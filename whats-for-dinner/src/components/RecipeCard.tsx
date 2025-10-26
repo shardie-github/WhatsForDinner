@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Recipe } from '@/lib/openaiClient'
+import { Recipe } from '@/lib/validation'
 
 interface RecipeCardProps {
   recipe: Recipe

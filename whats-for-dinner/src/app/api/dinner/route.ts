@@ -1,43 +1,36 @@
 import { NextResponse } from "next/server"
-import { openai, Recipe } from "@/lib/openaiClient"
+import { z } from "zod"
+import { GenerateRecipesRequestSchema } from "@/lib/validation"
+import { generateRecipesWithFallback } from "@/lib/openaiService"
 
 export async function POST(req: Request) {
   try {
-    const { ingredients, preferences } = await req.json()
+    // Validate request body
+    const body = await req.json()
+    const { ingredients, preferences } = GenerateRecipesRequestSchema.parse(body)
     
-    const prompt = `Suggest three dinner ideas based on these ingredients: ${ingredients.join(', ')}.
-    Take into account these dietary preferences: ${preferences || 'No specific preferences'}.
-    
-    For each recipe, provide:
-    - A creative and appetizing title
-    - Estimated cook time (e.g., "30 minutes", "1 hour")
-    - Approximate calories per serving
-    - List of ingredients needed
-    - Step-by-step cooking instructions
-    
-    Format the response as a JSON array of objects with the following structure:
-    [
-      {
-        "title": "Recipe Name",
-        "cookTime": "30 minutes",
-        "calories": 450,
-        "ingredients": ["ingredient1", "ingredient2"],
-        "steps": ["step1", "step2", "step3"]
-      }
-    ]`
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
+    // Generate recipes with retry logic and fallback
+    const result = await generateRecipesWithFallback({
+      ingredients,
+      preferences,
+      maxRetries: 3,
+      retryDelay: 1000,
     })
 
-    const content = completion.choices[0].message.content
-    const recipes = JSON.parse(content || '[]') as Recipe[]
-
-    return NextResponse.json({ recipes })
+    return NextResponse.json({
+      recipes: result.recipes,
+      metadata: result.metadata,
+    })
   } catch (error) {
     console.error('Error generating recipes:', error)
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid request data', details: error.errors },
+        { status: 400 }
+      )
+    }
+    
     return NextResponse.json(
       { error: 'Failed to generate recipes' },
       { status: 500 }
