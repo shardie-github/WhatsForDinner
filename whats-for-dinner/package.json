@@ -12,7 +12,13 @@
     "test:watch": "jest --watch",
     "test:ci": "jest --ci --coverage --watchAll=false",
     "test:coverage": "jest --coverage",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "autonomous:start": "node -e \"require('./src/lib/index.ts').initializeAutonomousSystem()\"",
+    "autonomous:status": "node -e \"console.log(require('./src/lib/index.ts').getSystemStatusSummary())\"",
+    "autonomous:shutdown": "node -e \"require('./src/lib/index.ts').shutdownAutonomousSystem()\"",
+    "autonomous:audit": "node -e \"require('./src/lib/observabilityAudit.ts').observabilityAudit.runDailyAudit().then(console.log)\"",
+    "autonomous:learn": "node -e \"require('./src/lib/cognitiveContinuity.ts').cognitiveContinuity.runLearningSession().then(console.log)\"",
+    "autonomous:optimize": "node -e \"require('./src/lib/predictiveOptimization.ts').predictiveOptimization.generateOptimizationRecommendations().then(console.log)\""
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
