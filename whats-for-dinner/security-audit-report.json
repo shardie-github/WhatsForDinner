@@ -1,0 +1,288 @@
+{
+  "timestamp": "2025-10-26T13:18:48.391Z",
+  "vulnerabilities": [
+    {
+      "file": "src/__tests__/ai-safety.test.ts",
+      "type": "Eval Usage",
+      "severity": "critical",
+      "description": "eval() usage detected - security risk",
+      "matches": 1
+    },
+    {
+      "file": "src/__tests__/security.test.ts",
+      "type": "Hardcoded Secrets",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected",
+      "matches": 2
+    },
+    {
+      "file": "src/__tests__/security.test.ts",
+      "type": "Eval Usage",
+      "severity": "critical",
+      "description": "eval() usage detected - security risk",
+      "matches": 1
+    },
+    {
+      "file": "src/app/api/developers/keys/[id]/route.ts",
+      "type": "Hardcoded Secrets",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected",
+      "matches": 2
+    },
+    {
+      "file": "src/app/api/developers/keys/route.ts",
+      "type": "Hardcoded Secrets",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected",
+      "matches": 1
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "type": "Hardcoded Secrets",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected",
+      "matches": 3
+    },
+    {
+      "file": "src/app/layout.tsx",
+      "type": "XSS Prevention",
+      "severity": "medium",
+      "description": "Potential XSS vulnerability - ensure content is sanitized",
+      "matches": 1
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 1
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 2
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 1
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 2
+    },
+    {
+      "file": "src/lib/modelAdvisor.ts",
+      "type": "Hardcoded Secrets",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected",
+      "matches": 1
+    },
+    {
+      "file": "src/lib/observability.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 1
+    },
+    {
+      "file": "src/lib/observabilityAudit.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 1
+    },
+    {
+      "file": "src/lib/performanceOptimizer.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 1
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 11
+    },
+    {
+      "file": "src/lib/realTimeAnalytics.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 2
+    },
+    {
+      "file": "src/lib/ugcGrowth.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 1
+    },
+    {
+      "file": "src/lib/utils.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 1
+    },
+    {
+      "file": "src/utils/commandRunner.ts",
+      "type": "Insecure Random",
+      "severity": "medium",
+      "description": "Use crypto.randomBytes() for cryptographic purposes",
+      "matches": 1
+    },
+    {
+      "file": "src/lib/agents/healAgent.ts",
+      "line": 232,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/agents/healAgent.ts",
+      "line": 530,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/aiCommerceHub.ts",
+      "line": 150,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/aiCommerceHub.ts",
+      "line": 503,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "line": 462,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "line": 293,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "line": 519,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "line": 135,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "line": 295,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "line": 304,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "line": 312,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "line": 778,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "line": 820,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/stripe.ts",
+      "line": 73,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    },
+    {
+      "file": "src/lib/stripe.ts",
+      "line": 131,
+      "type": "Hardcoded Secret",
+      "severity": "critical",
+      "description": "Potential hardcoded secret detected"
+    }
+  ],
+  "recommendations": [],
+  "compliance": {
+    "gdpr": {
+      "dataProcessing": {
+        "lawfulBasis": "Consent",
+        "dataTypes": [
+          "email",
+          "recipe_preferences",
+          "pantry_items"
+        ],
+        "retentionPeriod": "2 years",
+        "userRights": [
+          "access",
+          "rectification",
+          "erasure",
+          "portability"
+        ]
+      },
+      "technicalMeasures": {
+        "encryption": "AES-256 for data at rest, TLS 1.3 for data in transit",
+        "accessControl": "Role-based access control with MFA",
+        "monitoring": "Comprehensive audit logging"
+      }
+    },
+    "soc2": {
+      "security": {
+        "accessControl": "Multi-factor authentication required",
+        "dataEncryption": "End-to-end encryption implemented",
+        "monitoring": "24/7 security monitoring"
+      },
+      "availability": {
+        "uptime": "99.9% SLA",
+        "backup": "Daily automated backups",
+        "disasterRecovery": "RTO: 4 hours, RPO: 1 hour"
+      }
+    }
+  },
+  "score": 0
+}

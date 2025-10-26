@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Clock, Zap, ChevronDown, ChevronUp } from 'lucide-react';
-import { Recipe } from '@/lib/validation';
+import type { Recipe } from '@/lib/validation';
 import RecipeFeedback from './RecipeFeedback';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -56,7 +56,11 @@ export default function RecipeCard({
           </h4>
           <div className="flex flex-wrap gap-2">
             {recipe.ingredients.map((ingredient, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
+              <Badge
+                key={`ingredient-${ingredient}-${index}`}
+                variant="secondary"
+                className="text-xs"
+              >
                 {ingredient}
               </Badge>
             ))}
@@ -64,10 +68,10 @@ export default function RecipeCard({
         </div>
 
         <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowDetails(!showDetails)}
           className="h-auto w-full justify-between p-0 font-normal"
+          size="sm"
+          variant="ghost"
+          onClick={() => setShowDetails(!showDetails)}
         >
           <span>{showDetails ? 'Hide' : 'Show'} Instructions</span>
           {showDetails ? (
@@ -86,7 +90,7 @@ export default function RecipeCard({
               </h4>
               <ol className="space-y-3">
                 {recipe.steps.map((step, index) => (
-                  <li key={index} className="flex gap-3">
+                  <li key={`step-${index}`} className="flex gap-3">
                     <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
                       {index + 1}
                     </span>
@@ -102,16 +106,16 @@ export default function RecipeCard({
 
         <div className="flex gap-2 pt-2">
           {canSave && !isFavorite && (
-            <Button onClick={onSave} className="flex-1" size="sm">
+            <Button className="flex-1" size="sm" onClick={onSave}>
               Save Recipe
             </Button>
           )}
           {isFavorite && onRemove && (
             <Button
-              onClick={onRemove}
-              variant="destructive"
               className="flex-1"
               size="sm"
+              variant="destructive"
+              onClick={onRemove}
             >
               Remove
             </Button>
@@ -126,7 +130,8 @@ export default function RecipeCard({
               recipeId={recipeId}
               userId={userId}
               onFeedbackSubmitted={feedback => {
-                console.log('Feedback submitted:', feedback);
+                // Feedback submitted - could be logged or sent to analytics
+                // console.log('Feedback submitted:', feedback);
               }}
             />
           </div>

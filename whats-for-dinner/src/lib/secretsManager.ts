@@ -1,433 +1,383 @@
-import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
+/**
+ * Comprehensive Secrets Management System
+ * 
+ * This module provides secure secrets management including:
+ * - Environment variable validation
+ * - Secrets rotation
+ * - Encryption/decryption utilities
+ * - Audit logging for secret access
+ */
 
-interface SecretConfig {
-  key: string;
-  value: string;
-  environment: 'development' | 'staging' | 'production';
-  lastRotated: string;
-  nextRotation: string;
-  hash: string;
-  encrypted: boolean;
+import crypto from 'crypto';
+import { logger } from './logger';
+
+export interface SecretConfig {
+  name: string;
+  required: boolean;
+  encrypted?: boolean;
+  rotationInterval?: number; // in days
+  lastRotated?: Date;
 }
 
-interface SecretRotationPolicy {
-  key: string;
-  rotationIntervalDays: number;
-  autoRotate: boolean;
-  criticality: 'low' | 'medium' | 'high' | 'critical';
+export interface SecretValue {
+  value: string;
+  encrypted: boolean;
+  lastRotated: Date;
+  expiresAt?: Date;
 }
 
 class SecretsManager {
-  private supabase: any;
+  private secrets: Map<string, SecretValue> = new Map();
+  private configs: Map<string, SecretConfig> = new Map();
   private encryptionKey: string;
-  private rotationPolicies: SecretRotationPolicy[] = [];
+  private rotationJobs: Map<string, NodeJS.Timeout> = new Map();
 
   constructor() {
-    this.supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-    this.encryptionKey =
-      process.env.ENCRYPTION_KEY || this.generateEncryptionKey();
-    this.initializeRotationPolicies();
+    this.encryptionKey = this.getOrCreateEncryptionKey();
+    this.initializeSecrets();
+    this.setupRotationJobs();
   }
 
-  private generateEncryptionKey(): string {
-    return crypto.randomBytes(32).toString('hex');
-  }
-
-  private initializeRotationPolicies(): void {
-    this.rotationPolicies = [
+  /**
+   * Initialize all required secrets from environment variables
+   */
+  private initializeSecrets(): void {
+    const secretConfigs: SecretConfig[] = [
       {
-        key: 'OPENAI_API_KEY',
-        rotationIntervalDays: 30,
-        autoRotate: true,
-        criticality: 'critical',
+        name: 'OPENAI_API_KEY',
+        required: true,
+        encrypted: true,
+        rotationInterval: 90, // 90 days
       },
       {
-        key: 'STRIPE_SECRET_KEY',
-        rotationIntervalDays: 30,
-        autoRotate: true,
-        criticality: 'critical',
+        name: 'SUPABASE_SERVICE_ROLE_KEY',
+        required: true,
+        encrypted: true,
+        rotationInterval: 30, // 30 days
       },
       {
-        key: 'SUPABASE_SERVICE_ROLE_KEY',
-        rotationIntervalDays: 30,
-        autoRotate: true,
-        criticality: 'critical',
+        name: 'STRIPE_SECRET_KEY',
+        required: true,
+        encrypted: true,
+        rotationInterval: 60, // 60 days
       },
       {
-        key: 'JWT_SECRET',
-        rotationIntervalDays: 90,
-        autoRotate: true,
-        criticality: 'high',
+        name: 'JWT_SECRET',
+        required: true,
+        encrypted: true,
+        rotationInterval: 30, // 30 days
       },
       {
-        key: 'ENCRYPTION_KEY',
-        rotationIntervalDays: 90,
-        autoRotate: true,
-        criticality: 'high',
+        name: 'ENCRYPTION_KEY',
+        required: true,
+        encrypted: false,
+        rotationInterval: 90, // 90 days
       },
       {
-        key: 'VERCEL_TOKEN',
-        rotationIntervalDays: 60,
-        autoRotate: false,
-        criticality: 'medium',
+        name: 'SENTRY_DSN',
+        required: false,
+        encrypted: false,
+      },
+      {
+        name: 'RESEND_API_KEY',
+        required: false,
+        encrypted: true,
+        rotationInterval: 60, // 60 days
       },
     ];
+
+    for (const config of secretConfigs) {
+      this.configs.set(config.name, config);
+      this.loadSecret(config.name);
+    }
   }
 
-  private encrypt(value: string): string {
+  /**
+   * Load a secret from environment variables
+   */
+  private loadSecret(name: string): void {
+    const config = this.configs.get(name);
+    if (!config) return;
+
+    const envValue = process.env[name];
+    
+    if (!envValue) {
+      if (config.required) {
+        throw new Error(`Required secret ${name} not found in environment variables`);
+      }
+      return;
+    }
+
+    const secretValue: SecretValue = {
+      value: envValue,
+      encrypted: config.encrypted || false,
+      lastRotated: new Date(),
+    };
+
+    this.secrets.set(name, secretValue);
+    
+    // Log secret access for audit
+    logger.info(`Secret loaded: ${name}`, {
+      secret_name: name,
+      encrypted: secretValue.encrypted,
+      last_rotated: secretValue.lastRotated,
+    }, 'security', 'secrets_management');
+  }
+
+  /**
+   * Get a secret value
+   */
+  public getSecret(name: string): string | undefined {
+    const secret = this.secrets.get(name);
+    if (!secret) {
+      logger.warn(`Secret not found: ${name}`, {
+        secret_name: name,
+      }, 'security', 'secrets_management');
+      return undefined;
+    }
+
+    // Log secret access
+    logger.info(`Secret accessed: ${name}`, {
+      secret_name: name,
+      encrypted: secret.encrypted,
+    }, 'security', 'secrets_management');
+
+    return secret.value;
+  }
+
+  /**
+   * Set a secret value
+   */
+  public setSecret(name: string, value: string, encrypted: boolean = false): void {
+    const secretValue: SecretValue = {
+      value,
+      encrypted,
+      lastRotated: new Date(),
+    };
+
+    this.secrets.set(name, secretValue);
+
+    logger.info(`Secret set: ${name}`, {
+      secret_name: name,
+      encrypted,
+      last_rotated: secretValue.lastRotated,
+    }, 'security', 'secrets_management');
+  }
+
+  /**
+   * Rotate a secret
+   */
+  public async rotateSecret(name: string, newValue: string): Promise<void> {
+    const config = this.configs.get(name);
+    if (!config) {
+      throw new Error(`Secret configuration not found: ${name}`);
+    }
+
+    const oldSecret = this.secrets.get(name);
+    
+    // Set new secret
+    this.setSecret(name, newValue, config.encrypted);
+
+    // Log rotation
+    logger.info(`Secret rotated: ${name}`, {
+      secret_name: name,
+      old_last_rotated: oldSecret?.lastRotated,
+      new_last_rotated: new Date(),
+    }, 'security', 'secrets_management');
+
+    // Update environment variable if possible
+    if (process.env[name]) {
+      process.env[name] = newValue;
+    }
+  }
+
+  /**
+   * Check if a secret needs rotation
+   */
+  public needsRotation(name: string): boolean {
+    const config = this.configs.get(name);
+    const secret = this.secrets.get(name);
+    
+    if (!config || !secret || !config.rotationInterval) {
+      return false;
+    }
+
+    const daysSinceRotation = Math.floor(
+      (Date.now() - secret.lastRotated.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    return daysSinceRotation >= config.rotationInterval;
+  }
+
+  /**
+   * Get all secrets that need rotation
+   */
+  public getSecretsNeedingRotation(): string[] {
+    const secretsToRotate: string[] = [];
+    
+    for (const [name] of this.secrets) {
+      if (this.needsRotation(name)) {
+        secretsToRotate.push(name);
+      }
+    }
+    
+    return secretsToRotate;
+  }
+
+  /**
+   * Setup automatic rotation jobs
+   */
+  private setupRotationJobs(): void {
+    // Check for secrets needing rotation every hour
+    const rotationCheckInterval = setInterval(() => {
+      const secretsToRotate = this.getSecretsNeedingRotation();
+      
+      if (secretsToRotate.length > 0) {
+        logger.warn(`Secrets need rotation: ${secretsToRotate.join(', ')}`, {
+          secrets_needing_rotation: secretsToRotate,
+        }, 'security', 'secrets_management');
+        
+        // In a real implementation, this would trigger rotation workflows
+        this.notifyRotationNeeded(secretsToRotate);
+      }
+    }, 60 * 60 * 1000); // 1 hour
+
+    this.rotationJobs.set('rotation_check', rotationCheckInterval);
+  }
+
+  /**
+   * Notify that secrets need rotation
+   */
+  private notifyRotationNeeded(secrets: string[]): void {
+    // In a real implementation, this would send notifications
+    // to administrators or trigger automated rotation workflows
+    console.warn(`⚠️  Secrets need rotation: ${secrets.join(', ')}`);
+  }
+
+  /**
+   * Encrypt a value
+   */
+  public encrypt(value: string): string {
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipher('aes-256-gcm', this.encryptionKey);
+    const cipher = crypto.createCipher('aes-256-cbc', this.encryptionKey);
+    
     let encrypted = cipher.update(value, 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    const authTag = cipher.getAuthTag();
-    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
+    
+    return iv.toString('hex') + ':' + encrypted;
   }
 
-  private decrypt(encryptedValue: string): string {
-    const parts = encryptedValue.split(':');
-    const iv = Buffer.from(parts[0], 'hex');
-    const authTag = Buffer.from(parts[1], 'hex');
-    const encrypted = parts[2];
-
-    const decipher = crypto.createDecipher('aes-256-gcm', this.encryptionKey);
-    decipher.setAuthTag(authTag);
+  /**
+   * Decrypt a value
+   */
+  public decrypt(encryptedValue: string): string {
+    const [ivHex, encrypted] = encryptedValue.split(':');
+    const iv = Buffer.from(ivHex, 'hex');
+    const decipher = crypto.createDecipher('aes-256-cbc', this.encryptionKey);
+    
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
+    
     return decrypted;
   }
 
-  private generateHash(value: string): string {
-    return crypto.createHash('sha256').update(value).digest('hex');
-  }
-
-  async storeSecret(
-    key: string,
-    value: string,
-    environment: string = 'production'
-  ): Promise<void> {
-    try {
-      const hash = this.generateHash(value);
-      const encryptedValue = this.encrypt(value);
-
-      const secretConfig: SecretConfig = {
-        key,
-        value: encryptedValue,
-        environment: environment as any,
-        lastRotated: new Date().toISOString(),
-        nextRotation: this.calculateNextRotation(key),
-        hash,
-        encrypted: true,
-      };
-
-      const { error } = await this.supabase
-        .from('secrets_vault')
-        .upsert(secretConfig, { onConflict: 'key,environment' });
-
-      if (error) {
-        throw new Error(`Failed to store secret: ${error.message}`);
-      }
-
-      // Log secret storage (without the actual value)
-      console.log(
-        `Secret ${key} stored successfully for environment ${environment}`
-      );
-    } catch (error) {
-      console.error(`Error storing secret ${key}:`, error);
-      throw error;
+  /**
+   * Get or create encryption key
+   */
+  private getOrCreateEncryptionKey(): string {
+    let key = process.env.ENCRYPTION_KEY;
+    
+    if (!key) {
+      // Generate a new key (in production, this should be stored securely)
+      key = crypto.randomBytes(32).toString('hex');
+      logger.warn('No ENCRYPTION_KEY found, generated new key', {
+        generated_key: true,
+      }, 'security', 'secrets_management');
     }
+    
+    return key;
   }
 
-  async getSecret(
-    key: string,
-    environment: string = 'production'
-  ): Promise<string | null> {
-    try {
-      const { data, error } = await this.supabase
-        .from('secrets_vault')
-        .select('*')
-        .eq('key', key)
-        .eq('environment', environment)
-        .single();
-
-      if (error || !data) {
-        console.warn(`Secret ${key} not found for environment ${environment}`);
-        return null;
-      }
-
-      // Check if secret needs rotation
-      if (new Date(data.nextRotation) <= new Date()) {
-        console.warn(`Secret ${key} is due for rotation`);
-        await this.rotateSecret(key, environment);
-      }
-
-      return this.decrypt(data.value);
-    } catch (error) {
-      console.error(`Error retrieving secret ${key}:`, error);
-      return null;
-    }
-  }
-
-  async rotateSecret(
-    key: string,
-    environment: string = 'production'
-  ): Promise<void> {
-    try {
-      const policy = this.rotationPolicies.find(p => p.key === key);
-      if (!policy) {
-        throw new Error(`No rotation policy found for secret ${key}`);
-      }
-
-      // Generate new secret value (this would typically call an external API)
-      const newValue = await this.generateNewSecretValue(key);
-      const hash = this.generateHash(newValue);
-      const encryptedValue = this.encrypt(newValue);
-
-      const { error } = await this.supabase
-        .from('secrets_vault')
-        .update({
-          value: encryptedValue,
-          hash,
-          lastRotated: new Date().toISOString(),
-          nextRotation: this.calculateNextRotation(key),
-        })
-        .eq('key', key)
-        .eq('environment', environment);
-
-      if (error) {
-        throw new Error(`Failed to rotate secret: ${error.message}`);
-      }
-
-      // Log rotation
-      console.log(
-        `Secret ${key} rotated successfully for environment ${environment}`
-      );
-
-      // Store rotation event
-      await this.logRotationEvent(key, environment, hash);
-    } catch (error) {
-      console.error(`Error rotating secret ${key}:`, error);
-      throw error;
-    }
-  }
-
-  private async generateNewSecretValue(key: string): Promise<string> {
-    // This is a placeholder - in production, you would:
-    // 1. Call the respective API to generate new keys
-    // 2. Use a secure random generator for other secrets
-    // 3. Implement proper key derivation
-
-    switch (key) {
-      case 'JWT_SECRET':
-      case 'ENCRYPTION_KEY':
-        return crypto.randomBytes(32).toString('hex');
-      case 'RATE_LIMIT_SECRET':
-        return crypto.randomBytes(16).toString('hex');
-      default:
-        // For API keys, you would call the respective service
-        return crypto.randomBytes(32).toString('hex');
-    }
-  }
-
-  private calculateNextRotation(key: string): string {
-    const policy = this.rotationPolicies.find(p => p.key === key);
-    if (!policy)
-      return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-
-    const nextRotation = new Date();
-    nextRotation.setDate(nextRotation.getDate() + policy.rotationIntervalDays);
-    return nextRotation.toISOString();
-  }
-
-  private async logRotationEvent(
-    key: string,
-    environment: string,
-    newHash: string
-  ): Promise<void> {
-    try {
-      await this.supabase.from('secret_rotation_logs').insert({
-        key,
-        environment,
-        new_hash: newHash,
-        rotated_at: new Date().toISOString(),
-        rotated_by: 'system',
-      });
-    } catch (error) {
-      console.error('Failed to log rotation event:', error);
-    }
-  }
-
-  async validateSecrets(): Promise<{ valid: boolean; errors: string[] }> {
-    const errors: string[] = [];
-    const requiredSecrets = [
-      'OPENAI_API_KEY',
-      'STRIPE_SECRET_KEY',
-      'SUPABASE_SERVICE_ROLE_KEY',
-      'JWT_SECRET',
-      'ENCRYPTION_KEY',
-    ];
-
-    for (const secret of requiredSecrets) {
-      const value = await this.getSecret(secret);
-      if (!value) {
-        errors.push(`Missing required secret: ${secret}`);
-      } else if (value.length < 16) {
-        errors.push(`Secret ${secret} appears to be invalid (too short)`);
+  /**
+   * Validate all required secrets
+   */
+  public validateSecrets(): { valid: boolean; missing: string[]; invalid: string[] } {
+    const missing: string[] = [];
+    const invalid: string[] = [];
+    
+    for (const [name, config] of this.configs) {
+      if (config.required) {
+        const secret = this.secrets.get(name);
+        if (!secret || !secret.value) {
+          missing.push(name);
+        } else if (this.isSecretInvalid(name, secret.value)) {
+          invalid.push(name);
+        }
       }
     }
-
+    
     return {
-      valid: errors.length === 0,
-      errors,
+      valid: missing.length === 0 && invalid.length === 0,
+      missing,
+      invalid,
     };
   }
 
-  async getSecretChecksums(): Promise<Record<string, string>> {
-    try {
-      const { data, error } = await this.supabase
-        .from('secrets_vault')
-        .select('key, hash, environment');
-
-      if (error) {
-        throw new Error(
-          `Failed to retrieve secret checksums: ${error.message}`
-        );
-      }
-
-      const checksums: Record<string, string> = {};
-      data.forEach((secret: any) => {
-        checksums[`${secret.key}_${secret.environment}`] = secret.hash;
-      });
-
-      return checksums;
-    } catch (error) {
-      console.error('Error getting secret checksums:', error);
-      return {};
+  /**
+   * Check if a secret value is invalid
+   */
+  private isSecretInvalid(name: string, value: string): boolean {
+    switch (name) {
+      case 'OPENAI_API_KEY':
+        return !value.startsWith('sk-');
+      case 'SUPABASE_SERVICE_ROLE_KEY':
+        return !value.startsWith('eyJ');
+      case 'STRIPE_SECRET_KEY':
+        return !value.startsWith('sk_');
+      case 'JWT_SECRET':
+        return value.length < 32;
+      default:
+        return false;
     }
   }
 
-  async scheduleRotationCheck(): Promise<void> {
-    try {
-      const { data, error } = await this.supabase
-        .from('secrets_vault')
-        .select('key, nextRotation, environment')
-        .lte('nextRotation', new Date().toISOString());
+  /**
+   * Get secrets summary for monitoring
+   */
+  public getSecretsSummary(): {
+    total: number;
+    encrypted: number;
+    needsRotation: number;
+    lastRotated: Date | null;
+  } {
+    const secrets = Array.from(this.secrets.values());
+    const needsRotation = this.getSecretsNeedingRotation().length;
+    const lastRotated = secrets.length > 0 
+      ? new Date(Math.max(...secrets.map(s => s.lastRotated.getTime())))
+      : null;
+    
+    return {
+      total: secrets.length,
+      encrypted: secrets.filter(s => s.encrypted).length,
+      needsRotation,
+      lastRotated,
+    };
+  }
 
-      if (error) {
-        throw new Error(`Failed to check rotation schedule: ${error.message}`);
-      }
-
-      for (const secret of data) {
-        const policy = this.rotationPolicies.find(p => p.key === secret.key);
-        if (policy && policy.autoRotate) {
-          console.log(
-            `Auto-rotating secret ${secret.key} for environment ${secret.environment}`
-          );
-          await this.rotateSecret(secret.key, secret.environment);
-        } else {
-          console.warn(
-            `Secret ${secret.key} is due for rotation but auto-rotation is disabled`
-          );
-        }
-      }
-    } catch (error) {
-      console.error('Error in rotation check:', error);
+  /**
+   * Cleanup resources
+   */
+  public cleanup(): void {
+    for (const [name, job] of this.rotationJobs) {
+      clearInterval(job);
     }
+    this.rotationJobs.clear();
   }
 }
 
+// Export singleton instance
 export const secretsManager = new SecretsManager();
 
-// Utility functions for environment validation
-export function validateEnvironmentVariables(): {
-  valid: boolean;
-  errors: string[];
-} {
-  const errors: string[] = [];
-  const requiredVars = [
-    'NEXT_PUBLIC_SUPABASE_URL',
-    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-    'OPENAI_API_KEY',
-    'STRIPE_SECRET_KEY',
-  ];
-
-  for (const varName of requiredVars) {
-    if (!process.env[varName]) {
-      errors.push(`Missing required environment variable: ${varName}`);
-    }
-  }
-
-  // Validate URL formats
-  if (
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    !process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('https://')
-  ) {
-    errors.push('NEXT_PUBLIC_SUPABASE_URL must use HTTPS');
-  }
-
-  // Validate API key formats
-  if (
-    process.env.OPENAI_API_KEY &&
-    !process.env.OPENAI_API_KEY.startsWith('sk-')
-  ) {
-    errors.push('OPENAI_API_KEY appears to be invalid (should start with sk-)');
-  }
-
-  if (
-    process.env.STRIPE_SECRET_KEY &&
-    !process.env.STRIPE_SECRET_KEY.startsWith('sk_')
-  ) {
-    errors.push(
-      'STRIPE_SECRET_KEY appears to be invalid (should start with sk_)'
-    );
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
-}
-
-// Redact sensitive information from logs
-export function redactSensitiveData(data: any): any {
-  const sensitiveKeys = [
-    'password',
-    'secret',
-    'key',
-    'token',
-    'api_key',
-    'auth',
-    'openai',
-    'stripe',
-    'supabase',
-    'jwt',
-    'encryption',
-  ];
-
-  if (typeof data === 'string') {
-    return sensitiveKeys.some(key => data.toLowerCase().includes(key))
-      ? '[REDACTED]'
-      : data;
-  }
-
-  if (typeof data === 'object' && data !== null) {
-    const redacted = { ...data };
-    for (const key in redacted) {
-      if (
-        sensitiveKeys.some(sensitiveKey =>
-          key.toLowerCase().includes(sensitiveKey)
-        )
-      ) {
-        redacted[key] = '[REDACTED]';
-      } else if (typeof redacted[key] === 'object') {
-        redacted[key] = redactSensitiveData(redacted[key]);
-      }
-    }
-    return redacted;
-  }
-
-  return data;
-}
+// Export types and utilities
+export { SecretsManager };
+export type { SecretConfig, SecretValue };

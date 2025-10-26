@@ -3,30 +3,92 @@ import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';
 import prettierConfig from 'eslint-config-prettier';
 import prettierPlugin from 'eslint-plugin-prettier';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   prettierConfig,
   {
+    files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
+      },
+    },
     plugins: {
       prettier: prettierPlugin,
     },
     rules: {
-      // Core rules
+      // Core rules - Enhanced
       'no-console': 'warn',
+      'no-debugger': 'error',
+      'no-alert': 'warn',
       'no-unused-vars': 'off', // Use TypeScript version instead
-      '@typescript-eslint/no-unused-vars': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', { 
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_'
+      }],
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+      '@typescript-eslint/prefer-optional-chain': 'warn',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
+      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/await-thenable': 'warn',
+      '@typescript-eslint/no-misused-promises': 'warn',
+      '@typescript-eslint/require-await': 'warn',
+      '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/consistent-type-exports': 'error',
 
-      // React rules
-      'react/jsx-no-useless-fragment': 'warn',
+      // React rules - Enhanced
+      'react/jsx-no-useless-fragment': 'error',
       'react/jsx-key': 'error',
       'react/jsx-no-duplicate-props': 'error',
       'react/jsx-no-undef': 'error',
       'react/no-array-index-key': 'warn',
       'react/no-unescaped-entities': 'error',
       'react/prop-types': 'off', // Using TypeScript
+      'react/jsx-no-bind': 'warn',
+      'react/jsx-pascal-case': 'error',
+      'react/no-danger': 'warn',
+      'react/no-deprecated': 'error',
+      'react/no-direct-mutation-state': 'error',
+      'react/no-find-dom-node': 'error',
+      'react/no-is-mounted': 'error',
+      'react/no-render-return-value': 'error',
+      'react/no-string-refs': 'error',
+      'react/no-unescaped-entities': 'error',
+      'react/no-unknown-property': 'error',
+      'react/no-unsafe': 'warn',
+      'react/require-render-return': 'error',
+      'react/self-closing-comp': 'error',
+      'react/jsx-boolean-value': ['error', 'never'],
+      'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
+      'react/jsx-fragments': ['error', 'syntax'],
+      'react/jsx-no-useless-fragment': 'error',
+      'react/jsx-sort-props': ['warn', { 
+        callbacksLast: true, 
+        shorthandFirst: true,
+        noSortAlphabetically: true,
+        reservedFirst: true
+      }],
+
+      // Performance rules
+      'react-hooks/exhaustive-deps': 'error',
+      'react-hooks/rules-of-hooks': 'error',
+
+      // Security rules
+      'no-eval': 'error',
+      'no-implied-eval': 'error',
+      'no-new-func': 'error',
+      'no-script-url': 'error',
 
       // Prettier integration
       'prettier/prettier': 'error',

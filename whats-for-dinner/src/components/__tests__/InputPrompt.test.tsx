@@ -117,7 +117,7 @@ describe('InputPrompt', () => {
   });
 
   it('disables submit button when loading', () => {
-    render(<InputPrompt {...defaultProps} loading={true} />);
+    render(<InputPrompt {...defaultProps} loading />);
 
     const submitButton = screen.getByRole('button', {
       name: /generating recipes/i,

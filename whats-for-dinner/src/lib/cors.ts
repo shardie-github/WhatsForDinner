@@ -1,11 +1,12 @@
 /**
  * CORS Configuration for What's for Dinner
- * 
+ *
  * This module provides secure CORS configuration for API endpoints
  * with proper origin validation and security headers.
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export interface CORSOptions {
   origin: string | string[] | boolean;
@@ -16,17 +17,18 @@ export interface CORSOptions {
 }
 
 export const corsConfig: CORSOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://whats-for-dinner.vercel.app',
-        'https://whats-for-dinner-green.vercel.app',
-        'https://whats-for-dinner-blue.vercel.app'
-      ]
-    : [
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'http://127.0.0.1:3000'
-      ],
+  origin:
+    process.env.NODE_ENV === 'production'
+      ? [
+          'https://whats-for-dinner.vercel.app',
+          'https://whats-for-dinner-green.vercel.app',
+          'https://whats-for-dinner-blue.vercel.app',
+        ]
+      : [
+          'http://localhost:3000',
+          'http://localhost:3001',
+          'http://127.0.0.1:3000',
+        ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: [
     'Content-Type',
@@ -37,10 +39,10 @@ export const corsConfig: CORSOptions = {
     'Access-Control-Request-Method',
     'Access-Control-Request-Headers',
     'X-API-Key',
-    'X-Client-Version'
+    'X-Client-Version',
   ],
   credentials: true,
-  maxAge: 86400 // 24 hours
+  maxAge: 86400, // 24 hours
 };
 
 export function handleCORS(request: NextRequest): NextResponse | null {
@@ -50,10 +52,10 @@ export function handleCORS(request: NextRequest): NextResponse | null {
   // Handle preflight requests
   if (method === 'OPTIONS') {
     const response = new NextResponse(null, { status: 200 });
-    
+
     // Set CORS headers
     setCORSHeaders(response, origin);
-    
+
     return response;
   }
 
@@ -61,11 +63,11 @@ export function handleCORS(request: NextRequest): NextResponse | null {
   if (origin && !isValidOrigin(origin)) {
     return new NextResponse(
       JSON.stringify({ error: 'CORS policy violation: Invalid origin' }),
-      { 
+      {
         status: 403,
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
       }
     );
   }
@@ -73,7 +75,10 @@ export function handleCORS(request: NextRequest): NextResponse | null {
   return null;
 }
 
-export function setCORSHeaders(response: NextResponse, origin?: string | null): void {
+export function setCORSHeaders(
+  response: NextResponse,
+  origin?: string | null
+): void {
   // Set Access-Control-Allow-Origin
   if (origin && isValidOrigin(origin)) {
     response.headers.set('Access-Control-Allow-Origin', origin);
@@ -84,9 +89,18 @@ export function setCORSHeaders(response: NextResponse, origin?: string | null): 
   }
 
   // Set other CORS headers
-  response.headers.set('Access-Control-Allow-Methods', corsConfig.methods.join(', '));
-  response.headers.set('Access-Control-Allow-Headers', corsConfig.allowedHeaders.join(', '));
-  response.headers.set('Access-Control-Allow-Credentials', corsConfig.credentials.toString());
+  response.headers.set(
+    'Access-Control-Allow-Methods',
+    corsConfig.methods.join(', ')
+  );
+  response.headers.set(
+    'Access-Control-Allow-Headers',
+    corsConfig.allowedHeaders.join(', ')
+  );
+  response.headers.set(
+    'Access-Control-Allow-Credentials',
+    corsConfig.credentials.toString()
+  );
   response.headers.set('Access-Control-Max-Age', corsConfig.maxAge.toString());
 
   // Set security headers
@@ -94,7 +108,10 @@ export function setCORSHeaders(response: NextResponse, origin?: string | null): 
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  response.headers.set(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=()'
+  );
 }
 
 function isValidOrigin(origin: string): boolean {
@@ -109,12 +126,15 @@ function isValidOrigin(origin: string): boolean {
   return corsConfig.origin === origin;
 }
 
-export function createCORSResponse(data: any, status: number = 200): NextResponse {
+export function createCORSResponse(
+  data: any,
+  status: number = 200
+): NextResponse {
   const response = new NextResponse(JSON.stringify(data), {
     status,
     headers: {
       'Content-Type': 'application/json',
-    }
+    },
   });
 
   // Set CORS headers
@@ -123,7 +143,10 @@ export function createCORSResponse(data: any, status: number = 200): NextRespons
   return response;
 }
 
-export function createCORSErrorResponse(message: string, status: number = 400): NextResponse {
+export function createCORSErrorResponse(
+  message: string,
+  status: number = 400
+): NextResponse {
   return createCORSResponse({ error: message }, status);
 }
 
@@ -175,8 +198,8 @@ export const securityHeaders = {
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    "frame-ancestors 'none'"
-  ].join('; ')
+    "frame-ancestors 'none'",
+  ].join('; '),
 };
 
 export function setSecurityHeaders(response: NextResponse): void {

@@ -1,0 +1,2652 @@
+{
+  "timestamp": "2025-10-26T13:18:51.799Z",
+  "issues": [
+    {
+      "file": "src/app/admin/analytics/page.tsx",
+      "element": "<Activity className=\"h-4 w-4 text-muted-foreground\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/billing/page.tsx",
+      "element": "<Button onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/billing/page.tsx",
+      "element": "<Button\n                    onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/billing/page.tsx",
+      "element": "<Button onClick={handleManageBilling}>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/billing/page.tsx",
+      "element": "<AlertCircle className=\"mr-2 h-5 w-5\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<select\n                  value={contentType}\n                  onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<textarea\n                  value={context}\n                  onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<input\n                  type=\"text\"\n                  value={targetAudience}\n                  onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<select\n                    value={tone}\n                    onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<input\n                    type=\"number\"\n                    value={numberOfVariants}\n                    onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<button\n                onClick={generateVariants}\n                disabled={isGenerating}\n                className=\"w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50\"\n              >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<input\n                  type=\"text\"\n                  value={selectedTestId}\n                  onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<button\n                onClick={analyzeTest}\n                className=\"w-full rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700\"\n              >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<input\n                        type=\"number\"\n                        defaultValue={variant.performance_metrics.impressions}\n                        onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<input\n                        type=\"number\"\n                        defaultValue={variant.performance_metrics.clicks}\n                        onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "element": "<input\n                        type=\"number\"\n                        defaultValue={variant.performance_metrics.conversions}\n                        onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/funnel/page.tsx",
+      "element": "<input\n              type=\"date\"\n              value={dateRange.start}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/funnel/page.tsx",
+      "element": "<input\n              type=\"date\"\n              value={dateRange.end}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/funnel/page.tsx",
+      "element": "<button\n            onClick={loadFunnelData}\n            className=\"rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700\"\n          >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/page.tsx",
+      "element": "<Activity className=\"h-4 w-4 text-muted-foreground\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/page.tsx",
+      "element": "<Activity className=\"mx-auto mb-4 h-12 w-12 text-gray-400\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/performance/page.tsx",
+      "element": "<Button \n          onClick={fetchPerformanceData} \n          disabled={refreshing}\n          className=\"flex items-center gap-2\"\n        >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/performance/page.tsx",
+      "element": "<Activity className=\"h-4 w-4\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/performance/page.tsx",
+      "element": "<AlertTriangle className=\"h-5 w-5\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/performance/page.tsx",
+      "element": "<AlertTriangle className=\"h-5 w-5 text-red-600\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "element": "<Input\n              id=\"tenant-name\"\n              value={settings.name}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "element": "<Input\n              id=\"tenant-plan\"\n              value={tenant.plan.toUpperCase()}\n              disabled\n              className=\"bg-gray-100\"\n            />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "element": "<Input\n              id=\"data-retention\"\n              type=\"number\"\n              value={settings.settings.features.data_retention_days}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "element": "<Input\n              id=\"max-members\"\n              type=\"number\"\n              value={settings.settings.limits.max_members}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "element": "<Input\n              id=\"max-pantry-items\"\n              type=\"number\"\n              value={settings.settings.limits.max_pantry_items}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "element": "<Input\n              id=\"max-recipes\"\n              type=\"number\"\n              value={settings.settings.limits.max_recipes}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "element": "<AlertTriangle className=\"mr-2 h-5 w-5\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "element": "<Button variant=\"destructive\" className=\"mt-3\" disabled>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "element": "<Button\n          onClick={handleSave}\n          disabled={updateTenantMutation.isPending}\n          className=\"flex items-center\"\n        >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "element": "<any[]>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "element": "<select\n                    value={platform}\n                    onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "element": "<select\n                    value={contentType}\n                    onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "element": "<select\n                  value={selectedTheme}\n                  onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "element": "<button\n                onClick={generateContent}\n                disabled={isLoading || !selectedTheme}\n                className=\"w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50\"\n              >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "element": "<button\n                    onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "element": "<button\n                    onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "element": "<button\n                  onClick={loadTrendingThemes}\n                  disabled={isLoading}\n                  className=\"rounded bg-gray-600 px-3 py-1 text-sm text-white hover:bg-gray-700 disabled:opacity-50\"\n                >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/system/metrics.tsx",
+      "element": "<AlertTriangle className=\"mx-auto mb-4 h-12 w-12 text-red-500\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/system/metrics.tsx",
+      "element": "<select\n              value={timeframe}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/system/metrics.tsx",
+      "element": "<Activity className=\"mr-2 h-5 w-5\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "element": "<Button onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "element": "<input\n                  type=\"email\"\n                  value={inviteEmail}\n                  onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "element": "<select\n                  value={inviteRole}\n                  onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "element": "<Button type=\"submit\" disabled={inviteUserMutation.isPending}>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "element": "<Button\n                  type=\"button\"\n                  variant=\"outline\"\n                  onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "element": "<Button\n                        size=\"sm\"\n                        variant=\"ghost\"\n                        onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "element": "<Button\n                      size=\"sm\"\n                      variant=\"ghost\"\n                      onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "element": "<input\n                  id=\"name\"\n                  name=\"name\"\n                  type=\"text\"\n                  required={!isLogin}\n                  className=\"relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm\"\n                  placeholder=\"Full name\"\n                  value={name}\n                  onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "element": "<input\n                id=\"email-address\"\n                name=\"email\"\n                type=\"email\"\n                autoComplete=\"email\"\n                required\n                className=\"relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm\"\n                placeholder=\"Email address\"\n                value={email}\n                onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "element": "<input\n                id=\"password\"\n                name=\"password\"\n                type=\"password\"\n                autoComplete=\"current-password\"\n                required\n                className=\"relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm\"\n                placeholder=\"Password\"\n                value={password}\n                onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "element": "<button\n              type=\"submit\"\n              disabled={loading}\n              className=\"group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50\"\n            >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "element": "<button\n              type=\"button\"\n              onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/billing/page.tsx",
+      "element": "<Button\n                onClick={handleManageSubscription}\n                disabled={processing === 'portal'}\n                className=\"w-full\"\n              >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/billing/page.tsx",
+      "element": "<Button\n                      onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/billing/page.tsx",
+      "element": "<Button\n                onClick={handleManageSubscription}\n                disabled={processing === 'portal'}\n                variant=\"outline\"\n              >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<APIKey[]>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<APIUsage | null>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<Button className=\"w-full\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<Button size=\"sm\" className=\"flex-1\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<Button size=\"sm\" variant=\"outline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<Input\n                  placeholder=\"New API key name\"\n                  value={newKeyName}\n                  onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<Button\n                  onClick={createAPIKey}\n                  disabled={isCreatingKey || !newKeyName.trim()}\n                >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<Button\n                        size=\"sm\"\n                        variant=\"outline\"\n                        onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<Button\n                        size=\"sm\"\n                        variant=\"outline\"\n                        onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "element": "<Button className=\"w-full\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/favorites/page.tsx",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "element": "<Button>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "element": "<Button size=\"lg\" className=\"px-8 py-4 text-lg\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "element": "<ArrowRight className=\"ml-2 h-5 w-5\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "element": "<Button size=\"lg\" variant=\"outline\" className=\"px-8 py-4 text-lg\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "element": "<Button\n                    className={`w-full ${plan.popular ? 'bg-blue-600 hover:bg-blue-700' : ''}`}\n                    variant={plan.popular ? 'default' : 'outline'}\n                  >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "element": "<Button\n                  size=\"lg\"\n                  variant=\"secondary\"\n                  className=\"px-8 py-4 text-lg\"\n                >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "element": "<ArrowRight className=\"ml-2 h-5 w-5\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "element": "<Button\n                size=\"lg\"\n                variant=\"outline\"\n                className=\"border-white px-8 py-4 text-lg text-white hover:bg-white hover:text-blue-600\"\n              >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "element": "<a\n                        href=\"/billing\"\n                        className=\"inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90\"\n                      >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "element": "<InputPromptSkeleton />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "element": "<InputPrompt\n            pantryItems={pantryItemNames}\n            loading={generateRecipesMutation.isPending}\n            onGenerate={generateRecipes}\n          />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/pantry/page.tsx",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/partners/portal/page.tsx",
+      "element": "<Activity className=\"h-4 w-4 text-muted-foreground\" />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/partners/portal/page.tsx",
+      "element": "<Button size=\"sm\" variant=\"outline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/partners/portal/page.tsx",
+      "element": "<Button>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/partners/portal/page.tsx",
+      "element": "<Button variant=\"outline\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "element": "<Input\n                id=\"ingredient-input\"\n                type=\"text\"\n                value={newIngredient}\n                placeholder=\"Type an ingredient and press Enter...\"\n                className=\"flex-1\"\n                disabled={loading}\n                onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "element": "<Button\n                type=\"button\"\n                disabled={!newIngredient.trim() || loading}\n                size=\"icon\"\n                variant=\"outline\"\n                onClick={addIngredient}\n              >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "element": "<Button\n                    key={item}\n                    type=\"button\"\n                    variant=\"outline\"\n                    size=\"sm\"\n                    className=\"h-8\"\n                    disabled={loading}\n                    onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "element": "<Button\n                      type=\"button\"\n                      variant=\"ghost\"\n                      size=\"icon\"\n                      className=\"h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground\"\n                      disabled={loading}\n                      onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "element": "<Input\n              id=\"preferences\"\n              type=\"text\"\n              value={preferences}\n              placeholder=\"e.g., vegetarian, gluten-free, low-carb...\"\n              disabled={loading}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "element": "<Button\n            type=\"submit\"\n            disabled={loading || ingredients.length === 0}\n            className=\"h-12 w-full text-base\"\n            size=\"lg\"\n          >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "element": "<Button\n                  variant=\"outline\"\n                  size=\"sm\"\n                  className=\"text-destructive hover:bg-destructive hover:text-destructive-foreground\"\n                  onClick={handleSignOut}\n                >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "element": "<Button size=\"sm\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "element": "<Button\n                    variant=\"outline\"\n                    className=\"w-full justify-start text-destructive hover:bg-destructive hover:text-destructive-foreground\"\n                    onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "element": "<Button className=\"w-full justify-start\">",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PWAInstaller.tsx",
+      "element": "<button\n        className=\"flex items-center space-x-2 rounded-lg bg-blue-500 px-4 py-2 text-white shadow-lg transition-colors hover:bg-blue-600\"\n        onClick={handleInstallClick}\n      >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "element": "<input\n              required\n              type=\"text\"\n              value={newIngredient}\n              placeholder=\"e.g., tomatoes, chicken breast...\"\n              className=\"w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "element": "<input\n              type=\"number\"\n              value={newQuantity}\n              min=\"1\"\n              className=\"w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "element": "<button\n              type=\"submit\"\n              className=\"w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600\"\n            >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "element": "<button\n                      className=\"flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200\"\n                      onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "element": "<button\n                      className=\"flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200\"\n                      onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "element": "<button\n                    className=\"p-2 text-red-600 hover:text-red-800\"\n                    onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeCard.tsx",
+      "element": "<Button\n          className=\"h-auto w-full justify-between p-0 font-normal\"\n          size=\"sm\"\n          variant=\"ghost\"\n          onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeCard.tsx",
+      "element": "<Button className=\"flex-1\" size=\"sm\" onClick={onSave}>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeCard.tsx",
+      "element": "<Button\n              className=\"flex-1\"\n              size=\"sm\"\n              variant=\"destructive\"\n              onClick={onRemove}\n            >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "element": "<button\n              key={star}\n              disabled={isSubmitting}\n              className={`p-1 ${\n                userRating && star <= userRating\n                  ? 'text-yellow-400'\n                  : 'text-gray-300 hover:text-yellow-400'\n              } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}\n              onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "element": "<button\n          disabled={isSubmitting}\n          className={`flex items-center space-x-2 rounded-lg border px-3 py-2 ${\n            submittedFeedback === 'thumbs_up'\n              ? 'border-green-200 bg-green-50 text-green-700'\n              : 'border-gray-200 bg-white text-gray-600 hover:border-green-200 hover:bg-green-50'\n          } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}\n          onClick={handleThumbsUp}\n        >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "element": "<button\n          disabled={isSubmitting}\n          className={`flex items-center space-x-2 rounded-lg border px-3 py-2 ${\n            submittedFeedback === 'thumbs_down'\n              ? 'border-red-200 bg-red-50 text-red-700'\n              : 'border-gray-200 bg-white text-gray-600 hover:border-red-200 hover:bg-red-50'\n          } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}\n          onClick={handleThumbsDown}\n        >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "element": "<button\n          className=\"flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800\"\n          onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "element": "<textarea\n              value={feedbackText}\n              placeholder=\"Tell us what you think about this recipe...\"\n              className=\"w-full resize-none rounded-lg border border-gray-200 p-3 focus:border-transparent focus:ring-2 focus:ring-blue-500\"\n              rows={3}\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "element": "<button\n                disabled={isSubmitting || !feedbackText.trim()}\n                className=\"rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50\"\n                onClick={handleTextFeedback}\n              >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "element": "<button\n                className=\"rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300\"\n                onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "element": "<textarea\n              value={customMessage}\n              placeholder=\"Add a personal message...\"\n              className=\"h-20 w-full rounded-md border border-gray-300 px-3 py-2\"\n              onChange={e =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "element": "<input\n                    type=\"checkbox\"\n                    checked={selectedPlatforms.includes(platform)}\n                    className=\"rounded border-gray-300 text-blue-600 focus:ring-blue-500\"\n                    onChange={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "element": "<button\n            disabled={isSharing || selectedPlatforms.length === 0}\n            className=\"w-full rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50\"\n            onClick={handleShare}\n          >",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "element": "<button\n                      className=\"text-sm text-blue-600 hover:text-blue-800\"\n                      onClick={() =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} loading />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "element": "<InputPrompt {...defaultProps} pantryItems={[]} />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ui/input.tsx",
+      "element": "<input\n        ref={ref}\n        type={type}\n        className={cn(\n          'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',\n          className\n        )}\n        {...props}\n      />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ui/textarea.tsx",
+      "element": "<textarea\n        ref={ref}\n        className={cn(\n          'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',\n          className\n        )}\n        {...props}\n      />",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "element": "<any[]>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/healAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiCommerceHub.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiCommerceHub.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiCommerceHub.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "element": "<AIConfig | null>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "element": "<AIConfig, 'id' | 'created_at'>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "element": "<AIConfig | null>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "element": "<AIConfig>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "element": "<AIConfig[]>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiCopywriter.ts",
+      "element": "<AITestResult>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousSystem.ts",
+      "element": "<AgentState>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "element": "<AutonomousReflection>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "element": "<AuditLog[]>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "element": "<AnomalyDetection[]>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "element": "<any[]>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/monitoring.ts",
+      "element": "<Alert[]>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/observability.ts",
+      "element": "<any[]>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/observabilityAudit.ts",
+      "element": "<AutonomyAudit>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "element": "<any>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/theme.ts",
+      "element": "<select\n        value={theme}\n        onChange={(e) =>",
+      "issue": "Interactive element missing ARIA label",
+      "severity": "high"
+    },
+    {
+      "file": "src/__tests__/security.test.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/__tests__/page.test.tsx",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/layout.tsx",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/billing/page.tsx",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/favorites/page.tsx",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/pantry/page.tsx",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/partners/portal/page.tsx",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/hooks/useTenant.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/agents/healAgent.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/cors.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/franchiseAutomation.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/workflowManager.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/middleware.ts",
+      "issue": "Missing skip to main content link",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/billing/page.tsx",
+      "heading": "<h3 className=\"text-lg font-semibold\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/funnel/page.tsx",
+      "heading": "<h3 className=\"font-semibold\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "heading": "<h4 className=\"font-medium text-red-800\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "heading": "<h4 className=\"mb-2 font-medium\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/system/metrics.tsx",
+      "heading": "<h2 className=\"mb-2 text-xl font-semibold text-gray-900\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/system/metrics.tsx",
+      "heading": "<h3 className=\"mb-4 flex items-center text-lg font-semibold text-gray-900\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "heading": "<h2 className=\"mt-6 text-center text-3xl font-extrabold text-gray-900\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/billing/page.tsx",
+      "heading": "<h3 className=\"text-xl font-semibold\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "heading": "<h4 className=\"font-medium\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "heading": "<h2 className=\"mb-4 text-xl font-semibold text-gray-900\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/components/RecipeCard.tsx",
+      "heading": "<h4 className=\"mb-3 font-medium text-card-foreground\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "heading": "<h2 className=\"mb-2 text-2xl font-bold text-gray-900\">",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/components/ui/card.tsx",
+      "heading": "<h3\n    ref={ref}\n    className={cn(\n      'text-2xl font-semibold leading-none tracking-tight',\n      className\n    )}\n    {...props}\n  />",
+      "issue": "Heading level skipped",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/promptInjectionTests.ts",
+      "image": "<img src=\"x\" onerror=\"alert(1)\">",
+      "issue": "Image missing alt text",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "input": "<input\n                  type=\"text\"\n                  value={targetAudience}\n                  onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "input": "<input\n                    type=\"number\"\n                    value={numberOfVariants}\n                    onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "input": "<input\n                  type=\"text\"\n                  value={selectedTestId}\n                  onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "input": "<input\n                        type=\"number\"\n                        defaultValue={variant.performance_metrics.impressions}\n                        onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "input": "<input\n                        type=\"number\"\n                        defaultValue={variant.performance_metrics.clicks}\n                        onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "input": "<input\n                        type=\"number\"\n                        defaultValue={variant.performance_metrics.conversions}\n                        onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/funnel/page.tsx",
+      "input": "<input\n              type=\"date\"\n              value={dateRange.start}\n              onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/funnel/page.tsx",
+      "input": "<input\n              type=\"date\"\n              value={dateRange.end}\n              onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "input": "<input\n                  type=\"email\"\n                  value={inviteEmail}\n                  onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "input": "<input\n                  id=\"name\"\n                  name=\"name\"\n                  type=\"text\"\n                  required={!isLogin}\n                  className=\"relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm\"\n                  placeholder=\"Full name\"\n                  value={name}\n                  onChange={e =>",
+      "issue": "Required field missing aria-required attribute",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "input": "<input\n                id=\"email-address\"\n                name=\"email\"\n                type=\"email\"\n                autoComplete=\"email\"\n                required\n                className=\"relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm\"\n                placeholder=\"Email address\"\n                value={email}\n                onChange={e =>",
+      "issue": "Required field missing aria-required attribute",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "input": "<input\n                id=\"password\"\n                name=\"password\"\n                type=\"password\"\n                autoComplete=\"current-password\"\n                required\n                className=\"relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm\"\n                placeholder=\"Password\"\n                value={password}\n                onChange={e =>",
+      "issue": "Required field missing aria-required attribute",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "input": "<Input\n                  placeholder=\"New API key name\"\n                  value={newKeyName}\n                  onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "input": "<InputPromptSkeleton />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "input": "<InputPrompt\n            pantryItems={pantryItemNames}\n            loading={generateRecipesMutation.isPending}\n            onGenerate={generateRecipes}\n          />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "input": "<input\n              required\n              type=\"text\"\n              value={newIngredient}\n              placeholder=\"e.g., tomatoes, chicken breast...\"\n              className=\"w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"\n              onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "input": "<input\n              type=\"number\"\n              value={newQuantity}\n              min=\"1\"\n              className=\"w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"\n              onChange={e =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "input": "<input\n              required\n              type=\"text\"\n              value={newIngredient}\n              placeholder=\"e.g., tomatoes, chicken breast...\"\n              className=\"w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"\n              onChange={e =>",
+      "issue": "Required field missing aria-required attribute",
+      "severity": "medium"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "input": "<input\n                    type=\"checkbox\"\n                    checked={selectedPlatforms.includes(platform)}\n                    className=\"rounded border-gray-300 text-blue-600 focus:ring-blue-500\"\n                    onChange={() =>",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} loading />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "input": "<InputPrompt {...defaultProps} pantryItems={[]} />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ui/input.tsx",
+      "input": "<input\n        ref={ref}\n        type={type}\n        className={cn(\n          'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',\n          className\n        )}\n        {...props}\n      />",
+      "issue": "Form input missing label",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/billing/page.tsx",
+      "issue": "Multiple h1 elements found",
+      "severity": "medium"
+    },
+    {
+      "file": "src/__tests__/security.test.ts",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/funnel/page.tsx",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/api/dinner/__tests__/route.test.ts",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/api/observability/report/route.ts",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/components/__tests__/InputPrompt.test.tsx",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/healthCheck.ts",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/index.ts",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/openaiService.ts",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/promptInjectionTests.ts",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/lib/secretsManager.ts",
+      "issue": "Foreign text without language indication",
+      "severity": "medium"
+    },
+    {
+      "file": "src/app/admin/analytics/page.tsx",
+      "link": "<Activity className=\"h-4 w-4 text-muted-foreground\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/billing/page.tsx",
+      "button": "<Button onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/billing/page.tsx",
+      "button": "<Button\n                    onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/billing/page.tsx",
+      "button": "<Button onClick={handleManageBilling}>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/billing/page.tsx",
+      "link": "<AlertCircle className=\"mr-2 h-5 w-5\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "button": "<button\n                onClick={generateVariants}\n                disabled={isGenerating}\n                className=\"w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50\"\n              >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "button": "<button\n                onClick={analyzeTest}\n                className=\"w-full rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700\"\n              >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/copywriter/page.tsx",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/funnel/page.tsx",
+      "button": "<button\n            onClick={loadFunnelData}\n            className=\"rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700\"\n          >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/page.tsx",
+      "link": "<Activity className=\"h-4 w-4 text-muted-foreground\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/page.tsx",
+      "link": "<Activity className=\"mx-auto mb-4 h-12 w-12 text-gray-400\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/performance/page.tsx",
+      "button": "<Button \n          onClick={fetchPerformanceData} \n          disabled={refreshing}\n          className=\"flex items-center gap-2\"\n        >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/performance/page.tsx",
+      "link": "<Activity className=\"h-4 w-4\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/performance/page.tsx",
+      "link": "<AlertTriangle className=\"h-5 w-5\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/performance/page.tsx",
+      "link": "<AlertTriangle className=\"h-5 w-5 text-red-600\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "button": "<Button variant=\"destructive\" className=\"mt-3\" disabled>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "button": "<Button\n          onClick={handleSave}\n          disabled={updateTenantMutation.isPending}\n          className=\"flex items-center\"\n        >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/settings/page.tsx",
+      "link": "<AlertTriangle className=\"mr-2 h-5 w-5\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "button": "<button\n                onClick={generateContent}\n                disabled={isLoading || !selectedTheme}\n                className=\"w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50\"\n              >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "button": "<button\n                    onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "button": "<button\n                    onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "button": "<button\n                  onClick={loadTrendingThemes}\n                  disabled={isLoading}\n                  className=\"rounded bg-gray-600 px-3 py-1 text-sm text-white hover:bg-gray-700 disabled:opacity-50\"\n                >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/social/page.tsx",
+      "link": "<any[]>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/system/metrics.tsx",
+      "link": "<AlertTriangle className=\"mx-auto mb-4 h-12 w-12 text-red-500\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/system/metrics.tsx",
+      "link": "<Activity className=\"mr-2 h-5 w-5\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "button": "<Button onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "button": "<Button type=\"submit\" disabled={inviteUserMutation.isPending}>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "button": "<Button\n                  type=\"button\"\n                  variant=\"outline\"\n                  onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "button": "<Button\n                        size=\"sm\"\n                        variant=\"ghost\"\n                        onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/admin/users/page.tsx",
+      "button": "<Button\n                      size=\"sm\"\n                      variant=\"ghost\"\n                      onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "button": "<button\n              type=\"submit\"\n              disabled={loading}\n              className=\"group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50\"\n            >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/auth/page.tsx",
+      "button": "<button\n              type=\"button\"\n              onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/billing/page.tsx",
+      "button": "<Button\n                onClick={handleManageSubscription}\n                disabled={processing === 'portal'}\n                className=\"w-full\"\n              >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/billing/page.tsx",
+      "button": "<Button\n                      onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/billing/page.tsx",
+      "button": "<Button\n                onClick={handleManageSubscription}\n                disabled={processing === 'portal'}\n                variant=\"outline\"\n              >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "button": "<Button className=\"w-full\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "button": "<Button size=\"sm\" className=\"flex-1\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "button": "<Button size=\"sm\" variant=\"outline\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "button": "<Button\n                  onClick={createAPIKey}\n                  disabled={isCreatingKey || !newKeyName.trim()}\n                >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "button": "<Button\n                        size=\"sm\"\n                        variant=\"outline\"\n                        onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "button": "<Button\n                        size=\"sm\"\n                        variant=\"outline\"\n                        onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "button": "<Button className=\"w-full\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<APIKey[]>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<APIUsage | null>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/developers/page.tsx",
+      "link": "<a href=\"#\" className=\"text-blue-600 hover:underline\">",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/favorites/page.tsx",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "button": "<Button>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "button": "<Button size=\"lg\" className=\"px-8 py-4 text-lg\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "button": "<Button size=\"lg\" variant=\"outline\" className=\"px-8 py-4 text-lg\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "button": "<Button\n                    className={`w-full ${plan.popular ? 'bg-blue-600 hover:bg-blue-700' : ''}`}\n                    variant={plan.popular ? 'default' : 'outline'}\n                  >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "button": "<Button\n                  size=\"lg\"\n                  variant=\"secondary\"\n                  className=\"px-8 py-4 text-lg\"\n                >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "button": "<Button\n                size=\"lg\"\n                variant=\"outline\"\n                className=\"border-white px-8 py-4 text-lg text-white hover:bg-white hover:text-blue-600\"\n              >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "link": "<ArrowRight className=\"ml-2 h-5 w-5\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/landing/page.tsx",
+      "link": "<ArrowRight className=\"ml-2 h-5 w-5\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "link": "<a\n                        href=\"/billing\"\n                        className=\"inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90\"\n                      >",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/pantry/page.tsx",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/partners/portal/page.tsx",
+      "button": "<Button size=\"sm\" variant=\"outline\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/partners/portal/page.tsx",
+      "button": "<Button>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/partners/portal/page.tsx",
+      "button": "<Button variant=\"outline\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/app/partners/portal/page.tsx",
+      "link": "<Activity className=\"h-4 w-4 text-muted-foreground\" />",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "button": "<Button\n                type=\"button\"\n                disabled={!newIngredient.trim() || loading}\n                size=\"icon\"\n                variant=\"outline\"\n                onClick={addIngredient}\n              >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "button": "<Button\n                    key={item}\n                    type=\"button\"\n                    variant=\"outline\"\n                    size=\"sm\"\n                    className=\"h-8\"\n                    disabled={loading}\n                    onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "button": "<Button\n                      type=\"button\"\n                      variant=\"ghost\"\n                      size=\"icon\"\n                      className=\"h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground\"\n                      disabled={loading}\n                      onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/InputPrompt.tsx",
+      "button": "<Button\n            type=\"submit\"\n            disabled={loading || ingredients.length === 0}\n            className=\"h-12 w-full text-base\"\n            size=\"lg\"\n          >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "button": "<Button\n                  variant=\"outline\"\n                  size=\"sm\"\n                  className=\"text-destructive hover:bg-destructive hover:text-destructive-foreground\"\n                  onClick={handleSignOut}\n                >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "button": "<Button size=\"sm\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "button": "<Button\n                    variant=\"outline\"\n                    className=\"w-full justify-start text-destructive hover:bg-destructive hover:text-destructive-foreground\"\n                    onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/Navbar.tsx",
+      "button": "<Button className=\"w-full justify-start\">",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PWAInstaller.tsx",
+      "button": "<button\n        className=\"flex items-center space-x-2 rounded-lg bg-blue-500 px-4 py-2 text-white shadow-lg transition-colors hover:bg-blue-600\"\n        onClick={handleInstallClick}\n      >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "button": "<button\n              type=\"submit\"\n              className=\"w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600\"\n            >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "button": "<button\n                      className=\"flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200\"\n                      onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "button": "<button\n                      className=\"flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200\"\n                      onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/PantryManager.tsx",
+      "button": "<button\n                    className=\"p-2 text-red-600 hover:text-red-800\"\n                    onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeCard.tsx",
+      "button": "<Button\n          className=\"h-auto w-full justify-between p-0 font-normal\"\n          size=\"sm\"\n          variant=\"ghost\"\n          onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeCard.tsx",
+      "button": "<Button className=\"flex-1\" size=\"sm\" onClick={onSave}>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeCard.tsx",
+      "button": "<Button\n              className=\"flex-1\"\n              size=\"sm\"\n              variant=\"destructive\"\n              onClick={onRemove}\n            >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "button": "<button\n              key={star}\n              disabled={isSubmitting}\n              className={`p-1 ${\n                userRating && star <= userRating\n                  ? 'text-yellow-400'\n                  : 'text-gray-300 hover:text-yellow-400'\n              } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}\n              onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "button": "<button\n          disabled={isSubmitting}\n          className={`flex items-center space-x-2 rounded-lg border px-3 py-2 ${\n            submittedFeedback === 'thumbs_up'\n              ? 'border-green-200 bg-green-50 text-green-700'\n              : 'border-gray-200 bg-white text-gray-600 hover:border-green-200 hover:bg-green-50'\n          } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}\n          onClick={handleThumbsUp}\n        >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "button": "<button\n          disabled={isSubmitting}\n          className={`flex items-center space-x-2 rounded-lg border px-3 py-2 ${\n            submittedFeedback === 'thumbs_down'\n              ? 'border-red-200 bg-red-50 text-red-700'\n              : 'border-gray-200 bg-white text-gray-600 hover:border-red-200 hover:bg-red-50'\n          } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}\n          onClick={handleThumbsDown}\n        >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "button": "<button\n          className=\"flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800\"\n          onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "button": "<button\n                disabled={isSubmitting || !feedbackText.trim()}\n                className=\"rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50\"\n                onClick={handleTextFeedback}\n              >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/RecipeFeedback.tsx",
+      "button": "<button\n                className=\"rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300\"\n                onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "button": "<button\n            disabled={isSharing || selectedPlatforms.length === 0}\n            className=\"w-full rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50\"\n            onClick={handleShare}\n          >",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "button": "<button\n                      className=\"text-sm text-blue-600 hover:text-blue-800\"\n                      onClick={() =>",
+      "issue": "Button missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/components/ShareableMealCard.tsx",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "link": "<any[]>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/ethicsAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/healAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/agents/insightAgent.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiCommerceHub.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiCommerceHub.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiCommerceHub.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "link": "<AIConfig | null>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "link": "<AIConfig, 'id' | 'created_at'>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "link": "<AIConfig | null>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "link": "<AIConfig>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiConfig.ts",
+      "link": "<AIConfig[]>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/aiCopywriter.ts",
+      "link": "<AITestResult>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousOrchestrator.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/autonomousSystem.ts",
+      "link": "<AgentState>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "link": "<AutonomousReflection>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/cognitiveContinuity.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "link": "<AuditLog[]>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "link": "<AnomalyDetection[]>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/complianceAudit.ts",
+      "link": "<any[]>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/federatedGateway.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/monitoring.ts",
+      "link": "<Alert[]>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/observability.ts",
+      "link": "<any[]>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/observabilityAudit.ts",
+      "link": "<AutonomyAudit>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    },
+    {
+      "file": "src/lib/predictiveOptimization.ts",
+      "link": "<any>",
+      "issue": "Link missing accessible name",
+      "severity": "high"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "images",
+      "priority": "high",
+      "title": "Add alt text to all images",
+      "description": "Ensure all images have descriptive alt text or are marked as decorative"
+    },
+    {
+      "type": "aria",
+      "priority": "high",
+      "title": "Improve ARIA implementation",
+      "description": "Add proper ARIA labels and roles to interactive elements"
+    }
+  ],
+  "score": 0,
+  "wcagLevel": "AA"
+}
