@@ -1,0 +1,227 @@
+{
+  "name": "Autonomous Prompt Queue",
+  "description": "Event-driven prompt execution system for autonomous operations",
+  "version": "1.0.0",
+  "queues": {
+    "error_detection": {
+      "description": "Handle error detection and recovery",
+      "priority": "high",
+      "triggers": [
+        "error_rate_exceeded",
+        "api_failure",
+        "database_error",
+        "system_crash"
+      ],
+      "prompts": [
+        {
+          "id": "diagnose_error",
+          "prompt": "Analyze the error logs and system state to identify the root cause of the issue. Check error patterns, system resources, and recent changes.",
+          "timeout": 300,
+          "retry_count": 3
+        },
+        {
+          "id": "implement_fix",
+          "prompt": "Based on the error diagnosis, implement appropriate fixes. This may include code changes, configuration updates, or system restarts.",
+          "timeout": 600,
+          "retry_count": 2
+        },
+        {
+          "id": "verify_fix",
+          "prompt": "Verify that the fix has resolved the issue by running tests and monitoring system health. Document the resolution process.",
+          "timeout": 300,
+          "retry_count": 2
+        }
+      ]
+    },
+    "performance_optimization": {
+      "description": "Optimize system performance based on metrics",
+      "priority": "medium",
+      "triggers": [
+        "slow_response_times",
+        "high_memory_usage",
+        "database_slow_queries",
+        "api_latency_increase"
+      ],
+      "prompts": [
+        {
+          "id": "analyze_performance",
+          "prompt": "Analyze current performance metrics including response times, resource usage, and bottlenecks. Identify optimization opportunities.",
+          "timeout": 300,
+          "retry_count": 2
+        },
+        {
+          "id": "optimize_code",
+          "prompt": "Implement performance optimizations including code refactoring, query optimization, caching improvements, and resource management.",
+          "timeout": 900,
+          "retry_count": 2
+        },
+        {
+          "id": "test_optimizations",
+          "prompt": "Test the performance optimizations to ensure they improve system performance without introducing bugs or regressions.",
+          "timeout": 600,
+          "retry_count": 2
+        }
+      ]
+    },
+    "feedback_processing": {
+      "description": "Process user feedback and improve AI responses",
+      "priority": "medium",
+      "triggers": [
+        "feedback_threshold_exceeded",
+        "low_user_satisfaction",
+        "negative_feedback_spike",
+        "recipe_quality_issues"
+      ],
+      "prompts": [
+        {
+          "id": "analyze_feedback",
+          "prompt": "Analyze user feedback patterns, identify common complaints, and extract insights for improving recipe generation quality.",
+          "timeout": 300,
+          "retry_count": 2
+        },
+        {
+          "id": "update_prompts",
+          "prompt": "Update AI prompts and templates based on feedback analysis to address user concerns and improve recipe quality.",
+          "timeout": 600,
+          "retry_count": 2
+        },
+        {
+          "id": "test_improvements",
+          "prompt": "Test the updated prompts with sample inputs to ensure they produce better results and address the identified issues.",
+          "timeout": 300,
+          "retry_count": 2
+        }
+      ]
+    },
+    "ai_model_management": {
+      "description": "Manage AI model updates and configurations",
+      "priority": "low",
+      "triggers": [
+        "new_model_available",
+        "model_deprecation_warning",
+        "performance_improvement_available",
+        "cost_optimization_opportunity"
+      ],
+      "prompts": [
+        {
+          "id": "evaluate_models",
+          "prompt": "Evaluate new AI models or configurations against current performance metrics. Compare accuracy, speed, and cost.",
+          "timeout": 600,
+          "retry_count": 2
+        },
+        {
+          "id": "update_model",
+          "prompt": "Update AI model configuration or switch to a better performing model. Update prompts and test compatibility.",
+          "timeout": 900,
+          "retry_count": 2
+        },
+        {
+          "id": "validate_model",
+          "prompt": "Validate the new model configuration by running comprehensive tests and monitoring performance metrics.",
+          "timeout": 600,
+          "retry_count": 2
+        }
+      ]
+    },
+    "data_management": {
+      "description": "Manage data lifecycle and storage optimization",
+      "priority": "low",
+      "triggers": [
+        "storage_threshold_exceeded",
+        "old_data_cleanup_needed",
+        "backup_required",
+        "data_archival_time"
+      ],
+      "prompts": [
+        {
+          "id": "analyze_data_usage",
+          "prompt": "Analyze data usage patterns, identify old or unused data, and determine what can be archived or deleted.",
+          "timeout": 300,
+          "retry_count": 2
+        },
+        {
+          "id": "cleanup_data",
+          "prompt": "Clean up old data, archive important information, and optimize storage usage while maintaining data integrity.",
+          "timeout": 600,
+          "retry_count": 2
+        },
+        {
+          "id": "backup_critical_data",
+          "prompt": "Create backups of critical data and ensure proper data retention policies are in place.",
+          "timeout": 900,
+          "retry_count": 2
+        }
+      ]
+    },
+    "security_monitoring": {
+      "description": "Monitor security and compliance",
+      "priority": "high",
+      "triggers": [
+        "security_alert",
+        "suspicious_activity",
+        "compliance_check_required",
+        "vulnerability_detected"
+      ],
+      "prompts": [
+        {
+          "id": "security_audit",
+          "prompt": "Perform security audit, check for vulnerabilities, review access controls, and ensure compliance with security policies.",
+          "timeout": 600,
+          "retry_count": 2
+        },
+        {
+          "id": "investigate_threats",
+          "prompt": "Investigate potential security threats, analyze logs for suspicious activity, and implement protective measures.",
+          "timeout": 900,
+          "retry_count": 2
+        },
+        {
+          "id": "update_security",
+          "prompt": "Update security configurations, apply patches, and strengthen security measures based on audit findings.",
+          "timeout": 600,
+          "retry_count": 2
+        }
+      ]
+    }
+  },
+  "event_triggers": {
+    "error_rate_exceeded": {
+      "condition": "error_rate > 0.05",
+      "queue": "error_detection",
+      "immediate": true
+    },
+    "slow_response_times": {
+      "condition": "avg_response_time > 2000",
+      "queue": "performance_optimization",
+      "immediate": false
+    },
+    "feedback_threshold_exceeded": {
+      "condition": "negative_feedback_count > 10",
+      "queue": "feedback_processing",
+      "immediate": false
+    },
+    "storage_threshold_exceeded": {
+      "condition": "storage_usage > 0.8",
+      "queue": "data_management",
+      "immediate": false
+    },
+    "security_alert": {
+      "condition": "security_events > 0",
+      "queue": "security_monitoring",
+      "immediate": true
+    }
+  },
+  "execution_policy": {
+    "max_concurrent_queues": 3,
+    "max_retries_per_prompt": 3,
+    "timeout_per_prompt": 900,
+    "cooldown_between_executions": 300,
+    "priority_override": true
+  },
+  "monitoring": {
+    "log_level": "info",
+    "metrics_tracking": true,
+    "alert_on_failure": true,
+    "performance_reporting": true
+  }
+}
