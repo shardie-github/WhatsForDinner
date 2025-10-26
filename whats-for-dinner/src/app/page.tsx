@@ -1,56 +1,42 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabaseClient'
-import { Recipe } from '@/lib/openaiClient'
+import { Recipe } from '@/lib/validation'
+import { useGenerateRecipes } from '@/hooks/useRecipes'
+import { usePantryItems } from '@/hooks/usePantry'
+import { useSaveRecipe } from '@/hooks/useFavorites'
 import RecipeCard from '@/components/RecipeCard'
 import InputPrompt from '@/components/InputPrompt'
 import Navbar from '@/components/Navbar'
+import { RecipeCardSkeleton, InputPromptSkeleton } from '@/components/SkeletonLoader'
+import { queryClient } from '@/lib/queryClient'
 
-export default function Home() {
-  const [recipes, setRecipes] = useState<Recipe[]>([])
-  const [loading, setLoading] = useState(false)
+function HomeContent() {
   const [user, setUser] = useState<any>(null)
-  const [pantryItems, setPantryItems] = useState<string[]>([])
+  const [recipes, setRecipes] = useState<Recipe[]>([])
+  
+  const generateRecipesMutation = useGenerateRecipes()
+  const saveRecipeMutation = useSaveRecipe()
+  const { data: pantryItems = [], isLoading: pantryLoading } = usePantryItems(user?.id)
+  const pantryItemNames = (pantryItems as any[]).map(item => item.ingredient)
 
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
-      
-      if (user) {
-        // Fetch pantry items
-        const { data: pantry } = await supabase
-          .from('pantry_items')
-          .select('ingredient')
-          .eq('user_id', user.id)
-        
-        if (pantry) {
-          setPantryItems(pantry.map(item => item.ingredient))
-        }
-      }
     }
     
     getUser()
   }, [])
 
   const generateRecipes = async (ingredients: string[], preferences: string) => {
-    setLoading(true)
     try {
-      const response = await fetch('/api/dinner', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ingredients, preferences }),
-      })
-      
-      const data = await response.json()
-      setRecipes(data.recipes)
+      const result = await generateRecipesMutation.mutateAsync({ ingredients, preferences })
+      setRecipes(result.recipes)
     } catch (error) {
       console.error('Error generating recipes:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -58,27 +44,7 @@ export default function Home() {
     if (!user) return
 
     try {
-      const { data, error } = await supabase
-        .from('recipes')
-        .insert({
-          user_id: user.id,
-          title: recipe.title,
-          details: recipe,
-          calories: recipe.calories,
-          time: recipe.cookTime,
-        })
-        .select()
-        .single()
-
-      if (error) throw error
-
-      // Add to favorites
-      await supabase
-        .from('favorites')
-        .insert({
-          user_id: user.id,
-          recipe_id: data.id,
-        })
+      await saveRecipeMutation.mutateAsync({ recipe, userId: user.id })
     } catch (error) {
       console.error('Error saving recipe:', error)
     }
@@ -98,13 +64,30 @@ export default function Home() {
           </p>
         </div>
 
-        <InputPrompt
-          onGenerate={generateRecipes}
-          loading={loading}
-          pantryItems={pantryItems}
-        />
+        {pantryLoading ? (
+          <InputPromptSkeleton />
+        ) : (
+          <InputPrompt
+            onGenerate={generateRecipes}
+            loading={generateRecipesMutation.isPending}
+            pantryItems={pantryItemNames}
+          />
+        )}
 
-        {recipes.length > 0 && (
+        {generateRecipesMutation.isPending && (
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+              Generating Recipes...
+            </h2>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <RecipeCardSkeleton />
+              <RecipeCardSkeleton />
+              <RecipeCardSkeleton />
+            </div>
+          </div>
+        )}
+
+        {recipes.length > 0 && !generateRecipesMutation.isPending && (
           <div className="mt-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
               Suggested Recipes
@@ -121,7 +104,23 @@ export default function Home() {
             </div>
           </div>
         )}
+
+        {generateRecipesMutation.error && (
+          <div className="mt-8 p-4 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-red-800">
+              Error generating recipes: {generateRecipesMutation.error.message}
+            </p>
+          </div>
+        )}
       </main>
     </div>
+  )
+}
+
+export default function Home() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <HomeContent />
+    </QueryClientProvider>
   )
 }

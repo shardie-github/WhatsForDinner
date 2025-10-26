@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
-import { Recipe } from '@/lib/openaiClient'
+import { Recipe } from '@/lib/validation'
 import RecipeCard from '@/components/RecipeCard'
 import Navbar from '@/components/Navbar'
 
@@ -33,7 +33,7 @@ export default function FavoritesPage() {
         if (favorites) {
           setFavorites(favorites.map(fav => ({
             id: fav.id,
-            recipe: fav.recipes as Recipe
+            recipe: fav.recipes as any as Recipe
           })))
         }
       }
