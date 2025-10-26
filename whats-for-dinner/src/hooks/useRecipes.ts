@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { Recipe, GenerateRecipesRequest } from '@/lib/validation';
+import type { Recipe, GenerateRecipesRequest } from '@/lib/validation';
 import { useTenant } from './useTenant';
 import { supabase } from '@/lib/supabaseClient';
 

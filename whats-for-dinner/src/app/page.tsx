@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
-import { Recipe } from '@/lib/validation';
+import type { Recipe } from '@/lib/validation';
 import { useGenerateRecipes, useSaveRecipe } from '@/hooks/useRecipes';
 import { usePantryItems } from '@/hooks/usePantry';
 import { useTenant } from '@/hooks/useTenant';
@@ -20,16 +20,19 @@ import { logger } from '@/lib/logger';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChefHat, Clock, Users, Zap } from 'lucide-react';
+import type { User } from '@supabase/supabase-js';
 
 function HomeContent() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   const generateRecipesMutation = useGenerateRecipes();
   const saveRecipeMutation = useSaveRecipe();
   const { data: pantryItems = [], isLoading: pantryLoading } = usePantryItems();
   const { tenant, usage } = useTenant();
-  const pantryItemNames = (pantryItems as any[]).map(item => item.ingredient);
+  const pantryItemNames = (pantryItems as Array<{ ingredient: string }>).map(
+    item => item.ingredient
+  );
 
   useEffect(() => {
     const getUser = async () => {
@@ -51,7 +54,7 @@ function HomeContent() {
       });
     };
 
-    getUser();
+    void getUser();
   }, []);
 
   const generateRecipes = async (
@@ -75,8 +78,8 @@ function HomeContent() {
       // Track successful generation
       await analytics.trackEvent('recipe_generation_completed', {
         recipes_count: result.recipes.length,
-        api_latency: result.metadata?.apiLatencyMs || 0,
-        confidence_score: result.metadata?.confidenceScore || 0,
+        api_latency: result.metadata?.apiLatencyMs ?? 0,
+        confidence_score: result.metadata?.confidenceScore ?? 0,
       });
 
       await logger.info(
@@ -107,7 +110,8 @@ function HomeContent() {
         ingredients_count: ingredients.length,
       });
 
-      console.error('Error generating recipes:', error);
+      // Error already logged above
+      // console.error('Error generating recipes:', error);
     }
   };
 
@@ -145,7 +149,8 @@ function HomeContent() {
         error as Error
       );
 
-      console.error('Error saving recipe:', error);
+      // Error already logged above
+      // console.error('Error saving recipe:', error);
     }
   };
 
@@ -158,7 +163,7 @@ function HomeContent() {
         <div className="space-y-6 text-center">
           <div className="space-y-4">
             <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-4xl font-bold text-foreground text-transparent md:text-6xl">
-              What's for Dinner?
+              What&apos;s for Dinner?
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
               Get AI-powered meal suggestions based on your pantry and
@@ -226,9 +231,9 @@ function HomeContent() {
           <InputPromptSkeleton />
         ) : (
           <InputPrompt
-            onGenerate={generateRecipes}
-            loading={generateRecipesMutation.isPending}
             pantryItems={pantryItemNames}
+            loading={generateRecipesMutation.isPending}
+            onGenerate={generateRecipes}
           />
         )}
 
@@ -259,16 +264,21 @@ function HomeContent() {
               </p>
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {recipes.map((recipe, index) => (
-                <RecipeCard
-                  key={index}
-                  recipe={recipe}
-                  onSave={() => saveRecipe(recipe)}
-                  canSave={!!user}
-                  userId={user?.id}
-                  recipeId={index + 1} // This would be the actual recipe ID in a real implementation
-                />
-              ))}
+              {recipes.map((recipe, index) => {
+                const handleSave = () => {
+                  void saveRecipe(recipe);
+                };
+                return (
+                  <RecipeCard
+                    key={`recipe-${recipe.title}-${index}`}
+                    recipe={recipe}
+                    canSave={!!user}
+                    recipeId={index + 1}
+                    userId={user?.id}
+                    onSave={handleSave}
+                  />
+                );
+              })}
             </div>
           </div>
         )}

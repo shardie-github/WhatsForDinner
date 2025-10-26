@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RecipeCard from '../RecipeCard';
-import { Recipe } from '@/lib/openaiClient';
+import type { Recipe } from '@/lib/openaiClient';
 
 const mockRecipe: Recipe = {
   title: 'Pasta with Tomatoes',
@@ -79,9 +79,7 @@ describe('RecipeCard', () => {
 
   it('shows remove button when isFavorite is true', () => {
     const mockOnRemove = jest.fn();
-    render(
-      <RecipeCard {...defaultProps} isFavorite={true} onRemove={mockOnRemove} />
-    );
+    render(<RecipeCard {...defaultProps} isFavorite onRemove={mockOnRemove} />);
 
     expect(screen.getByRole('button', { name: /remove/i })).toBeInTheDocument();
     expect(
@@ -92,9 +90,7 @@ describe('RecipeCard', () => {
   it('calls onRemove when remove button is clicked', async () => {
     const mockOnRemove = jest.fn();
     const user = userEvent.setup();
-    render(
-      <RecipeCard {...defaultProps} isFavorite={true} onRemove={mockOnRemove} />
-    );
+    render(<RecipeCard {...defaultProps} isFavorite onRemove={mockOnRemove} />);
 
     const removeButton = screen.getByRole('button', { name: /remove/i });
     await user.click(removeButton);

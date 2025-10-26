@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useTenant } from '@/hooks/useTenant';
+import type { User } from '@supabase/supabase-js';
 import {
   Home,
   ChefHat,
@@ -19,7 +20,7 @@ import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 
 interface NavbarProps {
-  user: any;
+  user: User | null;
 }
 
 export default function Navbar({ user }: NavbarProps) {
@@ -104,10 +105,10 @@ export default function Navbar({ user }: NavbarProps) {
                   </span>
                 </div>
                 <Button
-                  onClick={handleSignOut}
                   variant="outline"
                   size="sm"
                   className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                  onClick={handleSignOut}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
@@ -128,8 +129,8 @@ export default function Navbar({ user }: NavbarProps) {
             variant="ghost"
             size="icon"
             className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (
               <X className="h-6 w-6" />
@@ -191,12 +192,12 @@ export default function Navbar({ user }: NavbarProps) {
                     </span>
                   </div>
                   <Button
+                    variant="outline"
+                    className="w-full justify-start text-destructive hover:bg-destructive hover:text-destructive-foreground"
                     onClick={() => {
                       handleSignOut();
                       setIsMenuOpen(false);
                     }}
-                    variant="outline"
-                    className="w-full justify-start text-destructive hover:bg-destructive hover:text-destructive-foreground"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out

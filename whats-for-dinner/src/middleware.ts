@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { monitoringSystem } from '@/lib/monitoring';
 import { observabilitySystem } from '@/lib/observability';
 import { logger } from '@/lib/logger';

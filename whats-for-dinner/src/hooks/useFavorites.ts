@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
-import { Recipe } from '@/lib/validation';
+import type { Recipe } from '@/lib/validation';
 import { useTenant } from './useTenant';
 
 interface Favorite {

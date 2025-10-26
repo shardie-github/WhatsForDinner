@@ -180,13 +180,13 @@ export default function RecipeFeedback({
           {[1, 2, 3, 4, 5].map(star => (
             <button
               key={star}
-              onClick={() => handleRating(star)}
               disabled={isSubmitting}
               className={`p-1 ${
                 userRating && star <= userRating
                   ? 'text-yellow-400'
                   : 'text-gray-300 hover:text-yellow-400'
               } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+              onClick={() => handleRating(star)}
             >
               <Star className="h-5 w-5 fill-current" />
             </button>
@@ -197,26 +197,26 @@ export default function RecipeFeedback({
       {/* Thumbs Up/Down */}
       <div className="flex items-center space-x-4">
         <button
-          onClick={handleThumbsUp}
           disabled={isSubmitting}
           className={`flex items-center space-x-2 rounded-lg border px-3 py-2 ${
             submittedFeedback === 'thumbs_up'
               ? 'border-green-200 bg-green-50 text-green-700'
               : 'border-gray-200 bg-white text-gray-600 hover:border-green-200 hover:bg-green-50'
           } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+          onClick={handleThumbsUp}
         >
           <ThumbsUp className="h-4 w-4" />
           <span className="text-sm">Helpful</span>
         </button>
 
         <button
-          onClick={handleThumbsDown}
           disabled={isSubmitting}
           className={`flex items-center space-x-2 rounded-lg border px-3 py-2 ${
             submittedFeedback === 'thumbs_down'
               ? 'border-red-200 bg-red-50 text-red-700'
               : 'border-gray-200 bg-white text-gray-600 hover:border-red-200 hover:bg-red-50'
           } ${isSubmitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+          onClick={handleThumbsDown}
         >
           <ThumbsDown className="h-4 w-4" />
           <span className="text-sm">Not helpful</span>
@@ -226,8 +226,8 @@ export default function RecipeFeedback({
       {/* Text Feedback */}
       <div className="space-y-2">
         <button
-          onClick={() => setShowTextInput(!showTextInput)}
           className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800"
+          onClick={() => setShowTextInput(!showTextInput)}
         >
           <MessageSquare className="h-4 w-4" />
           <span>Add detailed feedback</span>
@@ -237,25 +237,25 @@ export default function RecipeFeedback({
           <div className="space-y-2">
             <textarea
               value={feedbackText}
-              onChange={e => setFeedbackText(e.target.value)}
               placeholder="Tell us what you think about this recipe..."
               className="w-full resize-none rounded-lg border border-gray-200 p-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               rows={3}
+              onChange={e => setFeedbackText(e.target.value)}
             />
             <div className="flex space-x-2">
               <button
-                onClick={handleTextFeedback}
                 disabled={isSubmitting || !feedbackText.trim()}
                 className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={handleTextFeedback}
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
               </button>
               <button
+                className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
                 onClick={() => {
                   setShowTextInput(false);
                   setFeedbackText('');
                 }}
-                className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
               >
                 Cancel
               </button>

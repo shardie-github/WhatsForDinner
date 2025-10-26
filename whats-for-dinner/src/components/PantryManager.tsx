@@ -36,8 +36,8 @@ export default function PantryManager({
   return (
     <div className="mx-auto max-w-4xl">
       <form
-        onSubmit={handleAdd}
         className="mb-8 rounded-lg bg-white p-6 shadow-md"
+        onSubmit={handleAdd}
       >
         <h2 className="mb-4 text-xl font-semibold text-gray-900">
           Add New Item
@@ -48,12 +48,12 @@ export default function PantryManager({
               Ingredient
             </label>
             <input
+              required
               type="text"
               value={newIngredient}
-              onChange={e => setNewIngredient(e.target.value)}
               placeholder="e.g., tomatoes, chicken breast..."
               className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
+              onChange={e => setNewIngredient(e.target.value)}
             />
           </div>
           <div>
@@ -63,9 +63,9 @@ export default function PantryManager({
             <input
               type="number"
               value={newQuantity}
-              onChange={e => setNewQuantity(Number(e.target.value))}
               min="1"
               className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={e => setNewQuantity(Number(e.target.value))}
             />
           </div>
           <div className="flex items-end">
@@ -103,10 +103,10 @@ export default function PantryManager({
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     <button
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
                       onClick={() =>
                         onUpdate(item.id, Math.max(1, item.quantity - 1))
                       }
-                      className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
                     >
                       -
                     </button>
@@ -114,15 +114,15 @@ export default function PantryManager({
                       {item.quantity}
                     </span>
                     <button
-                      onClick={() => onUpdate(item.id, item.quantity + 1)}
                       className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      onClick={() => onUpdate(item.id, item.quantity + 1)}
                     >
                       +
                     </button>
                   </div>
                   <button
-                    onClick={() => onDelete(item.id)}
                     className="p-2 text-red-600 hover:text-red-800"
+                    onClick={() => onDelete(item.id)}
                   >
                     <svg
                       className="h-5 w-5"

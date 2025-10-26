@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { UGCGrowth, MealCard } from '@/lib/ugcGrowth';
+import type { MealCard } from '@/lib/ugcGrowth';
+import { UGCGrowth } from '@/lib/ugcGrowth';
 
 interface ShareableMealCardProps {
   recipeData: {
@@ -108,7 +109,7 @@ export default function ShareableMealCard({
   if (!mealCard || !shareSuggestions) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600" />
       </div>
     );
   }
@@ -205,9 +206,9 @@ export default function ShareableMealCard({
             </label>
             <textarea
               value={customMessage}
-              onChange={e => setCustomMessage(e.target.value)}
               placeholder="Add a personal message..."
               className="h-20 w-full rounded-md border border-gray-300 px-3 py-2"
+              onChange={e => setCustomMessage(e.target.value)}
             />
           </div>
 
@@ -232,8 +233,8 @@ export default function ShareableMealCard({
                   <input
                     type="checkbox"
                     checked={selectedPlatforms.includes(platform)}
-                    onChange={() => handlePlatformToggle(platform)}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    onChange={() => handlePlatformToggle(platform)}
                   />
                   <span className="text-sm capitalize">{platform}</span>
                 </label>
@@ -285,9 +286,9 @@ export default function ShareableMealCard({
 
           {/* Share Button */}
           <button
-            onClick={handleShare}
             disabled={isSharing || selectedPlatforms.length === 0}
             className="w-full rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={handleShare}
           >
             {isSharing
               ? 'Sharing...'
@@ -308,8 +309,8 @@ export default function ShareableMealCard({
                   >
                     <span className="text-sm capitalize">{platform}</span>
                     <button
-                      onClick={() => openShareUrl(platform)}
                       className="text-sm text-blue-600 hover:text-blue-800"
+                      onClick={() => openShareUrl(platform)}
                     >
                       Open
                     </button>

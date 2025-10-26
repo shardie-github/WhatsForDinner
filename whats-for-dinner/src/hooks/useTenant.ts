@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/lib/supabaseClient';
-import { Database } from '@/lib/supabaseClient';
+import type { Database } from '@/lib/supabaseClient';
 
 type Tenant = Database['public']['Tables']['tenants']['Row'];
 type TenantMembership =

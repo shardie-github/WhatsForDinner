@@ -64,7 +64,7 @@ export default function InputPrompt({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="ingredient-input" className="text-base font-medium">
               Add ingredients
@@ -74,18 +74,18 @@ export default function InputPrompt({
                 id="ingredient-input"
                 type="text"
                 value={newIngredient}
-                onChange={e => setNewIngredient(e.target.value)}
-                onKeyPress={handleKeyPress}
                 placeholder="Type an ingredient and press Enter..."
                 className="flex-1"
                 disabled={loading}
+                onChange={e => setNewIngredient(e.target.value)}
+                onKeyPress={handleKeyPress}
               />
               <Button
                 type="button"
-                onClick={addIngredient}
                 disabled={!newIngredient.trim() || loading}
                 size="icon"
                 variant="outline"
+                onClick={addIngredient}
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -102,11 +102,11 @@ export default function InputPrompt({
                   <Button
                     key={item}
                     type="button"
-                    onClick={() => addFromPantry(item)}
                     variant="outline"
                     size="sm"
                     className="h-8"
                     disabled={loading}
+                    onClick={() => addFromPantry(item)}
                   >
                     <Plus className="mr-1 h-3 w-3" />
                     {item}
@@ -131,11 +131,11 @@ export default function InputPrompt({
                     {ingredient}
                     <Button
                       type="button"
-                      onClick={() => removeIngredient(ingredient)}
                       variant="ghost"
                       size="icon"
                       className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground"
                       disabled={loading}
+                      onClick={() => removeIngredient(ingredient)}
                     >
                       <X className="h-3 w-3" />
                     </Button>
@@ -155,9 +155,9 @@ export default function InputPrompt({
               id="preferences"
               type="text"
               value={preferences}
-              onChange={e => setPreferences(e.target.value)}
               placeholder="e.g., vegetarian, gluten-free, low-carb..."
               disabled={loading}
+              onChange={e => setPreferences(e.target.value)}
             />
           </div>
 
