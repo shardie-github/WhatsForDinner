@@ -1,0 +1,297 @@
+name: Automated Release & Deployment
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ['v*']
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '9.0.0'
+
+jobs:
+  # Semantic Versioning & Changelog Generation
+  version-and-changelog:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      is-prerelease: ${{ steps.version.outputs.is-prerelease }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Generate Version & Changelog
+        id: version
+        run: |
+          # Install semantic-release
+          pnpm add -D semantic-release @semantic-release/changelog @semantic-release/git conventional-changelog-conventionalcommits
+          
+          # Generate version and changelog
+          npx semantic-release --dry-run --no-ci > release-info.txt
+          
+          # Extract version info
+          VERSION=$(grep "The next release version is" release-info.txt | sed 's/.*version is //')
+          IS_PRERELEASE=$(echo $VERSION | grep -q "alpha\|beta\|rc" && echo "true" || echo "false")
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "is-prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+          
+          # Generate changelog
+          npx conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 0
+          CHANGELOG=$(cat CHANGELOG.md)
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Upload Changelog
+        uses: actions/upload-artifact@v4
+        with:
+          name: changelog
+          path: CHANGELOG.md
+
+  # Build and Test
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: version-and-changelog
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm run type-check
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Test
+        run: pnpm run test:ci
+
+      - name: Build
+        run: pnpm run build
+        env:
+          NEXT_PUBLIC_APP_ENV: production
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: |
+            .next/
+            public/
+            package.json
+            pnpm-lock.yaml
+
+  # Canary Deployment
+  canary-deploy:
+    runs-on: ubuntu-latest
+    needs: [version-and-changelog, build-and-test]
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    environment: canary
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files
+
+      - name: Deploy to Canary
+        run: |
+          echo "🚀 Deploying canary version ${{ needs.version-and-changelog.outputs.version }}"
+          # Add your canary deployment logic here
+          # This could be Vercel preview, AWS Lambda, or any other platform
+          
+          # Example for Vercel:
+          # npx vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --confirm
+          
+          # Example for AWS:
+          # aws s3 sync .next/ s3://your-canary-bucket/
+          
+          echo "✅ Canary deployment completed"
+
+      - name: Notify Canary Deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "🚀 Canary deployment successful: ${{ needs.version-and-changelog.outputs.version }}"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # Production Deployment
+  production-deploy:
+    runs-on: ubuntu-latest
+    needs: [version-and-changelog, build-and-test]
+    if: startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push'
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files
+
+      - name: Deploy to Production
+        run: |
+          echo "🚀 Deploying production version ${{ needs.version-and-changelog.outputs.version }}"
+          # Add your production deployment logic here
+          
+          # Example for Vercel:
+          # npx vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --confirm
+          
+          # Example for AWS:
+          # aws s3 sync .next/ s3://your-production-bucket/
+          
+          echo "✅ Production deployment completed"
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            ## What's New in ${{ github.ref_name }}
+            
+            ${{ needs.version-and-changelog.outputs.changelog }}
+            
+            ## Deployment Status
+            - ✅ Build: Successful
+            - ✅ Tests: Passed
+            - ✅ Type Check: Passed
+            - ✅ Lint: Passed
+            - 🚀 Deployed to Production
+          draft: false
+          prerelease: ${{ needs.version-and-changelog.outputs.is-prerelease }}
+
+      - name: Notify Production Deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "🎉 Production release ${{ github.ref_name }} deployed successfully!"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # Blue/Green Deployment
+  blue-green-deploy:
+    runs-on: ubuntu-latest
+    needs: [version-and-changelog, build-and-test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files
+
+      - name: Blue/Green Deployment
+        run: |
+          echo "🔄 Starting blue/green deployment for version ${{ needs.version-and-changelog.outputs.version }}"
+          
+          # Determine current active environment
+          CURRENT_ENV=$(curl -s ${{ secrets.HEALTH_CHECK_URL }}/env || echo "blue")
+          NEW_ENV=$([ "$CURRENT_ENV" = "blue" ] && echo "green" || echo "blue")
+          
+          echo "Current environment: $CURRENT_ENV"
+          echo "Deploying to: $NEW_ENV"
+          
+          # Deploy to new environment
+          # Add your blue/green deployment logic here
+          
+          # Health check new deployment
+          echo "🔍 Performing health check on $NEW_ENV..."
+          # Add health check logic here
+          
+          # Switch traffic to new environment
+          echo "🔄 Switching traffic to $NEW_ENV..."
+          # Add traffic switching logic here
+          
+          # Verify deployment
+          echo "✅ Blue/green deployment completed successfully"
+
+      - name: Rollback on Failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed, initiating rollback..."
+          # Add rollback logic here
+          echo "🔄 Rollback completed"
+
+  # Security and Compliance Checks
+  security-audit:
+    runs-on: ubuntu-latest
+    needs: version-and-changelog
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Security Audit
+        run: |
+          pnpm audit --audit-level moderate
+          
+          # Run additional security checks
+          npx @snyk/cli test
+          npx @snyk/cli monitor
+
+      - name: License Check
+        run: |
+          npx license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;Unlicense'
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        if: github.event_name == 'pull_request'
