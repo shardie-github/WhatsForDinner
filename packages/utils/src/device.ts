@@ -1,15 +1,14 @@
-import { Platform } from 'react-native';
-
-export const isWeb = Platform.OS === 'web';
-export const isIOS = Platform.OS === 'ios';
-export const isAndroid = Platform.OS === 'android';
+// Platform detection without React Native dependency
+export const isWeb = typeof window !== 'undefined';
+export const isIOS = isWeb ? /iPad|iPhone|iPod/.test(navigator.userAgent) : false;
+export const isAndroid = isWeb ? /Android/.test(navigator.userAgent) : false;
 
 export function useDeviceMode() {
   return {
     isWeb,
     isIOS,
     isAndroid,
-    platform: Platform.OS,
+    platform: isWeb ? 'web' : 'native',
   };
 }
 

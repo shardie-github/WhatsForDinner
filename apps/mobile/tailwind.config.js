@@ -1,10 +1,3 @@
-const { nativeWindConfig } = require('@whats-for-dinner/theme');
+const config = require("@whats-for-dinner/config/tailwind.config");
 
-module.exports = {
-  ...nativeWindConfig,
-  content: [
-    './app/**/*.{js,ts,jsx,tsx}',
-    './src/**/*.{js,ts,jsx,tsx}',
-    '../../packages/ui/src/**/*.{js,ts,jsx,tsx}',
-  ],
-};
+module.exports = config;

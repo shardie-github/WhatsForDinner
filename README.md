@@ -1,230 +1,317 @@
-# What's for Dinner - Universal App
+# What's for Dinner? - Universal App Monorepo
 
-A cross-platform meal planning application built with Next.js, Expo, and shared design system. Runs natively on iOS, Android, and as a Progressive Web App (PWA).
+A production-ready universal app built with Expo SDK 52, Next.js 15, NativeWind, and Turborepo for iOS, Android, and Web (PWA).
 
-## 🏗️ Architecture
+## 🚀 Features
 
-This is a Turborepo monorepo with the following structure:
+- **Universal App**: Single codebase for iOS, Android, and Web
+- **Modern Stack**: Expo SDK 52, Next.js 15, React 18, TypeScript
+- **Styling**: NativeWind + Tailwind CSS for consistent design
+- **Monorepo**: Turborepo with shared packages
+- **PWA Support**: Offline-capable web app
+- **CI/CD**: GitHub Actions with automated builds and deployments
+- **Cross-Platform**: Shared UI components and business logic
+
+## 📁 Project Structure
 
 ```
-/workspace/
+whats-for-dinner/
 ├── apps/
-│   ├── web/           # Next.js PWA (Web)
-│   └── mobile/        # Expo React Native (iOS/Android)
+│   ├── mobile/          # Expo React Native app
+│   └── web/             # Next.js 15 PWA
 ├── packages/
-│   ├── ui/            # Shared UI components
-│   ├── utils/         # Shared utilities and hooks
-│   └── theme/         # Design tokens and styling
-└── scripts/           # Build and setup scripts
+│   ├── ui/              # Shared UI components
+│   ├── utils/           # Shared utilities and hooks
+│   ├── theme/           # Design system
+│   └── config/          # Shared configurations
+├── .github/workflows/   # CI/CD pipelines
+└── turbo.json          # Turborepo configuration
 ```
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js 18+ 
-- npm 8+
-- iOS Simulator (for iOS development)
-- Android Studio (for Android development)
-
-### Setup
-
-1. **Clone and install dependencies:**
-   ```bash
-   npm install
-   npm run install:all
-   ```
-
-2. **Start development:**
-   ```bash
-   # Start all apps
-   npm run dev
-   
-   # Or start individual apps
-   npm run dev:web      # Web app on http://localhost:3000
-   npm run dev:mobile   # Mobile app via Expo
-   ```
-
-3. **Build for production:**
-   ```bash
-   # Build all apps
-   npm run build
-   
-   # Or build individual apps
-   npm run build:web    # Static export for PWA
-   npm run build:mobile # Expo build for app stores
-   ```
-
-## 📱 Platform Support
-
-### Web (PWA)
-- **Framework:** Next.js 16 with App Router
-- **Styling:** Tailwind CSS + NativeWind
-- **PWA:** next-pwa with offline support
-- **Deployment:** Static export compatible with Vercel, Netlify, etc.
-
-### Mobile (iOS/Android)
-- **Framework:** Expo SDK 51
-- **Styling:** NativeWind (Tailwind for React Native)
-- **Navigation:** Expo Router
-- **Deployment:** EAS Build for App Store/Play Store
-
-## 🎨 Design System
-
-### Shared Components
-All UI components are located in `/packages/ui` and support both web and mobile:
-
-```tsx
-import { Button, Text, Card } from '@whats-for-dinner/ui';
-
-// Automatically renders as HTML button on web, TouchableOpacity on mobile
-<Button variant="primary" onPress={handlePress}>
-  <Text>Click me</Text>
-</Button>
-```
-
-### Platform-Specific Files
-Components use platform-specific files for optimal rendering:
-
-```
-Button/
-├── Button.web.tsx     # Web implementation
-├── Button.native.tsx  # Mobile implementation
-└── Button.tsx         # Main export
-```
-
-### Design Tokens
-Centralized design tokens in `/packages/theme`:
-
-```tsx
-import { colors, spacing, typography } from '@whats-for-dinner/theme';
-
-// Consistent colors, spacing, and typography across platforms
-```
-
-## 🔧 Development
-
-### Adding New Components
-
-1. Create component in `/packages/ui/src/components/YourComponent/`
-2. Add platform-specific files:
-   - `YourComponent.web.tsx` - Web implementation
-   - `YourComponent.native.tsx` - Mobile implementation
-   - `YourComponent.tsx` - Main export
-3. Export from `/packages/ui/src/index.ts`
-
-### Adding New Utilities
-
-1. Add utility functions to `/packages/utils/src/`
-2. Export from `/packages/utils/src/index.ts`
-3. Import in apps: `import { yourUtil } from '@whats-for-dinner/utils'`
-
-### Styling Guidelines
-
-- Use Tailwind classes for consistent styling
-- Platform-specific styles in `.web.tsx` and `.native.tsx` files
-- Design tokens from `/packages/theme` for colors, spacing, etc.
-- Responsive design with Tailwind breakpoints
-
-## 🧪 Testing
-
-### Web Testing
-```bash
-cd apps/web
-npm run test        # Unit tests
-npm run test:e2e    # E2E tests with Playwright
-```
-
-### Mobile Testing
-```bash
-cd apps/mobile
-npm run test        # Unit tests
-npm run test:e2e    # E2E tests with Detox
-```
-
-## 📦 Building & Deployment
-
-### Web (PWA)
-```bash
-npm run build:web
-# Outputs to apps/web/dist/
-# Deploy to Vercel, Netlify, or any static hosting
-```
-
-### Mobile (App Stores)
-```bash
-# iOS
-cd apps/mobile
-eas build --platform ios --profile production
-
-# Android  
-cd apps/mobile
-eas build --platform android --profile production
-```
-
-## 🔄 State Management
-
-- **Web:** React Query + Supabase
-- **Mobile:** React Query + Supabase (same API)
-- **Shared:** Custom hooks in `/packages/utils`
-
-## 📱 PWA Features
-
-- **Offline Support:** Service worker caches recipes and pantry data
-- **Install Prompt:** Native app-like installation
-- **Push Notifications:** Recipe reminders and updates
-- **Background Sync:** Sync data when online
-
-## 🎯 Performance Targets
-
-- **Web:** TTI < 1.2s, Lighthouse 95+
-- **Mobile:** TTI < 2s, 60fps animations
-- **Bundle Size:** < 30MB (Android AAB)
 
 ## 🛠️ Tech Stack
 
-### Core
-- **Monorepo:** Turborepo
-- **Web:** Next.js 16, React 19, TypeScript
-- **Mobile:** Expo 51, React Native 0.75, TypeScript
-- **Styling:** Tailwind CSS, NativeWind
+### Mobile (Expo SDK 52)
+- React Native 0.76.3
+- Expo Router 4.0
+- NativeWind 4.0
+- TypeScript 5
+
+### Web (Next.js 15)
+- Next.js 15 with App Router
+- PWA with next-pwa
+- Tailwind CSS 3.4
+- TypeScript 5
 
 ### Shared
-- **UI Components:** Custom design system
-- **State:** React Query, Supabase
-- **Validation:** Zod
-- **Icons:** Lucide React
+- Turborepo for monorepo management
+- pnpm for package management
+- ESLint + Prettier for code quality
+- GitHub Actions for CI/CD
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm 9+
+- iOS Simulator (for mobile development)
+- Android Studio (for mobile development)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd whats-for-dinner
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Build shared packages**
+   ```bash
+   pnpm run build:packages
+   ```
 
 ### Development
-- **Linting:** ESLint, Prettier
-- **Testing:** Jest, Testing Library, Playwright, Detox
-- **Type Checking:** TypeScript
 
-## 📚 Documentation
+#### Start all apps
+```bash
+pnpm dev
+```
 
-- [Design System Guide](./packages/ui/README.md)
-- [API Documentation](./docs/api.md)
-- [Deployment Guide](./docs/deployment.md)
-- [Contributing Guide](./CONTRIBUTING.md)
+#### Start specific apps
+```bash
+# Web app only
+pnpm dev:web
+
+# Mobile app only
+pnpm dev:mobile
+```
+
+#### Mobile Development
+
+1. **Start Expo development server**
+   ```bash
+   cd apps/mobile
+   pnpm dev
+   ```
+
+2. **Run on iOS Simulator**
+   ```bash
+   pnpm ios
+   ```
+
+3. **Run on Android Emulator**
+   ```bash
+   pnpm android
+   ```
+
+4. **Run on Web**
+   ```bash
+   pnpm web
+   ```
+
+#### Web Development
+
+1. **Start Next.js development server**
+   ```bash
+   cd apps/web
+   pnpm dev
+   ```
+
+2. **Open in browser**
+   ```
+   http://localhost:3000
+   ```
+
+## 📱 Building for Production
+
+### Web App
+
+```bash
+# Build for production
+pnpm build:web
+
+# The built files will be in apps/web/dist
+```
+
+### Mobile Apps
+
+#### Using EAS Build (Recommended)
+
+1. **Install EAS CLI**
+   ```bash
+   npm install -g @expo/eas-cli
+   ```
+
+2. **Login to Expo**
+   ```bash
+   eas login
+   ```
+
+3. **Configure EAS**
+   ```bash
+   cd apps/mobile
+   eas build:configure
+   ```
+
+4. **Build for iOS**
+   ```bash
+   eas build --platform ios
+   ```
+
+5. **Build for Android**
+   ```bash
+   eas build --platform android
+   ```
+
+#### Local Builds
+
+```bash
+# iOS (requires macOS)
+cd apps/mobile
+eas build --platform ios --local
+
+# Android
+cd apps/mobile
+eas build --platform android --local
+```
+
+## 🎨 Styling
+
+This project uses NativeWind (Tailwind CSS for React Native) for consistent styling across platforms.
+
+### Mobile (NativeWind)
+```tsx
+import { View, Text } from 'react-native';
+
+export function MyComponent() {
+  return (
+    <View className="flex-1 bg-background p-4">
+      <Text className="text-2xl font-bold text-foreground">
+        Hello World
+      </Text>
+    </View>
+  );
+}
+```
+
+### Web (Tailwind CSS)
+```tsx
+export function MyComponent() {
+  return (
+    <div className="flex-1 bg-background p-4">
+      <h1 className="text-2xl font-bold text-foreground">
+        Hello World
+      </h1>
+    </div>
+  );
+}
+```
+
+## 📦 Shared Packages
+
+### UI Components (`@whats-for-dinner/ui`)
+Cross-platform UI components that work on both mobile and web.
+
+```tsx
+import { Button } from '@whats-for-dinner/ui';
+
+<Button variant="primary" onPress={() => {}}>
+  Click me
+</Button>
+```
+
+### Utils (`@whats-for-dinner/utils`)
+Shared utilities, hooks, and helper functions.
+
+```tsx
+import { usePantry, cn } from '@whats-for-dinner/utils';
+
+const { items, addItem } = usePantry();
+```
+
+### Config (`@whats-for-dinner/config`)
+Shared configuration files for ESLint, Tailwind, and TypeScript.
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create `.env.local` files in the respective app directories:
+
+#### Mobile (apps/mobile/.env.local)
+```env
+EXPO_PUBLIC_API_URL=https://api.example.com
+EXPO_PUBLIC_SUPABASE_URL=your-supabase-url
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+#### Web (apps/web/.env.local)
+```env
+NEXT_PUBLIC_API_URL=https://api.example.com
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+### EAS Configuration
+
+Update `apps/mobile/eas.json` with your app identifiers and credentials.
+
+## 🚀 Deployment
+
+### Web App
+The web app is automatically deployed to GitHub Pages on push to main branch.
+
+### Mobile Apps
+Mobile apps are built using EAS Build and can be submitted to app stores.
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests for specific package
+pnpm test --filter=@whats-for-dinner/ui
+
+# Run tests in watch mode
+pnpm test:watch
+```
+
+## 📝 Scripts
+
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Start all apps in development mode |
+| `pnpm build` | Build all apps and packages |
+| `pnpm lint` | Lint all packages |
+| `pnpm test` | Run all tests |
+| `pnpm type-check` | Run TypeScript type checking |
+| `pnpm clean` | Clean all build artifacts |
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
+2. Create a feature branch
 3. Make your changes
-4. Run tests: `npm run test`
-5. Commit changes: `git commit -m 'Add amazing feature'`
-6. Push to branch: `git push origin feature/amazing-feature`
-7. Open a Pull Request
+4. Run tests and linting
+5. Submit a pull request
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🆘 Support
 
-- [Expo](https://expo.dev/) for the amazing React Native platform
-- [Next.js](https://nextjs.org/) for the powerful React framework
-- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
-- [NativeWind](https://www.nativewind.dev/) for bringing Tailwind to React Native
-- [Turborepo](https://turbo.build/) for the monorepo build system
+For support and questions:
+- Create an issue in the repository
+- Check the documentation
+- Review the code examples
+
+---
+
+Built with ❤️ using Expo, Next.js, and Turborepo

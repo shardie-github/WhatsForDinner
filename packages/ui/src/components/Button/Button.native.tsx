@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, ViewStyle, TextStyle } from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
 import { cn } from '@whats-for-dinner/utils';
 
 export interface ButtonProps {
@@ -10,7 +10,6 @@ export interface ButtonProps {
   disabled?: boolean;
   className?: string;
   testID?: string;
-  style?: ViewStyle;
 }
 
 export function Button({
@@ -21,69 +20,44 @@ export function Button({
   disabled = false,
   className,
   testID,
-  style,
   ...props
 }: ButtonProps) {
-  const baseStyle: ViewStyle = {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
+  const baseClasses = 'flex-row items-center justify-center rounded-md font-medium';
+  
+  const variantClasses = {
+    primary: 'bg-primary',
+    secondary: 'bg-secondary',
+    outline: 'border border-input bg-background',
+    ghost: 'bg-transparent',
   };
   
-  const variantStyles: Record<string, ViewStyle> = {
-    primary: {
-      backgroundColor: '#3b82f6',
-    },
-    secondary: {
-      backgroundColor: '#64748b',
-    },
-    outline: {
-      borderWidth: 1,
-      borderColor: '#e2e8f0',
-      backgroundColor: 'transparent',
-    },
-    ghost: {
-      backgroundColor: 'transparent',
-    },
-  };
-  
-  const sizeStyles: Record<string, ViewStyle> = {
-    sm: {
-      height: 36,
-      paddingHorizontal: 12,
-    },
-    md: {
-      height: 40,
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-    },
-    lg: {
-      height: 44,
-      paddingHorizontal: 32,
-    },
+  const sizeClasses = {
+    sm: 'h-9 px-3',
+    md: 'h-10 px-4 py-2',
+    lg: 'h-11 px-8',
   };
 
-  const textStyle: TextStyle = {
-    color: variant === 'primary' || variant === 'secondary' ? 'white' : '#374151',
-    fontWeight: '500',
-  };
+  const textClasses = cn(
+    'text-center font-medium',
+    variant === 'primary' || variant === 'secondary' ? 'text-white' : 'text-foreground'
+  );
 
   return (
     <TouchableOpacity
-      style={[
-        baseStyle,
-        variantStyles[variant],
-        sizeStyles[size],
-        style,
-      ]}
+      className={cn(
+        baseClasses,
+        variantClasses[variant],
+        sizeClasses[size],
+        disabled && 'opacity-50',
+        className
+      )}
       onPress={onPress}
       disabled={disabled}
       testID={testID}
       activeOpacity={0.7}
       {...props}
     >
-      <Text style={textStyle}>{children}</Text>
+      <Text className={textClasses}>{children}</Text>
     </TouchableOpacity>
   );
 }
