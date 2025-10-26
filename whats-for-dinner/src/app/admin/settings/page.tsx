@@ -1,48 +1,54 @@
-'use client'
+'use client';
 
-import { useTenant } from '@/hooks/useTenant'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabaseClient'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
-import { 
-  Settings, 
+import { useTenant } from '@/hooks/useTenant';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabaseClient';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import {
+  Settings,
   Save,
   AlertTriangle,
   Shield,
   Bell,
-  Database
-} from 'lucide-react'
-import { useState } from 'react'
+  Database,
+} from 'lucide-react';
+import { useState } from 'react';
 
 interface TenantSettings {
-  name: string
+  name: string;
   settings: {
     notifications: {
-      email: boolean
-      push: boolean
-      weekly_digest: boolean
-    }
+      email: boolean;
+      push: boolean;
+      weekly_digest: boolean;
+    };
     features: {
-      ai_optimization: boolean
-      analytics_tracking: boolean
-      data_retention_days: number
-    }
+      ai_optimization: boolean;
+      analytics_tracking: boolean;
+      data_retention_days: number;
+    };
     limits: {
-      max_members: number
-      max_pantry_items: number
-      max_recipes: number
-    }
-  }
+      max_members: number;
+      max_pantry_items: number;
+      max_recipes: number;
+    };
+  };
 }
 
 export default function AdminSettingsPage() {
-  const { tenant, refetch } = useTenant()
-  const queryClient = useQueryClient()
+  const { tenant, refetch } = useTenant();
+  const queryClient = useQueryClient();
   const [settings, setSettings] = useState<TenantSettings>({
     name: tenant?.name || '',
     settings: {
@@ -62,11 +68,11 @@ export default function AdminSettingsPage() {
         max_recipes: 1000,
       },
     },
-  })
+  });
 
   const updateTenantMutation = useMutation({
     mutationFn: async (updates: Partial<TenantSettings>) => {
-      if (!tenant) throw new Error('No tenant found')
+      if (!tenant) throw new Error('No tenant found');
 
       const { error } = await supabase
         .from('tenants')
@@ -74,41 +80,41 @@ export default function AdminSettingsPage() {
           name: updates.name,
           settings: updates.settings,
         })
-        .eq('id', tenant.id)
+        .eq('id', tenant.id);
 
-      if (error) throw error
+      if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tenant'] })
-      refetch()
+      queryClient.invalidateQueries({ queryKey: ['tenant'] });
+      refetch();
     },
-  })
+  });
 
   const handleSave = () => {
-    updateTenantMutation.mutate(settings)
-  }
+    updateTenantMutation.mutate(settings);
+  };
 
   const handleSettingChange = (path: string, value: any) => {
     setSettings(prev => {
-      const newSettings = { ...prev }
-      const keys = path.split('.')
-      let current = newSettings as any
-      
+      const newSettings = { ...prev };
+      const keys = path.split('.');
+      let current = newSettings as any;
+
       for (let i = 0; i < keys.length - 1; i++) {
-        current = current[keys[i]]
+        current = current[keys[i]];
       }
-      
-      current[keys[keys.length - 1]] = value
-      return newSettings
-    })
-  }
+
+      current[keys[keys.length - 1]] = value;
+      return newSettings;
+    });
+  };
 
   if (!tenant) {
     return (
-      <div className="text-center py-12">
+      <div className="py-12 text-center">
         <p className="text-gray-500">Loading tenant settings...</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -124,12 +130,10 @@ export default function AdminSettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Settings className="h-5 w-5 mr-2" />
+            <Settings className="mr-2 h-5 w-5" />
             General Settings
           </CardTitle>
-          <CardDescription>
-            Basic tenant configuration
-          </CardDescription>
+          <CardDescription>Basic tenant configuration</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -137,11 +141,11 @@ export default function AdminSettingsPage() {
             <Input
               id="tenant-name"
               value={settings.name}
-              onChange={(e) => handleSettingChange('name', e.target.value)}
+              onChange={e => handleSettingChange('name', e.target.value)}
               placeholder="Enter tenant name"
             />
           </div>
-          
+
           <div>
             <Label htmlFor="tenant-plan">Current Plan</Label>
             <Input
@@ -158,7 +162,7 @@ export default function AdminSettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Bell className="h-5 w-5 mr-2" />
+            <Bell className="mr-2 h-5 w-5" />
             Notification Settings
           </CardTitle>
           <CardDescription>
@@ -176,7 +180,7 @@ export default function AdminSettingsPage() {
             <Switch
               id="email-notifications"
               checked={settings.settings.notifications.email}
-              onCheckedChange={(checked) => 
+              onCheckedChange={checked =>
                 handleSettingChange('settings.notifications.email', checked)
               }
             />
@@ -192,7 +196,7 @@ export default function AdminSettingsPage() {
             <Switch
               id="push-notifications"
               checked={settings.settings.notifications.push}
-              onCheckedChange={(checked) => 
+              onCheckedChange={checked =>
                 handleSettingChange('settings.notifications.push', checked)
               }
             />
@@ -208,8 +212,11 @@ export default function AdminSettingsPage() {
             <Switch
               id="weekly-digest"
               checked={settings.settings.notifications.weekly_digest}
-              onCheckedChange={(checked) => 
-                handleSettingChange('settings.notifications.weekly_digest', checked)
+              onCheckedChange={checked =>
+                handleSettingChange(
+                  'settings.notifications.weekly_digest',
+                  checked
+                )
               }
             />
           </div>
@@ -220,7 +227,7 @@ export default function AdminSettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Shield className="h-5 w-5 mr-2" />
+            <Shield className="mr-2 h-5 w-5" />
             Feature Settings
           </CardTitle>
           <CardDescription>
@@ -238,8 +245,11 @@ export default function AdminSettingsPage() {
             <Switch
               id="ai-optimization"
               checked={settings.settings.features.ai_optimization}
-              onCheckedChange={(checked) => 
-                handleSettingChange('settings.features.ai_optimization', checked)
+              onCheckedChange={checked =>
+                handleSettingChange(
+                  'settings.features.ai_optimization',
+                  checked
+                )
               }
             />
           </div>
@@ -254,8 +264,11 @@ export default function AdminSettingsPage() {
             <Switch
               id="analytics-tracking"
               checked={settings.settings.features.analytics_tracking}
-              onCheckedChange={(checked) => 
-                handleSettingChange('settings.features.analytics_tracking', checked)
+              onCheckedChange={checked =>
+                handleSettingChange(
+                  'settings.features.analytics_tracking',
+                  checked
+                )
               }
             />
           </div>
@@ -266,13 +279,16 @@ export default function AdminSettingsPage() {
               id="data-retention"
               type="number"
               value={settings.settings.features.data_retention_days}
-              onChange={(e) => 
-                handleSettingChange('settings.features.data_retention_days', parseInt(e.target.value))
+              onChange={e =>
+                handleSettingChange(
+                  'settings.features.data_retention_days',
+                  parseInt(e.target.value)
+                )
               }
               min="30"
               max="3650"
             />
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="mt-1 text-sm text-gray-500">
               How long to keep analytics and usage data (30-3650 days)
             </p>
           </div>
@@ -283,12 +299,10 @@ export default function AdminSettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Database className="h-5 w-5 mr-2" />
+            <Database className="mr-2 h-5 w-5" />
             Usage Limits
           </CardTitle>
-          <CardDescription>
-            Set limits for your tenant's usage
-          </CardDescription>
+          <CardDescription>Set limits for your tenant's usage</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -297,18 +311,20 @@ export default function AdminSettingsPage() {
               id="max-members"
               type="number"
               value={settings.settings.limits.max_members}
-              onChange={(e) => 
-                handleSettingChange('settings.limits.max_members', parseInt(e.target.value))
+              onChange={e =>
+                handleSettingChange(
+                  'settings.limits.max_members',
+                  parseInt(e.target.value)
+                )
               }
               min="1"
               max={tenant.plan === 'family' ? 5 : 1}
               disabled={tenant.plan !== 'family'}
             />
-            <p className="text-sm text-gray-500 mt-1">
-              {tenant.plan === 'family' 
+            <p className="mt-1 text-sm text-gray-500">
+              {tenant.plan === 'family'
                 ? 'Maximum number of team members (1-5)'
-                : 'Upgrade to Family plan to add more members'
-              }
+                : 'Upgrade to Family plan to add more members'}
             </p>
           </div>
 
@@ -318,13 +334,16 @@ export default function AdminSettingsPage() {
               id="max-pantry-items"
               type="number"
               value={settings.settings.limits.max_pantry_items}
-              onChange={(e) => 
-                handleSettingChange('settings.limits.max_pantry_items', parseInt(e.target.value))
+              onChange={e =>
+                handleSettingChange(
+                  'settings.limits.max_pantry_items',
+                  parseInt(e.target.value)
+                )
               }
               min="10"
               max="10000"
             />
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="mt-1 text-sm text-gray-500">
               Maximum number of items in pantry lists
             </p>
           </div>
@@ -335,13 +354,16 @@ export default function AdminSettingsPage() {
               id="max-recipes"
               type="number"
               value={settings.settings.limits.max_recipes}
-              onChange={(e) => 
-                handleSettingChange('settings.limits.max_recipes', parseInt(e.target.value))
+              onChange={e =>
+                handleSettingChange(
+                  'settings.limits.max_recipes',
+                  parseInt(e.target.value)
+                )
               }
               min="50"
               max="100000"
             />
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="mt-1 text-sm text-gray-500">
               Maximum number of saved recipes
             </p>
           </div>
@@ -352,7 +374,7 @@ export default function AdminSettingsPage() {
       <Card className="border-red-200">
         <CardHeader>
           <CardTitle className="flex items-center text-red-600">
-            <AlertTriangle className="h-5 w-5 mr-2" />
+            <AlertTriangle className="mr-2 h-5 w-5" />
             Danger Zone
           </CardTitle>
           <CardDescription>
@@ -361,16 +383,13 @@ export default function AdminSettingsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="p-4 bg-red-50 rounded-lg">
+            <div className="rounded-lg bg-red-50 p-4">
               <h4 className="font-medium text-red-800">Delete Tenant</h4>
-              <p className="text-sm text-red-600 mt-1">
-                Permanently delete this tenant and all associated data. This action cannot be undone.
+              <p className="mt-1 text-sm text-red-600">
+                Permanently delete this tenant and all associated data. This
+                action cannot be undone.
               </p>
-              <Button 
-                variant="destructive" 
-                className="mt-3"
-                disabled
-              >
+              <Button variant="destructive" className="mt-3" disabled>
                 Delete Tenant
               </Button>
             </div>
@@ -380,15 +399,15 @@ export default function AdminSettingsPage() {
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button 
+        <Button
           onClick={handleSave}
           disabled={updateTenantMutation.isPending}
           className="flex items-center"
         >
-          <Save className="h-4 w-4 mr-2" />
+          <Save className="mr-2 h-4 w-4" />
           {updateTenantMutation.isPending ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>
     </div>
-  )
+  );
 }

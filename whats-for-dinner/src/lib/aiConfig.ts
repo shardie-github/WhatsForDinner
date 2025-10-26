@@ -1,41 +1,41 @@
-import { supabase } from './supabaseClient'
-import { v4 as uuidv4 } from 'uuid'
+import { supabase } from './supabaseClient';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface AIConfig {
-  id: string
-  model_name: string
-  system_prompt: string
-  message_templates: Record<string, string>
-  version: string
-  is_active: boolean
-  created_at: string
-  performance_score?: number
-  metadata: Record<string, any>
+  id: string;
+  model_name: string;
+  system_prompt: string;
+  message_templates: Record<string, string>;
+  version: string;
+  is_active: boolean;
+  created_at: string;
+  performance_score?: number;
+  metadata: Record<string, any>;
 }
 
 export interface PromptTemplate {
-  name: string
-  template: string
-  variables: string[]
-  description: string
+  name: string;
+  template: string;
+  variables: string[];
+  description: string;
 }
 
 export interface ModelEvaluation {
-  model_name: string
-  accuracy_score: number
-  response_time_ms: number
-  cost_per_request: number
-  user_satisfaction: number
-  test_results: Record<string, any>
-  evaluated_at: string
+  model_name: string;
+  accuracy_score: number;
+  response_time_ms: number;
+  cost_per_request: number;
+  user_satisfaction: number;
+  test_results: Record<string, any>;
+  evaluated_at: string;
 }
 
 class AIConfigManager {
-  private currentConfig: AIConfig | null = null
-  private promptTemplates: Map<string, PromptTemplate> = new Map()
+  private currentConfig: AIConfig | null = null;
+  private promptTemplates: Map<string, PromptTemplate> = new Map();
 
   constructor() {
-    this.initializePromptTemplates()
+    this.initializePromptTemplates();
   }
 
   private initializePromptTemplates() {
@@ -69,8 +69,8 @@ Format the response as a JSON array of objects with this structure:
   }
 ]`,
       variables: ['ingredients', 'preferences'],
-      description: 'Main template for generating dinner recipes'
-    })
+      description: 'Main template for generating dinner recipes',
+    });
 
     // Recipe improvement template
     this.promptTemplates.set('recipe_improvement', {
@@ -90,8 +90,8 @@ Please provide an improved version that addresses the feedback while maintaining
 
 Return the improved recipe in the same JSON format as the original.`,
       variables: ['original_recipe', 'feedback', 'feedback_type'],
-      description: 'Template for improving recipes based on user feedback'
-    })
+      description: 'Template for improving recipes based on user feedback',
+    });
 
     // Cuisine-specific templates
     this.promptTemplates.set('cuisine_specific', {
@@ -108,8 +108,8 @@ Focus on:
 
 Provide 2-3 recipes that showcase different aspects of {cuisine} cuisine.`,
       variables: ['cuisine', 'ingredients', 'preferences'],
-      description: 'Template for cuisine-specific recipe generation'
-    })
+      description: 'Template for cuisine-specific recipe generation',
+    });
 
     // Health-focused template
     this.promptTemplates.set('health_focused', {
@@ -129,13 +129,13 @@ Focus on:
 
 Include detailed nutritional information and health benefits.`,
       variables: ['ingredients', 'health_goals', 'dietary_restrictions'],
-      description: 'Template for health-focused recipe generation'
-    })
+      description: 'Template for health-focused recipe generation',
+    });
   }
 
   async getCurrentConfig(): Promise<AIConfig | null> {
     if (this.currentConfig) {
-      return this.currentConfig
+      return this.currentConfig;
     }
 
     try {
@@ -143,77 +143,82 @@ Include detailed nutritional information and health benefits.`,
         .from('ai_config')
         .select('*')
         .eq('is_active', true)
-        .single()
+        .single();
 
       if (error) {
-        console.error('Failed to fetch current AI config:', error)
-        return null
+        console.error('Failed to fetch current AI config:', error);
+        return null;
       }
 
-      this.currentConfig = data
-      return data
+      this.currentConfig = data;
+      return data;
     } catch (error) {
-      console.error('Error fetching AI config:', error)
-      return null
+      console.error('Error fetching AI config:', error);
+      return null;
     }
   }
 
-  async createConfig(config: Omit<AIConfig, 'id' | 'created_at'>): Promise<AIConfig | null> {
+  async createConfig(
+    config: Omit<AIConfig, 'id' | 'created_at'>
+  ): Promise<AIConfig | null> {
     try {
       // Deactivate current config
       await supabase
         .from('ai_config')
         .update({ is_active: false })
-        .eq('is_active', true)
+        .eq('is_active', true);
 
       // Create new config
       const newConfig: AIConfig = {
         id: uuidv4(),
         ...config,
         created_at: new Date().toISOString(),
-      }
+      };
 
       const { data, error } = await supabase
         .from('ai_config')
         .insert(newConfig)
         .select()
-        .single()
+        .single();
 
       if (error) {
-        console.error('Failed to create AI config:', error)
-        return null
+        console.error('Failed to create AI config:', error);
+        return null;
       }
 
-      this.currentConfig = data
-      return data
+      this.currentConfig = data;
+      return data;
     } catch (error) {
-      console.error('Error creating AI config:', error)
-      return null
+      console.error('Error creating AI config:', error);
+      return null;
     }
   }
 
-  async updateConfig(configId: string, updates: Partial<AIConfig>): Promise<boolean> {
+  async updateConfig(
+    configId: string,
+    updates: Partial<AIConfig>
+  ): Promise<boolean> {
     try {
       const { error } = await supabase
         .from('ai_config')
         .update(updates)
-        .eq('id', configId)
+        .eq('id', configId);
 
       if (error) {
-        console.error('Failed to update AI config:', error)
-        return false
+        console.error('Failed to update AI config:', error);
+        return false;
       }
 
       // Refresh current config if it was updated
       if (this.currentConfig?.id === configId) {
-        this.currentConfig = null
-        await this.getCurrentConfig()
+        this.currentConfig = null;
+        await this.getCurrentConfig();
       }
 
-      return true
+      return true;
     } catch (error) {
-      console.error('Error updating AI config:', error)
-      return false
+      console.error('Error updating AI config:', error);
+      return false;
     }
   }
 
@@ -222,27 +227,27 @@ Include detailed nutritional information and health benefits.`,
     testPrompts: Array<{ prompt: string; expectedOutput: any }>
   ): Promise<ModelEvaluation | null> {
     try {
-      const startTime = Date.now()
-      let totalAccuracy = 0
-      let totalCost = 0
-      const testResults: Record<string, any> = {}
+      const startTime = Date.now();
+      let totalAccuracy = 0;
+      let totalCost = 0;
+      const testResults: Record<string, any> = {};
 
       // Run test prompts (simplified evaluation)
       for (let i = 0; i < testPrompts.length; i++) {
-        const test = testPrompts[i]
+        const test = testPrompts[i];
         // This would normally call the actual model
         // For now, we'll simulate the evaluation
-        const accuracy = Math.random() * 0.4 + 0.6 // Simulate 60-100% accuracy
-        totalAccuracy += accuracy
+        const accuracy = Math.random() * 0.4 + 0.6; // Simulate 60-100% accuracy
+        totalAccuracy += accuracy;
         testResults[`test_${i}`] = {
           prompt: test.prompt,
           accuracy,
-          passed: accuracy > 0.7
-        }
+          passed: accuracy > 0.7,
+        };
       }
 
-      const responseTime = Date.now() - startTime
-      const averageAccuracy = totalAccuracy / testPrompts.length
+      const responseTime = Date.now() - startTime;
+      const averageAccuracy = totalAccuracy / testPrompts.length;
 
       const evaluation: ModelEvaluation = {
         model_name: modelName,
@@ -251,28 +256,28 @@ Include detailed nutritional information and health benefits.`,
         cost_per_request: totalCost,
         user_satisfaction: averageAccuracy * 0.8 + Math.random() * 0.2, // Simulate user satisfaction
         test_results: testResults,
-        evaluated_at: new Date().toISOString()
-      }
+        evaluated_at: new Date().toISOString(),
+      };
 
-      return evaluation
+      return evaluation;
     } catch (error) {
-      console.error('Error evaluating model:', error)
-      return null
+      console.error('Error evaluating model:', error);
+      return null;
     }
   }
 
   async compareModels(models: string[]): Promise<ModelEvaluation[]> {
-    const evaluations: ModelEvaluation[] = []
+    const evaluations: ModelEvaluation[] = [];
 
     for (const model of models) {
-      const testPrompts = this.getTestPrompts()
-      const evaluation = await this.evaluateModel(model, testPrompts)
+      const testPrompts = this.getTestPrompts();
+      const evaluation = await this.evaluateModel(model, testPrompts);
       if (evaluation) {
-        evaluations.push(evaluation)
+        evaluations.push(evaluation);
       }
     }
 
-    return evaluations.sort((a, b) => b.accuracy_score - a.accuracy_score)
+    return evaluations.sort((a, b) => b.accuracy_score - a.accuracy_score);
   }
 
   private getTestPrompts(): Array<{ prompt: string; expectedOutput: any }> {
@@ -282,52 +287,70 @@ Include detailed nutritional information and health benefits.`,
         expectedOutput: {
           type: 'array',
           minLength: 1,
-          requiredFields: ['title', 'cookTime', 'calories', 'ingredients', 'steps']
-        }
+          requiredFields: [
+            'title',
+            'cookTime',
+            'calories',
+            'ingredients',
+            'steps',
+          ],
+        },
       },
       {
         prompt: 'Create a vegetarian pasta dish',
         expectedOutput: {
           type: 'array',
           minLength: 1,
-          requiredFields: ['title', 'cookTime', 'calories', 'ingredients', 'steps']
-        }
+          requiredFields: [
+            'title',
+            'cookTime',
+            'calories',
+            'ingredients',
+            'steps',
+          ],
+        },
       },
       {
         prompt: 'Make a quick 15-minute meal',
         expectedOutput: {
           type: 'array',
           minLength: 1,
-          requiredFields: ['title', 'cookTime', 'calories', 'ingredients', 'steps']
-        }
-      }
-    ]
+          requiredFields: [
+            'title',
+            'cookTime',
+            'calories',
+            'ingredients',
+            'steps',
+          ],
+        },
+      },
+    ];
   }
 
   getPromptTemplate(name: string): PromptTemplate | undefined {
-    return this.promptTemplates.get(name)
+    return this.promptTemplates.get(name);
   }
 
   getAllPromptTemplates(): PromptTemplate[] {
-    return Array.from(this.promptTemplates.values())
+    return Array.from(this.promptTemplates.values());
   }
 
   async generatePrompt(
     templateName: string,
     variables: Record<string, string>
   ): Promise<string | null> {
-    const template = this.getPromptTemplate(templateName)
+    const template = this.getPromptTemplate(templateName);
     if (!template) {
-      console.error(`Template ${templateName} not found`)
-      return null
+      console.error(`Template ${templateName} not found`);
+      return null;
     }
 
-    let prompt = template.template
+    let prompt = template.template;
     for (const [key, value] of Object.entries(variables)) {
-      prompt = prompt.replace(new RegExp(`{${key}}`, 'g'), value)
+      prompt = prompt.replace(new RegExp(`{${key}}`, 'g'), value);
     }
 
-    return prompt
+    return prompt;
   }
 
   async getConfigHistory(): Promise<AIConfig[]> {
@@ -335,17 +358,17 @@ Include detailed nutritional information and health benefits.`,
       const { data, error } = await supabase
         .from('ai_config')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Failed to fetch config history:', error)
-        return []
+        console.error('Failed to fetch config history:', error);
+        return [];
       }
 
-      return data || []
+      return data || [];
     } catch (error) {
-      console.error('Error fetching config history:', error)
-      return []
+      console.error('Error fetching config history:', error);
+      return [];
     }
   }
 
@@ -355,38 +378,46 @@ Include detailed nutritional information and health benefits.`,
         .from('ai_config')
         .select('model_name, performance_score, created_at')
         .not('performance_score', 'is', null)
-        .order('created_at', { ascending: false })
+        .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Failed to fetch performance metrics:', error)
-        return {}
+        console.error('Failed to fetch performance metrics:', error);
+        return {};
       }
 
       return {
         models: data || [],
-        averageScore: data?.reduce((sum, config) => sum + (config.performance_score || 0), 0) / (data?.length || 1),
-        totalConfigs: data?.length || 0
-      }
+        averageScore:
+          data?.reduce(
+            (sum, config) => sum + (config.performance_score || 0),
+            0
+          ) / (data?.length || 1),
+        totalConfigs: data?.length || 0,
+      };
     } catch (error) {
-      console.error('Error fetching performance metrics:', error)
-      return {}
+      console.error('Error fetching performance metrics:', error);
+      return {};
     }
   }
 }
 
-export const aiConfigManager = new AIConfigManager()
+export const aiConfigManager = new AIConfigManager();
 
 // Initialize default config if none exists
 export async function initializeDefaultConfig() {
-  const currentConfig = await aiConfigManager.getCurrentConfig()
+  const currentConfig = await aiConfigManager.getCurrentConfig();
   if (!currentConfig) {
     const defaultConfig = await aiConfigManager.createConfig({
       model_name: 'gpt-4o-mini',
-      system_prompt: 'You are a professional chef and nutritionist specializing in creating delicious, healthy, and practical dinner recipes.',
+      system_prompt:
+        'You are a professional chef and nutritionist specializing in creating delicious, healthy, and practical dinner recipes.',
       message_templates: {
-        recipe_generation: 'Generate creative dinner recipes based on available ingredients and dietary preferences.',
-        recipe_improvement: 'Improve recipes based on user feedback while maintaining authenticity.',
-        cuisine_specific: 'Create authentic recipes for specific cuisines using available ingredients.'
+        recipe_generation:
+          'Generate creative dinner recipes based on available ingredients and dietary preferences.',
+        recipe_improvement:
+          'Improve recipes based on user feedback while maintaining authenticity.',
+        cuisine_specific:
+          'Create authentic recipes for specific cuisines using available ingredients.',
       },
       version: '1.0.0',
       is_active: true,
@@ -395,12 +426,12 @@ export async function initializeDefaultConfig() {
         temperature: 0.7,
         max_tokens: 2000,
         retry_attempts: 3,
-        fallback_enabled: true
-      }
-    })
+        fallback_enabled: true,
+      },
+    });
 
     if (defaultConfig) {
-      console.log('Default AI config initialized')
+      console.log('Default AI config initialized');
     }
   }
 }

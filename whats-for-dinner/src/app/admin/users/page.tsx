@@ -1,95 +1,109 @@
-'use client'
+'use client';
 
-import { useTenant } from '@/hooks/useTenant'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabaseClient'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { 
-  Users, 
-  UserPlus, 
+import { useTenant } from '@/hooks/useTenant';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabaseClient';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Users,
+  UserPlus,
   Mail,
   Shield,
   MoreHorizontal,
-  Trash2
-} from 'lucide-react'
-import { useState } from 'react'
+  Trash2,
+} from 'lucide-react';
+import { useState } from 'react';
 
 interface TenantMember {
-  id: string
-  user_id: string
-  role: 'owner' | 'editor' | 'viewer'
-  status: 'active' | 'pending' | 'suspended'
-  joined_at: string
-  invited_by: string | null
+  id: string;
+  user_id: string;
+  role: 'owner' | 'editor' | 'viewer';
+  status: 'active' | 'pending' | 'suspended';
+  joined_at: string;
+  invited_by: string | null;
   user: {
-    id: string
-    email: string
-    name: string | null
-  } | null
+    id: string;
+    email: string;
+    name: string | null;
+  } | null;
 }
 
 interface TenantInvite {
-  id: string
-  email: string
-  role: 'editor' | 'viewer'
-  status: 'pending' | 'used' | 'expired'
-  created_at: string
-  expires_at: string
+  id: string;
+  email: string;
+  role: 'editor' | 'viewer';
+  status: 'pending' | 'used' | 'expired';
+  created_at: string;
+  expires_at: string;
 }
 
 export default function AdminUsersPage() {
-  const { tenant } = useTenant()
-  const queryClient = useQueryClient()
-  const [showInviteForm, setShowInviteForm] = useState(false)
-  const [inviteEmail, setInviteEmail] = useState('')
-  const [inviteRole, setInviteRole] = useState<'editor' | 'viewer'>('editor')
+  const { tenant } = useTenant();
+  const queryClient = useQueryClient();
+  const [showInviteForm, setShowInviteForm] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState<'editor' | 'viewer'>('editor');
 
   const { data: members, isLoading: membersLoading } = useQuery({
     queryKey: ['tenant-members', tenant?.id],
     queryFn: async (): Promise<TenantMember[]> => {
-      if (!tenant) return []
+      if (!tenant) return [];
 
       const { data, error } = await supabase
         .from('tenant_memberships')
-        .select(`
+        .select(
+          `
           *,
           user:profiles!tenant_memberships_user_id_fkey (
             id,
             name,
             email:auth.users!profiles_id_fkey(email)
           )
-        `)
+        `
+        )
         .eq('tenant_id', tenant.id)
-        .order('joined_at', { ascending: false })
+        .order('joined_at', { ascending: false });
 
-      if (error) throw error
-      return data || []
+      if (error) throw error;
+      return data || [];
     },
     enabled: !!tenant,
-  })
+  });
 
   const { data: invites, isLoading: invitesLoading } = useQuery({
     queryKey: ['tenant-invites', tenant?.id],
     queryFn: async (): Promise<TenantInvite[]> => {
-      if (!tenant) return []
+      if (!tenant) return [];
 
       const { data, error } = await supabase
         .from('tenant_invites')
         .select('*')
         .eq('tenant_id', tenant.id)
-        .order('created_at', { ascending: false })
+        .order('created_at', { ascending: false });
 
-      if (error) throw error
-      return data || []
+      if (error) throw error;
+      return data || [];
     },
     enabled: !!tenant,
-  })
+  });
 
   const inviteUserMutation = useMutation({
-    mutationFn: async ({ email, role }: { email: string; role: 'editor' | 'viewer' }) => {
-      if (!tenant) throw new Error('No tenant found')
+    mutationFn: async ({
+      email,
+      role,
+    }: {
+      email: string;
+      role: 'editor' | 'viewer';
+    }) => {
+      if (!tenant) throw new Error('No tenant found');
 
       const { data, error } = await supabase
         .from('tenant_invites')
@@ -98,71 +112,73 @@ export default function AdminUsersPage() {
           email,
           role,
           token: crypto.randomUUID(),
-          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          expires_at: new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toISOString(),
         })
         .select()
-        .single()
+        .single();
 
-      if (error) throw error
-      return data
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tenant-invites'] })
-      setShowInviteForm(false)
-      setInviteEmail('')
+      queryClient.invalidateQueries({ queryKey: ['tenant-invites'] });
+      setShowInviteForm(false);
+      setInviteEmail('');
     },
-  })
+  });
 
   const removeMemberMutation = useMutation({
     mutationFn: async (membershipId: string) => {
       const { error } = await supabase
         .from('tenant_memberships')
         .delete()
-        .eq('id', membershipId)
+        .eq('id', membershipId);
 
-      if (error) throw error
+      if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tenant-members'] })
+      queryClient.invalidateQueries({ queryKey: ['tenant-members'] });
     },
-  })
+  });
 
   const cancelInviteMutation = useMutation({
     mutationFn: async (inviteId: string) => {
       const { error } = await supabase
         .from('tenant_invites')
         .delete()
-        .eq('id', inviteId)
+        .eq('id', inviteId);
 
-      if (error) throw error
+      if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tenant-invites'] })
+      queryClient.invalidateQueries({ queryKey: ['tenant-invites'] });
     },
-  })
+  });
 
   const handleInviteUser = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!inviteEmail || !inviteRole) return
+    e.preventDefault();
+    if (!inviteEmail || !inviteRole) return;
 
-    inviteUserMutation.mutate({ email: inviteEmail, role: inviteRole })
-  }
+    inviteUserMutation.mutate({ email: inviteEmail, role: inviteRole });
+  };
 
   if (membersLoading || invitesLoading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 bg-gray-200 rounded w-1/4 animate-pulse"></div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="h-96 bg-gray-200 rounded animate-pulse"></div>
-          <div className="h-96 bg-gray-200 rounded animate-pulse"></div>
+        <div className="h-8 w-1/4 animate-pulse rounded bg-gray-200"></div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="h-96 animate-pulse rounded bg-gray-200"></div>
+          <div className="h-96 animate-pulse rounded bg-gray-200"></div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
           <p className="text-gray-600">
@@ -170,7 +186,7 @@ export default function AdminUsersPage() {
           </p>
         </div>
         <Button onClick={() => setShowInviteForm(true)}>
-          <UserPlus className="h-4 w-4 mr-2" />
+          <UserPlus className="mr-2 h-4 w-4" />
           Invite User
         </Button>
       </div>
@@ -187,34 +203,40 @@ export default function AdminUsersPage() {
           <CardContent>
             <form onSubmit={handleInviteUser} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-gray-700">
                   Email Address
                 </label>
                 <input
                   type="email"
                   value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={e => setInviteEmail(e.target.value)}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="user@example.com"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-gray-700">
                   Role
                 </label>
                 <select
                   value={inviteRole}
-                  onChange={(e) => setInviteRole(e.target.value as 'editor' | 'viewer')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={e =>
+                    setInviteRole(e.target.value as 'editor' | 'viewer')
+                  }
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="editor">Editor - Can create and edit recipes</option>
+                  <option value="editor">
+                    Editor - Can create and edit recipes
+                  </option>
                   <option value="viewer">Viewer - Can view recipes only</option>
                 </select>
               </div>
               <div className="flex space-x-2">
                 <Button type="submit" disabled={inviteUserMutation.isPending}>
-                  {inviteUserMutation.isPending ? 'Sending...' : 'Send Invitation'}
+                  {inviteUserMutation.isPending
+                    ? 'Sending...'
+                    : 'Send Invitation'}
                 </Button>
                 <Button
                   type="button"
@@ -229,32 +251,32 @@ export default function AdminUsersPage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Current Members */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Users className="h-5 w-5 mr-2" />
+              <Users className="mr-2 h-5 w-5" />
               Team Members ({members?.length || 0})
             </CardTitle>
-            <CardDescription>
-              Users who have joined your tenant
-            </CardDescription>
+            <CardDescription>Users who have joined your tenant</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {members?.map((member) => (
+              {members?.map(member => (
                 <div
                   key={member.id}
-                  className="flex items-center justify-between p-3 border rounded-lg"
+                  className="flex items-center justify-between rounded-lg border p-3"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
                       <Shield className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
                       <p className="text-sm font-medium">
-                        {member.user?.name || member.user?.email || 'Unknown User'}
+                        {member.user?.name ||
+                          member.user?.email ||
+                          'Unknown User'}
                       </p>
                       <p className="text-xs text-gray-500">
                         {member.user?.email}
@@ -262,10 +284,18 @@ export default function AdminUsersPage() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Badge variant={member.role === 'owner' ? 'default' : 'secondary'}>
+                    <Badge
+                      variant={
+                        member.role === 'owner' ? 'default' : 'secondary'
+                      }
+                    >
                       {member.role}
                     </Badge>
-                    <Badge variant={member.status === 'active' ? 'default' : 'destructive'}>
+                    <Badge
+                      variant={
+                        member.status === 'active' ? 'default' : 'destructive'
+                      }
+                    >
                       {member.status}
                     </Badge>
                     {member.role !== 'owner' && (
@@ -289,7 +319,7 @@ export default function AdminUsersPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Mail className="h-5 w-5 mr-2" />
+              <Mail className="mr-2 h-5 w-5" />
               Pending Invitations ({invites?.length || 0})
             </CardTitle>
             <CardDescription>
@@ -298,19 +328,20 @@ export default function AdminUsersPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {invites?.map((invite) => (
+              {invites?.map(invite => (
                 <div
                   key={invite.id}
-                  className="flex items-center justify-between p-3 border rounded-lg"
+                  className="flex items-center justify-between rounded-lg border p-3"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
                       <Mail className="h-4 w-4 text-gray-600" />
                     </div>
                     <div>
                       <p className="text-sm font-medium">{invite.email}</p>
                       <p className="text-xs text-gray-500">
-                        Expires {new Date(invite.expires_at).toLocaleDateString()}
+                        Expires{' '}
+                        {new Date(invite.expires_at).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
@@ -332,5 +363,5 @@ export default function AdminUsersPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

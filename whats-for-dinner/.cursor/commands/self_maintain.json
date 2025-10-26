@@ -6,17 +6,29 @@
     "analyze_system": {
       "description": "Analyze system performance and user feedback",
       "prompt": "Analyze the current system performance, review user feedback patterns, and identify areas for improvement. Check error rates, API latency, user satisfaction scores, and suggest optimizations.",
-      "triggers": ["daily", "error_threshold_exceeded", "performance_degradation"]
+      "triggers": [
+        "daily",
+        "error_threshold_exceeded",
+        "performance_degradation"
+      ]
     },
     "optimize_ai_prompts": {
       "description": "Optimize AI prompts based on user feedback",
       "prompt": "Review user feedback data, identify common issues with recipe generation, and optimize the AI prompts to improve user satisfaction. Update prompt templates and test new configurations.",
-      "triggers": ["weekly", "feedback_threshold_exceeded", "low_satisfaction_score"]
+      "triggers": [
+        "weekly",
+        "feedback_threshold_exceeded",
+        "low_satisfaction_score"
+      ]
     },
     "update_ai_config": {
       "description": "Update AI configuration based on performance metrics",
       "prompt": "Analyze AI performance metrics, compare different model configurations, and update the AI configuration to improve recipe quality and response times. Test new models and configurations.",
-      "triggers": ["monthly", "model_deprecation", "performance_improvement_available"]
+      "triggers": [
+        "monthly",
+        "model_deprecation",
+        "performance_improvement_available"
+      ]
     },
     "generate_analytics_report": {
       "description": "Generate comprehensive analytics report",

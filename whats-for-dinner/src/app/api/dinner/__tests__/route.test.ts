@@ -1,5 +1,5 @@
-import { POST } from '../route'
-import { openai } from '@/lib/openaiClient'
+import { POST } from '../route';
+import { openai } from '@/lib/openaiClient';
 
 // Mock the OpenAI client
 jest.mock('@/lib/openaiClient', () => ({
@@ -10,14 +10,14 @@ jest.mock('@/lib/openaiClient', () => ({
       },
     },
   },
-}))
+}));
 
-const mockOpenai = openai as jest.Mocked<typeof openai>
+const mockOpenai = openai as jest.Mocked<typeof openai>;
 
 describe('/api/dinner', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    jest.clearAllMocks();
+  });
 
   it('should generate recipes successfully', async () => {
     const mockRecipes = [
@@ -28,7 +28,7 @@ describe('/api/dinner', () => {
         ingredients: ['pasta', 'tomatoes', 'garlic'],
         steps: ['Boil pasta', 'Sauté garlic', 'Add tomatoes'],
       },
-    ]
+    ];
 
     mockOpenai.chat.completions.create.mockResolvedValue({
       choices: [
@@ -38,7 +38,7 @@ describe('/api/dinner', () => {
           },
         },
       ],
-    } as any)
+    } as any);
 
     const request = new Request('http://localhost:3000/api/dinner', {
       method: 'POST',
@@ -49,13 +49,13 @@ describe('/api/dinner', () => {
         ingredients: ['pasta', 'tomatoes'],
         preferences: 'vegetarian',
       }),
-    })
+    });
 
-    const response = await POST(request)
-    const data = await response.json()
+    const response = await POST(request);
+    const data = await response.json();
 
-    expect(response.status).toBe(200)
-    expect(data.recipes).toEqual(mockRecipes)
+    expect(response.status).toBe(200);
+    expect(data.recipes).toEqual(mockRecipes);
     expect(mockOpenai.chat.completions.create).toHaveBeenCalledWith({
       model: 'gpt-4o-mini',
       messages: [
@@ -65,11 +65,13 @@ describe('/api/dinner', () => {
         },
       ],
       temperature: 0.7,
-    })
-  })
+    });
+  });
 
   it('should handle OpenAI API errors', async () => {
-    mockOpenai.chat.completions.create.mockRejectedValue(new Error('API Error'))
+    mockOpenai.chat.completions.create.mockRejectedValue(
+      new Error('API Error')
+    );
 
     const request = new Request('http://localhost:3000/api/dinner', {
       method: 'POST',
@@ -80,14 +82,14 @@ describe('/api/dinner', () => {
         ingredients: ['pasta'],
         preferences: '',
       }),
-    })
+    });
 
-    const response = await POST(request)
-    const data = await response.json()
+    const response = await POST(request);
+    const data = await response.json();
 
-    expect(response.status).toBe(500)
-    expect(data.error).toBe('Failed to generate recipes')
-  })
+    expect(response.status).toBe(500);
+    expect(data.error).toBe('Failed to generate recipes');
+  });
 
   it('should handle invalid JSON response from OpenAI', async () => {
     mockOpenai.chat.completions.create.mockResolvedValue({
@@ -98,7 +100,7 @@ describe('/api/dinner', () => {
           },
         },
       ],
-    } as any)
+    } as any);
 
     const request = new Request('http://localhost:3000/api/dinner', {
       method: 'POST',
@@ -109,14 +111,14 @@ describe('/api/dinner', () => {
         ingredients: ['pasta'],
         preferences: '',
       }),
-    })
+    });
 
-    const response = await POST(request)
-    const data = await response.json()
+    const response = await POST(request);
+    const data = await response.json();
 
-    expect(response.status).toBe(500)
-    expect(data.error).toBe('Failed to generate recipes')
-  })
+    expect(response.status).toBe(500);
+    expect(data.error).toBe('Failed to generate recipes');
+  });
 
   it('should handle missing ingredients', async () => {
     const request = new Request('http://localhost:3000/api/dinner', {
@@ -128,12 +130,12 @@ describe('/api/dinner', () => {
         ingredients: [],
         preferences: '',
       }),
-    })
+    });
 
-    const response = await POST(request)
-    const data = await response.json()
+    const response = await POST(request);
+    const data = await response.json();
 
-    expect(response.status).toBe(200)
-    expect(data.recipes).toEqual([])
-  })
-})
+    expect(response.status).toBe(200);
+    expect(data.recipes).toEqual([]);
+  });
+});

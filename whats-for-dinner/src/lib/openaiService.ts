@@ -1,27 +1,27 @@
-import { openai } from './openaiClient'
-import { RecipeSchema } from './validation'
-import { z } from 'zod'
-import { analytics } from './analytics'
-import { logger } from './logger'
-import { aiConfigManager } from './aiConfig'
+import { openai } from './openaiClient';
+import { RecipeSchema } from './validation';
+import { z } from 'zod';
+import { analytics } from './analytics';
+import { logger } from './logger';
+import { aiConfigManager } from './aiConfig';
 
 interface GenerateRecipesOptions {
-  ingredients: string[]
-  preferences: string
-  maxRetries?: number
-  retryDelay?: number
+  ingredients: string[];
+  preferences: string;
+  maxRetries?: number;
+  retryDelay?: number;
 }
 
 interface GenerateRecipesResult {
-  recipes: z.infer<typeof RecipeSchema>[]
+  recipes: z.infer<typeof RecipeSchema>[];
   metadata: {
-    model: string
-    timestamp: string
-    retryCount: number
-    apiLatencyMs: number
-    costEstimate: number
-    confidenceScore: number
-  }
+    model: string;
+    timestamp: string;
+    retryCount: number;
+    apiLatencyMs: number;
+    costEstimate: number;
+    confidenceScore: number;
+  };
 }
 
 export async function generateRecipes({
@@ -30,20 +30,23 @@ export async function generateRecipes({
   maxRetries = 3,
   retryDelay = 1000,
 }: GenerateRecipesOptions): Promise<GenerateRecipesResult> {
-  const startTime = Date.now()
-  let lastError: Error | null = null
-  let retryCount = 0
+  const startTime = Date.now();
+  let lastError: Error | null = null;
+  let retryCount = 0;
 
   // Get current AI configuration
-  const aiConfig = await aiConfigManager.getCurrentConfig()
-  const model = aiConfig?.model_name || "gpt-4o-mini"
-  const systemPrompt = aiConfig?.system_prompt || "You are a professional chef and nutritionist."
+  const aiConfig = await aiConfigManager.getCurrentConfig();
+  const model = aiConfig?.model_name || 'gpt-4o-mini';
+  const systemPrompt =
+    aiConfig?.system_prompt || 'You are a professional chef and nutritionist.';
 
   // Generate prompt using AI config templates
-  const prompt = await aiConfigManager.generatePrompt('recipe_generation', {
-    ingredients: ingredients.join(', '),
-    preferences: preferences || 'No specific preferences'
-  }) || `Suggest three dinner ideas based on these ingredients: ${ingredients.join(', ')}.
+  const prompt =
+    (await aiConfigManager.generatePrompt('recipe_generation', {
+      ingredients: ingredients.join(', '),
+      preferences: preferences || 'No specific preferences',
+    })) ||
+    `Suggest three dinner ideas based on these ingredients: ${ingredients.join(', ')}.
   Take into account these dietary preferences: ${preferences || 'No specific preferences'}.
   
   For each recipe, provide:
@@ -66,43 +69,43 @@ export async function generateRecipes({
       "nutritional_highlights": ["high protein", "low carb"],
       "difficulty": "Easy"
     }
-  ]`
+  ]`;
 
   // Track analytics event
   await analytics.trackEvent('recipe_generation_started', {
     ingredients_count: ingredients.length,
     has_preferences: !!preferences,
-    model: model
-  })
+    model: model,
+  });
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const attemptStartTime = Date.now()
-      
+      const attemptStartTime = Date.now();
+
       const completion = await openai.chat.completions.create({
         model: model,
         messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: prompt }
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt },
         ],
         temperature: aiConfig?.metadata?.temperature || 0.7,
         max_tokens: aiConfig?.metadata?.max_tokens || 2000,
-      })
+      });
 
-      const attemptDuration = Date.now() - attemptStartTime
-      const content = completion.choices[0].message.content
-      
+      const attemptDuration = Date.now() - attemptStartTime;
+      const content = completion.choices[0].message.content;
+
       if (!content) {
-        throw new Error('No content received from OpenAI')
+        throw new Error('No content received from OpenAI');
       }
 
       // Parse and validate the response
-      const rawRecipes = JSON.parse(content)
-      const recipes = z.array(RecipeSchema).parse(rawRecipes)
+      const rawRecipes = JSON.parse(content);
+      const recipes = z.array(RecipeSchema).parse(rawRecipes);
 
-      const totalDuration = Date.now() - startTime
-      const costEstimate = calculateCostEstimate(completion.usage, model)
-      const confidenceScore = calculateConfidenceScore(recipes, ingredients)
+      const totalDuration = Date.now() - startTime;
+      const costEstimate = calculateCostEstimate(completion.usage, model);
+      const confidenceScore = calculateConfidenceScore(recipes, ingredients);
 
       // Track successful generation
       await analytics.trackRecipeGeneration({
@@ -114,25 +117,30 @@ export async function generateRecipes({
         calories: recipes[0]?.calories || 0,
         api_latency_ms: attemptDuration,
         model_used: model,
-        retry_count: attempt
-      })
+        retry_count: attempt,
+      });
 
       // Track system metrics
       await analytics.trackSystemMetric('api_performance', attemptDuration, {
         model: model,
         success: true,
         retry_count: attempt,
-        tokens_used: completion.usage?.total_tokens || 0
-      })
+        tokens_used: completion.usage?.total_tokens || 0,
+      });
 
       // Log successful generation
-      await logger.info('Recipe generation successful', {
-        model: model,
-        attempt: attempt + 1,
-        duration_ms: attemptDuration,
-        recipes_count: recipes.length,
-        confidence_score: confidenceScore
-      }, 'api', 'openai')
+      await logger.info(
+        'Recipe generation successful',
+        {
+          model: model,
+          attempt: attempt + 1,
+          duration_ms: attemptDuration,
+          recipes_count: recipes.length,
+          confidence_score: confidenceScore,
+        },
+        'api',
+        'openai'
+      );
 
       return {
         recipes,
@@ -142,41 +150,49 @@ export async function generateRecipes({
           retryCount: attempt,
           apiLatencyMs: attemptDuration,
           costEstimate: costEstimate,
-          confidenceScore: confidenceScore
+          confidenceScore: confidenceScore,
         },
-      }
+      };
     } catch (error) {
-      lastError = error as Error
-      retryCount = attempt
+      lastError = error as Error;
+      retryCount = attempt;
 
       // Log the error
-      await logger.error(`OpenAI API attempt ${attempt + 1} failed`, {
-        error: error.message,
-        model: model,
-        attempt: attempt + 1,
-        ingredients: ingredients
-      }, 'api', 'openai', error as Error)
+      await logger.error(
+        `OpenAI API attempt ${attempt + 1} failed`,
+        {
+          error: error.message,
+          model: model,
+          attempt: attempt + 1,
+          ingredients: ingredients,
+        },
+        'api',
+        'openai',
+        error as Error
+      );
 
       // Track error metrics
       await analytics.trackSystemMetric('error_rate', 1, {
         model: model,
         error_type: error.constructor.name,
-        attempt: attempt + 1
-      })
+        attempt: attempt + 1,
+      });
 
       // Don't retry on validation errors
       if (error instanceof z.ZodError) {
-        throw new Error(`Recipe validation failed: ${error.errors.map(e => e.message).join(', ')}`)
+        throw new Error(
+          `Recipe validation failed: ${error.errors.map(e => e.message).join(', ')}`
+        );
       }
 
       // Don't retry on the last attempt
       if (attempt === maxRetries) {
-        break
+        break;
       }
 
       // Wait before retrying with exponential backoff
-      const delay = retryDelay * Math.pow(2, attempt)
-      await new Promise(resolve => setTimeout(resolve, delay))
+      const delay = retryDelay * Math.pow(2, attempt);
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
 
@@ -184,101 +200,116 @@ export async function generateRecipes({
   await analytics.trackEvent('recipe_generation_failed', {
     model: model,
     total_attempts: maxRetries + 1,
-    final_error: lastError?.message
-  })
+    final_error: lastError?.message,
+  });
 
   // If we get here, all retries failed
-  throw new Error(`Failed to generate recipes after ${maxRetries + 1} attempts. Last error: ${lastError?.message}`)
+  throw new Error(
+    `Failed to generate recipes after ${maxRetries + 1} attempts. Last error: ${lastError?.message}`
+  );
 }
 
 // Helper methods
 function calculateCostEstimate(usage: any, model: string): number {
-  if (!usage) return 0
-  
+  if (!usage) return 0;
+
   // Simplified cost calculation (prices as of 2024)
   const pricing = {
     'gpt-4o-mini': { input: 0.00015, output: 0.0006 },
     'gpt-4o': { input: 0.005, output: 0.015 },
-    'gpt-3.5-turbo': { input: 0.0015, output: 0.002 }
-  }
-  
-  const modelPricing = pricing[model as keyof typeof pricing] || pricing['gpt-4o-mini']
-  const inputCost = (usage.prompt_tokens || 0) * modelPricing.input / 1000
-  const outputCost = (usage.completion_tokens || 0) * modelPricing.output / 1000
-  
-  return inputCost + outputCost
+    'gpt-3.5-turbo': { input: 0.0015, output: 0.002 },
+  };
+
+  const modelPricing =
+    pricing[model as keyof typeof pricing] || pricing['gpt-4o-mini'];
+  const inputCost = ((usage.prompt_tokens || 0) * modelPricing.input) / 1000;
+  const outputCost =
+    ((usage.completion_tokens || 0) * modelPricing.output) / 1000;
+
+  return inputCost + outputCost;
 }
 
-function calculateConfidenceScore(recipes: any[], ingredients: string[]): number {
-  let score = 0.5 // Base score
-  
+function calculateConfidenceScore(
+  recipes: any[],
+  ingredients: string[]
+): number {
+  let score = 0.5; // Base score
+
   // Check if recipes use most of the provided ingredients
-  const usedIngredients = new Set()
+  const usedIngredients = new Set();
   recipes.forEach(recipe => {
     recipe.ingredients?.forEach((ing: string) => {
       ingredients.forEach(providedIng => {
         if (ing.toLowerCase().includes(providedIng.toLowerCase())) {
-          usedIngredients.add(providedIng)
+          usedIngredients.add(providedIng);
         }
-      })
-    })
-  })
-  
-  const ingredientUsageRatio = usedIngredients.size / ingredients.length
-  score += ingredientUsageRatio * 0.3
-  
+      });
+    });
+  });
+
+  const ingredientUsageRatio = usedIngredients.size / ingredients.length;
+  score += ingredientUsageRatio * 0.3;
+
   // Check recipe completeness
-  const completeRecipes = recipes.filter(r => 
-    r.title && r.cookTime && r.calories && r.ingredients?.length > 0 && r.steps?.length > 0
-  )
-  score += (completeRecipes.length / recipes.length) * 0.2
-  
-  return Math.min(1.0, Math.max(0.0, score))
+  const completeRecipes = recipes.filter(
+    r =>
+      r.title &&
+      r.cookTime &&
+      r.calories &&
+      r.ingredients?.length > 0 &&
+      r.steps?.length > 0
+  );
+  score += (completeRecipes.length / recipes.length) * 0.2;
+
+  return Math.min(1.0, Math.max(0.0, score));
 }
 
 function detectCuisineType(recipes: any[]): string | null {
   const cuisineKeywords = {
-    'Italian': ['pasta', 'pizza', 'risotto', 'parmesan', 'basil', 'oregano'],
-    'Mexican': ['taco', 'burrito', 'salsa', 'cilantro', 'lime', 'jalapeño'],
-    'Asian': ['soy', 'ginger', 'sesame', 'rice', 'noodle', 'stir-fry'],
-    'Indian': ['curry', 'cumin', 'turmeric', 'garam masala', 'coconut'],
-    'Mediterranean': ['olive oil', 'feta', 'tomato', 'oregano', 'lemon']
-  }
-  
-  const allText = recipes.map(r => 
-    `${r.title} ${r.ingredients?.join(' ')} ${r.steps?.join(' ')}`
-  ).join(' ').toLowerCase()
-  
+    Italian: ['pasta', 'pizza', 'risotto', 'parmesan', 'basil', 'oregano'],
+    Mexican: ['taco', 'burrito', 'salsa', 'cilantro', 'lime', 'jalapeño'],
+    Asian: ['soy', 'ginger', 'sesame', 'rice', 'noodle', 'stir-fry'],
+    Indian: ['curry', 'cumin', 'turmeric', 'garam masala', 'coconut'],
+    Mediterranean: ['olive oil', 'feta', 'tomato', 'oregano', 'lemon'],
+  };
+
+  const allText = recipes
+    .map(r => `${r.title} ${r.ingredients?.join(' ')} ${r.steps?.join(' ')}`)
+    .join(' ')
+    .toLowerCase();
+
   for (const [cuisine, keywords] of Object.entries(cuisineKeywords)) {
     if (keywords.some(keyword => allText.includes(keyword))) {
-      return cuisine
+      return cuisine;
     }
   }
-  
-  return null
+
+  return null;
 }
 
 export async function generateRecipesWithFallback(
   options: GenerateRecipesOptions
 ): Promise<GenerateRecipesResult> {
   try {
-    return await generateRecipes(options)
+    return await generateRecipes(options);
   } catch (error) {
-    console.error('Primary recipe generation failed, using fallback:', error)
-    
+    console.error('Primary recipe generation failed, using fallback:', error);
+
     // Fallback: return a simple recipe based on ingredients
-    const fallbackRecipes = [{
-      title: `Simple ${options.ingredients[0]} Dish`,
-      cookTime: '20 minutes',
-      calories: 300,
-      ingredients: options.ingredients,
-      steps: [
-        `Prepare ${options.ingredients.join(', ')}`,
-        'Heat oil in a pan',
-        'Cook ingredients until tender',
-        'Season to taste and serve'
-      ]
-    }]
+    const fallbackRecipes = [
+      {
+        title: `Simple ${options.ingredients[0]} Dish`,
+        cookTime: '20 minutes',
+        calories: 300,
+        ingredients: options.ingredients,
+        steps: [
+          `Prepare ${options.ingredients.join(', ')}`,
+          'Heat oil in a pan',
+          'Cook ingredients until tender',
+          'Season to taste and serve',
+        ],
+      },
+    ];
 
     return {
       recipes: fallbackRecipes,
@@ -287,6 +318,6 @@ export async function generateRecipesWithFallback(
         timestamp: new Date().toISOString(),
         retryCount: -1,
       },
-    }
+    };
   }
 }

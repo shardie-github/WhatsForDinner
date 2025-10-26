@@ -41,12 +41,12 @@ export class InsightAgent extends BaseAgent {
         'cost_analysis',
         'performance_analysis',
         'security_analysis',
-        'generate_insights'
+        'generate_insights',
       ],
       safetyConstraints: [
         'no_data_export_without_anonymization',
         'no_analysis_without_permission',
-        'preserve_user_privacy'
+        'preserve_user_privacy',
       ],
       learningRate: 0.15,
       maxRetries: 2,
@@ -78,24 +78,33 @@ export class InsightAgent extends BaseAgent {
     }
   }
 
-  protected checkSafetyConstraint(constraint: string, action: AgentAction): boolean {
+  protected checkSafetyConstraint(
+    constraint: string,
+    action: AgentAction
+  ): boolean {
     switch (constraint) {
       case 'no_data_export_without_anonymization':
-        if (action.type === 'analyze_user_behavior' && action.payload?.exportData) {
+        if (
+          action.type === 'analyze_user_behavior' &&
+          action.payload?.exportData
+        ) {
           return action.payload?.anonymized === true;
         }
         return true;
-      
+
       case 'no_analysis_without_permission':
-        if (action.type === 'analyze_kpis' || action.type === 'analyze_user_behavior') {
+        if (
+          action.type === 'analyze_kpis' ||
+          action.type === 'analyze_user_behavior'
+        ) {
           return action.payload?.hasPermission === true;
         }
         return true;
-      
+
       case 'preserve_user_privacy':
         // Always ensure user privacy is preserved
         return this.validatePrivacyCompliance(action);
-      
+
       default:
         return true;
     }
@@ -107,24 +116,24 @@ export class InsightAgent extends BaseAgent {
   private async analyzeKPIs(): Promise<boolean> {
     try {
       logger.info('Analyzing KPIs');
-      
+
       const currentMetrics = await this.collectCurrentMetrics();
       this.kpiHistory.push(currentMetrics);
-      
+
       // Keep only last 30 days of data
       if (this.kpiHistory.length > 30) {
         this.kpiHistory = this.kpiHistory.slice(-30);
       }
-      
+
       const analysis = this.performKPIAnalysis(currentMetrics);
-      
+
       // Update system with insights
       autonomousSystem.recordLearningData('kpi_analysis', {
         metrics: currentMetrics,
         analysis,
         timestamp: new Date().toISOString(),
       });
-      
+
       logger.info('KPI analysis complete', { analysis });
       return true;
     } catch (error) {
@@ -139,24 +148,24 @@ export class InsightAgent extends BaseAgent {
   private async suggestOptimizations(): Promise<boolean> {
     try {
       logger.info('Generating optimization suggestions');
-      
+
       const suggestions = await this.generateOptimizationSuggestions();
       this.optimizationSuggestions = suggestions;
-      
+
       // Prioritize suggestions by impact/effort ratio
       const prioritizedSuggestions = this.prioritizeSuggestions(suggestions);
-      
+
       // Update system with suggestions
       autonomousSystem.recordLearningData('optimization_suggestions', {
         suggestions: prioritizedSuggestions,
         timestamp: new Date().toISOString(),
       });
-      
-      logger.info('Optimization suggestions generated', { 
+
+      logger.info('Optimization suggestions generated', {
         count: suggestions.length,
-        topSuggestions: prioritizedSuggestions.slice(0, 3)
+        topSuggestions: prioritizedSuggestions.slice(0, 3),
       });
-      
+
       return true;
     } catch (error) {
       logger.error('Optimization suggestion error', { error });
@@ -171,15 +180,15 @@ export class InsightAgent extends BaseAgent {
     try {
       const timeframe = payload?.timeframe || 7; // days
       logger.info(`Predicting trends for next ${timeframe} days`);
-      
+
       const predictions = this.performTrendPrediction(timeframe);
-      
+
       autonomousSystem.recordLearningData('trend_predictions', {
         predictions,
         timeframe,
         timestamp: new Date().toISOString(),
       });
-      
+
       logger.info('Trend predictions complete', { predictions });
       return true;
     } catch (error) {
@@ -194,14 +203,14 @@ export class InsightAgent extends BaseAgent {
   private async analyzeUserBehavior(payload: any): Promise<boolean> {
     try {
       logger.info('Analyzing user behavior');
-      
+
       const behaviorAnalysis = await this.performBehaviorAnalysis(payload);
-      
+
       autonomousSystem.recordLearningData('user_behavior', {
         analysis: behaviorAnalysis,
         timestamp: new Date().toISOString(),
       });
-      
+
       logger.info('User behavior analysis complete', { behaviorAnalysis });
       return true;
     } catch (error) {
@@ -216,14 +225,14 @@ export class InsightAgent extends BaseAgent {
   private async analyzeCosts(): Promise<boolean> {
     try {
       logger.info('Analyzing costs');
-      
+
       const costAnalysis = await this.performCostAnalysis();
-      
+
       autonomousSystem.recordLearningData('cost_analysis', {
         analysis: costAnalysis,
         timestamp: new Date().toISOString(),
       });
-      
+
       logger.info('Cost analysis complete', { costAnalysis });
       return true;
     } catch (error) {
@@ -238,14 +247,14 @@ export class InsightAgent extends BaseAgent {
   private async analyzePerformance(): Promise<boolean> {
     try {
       logger.info('Analyzing performance');
-      
+
       const performanceAnalysis = await this.performPerformanceAnalysis();
-      
+
       autonomousSystem.recordLearningData('performance_analysis', {
         analysis: performanceAnalysis,
         timestamp: new Date().toISOString(),
       });
-      
+
       logger.info('Performance analysis complete', { performanceAnalysis });
       return true;
     } catch (error) {
@@ -260,14 +269,14 @@ export class InsightAgent extends BaseAgent {
   private async analyzeSecurity(): Promise<boolean> {
     try {
       logger.info('Analyzing security');
-      
+
       const securityAnalysis = await this.performSecurityAnalysis();
-      
+
       autonomousSystem.recordLearningData('security_analysis', {
         analysis: securityAnalysis,
         timestamp: new Date().toISOString(),
       });
-      
+
       logger.info('Security analysis complete', { securityAnalysis });
       return true;
     } catch (error) {
@@ -282,14 +291,14 @@ export class InsightAgent extends BaseAgent {
   private async generateInsights(): Promise<boolean> {
     try {
       logger.info('Generating comprehensive insights');
-      
+
       const insights = await this.performComprehensiveAnalysis();
-      
+
       autonomousSystem.recordLearningData('comprehensive_insights', {
         insights,
         timestamp: new Date().toISOString(),
       });
-      
+
       logger.info('Comprehensive insights generated', { insights });
       return true;
     } catch (error) {
@@ -323,7 +332,7 @@ export class InsightAgent extends BaseAgent {
       recommendations: this.generateRecommendations(metrics),
       alerts: this.checkAlerts(metrics),
     };
-    
+
     return analysis;
   }
 
@@ -336,15 +345,15 @@ export class InsightAgent extends BaseAgent {
       conversionRate: 0.25,
       pageLoadTime: 0.15,
       errorRate: 0.15,
-      costEfficiency: 0.10,
-      securityScore: 0.10,
+      costEfficiency: 0.1,
+      securityScore: 0.1,
     };
-    
+
     let score = 0;
     for (const [key, value] of Object.entries(metrics)) {
       score += value * weights[key as keyof typeof weights];
     }
-    
+
     return score;
   }
 
@@ -353,17 +362,17 @@ export class InsightAgent extends BaseAgent {
    */
   private calculateTrends(): any {
     if (this.kpiHistory.length < 2) return {};
-    
+
     const recent = this.kpiHistory[this.kpiHistory.length - 1];
     const previous = this.kpiHistory[this.kpiHistory.length - 2];
-    
+
     const trends: any = {};
     for (const key of Object.keys(recent)) {
       const current = recent[key as keyof KPIMetrics];
       const prev = previous[key as keyof KPIMetrics];
       trends[key] = ((current - prev) / prev) * 100;
     }
-    
+
     return trends;
   }
 
@@ -372,31 +381,37 @@ export class InsightAgent extends BaseAgent {
    */
   private generateRecommendations(metrics: KPIMetrics): string[] {
     const recommendations: string[] = [];
-    
+
     if (metrics.userEngagement < 0.7) {
       recommendations.push('Improve user engagement through better UX design');
     }
-    
+
     if (metrics.conversionRate < 0.1) {
-      recommendations.push('Optimize conversion funnel and call-to-action buttons');
+      recommendations.push(
+        'Optimize conversion funnel and call-to-action buttons'
+      );
     }
-    
+
     if (metrics.pageLoadTime > 2.0) {
-      recommendations.push('Optimize page load time with code splitting and caching');
+      recommendations.push(
+        'Optimize page load time with code splitting and caching'
+      );
     }
-    
+
     if (metrics.errorRate > 0.05) {
       recommendations.push('Investigate and fix high error rate');
     }
-    
+
     if (metrics.costEfficiency < 0.8) {
       recommendations.push('Optimize resource usage and costs');
     }
-    
+
     if (metrics.securityScore < 0.9) {
-      recommendations.push('Strengthen security measures and conduct security audit');
+      recommendations.push(
+        'Strengthen security measures and conduct security audit'
+      );
     }
-    
+
     return recommendations;
   }
 
@@ -405,26 +420,28 @@ export class InsightAgent extends BaseAgent {
    */
   private checkAlerts(metrics: KPIMetrics): string[] {
     const alerts: string[] = [];
-    
+
     if (metrics.errorRate > 0.1) {
       alerts.push('CRITICAL: High error rate detected');
     }
-    
+
     if (metrics.pageLoadTime > 5.0) {
       alerts.push('WARNING: Page load time is too slow');
     }
-    
+
     if (metrics.securityScore < 0.8) {
       alerts.push('WARNING: Security score is below threshold');
     }
-    
+
     return alerts;
   }
 
   /**
    * Generate optimization suggestions
    */
-  private async generateOptimizationSuggestions(): Promise<OptimizationSuggestion[]> {
+  private async generateOptimizationSuggestions(): Promise<
+    OptimizationSuggestion[]
+  > {
     // In a real implementation, this would analyze actual data
     return [
       {
@@ -434,7 +451,11 @@ export class InsightAgent extends BaseAgent {
         effort: 0.6,
         description: 'Implement code splitting for faster initial load',
         expectedImprovement: '30% faster page load time',
-        implementation: ['Configure webpack splitting', 'Lazy load components', 'Optimize bundle size'],
+        implementation: [
+          'Configure webpack splitting',
+          'Lazy load components',
+          'Optimize bundle size',
+        ],
       },
       {
         category: 'User Experience',
@@ -443,7 +464,11 @@ export class InsightAgent extends BaseAgent {
         effort: 0.4,
         description: 'Add loading states and skeleton screens',
         expectedImprovement: 'Improved perceived performance',
-        implementation: ['Create skeleton components', 'Add loading indicators', 'Implement progressive loading'],
+        implementation: [
+          'Create skeleton components',
+          'Add loading indicators',
+          'Implement progressive loading',
+        ],
       },
       {
         category: 'Security',
@@ -452,7 +477,11 @@ export class InsightAgent extends BaseAgent {
         effort: 0.8,
         description: 'Implement comprehensive input validation',
         expectedImprovement: 'Eliminate injection vulnerabilities',
-        implementation: ['Add input sanitization', 'Implement CSRF protection', 'Add rate limiting'],
+        implementation: [
+          'Add input sanitization',
+          'Implement CSRF protection',
+          'Add rate limiting',
+        ],
       },
     ];
   }
@@ -460,7 +489,9 @@ export class InsightAgent extends BaseAgent {
   /**
    * Prioritize suggestions by impact/effort ratio
    */
-  private prioritizeSuggestions(suggestions: OptimizationSuggestion[]): OptimizationSuggestion[] {
+  private prioritizeSuggestions(
+    suggestions: OptimizationSuggestion[]
+  ): OptimizationSuggestion[] {
     return suggestions.sort((a, b) => {
       const ratioA = a.impact / a.effort;
       const ratioB = b.impact / b.effort;
@@ -474,20 +505,20 @@ export class InsightAgent extends BaseAgent {
   private performTrendPrediction(timeframe: number): any {
     // Simple linear regression for trend prediction
     if (this.kpiHistory.length < 3) return {};
-    
+
     const predictions: any = {};
     const metrics = Object.keys(this.kpiHistory[0]);
-    
+
     for (const metric of metrics) {
       const values = this.kpiHistory.map(h => h[metric as keyof KPIMetrics]);
       const trend = this.calculateLinearTrend(values);
       predictions[metric] = {
         current: values[values.length - 1],
-        predicted: values[values.length - 1] + (trend * timeframe),
+        predicted: values[values.length - 1] + trend * timeframe,
         trend: trend > 0 ? 'increasing' : trend < 0 ? 'decreasing' : 'stable',
       };
     }
-    
+
     return predictions;
   }
 
@@ -498,12 +529,12 @@ export class InsightAgent extends BaseAgent {
     const n = values.length;
     const x = Array.from({ length: n }, (_, i) => i);
     const y = values;
-    
+
     const sumX = x.reduce((a, b) => a + b, 0);
     const sumY = y.reduce((a, b) => a + b, 0);
     const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
     const sumXX = x.reduce((sum, xi) => sum + xi * xi, 0);
-    
+
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     return slope;
   }
@@ -528,17 +559,21 @@ export class InsightAgent extends BaseAgent {
   private async performCostAnalysis(): Promise<any> {
     // In a real implementation, this would analyze actual costs
     return {
-      totalCost: 1250.50,
+      totalCost: 1250.5,
       costByService: {
-        hosting: 300.00,
-        database: 150.00,
-        ai: 500.00,
-        cdn: 100.00,
-        monitoring: 200.50,
+        hosting: 300.0,
+        database: 150.0,
+        ai: 500.0,
+        cdn: 100.0,
+        monitoring: 200.5,
       },
       costPerUser: 0.25,
       costTrend: 'increasing',
-      recommendations: ['Optimize AI usage', 'Implement caching', 'Review hosting plan'],
+      recommendations: [
+        'Optimize AI usage',
+        'Implement caching',
+        'Review hosting plan',
+      ],
     };
   }
 
@@ -577,10 +612,13 @@ export class InsightAgent extends BaseAgent {
    * Perform comprehensive analysis
    */
   private async performComprehensiveAnalysis(): Promise<any> {
-    const kpiAnalysis = this.performKPIAnalysis(this.kpiHistory[this.kpiHistory.length - 1] || await this.collectCurrentMetrics());
+    const kpiAnalysis = this.performKPIAnalysis(
+      this.kpiHistory[this.kpiHistory.length - 1] ||
+        (await this.collectCurrentMetrics())
+    );
     const trends = this.performTrendPrediction(7);
     const suggestions = this.optimizationSuggestions;
-    
+
     return {
       summary: {
         overallHealth: kpiAnalysis.overallScore,
@@ -600,9 +638,13 @@ export class InsightAgent extends BaseAgent {
    */
   private calculateOverallTrend(trends: any): string {
     const trendValues = Object.values(trends) as any[];
-    const positiveTrends = trendValues.filter(t => t.trend === 'increasing').length;
-    const negativeTrends = trendValues.filter(t => t.trend === 'decreasing').length;
-    
+    const positiveTrends = trendValues.filter(
+      t => t.trend === 'increasing'
+    ).length;
+    const negativeTrends = trendValues.filter(
+      t => t.trend === 'decreasing'
+    ).length;
+
     if (positiveTrends > negativeTrends) return 'positive';
     if (negativeTrends > positiveTrends) return 'negative';
     return 'stable';

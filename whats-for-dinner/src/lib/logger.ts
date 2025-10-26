@@ -1,66 +1,64 @@
-import { supabase } from './supabaseClient'
-import { v4 as uuidv4 } from 'uuid'
+import { supabase } from './supabaseClient';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface LogEntry {
-  id: string
-  level: 'error' | 'warn' | 'info' | 'debug'
-  message: string
-  context?: Record<string, any>
-  user_id?: string
-  session_id?: string
-  stack_trace?: string
-  timestamp: string
-  source: 'frontend' | 'api' | 'edge_function' | 'system'
-  component?: string
+  id: string;
+  level: 'error' | 'warn' | 'info' | 'debug';
+  message: string;
+  context?: Record<string, any>;
+  user_id?: string;
+  session_id?: string;
+  stack_trace?: string;
+  timestamp: string;
+  source: 'frontend' | 'api' | 'edge_function' | 'system';
+  component?: string;
 }
 
 export interface ErrorReport {
-  id: string
-  error_type: string
-  message: string
-  stack_trace?: string
-  user_id?: string
-  session_id?: string
-  context: Record<string, any>
-  resolved: boolean
-  created_at: string
-  resolved_at?: string
+  id: string;
+  error_type: string;
+  message: string;
+  stack_trace?: string;
+  user_id?: string;
+  session_id?: string;
+  context: Record<string, any>;
+  resolved: boolean;
+  created_at: string;
+  resolved_at?: string;
 }
 
 class Logger {
-  private sessionId: string
-  private userId?: string
+  private sessionId: string;
+  private userId?: string;
 
   constructor() {
-    this.sessionId = this.getOrCreateSessionId()
+    this.sessionId = this.getOrCreateSessionId();
   }
 
   private getOrCreateSessionId(): string {
-    if (typeof window === 'undefined') return uuidv4()
-    
-    let sessionId = localStorage.getItem('logger_session_id')
+    if (typeof window === 'undefined') return uuidv4();
+
+    let sessionId = localStorage.getItem('logger_session_id');
     if (!sessionId) {
-      sessionId = uuidv4()
-      localStorage.setItem('logger_session_id', sessionId)
+      sessionId = uuidv4();
+      localStorage.setItem('logger_session_id', sessionId);
     }
-    return sessionId
+    return sessionId;
   }
 
   setUserId(userId: string) {
-    this.userId = userId
+    this.userId = userId;
   }
 
   private async writeLog(entry: LogEntry) {
     try {
-      const { error } = await supabase
-        .from('logs')
-        .insert(entry)
+      const { error } = await supabase.from('logs').insert(entry);
 
       if (error) {
-        console.error('Failed to write log to database:', error)
+        console.error('Failed to write log to database:', error);
       }
     } catch (error) {
-      console.error('Logger database error:', error)
+      console.error('Logger database error:', error);
     }
   }
 
@@ -81,7 +79,7 @@ class Logger {
       timestamp: new Date().toISOString(),
       source,
       component,
-    }
+    };
   }
 
   async error(
@@ -91,22 +89,28 @@ class Logger {
     component?: string,
     error?: Error
   ) {
-    const entry = this.createLogEntry('error', message, context, source, component)
-    
+    const entry = this.createLogEntry(
+      'error',
+      message,
+      context,
+      source,
+      component
+    );
+
     if (error) {
-      entry.stack_trace = error.stack
-      entry.context = { ...context, error: error.message }
+      entry.stack_trace = error.stack;
+      entry.context = { ...context, error: error.message };
     }
 
     // Always log to console for immediate debugging
-    console.error(`[${source}] ${message}`, context, error)
+    console.error(`[${source}] ${message}`, context, error);
 
     // Write to database
-    await this.writeLog(entry)
+    await this.writeLog(entry);
 
     // If it's an error, also create an error report
     if (error || level === 'error') {
-      await this.reportError(message, error, context, source, component)
+      await this.reportError(message, error, context, source, component);
     }
   }
 
@@ -116,10 +120,16 @@ class Logger {
     source: LogEntry['source'] = 'frontend',
     component?: string
   ) {
-    const entry = this.createLogEntry('warn', message, context, source, component)
-    
-    console.warn(`[${source}] ${message}`, context)
-    await this.writeLog(entry)
+    const entry = this.createLogEntry(
+      'warn',
+      message,
+      context,
+      source,
+      component
+    );
+
+    console.warn(`[${source}] ${message}`, context);
+    await this.writeLog(entry);
   }
 
   async info(
@@ -128,10 +138,16 @@ class Logger {
     source: LogEntry['source'] = 'frontend',
     component?: string
   ) {
-    const entry = this.createLogEntry('info', message, context, source, component)
-    
-    console.info(`[${source}] ${message}`, context)
-    await this.writeLog(entry)
+    const entry = this.createLogEntry(
+      'info',
+      message,
+      context,
+      source,
+      component
+    );
+
+    console.info(`[${source}] ${message}`, context);
+    await this.writeLog(entry);
   }
 
   async debug(
@@ -140,12 +156,18 @@ class Logger {
     source: LogEntry['source'] = 'frontend',
     component?: string
   ) {
-    const entry = this.createLogEntry('debug', message, context, source, component)
-    
+    const entry = this.createLogEntry(
+      'debug',
+      message,
+      context,
+      source,
+      component
+    );
+
     if (process.env.NODE_ENV === 'development') {
-      console.debug(`[${source}] ${message}`, context)
+      console.debug(`[${source}] ${message}`, context);
     }
-    await this.writeLog(entry)
+    await this.writeLog(entry);
   }
 
   private async reportError(
@@ -166,23 +188,24 @@ class Logger {
         ...context,
         source,
         component,
-        user_agent: typeof window !== 'undefined' ? navigator.userAgent : undefined,
+        user_agent:
+          typeof window !== 'undefined' ? navigator.userAgent : undefined,
         url: typeof window !== 'undefined' ? window.location.href : undefined,
       },
       resolved: false,
       created_at: new Date().toISOString(),
-    }
+    };
 
     try {
       const { error: dbError } = await supabase
         .from('error_reports')
-        .insert(errorReport)
+        .insert(errorReport);
 
       if (dbError) {
-        console.error('Failed to create error report:', dbError)
+        console.error('Failed to create error report:', dbError);
       }
     } catch (err) {
-      console.error('Error report creation failed:', err)
+      console.error('Error report creation failed:', err);
     }
   }
 
@@ -192,23 +215,23 @@ class Logger {
         .from('error_reports')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(limit)
+        .limit(limit);
 
       if (resolved !== undefined) {
-        query = query.eq('resolved', resolved)
+        query = query.eq('resolved', resolved);
       }
 
-      const { data, error } = await query
+      const { data, error } = await query;
 
       if (error) {
-        console.error('Failed to fetch error reports:', error)
-        return []
+        console.error('Failed to fetch error reports:', error);
+        return [];
       }
 
-      return data || []
+      return data || [];
     } catch (error) {
-      console.error('Failed to fetch error reports:', error)
-      return []
+      console.error('Failed to fetch error reports:', error);
+      return [];
     }
   }
 
@@ -220,17 +243,17 @@ class Logger {
           resolved: true,
           resolved_at: new Date().toISOString(),
         })
-        .eq('id', errorId)
+        .eq('id', errorId);
 
       if (error) {
-        console.error('Failed to resolve error report:', error)
-        return false
+        console.error('Failed to resolve error report:', error);
+        return false;
       }
 
-      return true
+      return true;
     } catch (error) {
-      console.error('Failed to resolve error report:', error)
-      return false
+      console.error('Failed to resolve error report:', error);
+      return false;
     }
   }
 
@@ -240,10 +263,15 @@ class Logger {
     duration: number,
     metadata?: Record<string, any>
   ) {
-    await this.info(`Performance: ${operation}`, {
-      duration_ms: duration,
-      ...metadata,
-    }, 'system', 'performance')
+    await this.info(
+      `Performance: ${operation}`,
+      {
+        duration_ms: duration,
+        ...metadata,
+      },
+      'system',
+      'performance'
+    );
   }
 
   // API call monitoring
@@ -254,16 +282,21 @@ class Logger {
     duration: number,
     metadata?: Record<string, any>
   ) {
-    const level = statusCode >= 400 ? 'error' : 'info'
-    await this[level](`API Call: ${method} ${endpoint}`, {
-      status_code: statusCode,
-      duration_ms: duration,
-      ...metadata,
-    }, 'api', 'api_client')
+    const level = statusCode >= 400 ? 'error' : 'info';
+    await this[level](
+      `API Call: ${method} ${endpoint}`,
+      {
+        status_code: statusCode,
+        duration_ms: duration,
+        ...metadata,
+      },
+      'api',
+      'api_client'
+    );
   }
 }
 
-export const logger = new Logger()
+export const logger = new Logger();
 
 // React hook for logging
 export function useLogger() {
@@ -274,22 +307,33 @@ export function useLogger() {
     debug: logger.debug.bind(logger),
     trackPerformance: logger.trackPerformance.bind(logger),
     trackAPICall: logger.trackAPICall.bind(logger),
-  }
+  };
 }
 
 // Global error handler for unhandled errors
 if (typeof window !== 'undefined') {
-  window.addEventListener('error', (event) => {
-    logger.error('Unhandled error', {
-      filename: event.filename,
-      lineno: event.lineno,
-      colno: event.colno,
-    }, 'frontend', 'global', event.error)
-  })
+  window.addEventListener('error', event => {
+    logger.error(
+      'Unhandled error',
+      {
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+      },
+      'frontend',
+      'global',
+      event.error
+    );
+  });
 
-  window.addEventListener('unhandledrejection', (event) => {
-    logger.error('Unhandled promise rejection', {
-      reason: event.reason,
-    }, 'frontend', 'global')
-  })
+  window.addEventListener('unhandledrejection', event => {
+    logger.error(
+      'Unhandled promise rejection',
+      {
+        reason: event.reason,
+      },
+      'frontend',
+      'global'
+    );
+  });
 }

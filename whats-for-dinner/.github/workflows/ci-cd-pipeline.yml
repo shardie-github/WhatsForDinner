@@ -69,7 +69,7 @@ jobs:
             p/typescript
             p/react
             p/nextjs
-          generateSarif: "1"
+          generateSarif: '1'
 
       - name: Upload Semgrep results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3

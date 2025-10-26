@@ -1,173 +1,217 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { supabase } from '@/lib/supabaseClient'
-import { useTenant } from '@/hooks/useTenant'
-import { 
-  Home, 
-  ChefHat, 
-  Heart, 
-  CreditCard, 
-  Settings, 
+import { useState } from 'react';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabaseClient';
+import { useTenant } from '@/hooks/useTenant';
+import {
+  Home,
+  ChefHat,
+  Heart,
+  CreditCard,
+  Settings,
   LogOut,
   Menu,
-  X
-} from 'lucide-react'
+  X,
+  User,
+} from 'lucide-react';
+import { Button } from './ui/button';
+import { Separator } from './ui/separator';
 
 interface NavbarProps {
-  user: any
+  user: any;
 }
 
 export default function Navbar({ user }: NavbarProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { tenant } = useTenant()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { tenant } = useTenant();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-  }
+    await supabase.auth.signOut();
+  };
+
+  const navItems = [
+    { href: '/', label: 'Home', icon: Home },
+    { href: '/pantry', label: 'Pantry', icon: ChefHat },
+    { href: '/favorites', label: 'Favorites', icon: Heart },
+  ];
+
+  const userNavItems = [
+    { href: '/billing', label: 'Billing', icon: CreditCard },
+    ...(tenant && tenant.plan !== 'free'
+      ? [{ href: '/admin', label: 'Admin', icon: Settings }]
+      : []),
+  ];
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center space-x-2">
-            <ChefHat className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">
+        <div className="flex h-16 items-center justify-between">
+          <Link href="/" className="group flex items-center space-x-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary transition-colors group-hover:bg-primary/90">
+              <ChefHat className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="text-xl font-bold text-foreground transition-colors group-hover:text-primary">
               What's for Dinner?
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <Link href="/" className="flex items-center space-x-1 text-gray-600 hover:text-gray-900">
-              <Home className="h-4 w-4" />
-              <span>Home</span>
-            </Link>
-            <Link href="/pantry" className="flex items-center space-x-1 text-gray-600 hover:text-gray-900">
-              <ChefHat className="h-4 w-4" />
-              <span>Pantry</span>
-            </Link>
-            <Link href="/favorites" className="flex items-center space-x-1 text-gray-600 hover:text-gray-900">
-              <Heart className="h-4 w-4" />
-              <span>Favorites</span>
-            </Link>
-            
+          {/* Desktop Navigation */}
+          <div className="hidden items-center space-x-1 md:flex">
+            {navItems.map(item => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+
             {user && (
               <>
-                <Link href="/billing" className="flex items-center space-x-1 text-gray-600 hover:text-gray-900">
-                  <CreditCard className="h-4 w-4" />
-                  <span>Billing</span>
-                </Link>
-                
-                {tenant && tenant.plan !== 'free' && (
-                  <Link href="/admin" className="flex items-center space-x-1 text-gray-600 hover:text-gray-900">
-                    <Settings className="h-4 w-4" />
-                    <span>Admin</span>
-                  </Link>
-                )}
+                <Separator orientation="vertical" className="h-6" />
+                {userNavItems.map(item => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
               </>
             )}
 
+            <Separator orientation="vertical" className="h-6" />
+
             {user ? (
-              <button
-                onClick={handleSignOut}
-                className="flex items-center space-x-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Sign Out</span>
-              </button>
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 px-3 py-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                    <User className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="text-sm font-medium text-foreground">
+                    {user.email?.split('@')[0] || 'User'}
+                  </span>
+                </div>
+                <Button
+                  onClick={handleSignOut}
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
             ) : (
-              <Link
-                href="/auth"
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-              >
-                Sign In
+              <Link href="/auth">
+                <Button size="sm">
+                  <User className="mr-2 h-4 w-4" />
+                  Sign In
+                </Button>
               </Link>
             )}
           </div>
 
-          <button
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            size="icon"
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
             {isMenuOpen ? (
-              <X className="w-6 h-6" />
+              <X className="h-6 w-6" />
             ) : (
-              <Menu className="w-6 h-6" />
+              <Menu className="h-6 w-6" />
             )}
-          </button>
+          </Button>
         </div>
 
+        {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <Link 
-                href="/" 
-                className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-900"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Home className="h-4 w-4" />
-                <span>Home</span>
-              </Link>
-              <Link 
-                href="/pantry" 
-                className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-900"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <ChefHat className="h-4 w-4" />
-                <span>Pantry</span>
-              </Link>
-              <Link 
-                href="/favorites" 
-                className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-900"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Heart className="h-4 w-4" />
-                <span>Favorites</span>
-              </Link>
-              
-              {user && (
-                <>
-                  <Link 
-                    href="/billing" 
-                    className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-900"
+          <div className="border-t bg-background md:hidden">
+            <div className="space-y-1 px-2 pb-3 pt-2">
+              {navItems.map(item => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <CreditCard className="h-4 w-4" />
-                    <span>Billing</span>
+                    <Icon className="h-5 w-5" />
+                    <span>{item.label}</span>
                   </Link>
-                  
-                  {tenant && tenant.plan !== 'free' && (
-                    <Link 
-                      href="/admin" 
-                      className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-900"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <Settings className="h-4 w-4" />
-                      <span>Admin</span>
-                    </Link>
-                  )}
+                );
+              })}
+
+              {user && (
+                <>
+                  <Separator className="my-2" />
+                  {userNavItems.map(item => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <Icon className="h-5 w-5" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
                 </>
               )}
 
+              <Separator className="my-2" />
+
               {user ? (
-                <button
-                  onClick={() => {
-                    handleSignOut()
-                    setIsMenuOpen(false)
-                  }}
-                  className="flex items-center space-x-2 w-full text-left px-3 py-2 text-red-600 hover:text-red-900"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>Sign Out</span>
-                </button>
+                <div className="space-y-2 px-3 py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                      <User className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="text-base font-medium text-foreground">
+                      {user.email?.split('@')[0] || 'User'}
+                    </span>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMenuOpen(false);
+                    }}
+                    variant="outline"
+                    className="w-full justify-start text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </div>
               ) : (
                 <Link
                   href="/auth"
-                  className="block px-3 py-2 text-blue-600 hover:text-blue-900"
+                  className="block px-3 py-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Sign In
+                  <Button className="w-full justify-start">
+                    <User className="mr-2 h-4 w-4" />
+                    Sign In
+                  </Button>
                 </Link>
               )}
             </div>
@@ -175,5 +219,5 @@ export default function Navbar({ user }: NavbarProps) {
         )}
       </div>
     </nav>
-  )
+  );
 }

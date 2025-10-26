@@ -1,38 +1,40 @@
-import { supabase } from './supabaseClient'
-import { Database } from './supabaseClient'
+import { supabase } from './supabaseClient';
+import { Database } from './supabaseClient';
 
-type GrowthMetric = Database['public']['Tables']['growth_metrics']['Row']
-type GrowthMetricInsert = Database['public']['Tables']['growth_metrics']['Insert']
-type FunnelEvent = Database['public']['Tables']['funnel_events']['Row']
-type FunnelEventInsert = Database['public']['Tables']['funnel_events']['Insert']
-type Referral = Database['public']['Tables']['referrals']['Row']
-type ReferralInsert = Database['public']['Tables']['referrals']['Insert']
+type GrowthMetric = Database['public']['Tables']['growth_metrics']['Row'];
+type GrowthMetricInsert =
+  Database['public']['Tables']['growth_metrics']['Insert'];
+type FunnelEvent = Database['public']['Tables']['funnel_events']['Row'];
+type FunnelEventInsert =
+  Database['public']['Tables']['funnel_events']['Insert'];
+type Referral = Database['public']['Tables']['referrals']['Row'];
+type ReferralInsert = Database['public']['Tables']['referrals']['Insert'];
 
 export interface CohortRetentionData {
-  cohort_date: string
-  days_since_signup: number
-  users_in_cohort: number
-  users_retained: number
-  retention_rate: number
+  cohort_date: string;
+  days_since_signup: number;
+  users_in_cohort: number;
+  users_retained: number;
+  retention_rate: number;
 }
 
 export interface GrowthMetricsSummary {
-  mrr: number
-  ltv: number
-  cac: number
-  churn_rate: number
-  conversion_rate: number
-  activation_rate: number
-  engagement_score: number
-  ai_cost_ratio: number
+  mrr: number;
+  ltv: number;
+  cac: number;
+  churn_rate: number;
+  conversion_rate: number;
+  activation_rate: number;
+  engagement_score: number;
+  ai_cost_ratio: number;
 }
 
 export interface FunnelConversionRates {
-  landing_to_signup: number
-  signup_to_onboarding: number
-  onboarding_to_first_recipe: number
-  first_recipe_to_subscription: number
-  subscription_to_activation: number
+  landing_to_signup: number;
+  signup_to_onboarding: number;
+  onboarding_to_first_recipe: number;
+  first_recipe_to_subscription: number;
+  subscription_to_activation: number;
 }
 
 export class GrowthAnalytics {
@@ -58,16 +60,16 @@ export class GrowthAnalytics {
         page_url_param: pageUrl,
         utm_source_param: utmSource,
         utm_medium_param: utmMedium,
-        utm_campaign_param: utmCampaign
-      })
+        utm_campaign_param: utmCampaign,
+      });
 
       if (error) {
-        console.error('Error tracking funnel event:', error)
-        throw error
+        console.error('Error tracking funnel event:', error);
+        throw error;
       }
     } catch (error) {
-      console.error('Failed to track funnel event:', error)
-      throw error
+      console.error('Failed to track funnel event:', error);
+      throw error;
     }
   }
 
@@ -81,18 +83,18 @@ export class GrowthAnalytics {
     try {
       const { data, error } = await supabase.rpc('calculate_cohort_retention', {
         cohort_date_param: cohortDate,
-        days_param: days
-      })
+        days_param: days,
+      });
 
       if (error) {
-        console.error('Error calculating cohort retention:', error)
-        throw error
+        console.error('Error calculating cohort retention:', error);
+        throw error;
       }
 
-      return data || []
+      return data || [];
     } catch (error) {
-      console.error('Failed to get cohort retention:', error)
-      throw error
+      console.error('Failed to get cohort retention:', error);
+      throw error;
     }
   }
 
@@ -102,18 +104,18 @@ export class GrowthAnalytics {
   static async calculateUserLTV(userId: string): Promise<number> {
     try {
       const { data, error } = await supabase.rpc('calculate_user_ltv', {
-        user_id_param: userId
-      })
+        user_id_param: userId,
+      });
 
       if (error) {
-        console.error('Error calculating user LTV:', error)
-        throw error
+        console.error('Error calculating user LTV:', error);
+        throw error;
       }
 
-      return data || 0
+      return data || 0;
     } catch (error) {
-      console.error('Failed to calculate user LTV:', error)
-      throw error
+      console.error('Failed to calculate user LTV:', error);
+      throw error;
     }
   }
 
@@ -137,20 +139,20 @@ export class GrowthAnalytics {
         period_start: periodStart,
         period_end: periodEnd,
         cohort_date: cohortDate,
-        metadata
-      }
+        metadata,
+      };
 
       const { error } = await supabase
         .from('growth_metrics')
-        .insert(metricData)
+        .insert(metricData);
 
       if (error) {
-        console.error('Error storing growth metric:', error)
-        throw error
+        console.error('Error storing growth metric:', error);
+        throw error;
       }
     } catch (error) {
-      console.error('Failed to store growth metric:', error)
-      throw error
+      console.error('Failed to store growth metric:', error);
+      throw error;
     }
   }
 
@@ -168,14 +170,14 @@ export class GrowthAnalytics {
         .select('metric_type, value')
         .eq('tenant_id', tenantId)
         .eq('period_start', periodStart)
-        .eq('period_end', periodEnd)
+        .eq('period_end', periodEnd);
 
       if (error) {
-        console.error('Error fetching growth metrics:', error)
-        throw error
+        console.error('Error fetching growth metrics:', error);
+        throw error;
       }
 
-      const metrics = data || []
+      const metrics = data || [];
       const summary: GrowthMetricsSummary = {
         mrr: 0,
         ltv: 0,
@@ -184,42 +186,42 @@ export class GrowthAnalytics {
         conversion_rate: 0,
         activation_rate: 0,
         engagement_score: 0,
-        ai_cost_ratio: 0
-      }
+        ai_cost_ratio: 0,
+      };
 
       metrics.forEach(metric => {
         switch (metric.metric_type) {
           case 'mrr':
-            summary.mrr = metric.value
-            break
+            summary.mrr = metric.value;
+            break;
           case 'ltv':
-            summary.ltv = metric.value
-            break
+            summary.ltv = metric.value;
+            break;
           case 'cac':
-            summary.cac = metric.value
-            break
+            summary.cac = metric.value;
+            break;
           case 'churn_rate':
-            summary.churn_rate = metric.value
-            break
+            summary.churn_rate = metric.value;
+            break;
           case 'conversion_rate':
-            summary.conversion_rate = metric.value
-            break
+            summary.conversion_rate = metric.value;
+            break;
           case 'activation_rate':
-            summary.activation_rate = metric.value
-            break
+            summary.activation_rate = metric.value;
+            break;
           case 'engagement_score':
-            summary.engagement_score = metric.value
-            break
+            summary.engagement_score = metric.value;
+            break;
           case 'ai_cost_ratio':
-            summary.ai_cost_ratio = metric.value
-            break
+            summary.ai_cost_ratio = metric.value;
+            break;
         }
-      })
+      });
 
-      return summary
+      return summary;
     } catch (error) {
-      console.error('Failed to get growth metrics summary:', error)
-      throw error
+      console.error('Failed to get growth metrics summary:', error);
+      throw error;
     }
   }
 
@@ -237,48 +239,56 @@ export class GrowthAnalytics {
         .select('funnel_stage')
         .eq('tenant_id', tenantId)
         .gte('timestamp', periodStart)
-        .lte('timestamp', periodEnd)
+        .lte('timestamp', periodEnd);
 
       if (error) {
-        console.error('Error fetching funnel events:', error)
-        throw error
+        console.error('Error fetching funnel events:', error);
+        throw error;
       }
 
-      const events = data || []
-      const stageCounts = events.reduce((acc, event) => {
-        acc[event.funnel_stage] = (acc[event.funnel_stage] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
+      const events = data || [];
+      const stageCounts = events.reduce(
+        (acc, event) => {
+          acc[event.funnel_stage] = (acc[event.funnel_stage] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
       const rates: FunnelConversionRates = {
         landing_to_signup: 0,
         signup_to_onboarding: 0,
         onboarding_to_first_recipe: 0,
         first_recipe_to_subscription: 0,
-        subscription_to_activation: 0
-      }
+        subscription_to_activation: 0,
+      };
 
       // Calculate conversion rates
       if (stageCounts.landing > 0) {
-        rates.landing_to_signup = (stageCounts.signup || 0) / stageCounts.landing
+        rates.landing_to_signup =
+          (stageCounts.signup || 0) / stageCounts.landing;
       }
       if (stageCounts.signup > 0) {
-        rates.signup_to_onboarding = (stageCounts.onboarding || 0) / stageCounts.signup
+        rates.signup_to_onboarding =
+          (stageCounts.onboarding || 0) / stageCounts.signup;
       }
       if (stageCounts.onboarding > 0) {
-        rates.onboarding_to_first_recipe = (stageCounts.first_recipe || 0) / stageCounts.onboarding
+        rates.onboarding_to_first_recipe =
+          (stageCounts.first_recipe || 0) / stageCounts.onboarding;
       }
       if (stageCounts.first_recipe > 0) {
-        rates.first_recipe_to_subscription = (stageCounts.subscription || 0) / stageCounts.first_recipe
+        rates.first_recipe_to_subscription =
+          (stageCounts.subscription || 0) / stageCounts.first_recipe;
       }
       if (stageCounts.subscription > 0) {
-        rates.subscription_to_activation = (stageCounts.activation || 0) / stageCounts.subscription
+        rates.subscription_to_activation =
+          (stageCounts.activation || 0) / stageCounts.subscription;
       }
 
-      return rates
+      return rates;
     } catch (error) {
-      console.error('Failed to get funnel conversion rates:', error)
-      throw error
+      console.error('Failed to get funnel conversion rates:', error);
+      throw error;
     }
   }
 
@@ -287,36 +297,36 @@ export class GrowthAnalytics {
    */
   static async generateReferralCode(userId: string): Promise<string> {
     try {
-      const { data, error } = await supabase.rpc('generate_referral_code')
+      const { data, error } = await supabase.rpc('generate_referral_code');
 
       if (error) {
-        console.error('Error generating referral code:', error)
-        throw error
+        console.error('Error generating referral code:', error);
+        throw error;
       }
 
-      const referralCode = data
+      const referralCode = data;
 
       // Store the referral record
       const referralData: ReferralInsert = {
         referrer_id: userId,
         referral_code: referralCode,
         reward_type: 'pro_extension',
-        reward_value: 7 // 7 days of Pro
-      }
+        reward_value: 7, // 7 days of Pro
+      };
 
       const { error: insertError } = await supabase
         .from('referrals')
-        .insert(referralData)
+        .insert(referralData);
 
       if (insertError) {
-        console.error('Error storing referral:', insertError)
-        throw insertError
+        console.error('Error storing referral:', insertError);
+        throw insertError;
       }
 
-      return referralCode
+      return referralCode;
     } catch (error) {
-      console.error('Failed to generate referral code:', error)
-      throw error
+      console.error('Failed to generate referral code:', error);
+      throw error;
     }
   }
 
@@ -328,20 +338,23 @@ export class GrowthAnalytics {
     newUserId: string
   ): Promise<boolean> {
     try {
-      const { data, error } = await supabase.rpc('process_referral_conversion', {
-        referral_code_param: referralCode,
-        new_user_id: newUserId
-      })
+      const { data, error } = await supabase.rpc(
+        'process_referral_conversion',
+        {
+          referral_code_param: referralCode,
+          new_user_id: newUserId,
+        }
+      );
 
       if (error) {
-        console.error('Error processing referral conversion:', error)
-        throw error
+        console.error('Error processing referral conversion:', error);
+        throw error;
       }
 
-      return data || false
+      return data || false;
     } catch (error) {
-      console.error('Failed to process referral conversion:', error)
-      throw error
+      console.error('Failed to process referral conversion:', error);
+      throw error;
     }
   }
 
@@ -349,50 +362,58 @@ export class GrowthAnalytics {
    * Get user's referral stats
    */
   static async getUserReferralStats(userId: string): Promise<{
-    total_referrals: number
-    successful_referrals: number
-    pending_referrals: number
-    total_earnings: number
+    total_referrals: number;
+    successful_referrals: number;
+    pending_referrals: number;
+    total_earnings: number;
   }> {
     try {
       const { data, error } = await supabase
         .from('referrals')
         .select('reward_status, reward_value')
-        .eq('referrer_id', userId)
+        .eq('referrer_id', userId);
 
       if (error) {
-        console.error('Error fetching referral stats:', error)
-        throw error
+        console.error('Error fetching referral stats:', error);
+        throw error;
       }
 
-      const referrals = data || []
+      const referrals = data || [];
       const stats = {
         total_referrals: referrals.length,
-        successful_referrals: referrals.filter(r => r.reward_status === 'earned' || r.reward_status === 'paid').length,
-        pending_referrals: referrals.filter(r => r.reward_status === 'pending').length,
+        successful_referrals: referrals.filter(
+          r => r.reward_status === 'earned' || r.reward_status === 'paid'
+        ).length,
+        pending_referrals: referrals.filter(r => r.reward_status === 'pending')
+          .length,
         total_earnings: referrals
-          .filter(r => r.reward_status === 'earned' || r.reward_status === 'paid')
-          .reduce((sum, r) => sum + (r.reward_value || 0), 0)
-      }
+          .filter(
+            r => r.reward_status === 'earned' || r.reward_status === 'paid'
+          )
+          .reduce((sum, r) => sum + (r.reward_value || 0), 0),
+      };
 
-      return stats
+      return stats;
     } catch (error) {
-      console.error('Failed to get user referral stats:', error)
-      throw error
+      console.error('Failed to get user referral stats:', error);
+      throw error;
     }
   }
 
   /**
    * Calculate daily growth metrics for a tenant
    */
-  static async calculateDailyGrowthMetrics(tenantId: string, date: string): Promise<void> {
+  static async calculateDailyGrowthMetrics(
+    tenantId: string,
+    date: string
+  ): Promise<void> {
     try {
-      const startOfDay = new Date(date)
-      const endOfDay = new Date(date)
-      endOfDay.setHours(23, 59, 59, 999)
+      const startOfDay = new Date(date);
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
 
-      const periodStart = startOfDay.toISOString()
-      const periodEnd = endOfDay.toISOString()
+      const periodStart = startOfDay.toISOString();
+      const periodEnd = endOfDay.toISOString();
 
       // Get funnel events for the day
       const { data: funnelEvents, error: funnelError } = await supabase
@@ -400,39 +421,62 @@ export class GrowthAnalytics {
         .select('funnel_stage, user_id')
         .eq('tenant_id', tenantId)
         .gte('timestamp', periodStart)
-        .lte('timestamp', periodEnd)
+        .lte('timestamp', periodEnd);
 
       if (funnelError) {
-        console.error('Error fetching funnel events:', funnelError)
-        return
+        console.error('Error fetching funnel events:', funnelError);
+        return;
       }
 
-      const events = funnelEvents || []
-      const uniqueUsers = new Set(events.map(e => e.user_id).filter(Boolean))
+      const events = funnelEvents || [];
+      const uniqueUsers = new Set(events.map(e => e.user_id).filter(Boolean));
 
       // Calculate conversion rate
-      const signups = events.filter(e => e.funnel_stage === 'signup').length
-      const subscriptions = events.filter(e => e.funnel_stage === 'subscription').length
-      const conversionRate = signups > 0 ? subscriptions / signups : 0
+      const signups = events.filter(e => e.funnel_stage === 'signup').length;
+      const subscriptions = events.filter(
+        e => e.funnel_stage === 'subscription'
+      ).length;
+      const conversionRate = signups > 0 ? subscriptions / signups : 0;
 
       // Calculate activation rate
-      const activations = events.filter(e => e.funnel_stage === 'activation').length
-      const activationRate = subscriptions > 0 ? activations / subscriptions : 0
+      const activations = events.filter(
+        e => e.funnel_stage === 'activation'
+      ).length;
+      const activationRate =
+        subscriptions > 0 ? activations / subscriptions : 0;
 
       // Calculate engagement score (simplified)
-      const totalEvents = events.length
-      const engagementScore = uniqueUsers.size > 0 ? totalEvents / uniqueUsers.size : 0
+      const totalEvents = events.length;
+      const engagementScore =
+        uniqueUsers.size > 0 ? totalEvents / uniqueUsers.size : 0;
 
       // Store metrics
       await Promise.all([
-        this.storeGrowthMetric(tenantId, 'conversion_rate', conversionRate, periodStart, periodEnd),
-        this.storeGrowthMetric(tenantId, 'activation_rate', activationRate, periodStart, periodEnd),
-        this.storeGrowthMetric(tenantId, 'engagement_score', engagementScore, periodStart, periodEnd)
-      ])
-
+        this.storeGrowthMetric(
+          tenantId,
+          'conversion_rate',
+          conversionRate,
+          periodStart,
+          periodEnd
+        ),
+        this.storeGrowthMetric(
+          tenantId,
+          'activation_rate',
+          activationRate,
+          periodStart,
+          periodEnd
+        ),
+        this.storeGrowthMetric(
+          tenantId,
+          'engagement_score',
+          engagementScore,
+          periodStart,
+          periodEnd
+        ),
+      ]);
     } catch (error) {
-      console.error('Failed to calculate daily growth metrics:', error)
-      throw error
+      console.error('Failed to calculate daily growth metrics:', error);
+      throw error;
     }
   }
 
@@ -443,13 +487,13 @@ export class GrowthAnalytics {
     tenantId: string,
     days: number = 30
   ): Promise<{
-    dates: string[]
-    metrics: Record<string, number[]>
+    dates: string[];
+    metrics: Record<string, number[]>;
   }> {
     try {
-      const endDate = new Date()
-      const startDate = new Date()
-      startDate.setDate(startDate.getDate() - days)
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
 
       const { data, error } = await supabase
         .from('growth_metrics')
@@ -457,37 +501,44 @@ export class GrowthAnalytics {
         .eq('tenant_id', tenantId)
         .gte('period_start', startDate.toISOString())
         .lte('period_start', endDate.toISOString())
-        .order('period_start', { ascending: true })
+        .order('period_start', { ascending: true });
 
       if (error) {
-        console.error('Error fetching growth trends:', error)
-        throw error
+        console.error('Error fetching growth trends:', error);
+        throw error;
       }
 
-      const metrics = data || []
+      const metrics = data || [];
       const dates = Array.from({ length: days }, (_, i) => {
-        const date = new Date(startDate)
-        date.setDate(date.getDate() + i)
-        return date.toISOString().split('T')[0]
-      })
+        const date = new Date(startDate);
+        date.setDate(date.getDate() + i);
+        return date.toISOString().split('T')[0];
+      });
 
-      const metricTypes = ['mrr', 'ltv', 'cac', 'churn_rate', 'conversion_rate', 'activation_rate', 'engagement_score']
-      const trends: Record<string, number[]> = {}
+      const metricTypes = [
+        'mrr',
+        'ltv',
+        'cac',
+        'churn_rate',
+        'conversion_rate',
+        'activation_rate',
+        'engagement_score',
+      ];
+      const trends: Record<string, number[]> = {};
 
       metricTypes.forEach(type => {
         trends[type] = dates.map(date => {
-          const metric = metrics.find(m => 
-            m.metric_type === type && 
-            m.period_start.startsWith(date)
-          )
-          return metric ? metric.value : 0
-        })
-      })
+          const metric = metrics.find(
+            m => m.metric_type === type && m.period_start.startsWith(date)
+          );
+          return metric ? metric.value : 0;
+        });
+      });
 
-      return { dates, metrics: trends }
+      return { dates, metrics: trends };
     } catch (error) {
-      console.error('Failed to get growth trends:', error)
-      throw error
+      console.error('Failed to get growth trends:', error);
+      throw error;
     }
   }
 }

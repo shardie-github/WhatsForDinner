@@ -15,7 +15,13 @@ import path from 'path';
 export interface AuditEvent {
   id: string;
   timestamp: string;
-  type: 'system' | 'security' | 'compliance' | 'performance' | 'ai_action' | 'user_action';
+  type:
+    | 'system'
+    | 'security'
+    | 'compliance'
+    | 'performance'
+    | 'ai_action'
+    | 'user_action';
   severity: 'info' | 'warning' | 'error' | 'critical';
   source: string;
   action: string;
@@ -124,21 +130,23 @@ export class ObservabilityAudit {
    */
   private initializeComplianceChecks(): void {
     const standards = ['SOC2', 'ISO27001', 'GDPR', 'CCPA', 'HIPAA', 'PCI-DSS'];
-    
+
     for (const standard of standards) {
       const check: ComplianceCheck = {
         standard: standard as any,
         status: 'needs_review',
         score: 0,
         lastChecked: new Date().toISOString(),
-        nextCheck: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+        nextCheck: new Date(
+          Date.now() + 30 * 24 * 60 * 60 * 1000
+        ).toISOString(), // 30 days
         issues: [],
         evidence: [],
       };
-      
+
       this.complianceChecks.set(standard, check);
     }
-    
+
     logger.info('Compliance checks initialized', { standards });
   }
 
@@ -147,17 +155,23 @@ export class ObservabilityAudit {
    */
   private startMonitoring(): void {
     this.isMonitoring = true;
-    
+
     // Run daily audit
-    this.auditInterval = setInterval(async () => {
-      await this.runDailyAudit();
-    }, 24 * 60 * 60 * 1000);
-    
+    this.auditInterval = setInterval(
+      async () => {
+        await this.runDailyAudit();
+      },
+      24 * 60 * 60 * 1000
+    );
+
     // Check system health every 5 minutes
-    this.healthCheckInterval = setInterval(async () => {
-      await this.checkSystemHealth();
-    }, 5 * 60 * 1000);
-    
+    this.healthCheckInterval = setInterval(
+      async () => {
+        await this.checkSystemHealth();
+      },
+      5 * 60 * 1000
+    );
+
     logger.info('Observability and audit monitoring started');
   }
 
@@ -190,17 +204,17 @@ export class ObservabilityAudit {
       complianceFlags: options.complianceFlags || [],
       dataClassification: options.dataClassification || 'internal',
     };
-    
+
     this.auditEvents.push(event);
-    
+
     // Keep only last 10000 events
     if (this.auditEvents.length > 10000) {
       this.auditEvents = this.auditEvents.slice(-10000);
     }
-    
+
     // Check for compliance violations
     await this.checkComplianceViolations(event);
-    
+
     logger.info('Audit event logged', { event });
     return event.id;
   }
@@ -211,27 +225,27 @@ export class ObservabilityAudit {
   async runDailyAudit(): Promise<AutonomyAudit> {
     try {
       logger.info('Running daily autonomy audit');
-      
+
       const startTime = Date.now();
-      
+
       // Collect agent actions
       const agentActions = await this.collectAgentActions();
-      
+
       // Analyze self-corrections
       const selfCorrections = await this.analyzeSelfCorrections();
-      
+
       // Assess learning progress
       const learningProgress = await this.assessLearningProgress();
-      
+
       // Check compliance status
       const complianceStatus = await this.checkComplianceStatus();
-      
+
       // Generate recommendations
       const recommendations = await this.generateRecommendations();
-      
+
       // Plan next actions
       const nextActions = await this.planNextActions();
-      
+
       const audit: AutonomyAudit = {
         timestamp: new Date().toISOString(),
         period: 'daily',
@@ -242,13 +256,12 @@ export class ObservabilityAudit {
         recommendations,
         nextActions,
       };
-      
+
       // Save audit report
       await this.saveAuditReport(audit);
-      
+
       logger.info('Daily audit completed', { audit });
       return audit;
-      
     } catch (error) {
       logger.error('Daily audit failed', { error });
       throw error;
@@ -262,25 +275,27 @@ export class ObservabilityAudit {
     try {
       // Get component health scores
       const components = await this.getComponentHealthScores();
-      
+
       // Calculate overall health
-      const overall = Object.values(components).reduce((sum, score) => sum + score, 0) / Object.keys(components).length;
-      
+      const overall =
+        Object.values(components).reduce((sum, score) => sum + score, 0) /
+        Object.keys(components).length;
+
       // Collect system metrics
       const metrics = await this.collectSystemMetrics();
-      
+
       // Check for alerts
       const alerts = await this.checkForAlerts();
-      
+
       const health: SystemHealth = {
         overall,
         components,
         metrics,
         alerts,
       };
-      
+
       this.systemHealth = health;
-      
+
       // Log health check
       await this.logEvent(
         'system',
@@ -289,9 +304,8 @@ export class ObservabilityAudit {
         'health_check',
         { health }
       );
-      
+
       return health;
-      
     } catch (error) {
       logger.error('System health check failed', { error });
       throw error;
@@ -303,22 +317,25 @@ export class ObservabilityAudit {
    */
   private async checkComplianceViolations(event: AuditEvent): Promise<void> {
     const violations: string[] = [];
-    
+
     // Check for data classification violations
-    if (event.dataClassification === 'restricted' && !event.complianceFlags.includes('encrypted')) {
+    if (
+      event.dataClassification === 'restricted' &&
+      !event.complianceFlags.includes('encrypted')
+    ) {
       violations.push('Restricted data not encrypted');
     }
-    
+
     // Check for audit trail completeness
     if (event.type === 'ai_action' && !event.sessionId) {
       violations.push('AI action missing session ID');
     }
-    
+
     // Check for user action logging
     if (event.type === 'user_action' && !event.user) {
       violations.push('User action missing user identification');
     }
-    
+
     if (violations.length > 0) {
       await this.logEvent(
         'compliance',
@@ -334,19 +351,21 @@ export class ObservabilityAudit {
   /**
    * Collect agent actions
    */
-  private async collectAgentActions(): Promise<Array<{
-    agent: string;
-    actions: number;
-    successes: number;
-    failures: number;
-    successRate: number;
-    averageResponseTime: number;
-  }>> {
+  private async collectAgentActions(): Promise<
+    Array<{
+      agent: string;
+      actions: number;
+      successes: number;
+      failures: number;
+      successRate: number;
+      averageResponseTime: number;
+    }>
+  > {
     const agentActions = [];
-    
+
     // Get autonomous system state
     const systemState = autonomousSystem.getSystemState();
-    
+
     for (const [agentName, agentState] of Object.entries(systemState.agents)) {
       agentActions.push({
         agent: agentName,
@@ -357,19 +376,21 @@ export class ObservabilityAudit {
         averageResponseTime: 0, // Would be calculated from actual data
       });
     }
-    
+
     return agentActions;
   }
 
   /**
    * Analyze self-corrections
    */
-  private async analyzeSelfCorrections(): Promise<Array<{
-    type: string;
-    count: number;
-    impact: 'low' | 'medium' | 'high';
-    description: string;
-  }>> {
+  private async analyzeSelfCorrections(): Promise<
+    Array<{
+      type: string;
+      count: number;
+      impact: 'low' | 'medium' | 'high';
+      description: string;
+    }>
+  > {
     // In a real implementation, this would analyze actual self-corrections
     return [
       {
@@ -404,10 +425,11 @@ export class ObservabilityAudit {
   }> {
     // Get knowledge base stats
     const knowledgeStats = cognitiveContinuity.getKnowledgeBaseStats();
-    
+
     // Get optimization recommendations
-    const optimizations = predictiveOptimization.getOptimizationRecommendations();
-    
+    const optimizations =
+      predictiveOptimization.getOptimizationRecommendations();
+
     return {
       knowledgeEntries: knowledgeStats.totalEntries,
       newPatterns: 12, // Would be calculated from actual data
@@ -424,8 +446,9 @@ export class ObservabilityAudit {
     standards: ComplianceCheck[];
   }> {
     const standards = Array.from(this.complianceChecks.values());
-    const overall = standards.reduce((sum, check) => sum + check.score, 0) / standards.length;
-    
+    const overall =
+      standards.reduce((sum, check) => sum + check.score, 0) / standards.length;
+
     return {
       overall,
       standards,
@@ -437,32 +460,35 @@ export class ObservabilityAudit {
    */
   private async generateRecommendations(): Promise<string[]> {
     const recommendations: string[] = [];
-    
+
     // Get system health
     if (this.systemHealth) {
       if (this.systemHealth.overall < 80) {
         recommendations.push('Improve overall system health');
       }
-      
+
       if (this.systemHealth.metrics.errorRate > 0.05) {
         recommendations.push('Reduce error rate');
       }
-      
+
       if (this.systemHealth.metrics.responseTime > 2000) {
         recommendations.push('Optimize response times');
       }
     }
-    
+
     // Get compliance status
     const complianceStatus = await this.checkComplianceStatus();
     if (complianceStatus.overall < 90) {
       recommendations.push('Improve compliance posture');
     }
-    
+
     // Get optimization recommendations
-    const optimizationRecs = predictiveOptimization.getOptimizationRecommendations();
-    recommendations.push(...optimizationRecs.slice(0, 3).map(rec => rec.description));
-    
+    const optimizationRecs =
+      predictiveOptimization.getOptimizationRecommendations();
+    recommendations.push(
+      ...optimizationRecs.slice(0, 3).map(rec => rec.description)
+    );
+
     return recommendations;
   }
 
@@ -471,46 +497,55 @@ export class ObservabilityAudit {
    */
   private async planNextActions(): Promise<string[]> {
     const actions: string[] = [];
-    
+
     // Get system health alerts
     if (this.systemHealth) {
-      const criticalAlerts = this.systemHealth.alerts.filter(alert => alert.severity === 'critical');
+      const criticalAlerts = this.systemHealth.alerts.filter(
+        alert => alert.severity === 'critical'
+      );
       if (criticalAlerts.length > 0) {
         actions.push('Address critical system alerts');
       }
     }
-    
+
     // Get compliance issues
     const complianceStatus = await this.checkComplianceStatus();
-    const highPriorityIssues = complianceStatus.standards.flatMap(check => 
-      check.issues.filter(issue => issue.severity === 'high' || issue.severity === 'critical')
+    const highPriorityIssues = complianceStatus.standards.flatMap(check =>
+      check.issues.filter(
+        issue => issue.severity === 'high' || issue.severity === 'critical'
+      )
     );
-    
+
     if (highPriorityIssues.length > 0) {
       actions.push('Address high-priority compliance issues');
     }
-    
+
     // Get optimization recommendations
-    const optimizationRecs = predictiveOptimization.getOptimizationRecommendations();
-    const criticalRecs = optimizationRecs.filter(rec => rec.priority === 'critical');
-    
+    const optimizationRecs =
+      predictiveOptimization.getOptimizationRecommendations();
+    const criticalRecs = optimizationRecs.filter(
+      rec => rec.priority === 'critical'
+    );
+
     if (criticalRecs.length > 0) {
       actions.push('Implement critical optimization recommendations');
     }
-    
+
     return actions;
   }
 
   /**
    * Get component health scores
    */
-  private async getComponentHealthScores(): Promise<SystemHealth['components']> {
+  private async getComponentHealthScores(): Promise<
+    SystemHealth['components']
+  > {
     // In a real implementation, this would check actual component health
     return {
       autonomousSystem: 0.92,
       safetyGuardrails: 0.88,
       secretsIntelligence: 0.95,
-      predictiveOptimization: 0.90,
+      predictiveOptimization: 0.9,
       cognitiveContinuity: 0.85,
       observabilityAudit: 0.93,
     };
@@ -536,7 +571,7 @@ export class ObservabilityAudit {
    */
   private async checkForAlerts(): Promise<SystemHealth['alerts']> {
     const alerts: SystemHealth['alerts'] = [];
-    
+
     // Check system health
     if (this.systemHealth) {
       if (this.systemHealth.overall < 70) {
@@ -549,7 +584,7 @@ export class ObservabilityAudit {
           resolved: false,
         });
       }
-      
+
       if (this.systemHealth.metrics.errorRate > 0.1) {
         alerts.push({
           id: `alert_${Date.now()}_2`,
@@ -561,7 +596,7 @@ export class ObservabilityAudit {
         });
       }
     }
-    
+
     return alerts;
   }
 
@@ -572,12 +607,12 @@ export class ObservabilityAudit {
     try {
       const auditDir = path.join(process.cwd(), 'audit_reports');
       await fs.mkdir(auditDir, { recursive: true });
-      
+
       const filename = `autonomy_audit_${audit.timestamp.split('T')[0]}.json`;
       const filepath = path.join(auditDir, filename);
-      
+
       await fs.writeFile(filepath, JSON.stringify(audit, null, 2));
-      
+
       logger.info('Audit report saved', { filepath });
     } catch (error) {
       logger.error('Failed to save audit report', { error });
@@ -598,36 +633,39 @@ export class ObservabilityAudit {
     } = {}
   ): AuditEvent[] {
     let events = [...this.auditEvents];
-    
+
     // Apply filters
     if (filters.type) {
       events = events.filter(event => event.type === filters.type);
     }
-    
+
     if (filters.severity) {
       events = events.filter(event => event.severity === filters.severity);
     }
-    
+
     if (filters.source) {
       events = events.filter(event => event.source === filters.source);
     }
-    
+
     if (filters.startDate) {
       events = events.filter(event => event.timestamp >= filters.startDate!);
     }
-    
+
     if (filters.endDate) {
       events = events.filter(event => event.timestamp <= filters.endDate!);
     }
-    
+
     // Sort by timestamp (newest first)
-    events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    
+    events.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+
     // Apply limit
     if (filters.limit) {
       events = events.slice(0, filters.limit);
     }
-    
+
     return events;
   }
 
@@ -650,20 +688,26 @@ export class ObservabilityAudit {
    */
   getAuditStatistics(): any {
     const totalEvents = this.auditEvents.length;
-    const eventsByType = this.auditEvents.reduce((acc, event) => {
-      acc[event.type] = (acc[event.type] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
-    const eventsBySeverity = this.auditEvents.reduce((acc, event) => {
-      acc[event.severity] = (acc[event.severity] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
-    const complianceViolations = this.auditEvents.filter(
-      event => event.complianceFlags.includes('violation')
+    const eventsByType = this.auditEvents.reduce(
+      (acc, event) => {
+        acc[event.type] = (acc[event.type] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    const eventsBySeverity = this.auditEvents.reduce(
+      (acc, event) => {
+        acc[event.severity] = (acc[event.severity] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    const complianceViolations = this.auditEvents.filter(event =>
+      event.complianceFlags.includes('violation')
     ).length;
-    
+
     return {
       totalEvents,
       eventsByType,
@@ -678,17 +722,17 @@ export class ObservabilityAudit {
    */
   shutdown(): void {
     this.isMonitoring = false;
-    
+
     if (this.auditInterval) {
       clearInterval(this.auditInterval);
       this.auditInterval = null;
     }
-    
+
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = null;
     }
-    
+
     logger.info('Observability and audit system shutdown');
   }
 }

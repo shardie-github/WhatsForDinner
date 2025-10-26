@@ -7,7 +7,12 @@ import { BaseAgent, AgentConfig, AgentAction } from './baseAgent';
 import { logger } from '../logger';
 
 export interface SafetyViolation {
-  type: 'prompt_injection' | 'data_leak' | 'unauthorized_access' | 'bias' | 'harmful_content';
+  type:
+    | 'prompt_injection'
+    | 'data_leak'
+    | 'unauthorized_access'
+    | 'bias'
+    | 'harmful_content';
   severity: 'low' | 'medium' | 'high' | 'critical';
   description: string;
   detectedAt: string;
@@ -49,7 +54,7 @@ export class EthicsAgent extends BaseAgent {
         'simulate_threats',
         'enforce_guidelines',
         'generate_ethics_report',
-        'validate_ai_outputs'
+        'validate_ai_outputs',
       ],
       safetyConstraints: [
         'no_harmful_content_generation',
@@ -57,7 +62,7 @@ export class EthicsAgent extends BaseAgent {
         'no_bias_amplification',
         'preserve_user_privacy',
         'maintain_transparency',
-        'ensure_accountability'
+        'ensure_accountability',
       ],
       learningRate: 0.05, // Conservative learning rate for safety
       maxRetries: 1, // Minimal retries for safety-critical operations
@@ -92,26 +97,29 @@ export class EthicsAgent extends BaseAgent {
     }
   }
 
-  protected checkSafetyConstraint(constraint: string, action: AgentAction): boolean {
+  protected checkSafetyConstraint(
+    constraint: string,
+    action: AgentAction
+  ): boolean {
     switch (constraint) {
       case 'no_harmful_content_generation':
         return this.validateNoHarmfulContent(action);
-      
+
       case 'no_unauthorized_data_access':
         return this.validateDataAccess(action);
-      
+
       case 'no_bias_amplification':
         return this.validateNoBiasAmplification(action);
-      
+
       case 'preserve_user_privacy':
         return this.validatePrivacyPreservation(action);
-      
+
       case 'maintain_transparency':
         return this.validateTransparency(action);
-      
+
       case 'ensure_accountability':
         return this.validateAccountability(action);
-      
+
       default:
         return true;
     }
@@ -123,22 +131,22 @@ export class EthicsAgent extends BaseAgent {
   private async monitorSafety(): Promise<boolean> {
     try {
       logger.info('Monitoring system safety');
-      
+
       // Check for prompt injection attempts
       const promptInjectionViolations = await this.detectPromptInjection();
-      
+
       // Check for data leakage
       const dataLeakViolations = await this.detectDataLeakage();
-      
+
       // Check for unauthorized access
       const accessViolations = await this.detectUnauthorizedAccess();
-      
+
       // Check for bias in AI outputs
       const biasViolations = await this.detectBiasInOutputs();
-      
+
       // Check for harmful content
       const harmfulContentViolations = await this.detectHarmfulContent();
-      
+
       const allViolations = [
         ...promptInjectionViolations,
         ...dataLeakViolations,
@@ -146,16 +154,20 @@ export class EthicsAgent extends BaseAgent {
         ...biasViolations,
         ...harmfulContentViolations,
       ];
-      
+
       this.safetyViolations.push(...allViolations);
-      
+
       // Trigger immediate response for critical violations
-      const criticalViolations = allViolations.filter(v => v.severity === 'critical');
+      const criticalViolations = allViolations.filter(
+        v => v.severity === 'critical'
+      );
       if (criticalViolations.length > 0) {
         await this.respondToCriticalViolations(criticalViolations);
       }
-      
-      logger.info(`Safety monitoring complete. Found ${allViolations.length} violations`);
+
+      logger.info(
+        `Safety monitoring complete. Found ${allViolations.length} violations`
+      );
       return true;
     } catch (error) {
       logger.error('Safety monitoring failed', { error });
@@ -169,23 +181,27 @@ export class EthicsAgent extends BaseAgent {
   private async checkCompliance(payload: any): Promise<boolean> {
     try {
       const standards = payload?.standards || ['SOC2', 'ISO27001', 'GDPR'];
-      logger.info(`Checking compliance with standards: ${standards.join(', ')}`);
-      
+      logger.info(
+        `Checking compliance with standards: ${standards.join(', ')}`
+      );
+
       const complianceResults: ComplianceCheck[] = [];
-      
+
       for (const standard of standards) {
         const result = await this.performComplianceCheck(standard);
         complianceResults.push(result);
       }
-      
+
       this.complianceChecks = complianceResults;
-      
+
       // Log non-compliant items
-      const nonCompliant = complianceResults.filter(r => r.status === 'non_compliant');
+      const nonCompliant = complianceResults.filter(
+        r => r.status === 'non_compliant'
+      );
       if (nonCompliant.length > 0) {
         logger.warn('Compliance issues found', { nonCompliant });
       }
-      
+
       logger.info('Compliance check complete', { results: complianceResults });
       return true;
     } catch (error) {
@@ -200,23 +216,25 @@ export class EthicsAgent extends BaseAgent {
   private async detectBias(payload: any): Promise<boolean> {
     try {
       logger.info('Detecting bias in AI outputs');
-      
+
       const outputs = payload?.outputs || [];
       const biasDetections = [];
-      
+
       for (const output of outputs) {
         const bias = await this.analyzeBias(output);
         if (bias.detected) {
           biasDetections.push(bias);
         }
       }
-      
+
       if (biasDetections.length > 0) {
         logger.warn('Bias detected in AI outputs', { biasDetections });
         await this.mitigateBias(biasDetections);
       }
-      
-      logger.info(`Bias detection complete. Found ${biasDetections.length} instances`);
+
+      logger.info(
+        `Bias detection complete. Found ${biasDetections.length} instances`
+      );
       return true;
     } catch (error) {
       logger.error('Bias detection failed', { error });
@@ -230,22 +248,24 @@ export class EthicsAgent extends BaseAgent {
   private async preventHarm(payload: any): Promise<boolean> {
     try {
       logger.info('Implementing harm prevention measures');
-      
+
       // Validate user inputs
       const inputValidation = await this.validateUserInputs(payload?.inputs);
-      
+
       // Check for harmful patterns
-      const harmfulPatterns = await this.detectHarmfulPatterns(payload?.content);
-      
+      const harmfulPatterns = await this.detectHarmfulPatterns(
+        payload?.content
+      );
+
       // Implement safety measures
       const safetyMeasures = await this.implementSafetyMeasures();
-      
+
       logger.info('Harm prevention measures implemented', {
         inputValidation,
         harmfulPatterns,
         safetyMeasures,
       });
-      
+
       return true;
     } catch (error) {
       logger.error('Harm prevention failed', { error });
@@ -259,18 +279,20 @@ export class EthicsAgent extends BaseAgent {
   private async auditAIBehavior(payload: any): Promise<boolean> {
     try {
       logger.info('Auditing AI behavior');
-      
+
       const behaviorLog = payload?.behaviorLog || [];
       const auditResults = await this.performBehaviorAudit(behaviorLog);
-      
+
       // Check for ethical violations
       const ethicalViolations = auditResults.filter(r => r.violation);
-      
+
       if (ethicalViolations.length > 0) {
-        logger.warn('Ethical violations detected in AI behavior', { ethicalViolations });
+        logger.warn('Ethical violations detected in AI behavior', {
+          ethicalViolations,
+        });
         await this.addressEthicalViolations(ethicalViolations);
       }
-      
+
       logger.info('AI behavior audit complete', { auditResults });
       return true;
     } catch (error) {
@@ -285,7 +307,7 @@ export class EthicsAgent extends BaseAgent {
   private async simulateThreats(): Promise<boolean> {
     try {
       logger.info('Simulating threats for security testing');
-      
+
       const threatScenarios = [
         'prompt_injection_attack',
         'data_exfiltration_attempt',
@@ -293,19 +315,19 @@ export class EthicsAgent extends BaseAgent {
         'harmful_content_generation',
         'unauthorized_access_attempt',
       ];
-      
+
       const simulationResults = [];
-      
+
       for (const scenario of threatScenarios) {
         const result = await this.simulateThreat(scenario);
         simulationResults.push(result);
       }
-      
+
       this.threatSimulationResults = simulationResults;
-      
+
       // Analyze results and improve defenses
       await this.analyzeThreatSimulationResults(simulationResults);
-      
+
       logger.info('Threat simulation complete', { results: simulationResults });
       return true;
     } catch (error) {
@@ -320,10 +342,10 @@ export class EthicsAgent extends BaseAgent {
   private async enforceGuidelines(payload: any): Promise<boolean> {
     try {
       logger.info('Enforcing ethical guidelines');
-      
+
       const action = payload?.action;
       const violations = [];
-      
+
       for (const guideline of this.ethicalGuidelines) {
         const violation = await this.checkGuidelineViolation(guideline, action);
         if (violation) {
@@ -331,12 +353,14 @@ export class EthicsAgent extends BaseAgent {
           await this.enforceGuidelineViolation(guideline, violation);
         }
       }
-      
+
       if (violations.length > 0) {
         logger.warn('Ethical guideline violations detected', { violations });
       }
-      
-      logger.info('Ethical guidelines enforcement complete', { violations: violations.length });
+
+      logger.info('Ethical guidelines enforcement complete', {
+        violations: violations.length,
+      });
       return true;
     } catch (error) {
       logger.error('Ethical guidelines enforcement failed', { error });
@@ -350,7 +374,7 @@ export class EthicsAgent extends BaseAgent {
   private async generateEthicsReport(): Promise<boolean> {
     try {
       logger.info('Generating ethics report');
-      
+
       const report = {
         timestamp: new Date().toISOString(),
         safetyViolations: this.safetyViolations,
@@ -360,10 +384,10 @@ export class EthicsAgent extends BaseAgent {
         recommendations: await this.generateEthicsRecommendations(),
         overallScore: await this.calculateEthicsScore(),
       };
-      
+
       // Save report
       await this.saveEthicsReport(report);
-      
+
       logger.info('Ethics report generated', { report });
       return true;
     } catch (error) {
@@ -379,22 +403,24 @@ export class EthicsAgent extends BaseAgent {
     try {
       const outputs = payload?.outputs || [];
       logger.info(`Validating ${outputs.length} AI outputs`);
-      
+
       const validationResults = [];
-      
+
       for (const output of outputs) {
         const validation = await this.validateSingleOutput(output);
         validationResults.push(validation);
-        
+
         if (!validation.safe) {
           logger.warn('Unsafe AI output detected', { output, validation });
           await this.quarantineOutput(output, validation);
         }
       }
-      
+
       const unsafeOutputs = validationResults.filter(r => !r.safe);
-      logger.info(`AI output validation complete. ${unsafeOutputs.length} unsafe outputs detected`);
-      
+      logger.info(
+        `AI output validation complete. ${unsafeOutputs.length} unsafe outputs detected`
+      );
+
       return true;
     } catch (error) {
       logger.error('AI output validation failed', { error });
@@ -409,7 +435,8 @@ export class EthicsAgent extends BaseAgent {
     this.ethicalGuidelines = [
       {
         principle: 'Do No Harm',
-        description: 'AI systems must not cause physical, psychological, or social harm',
+        description:
+          'AI systems must not cause physical, psychological, or social harm',
         enforcement: 'strict',
         violations: 0,
         lastViolation: null,
@@ -423,7 +450,8 @@ export class EthicsAgent extends BaseAgent {
       },
       {
         principle: 'Privacy and Data Protection',
-        description: 'AI systems must protect user privacy and handle data responsibly',
+        description:
+          'AI systems must protect user privacy and handle data responsibly',
         enforcement: 'strict',
         violations: 0,
         lastViolation: null,
@@ -451,7 +479,7 @@ export class EthicsAgent extends BaseAgent {
   private async detectPromptInjection(): Promise<SafetyViolation[]> {
     // In a real implementation, this would use sophisticated detection algorithms
     const violations: SafetyViolation[] = [];
-    
+
     // Mock detection - in reality, this would analyze actual user inputs
     const suspiciousPatterns = [
       'ignore previous instructions',
@@ -459,7 +487,7 @@ export class EthicsAgent extends BaseAgent {
       'jailbreak',
       'roleplay as',
     ];
-    
+
     // This would be replaced with actual input analysis
     return violations;
   }
@@ -499,9 +527,11 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Respond to critical safety violations
    */
-  private async respondToCriticalViolations(violations: SafetyViolation[]): Promise<void> {
+  private async respondToCriticalViolations(
+    violations: SafetyViolation[]
+  ): Promise<void> {
     logger.error('Critical safety violations detected', { violations });
-    
+
     // In a real implementation, this would:
     // 1. Immediately stop AI operations
     // 2. Alert security team
@@ -512,7 +542,9 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Perform compliance check for specific standard
    */
-  private async performComplianceCheck(standard: string): Promise<ComplianceCheck> {
+  private async performComplianceCheck(
+    standard: string
+  ): Promise<ComplianceCheck> {
     // In a real implementation, this would check actual compliance
     return {
       standard: standard as any,
@@ -626,7 +658,10 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Check guideline violation
    */
-  private async checkGuidelineViolation(guideline: EthicalGuideline, action: any): Promise<any> {
+  private async checkGuidelineViolation(
+    guideline: EthicalGuideline,
+    action: any
+  ): Promise<any> {
     // In a real implementation, this would check actual violations
     return null;
   }
@@ -634,8 +669,14 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Enforce guideline violation
    */
-  private async enforceGuidelineViolation(guideline: EthicalGuideline, violation: any): Promise<void> {
-    logger.warn('Enforcing guideline violation', { guideline: guideline.principle, violation });
+  private async enforceGuidelineViolation(
+    guideline: EthicalGuideline,
+    violation: any
+  ): Promise<void> {
+    logger.warn('Enforcing guideline violation', {
+      guideline: guideline.principle,
+      violation,
+    });
     // In a real implementation, this would implement enforcement measures
   }
 

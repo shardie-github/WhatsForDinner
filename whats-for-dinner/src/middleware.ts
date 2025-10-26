@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { monitoringSystem } from '@/lib/monitoring'
-import { observabilitySystem } from '@/lib/observability'
-import { logger } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server';
+import { monitoringSystem } from '@/lib/monitoring';
+import { observabilitySystem } from '@/lib/observability';
+import { logger } from '@/lib/logger';
 
 // Rate limiting store (in production, use Redis or similar)
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
 // Rate limiting configuration
 const RATE_LIMITS = {
@@ -18,13 +18,13 @@ const RATE_LIMITS = {
   '/api/logs': { requests: 30, window: 60 * 1000 }, // 30 requests per minute
   '/api/errors': { requests: 30, window: 60 * 1000 }, // 30 requests per minute
   '/api/observability': { requests: 30, window: 60 * 1000 }, // 30 requests per minute
-}
+};
 
 export async function middleware(request: NextRequest) {
-  const startTime = Date.now()
-  const { pathname, method } = request
-  const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
-  const userAgent = request.headers.get('user-agent') || 'unknown'
+  const startTime = Date.now();
+  const { pathname, method } = request;
+  const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+  const userAgent = request.headers.get('user-agent') || 'unknown';
 
   // Start trace for the request
   const traceId = await observabilitySystem.startTrace(
@@ -36,23 +36,26 @@ export async function middleware(request: NextRequest) {
       ip,
       userAgent,
       pathname,
-      method
+      method,
     }
-  )
+  );
 
-  const spanId = await observabilitySystem.startSpan(traceId, 'middleware')
+  const spanId = await observabilitySystem.startSpan(traceId, 'middleware');
 
   try {
     // Security headers
-    const response = NextResponse.next()
-    
+    const response = NextResponse.next();
+
     // Add security headers
-    response.headers.set('X-Content-Type-Options', 'nosniff')
-    response.headers.set('X-Frame-Options', 'DENY')
-    response.headers.set('X-XSS-Protection', '1; mode=block')
-    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
-    
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set(
+      'Permissions-Policy',
+      'camera=(), microphone=(), geolocation=()'
+    );
+
     // Content Security Policy
     const csp = [
       "default-src 'self'",
@@ -63,192 +66,228 @@ export async function middleware(request: NextRequest) {
       "connect-src 'self' https://api.openai.com https://*.supabase.co",
       "frame-ancestors 'none'",
       "base-uri 'self'",
-      "form-action 'self'"
-    ].join('; ')
-    
-    response.headers.set('Content-Security-Policy', csp)
+      "form-action 'self'",
+    ].join('; ');
+
+    response.headers.set('Content-Security-Policy', csp);
 
     // Rate limiting
-    const rateLimit = getRateLimit(pathname)
+    const rateLimit = getRateLimit(pathname);
     if (rateLimit) {
-      const key = `${ip}:${pathname}`
-      const now = Date.now()
-      const windowStart = now - rateLimit.window
-      
+      const key = `${ip}:${pathname}`;
+      const now = Date.now();
+      const windowStart = now - rateLimit.window;
+
       // Clean up old entries
       for (const [k, v] of rateLimitStore.entries()) {
         if (v.resetTime < now) {
-          rateLimitStore.delete(k)
+          rateLimitStore.delete(k);
         }
       }
-      
-      const current = rateLimitStore.get(key) || { count: 0, resetTime: now + rateLimit.window }
-      
+
+      const current = rateLimitStore.get(key) || {
+        count: 0,
+        resetTime: now + rateLimit.window,
+      };
+
       if (current.resetTime < now) {
-        current.count = 0
-        current.resetTime = now + rateLimit.window
+        current.count = 0;
+        current.resetTime = now + rateLimit.window;
       }
-      
-      current.count++
-      rateLimitStore.set(key, current)
-      
+
+      current.count++;
+      rateLimitStore.set(key, current);
+
       if (current.count > rateLimit.requests) {
         await monitoringSystem.recordCounter('rate_limit_exceeded', 1, {
           path: pathname,
           ip,
-          userAgent
-        })
-        
-        await logger.warn('Rate limit exceeded', {
-          path: pathname,
-          ip,
           userAgent,
-          count: current.count,
-          limit: rateLimit.requests
-        }, 'middleware', 'rate_limiting')
-        
+        });
+
+        await logger.warn(
+          'Rate limit exceeded',
+          {
+            path: pathname,
+            ip,
+            userAgent,
+            count: current.count,
+            limit: rateLimit.requests,
+          },
+          'middleware',
+          'rate_limiting'
+        );
+
         await observabilitySystem.finishSpan(spanId, 'error', {
           error: 'Rate limit exceeded',
-          rateLimit: current.count
-        })
-        await observabilitySystem.finishTrace(traceId, 'error')
-        
+          rateLimit: current.count,
+        });
+        await observabilitySystem.finishTrace(traceId, 'error');
+
         return new NextResponse(
           JSON.stringify({
             error: 'Rate limit exceeded',
-            retryAfter: Math.ceil((current.resetTime - now) / 1000)
+            retryAfter: Math.ceil((current.resetTime - now) / 1000),
           }),
           {
             status: 429,
             headers: {
               'Content-Type': 'application/json',
-              'Retry-After': Math.ceil((current.resetTime - now) / 1000).toString(),
+              'Retry-After': Math.ceil(
+                (current.resetTime - now) / 1000
+              ).toString(),
               'X-RateLimit-Limit': rateLimit.requests.toString(),
-              'X-RateLimit-Remaining': Math.max(0, rateLimit.requests - current.count).toString(),
-              'X-RateLimit-Reset': current.resetTime.toString()
-            }
+              'X-RateLimit-Remaining': Math.max(
+                0,
+                rateLimit.requests - current.count
+              ).toString(),
+              'X-RateLimit-Reset': current.resetTime.toString(),
+            },
           }
-        )
+        );
       }
-      
+
       // Add rate limit headers
-      response.headers.set('X-RateLimit-Limit', rateLimit.requests.toString())
-      response.headers.set('X-RateLimit-Remaining', Math.max(0, rateLimit.requests - current.count).toString())
-      response.headers.set('X-RateLimit-Reset', current.resetTime.toString())
+      response.headers.set('X-RateLimit-Limit', rateLimit.requests.toString());
+      response.headers.set(
+        'X-RateLimit-Remaining',
+        Math.max(0, rateLimit.requests - current.count).toString()
+      );
+      response.headers.set('X-RateLimit-Reset', current.resetTime.toString());
     }
 
     // Request logging
-    await logger.info(`${method} ${pathname}`, {
-      ip,
-      userAgent,
-      pathname,
-      method,
-      traceId
-    }, 'middleware', 'request')
+    await logger.info(
+      `${method} ${pathname}`,
+      {
+        ip,
+        userAgent,
+        pathname,
+        method,
+        traceId,
+      },
+      'middleware',
+      'request'
+    );
 
     // Record request metric
     await monitoringSystem.recordCounter('http_requests', 1, {
       method,
       path: pathname,
-      status: 'pending'
-    })
+      status: 'pending',
+    });
 
     // Add trace ID to response headers
-    response.headers.set('X-Trace-Id', traceId)
+    response.headers.set('X-Trace-Id', traceId);
 
     // Continue with the request
-    const result = await NextResponse.next()
-    
+    const result = await NextResponse.next();
+
     // Record response metrics
-    const duration = Date.now() - startTime
-    const statusCode = result.status
-    
+    const duration = Date.now() - startTime;
+    const statusCode = result.status;
+
     await monitoringSystem.recordTimer('http_response_time', duration, {
       method,
       path: pathname,
-      status_code: statusCode.toString()
-    })
-    
+      status_code: statusCode.toString(),
+    });
+
     await monitoringSystem.recordCounter('http_responses', 1, {
       method,
       path: pathname,
-      status_code: statusCode.toString()
-    })
-    
+      status_code: statusCode.toString(),
+    });
+
     if (statusCode >= 400) {
       await monitoringSystem.recordCounter('http_errors', 1, {
         method,
         path: pathname,
-        status_code: statusCode.toString()
-      })
+        status_code: statusCode.toString(),
+      });
     }
 
     // Add performance headers
-    result.headers.set('X-Response-Time', duration.toString())
-    result.headers.set('X-Trace-Id', traceId)
+    result.headers.set('X-Response-Time', duration.toString());
+    result.headers.set('X-Trace-Id', traceId);
 
     // Finish tracing
-    await observabilitySystem.finishSpan(spanId, statusCode >= 400 ? 'error' : 'completed', {
-      statusCode,
-      duration
-    })
-    await observabilitySystem.finishTrace(traceId, statusCode >= 400 ? 'error' : 'completed')
+    await observabilitySystem.finishSpan(
+      spanId,
+      statusCode >= 400 ? 'error' : 'completed',
+      {
+        statusCode,
+        duration,
+      }
+    );
+    await observabilitySystem.finishTrace(
+      traceId,
+      statusCode >= 400 ? 'error' : 'completed'
+    );
 
-    return result
-
+    return result;
   } catch (error) {
     // Error handling
-    const duration = Date.now() - startTime
-    
+    const duration = Date.now() - startTime;
+
     await monitoringSystem.recordCounter('middleware_errors', 1, {
       path: pathname,
       method,
-      error: error.message
-    })
-    
-    await logger.error('Middleware error', {
       error: error.message,
-      stack: error.stack,
-      pathname,
-      method,
-      ip,
-      userAgent,
-      traceId
-    }, 'middleware', 'error')
-    
+    });
+
+    await logger.error(
+      'Middleware error',
+      {
+        error: error.message,
+        stack: error.stack,
+        pathname,
+        method,
+        ip,
+        userAgent,
+        traceId,
+      },
+      'middleware',
+      'error'
+    );
+
     await observabilitySystem.finishSpan(spanId, 'error', {
       error: error.message,
-      duration
-    })
-    await observabilitySystem.finishTrace(traceId, 'error')
-    
+      duration,
+    });
+    await observabilitySystem.finishTrace(traceId, 'error');
+
     return new NextResponse(
       JSON.stringify({
         error: 'Internal server error',
-        traceId
+        traceId,
       }),
       {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
-          'X-Trace-Id': traceId
-        }
+          'X-Trace-Id': traceId,
+        },
       }
-    )
+    );
   }
 }
 
-function getRateLimit(pathname: string): { requests: number; window: number } | null {
+function getRateLimit(
+  pathname: string
+): { requests: number; window: number } | null {
   // Find the most specific matching rate limit
-  const sortedPaths = Object.keys(RATE_LIMITS).sort((a, b) => b.length - a.length)
-  
+  const sortedPaths = Object.keys(RATE_LIMITS).sort(
+    (a, b) => b.length - a.length
+  );
+
   for (const path of sortedPaths) {
     if (pathname.startsWith(path)) {
-      return RATE_LIMITS[path as keyof typeof RATE_LIMITS]
+      return RATE_LIMITS[path as keyof typeof RATE_LIMITS];
     }
   }
-  
-  return null
+
+  return null;
 }
 
 export const config = {
@@ -262,4 +301,4 @@ export const config = {
      */
     '/((?!_next/static|_next/image|favicon.ico|public).*)',
   ],
-}
+};

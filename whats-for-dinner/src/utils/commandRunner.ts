@@ -42,10 +42,13 @@ export class CommandRunner {
     } = {}
   ): Promise<CommandResult> {
     const startTime = Date.now();
-    
+
     try {
       // Validate command if allowedCommands is provided
-      if (options.allowedCommands && !this.isCommandAllowed(command, options.allowedCommands)) {
+      if (
+        options.allowedCommands &&
+        !this.isCommandAllowed(command, options.allowedCommands)
+      ) {
         throw new Error(`Command not allowed: ${command}`);
       }
 
@@ -54,7 +57,7 @@ export class CommandRunner {
       // In a real implementation, this would use child_process or similar
       // For now, we'll simulate command execution
       const result = await this.simulateCommandExecution(command, options);
-      
+
       const duration = Date.now() - startTime;
       const commandResult: CommandResult = {
         success: result.success,
@@ -76,10 +79,10 @@ export class CommandRunner {
         this.commandHistory = this.commandHistory.slice(-1000);
       }
 
-      logger.info(`Command completed`, { 
-        command, 
-        success: commandResult.success, 
-        duration 
+      logger.info(`Command completed`, {
+        command,
+        success: commandResult.success,
+        duration,
       });
 
       return commandResult;
@@ -102,7 +105,10 @@ export class CommandRunner {
   /**
    * Check if command is allowed
    */
-  private isCommandAllowed(command: string, allowedCommands: string[]): boolean {
+  private isCommandAllowed(
+    command: string,
+    allowedCommands: string[]
+  ): boolean {
     const commandName = command.split(' ')[0];
     return allowedCommands.includes(commandName);
   }
@@ -113,7 +119,12 @@ export class CommandRunner {
   private async simulateCommandExecution(
     command: string,
     options: any
-  ): Promise<{ success: boolean; output: string; error: string | null; exitCode: number }> {
+  ): Promise<{
+    success: boolean;
+    output: string;
+    error: string | null;
+    exitCode: number;
+  }> {
     // Simulate different command outcomes based on command type
     if (command.startsWith('npm run test')) {
       return {
@@ -178,11 +189,11 @@ export class CommandRunner {
    */
   public getSuccessRate(): number {
     if (this.commandHistory.length === 0) return 0;
-    
+
     const successfulCommands = this.commandHistory.filter(
       entry => entry.result.success
     ).length;
-    
+
     return successfulCommands / this.commandHistory.length;
   }
 
@@ -191,12 +202,12 @@ export class CommandRunner {
    */
   public getAverageDuration(): number {
     if (this.commandHistory.length === 0) return 0;
-    
+
     const totalDuration = this.commandHistory.reduce(
       (sum, entry) => sum + entry.result.duration,
       0
     );
-    
+
     return totalDuration / this.commandHistory.length;
   }
 

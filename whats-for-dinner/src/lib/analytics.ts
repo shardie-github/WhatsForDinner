@@ -1,60 +1,64 @@
-import { supabase } from './supabaseClient'
-import { v4 as uuidv4 } from 'uuid'
+import { supabase } from './supabaseClient';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface AnalyticsEvent {
-  id: string
-  event_type: string
-  user_id?: string
-  session_id: string
-  properties: Record<string, any>
-  timestamp: string
-  page_url?: string
-  user_agent?: string
+  id: string;
+  event_type: string;
+  user_id?: string;
+  session_id: string;
+  properties: Record<string, any>;
+  timestamp: string;
+  page_url?: string;
+  user_agent?: string;
 }
 
 export interface RecipeMetrics {
-  recipe_id: number
-  user_id: string
-  generated_at: string
-  ingredients_used: string[]
-  cuisine_type?: string
-  cook_time: string
-  calories: number
-  feedback_score?: number
-  api_latency_ms: number
-  model_used: string
-  retry_count: number
+  recipe_id: number;
+  user_id: string;
+  generated_at: string;
+  ingredients_used: string[];
+  cuisine_type?: string;
+  cook_time: string;
+  calories: number;
+  feedback_score?: number;
+  api_latency_ms: number;
+  model_used: string;
+  retry_count: number;
 }
 
 export interface SystemMetrics {
-  id: string
-  metric_type: 'api_performance' | 'user_engagement' | 'error_rate' | 'cost_analysis'
-  value: number
-  metadata: Record<string, any>
-  timestamp: string
+  id: string;
+  metric_type:
+    | 'api_performance'
+    | 'user_engagement'
+    | 'error_rate'
+    | 'cost_analysis';
+  value: number;
+  metadata: Record<string, any>;
+  timestamp: string;
 }
 
 class AnalyticsService {
-  private sessionId: string
-  private userId?: string
+  private sessionId: string;
+  private userId?: string;
 
   constructor() {
-    this.sessionId = this.getOrCreateSessionId()
+    this.sessionId = this.getOrCreateSessionId();
   }
 
   private getOrCreateSessionId(): string {
-    if (typeof window === 'undefined') return uuidv4()
-    
-    let sessionId = localStorage.getItem('analytics_session_id')
+    if (typeof window === 'undefined') return uuidv4();
+
+    let sessionId = localStorage.getItem('analytics_session_id');
     if (!sessionId) {
-      sessionId = uuidv4()
-      localStorage.setItem('analytics_session_id', sessionId)
+      sessionId = uuidv4();
+      localStorage.setItem('analytics_session_id', sessionId);
     }
-    return sessionId
+    return sessionId;
   }
 
   setUserId(userId: string) {
-    this.userId = userId
+    this.userId = userId;
   }
 
   async trackEvent(eventType: string, properties: Record<string, any> = {}) {
@@ -65,20 +69,20 @@ class AnalyticsService {
       session_id: this.sessionId,
       properties,
       timestamp: new Date().toISOString(),
-      page_url: typeof window !== 'undefined' ? window.location.href : undefined,
-      user_agent: typeof window !== 'undefined' ? navigator.userAgent : undefined,
-    }
+      page_url:
+        typeof window !== 'undefined' ? window.location.href : undefined,
+      user_agent:
+        typeof window !== 'undefined' ? navigator.userAgent : undefined,
+    };
 
     try {
-      const { error } = await supabase
-        .from('analytics_events')
-        .insert(event)
-      
+      const { error } = await supabase.from('analytics_events').insert(event);
+
       if (error) {
-        console.error('Analytics tracking error:', error)
+        console.error('Analytics tracking error:', error);
       }
     } catch (error) {
-      console.error('Failed to track analytics event:', error)
+      console.error('Failed to track analytics event:', error);
     }
   }
 
@@ -88,39 +92,41 @@ class AnalyticsService {
         .from('recipe_metrics')
         .insert(metrics)
         .select('id')
-        .single()
+        .single();
 
       if (error) {
-        console.error('Recipe metrics tracking error:', error)
-        return null
+        console.error('Recipe metrics tracking error:', error);
+        return null;
       }
 
-      return data.id
+      return data.id;
     } catch (error) {
-      console.error('Failed to track recipe metrics:', error)
-      return null
+      console.error('Failed to track recipe metrics:', error);
+      return null;
     }
   }
 
-  async trackSystemMetric(metricType: SystemMetrics['metric_type'], value: number, metadata: Record<string, any> = {}) {
+  async trackSystemMetric(
+    metricType: SystemMetrics['metric_type'],
+    value: number,
+    metadata: Record<string, any> = {}
+  ) {
     const metric: SystemMetrics = {
       id: uuidv4(),
       metric_type: metricType,
       value,
       metadata,
       timestamp: new Date().toISOString(),
-    }
+    };
 
     try {
-      const { error } = await supabase
-        .from('system_metrics')
-        .insert(metric)
-      
+      const { error } = await supabase.from('system_metrics').insert(metric);
+
       if (error) {
-        console.error('System metrics tracking error:', error)
+        console.error('System metrics tracking error:', error);
       }
     } catch (error) {
-      console.error('Failed to track system metric:', error)
+      console.error('Failed to track system metric:', error);
     }
   }
 
@@ -128,62 +134,62 @@ class AnalyticsService {
     const timeframes = {
       day: 1,
       week: 7,
-      month: 30
-    }
+      month: 30,
+    };
 
-    const days = timeframes[timeframe]
-    const startDate = new Date()
-    startDate.setDate(startDate.getDate() - days)
+    const days = timeframes[timeframe];
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
 
     try {
       const { data, error } = await supabase
         .from('recipe_metrics')
         .select('*')
-        .gte('generated_at', startDate.toISOString())
+        .gte('generated_at', startDate.toISOString());
 
       if (error) {
-        console.error('Failed to fetch recipe analytics:', error)
-        return null
+        console.error('Failed to fetch recipe analytics:', error);
+        return null;
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error('Failed to fetch recipe analytics:', error)
-      return null
+      console.error('Failed to fetch recipe analytics:', error);
+      return null;
     }
   }
 
   async getPopularIngredients(limit: number = 10) {
     try {
-      const { data, error } = await supabase
-        .rpc('get_popular_ingredients', { limit_count: limit })
+      const { data, error } = await supabase.rpc('get_popular_ingredients', {
+        limit_count: limit,
+      });
 
       if (error) {
-        console.error('Failed to fetch popular ingredients:', error)
-        return []
+        console.error('Failed to fetch popular ingredients:', error);
+        return [];
       }
 
-      return data || []
+      return data || [];
     } catch (error) {
-      console.error('Failed to fetch popular ingredients:', error)
-      return []
+      console.error('Failed to fetch popular ingredients:', error);
+      return [];
     }
   }
 
   async getCuisinePreferences() {
     try {
-      const { data, error } = await supabase
-        .rpc('get_cuisine_preferences')
+      const { data, error } = await supabase.rpc('get_cuisine_preferences');
 
       if (error) {
-        console.error('Failed to fetch cuisine preferences:', error)
-        return []
+        console.error('Failed to fetch cuisine preferences:', error);
+        return [];
       }
 
-      return data || []
+      return data || [];
     } catch (error) {
-      console.error('Failed to fetch cuisine preferences:', error)
-      return []
+      console.error('Failed to fetch cuisine preferences:', error);
+      return [];
     }
   }
 
@@ -194,22 +200,22 @@ class AnalyticsService {
         .select('*')
         .eq('metric_type', 'api_performance')
         .order('timestamp', { ascending: false })
-        .limit(100)
+        .limit(100);
 
       if (error) {
-        console.error('Failed to fetch API performance metrics:', error)
-        return []
+        console.error('Failed to fetch API performance metrics:', error);
+        return [];
       }
 
-      return data || []
+      return data || [];
     } catch (error) {
-      console.error('Failed to fetch API performance metrics:', error)
-      return []
+      console.error('Failed to fetch API performance metrics:', error);
+      return [];
     }
   }
 }
 
-export const analytics = new AnalyticsService()
+export const analytics = new AnalyticsService();
 
 // React hook for analytics
 export function useAnalytics() {
@@ -217,5 +223,5 @@ export function useAnalytics() {
     trackEvent: analytics.trackEvent.bind(analytics),
     trackRecipeGeneration: analytics.trackRecipeGeneration.bind(analytics),
     trackSystemMetric: analytics.trackSystemMetric.bind(analytics),
-  }
+  };
 }
