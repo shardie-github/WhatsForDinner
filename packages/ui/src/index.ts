@@ -8,3 +8,4 @@ export * from './components/Icon';
 export * from './components/Badge';
 export * from './components/Skeleton';
 export * from './components/SafeAreaView';
+export * from './components/ThemeToggle';

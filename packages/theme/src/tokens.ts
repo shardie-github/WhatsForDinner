@@ -1,32 +1,67 @@
 // Design tokens for cross-platform consistency
 export const colors = {
-  // Primary colors
-  primary: {
-    50: '#eff6ff',
-    100: '#dbeafe',
-    200: '#bfdbfe',
-    300: '#93c5fd',
-    400: '#60a5fa',
-    500: '#3b82f6',
-    600: '#2563eb',
-    700: '#1d4ed8',
-    800: '#1e40af',
-    900: '#1e3a8a',
-    950: '#172554',
+  // Brand colors - "What's for Dinner" theme
+  brand: {
+    50: '#ECFDF5',
+    100: '#D1FAE5',
+    200: '#A7F3D0',
+    300: '#6EE7B7',
+    400: '#34D399',
+    500: '#10B981',
+    600: '#059669',
+    700: '#047857',
+    800: '#065F46',
+    900: '#064E3B',
+    950: '#022C22',
   },
-  // Secondary colors
+  // Primary colors (using brand colors)
+  primary: {
+    50: '#ECFDF5',
+    100: '#D1FAE5',
+    200: '#A7F3D0',
+    300: '#6EE7B7',
+    400: '#34D399',
+    500: '#10B981',
+    600: '#059669',
+    700: '#047857',
+    800: '#065F46',
+    900: '#064E3B',
+    950: '#022C22',
+  },
+  // Secondary colors (warm grays for food theme)
   secondary: {
-    50: '#f8fafc',
-    100: '#f1f5f9',
-    200: '#e2e8f0',
-    300: '#cbd5e1',
-    400: '#94a3b8',
-    500: '#64748b',
-    600: '#475569',
-    700: '#334155',
-    800: '#1e293b',
-    900: '#0f172a',
-    950: '#020617',
+    50: '#fafaf9',
+    100: '#f5f5f4',
+    200: '#e7e5e4',
+    300: '#d6d3d1',
+    400: '#a8a29e',
+    500: '#78716c',
+    600: '#57534e',
+    700: '#44403c',
+    800: '#292524',
+    900: '#1c1917',
+    950: '#0c0a09',
+  },
+  // Accent colors (complementary warm tones)
+  accent: {
+    50: '#fef7ed',
+    100: '#fdedd3',
+    200: '#fbd9a5',
+    300: '#f8c06d',
+    400: '#f59e0b',
+    500: '#d97706',
+    600: '#b45309',
+    700: '#92400e',
+    800: '#78350f',
+    900: '#451a03',
+  },
+  // Food-inspired colors
+  food: {
+    orange: '#f97316',
+    red: '#ef4444',
+    yellow: '#eab308',
+    purple: '#a855f7',
+    pink: '#ec4899',
   },
   // Semantic colors
   success: {
@@ -76,6 +111,8 @@ export const spacing = {
   '2xl': 48,
   '3xl': 64,
   '4xl': 96,
+  '5xl': 128,
+  '6xl': 192,
 } as const;
 
 export const borderRadius = {
@@ -90,8 +127,10 @@ export const borderRadius = {
 
 export const typography = {
   fontFamily: {
-    sans: ['Inter', 'system-ui', 'sans-serif'],
-    mono: ['JetBrains Mono', 'monospace'],
+    sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+    serif: ['Playfair Display', 'ui-serif', 'Georgia', 'serif'],
+    mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+    display: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
   },
   fontSize: {
     xs: 12,
@@ -155,4 +194,52 @@ export const breakpoints = {
   lg: 1024,
   xl: 1280,
   '2xl': 1536,
+} as const;
+
+// Additional design tokens for "What's for Dinner" theme
+export const zIndex = {
+  hide: -1,
+  auto: 'auto',
+  base: 0,
+  docked: 10,
+  dropdown: 1000,
+  sticky: 1100,
+  banner: 1200,
+  overlay: 1300,
+  modal: 1400,
+  popover: 1500,
+  skipLink: 1600,
+  toast: 1700,
+  tooltip: 1800,
+} as const;
+
+export const animation = {
+  duration: {
+    fast: '150ms',
+    normal: '300ms',
+    slow: '500ms',
+  },
+  easing: {
+    linear: 'linear',
+    in: 'cubic-bezier(0.4, 0, 1, 1)',
+    out: 'cubic-bezier(0, 0, 0.2, 1)',
+    inOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  },
+} as const;
+
+export const layout = {
+  container: {
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+    '2xl': '1400px',
+  },
+  header: {
+    height: '64px',
+  },
+  sidebar: {
+    width: '256px',
+    collapsedWidth: '64px',
+  },
 } as const;

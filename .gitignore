@@ -195,3 +195,5 @@ xcuserdata/
 
 # CocoaPods
 /ios/Pods/
+*storybook.log
+storybook-static

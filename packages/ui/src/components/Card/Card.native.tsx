@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, Text } from 'react-native';
 import { cn } from '@whats-for-dinner/utils';
 
 export interface CardProps {
@@ -7,6 +8,7 @@ export interface CardProps {
   subtitle?: string;
   variant?: 'default' | 'elevated' | 'outlined' | 'filled' | 'brand';
   className?: string;
+  testID?: string;
 }
 
 export function Card({ 
@@ -15,38 +17,40 @@ export function Card({
   subtitle, 
   variant = 'default',
   className, 
+  testID,
   ...props 
-}: CardProps & React.HTMLAttributes<HTMLDivElement>) {
-  const baseClasses = 'rounded-lg border p-6 transition-colors';
+}: CardProps) {
+  const baseClasses = 'rounded-lg border p-4';
   
   const variantClasses = {
-    default: 'bg-white border-gray-200 shadow-sm hover:shadow-md',
-    elevated: 'bg-white border-gray-200 shadow-lg hover:shadow-xl',
-    outlined: 'bg-transparent border-2 border-primary-200 hover:border-primary-300',
-    filled: 'bg-primary-50 border-primary-200 hover:bg-primary-100',
-    brand: 'bg-brand-50 border-brand-200 hover:bg-brand-100',
+    default: 'bg-white border-gray-200 shadow-sm',
+    elevated: 'bg-white border-gray-200 shadow-lg',
+    outlined: 'bg-transparent border-2 border-primary-200',
+    filled: 'bg-primary-50 border-primary-200',
+    brand: 'bg-brand-50 border-brand-200',
   };
 
   return (
-    <div
+    <View
       className={cn(
         baseClasses,
         variantClasses[variant],
         className
       )}
+      testID={testID}
       {...props}
     >
       {title && (
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <Text className="text-lg font-semibold text-gray-900 mb-2">
           {title}
-        </h3>
+        </Text>
       )}
       {subtitle && (
-        <p className="text-sm text-gray-600 mb-4">
+        <Text className="text-sm text-gray-600 mb-3">
           {subtitle}
-        </p>
+        </Text>
       )}
       {children}
-    </div>
+    </View>
   );
 }
