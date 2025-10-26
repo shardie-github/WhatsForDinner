@@ -1,0 +1,562 @@
+name: Cost Tracking and Optimization
+
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Weekly on Monday at 9 AM
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - staging
+          - production
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # Cost analysis
+  cost-analysis:
+    name: Cost Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Run cost analysis
+        run: |
+          echo "💰 Running cost analysis..."
+          # Get current month costs
+          aws ce get-cost-and-usage \
+            --time-period Start=2024-01-01,End=2024-02-01 \
+            --granularity MONTHLY \
+            --metrics BlendedCost \
+            --group-by Type=DIMENSION,Key=SERVICE \
+            --query 'ResultsByTime[0].Groups[*].[Keys[0],Metrics.BlendedCost.Amount]' \
+            --output table > cost-analysis.txt
+
+      - name: Analyze cost trends
+        run: |
+          echo "📈 Analyzing cost trends..."
+          # Analyze cost trends over time
+          aws ce get-cost-and-usage \
+            --time-period Start=2023-12-01,End=2024-02-01 \
+            --granularity MONTHLY \
+            --metrics BlendedCost \
+            --query 'ResultsByTime[*].[TimePeriod.Start,Total.BlendedCost.Amount]' \
+            --output table > cost-trends.txt
+
+      - name: Identify cost anomalies
+        run: |
+          echo "🚨 Identifying cost anomalies..."
+          # Check for cost anomalies
+          aws ce get-anomalies \
+            --date-interval Start=2024-01-01,End=2024-02-01 \
+            --query 'Anomalies[*].[AnomalyId,AnomalyScore,Impact]' \
+            --output table > cost-anomalies.txt
+
+      - name: Get cost recommendations
+        run: |
+          echo "💡 Getting cost recommendations..."
+          # Get cost optimization recommendations
+          aws ce get-rightsizing-recommendation \
+            --query 'RightsizingRecommendations[*].[ResourceId,CurrentInstanceType,RecommendedInstanceType,EstimatedMonthlySavings]' \
+            --output table > cost-recommendations.txt
+
+      - name: Upload cost analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-analysis
+          path: |
+            cost-analysis.txt
+            cost-trends.txt
+            cost-anomalies.txt
+            cost-recommendations.txt
+
+  # Budget monitoring
+  budget-monitoring:
+    name: Budget Monitoring
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Check budget status
+        run: |
+          echo "📊 Checking budget status..."
+          # Check budget status
+          aws budgets describe-budgets \
+            --account-id $(aws sts get-caller-identity --query Account --output text) \
+            --query 'Budgets[*].[BudgetName,BudgetLimit.Amount,CalculatedSpend.ActualSpend.Amount,CalculatedSpend.ForecastedSpend.Amount]' \
+            --output table > budget-status.txt
+
+      - name: Check budget alerts
+        run: |
+          echo "🚨 Checking budget alerts..."
+          # Check budget alerts
+          aws budgets describe-budget-performance-history \
+            --account-id $(aws sts get-caller-identity --query Account --output text) \
+            --budget-name "whats-for-dinner-budget" \
+            --query 'BudgetPerformanceHistory[*].[TimePeriod.Start,ActualSpend.Amount,ForecastedSpend.Amount]' \
+            --output table > budget-alerts.txt
+
+      - name: Upload budget monitoring
+        uses: actions/upload-artifact@v4
+        with:
+          name: budget-monitoring
+          path: |
+            budget-status.txt
+            budget-alerts.txt
+
+  # Resource optimization
+  resource-optimization:
+    name: Resource Optimization
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Check unused resources
+        run: |
+          echo "🔍 Checking unused resources..."
+          # Check for unused EC2 instances
+          aws ec2 describe-instances \
+            --filters "Name=instance-state-name,Values=running" \
+            --query 'Reservations[*].Instances[*].[InstanceId,InstanceType,LaunchTime,State.Name]' \
+            --output table > ec2-instances.txt
+
+          # Check for unused EBS volumes
+          aws ec2 describe-volumes \
+            --filters "Name=status,Values=available" \
+            --query 'Volumes[*].[VolumeId,Size,VolumeType,CreateTime]' \
+            --output table > ebs-volumes.txt
+
+          # Check for unused RDS instances
+          aws rds describe-db-instances \
+            --query 'DBInstances[*].[DBInstanceIdentifier,DBInstanceClass,Engine,DBInstanceStatus]' \
+            --output table > rds-instances.txt
+
+      - name: Check resource utilization
+        run: |
+          echo "📊 Checking resource utilization..."
+          # Check EC2 CPU utilization
+          aws cloudwatch get-metric-statistics \
+            --namespace AWS/EC2 \
+            --metric-name CPUUtilization \
+            --dimensions Name=InstanceId,Value=i-1234567890abcdef0 \
+            --start-time 2024-01-01T00:00:00Z \
+            --end-time 2024-01-31T23:59:59Z \
+            --period 3600 \
+            --statistics Average \
+            --query 'Datapoints[*].[Timestamp,Average]' \
+            --output table > ec2-cpu-utilization.txt
+
+      - name: Get optimization recommendations
+        run: |
+          echo "💡 Getting optimization recommendations..."
+          # Get EC2 rightsizing recommendations
+          aws compute-optimizer get-ec2-instance-recommendations \
+            --query 'instanceRecommendations[*].[InstanceArn,CurrentInstanceType,RecommendedInstanceType,ProjectedUtilizationMetrics.CpuUtilization]' \
+            --output table > ec2-recommendations.txt
+
+          # Get EBS optimization recommendations
+          aws compute-optimizer get-ebs-volume-recommendations \
+            --query 'volumeRecommendations[*].[VolumeArn,CurrentVolumeType,RecommendedVolumeType,ProjectedUtilizationMetrics.VolumeReadOpsPerSecond]' \
+            --output table > ebs-recommendations.txt
+
+      - name: Upload resource optimization
+        uses: actions/upload-artifact@v4
+        with:
+          name: resource-optimization
+          path: |
+            ec2-instances.txt
+            ebs-volumes.txt
+            rds-instances.txt
+            ec2-cpu-utilization.txt
+            ec2-recommendations.txt
+            ebs-recommendations.txt
+
+  # Cost allocation
+  cost-allocation:
+    name: Cost Allocation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Get cost by service
+        run: |
+          echo "📊 Getting cost by service..."
+          # Get cost by service
+          aws ce get-cost-and-usage \
+            --time-period Start=2024-01-01,End=2024-02-01 \
+            --granularity MONTHLY \
+            --metrics BlendedCost \
+            --group-by Type=DIMENSION,Key=SERVICE \
+            --query 'ResultsByTime[0].Groups[*].[Keys[0],Metrics.BlendedCost.Amount]' \
+            --output table > cost-by-service.txt
+
+      - name: Get cost by environment
+        run: |
+          echo "🌍 Getting cost by environment..."
+          # Get cost by environment tag
+          aws ce get-cost-and-usage \
+            --time-period Start=2024-01-01,End=2024-02-01 \
+            --granularity MONTHLY \
+            --metrics BlendedCost \
+            --group-by Type=TAG,Key=Environment \
+            --query 'ResultsByTime[0].Groups[*].[Keys[0],Metrics.BlendedCost.Amount]' \
+            --output table > cost-by-environment.txt
+
+      - name: Get cost by project
+        run: |
+          echo "📁 Getting cost by project..."
+          # Get cost by project tag
+          aws ce get-cost-and-usage \
+            --time-period Start=2024-01-01,End=2024-02-01 \
+            --granularity MONTHLY \
+            --metrics BlendedCost \
+            --group-by Type=TAG,Key=Project \
+            --query 'ResultsByTime[0].Groups[*].[Keys[0],Metrics.BlendedCost.Amount]' \
+            --output table > cost-by-project.txt
+
+      - name: Get cost by team
+        run: |
+          echo "👥 Getting cost by team..."
+          # Get cost by team tag
+          aws ce get-cost-and-usage \
+            --time-period Start=2024-01-01,End=2024-02-01 \
+            --granularity MONTHLY \
+            --metrics BlendedCost \
+            --group-by Type=TAG,Key=Team \
+            --query 'ResultsByTime[0].Groups[*].[Keys[0],Metrics.BlendedCost.Amount]' \
+            --output table > cost-by-team.txt
+
+      - name: Upload cost allocation
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-allocation
+          path: |
+            cost-by-service.txt
+            cost-by-environment.txt
+            cost-by-project.txt
+            cost-by-team.txt
+
+  # Cost forecasting
+  cost-forecasting:
+    name: Cost Forecasting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Get cost forecast
+        run: |
+          echo "🔮 Getting cost forecast..."
+          # Get cost forecast for next 3 months
+          aws ce get-cost-forecast \
+            --time-period Start=2024-02-01,End=2024-05-01 \
+            --metric BLENDED_COST \
+            --granularity MONTHLY \
+            --query 'ForecastResultsByTime[*].[TimePeriod.Start,MeanValue]' \
+            --output table > cost-forecast.txt
+
+      - name: Get usage forecast
+        run: |
+          echo "📈 Getting usage forecast..."
+          # Get usage forecast for next 3 months
+          aws ce get-usage-forecast \
+            --time-period Start=2024-02-01,End=2024-05-01 \
+            --metric USAGE_QUANTITY \
+            --granularity MONTHLY \
+            --query 'ForecastResultsByTime[*].[TimePeriod.Start,MeanValue]' \
+            --output table > usage-forecast.txt
+
+      - name: Upload cost forecasting
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-forecasting
+          path: |
+            cost-forecast.txt
+            usage-forecast.txt
+
+  # Cost alerts
+  cost-alerts:
+    name: Cost Alerts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Check cost alerts
+        run: |
+          echo "🚨 Checking cost alerts..."
+          # Check CloudWatch alarms for cost
+          aws cloudwatch describe-alarms \
+            --alarm-names "whats-for-dinner-daily-cost" \
+            --query 'MetricAlarms[*].[AlarmName,StateValue,StateReason]' \
+            --output table > cost-alerts.txt
+
+      - name: Check budget alerts
+        run: |
+          echo "💰 Checking budget alerts..."
+          # Check budget alerts
+          aws budgets describe-budget-performance-history \
+            --account-id $(aws sts get-caller-identity --query Account --output text) \
+            --budget-name "whats-for-dinner-budget" \
+            --query 'BudgetPerformanceHistory[*].[TimePeriod.Start,ActualSpend.Amount,ForecastedSpend.Amount]' \
+            --output table > budget-alerts.txt
+
+      - name: Upload cost alerts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-alerts
+          path: |
+            cost-alerts.txt
+            budget-alerts.txt
+
+  # Cost optimization
+  cost-optimization:
+    name: Cost Optimization
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Get savings plans recommendations
+        run: |
+          echo "💡 Getting savings plans recommendations..."
+          # Get savings plans recommendations
+          aws ce get-savings-plans-utilization \
+            --query 'SavingsPlansUtilizationsByTime[*].[TimePeriod.Start,Total.Commitment,Total.UtilizationPercentage]' \
+            --output table > savings-plans.txt
+
+      - name: Get reserved instances recommendations
+        run: |
+          echo "🏠 Getting reserved instances recommendations..."
+          # Get reserved instances recommendations
+          aws ec2 describe-reserved-instances \
+            --query 'ReservedInstances[*].[ReservedInstancesId,InstanceType,State,OfferingType]' \
+            --output table > reserved-instances.txt
+
+      - name: Get spot instances recommendations
+        run: |
+          echo "⚡ Getting spot instances recommendations..."
+          # Get spot instances recommendations
+          aws ec2 describe-spot-price-history \
+            --instance-types t3.micro \
+            --product-descriptions "Linux/UNIX" \
+            --query 'SpotPriceHistory[*].[InstanceType,SpotPrice,AvailabilityZone]' \
+            --output table > spot-instances.txt
+
+      - name: Upload cost optimization
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-optimization
+          path: |
+            savings-plans.txt
+            reserved-instances.txt
+            spot-instances.txt
+
+  # Cost reporting
+  cost-reporting:
+    name: Cost Reporting
+    runs-on: ubuntu-latest
+    needs: [cost-analysis, budget-monitoring, resource-optimization, cost-allocation, cost-forecasting, cost-alerts, cost-optimization]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate cost report
+        run: |
+          echo "📊 Generating cost report..."
+          # Generate comprehensive cost report
+          cat cost-analysis/cost-analysis.txt > cost-report.md
+          echo "" >> cost-report.md
+          echo "## Cost Trends" >> cost-report.md
+          cat cost-analysis/cost-trends.txt >> cost-report.md
+          echo "" >> cost-report.md
+          echo "## Cost Anomalies" >> cost-report.md
+          cat cost-analysis/cost-anomalies.txt >> cost-report.md
+          echo "" >> cost-report.md
+          echo "## Cost Recommendations" >> cost-report.md
+          cat cost-analysis/cost-recommendations.txt >> cost-report.md
+          echo "" >> cost-report.md
+          echo "## Budget Status" >> cost-report.md
+          cat budget-monitoring/budget-status.txt >> cost-report.md
+          echo "" >> cost-report.md
+          echo "## Budget Alerts" >> cost-report.md
+          cat budget-monitoring/budget-alerts.txt >> cost-report.md
+          echo "" >> cost-report.md
+          echo "## Resource Optimization" >> cost-report.md
+          cat resource-optimization/ec2-recommendations.txt >> cost-report.md
+          echo "" >> cost-report.md
+          echo "## Cost Allocation" >> cost-report.md
+          cat cost-allocation/cost-by-service.txt >> cost-report.md
+          echo "" >> cost-report.md
+          echo "## Cost Forecast" >> cost-report.md
+          cat cost-forecasting/cost-forecast.txt >> cost-report.md
+          echo "" >> cost-report.md
+          echo "## Cost Alerts" >> cost-report.md
+          cat cost-alerts/cost-alerts.txt >> cost-report.md
+          echo "" >> cost-report.md
+          echo "## Cost Optimization" >> cost-report.md
+          cat cost-optimization/savings-plans.txt >> cost-report.md
+
+      - name: Upload cost report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-report
+          path: cost-report.md
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('cost-report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Cost Report\n\n${report}`
+            });
+
+      - name: Notify cost team
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: '#cost-alerts'
+          webhook_url: ${{ secrets.SLACK_COST_WEBHOOK }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
