@@ -85,6 +85,319 @@ export type Database = {
           recipe_id?: number
         }
       }
+      analytics_events: {
+        Row: {
+          id: string
+          event_type: string
+          user_id: string | null
+          session_id: string
+          properties: any
+          timestamp: string
+          page_url: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          id?: string
+          event_type: string
+          user_id?: string | null
+          session_id: string
+          properties?: any
+          timestamp?: string
+          page_url?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          id?: string
+          event_type?: string
+          user_id?: string | null
+          session_id?: string
+          properties?: any
+          timestamp?: string
+          page_url?: string | null
+          user_agent?: string | null
+        }
+      }
+      recipe_metrics: {
+        Row: {
+          id: number
+          recipe_id: number | null
+          user_id: string | null
+          generated_at: string
+          ingredients_used: string[]
+          cuisine_type: string | null
+          cook_time: string
+          calories: number
+          feedback_score: number | null
+          api_latency_ms: number
+          model_used: string
+          retry_count: number
+        }
+        Insert: {
+          id?: number
+          recipe_id?: number | null
+          user_id?: string | null
+          generated_at?: string
+          ingredients_used: string[]
+          cuisine_type?: string | null
+          cook_time: string
+          calories: number
+          feedback_score?: number | null
+          api_latency_ms: number
+          model_used: string
+          retry_count?: number
+        }
+        Update: {
+          id?: number
+          recipe_id?: number | null
+          user_id?: string | null
+          generated_at?: string
+          ingredients_used?: string[]
+          cuisine_type?: string | null
+          cook_time?: string
+          calories?: number
+          feedback_score?: number | null
+          api_latency_ms?: number
+          model_used?: string
+          retry_count?: number
+        }
+      }
+      system_metrics: {
+        Row: {
+          id: string
+          metric_type: 'api_performance' | 'user_engagement' | 'error_rate' | 'cost_analysis'
+          value: number
+          metadata: any
+          timestamp: string
+        }
+        Insert: {
+          id?: string
+          metric_type: 'api_performance' | 'user_engagement' | 'error_rate' | 'cost_analysis'
+          value: number
+          metadata?: any
+          timestamp?: string
+        }
+        Update: {
+          id?: string
+          metric_type?: 'api_performance' | 'user_engagement' | 'error_rate' | 'cost_analysis'
+          value?: number
+          metadata?: any
+          timestamp?: string
+        }
+      }
+      logs: {
+        Row: {
+          id: string
+          level: 'error' | 'warn' | 'info' | 'debug'
+          message: string
+          context: any
+          user_id: string | null
+          session_id: string | null
+          stack_trace: string | null
+          timestamp: string
+          source: 'frontend' | 'api' | 'edge_function' | 'system'
+          component: string | null
+        }
+        Insert: {
+          id?: string
+          level: 'error' | 'warn' | 'info' | 'debug'
+          message: string
+          context?: any
+          user_id?: string | null
+          session_id?: string | null
+          stack_trace?: string | null
+          timestamp?: string
+          source: 'frontend' | 'api' | 'edge_function' | 'system'
+          component?: string | null
+        }
+        Update: {
+          id?: string
+          level?: 'error' | 'warn' | 'info' | 'debug'
+          message?: string
+          context?: any
+          user_id?: string | null
+          session_id?: string | null
+          stack_trace?: string | null
+          timestamp?: string
+          source?: 'frontend' | 'api' | 'edge_function' | 'system'
+          component?: string | null
+        }
+      }
+      error_reports: {
+        Row: {
+          id: string
+          error_type: string
+          message: string
+          stack_trace: string | null
+          user_id: string | null
+          session_id: string | null
+          context: any
+          resolved: boolean
+          created_at: string
+          resolved_at: string | null
+        }
+        Insert: {
+          id?: string
+          error_type: string
+          message: string
+          stack_trace?: string | null
+          user_id?: string | null
+          session_id?: string | null
+          context?: any
+          resolved?: boolean
+          created_at?: string
+          resolved_at?: string | null
+        }
+        Update: {
+          id?: string
+          error_type?: string
+          message?: string
+          stack_trace?: string | null
+          user_id?: string | null
+          session_id?: string | null
+          context?: any
+          resolved?: boolean
+          created_at?: string
+          resolved_at?: string | null
+        }
+      }
+      recipe_feedback: {
+        Row: {
+          id: number
+          recipe_id: number | null
+          user_id: string | null
+          feedback_type: 'thumbs_up' | 'thumbs_down' | 'rating'
+          score: number | null
+          feedback_text: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          recipe_id?: number | null
+          user_id?: string | null
+          feedback_type: 'thumbs_up' | 'thumbs_down' | 'rating'
+          score?: number | null
+          feedback_text?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          recipe_id?: number | null
+          user_id?: string | null
+          feedback_type?: 'thumbs_up' | 'thumbs_down' | 'rating'
+          score?: number | null
+          feedback_text?: string | null
+          created_at?: string
+        }
+      }
+      ai_config: {
+        Row: {
+          id: string
+          model_name: string
+          system_prompt: string
+          message_templates: any
+          version: string
+          is_active: boolean
+          created_at: string
+          performance_score: number | null
+          metadata: any
+        }
+        Insert: {
+          id?: string
+          model_name: string
+          system_prompt: string
+          message_templates: any
+          version: string
+          is_active?: boolean
+          created_at?: string
+          performance_score?: number | null
+          metadata?: any
+        }
+        Update: {
+          id?: string
+          model_name?: string
+          system_prompt?: string
+          message_templates?: any
+          version?: string
+          is_active?: boolean
+          created_at?: string
+          performance_score?: number | null
+          metadata?: any
+        }
+      }
+      workflow_state: {
+        Row: {
+          id: string
+          workflow_name: string
+          status: 'pending' | 'running' | 'completed' | 'failed'
+          current_step: string | null
+          progress_percentage: number
+          metadata: any
+          started_at: string
+          completed_at: string | null
+          error_message: string | null
+        }
+        Insert: {
+          id?: string
+          workflow_name: string
+          status: 'pending' | 'running' | 'completed' | 'failed'
+          current_step?: string | null
+          progress_percentage?: number
+          metadata?: any
+          started_at?: string
+          completed_at?: string | null
+          error_message?: string | null
+        }
+        Update: {
+          id?: string
+          workflow_name?: string
+          status?: 'pending' | 'running' | 'completed' | 'failed'
+          current_step?: string | null
+          progress_percentage?: number
+          metadata?: any
+          started_at?: string
+          completed_at?: string | null
+          error_message?: string | null
+        }
+      }
+    }
+    Functions: {
+      get_popular_ingredients: {
+        Args: {
+          limit_count?: number
+        }
+        Returns: {
+          ingredient: string
+          usage_count: number
+        }[]
+      }
+      get_cuisine_preferences: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          cuisine_type: string
+          preference_count: number
+        }[]
+      }
+      get_recipe_feedback_summary: {
+        Args: {
+          recipe_id_param: number
+        }
+        Returns: {
+          total_feedback: number
+          average_rating: number
+          thumbs_up_count: number
+          thumbs_down_count: number
+        }[]
+      }
+      update_recipe_feedback: {
+        Args: {
+          recipe_id_param: number
+          user_id_param: string
+          feedback_type_param: string
+          score_param?: number
+          feedback_text_param?: string
+        }
+        Returns: number
+      }
     }
   }
 }

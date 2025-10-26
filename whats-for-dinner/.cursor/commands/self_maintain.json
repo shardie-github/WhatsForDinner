@@ -1,0 +1,130 @@
+{
+  "name": "Self-Maintain System",
+  "description": "Autonomous system maintenance and optimization",
+  "version": "1.0.0",
+  "commands": {
+    "analyze_system": {
+      "description": "Analyze system performance and user feedback",
+      "prompt": "Analyze the current system performance, review user feedback patterns, and identify areas for improvement. Check error rates, API latency, user satisfaction scores, and suggest optimizations.",
+      "triggers": ["daily", "error_threshold_exceeded", "performance_degradation"]
+    },
+    "optimize_ai_prompts": {
+      "description": "Optimize AI prompts based on user feedback",
+      "prompt": "Review user feedback data, identify common issues with recipe generation, and optimize the AI prompts to improve user satisfaction. Update prompt templates and test new configurations.",
+      "triggers": ["weekly", "feedback_threshold_exceeded", "low_satisfaction_score"]
+    },
+    "update_ai_config": {
+      "description": "Update AI configuration based on performance metrics",
+      "prompt": "Analyze AI performance metrics, compare different model configurations, and update the AI configuration to improve recipe quality and response times. Test new models and configurations.",
+      "triggers": ["monthly", "model_deprecation", "performance_improvement_available"]
+    },
+    "generate_analytics_report": {
+      "description": "Generate comprehensive analytics report",
+      "prompt": "Generate a detailed analytics report including user engagement metrics, popular ingredients, cuisine preferences, API performance, and system health. Create visualizations and insights.",
+      "triggers": ["weekly", "monthly", "on_demand"]
+    },
+    "cleanup_system": {
+      "description": "Clean up old data and optimize system resources",
+      "prompt": "Clean up old logs, analytics data, and temporary files. Optimize database queries, remove unused data, and ensure system resources are efficiently utilized.",
+      "triggers": ["daily", "storage_threshold_exceeded", "performance_issues"]
+    },
+    "health_check": {
+      "description": "Perform comprehensive system health check",
+      "prompt": "Check database connectivity, API endpoints, external services, error rates, and system performance. Identify and report any issues or potential problems.",
+      "triggers": ["hourly", "error_detected", "system_alert"]
+    },
+    "backup_data": {
+      "description": "Backup critical system data",
+      "prompt": "Create backups of critical data including user preferences, recipe data, analytics, and configuration. Ensure data integrity and create recovery plans.",
+      "triggers": ["daily", "before_major_update", "data_corruption_risk"]
+    },
+    "test_system": {
+      "description": "Run comprehensive system tests",
+      "prompt": "Run all system tests including unit tests, integration tests, API tests, and user acceptance tests. Verify system functionality and performance.",
+      "triggers": ["before_deployment", "after_changes", "weekly"]
+    },
+    "update_documentation": {
+      "description": "Update system documentation",
+      "prompt": "Update API documentation, system architecture docs, user guides, and technical documentation. Ensure all documentation is current and accurate.",
+      "triggers": ["after_changes", "weekly", "on_demand"]
+    },
+    "security_audit": {
+      "description": "Perform security audit and vulnerability assessment",
+      "prompt": "Review security configurations, check for vulnerabilities, audit user permissions, and ensure compliance with security best practices.",
+      "triggers": ["weekly", "security_alert", "compliance_requirement"]
+    }
+  },
+  "workflows": {
+    "nightly_maintenance": {
+      "description": "Nightly system maintenance routine",
+      "steps": [
+        "health_check",
+        "cleanup_system",
+        "backup_data",
+        "analyze_system"
+      ],
+      "schedule": "0 2 * * *",
+      "enabled": true
+    },
+    "weekly_optimization": {
+      "description": "Weekly system optimization routine",
+      "steps": [
+        "analyze_system",
+        "optimize_ai_prompts",
+        "generate_analytics_report",
+        "test_system"
+      ],
+      "schedule": "0 3 * * 0",
+      "enabled": true
+    },
+    "monthly_review": {
+      "description": "Monthly system review and update",
+      "steps": [
+        "analyze_system",
+        "update_ai_config",
+        "security_audit",
+        "update_documentation"
+      ],
+      "schedule": "0 4 1 * *",
+      "enabled": true
+    },
+    "error_recovery": {
+      "description": "Error detection and recovery workflow",
+      "steps": [
+        "health_check",
+        "analyze_system",
+        "cleanup_system",
+        "test_system"
+      ],
+      "triggers": ["error_detected", "system_failure"],
+      "enabled": true
+    }
+  },
+  "monitoring": {
+    "metrics": [
+      "api_response_time",
+      "error_rate",
+      "user_satisfaction",
+      "system_uptime",
+      "database_performance",
+      "ai_model_performance"
+    ],
+    "thresholds": {
+      "api_response_time": 2000,
+      "error_rate": 0.05,
+      "user_satisfaction": 0.8,
+      "system_uptime": 0.99
+    },
+    "alerts": {
+      "email": ["admin@example.com"],
+      "webhook": "https://hooks.slack.com/services/...",
+      "log_level": "error"
+    }
+  },
+  "compliance": {
+    "gdpr": true,
+    "data_retention_days": 90,
+    "privacy_policy_required": true,
+    "audit_logging": true
+  }
+}

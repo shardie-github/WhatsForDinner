@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Recipe } from '@/lib/validation'
+import RecipeFeedback from './RecipeFeedback'
 
 interface RecipeCardProps {
   recipe: Recipe
@@ -9,6 +10,8 @@ interface RecipeCardProps {
   onRemove?: () => void
   canSave?: boolean
   isFavorite?: boolean
+  userId?: string
+  recipeId?: number
 }
 
 export default function RecipeCard({ 
@@ -16,7 +19,9 @@ export default function RecipeCard({
   onSave, 
   onRemove, 
   canSave = false,
-  isFavorite = false 
+  isFavorite = false,
+  userId,
+  recipeId
 }: RecipeCardProps) {
   const [showDetails, setShowDetails] = useState(false)
 
@@ -95,6 +100,19 @@ export default function RecipeCard({
             </button>
           )}
         </div>
+
+        {/* Recipe Feedback Component */}
+        {userId && recipeId && (
+          <div className=\"border-t pt-4 mt-4\">
+            <RecipeFeedback
+              recipeId={recipeId}
+              userId={userId}
+              onFeedbackSubmitted={(feedback) => {
+                console.log('Feedback submitted:', feedback)
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   )
