@@ -1,0 +1,29 @@
+{
+  "name": "@whats-for-dinner/ui",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@whats-for-dinner/utils": "workspace:*",
+    "@whats-for-dinner/theme": "workspace:*",
+    "react": "^19.2.0",
+    "react-native": "^0.75.0",
+    "react-native-safe-area-context": "^4.10.0",
+    "react-native-svg": "^15.0.0",
+    "lucide-react-native": "^0.460.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-native": "^0.75.0",
+    "@types/node": "^20",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react": "^19.2.0",
+    "react-native": "^0.75.0"
+  }
+}
