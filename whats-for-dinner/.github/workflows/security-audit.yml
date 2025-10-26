@@ -1,8 +1,8 @@
-name: Security Audit & Compliance Check
+name: Security Audit
 
 on:
   schedule:
-    - cron: '0 2 * * 1' # Every Monday at 2 AM
+    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
   workflow_dispatch:
     inputs:
       audit_type:
@@ -12,132 +12,20 @@ on:
         type: choice
         options:
           - full
-          - quick
-          - compliance
           - dependencies
-      environment:
-        description: 'Target environment'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-          - staging
-          - production
+          - secrets
+          - rls
+          - cors
 
 env:
   NODE_VERSION: '20'
-  AUDIT_TIMEOUT: '30m'
+  PNPM_VERSION: '8'
 
 jobs:
-  security-audit:
-    name: Security Audit
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    outputs:
-      audit-score: ${{ steps.audit.outputs.score }}
-      critical-issues: ${{ steps.audit.outputs.critical-issues }}
-      high-issues: ${{ steps.audit.outputs.high-issues }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run security audit
-        id: audit
-        run: |
-          echo "🔒 Running comprehensive security audit..."
-          
-          # Run the security audit script
-          node scripts/security-audit.js
-          
-          # Parse audit results
-          if [ -f "SECURITY_AUDIT_REPORT.json" ]; then
-            AUDIT_SCORE=$(jq -r '.overallScore' SECURITY_AUDIT_REPORT.json)
-            CRITICAL_ISSUES=$(jq -r '.summary.criticalCount' SECURITY_AUDIT_REPORT.json)
-            HIGH_ISSUES=$(jq -r '.summary.highCount' SECURITY_AUDIT_REPORT.json)
-            
-            echo "audit-score=$AUDIT_SCORE" >> $GITHUB_OUTPUT
-            echo "critical-issues=$CRITICAL_ISSUES" >> $GITHUB_OUTPUT
-            echo "high-issues=$HIGH_ISSUES" >> $GITHUB_OUTPUT
-            
-            echo "📊 Audit Score: $AUDIT_SCORE/100"
-            echo "🚨 Critical Issues: $CRITICAL_ISSUES"
-            echo "⚠️  High Issues: $HIGH_ISSUES"
-          else
-            echo "❌ Security audit report not found"
-            exit 1
-          fi
-
-      - name: Upload security audit report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: security-audit-report
-          path: |
-            SECURITY_AUDIT_REPORT.json
-            SECURITY_AUDIT_REPORT.md
-          retention-days: 30
-
-      - name: Comment on PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const path = require('path');
-            
-            let comment = '## 🔒 Security Audit Results\n\n';
-            
-            if (fs.existsSync('SECURITY_AUDIT_REPORT.json')) {
-              const report = JSON.parse(fs.readFileSync('SECURITY_AUDIT_REPORT.json', 'utf8'));
-              
-              comment += `**Overall Score:** ${report.overallScore}/100\n\n`;
-              comment += `**Issues Found:**\n`;
-              comment += `- Critical: ${report.summary.criticalCount}\n`;
-              comment += `- High: ${report.summary.highCount}\n`;
-              comment += `- Medium: ${report.summary.mediumCount}\n`;
-              comment += `- Low: ${report.summary.lowCount}\n\n`;
-              
-              if (report.criticalIssues.length > 0) {
-                comment += `### 🚨 Critical Issues\n`;
-                report.criticalIssues.forEach(issue => {
-                  comment += `- **${issue.category}:** ${issue.issue}\n`;
-                });
-                comment += '\n';
-              }
-              
-              if (report.highIssues.length > 0) {
-                comment += `### ⚠️ High Issues\n`;
-                report.highIssues.forEach(issue => {
-                  comment += `- **${issue.category}:** ${issue.issue}\n`;
-                });
-                comment += '\n';
-              }
-              
-              comment += `[View full report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
-            } else {
-              comment += '❌ Security audit report not found';
-            }
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
-
   dependency-audit:
     name: Dependency Security Audit
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    if: github.event.inputs.audit_type == 'full' || github.event.inputs.audit_type == 'dependencies' || github.event_name == 'schedule'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -146,36 +34,56 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
-      - name: Run npm audit
-        run: |
-          echo "🔍 Running dependency security audit..."
-          npm audit --audit-level=moderate --json > audit-results.json || true
-          
-          if [ -s audit-results.json ]; then
-            echo "📊 Dependency audit completed"
-            cat audit-results.json | jq '.vulnerabilities | length' || echo "0"
-          else
-            echo "✅ No vulnerabilities found"
-          fi
+      - name: Run pnpm audit
+        run: pnpm audit --audit-level moderate
 
-      - name: Upload dependency audit results
-        uses: actions/upload-artifact@v4
-        if: always()
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          name: dependency-audit-results
-          path: audit-results.json
-          retention-days: 30
+          args: --severity-threshold=high --json-file-output=snyk-results.json
 
-  secrets-rotation:
-    name: Secrets Rotation Check
+      - name: Upload Snyk results
+        uses: actions/upload-artifact@v3
+        with:
+          name: snyk-results
+          path: snyk-results.json
+
+  secrets-audit:
+    name: Secrets Audit
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: github.event_name == 'schedule'
+    if: github.event.inputs.audit_type == 'full' || github.event.inputs.audit_type == 'secrets' || github.event_name == 'schedule'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      - name: Run GitLeaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  rls-audit:
+    name: Row Level Security Audit
+    runs-on: ubuntu-latest
+    if: github.event.inputs.audit_type == 'full' || github.event.inputs.audit_type == 'rls' || github.event_name == 'schedule'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -184,25 +92,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
-      - name: Check secrets rotation status
-        run: |
-          echo "🔄 Checking secrets rotation status..."
-          
-          # Check if secrets need rotation
-          node scripts/secrets-rotation.js --check-only
-          
-          echo "✅ Secrets rotation check completed"
+      - name: Run RLS validation
+        run: pnpm security:audit:rls
 
-  compliance-check:
-    name: Compliance Check
+      - name: Upload RLS audit results
+        uses: actions/upload-artifact@v3
+        with:
+          name: rls-audit-results
+          path: security-audit/rls-results.json
+
+  cors-audit:
+    name: CORS Configuration Audit
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    if: github.event.inputs.audit_type == 'compliance' || github.event_name == 'schedule'
+    if: github.event.inputs.audit_type == 'full' || github.event.inputs.audit_type == 'cors' || github.event_name == 'schedule'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -211,95 +122,116 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
-      - name: Run compliance check
-        run: |
-          echo "📋 Running compliance check..."
-          
-          # Check GDPR compliance
-          echo "🔍 Checking GDPR compliance..."
-          if [ -f "src/app/api/consent/route.ts" ]; then
-            echo "✅ Data processing consent mechanism found"
-          else
-            echo "❌ Data processing consent mechanism missing"
-          fi
-          
-          # Check SOC2 compliance
-          echo "🔍 Checking SOC2 compliance..."
-          if [ -f "src/lib/rbac.ts" ]; then
-            echo "✅ Role-based access control found"
-          else
-            echo "❌ Role-based access control missing"
-          fi
-          
-          # Check ISO 27001 compliance
-          echo "🔍 Checking ISO 27001 compliance..."
-          if [ -f "SECURITY_POLICIES.md" ]; then
-            echo "✅ Security policies found"
-          else
-            echo "❌ Security policies missing"
-          fi
-          
-          echo "✅ Compliance check completed"
+      - name: Run CORS audit
+        run: pnpm security:audit:cors
 
-  security-notification:
-    name: Security Notification
+      - name: Upload CORS audit results
+        uses: actions/upload-artifact@v3
+        with:
+          name: cors-audit-results
+          path: security-audit/cors-results.json
+
+  key-rotation:
+    name: Automated Key Rotation
     runs-on: ubuntu-latest
-    needs: [security-audit, dependency-audit]
-    if: always() && (needs.security-audit.result == 'failure' || needs.dependency-audit.result == 'failure')
+    if: github.event.inputs.audit_type == 'full' || github.event_name == 'schedule'
     steps:
-      - name: Send security alert
-        run: |
-          echo "🚨 Security audit failed!"
-          echo "Critical issues: ${{ needs.security-audit.outputs.critical-issues }}"
-          echo "High issues: ${{ needs.security-audit.outputs.high-issues }}"
-          
-          # Send notification to security team
-          echo "Sending security alert notification..."
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run key rotation check
+        run: pnpm security:key-rotation:check
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+
+      - name: Rotate keys if needed
+        run: pnpm security:key-rotation:rotate
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        if: success()
 
   security-report:
     name: Generate Security Report
     runs-on: ubuntu-latest
-    needs: [security-audit, dependency-audit, compliance-check]
+    needs: [dependency-audit, secrets-audit, rls-audit, cors-audit, key-rotation]
     if: always()
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download security audit artifacts
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: security-audit-report
-          path: ./reports/
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Download dependency audit artifacts
-        uses: actions/download-artifact@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          name: dependency-audit-results
-          path: ./reports/
+          version: ${{ env.PNPM_VERSION }}
 
-      - name: Generate comprehensive security report
-        run: |
-          echo "📊 Generating comprehensive security report..."
-          
-          # Combine all audit results
-          if [ -f "reports/SECURITY_AUDIT_REPORT.json" ]; then
-            echo "✅ Security audit report found"
-          fi
-          
-          if [ -f "reports/audit-results.json" ]; then
-            echo "✅ Dependency audit results found"
-          fi
-          
-          echo "📋 Security report generation completed"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Upload comprehensive security report
-        uses: actions/upload-artifact@v4
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Generate security report
+        run: pnpm security:report:generate
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v3
         with:
-          name: comprehensive-security-report
-          path: ./reports/
-          retention-days: 90
+          name: security-report
+          path: security-audit/security-report.md
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('security-audit/security-report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Security Audit Report\n\n${report}`
+            });
+
+  notify-security-team:
+    name: Notify Security Team
+    runs-on: ubuntu-latest
+    needs: [security-report]
+    if: always() && (needs.dependency-audit.result == 'failure' || needs.secrets-audit.result == 'failure' || needs.rls-audit.result == 'failure' || needs.cors-audit.result == 'failure')
+    steps:
+      - name: Notify Slack Security Channel
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: '#security-alerts'
+          webhook_url: ${{ secrets.SLACK_SECURITY_WEBHOOK }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
