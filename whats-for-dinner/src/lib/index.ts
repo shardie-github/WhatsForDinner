@@ -29,12 +29,39 @@ export { BaseAgent } from './agents/baseAgent';
 export { run_terminal_cmd } from '../utils/commandRunner';
 
 // Types
-export type { SystemMetrics, AgentState, DiagnosticResult } from './autonomousSystem';
-export type { SafetyViolation, PromptSanitizationResult, ThreatSimulationResult } from './aiSafetyGuardrails';
-export type { Secret, SecretVault, SecurityScanResult, SecretsManifest } from './secretsIntelligence';
-export type { BuildPrediction, ResourceScalingDecision, BehavioralAnalytics } from './predictiveOptimization';
-export type { KnowledgeEntry, MetaPrompt, LearningSession, AutonomousReflection } from './cognitiveContinuity';
-export type { AuditEvent, ComplianceCheck, SystemHealth, AutonomyAudit } from './observabilityAudit';
+export type {
+  SystemMetrics,
+  AgentState,
+  DiagnosticResult,
+} from './autonomousSystem';
+export type {
+  SafetyViolation,
+  PromptSanitizationResult,
+  ThreatSimulationResult,
+} from './aiSafetyGuardrails';
+export type {
+  Secret,
+  SecretVault,
+  SecurityScanResult,
+  SecretsManifest,
+} from './secretsIntelligence';
+export type {
+  BuildPrediction,
+  ResourceScalingDecision,
+  BehavioralAnalytics,
+} from './predictiveOptimization';
+export type {
+  KnowledgeEntry,
+  MetaPrompt,
+  LearningSession,
+  AutonomousReflection,
+} from './cognitiveContinuity';
+export type {
+  AuditEvent,
+  ComplianceCheck,
+  SystemHealth,
+  AutonomyAudit,
+} from './observabilityAudit';
 export type { SystemStatus, AutonomousAction } from './autonomousOrchestrator';
 export type { AgentConfig, AgentAction, AgentMemory } from './agents/baseAgent';
 
@@ -44,14 +71,15 @@ export type { AgentConfig, AgentAction, AgentMemory } from './agents/baseAgent';
 export async function initializeAutonomousSystem(): Promise<void> {
   try {
     console.log('🚀 Initializing Autonomous "What\'s for Dinner" System...');
-    
+
     // The orchestrator will handle all initialization
     console.log('✅ Autonomous system initialized successfully');
-    console.log('🎯 System is now self-healing, self-optimizing, and continuously learning');
+    console.log(
+      '🎯 System is now self-healing, self-optimizing, and continuously learning'
+    );
     console.log('🛡️ Security guardrails and compliance monitoring active');
     console.log('🧠 Cognitive continuity and knowledge evolution enabled');
     console.log('📊 Predictive optimization and behavioral analytics running');
-    
   } catch (error) {
     console.error('❌ Failed to initialize autonomous system:', error);
     throw error;
@@ -63,15 +91,20 @@ export async function initializeAutonomousSystem(): Promise<void> {
  */
 export function getSystemStatusSummary(): string {
   const status = autonomousOrchestrator.getSystemStatus();
-  
+
   if (!status) {
     return 'System status unavailable';
   }
-  
-  const healthEmoji = status.overall === 'healthy' ? '🟢' : 
-                     status.overall === 'degraded' ? '🟡' : 
-                     status.overall === 'critical' ? '🔴' : '⚪';
-  
+
+  const healthEmoji =
+    status.overall === 'healthy'
+      ? '🟢'
+      : status.overall === 'degraded'
+        ? '🟡'
+        : status.overall === 'critical'
+          ? '🔴'
+          : '⚪';
+
   return `
 ${healthEmoji} Autonomous System Status: ${status.overall.toUpperCase()}
 📊 Success Rate: ${(status.metrics.successRate * 100).toFixed(1)}%

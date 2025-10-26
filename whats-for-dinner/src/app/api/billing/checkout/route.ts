@@ -1,25 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { StripeService } from '@/lib/stripe'
-import { supabase } from '@/lib/supabaseClient'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server';
+import { StripeService } from '@/lib/stripe';
+import { supabase } from '@/lib/supabaseClient';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
-    const { data: { user } } = await supabase.auth.getUser()
+    const supabase = createRouteHandlerClient({ cookies });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { plan, successUrl, cancelUrl } = await request.json()
+    const { plan, successUrl, cancelUrl } = await request.json();
 
     if (!plan || !successUrl || !cancelUrl) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
-      )
+      );
     }
 
     // Get user's tenant
@@ -27,13 +29,13 @@ export async function POST(request: NextRequest) {
       .from('profiles')
       .select('tenant_id')
       .eq('id', user.id)
-      .single()
+      .single();
 
     if (!profile?.tenant_id) {
       return NextResponse.json(
         { error: 'No tenant found for user' },
         { status: 400 }
-      )
+      );
     }
 
     // Create checkout session
@@ -43,14 +45,14 @@ export async function POST(request: NextRequest) {
       plan,
       successUrl,
       cancelUrl,
-    })
+    });
 
-    return NextResponse.json({ sessionId: session.id, url: session.url })
+    return NextResponse.json({ sessionId: session.id, url: session.url });
   } catch (error) {
-    console.error('Checkout error:', error)
+    console.error('Checkout error:', error);
     return NextResponse.json(
       { error: 'Failed to create checkout session' },
       { status: 500 }
-    )
+    );
   }
 }

@@ -1,24 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { StripeService } from '@/lib/stripe'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server';
+import { StripeService } from '@/lib/stripe';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
-    const { data: { user } } = await supabase.auth.getUser()
+    const supabase = createRouteHandlerClient({ cookies });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { returnUrl } = await request.json()
+    const { returnUrl } = await request.json();
 
     if (!returnUrl) {
-      return NextResponse.json(
-        { error: 'Missing returnUrl' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing returnUrl' }, { status: 400 });
     }
 
     // Get user's tenant
@@ -26,13 +25,13 @@ export async function POST(request: NextRequest) {
       .from('profiles')
       .select('tenant_id')
       .eq('id', user.id)
-      .single()
+      .single();
 
     if (!profile?.tenant_id) {
       return NextResponse.json(
         { error: 'No tenant found for user' },
         { status: 400 }
-      )
+      );
     }
 
     // Create customer portal session
@@ -40,14 +39,14 @@ export async function POST(request: NextRequest) {
       tenantId: profile.tenant_id,
       userId: user.id,
       returnUrl,
-    })
+    });
 
-    return NextResponse.json({ url: session.url })
+    return NextResponse.json({ url: session.url });
   } catch (error) {
-    console.error('Portal error:', error)
+    console.error('Portal error:', error);
     return NextResponse.json(
       { error: 'Failed to create portal session' },
       { status: 500 }
-    )
+    );
   }
 }

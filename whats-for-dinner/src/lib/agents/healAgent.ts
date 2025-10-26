@@ -42,13 +42,13 @@ export class HealAgent extends BaseAgent {
         'refactor_code',
         'run_tests',
         'validate_fixes',
-        'rollback_changes'
+        'rollback_changes',
       ],
       safetyConstraints: [
         'no_breaking_changes_without_tests',
         'preserve_functionality',
         'maintain_code_quality',
-        'no_security_compromises'
+        'no_security_compromises',
       ],
       learningRate: 0.2,
       maxRetries: 5,
@@ -82,32 +82,38 @@ export class HealAgent extends BaseAgent {
     }
   }
 
-  protected checkSafetyConstraint(constraint: string, action: AgentAction): boolean {
+  protected checkSafetyConstraint(
+    constraint: string,
+    action: AgentAction
+  ): boolean {
     switch (constraint) {
       case 'no_breaking_changes_without_tests':
         if (action.type === 'refactor_code' || action.type === 'fix_errors') {
           return this.hasComprehensiveTests();
         }
         return true;
-      
+
       case 'preserve_functionality':
         if (action.type === 'fix_errors' || action.type === 'refactor_code') {
           return action.payload?.preserveFunctionality === true;
         }
         return true;
-      
+
       case 'maintain_code_quality':
-        if (action.type === 'fix_warnings' || action.type === 'optimize_performance') {
+        if (
+          action.type === 'fix_warnings' ||
+          action.type === 'optimize_performance'
+        ) {
           return this.willMaintainCodeQuality(action);
         }
         return true;
-      
+
       case 'no_security_compromises':
         if (action.type === 'fix_security' || action.type === 'refactor_code') {
           return this.willNotCompromiseSecurity(action);
         }
         return true;
-      
+
       default:
         return true;
     }
@@ -119,23 +125,23 @@ export class HealAgent extends BaseAgent {
   private async scanCode(): Promise<boolean> {
     try {
       logger.info('Scanning code for issues');
-      
+
       // Run linting to find style and basic issues
       const lintResult = await run_terminal_cmd('npm run lint');
-      
+
       // Run type checking for TypeScript errors
       const typeCheckResult = await run_terminal_cmd('npm run type-check');
-      
+
       // Run security audit
       const securityResult = await run_terminal_cmd('npm audit --json');
-      
+
       // Parse results and create issue list
       this.codeIssues = await this.parseScanResults({
         lint: lintResult,
         typeCheck: typeCheckResult,
         security: securityResult,
       });
-      
+
       logger.info(`Found ${this.codeIssues.length} code issues`);
       return true;
     } catch (error) {
@@ -150,18 +156,21 @@ export class HealAgent extends BaseAgent {
   private async fixErrors(payload: any): Promise<boolean> {
     try {
       logger.info('Fixing code errors');
-      
+
       const errors = this.codeIssues.filter(issue => issue.type === 'error');
       const autoFixableErrors = errors.filter(issue => issue.autoFixable);
-      
+
       if (autoFixableErrors.length === 0) {
         logger.info('No auto-fixable errors found');
         return true;
       }
-      
-      const repairResult = await this.performRepairs(autoFixableErrors, 'error');
+
+      const repairResult = await this.performRepairs(
+        autoFixableErrors,
+        'error'
+      );
       this.repairHistory.push(repairResult);
-      
+
       logger.info(`Fixed ${repairResult.issuesFixed} errors`, { repairResult });
       return repairResult.success;
     } catch (error) {
@@ -176,19 +185,26 @@ export class HealAgent extends BaseAgent {
   private async fixWarnings(payload: any): Promise<boolean> {
     try {
       logger.info('Fixing code warnings');
-      
-      const warnings = this.codeIssues.filter(issue => issue.type === 'warning');
+
+      const warnings = this.codeIssues.filter(
+        issue => issue.type === 'warning'
+      );
       const autoFixableWarnings = warnings.filter(issue => issue.autoFixable);
-      
+
       if (autoFixableWarnings.length === 0) {
         logger.info('No auto-fixable warnings found');
         return true;
       }
-      
-      const repairResult = await this.performRepairs(autoFixableWarnings, 'warning');
+
+      const repairResult = await this.performRepairs(
+        autoFixableWarnings,
+        'warning'
+      );
       this.repairHistory.push(repairResult);
-      
-      logger.info(`Fixed ${repairResult.issuesFixed} warnings`, { repairResult });
+
+      logger.info(`Fixed ${repairResult.issuesFixed} warnings`, {
+        repairResult,
+      });
       return repairResult.success;
     } catch (error) {
       logger.error('Warning fixing failed', { error });
@@ -202,19 +218,24 @@ export class HealAgent extends BaseAgent {
   private async optimizePerformance(payload: any): Promise<boolean> {
     try {
       logger.info('Optimizing performance');
-      
-      const performanceIssues = this.codeIssues.filter(issue => issue.type === 'performance');
-      
+
+      const performanceIssues = this.codeIssues.filter(
+        issue => issue.type === 'performance'
+      );
+
       if (performanceIssues.length === 0) {
         logger.info('No performance issues found');
         return true;
       }
-      
-      const optimizations = await this.generatePerformanceOptimizations(performanceIssues);
+
+      const optimizations =
+        await this.generatePerformanceOptimizations(performanceIssues);
       const repairResult = await this.applyOptimizations(optimizations);
       this.repairHistory.push(repairResult);
-      
-      logger.info(`Applied ${optimizations.length} performance optimizations`, { repairResult });
+
+      logger.info(`Applied ${optimizations.length} performance optimizations`, {
+        repairResult,
+      });
       return repairResult.success;
     } catch (error) {
       logger.error('Performance optimization failed', { error });
@@ -228,19 +249,23 @@ export class HealAgent extends BaseAgent {
   private async fixSecurityIssues(payload: any): Promise<boolean> {
     try {
       logger.info('Fixing security issues');
-      
-      const securityIssues = this.codeIssues.filter(issue => issue.type === 'security');
-      
+
+      const securityIssues = this.codeIssues.filter(
+        issue => issue.type === 'security'
+      );
+
       if (securityIssues.length === 0) {
         logger.info('No security issues found');
         return true;
       }
-      
+
       const securityFixes = await this.generateSecurityFixes(securityIssues);
       const repairResult = await this.applySecurityFixes(securityFixes);
       this.repairHistory.push(repairResult);
-      
-      logger.info(`Applied ${securityFixes.length} security fixes`, { repairResult });
+
+      logger.info(`Applied ${securityFixes.length} security fixes`, {
+        repairResult,
+      });
       return repairResult.success;
     } catch (error) {
       logger.error('Security fixing failed', { error });
@@ -254,19 +279,23 @@ export class HealAgent extends BaseAgent {
   private async refactorCode(payload: any): Promise<boolean> {
     try {
       logger.info('Refactoring code');
-      
+
       const refactoringTargets = await this.identifyRefactoringTargets();
-      
+
       if (refactoringTargets.length === 0) {
         logger.info('No refactoring targets identified');
         return true;
       }
-      
-      const refactoringPlan = await this.createRefactoringPlan(refactoringTargets);
+
+      const refactoringPlan =
+        await this.createRefactoringPlan(refactoringTargets);
       const repairResult = await this.executeRefactoring(refactoringPlan);
       this.repairHistory.push(repairResult);
-      
-      logger.info(`Completed refactoring of ${refactoringTargets.length} targets`, { repairResult });
+
+      logger.info(
+        `Completed refactoring of ${refactoringTargets.length} targets`,
+        { repairResult }
+      );
       return repairResult.success;
     } catch (error) {
       logger.error('Code refactoring failed', { error });
@@ -280,9 +309,9 @@ export class HealAgent extends BaseAgent {
   private async runTests(): Promise<boolean> {
     try {
       logger.info('Running tests to validate fixes');
-      
+
       const testResult = await run_terminal_cmd('npm run test:ci');
-      
+
       if (testResult.success) {
         logger.info('All tests passed');
         return true;
@@ -302,19 +331,21 @@ export class HealAgent extends BaseAgent {
   private async validateFixes(payload: any): Promise<boolean> {
     try {
       logger.info('Validating fixes');
-      
+
       // Re-scan code to check if issues are resolved
       await this.scanCode();
-      
-      const remainingIssues = this.codeIssues.filter(issue => 
-        issue.severity === 'high' || issue.severity === 'critical'
+
+      const remainingIssues = this.codeIssues.filter(
+        issue => issue.severity === 'high' || issue.severity === 'critical'
       );
-      
+
       if (remainingIssues.length === 0) {
         logger.info('All critical issues resolved');
         return true;
       } else {
-        logger.warn(`${remainingIssues.length} critical issues remain`, { remainingIssues });
+        logger.warn(`${remainingIssues.length} critical issues remain`, {
+          remainingIssues,
+        });
         return false;
       }
     } catch (error) {
@@ -330,10 +361,10 @@ export class HealAgent extends BaseAgent {
     try {
       const changeId = payload?.changeId;
       logger.info(`Rolling back changes: ${changeId}`);
-      
+
       // In a real implementation, this would use git to rollback specific changes
       const rollbackResult = await run_terminal_cmd(`git revert ${changeId}`);
-      
+
       if (rollbackResult.success) {
         logger.info('Changes rolled back successfully');
         return true;
@@ -352,25 +383,25 @@ export class HealAgent extends BaseAgent {
    */
   private async parseScanResults(results: any): Promise<CodeIssue[]> {
     const issues: CodeIssue[] = [];
-    
+
     // Parse linting results
     if (results.lint && !results.lint.success) {
       const lintIssues = this.parseLintResults(results.lint.output);
       issues.push(...lintIssues);
     }
-    
+
     // Parse TypeScript errors
     if (results.typeCheck && !results.typeCheck.success) {
       const typeIssues = this.parseTypeCheckResults(results.typeCheck.output);
       issues.push(...typeIssues);
     }
-    
+
     // Parse security audit results
     if (results.security && results.security.success) {
       const securityIssues = this.parseSecurityResults(results.security.output);
       issues.push(...securityIssues);
     }
-    
+
     return issues;
   }
 
@@ -431,11 +462,14 @@ export class HealAgent extends BaseAgent {
   /**
    * Perform repairs on identified issues
    */
-  private async performRepairs(issues: CodeIssue[], issueType: string): Promise<RepairResult> {
+  private async performRepairs(
+    issues: CodeIssue[],
+    issueType: string
+  ): Promise<RepairResult> {
     const changes: string[] = [];
     let issuesFixed = 0;
     let issuesRemaining = 0;
-    
+
     for (const issue of issues) {
       try {
         const fix = await this.generateFix(issue);
@@ -451,10 +485,10 @@ export class HealAgent extends BaseAgent {
         issuesRemaining++;
       }
     }
-    
+
     // Run tests after fixes
     const testResults = await this.runTests();
-    
+
     return {
       success: issuesFixed > 0 && testResults,
       issuesFixed,
@@ -493,7 +527,9 @@ export class HealAgent extends BaseAgent {
   /**
    * Generate performance optimizations
    */
-  private async generatePerformanceOptimizations(issues: CodeIssue[]): Promise<string[]> {
+  private async generatePerformanceOptimizations(
+    issues: CodeIssue[]
+  ): Promise<string[]> {
     // In a real implementation, this would analyze code and suggest optimizations
     return [
       'Implement React.memo for expensive components',
@@ -505,10 +541,12 @@ export class HealAgent extends BaseAgent {
   /**
    * Apply performance optimizations
    */
-  private async applyOptimizations(optimizations: string[]): Promise<RepairResult> {
+  private async applyOptimizations(
+    optimizations: string[]
+  ): Promise<RepairResult> {
     // In a real implementation, this would apply actual optimizations
     logger.info('Applying performance optimizations', { optimizations });
-    
+
     return {
       success: true,
       issuesFixed: optimizations.length,
@@ -537,7 +575,7 @@ export class HealAgent extends BaseAgent {
   private async applySecurityFixes(fixes: string[]): Promise<RepairResult> {
     // In a real implementation, this would apply actual security fixes
     logger.info('Applying security fixes', { fixes });
-    
+
     return {
       success: true,
       issuesFixed: fixes.length,
@@ -582,7 +620,7 @@ export class HealAgent extends BaseAgent {
   private async executeRefactoring(plan: any): Promise<RepairResult> {
     // In a real implementation, this would execute the refactoring plan
     logger.info('Executing refactoring plan', { plan });
-    
+
     return {
       success: true,
       issuesFixed: plan.steps.length,

@@ -64,7 +64,7 @@ jobs:
           node -e "
           const { workflowManager } = require('./src/lib/workflowManager.ts');
           const { logger } = require('./src/lib/logger.ts');
-          
+
           async function healthCheck() {
             try {
               const workflowId = await workflowManager.createSelfHealWorkflow();
@@ -82,7 +82,7 @@ jobs:
               process.exit(1);
             }
           }
-          
+
           healthCheck();
           "
 
@@ -92,7 +92,7 @@ jobs:
           echo "Generating analytics report..."
           node -e "
           const { workflowManager } = require('./src/lib/workflowManager.ts');
-          
+
           async function generateReport() {
             try {
               const workflowId = await workflowManager.createAnalyticsWorkflow();
@@ -107,7 +107,7 @@ jobs:
               console.error('❌ Analytics report error:', error);
             }
           }
-          
+
           generateReport();
           "
 
@@ -117,31 +117,31 @@ jobs:
           echo "Updating documentation..."
           # Generate API documentation
           npm run build
-          
+
           # Update README with latest metrics
           node -e "
           const { analytics } = require('./src/lib/analytics.ts');
           const fs = require('fs');
-          
+
           async function updateReadme() {
             try {
               const recipeAnalytics = await analytics.getRecipeAnalytics('week');
               const popularIngredients = await analytics.getPopularIngredients(5);
               
               const readmeContent = \`# What's for Dinner
-          
+
           ## System Status
           - **Total Recipes Generated**: \${recipeAnalytics?.length || 0}
           - **Popular Ingredients**: \${popularIngredients?.map(i => i.ingredient).join(', ') || 'N/A'}
           - **Last Updated**: \${new Date().toISOString()}
-          
+
           ## Features
           - AI-powered recipe generation
           - Self-optimizing system
           - Real-time analytics
           - User feedback integration
           - Autonomous monitoring
-          
+
           ## Quick Start
           \`npm install\`
           \`npm run dev\`
@@ -153,7 +153,7 @@ jobs:
               console.error('❌ Documentation update error:', error);
             }
           }
-          
+
           updateReadme();
           "
 
@@ -164,7 +164,7 @@ jobs:
           node -e "
           const { aiConfigManager } = require('./src/lib/aiConfig.ts');
           const { logger } = require('./src/lib/logger.ts');
-          
+
           async function checkDeprecations() {
             try {
               const currentConfig = await aiConfigManager.getCurrentConfig();
@@ -184,7 +184,7 @@ jobs:
               console.error('❌ Deprecation check error:', error);
             }
           }
-          
+
           checkDeprecations();
           "
 
@@ -194,7 +194,7 @@ jobs:
           echo "Cleaning up old data..."
           node -e "
           const { workflowManager } = require('./src/lib/workflowManager.ts');
-          
+
           async function cleanup() {
             try {
               const workflowId = await workflowManager.createMaintenanceWorkflow();
@@ -209,7 +209,7 @@ jobs:
               console.error('❌ Data cleanup error:', error);
             }
           }
-          
+
           cleanup();
           "
 
@@ -262,11 +262,11 @@ jobs:
         run: |
           echo "Checking for security vulnerabilities..."
           npm audit --json > audit-results.json
-          
+
           # Check if there are high or critical vulnerabilities
           HIGH_VULNS=$(cat audit-results.json | jq '.metadata.vulnerabilities.high // 0')
           CRITICAL_VULNS=$(cat audit-results.json | jq '.metadata.vulnerabilities.critical // 0')
-          
+
           if [ "$HIGH_VULNS" -gt 0 ] || [ "$CRITICAL_VULNS" -gt 0 ]; then
             echo "❌ Security vulnerabilities found:"
             echo "High: $HIGH_VULNS, Critical: $CRITICAL_VULNS"

@@ -74,27 +74,26 @@ export class AutonomousOrchestrator {
   private async initializeAgents(): Promise<void> {
     try {
       logger.info('Initializing autonomous agents');
-      
+
       // Initialize agents
       const buildAgent = new BuildAgent();
       const insightAgent = new InsightAgent();
       const healAgent = new HealAgent();
       const ethicsAgent = new EthicsAgent();
-      
+
       // Store agents
       this.agents.set('buildAgent', buildAgent);
       this.agents.set('insightAgent', insightAgent);
       this.agents.set('healAgent', healAgent);
       this.agents.set('ethicsAgent', ethicsAgent);
-      
+
       // Initialize agents
       await buildAgent.initialize();
       await insightAgent.initialize();
       await healAgent.initialize();
       await ethicsAgent.initialize();
-      
+
       logger.info('All agents initialized successfully');
-      
     } catch (error) {
       logger.error('Failed to initialize agents', { error });
       throw error;
@@ -106,22 +105,25 @@ export class AutonomousOrchestrator {
    */
   private startOrchestrator(): void {
     this.isRunning = true;
-    
+
     // Update system status every minute
     this.statusUpdateInterval = setInterval(async () => {
       await this.updateSystemStatus();
     }, 60 * 1000);
-    
+
     // Process action queue every 30 seconds
     setInterval(async () => {
       await this.processActionQueue();
     }, 30 * 1000);
-    
+
     // Run autonomous maintenance every hour
-    setInterval(async () => {
-      await this.runAutonomousMaintenance();
-    }, 60 * 60 * 1000);
-    
+    setInterval(
+      async () => {
+        await this.runAutonomousMaintenance();
+      },
+      60 * 60 * 1000
+    );
+
     logger.info('Autonomous orchestrator started');
   }
 
@@ -145,21 +147,24 @@ export class AutonomousOrchestrator {
         parameters,
         startedAt: new Date().toISOString(),
       };
-      
+
       // Add to queue
       this.actionQueue.push(action);
-      
+
       // Sort queue by priority
       this.actionQueue.sort((a, b) => {
         const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
         return priorityOrder[b.priority] - priorityOrder[a.priority];
       });
-      
+
       logger.info('Autonomous action queued', { action });
       return action.id;
-      
     } catch (error) {
-      logger.error('Failed to queue autonomous action', { error, type, description });
+      logger.error('Failed to queue autonomous action', {
+        error,
+        type,
+        description,
+      });
       throw error;
     }
   }
@@ -169,30 +174,33 @@ export class AutonomousOrchestrator {
    */
   private async processActionQueue(): Promise<void> {
     if (this.actionQueue.length === 0) return;
-    
+
     const action = this.actionQueue.shift();
     if (!action) return;
-    
+
     try {
       action.status = 'running';
       logger.info('Processing autonomous action', { action });
-      
+
       // Execute action based on type
       const result = await this.executeActionByType(action);
-      
+
       action.status = 'completed';
       action.result = result;
       action.completedAt = new Date().toISOString();
-      action.duration = new Date(action.completedAt).getTime() - new Date(action.startedAt).getTime();
-      
+      action.duration =
+        new Date(action.completedAt).getTime() -
+        new Date(action.startedAt).getTime();
+
       logger.info('Autonomous action completed', { action });
-      
     } catch (error) {
       action.status = 'failed';
       action.error = error instanceof Error ? error.message : String(error);
       action.completedAt = new Date().toISOString();
-      action.duration = new Date(action.completedAt).getTime() - new Date(action.startedAt).getTime();
-      
+      action.duration =
+        new Date(action.completedAt).getTime() -
+        new Date(action.startedAt).getTime();
+
       logger.error('Autonomous action failed', { action, error });
     }
   }
@@ -225,9 +233,9 @@ export class AutonomousOrchestrator {
   private async executeBuildAction(action: AutonomousAction): Promise<any> {
     const buildAgent = this.agents.get('buildAgent');
     if (!buildAgent) throw new Error('BuildAgent not available');
-    
+
     const { command, parameters } = action.parameters;
-    
+
     switch (command) {
       case 'compile':
         return await buildAgent.executeAction({
@@ -268,9 +276,9 @@ export class AutonomousOrchestrator {
   private async executeOptimizeAction(action: AutonomousAction): Promise<any> {
     const insightAgent = this.agents.get('insightAgent');
     if (!insightAgent) throw new Error('InsightAgent not available');
-    
+
     const { analysisType } = action.parameters;
-    
+
     switch (analysisType) {
       case 'kpis':
         return await insightAgent.executeAction({
@@ -304,9 +312,9 @@ export class AutonomousOrchestrator {
   private async executeHealAction(action: AutonomousAction): Promise<any> {
     const healAgent = this.agents.get('healAgent');
     if (!healAgent) throw new Error('HealAgent not available');
-    
+
     const { healType } = action.parameters;
-    
+
     switch (healType) {
       case 'scan':
         return await healAgent.executeAction({
@@ -347,9 +355,9 @@ export class AutonomousOrchestrator {
   private async executeAnalyzeAction(action: AutonomousAction): Promise<any> {
     const insightAgent = this.agents.get('insightAgent');
     if (!insightAgent) throw new Error('InsightAgent not available');
-    
+
     const { analysisType } = action.parameters;
-    
+
     switch (analysisType) {
       case 'user_behavior':
         return await insightAgent.executeAction({
@@ -382,7 +390,7 @@ export class AutonomousOrchestrator {
    */
   private async executeLearnAction(action: AutonomousAction): Promise<any> {
     const { learningType } = action.parameters;
-    
+
     switch (learningType) {
       case 'session':
         return await cognitiveContinuity.runLearningSession();
@@ -400,7 +408,7 @@ export class AutonomousOrchestrator {
    */
   private async executeAuditAction(action: AutonomousAction): Promise<any> {
     const { auditType } = action.parameters;
-    
+
     switch (auditType) {
       case 'daily':
         return await observabilityAudit.runDailyAudit();
@@ -440,24 +448,23 @@ export class AutonomousOrchestrator {
   private async runAutonomousMaintenance(): Promise<void> {
     try {
       logger.info('Running autonomous maintenance');
-      
+
       // Run system health check
       await observabilityAudit.checkSystemHealth();
-      
+
       // Run learning session
       await cognitiveContinuity.runLearningSession();
-      
+
       // Run threat simulation
       await aiSafetyGuardrails.runThreatSimulation();
-      
+
       // Generate optimization recommendations
       await predictiveOptimization.generateOptimizationRecommendations();
-      
+
       // Run compliance checks
       await observabilityAudit.checkComplianceStatus();
-      
+
       logger.info('Autonomous maintenance completed');
-      
     } catch (error) {
       logger.error('Autonomous maintenance failed', { error });
     }
@@ -477,13 +484,17 @@ export class AutonomousOrchestrator {
         cognitiveContinuity: true,
         observabilityAudit: true,
         agents: {
-          buildAgent: this.agents.get('buildAgent')?.getStatus()?.isActive || false,
-          insightAgent: this.agents.get('insightAgent')?.getStatus()?.isActive || false,
-          healAgent: this.agents.get('healAgent')?.getStatus()?.isActive || false,
-          ethicsAgent: this.agents.get('ethicsAgent')?.getStatus()?.isActive || false,
+          buildAgent:
+            this.agents.get('buildAgent')?.getStatus()?.isActive || false,
+          insightAgent:
+            this.agents.get('insightAgent')?.getStatus()?.isActive || false,
+          healAgent:
+            this.agents.get('healAgent')?.getStatus()?.isActive || false,
+          ethicsAgent:
+            this.agents.get('ethicsAgent')?.getStatus()?.isActive || false,
         },
       };
-      
+
       // Calculate overall status
       const allComponents = [
         components.autonomousSystem,
@@ -494,11 +505,15 @@ export class AutonomousOrchestrator {
         components.observabilityAudit,
         ...Object.values(components.agents),
       ];
-      
+
       const healthyComponents = allComponents.filter(Boolean).length;
-      const overall = healthyComponents === allComponents.length ? 'healthy' :
-                     healthyComponents >= allComponents.length * 0.8 ? 'degraded' : 'critical';
-      
+      const overall =
+        healthyComponents === allComponents.length
+          ? 'healthy'
+          : healthyComponents >= allComponents.length * 0.8
+            ? 'degraded'
+            : 'critical';
+
       // Get metrics
       const metrics = {
         uptime: 0.999, // Would calculate actual uptime
@@ -507,14 +522,13 @@ export class AutonomousOrchestrator {
         averageResponseTime: 1200, // Would calculate from actual data
         errorRate: 0.08, // Would calculate from actual data
       };
-      
+
       this.systemStatus = {
         overall,
         components,
         metrics,
         lastUpdated: new Date().toISOString(),
       };
-      
     } catch (error) {
       logger.error('Failed to update system status', { error });
     }
@@ -547,11 +561,11 @@ export class AutonomousOrchestrator {
    */
   getAllAgentStatuses(): Record<string, any> {
     const statuses: Record<string, any> = {};
-    
+
     for (const [name, agent] of this.agents) {
       statuses[name] = agent.getStatus();
     }
-    
+
     return statuses;
   }
 
@@ -561,15 +575,15 @@ export class AutonomousOrchestrator {
   async shutdown(): Promise<void> {
     try {
       logger.info('Shutting down autonomous orchestrator');
-      
+
       this.isRunning = false;
-      
+
       // Clear intervals
       if (this.statusUpdateInterval) {
         clearInterval(this.statusUpdateInterval);
         this.statusUpdateInterval = null;
       }
-      
+
       // Shutdown agents
       for (const [name, agent] of this.agents) {
         try {
@@ -579,7 +593,7 @@ export class AutonomousOrchestrator {
           logger.error(`Failed to shutdown agent ${name}`, { error });
         }
       }
-      
+
       // Shutdown systems
       autonomousSystem.shutdown();
       aiSafetyGuardrails.shutdown();
@@ -587,9 +601,8 @@ export class AutonomousOrchestrator {
       predictiveOptimization.shutdown();
       cognitiveContinuity.shutdown();
       observabilityAudit.shutdown();
-      
+
       logger.info('Autonomous orchestrator shutdown completed');
-      
     } catch (error) {
       logger.error('Error during orchestrator shutdown', { error });
     }

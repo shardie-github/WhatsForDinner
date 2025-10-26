@@ -1,72 +1,90 @@
-import { observabilitySystem } from '@/lib/observability'
-import { NextRequest } from 'next/server'
+import { observabilitySystem } from '@/lib/observability';
+import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const level = searchParams.get('level')
-    const service = searchParams.get('service')
-    const component = searchParams.get('component')
-    const startTime = searchParams.get('startTime')
-    const endTime = searchParams.get('endTime')
-    const limit = searchParams.get('limit')
+    const { searchParams } = new URL(request.url);
+    const level = searchParams.get('level');
+    const service = searchParams.get('service');
+    const component = searchParams.get('component');
+    const startTime = searchParams.get('startTime');
+    const endTime = searchParams.get('endTime');
+    const limit = searchParams.get('limit');
 
-    const filters: any = {}
-    if (level) filters.level = level
-    if (service) filters.service = service
-    if (component) filters.component = component
-    if (startTime) filters.startTime = startTime
-    if (endTime) filters.endTime = endTime
-    if (limit) filters.limit = parseInt(limit)
+    const filters: any = {};
+    if (level) filters.level = level;
+    if (service) filters.service = service;
+    if (component) filters.component = component;
+    if (startTime) filters.startTime = startTime;
+    if (endTime) filters.endTime = endTime;
+    if (limit) filters.limit = parseInt(limit);
 
-    const logs = await observabilitySystem.getLogs(filters)
+    const logs = await observabilitySystem.getLogs(filters);
 
     // Group logs by level
-    const groupedLogs = logs.reduce((acc, log) => {
-      if (!acc[log.level]) {
-        acc[log.level] = []
-      }
-      acc[log.level].push(log)
-      return acc
-    }, {} as Record<string, any[]>)
+    const groupedLogs = logs.reduce(
+      (acc, log) => {
+        if (!acc[log.level]) {
+          acc[log.level] = [];
+        }
+        acc[log.level].push(log);
+        return acc;
+      },
+      {} as Record<string, any[]>
+    );
 
     // Calculate statistics
     const stats = {
       total: logs.length,
-      byLevel: Object.entries(groupedLogs).reduce((acc, [level, logs]) => {
-        acc[level] = logs.length
-        return acc
-      }, {} as Record<string, number>),
-      byService: logs.reduce((acc, log) => {
-        acc[log.service] = (acc[log.service] || 0) + 1
-        return acc
-      }, {} as Record<string, number>),
-      byComponent: logs.reduce((acc, log) => {
-        acc[log.component] = (acc[log.component] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
-    }
+      byLevel: Object.entries(groupedLogs).reduce(
+        (acc, [level, logs]) => {
+          acc[level] = logs.length;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+      byService: logs.reduce(
+        (acc, log) => {
+          acc[log.service] = (acc[log.service] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+      byComponent: logs.reduce(
+        (acc, log) => {
+          acc[log.component] = (acc[log.component] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+    };
 
-    return new Response(JSON.stringify({
-      logs,
-      grouped: groupedLogs,
-      stats,
-      count: logs.length
-    }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
+    return new Response(
+      JSON.stringify({
+        logs,
+        grouped: groupedLogs,
+        stats,
+        count: logs.length,
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+        },
       }
-    })
+    );
   } catch (error) {
-    return new Response(JSON.stringify({
-      error: error.message
-    }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json'
+    return new Response(
+      JSON.stringify({
+        error: error.message,
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
-    })
+    );
   }
 }

@@ -19,12 +19,12 @@ export class BuildAgent extends BaseAgent {
         'deploy',
         'rollback',
         'analyze_logs',
-        'optimize_config'
+        'optimize_config',
       ],
       safetyConstraints: [
         'no_production_deploy_without_tests',
         'no_deploy_with_critical_errors',
-        'require_approval_for_major_changes'
+        'require_approval_for_major_changes',
       ],
       learningRate: 0.1,
       maxRetries: 3,
@@ -56,26 +56,32 @@ export class BuildAgent extends BaseAgent {
     }
   }
 
-  protected checkSafetyConstraint(constraint: string, action: AgentAction): boolean {
+  protected checkSafetyConstraint(
+    constraint: string,
+    action: AgentAction
+  ): boolean {
     switch (constraint) {
       case 'no_production_deploy_without_tests':
-        if (action.type === 'deploy' && action.payload?.environment === 'production') {
+        if (
+          action.type === 'deploy' &&
+          action.payload?.environment === 'production'
+        ) {
           return this.hasRecentSuccessfulTests();
         }
         return true;
-      
+
       case 'no_deploy_with_critical_errors':
         if (action.type === 'deploy') {
           return !this.hasCriticalErrors();
         }
         return true;
-      
+
       case 'require_approval_for_major_changes':
         if (action.type === 'deploy' && action.payload?.isMajorChange) {
           return action.payload?.approved === true;
         }
         return true;
-      
+
       default:
         return true;
     }
@@ -87,9 +93,9 @@ export class BuildAgent extends BaseAgent {
   private async compile(): Promise<boolean> {
     try {
       logger.info('Starting compilation');
-      
+
       const result = await run_terminal_cmd('npm run type-check');
-      
+
       if (result.success) {
         logger.info('Compilation successful');
         return true;
@@ -109,9 +115,9 @@ export class BuildAgent extends BaseAgent {
   private async runTests(): Promise<boolean> {
     try {
       logger.info('Running tests');
-      
+
       const result = await run_terminal_cmd('npm run test:ci');
-      
+
       if (result.success) {
         logger.info('Tests passed');
         return true;
@@ -131,9 +137,9 @@ export class BuildAgent extends BaseAgent {
   private async runLint(): Promise<boolean> {
     try {
       logger.info('Running linter');
-      
+
       const result = await run_terminal_cmd('npm run lint');
-      
+
       if (result.success) {
         logger.info('Linting passed');
         return true;
@@ -153,9 +159,9 @@ export class BuildAgent extends BaseAgent {
   private async build(): Promise<boolean> {
     try {
       logger.info('Building application');
-      
+
       const result = await run_terminal_cmd('npm run build');
-      
+
       if (result.success) {
         logger.info('Build successful');
         return true;
@@ -176,11 +182,11 @@ export class BuildAgent extends BaseAgent {
     try {
       const environment = payload?.environment || 'staging';
       logger.info(`Deploying to ${environment}`);
-      
+
       // In a real implementation, this would integrate with your deployment system
       // For now, we'll simulate the deployment
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       logger.info(`Deployment to ${environment} successful`);
       return true;
     } catch (error) {
@@ -196,10 +202,10 @@ export class BuildAgent extends BaseAgent {
     try {
       const version = payload?.version || 'previous';
       logger.info(`Rolling back to ${version}`);
-      
+
       // In a real implementation, this would integrate with your rollback system
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       logger.info(`Rollback to ${version} successful`);
       return true;
     } catch (error) {
@@ -215,7 +221,7 @@ export class BuildAgent extends BaseAgent {
     try {
       const logType = payload?.logType || 'build';
       logger.info(`Analyzing ${logType} logs`);
-      
+
       // In a real implementation, this would analyze actual logs
       // For now, we'll simulate the analysis
       const analysis = {
@@ -224,7 +230,7 @@ export class BuildAgent extends BaseAgent {
         performance: 'good',
         recommendations: ['Optimize bundle size', 'Add more tests'],
       };
-      
+
       logger.info('Log analysis complete', { analysis });
       return true;
     } catch (error) {
@@ -239,10 +245,10 @@ export class BuildAgent extends BaseAgent {
   private async optimizeConfig(): Promise<boolean> {
     try {
       logger.info('Optimizing build configuration');
-      
+
       // Analyze current performance and suggest optimizations
       const optimizations = await this.analyzePerformance();
-      
+
       if (optimizations.length > 0) {
         await this.applyOptimizations(optimizations);
         logger.info('Configuration optimized', { optimizations });

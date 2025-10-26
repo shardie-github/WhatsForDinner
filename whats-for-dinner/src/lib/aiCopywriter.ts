@@ -1,28 +1,33 @@
-import { supabase } from './supabaseClient'
-import { openaiClient } from './openaiClient'
+import { supabase } from './supabaseClient';
+import { openai } from './openaiClient';
 
 export interface CopyVariant {
-  id: string
-  content_type: 'landing_headline' | 'email_subject' | 'feature_copy' | 'cta_button' | 'social_post'
-  variant_name: string
-  content: string
+  id: string;
+  content_type:
+    | 'landing_headline'
+    | 'email_subject'
+    | 'feature_copy'
+    | 'cta_button'
+    | 'social_post';
+  variant_name: string;
+  content: string;
   performance_metrics: {
-    impressions: number
-    clicks: number
-    conversions: number
-    ctr: number
-    conversion_rate: number
-  }
-  is_winner: boolean
-  test_id: string
-  created_at: string
+    impressions: number;
+    clicks: number;
+    conversions: number;
+    ctr: number;
+    conversion_rate: number;
+  };
+  is_winner: boolean;
+  test_id: string;
+  created_at: string;
 }
 
 export interface AITestResult {
-  variants: CopyVariant[]
-  winner: CopyVariant | null
-  confidence_level: number
-  recommended_action: string
+  variants: CopyVariant[];
+  winner: CopyVariant | null;
+  confidence_level: number;
+  recommended_action: string;
 }
 
 export class AICopywriter {
@@ -37,29 +42,38 @@ export class AICopywriter {
     numberOfVariants: number = 3
   ): Promise<CopyVariant[]> {
     try {
-      const prompt = this.buildCopyPrompt(contentType, context, targetAudience, tone, numberOfVariants)
-      
-      const response = await openaiClient.chat.completions.create({
+      const prompt = this.buildCopyPrompt(
+        contentType,
+        context,
+        targetAudience,
+        tone,
+        numberOfVariants
+      );
+
+      const response = await openai.chat.completions.create({
         model: 'gpt-4',
         messages: [
           {
             role: 'system',
-            content: `You are an expert copywriter specializing in conversion optimization. Generate ${numberOfVariants} distinct variants for ${contentType} that will be A/B tested. Each variant should have a different approach or angle.`
+            content: `You are an expert copywriter specializing in conversion optimization. Generate ${numberOfVariants} distinct variants for ${contentType} that will be A/B tested. Each variant should have a different approach or angle.`,
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.8,
-        max_tokens: 1000
-      })
+        max_tokens: 1000,
+      });
 
-      const generatedContent = response.choices[0]?.message?.content || ''
-      const variants = this.parseGeneratedVariants(generatedContent, contentType)
-      
+      const generatedContent = response.choices[0]?.message?.content || '';
+      const variants = this.parseGeneratedVariants(
+        generatedContent,
+        contentType
+      );
+
       // Store variants in database
-      const storedVariants: CopyVariant[] = []
+      const storedVariants: CopyVariant[] = [];
       for (const variant of variants) {
         const { data, error } = await supabase
           .from('ai_copy_logs')
@@ -72,22 +86,22 @@ export class AICopywriter {
               clicks: 0,
               conversions: 0,
               ctr: 0,
-              conversion_rate: 0
+              conversion_rate: 0,
             },
-            is_winner: false
+            is_winner: false,
           })
           .select()
-          .single()
+          .single();
 
         if (!error && data) {
-          storedVariants.push(data as CopyVariant)
+          storedVariants.push(data as CopyVariant);
         }
       }
 
-      return storedVariants
+      return storedVariants;
     } catch (error) {
-      console.error('Error generating copy variants:', error)
-      throw error
+      console.error('Error generating copy variants:', error);
+      throw error;
     }
   }
 
@@ -107,7 +121,7 @@ Context: ${context}
 Target Audience: ${targetAudience}
 Tone: ${tone}
 
-Content Type Specifics:`
+Content Type Specifics:`;
 
     switch (contentType) {
       case 'landing_headline':
@@ -121,7 +135,7 @@ Content Type Specifics:`
 Format each variant as:
 Variant 1: [headline]
 Variant 2: [headline]
-Variant 3: [headline]`
+Variant 3: [headline]`;
 
       case 'email_subject':
         return `${basePrompt}
@@ -134,7 +148,7 @@ Variant 3: [headline]`
 Format each variant as:
 Variant 1: [subject line]
 Variant 2: [subject line]
-Variant 3: [subject line]`
+Variant 3: [subject line]`;
 
       case 'cta_button':
         return `${basePrompt}
@@ -147,7 +161,7 @@ Variant 3: [subject line]`
 Format each variant as:
 Variant 1: [button text]
 Variant 2: [button text]
-Variant 3: [button text]`
+Variant 3: [button text]`;
 
       case 'feature_copy':
         return `${basePrompt}
@@ -160,7 +174,7 @@ Variant 3: [button text]`
 Format each variant as:
 Variant 1: [feature description]
 Variant 2: [feature description]
-Variant 3: [feature description]`
+Variant 3: [feature description]`;
 
       case 'social_post':
         return `${basePrompt}
@@ -173,10 +187,10 @@ Variant 3: [feature description]`
 Format each variant as:
 Variant 1: [post content]
 Variant 2: [post content]
-Variant 3: [post content]`
+Variant 3: [post content]`;
 
       default:
-        return basePrompt
+        return basePrompt;
     }
   }
 
@@ -187,13 +201,13 @@ Variant 3: [post content]`
     content: string,
     contentType: CopyVariant['content_type']
   ): Omit<CopyVariant, 'id' | 'test_id' | 'created_at'>[] {
-    const lines = content.split('\n').filter(line => line.trim())
-    const variants: Omit<CopyVariant, 'id' | 'test_id' | 'created_at'>[] = []
+    const lines = content.split('\n').filter(line => line.trim());
+    const variants: Omit<CopyVariant, 'id' | 'test_id' | 'created_at'>[] = [];
 
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]
+      const line = lines[i];
       if (line.includes('Variant') && line.includes(':')) {
-        const variantText = line.split(':')[1]?.trim()
+        const variantText = line.split(':')[1]?.trim();
         if (variantText) {
           variants.push({
             content_type: contentType,
@@ -204,15 +218,15 @@ Variant 3: [post content]`
               clicks: 0,
               conversions: 0,
               ctr: 0,
-              conversion_rate: 0
+              conversion_rate: 0,
             },
-            is_winner: false
-          })
+            is_winner: false,
+          });
         }
       }
     }
 
-    return variants
+    return variants;
   }
 
   /**
@@ -221,9 +235,9 @@ Variant 3: [post content]`
   static async updateCopyMetrics(
     variantId: string,
     metrics: {
-      impressions?: number
-      clicks?: number
-      conversions?: number
+      impressions?: number;
+      clicks?: number;
+      conversions?: number;
     }
   ): Promise<void> {
     try {
@@ -232,11 +246,11 @@ Variant 3: [post content]`
         .from('ai_copy_logs')
         .select('performance_metrics')
         .eq('id', variantId)
-        .single()
+        .single();
 
       if (fetchError) {
-        console.error('Error fetching current metrics:', fetchError)
-        return
+        console.error('Error fetching current metrics:', fetchError);
+        return;
       }
 
       const currentMetrics = currentVariant.performance_metrics || {
@@ -244,30 +258,36 @@ Variant 3: [post content]`
         clicks: 0,
         conversions: 0,
         ctr: 0,
-        conversion_rate: 0
-      }
+        conversion_rate: 0,
+      };
 
       // Update metrics
       const updatedMetrics = {
         ...currentMetrics,
         ...metrics,
-        ctr: metrics.clicks && metrics.impressions ? metrics.clicks / metrics.impressions : currentMetrics.ctr,
-        conversion_rate: metrics.conversions && metrics.clicks ? metrics.conversions / metrics.clicks : currentMetrics.conversion_rate
-      }
+        ctr:
+          metrics.clicks && metrics.impressions
+            ? metrics.clicks / metrics.impressions
+            : currentMetrics.ctr,
+        conversion_rate:
+          metrics.conversions && metrics.clicks
+            ? metrics.conversions / metrics.clicks
+            : currentMetrics.conversion_rate,
+      };
 
       // Save updated metrics
       const { error: updateError } = await supabase
         .from('ai_copy_logs')
         .update({ performance_metrics: updatedMetrics })
-        .eq('id', variantId)
+        .eq('id', variantId);
 
       if (updateError) {
-        console.error('Error updating copy metrics:', updateError)
-        throw updateError
+        console.error('Error updating copy metrics:', updateError);
+        throw updateError;
       }
     } catch (error) {
-      console.error('Failed to update copy metrics:', error)
-      throw error
+      console.error('Failed to update copy metrics:', error);
+      throw error;
     }
   }
 
@@ -279,11 +299,11 @@ Variant 3: [post content]`
       const { data: variants, error } = await supabase
         .from('ai_copy_logs')
         .select('*')
-        .eq('test_id', testId)
+        .eq('test_id', testId);
 
       if (error) {
-        console.error('Error fetching test variants:', error)
-        throw error
+        console.error('Error fetching test variants:', error);
+        throw error;
       }
 
       if (!variants || variants.length === 0) {
@@ -291,108 +311,121 @@ Variant 3: [post content]`
           variants: [],
           winner: null,
           confidence_level: 0,
-          recommended_action: 'No data available'
-        }
+          recommended_action: 'No data available',
+        };
       }
 
       // Find winner based on conversion rate
-      const sortedVariants = variants.sort((a, b) => 
-        b.performance_metrics.conversion_rate - a.performance_metrics.conversion_rate
-      )
+      const sortedVariants = variants.sort(
+        (a, b) =>
+          b.performance_metrics.conversion_rate -
+          a.performance_metrics.conversion_rate
+      );
 
-      const winner = sortedVariants[0]
-      const secondBest = sortedVariants[1]
+      const winner = sortedVariants[0];
+      const secondBest = sortedVariants[1];
 
       // Calculate confidence level
-      const confidenceLevel = this.calculateConfidenceLevel(winner, secondBest)
+      const confidenceLevel = this.calculateConfidenceLevel(winner, secondBest);
 
       // Generate recommendation
-      const recommendedAction = this.generateRecommendation(winner, confidenceLevel)
+      const recommendedAction = this.generateRecommendation(
+        winner,
+        confidenceLevel
+      );
 
       // Mark winner in database
       if (confidenceLevel > 0.8) {
         await supabase
           .from('ai_copy_logs')
           .update({ is_winner: true })
-          .eq('id', winner.id)
+          .eq('id', winner.id);
       }
 
       return {
         variants: variants as CopyVariant[],
         winner: winner as CopyVariant,
         confidence_level: confidenceLevel,
-        recommended_action: recommendedAction
-      }
+        recommended_action: recommendedAction,
+      };
     } catch (error) {
-      console.error('Failed to analyze test results:', error)
-      throw error
+      console.error('Failed to analyze test results:', error);
+      throw error;
     }
   }
 
   /**
    * Calculate statistical confidence level
    */
-  private static calculateConfidenceLevel(winner: any, secondBest: any): number {
-    const winnerRate = winner.performance_metrics.conversion_rate
-    const secondRate = secondBest?.performance_metrics.conversion_rate || 0
-    const winnerClicks = winner.performance_metrics.clicks
-    const secondClicks = secondBest?.performance_metrics.clicks || 0
+  private static calculateConfidenceLevel(
+    winner: any,
+    secondBest: any
+  ): number {
+    const winnerRate = winner.performance_metrics.conversion_rate;
+    const secondRate = secondBest?.performance_metrics.conversion_rate || 0;
+    const winnerClicks = winner.performance_metrics.clicks;
+    const secondClicks = secondBest?.performance_metrics.clicks || 0;
 
     // Simple confidence calculation based on difference and sample size
-    const rateDifference = winnerRate - secondRate
-    const minSampleSize = Math.min(winnerClicks, secondClicks)
-    
-    if (minSampleSize < 100) return 0.5 // Low confidence for small samples
-    if (rateDifference < 0.05) return 0.6 // Low confidence for small differences
-    if (rateDifference < 0.1) return 0.7 // Medium confidence
-    if (rateDifference < 0.2) return 0.8 // High confidence
-    return 0.9 // Very high confidence
+    const rateDifference = winnerRate - secondRate;
+    const minSampleSize = Math.min(winnerClicks, secondClicks);
+
+    if (minSampleSize < 100) return 0.5; // Low confidence for small samples
+    if (rateDifference < 0.05) return 0.6; // Low confidence for small differences
+    if (rateDifference < 0.1) return 0.7; // Medium confidence
+    if (rateDifference < 0.2) return 0.8; // High confidence
+    return 0.9; // Very high confidence
   }
 
   /**
    * Generate recommendation based on test results
    */
-  private static generateRecommendation(winner: any, confidenceLevel: number): string {
-    const winnerRate = winner.performance_metrics.conversion_rate
-    const winnerCtr = winner.performance_metrics.ctr
+  private static generateRecommendation(
+    winner: any,
+    confidenceLevel: number
+  ): string {
+    const winnerRate = winner.performance_metrics.conversion_rate;
+    const winnerCtr = winner.performance_metrics.ctr;
 
     if (confidenceLevel < 0.7) {
-      return 'Continue testing with larger sample size to reach statistical significance'
+      return 'Continue testing with larger sample size to reach statistical significance';
     }
 
     if (winnerRate > 0.1) {
-      return `Winner identified with ${(confidenceLevel * 100).toFixed(0)}% confidence. Implement immediately and consider scaling to other campaigns.`
+      return `Winner identified with ${(confidenceLevel * 100).toFixed(0)}% confidence. Implement immediately and consider scaling to other campaigns.`;
     }
 
     if (winnerCtr > 0.05) {
-      return `Winner has good click-through rate (${(winnerCtr * 100).toFixed(1)}%). Focus on improving conversion rate with better landing page optimization.`
+      return `Winner has good click-through rate (${(winnerCtr * 100).toFixed(1)}%). Focus on improving conversion rate with better landing page optimization.`;
     }
 
-    return 'Winner identified but performance is below expectations. Consider testing new variants or improving targeting.'
+    return 'Winner identified but performance is below expectations. Consider testing new variants or improving targeting.';
   }
 
   /**
    * Get copy performance insights
    */
-  static async getCopyInsights(contentType: CopyVariant['content_type']): Promise<{
-    best_performing: CopyVariant[]
-    worst_performing: CopyVariant[]
+  static async getCopyInsights(
+    contentType: CopyVariant['content_type']
+  ): Promise<{
+    best_performing: CopyVariant[];
+    worst_performing: CopyVariant[];
     average_metrics: {
-      ctr: number
-      conversion_rate: number
-    }
-    recommendations: string[]
+      ctr: number;
+      conversion_rate: number;
+    };
+    recommendations: string[];
   }> {
     try {
       const { data: variants, error } = await supabase
         .from('ai_copy_logs')
         .select('*')
         .eq('content_type', contentType)
-        .order('performance_metrics->conversion_rate', { ascending: false })
+        .order('performance_metrics->conversion_rate', { ascending: false });
 
       if (error) {
-        console.error('Error fetching copy insights:', error)
-        throw error
+        console.error('Error fetching copy insights:', error);
+        throw error;
       }
 
       if (!variants || variants.length === 0) {
@@ -400,33 +433,42 @@ Variant 3: [post content]`
           best_performing: [],
           worst_performing: [],
           average_metrics: { ctr: 0, conversion_rate: 0 },
-          recommendations: []
-        }
+          recommendations: [],
+        };
       }
 
-      const typedVariants = variants as CopyVariant[]
-      const bestPerforming = typedVariants.slice(0, 3)
-      const worstPerforming = typedVariants.slice(-3)
+      const typedVariants = variants as CopyVariant[];
+      const bestPerforming = typedVariants.slice(0, 3);
+      const worstPerforming = typedVariants.slice(-3);
 
-      const totalCtr = typedVariants.reduce((sum, v) => sum + v.performance_metrics.ctr, 0)
-      const totalConversionRate = typedVariants.reduce((sum, v) => sum + v.performance_metrics.conversion_rate, 0)
+      const totalCtr = typedVariants.reduce(
+        (sum, v) => sum + v.performance_metrics.ctr,
+        0
+      );
+      const totalConversionRate = typedVariants.reduce(
+        (sum, v) => sum + v.performance_metrics.conversion_rate,
+        0
+      );
 
       const averageMetrics = {
         ctr: totalCtr / typedVariants.length,
-        conversion_rate: totalConversionRate / typedVariants.length
-      }
+        conversion_rate: totalConversionRate / typedVariants.length,
+      };
 
-      const recommendations = this.generateInsightRecommendations(typedVariants, averageMetrics)
+      const recommendations = this.generateInsightRecommendations(
+        typedVariants,
+        averageMetrics
+      );
 
       return {
         best_performing: bestPerforming,
         worst_performing: worstPerforming,
         average_metrics: averageMetrics,
-        recommendations
-      }
+        recommendations,
+      };
     } catch (error) {
-      console.error('Failed to get copy insights:', error)
-      throw error
+      console.error('Failed to get copy insights:', error);
+      throw error;
     }
   }
 
@@ -437,27 +479,43 @@ Variant 3: [post content]`
     variants: CopyVariant[],
     averageMetrics: { ctr: number; conversion_rate: number }
   ): string[] {
-    const recommendations: string[] = []
+    const recommendations: string[] = [];
 
     if (averageMetrics.ctr < 0.02) {
-      recommendations.push('Low click-through rates detected. Focus on more compelling headlines and better targeting.')
+      recommendations.push(
+        'Low click-through rates detected. Focus on more compelling headlines and better targeting.'
+      );
     }
 
     if (averageMetrics.conversion_rate < 0.05) {
-      recommendations.push('Low conversion rates. Consider improving landing page experience and value proposition.')
+      recommendations.push(
+        'Low conversion rates. Consider improving landing page experience and value proposition.'
+      );
     }
 
-    const highPerformingVariants = variants.filter(v => v.performance_metrics.conversion_rate > averageMetrics.conversion_rate * 1.5)
+    const highPerformingVariants = variants.filter(
+      v =>
+        v.performance_metrics.conversion_rate >
+        averageMetrics.conversion_rate * 1.5
+    );
     if (highPerformingVariants.length > 0) {
-      recommendations.push(`Found ${highPerformingVariants.length} high-performing variants. Consider using their successful elements in future tests.`)
+      recommendations.push(
+        `Found ${highPerformingVariants.length} high-performing variants. Consider using their successful elements in future tests.`
+      );
     }
 
-    const lowPerformingVariants = variants.filter(v => v.performance_metrics.conversion_rate < averageMetrics.conversion_rate * 0.5)
+    const lowPerformingVariants = variants.filter(
+      v =>
+        v.performance_metrics.conversion_rate <
+        averageMetrics.conversion_rate * 0.5
+    );
     if (lowPerformingVariants.length > variants.length * 0.3) {
-      recommendations.push('Many variants are underperforming. Consider testing completely different approaches or messaging strategies.')
+      recommendations.push(
+        'Many variants are underperforming. Consider testing completely different approaches or messaging strategies.'
+      );
     }
 
-    return recommendations
+    return recommendations;
   }
 
   /**
@@ -480,28 +538,29 @@ Requirements:
 - Be specific to the use case
 - Include relevant details from context
 
-Generate the copy:`
+Generate the copy:`;
 
-      const response = await openaiClient.chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: 'gpt-4',
         messages: [
           {
             role: 'system',
-            content: 'You are an expert copywriter focused on conversion optimization. Generate compelling copy that drives action.'
+            content:
+              'You are an expert copywriter focused on conversion optimization. Generate compelling copy that drives action.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.7,
-        max_tokens: 500
-      })
+        max_tokens: 500,
+      });
 
-      return response.choices[0]?.message?.content || ''
+      return response.choices[0]?.message?.content || '';
     } catch (error) {
-      console.error('Failed to generate copy for use case:', error)
-      throw error
+      console.error('Failed to generate copy for use case:', error);
+      throw error;
     }
   }
 }

@@ -25,27 +25,31 @@ An AI-powered meal recommendation application that suggests delicious recipes ba
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/whats-for-dinner.git
    cd whats-for-dinner
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.local.example .env.local
    ```
-   
+
    Fill in your environment variables:
+
    ```bash
    # Supabase Configuration
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   
+
    # OpenAI Configuration
    OPENAI_API_KEY=your_openai_api_key
    ```
@@ -56,6 +60,7 @@ An AI-powered meal recommendation application that suggests delicious recipes ba
    - Enable Row Level Security (RLS) policies
 
 5. **Start the development server**
+
    ```bash
    npm run dev
    ```

@@ -1,13 +1,13 @@
-import Stripe from 'stripe'
+import Stripe from 'stripe';
 
 if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not set')
+  throw new Error('STRIPE_SECRET_KEY is not set');
 }
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2024-12-18.acacia',
   typescript: true,
-})
+});
 
 export const STRIPE_CONFIG = {
   plans: {
@@ -58,22 +58,22 @@ export const STRIPE_CONFIG = {
     },
   },
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-}
+};
 
-export type PlanType = keyof typeof STRIPE_CONFIG.plans
+export type PlanType = keyof typeof STRIPE_CONFIG.plans;
 
 export interface CreateCheckoutSessionParams {
-  tenantId: string
-  userId: string
-  plan: PlanType
-  successUrl: string
-  cancelUrl: string
+  tenantId: string;
+  userId: string;
+  plan: PlanType;
+  successUrl: string;
+  cancelUrl: string;
 }
 
 export interface CreateCustomerPortalSessionParams {
-  tenantId: string
-  userId: string
-  returnUrl: string
+  tenantId: string;
+  userId: string;
+  returnUrl: string;
 }
 
 export class StripeService {
@@ -87,10 +87,10 @@ export class StripeService {
     successUrl,
     cancelUrl,
   }: CreateCheckoutSessionParams) {
-    const planConfig = STRIPE_CONFIG.plans[plan]
-    
+    const planConfig = STRIPE_CONFIG.plans[plan];
+
     if (!planConfig.priceId) {
-      throw new Error(`Price ID not configured for plan: ${plan}`)
+      throw new Error(`Price ID not configured for plan: ${plan}`);
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -116,9 +116,9 @@ export class StripeService {
           plan,
         },
       },
-    })
+    });
 
-    return session
+    return session;
   }
 
   /**
@@ -134,18 +134,18 @@ export class StripeService {
       .from('tenants')
       .select('stripe_customer_id')
       .eq('id', tenantId)
-      .single()
+      .single();
 
     if (!tenant?.stripe_customer_id) {
-      throw new Error('No Stripe customer found for tenant')
+      throw new Error('No Stripe customer found for tenant');
     }
 
     const session = await stripe.billingPortal.sessions.create({
       customer: tenant.stripe_customer_id,
       return_url: returnUrl,
-    })
+    });
 
-    return session
+    return session;
   }
 
   /**
@@ -154,7 +154,7 @@ export class StripeService {
   static async getSubscription(subscriptionId: string) {
     return await stripe.subscriptions.retrieve(subscriptionId, {
       expand: ['default_payment_method', 'customer'],
-    })
+    });
   }
 
   /**
@@ -162,11 +162,11 @@ export class StripeService {
    */
   static async cancelSubscription(subscriptionId: string, immediately = false) {
     if (immediately) {
-      return await stripe.subscriptions.cancel(subscriptionId)
+      return await stripe.subscriptions.cancel(subscriptionId);
     } else {
       return await stripe.subscriptions.update(subscriptionId, {
         cancel_at_period_end: true,
-      })
+      });
     }
   }
 
@@ -177,14 +177,14 @@ export class StripeService {
     subscriptionId: string,
     newPlan: PlanType
   ) {
-    const planConfig = STRIPE_CONFIG.plans[newPlan]
-    
+    const planConfig = STRIPE_CONFIG.plans[newPlan];
+
     if (!planConfig.priceId) {
-      throw new Error(`Price ID not configured for plan: ${newPlan}`)
+      throw new Error(`Price ID not configured for plan: ${newPlan}`);
     }
 
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-    
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
     return await stripe.subscriptions.update(subscriptionId, {
       items: [
         {
@@ -193,7 +193,7 @@ export class StripeService {
         },
       ],
       proration_behavior: 'create_prorations',
-    })
+    });
   }
 
   /**
@@ -201,14 +201,14 @@ export class StripeService {
    */
   static verifyWebhookSignature(payload: string, signature: string) {
     if (!STRIPE_CONFIG.webhookSecret) {
-      throw new Error('STRIPE_WEBHOOK_SECRET is not set')
+      throw new Error('STRIPE_WEBHOOK_SECRET is not set');
     }
 
     return stripe.webhooks.constructEvent(
       payload,
       signature,
       STRIPE_CONFIG.webhookSecret
-    )
+    );
   }
 
   /**
@@ -218,12 +218,13 @@ export class StripeService {
     const pricing = {
       'gpt-4o': 0.005, // $0.005 per 1K tokens
       'gpt-4o-mini': 0.00015, // $0.00015 per 1K tokens
-    }
+    };
 
-    const pricePer1K = pricing[model as keyof typeof pricing] || pricing['gpt-4o-mini']
-    return (tokens / 1000) * pricePer1K
+    const pricePer1K =
+      pricing[model as keyof typeof pricing] || pricing['gpt-4o-mini'];
+    return (tokens / 1000) * pricePer1K;
   }
 }
 
 // Import supabase client
-import { supabase } from './supabaseClient'
+import { supabase } from './supabaseClient';

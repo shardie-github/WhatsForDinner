@@ -1,87 +1,100 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { headers } from 'next/headers'
-import { supabase } from '@/lib/supabaseClient'
+import { NextRequest, NextResponse } from 'next/server';
+import { headers } from 'next/headers';
+import { supabase } from '@/lib/supabaseClient';
 
 export async function GET(req: NextRequest) {
   try {
     // Get tenant context
-    const headersList = headers()
-    const tenantId = headersList.get('x-tenant-id')
-    
+    const headersList = headers();
+    const tenantId = headersList.get('x-tenant-id');
+
     if (!tenantId) {
       return NextResponse.json(
         { error: 'Tenant information required' },
         { status: 400 }
-      )
+      );
     }
 
-    const { searchParams } = new URL(req.url)
-    const period = searchParams.get('period') || '30d'
-    const periodDays = parsePeriod(period)
-    const startDate = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000)
+    const { searchParams } = new URL(req.url);
+    const period = searchParams.get('period') || '30d';
+    const periodDays = parsePeriod(period);
+    const startDate = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000);
 
     // Get partner revenue data
     const { data: revenueData } = await supabase
       .from('api_usage_tracking')
       .select('revenue_usd, timestamp')
       .eq('tenant_id', tenantId)
-      .gte('timestamp', startDate.toISOString())
+      .gte('timestamp', startDate.toISOString());
 
     // Get previous period for comparison
-    const previousStartDate = new Date(startDate.getTime() - periodDays * 24 * 60 * 60 * 1000)
+    const previousStartDate = new Date(
+      startDate.getTime() - periodDays * 24 * 60 * 60 * 1000
+    );
     const { data: previousRevenueData } = await supabase
       .from('api_usage_tracking')
       .select('revenue_usd, timestamp')
       .eq('tenant_id', tenantId)
       .gte('timestamp', previousStartDate.toISOString())
-      .lt('timestamp', startDate.toISOString())
+      .lt('timestamp', startDate.toISOString());
 
     // Get request data
     const { data: requestData } = await supabase
       .from('api_usage_tracking')
       .select('timestamp')
       .eq('tenant_id', tenantId)
-      .gte('timestamp', startDate.toISOString())
+      .gte('timestamp', startDate.toISOString());
 
     const { data: previousRequestData } = await supabase
       .from('api_usage_tracking')
       .select('timestamp')
       .eq('tenant_id', tenantId)
       .gte('timestamp', previousStartDate.toISOString())
-      .lt('timestamp', startDate.toISOString())
+      .lt('timestamp', startDate.toISOString());
 
     // Get active users
     const { data: userData } = await supabase
       .from('api_usage_tracking')
       .select('user_id')
       .eq('tenant_id', tenantId)
-      .gte('timestamp', startDate.toISOString())
+      .gte('timestamp', startDate.toISOString());
 
-    const uniqueUsers = new Set(userData?.map(record => record.user_id).filter(Boolean) || [])
+    const uniqueUsers = new Set(
+      userData?.map(record => record.user_id).filter(Boolean) || []
+    );
 
     // Calculate statistics
-    const totalRevenue = revenueData?.reduce((sum, record) => sum + record.revenue_usd, 0) || 0
-    const previousTotalRevenue = previousRevenueData?.reduce((sum, record) => sum + record.revenue_usd, 0) || 0
-    const revenueGrowth = previousTotalRevenue > 0 
-      ? ((totalRevenue - previousTotalRevenue) / previousTotalRevenue) * 100 
-      : 0
+    const totalRevenue =
+      revenueData?.reduce((sum, record) => sum + record.revenue_usd, 0) || 0;
+    const previousTotalRevenue =
+      previousRevenueData?.reduce(
+        (sum, record) => sum + record.revenue_usd,
+        0
+      ) || 0;
+    const revenueGrowth =
+      previousTotalRevenue > 0
+        ? ((totalRevenue - previousTotalRevenue) / previousTotalRevenue) * 100
+        : 0;
 
-    const totalRequests = requestData?.length || 0
-    const previousTotalRequests = previousRequestData?.length || 0
-    const requestGrowth = previousTotalRequests > 0 
-      ? ((totalRequests - previousTotalRequests) / previousTotalRequests) * 100 
-      : 0
+    const totalRequests = requestData?.length || 0;
+    const previousTotalRequests = previousRequestData?.length || 0;
+    const requestGrowth =
+      previousTotalRequests > 0
+        ? ((totalRequests - previousTotalRequests) / previousTotalRequests) *
+          100
+        : 0;
 
-    const activeUsers = uniqueUsers.size
+    const activeUsers = uniqueUsers.size;
 
     // Calculate conversion rate (simplified)
     const { data: subscriptionData } = await supabase
       .from('subscriptions')
       .select('id')
       .eq('tenant_id', tenantId)
-      .eq('status', 'active')
+      .eq('status', 'active');
 
-    const conversionRate = activeUsers > 0 ? (subscriptionData?.length || 0) / activeUsers : 0
+    const conversionRate =
+      activeUsers > 0 ? (subscriptionData?.length || 0) / activeUsers : 0;
 
     const stats = {
       totalRevenue,
@@ -91,19 +104,19 @@ export async function GET(req: NextRequest) {
       revenueGrowth,
       requestGrowth,
       period,
-      generatedAt: new Date().toISOString()
-    }
+      generatedAt: new Date().toISOString(),
+    };
 
     return NextResponse.json({
       success: true,
-      stats
-    })
+      stats,
+    });
   } catch (error) {
-    console.error('Error fetching partner stats:', error)
+    console.error('Error fetching partner stats:', error);
     return NextResponse.json(
       { error: 'Failed to fetch partner statistics' },
       { status: 500 }
-    )
+    );
   }
 }
 
@@ -113,7 +126,7 @@ function parsePeriod(period: string): number {
     '7d': 7,
     '30d': 30,
     '90d': 90,
-    '1y': 365
-  }
-  return periodMap[period] || 30
+    '1y': 365,
+  };
+  return periodMap[period] || 30;
 }

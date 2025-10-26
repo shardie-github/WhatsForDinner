@@ -5,12 +5,14 @@ A production-ready, scalable SaaS platform that transforms AI meal planning into
 ## 🚀 Features
 
 ### Multi-Tenant Architecture
+
 - **Tenant Isolation**: Complete data separation using Supabase RLS
 - **Role-Based Access**: Owner, Editor, Viewer roles with granular permissions
 - **Team Management**: Invite users, manage memberships, and control access
 - **Automatic Tenant Creation**: New users get their own isolated workspace
 
 ### Subscription & Billing
+
 - **Stripe Integration**: Complete checkout, webhooks, and subscription management
 - **Three Pricing Tiers**:
   - **Free**: 3 AI meals/day, 1 pantry list
@@ -20,18 +22,21 @@ A production-ready, scalable SaaS platform that transforms AI meal planning into
 - **Billing Portal**: Self-service subscription management
 
 ### AI Cost Optimization
+
 - **Smart Caching**: Reduces API costs with intelligent response caching
 - **Model Selection**: Automatic GPT-4o vs GPT-4o-mini selection based on plan
 - **Fallback Systems**: Graceful degradation when APIs are unavailable
 - **Cost Analytics**: Detailed tracking of AI usage and expenses
 
 ### Admin Dashboard
+
 - **Comprehensive Analytics**: Usage metrics, revenue tracking, user activity
 - **User Management**: Invite users, manage roles, view activity
 - **Billing Overview**: Subscription status, payment history, cost analysis
 - **System Settings**: Configure limits, features, and tenant preferences
 
 ### Advanced Features
+
 - **Usage Quotas**: Enforce daily limits based on subscription plan
 - **Analytics Tracking**: Detailed user behavior and system performance metrics
 - **Error Monitoring**: Comprehensive logging and error reporting
@@ -40,6 +45,7 @@ A production-ready, scalable SaaS platform that transforms AI meal planning into
 ## 🏗️ Architecture
 
 ### Database Schema
+
 ```sql
 -- Core tenant tables
 tenants (id, name, plan, stripe_customer_id, status, settings)
@@ -57,6 +63,7 @@ profiles, pantry_items, recipes, favorites (all with tenant_id)
 ### Key Components
 
 #### Frontend
+
 - **Next.js 16** with App Router
 - **TypeScript** for type safety
 - **Tailwind CSS** for styling
@@ -64,12 +71,14 @@ profiles, pantry_items, recipes, favorites (all with tenant_id)
 - **Multi-tenant hooks** for data access
 
 #### Backend
+
 - **Supabase** for database and auth
 - **Stripe** for payments and subscriptions
 - **OpenAI API** for AI meal generation
 - **Row Level Security** for tenant isolation
 
 #### AI Optimization
+
 - **Intelligent Caching** with TTL-based expiration
 - **Model Selection** based on plan and cost
 - **Fallback Mechanisms** for reliability
@@ -78,12 +87,14 @@ profiles, pantry_items, recipes, favorites (all with tenant_id)
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - Supabase account
 - Stripe account
 - OpenAI API key
 
 ### Environment Variables
+
 ```bash
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
@@ -104,6 +115,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 ### Installation
+
 ```bash
 # Install dependencies
 npm install
@@ -116,6 +128,7 @@ npm run dev
 ```
 
 ### Database Setup
+
 1. Run the migration files in order:
    - `001_create_tables.sql`
    - `002_analytics_logging_tables.sql`
@@ -128,12 +141,14 @@ npm run dev
 ## 📊 Usage Analytics
 
 ### Key Metrics Tracked
+
 - **User Engagement**: Page views, session duration, feature usage
 - **AI Performance**: Response times, success rates, error rates
 - **Cost Analysis**: Token usage, API costs, optimization savings
 - **Business Metrics**: Revenue, churn, conversion rates
 
 ### Admin Dashboard Features
+
 - **Real-time Usage**: Live quota tracking and cost monitoring
 - **User Management**: Team member administration and role management
 - **Billing Overview**: Subscription status and payment history
@@ -142,46 +157,50 @@ npm run dev
 ## 🔧 Configuration
 
 ### Tenant Settings
+
 ```typescript
 interface TenantSettings {
   notifications: {
-    email: boolean
-    push: boolean
-    weekly_digest: boolean
-  }
+    email: boolean;
+    push: boolean;
+    weekly_digest: boolean;
+  };
   features: {
-    ai_optimization: boolean
-    analytics_tracking: boolean
-    data_retention_days: number
-  }
+    ai_optimization: boolean;
+    analytics_tracking: boolean;
+    data_retention_days: number;
+  };
   limits: {
-    max_members: number
-    max_pantry_items: number
-    max_recipes: number
-  }
+    max_members: number;
+    max_pantry_items: number;
+    max_recipes: number;
+  };
 }
 ```
 
 ### AI Optimization Config
+
 ```typescript
 interface OptimizationConfig {
-  enableCaching: boolean
-  cacheTTL: number // seconds
-  fallbackToCache: boolean
-  costThreshold: number // USD per request
-  modelSelection: 'auto' | 'gpt-4o-mini' | 'gpt-4o'
+  enableCaching: boolean;
+  cacheTTL: number; // seconds
+  fallbackToCache: boolean;
+  costThreshold: number; // USD per request
+  modelSelection: 'auto' | 'gpt-4o-mini' | 'gpt-4o';
 }
 ```
 
 ## 🛡️ Security
 
 ### Data Protection
+
 - **Row Level Security**: Database-level tenant isolation
 - **API Authentication**: JWT-based user authentication
 - **Webhook Security**: Stripe signature verification
 - **Input Validation**: Zod schema validation for all inputs
 
 ### Privacy Compliance
+
 - **GDPR Ready**: Data retention controls and user consent
 - **Data Isolation**: Complete tenant data separation
 - **Audit Logging**: Comprehensive activity tracking
@@ -190,12 +209,14 @@ interface OptimizationConfig {
 ## 📈 Scaling Considerations
 
 ### Performance
+
 - **Database Indexing**: Optimized queries for multi-tenant access
 - **Caching Strategy**: Redis for session and API response caching
 - **CDN Integration**: Static asset optimization
 - **Load Balancing**: Horizontal scaling support
 
 ### Cost Optimization
+
 - **AI Caching**: Reduce OpenAI API costs by 60-80%
 - **Model Selection**: Use cheaper models when appropriate
 - **Usage Monitoring**: Real-time cost tracking and alerts
@@ -204,6 +225,7 @@ interface OptimizationConfig {
 ## 🚀 Deployment
 
 ### Production Checklist
+
 - [ ] Configure production environment variables
 - [ ] Set up Stripe webhooks for production
 - [ ] Configure Supabase production database
@@ -214,6 +236,7 @@ interface OptimizationConfig {
 - [ ] Set up CI/CD pipeline
 
 ### Monitoring
+
 - **Application Metrics**: Response times, error rates, throughput
 - **Business Metrics**: Revenue, user growth, conversion rates
 - **Infrastructure Metrics**: CPU, memory, database performance
@@ -222,12 +245,14 @@ interface OptimizationConfig {
 ## 📚 API Documentation
 
 ### Core Endpoints
+
 - `POST /api/dinner` - Generate AI recipes
 - `POST /api/billing/checkout` - Create Stripe checkout session
 - `POST /api/billing/portal` - Create customer portal session
 - `POST /api/stripe/webhook` - Handle Stripe webhooks
 
 ### Admin Endpoints
+
 - `GET /admin` - Dashboard overview
 - `GET /admin/users` - User management
 - `GET /admin/analytics` - Usage analytics
@@ -249,6 +274,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🆘 Support
 
 For support and questions:
+
 - Create an issue in the repository
 - Check the documentation
 - Contact the development team

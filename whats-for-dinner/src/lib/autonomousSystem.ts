@@ -56,10 +56,30 @@ export class AutonomousSystem {
 
   private initializeAgents() {
     const agentConfigs = [
-      { name: 'BuildAgent', status: 'active' as const, lastAction: 'Pipeline setup', successRate: 0 },
-      { name: 'InsightAgent', status: 'idle' as const, lastAction: 'N/A', successRate: 0 },
-      { name: 'HealAgent', status: 'idle' as const, lastAction: 'N/A', successRate: 0 },
-      { name: 'EthicsAgent', status: 'idle' as const, lastAction: 'N/A', successRate: 0 },
+      {
+        name: 'BuildAgent',
+        status: 'active' as const,
+        lastAction: 'Pipeline setup',
+        successRate: 0,
+      },
+      {
+        name: 'InsightAgent',
+        status: 'idle' as const,
+        lastAction: 'N/A',
+        successRate: 0,
+      },
+      {
+        name: 'HealAgent',
+        status: 'idle' as const,
+        lastAction: 'N/A',
+        successRate: 0,
+      },
+      {
+        name: 'EthicsAgent',
+        status: 'idle' as const,
+        lastAction: 'N/A',
+        successRate: 0,
+      },
     ];
 
     agentConfigs.forEach(config => {
@@ -75,7 +95,7 @@ export class AutonomousSystem {
    */
   async startContinuousMonitoring(): Promise<void> {
     logger.info('Starting continuous monitoring system');
-    
+
     setInterval(async () => {
       await this.collectMetrics();
       await this.analyzeAnomalies();
@@ -113,10 +133,10 @@ export class AutonomousSystem {
    */
   private async analyzeAnomalies(): Promise<void> {
     const anomalies = await this.detectAnomalies();
-    
+
     for (const anomaly of anomalies) {
       logger.warn('Anomaly detected', { anomaly });
-      
+
       if (anomaly.severity === 'critical' || anomaly.severity === 'high') {
         await this.triggerAutoRemediation(anomaly);
       }
@@ -128,7 +148,7 @@ export class AutonomousSystem {
    */
   private async detectAnomalies(): Promise<DiagnosticResult[]> {
     const anomalies: DiagnosticResult[] = [];
-    
+
     // Check build success rate
     if (this.metrics.buildSuccessRate < 0.8) {
       anomalies.push({
@@ -168,7 +188,9 @@ export class AutonomousSystem {
   /**
    * Active auto-remediation with decision engine
    */
-  private async triggerAutoRemediation(anomaly: DiagnosticResult): Promise<void> {
+  private async triggerAutoRemediation(
+    anomaly: DiagnosticResult
+  ): Promise<void> {
     if (!anomaly.autoRemediation) return;
 
     logger.info('Triggering auto-remediation', { anomaly });
@@ -185,7 +207,9 @@ export class AutonomousSystem {
           await this.optimizePerformance();
           break;
         default:
-          logger.warn('No auto-remediation available for issue', { issue: anomaly.issue });
+          logger.warn('No auto-remediation available for issue', {
+            issue: anomaly.issue,
+          });
       }
 
       // Update reinforcement weights
@@ -227,15 +251,15 @@ export class AutonomousSystem {
    */
   private async updateReinforcementWeights(): Promise<void> {
     const currentWeights = this.reinforcementWeights;
-    
+
     // Update weights based on outcomes
     // success (+1), rollback (-1), warning (+0.5)
     const outcomes = await this.getRecentOutcomes();
-    
+
     for (const [action, outcome] of outcomes) {
       const currentWeight = currentWeights.get(action) || 0;
       let weightDelta = 0;
-      
+
       switch (outcome) {
         case 'success':
           weightDelta = 1;
@@ -247,12 +271,12 @@ export class AutonomousSystem {
           weightDelta = 0.5;
           break;
       }
-      
+
       this.reinforcementWeights.set(action, currentWeight + weightDelta);
     }
 
-    logger.info('Reinforcement weights updated', { 
-      weights: Object.fromEntries(this.reinforcementWeights) 
+    logger.info('Reinforcement weights updated', {
+      weights: Object.fromEntries(this.reinforcementWeights),
     });
   }
 

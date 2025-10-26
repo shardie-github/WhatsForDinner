@@ -73,7 +73,10 @@ export abstract class BaseAgent {
     try {
       // Safety constraint check
       if (!this.validateAction(action)) {
-        logger.warn(`Action failed safety check`, { agent: this.config.name, action });
+        logger.warn(`Action failed safety check`, {
+          agent: this.config.name,
+          action,
+        });
         return false;
       }
 
@@ -82,10 +85,10 @@ export abstract class BaseAgent {
 
       // Execute the specific action
       const result = await this.performAction(action);
-      
+
       // Record experience for learning
       this.recordExperience(action, result ? 'success' : 'failure');
-      
+
       // Update system state
       autonomousSystem.updateAgentState(this.config.name, {
         lastAction: action.type,
@@ -94,12 +97,12 @@ export abstract class BaseAgent {
 
       return result;
     } catch (error) {
-      logger.error(`Action execution failed`, { 
-        agent: this.config.name, 
-        action, 
-        error 
+      logger.error(`Action execution failed`, {
+        agent: this.config.name,
+        action,
+        error,
       });
-      
+
       this.recordExperience(action, 'failure');
       return false;
     } finally {
@@ -113,10 +116,10 @@ export abstract class BaseAgent {
   protected validateAction(action: AgentAction): boolean {
     // Check if action type is in capabilities
     if (!this.config.capabilities.includes(action.type)) {
-      logger.warn(`Action type not in capabilities`, { 
-        agent: this.config.name, 
+      logger.warn(`Action type not in capabilities`, {
+        agent: this.config.name,
         actionType: action.type,
-        capabilities: this.config.capabilities 
+        capabilities: this.config.capabilities,
       });
       return false;
     }
@@ -124,10 +127,10 @@ export abstract class BaseAgent {
     // Check safety constraints
     for (const constraint of this.config.safetyConstraints) {
       if (!this.checkSafetyConstraint(constraint, action)) {
-        logger.warn(`Action violates safety constraint`, { 
-          agent: this.config.name, 
-          constraint, 
-          action 
+        logger.warn(`Action violates safety constraint`, {
+          agent: this.config.name,
+          constraint,
+          action,
         });
         return false;
       }
@@ -139,7 +142,10 @@ export abstract class BaseAgent {
   /**
    * Check individual safety constraint
    */
-  protected checkSafetyConstraint(constraint: string, action: AgentAction): boolean {
+  protected checkSafetyConstraint(
+    constraint: string,
+    action: AgentAction
+  ): boolean {
     // Override in subclasses for specific constraint logic
     return true;
   }
@@ -152,7 +158,10 @@ export abstract class BaseAgent {
   /**
    * Record experience for learning
    */
-  protected recordExperience(action: AgentAction, outcome: 'success' | 'failure' | 'warning'): void {
+  protected recordExperience(
+    action: AgentAction,
+    outcome: 'success' | 'failure' | 'warning'
+  ): void {
     const experience = {
       action,
       outcome,
@@ -161,7 +170,7 @@ export abstract class BaseAgent {
     };
 
     this.memory.experiences.push(experience);
-    
+
     // Keep only last 1000 experiences
     if (this.memory.experiences.length > 1000) {
       this.memory.experiences = this.memory.experiences.slice(-1000);
@@ -169,7 +178,7 @@ export abstract class BaseAgent {
 
     // Update patterns
     this.updatePatterns(action, outcome);
-    
+
     // Save memory
     this.saveMemory();
   }
@@ -191,7 +200,8 @@ export abstract class BaseAgent {
    */
   protected updatePatterns(action: AgentAction, outcome: string): void {
     const patternKey = `${action.type}_${outcome}`;
-    this.memory.patterns[patternKey] = (this.memory.patterns[patternKey] || 0) + 1;
+    this.memory.patterns[patternKey] =
+      (this.memory.patterns[patternKey] || 0) + 1;
   }
 
   /**
@@ -199,8 +209,10 @@ export abstract class BaseAgent {
    */
   protected calculateSuccessRate(): number {
     if (this.memory.experiences.length === 0) return 0;
-    
-    const successes = this.memory.experiences.filter(exp => exp.outcome === 'success').length;
+
+    const successes = this.memory.experiences.filter(
+      exp => exp.outcome === 'success'
+    ).length;
     return successes / this.memory.experiences.length;
   }
 
@@ -209,13 +221,13 @@ export abstract class BaseAgent {
    */
   async learn(): Promise<void> {
     logger.info(`Agent ${this.config.name} learning from experiences`);
-    
+
     // Analyze patterns
     const patterns = this.analyzePatterns();
-    
+
     // Update knowledge base
     this.updateKnowledge(patterns);
-    
+
     // Update system with learning data
     autonomousSystem.recordLearningData(this.config.name, {
       patterns,
@@ -229,15 +241,19 @@ export abstract class BaseAgent {
    */
   protected analyzePatterns(): Record<string, any> {
     const patterns: Record<string, any> = {};
-    
+
     // Analyze success patterns
-    const successActions = this.memory.experiences.filter(exp => exp.outcome === 'success');
+    const successActions = this.memory.experiences.filter(
+      exp => exp.outcome === 'success'
+    );
     patterns.successPatterns = this.groupByActionType(successActions);
-    
+
     // Analyze failure patterns
-    const failureActions = this.memory.experiences.filter(exp => exp.outcome === 'failure');
+    const failureActions = this.memory.experiences.filter(
+      exp => exp.outcome === 'failure'
+    );
     patterns.failurePatterns = this.groupByActionType(failureActions);
-    
+
     return patterns;
   }
 

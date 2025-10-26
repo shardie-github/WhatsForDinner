@@ -1,37 +1,41 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabaseClient'
-import PantryManager from '@/components/PantryManager'
-import Navbar from '@/components/Navbar'
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabaseClient';
+import PantryManager from '@/components/PantryManager';
+import Navbar from '@/components/Navbar';
 
 export default function PantryPage() {
-  const [user, setUser] = useState<any>(null)
-  const [pantryItems, setPantryItems] = useState<Array<{id: number, ingredient: string, quantity: number}>>([])
+  const [user, setUser] = useState<any>(null);
+  const [pantryItems, setPantryItems] = useState<
+    Array<{ id: number; ingredient: string; quantity: number }>
+  >([]);
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+
       if (user) {
         const { data: pantry } = await supabase
           .from('pantry_items')
           .select('*')
           .eq('user_id', user.id)
-          .order('ingredient')
-        
+          .order('ingredient');
+
         if (pantry) {
-          setPantryItems(pantry)
+          setPantryItems(pantry);
         }
       }
-    }
-    
-    getUser()
-  }, [])
+    };
+
+    getUser();
+  }, []);
 
   const addItem = async (ingredient: string, quantity: number) => {
-    if (!user) return
+    if (!user) return;
 
     try {
       const { data, error } = await supabase
@@ -42,54 +46,54 @@ export default function PantryPage() {
           quantity,
         })
         .select()
-        .single()
+        .single();
 
-      if (error) throw error
-      setPantryItems([...pantryItems, data])
+      if (error) throw error;
+      setPantryItems([...pantryItems, data]);
     } catch (error) {
-      console.error('Error adding item:', error)
+      console.error('Error adding item:', error);
     }
-  }
+  };
 
   const updateItem = async (id: number, quantity: number) => {
     try {
       const { error } = await supabase
         .from('pantry_items')
         .update({ quantity })
-        .eq('id', id)
+        .eq('id', id);
 
-      if (error) throw error
-      
-      setPantryItems(pantryItems.map(item => 
-        item.id === id ? { ...item, quantity } : item
-      ))
+      if (error) throw error;
+
+      setPantryItems(
+        pantryItems.map(item => (item.id === id ? { ...item, quantity } : item))
+      );
     } catch (error) {
-      console.error('Error updating item:', error)
+      console.error('Error updating item:', error);
     }
-  }
+  };
 
   const deleteItem = async (id: number) => {
     try {
       const { error } = await supabase
         .from('pantry_items')
         .delete()
-        .eq('id', id)
+        .eq('id', id);
 
-      if (error) throw error
-      
-      setPantryItems(pantryItems.filter(item => item.id !== id))
+      if (error) throw error;
+
+      setPantryItems(pantryItems.filter(item => item.id !== id));
     } catch (error) {
-      console.error('Error deleting item:', error)
+      console.error('Error deleting item:', error);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar user={user} />
-      
+
       <main className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <div className="mb-8 text-center">
+          <h1 className="mb-4 text-4xl font-bold text-gray-900">
             Pantry Manager
           </h1>
           <p className="text-lg text-gray-600">
@@ -105,5 +109,5 @@ export default function PantryPage() {
         />
       </main>
     </div>
-  )
+  );
 }

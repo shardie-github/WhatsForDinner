@@ -1,119 +1,137 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Recipe } from '@/lib/validation'
-import RecipeFeedback from './RecipeFeedback'
+import { useState } from 'react';
+import { Clock, Zap, ChevronDown, ChevronUp } from 'lucide-react';
+import { Recipe } from '@/lib/validation';
+import RecipeFeedback from './RecipeFeedback';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { Separator } from './ui/separator';
 
 interface RecipeCardProps {
-  recipe: Recipe
-  onSave?: () => void
-  onRemove?: () => void
-  canSave?: boolean
-  isFavorite?: boolean
-  userId?: string
-  recipeId?: number
+  recipe: Recipe;
+  onSave?: () => void;
+  onRemove?: () => void;
+  canSave?: boolean;
+  isFavorite?: boolean;
+  userId?: string;
+  recipeId?: number;
 }
 
-export default function RecipeCard({ 
-  recipe, 
-  onSave, 
-  onRemove, 
+export default function RecipeCard({
+  recipe,
+  onSave,
+  onRemove,
   canSave = false,
   isFavorite = false,
   userId,
-  recipeId
+  recipeId,
 }: RecipeCardProps) {
-  const [showDetails, setShowDetails] = useState(false)
+  const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="p-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+    <Card className="group animate-fade-in transition-all duration-300 hover:shadow-lg">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-xl font-semibold text-card-foreground transition-colors group-hover:text-primary">
           {recipe.title}
-        </h3>
-        
-        <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
-          <span className="flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {recipe.cookTime}
-          </span>
-          <span className="flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            {recipe.calories} cal
-          </span>
-        </div>
+        </CardTitle>
 
-        <div className="mb-4">
-          <h4 className="font-medium text-gray-900 mb-2">Ingredients:</h4>
-          <ul className="text-sm text-gray-600 space-y-1">
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4" />
+            <span>{recipe.cookTime}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Zap className="h-4 w-4" />
+            <span>{recipe.calories} cal</span>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <div>
+          <h4 className="mb-3 font-medium text-card-foreground">
+            Ingredients:
+          </h4>
+          <div className="flex flex-wrap gap-2">
             {recipe.ingredients.map((ingredient, index) => (
-              <li key={index} className="flex items-center">
-                <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+              <Badge key={index} variant="secondary" className="text-xs">
                 {ingredient}
-              </li>
+              </Badge>
             ))}
-          </ul>
+          </div>
         </div>
 
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => setShowDetails(!showDetails)}
-          className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-4"
+          className="h-auto w-full justify-between p-0 font-normal"
         >
-          {showDetails ? 'Hide' : 'Show'} Instructions
-        </button>
+          <span>{showDetails ? 'Hide' : 'Show'} Instructions</span>
+          {showDetails ? (
+            <ChevronDown className="h-4 w-4" />
+          ) : (
+            <ChevronUp className="h-4 w-4" />
+          )}
+        </Button>
 
         {showDetails && (
-          <div className="mb-4">
-            <h4 className="font-medium text-gray-900 mb-2">Instructions:</h4>
-            <ol className="text-sm text-gray-600 space-y-2">
-              {recipe.steps.map((step, index) => (
-                <li key={index} className="flex">
-                  <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-xs font-medium mr-3">
-                    {index + 1}
-                  </span>
-                  {step}
-                </li>
-              ))}
-            </ol>
+          <div className="space-y-3">
+            <Separator />
+            <div>
+              <h4 className="mb-3 font-medium text-card-foreground">
+                Instructions:
+              </h4>
+              <ol className="space-y-3">
+                {recipe.steps.map((step, index) => (
+                  <li key={index} className="flex gap-3">
+                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
+                      {index + 1}
+                    </span>
+                    <span className="text-sm leading-relaxed text-muted-foreground">
+                      {step}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
         )}
 
-        <div className="flex space-x-2">
+        <div className="flex gap-2 pt-2">
           {canSave && !isFavorite && (
-            <button
-              onClick={onSave}
-              className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 text-sm font-medium"
-            >
+            <Button onClick={onSave} className="flex-1" size="sm">
               Save Recipe
-            </button>
+            </Button>
           )}
           {isFavorite && onRemove && (
-            <button
+            <Button
               onClick={onRemove}
-              className="flex-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm font-medium"
+              variant="destructive"
+              className="flex-1"
+              size="sm"
             >
               Remove
-            </button>
+            </Button>
           )}
         </div>
 
         {/* Recipe Feedback Component */}
         {userId && recipeId && (
-          <div className=\"border-t pt-4 mt-4\">
+          <div className="pt-4">
+            <Separator className="mb-4" />
             <RecipeFeedback
               recipeId={recipeId}
               userId={userId}
-              onFeedbackSubmitted={(feedback) => {
-                console.log('Feedback submitted:', feedback)
+              onFeedbackSubmitted={feedback => {
+                console.log('Feedback submitted:', feedback);
               }}
             />
           </div>
         )}
-      </div>
-    </div>
-  )
+      </CardContent>
+    </Card>
+  );
 }

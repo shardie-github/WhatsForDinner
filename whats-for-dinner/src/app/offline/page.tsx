@@ -1,9 +1,9 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function OfflinePage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="max-w-md w-full text-center">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md text-center">
         <div className="mb-8">
           <svg
             className="mx-auto h-24 w-24 text-gray-400"
@@ -19,28 +19,29 @@ export default function OfflinePage() {
             />
           </svg>
         </div>
-        
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+
+        <h1 className="mb-4 text-3xl font-bold text-gray-900">
           You're Offline
         </h1>
-        
-        <p className="text-lg text-gray-600 mb-8">
-          It looks like you're not connected to the internet. Don't worry, you can still browse your saved recipes!
+
+        <p className="mb-8 text-lg text-gray-600">
+          It looks like you're not connected to the internet. Don't worry, you
+          can still browse your saved recipes!
         </p>
-        
+
         <div className="space-y-4">
           <Link
             href="/favorites"
-            className="inline-block bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition-colors"
+            className="inline-block rounded-md bg-blue-500 px-6 py-3 text-white transition-colors hover:bg-blue-600"
           >
             View Saved Recipes
           </Link>
-          
+
           <div className="text-sm text-gray-500">
             <p>Try refreshing the page when you're back online</p>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

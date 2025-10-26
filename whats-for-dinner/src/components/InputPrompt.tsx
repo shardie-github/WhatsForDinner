@@ -1,133 +1,186 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
+import { Plus, X, ChefHat } from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import { Separator } from './ui/separator';
 
 interface InputPromptProps {
-  onGenerate: (ingredients: string[], preferences: string) => void
-  loading: boolean
-  pantryItems: string[]
+  onGenerate: (ingredients: string[], preferences: string) => void;
+  loading: boolean;
+  pantryItems: string[];
 }
 
-export default function InputPrompt({ onGenerate, loading, pantryItems }: InputPromptProps) {
-  const [ingredients, setIngredients] = useState<string[]>([])
-  const [preferences, setPreferences] = useState('')
-  const [newIngredient, setNewIngredient] = useState('')
+export default function InputPrompt({
+  onGenerate,
+  loading,
+  pantryItems,
+}: InputPromptProps) {
+  const [ingredients, setIngredients] = useState<string[]>([]);
+  const [preferences, setPreferences] = useState('');
+  const [newIngredient, setNewIngredient] = useState('');
 
   const addIngredient = () => {
     if (newIngredient.trim() && !ingredients.includes(newIngredient.trim())) {
-      setIngredients([...ingredients, newIngredient.trim()])
-      setNewIngredient('')
+      setIngredients([...ingredients, newIngredient.trim()]);
+      setNewIngredient('');
     }
-  }
+  };
 
   const removeIngredient = (ingredient: string) => {
-    setIngredients(ingredients.filter(i => i !== ingredient))
-  }
+    setIngredients(ingredients.filter(i => i !== ingredient));
+  };
 
   const addFromPantry = (ingredient: string) => {
     if (!ingredients.includes(ingredient)) {
-      setIngredients([...ingredients, ingredient])
+      setIngredients([...ingredients, ingredient]);
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (ingredients.length > 0) {
-      onGenerate(ingredients, preferences)
+      onGenerate(ingredients, preferences);
     }
-  }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addIngredient();
+    }
+  };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            What ingredients do you have?
-          </label>
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              value={newIngredient}
-              onChange={(e) => setNewIngredient(e.target.value)}
-              placeholder="Add an ingredient..."
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="button"
-              onClick={addIngredient}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            >
-              Add
-            </button>
-          </div>
-        </div>
-
-        {pantryItems.length > 0 && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Or add from your pantry:
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {pantryItems.map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => addFromPantry(item)}
-                  className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200"
-                >
-                  + {item}
-                </button>
-              ))}
+    <Card className="mx-auto w-full max-w-2xl">
+      <CardHeader className="text-center">
+        <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+          <ChefHat className="h-6 w-6 text-primary" />
+          What ingredients do you have?
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="ingredient-input" className="text-base font-medium">
+              Add ingredients
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                id="ingredient-input"
+                type="text"
+                value={newIngredient}
+                onChange={e => setNewIngredient(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Type an ingredient and press Enter..."
+                className="flex-1"
+                disabled={loading}
+              />
+              <Button
+                type="button"
+                onClick={addIngredient}
+                disabled={!newIngredient.trim() || loading}
+                size="icon"
+                variant="outline"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
           </div>
-        )}
 
-        {ingredients.length > 0 && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Selected ingredients:
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {ingredients.map((ingredient) => (
-                <span
-                  key={ingredient}
-                  className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-                >
-                  {ingredient}
-                  <button
+          {pantryItems.length > 0 && (
+            <div className="space-y-3">
+              <Label className="text-base font-medium">
+                Or add from your pantry:
+              </Label>
+              <div className="flex flex-wrap gap-2">
+                {pantryItems.map(item => (
+                  <Button
+                    key={item}
                     type="button"
-                    onClick={() => removeIngredient(ingredient)}
-                    className="ml-2 text-blue-600 hover:text-blue-800"
+                    onClick={() => addFromPantry(item)}
+                    variant="outline"
+                    size="sm"
+                    className="h-8"
+                    disabled={loading}
                   >
-                    ×
-                  </button>
-                </span>
-              ))}
+                    <Plus className="mr-1 h-3 w-3" />
+                    {item}
+                  </Button>
+                ))}
+              </div>
             </div>
+          )}
+
+          {ingredients.length > 0 && (
+            <div className="space-y-3">
+              <Label className="text-base font-medium">
+                Selected ingredients ({ingredients.length}):
+              </Label>
+              <div className="flex flex-wrap gap-2">
+                {ingredients.map(ingredient => (
+                  <Badge
+                    key={ingredient}
+                    variant="secondary"
+                    className="flex items-center gap-1 px-3 py-1"
+                  >
+                    {ingredient}
+                    <Button
+                      type="button"
+                      onClick={() => removeIngredient(ingredient)}
+                      variant="ghost"
+                      size="icon"
+                      className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                      disabled={loading}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <Separator />
+
+          <div className="space-y-2">
+            <Label htmlFor="preferences" className="text-base font-medium">
+              Any dietary preferences or restrictions?
+            </Label>
+            <Input
+              id="preferences"
+              type="text"
+              value={preferences}
+              onChange={e => setPreferences(e.target.value)}
+              placeholder="e.g., vegetarian, gluten-free, low-carb..."
+              disabled={loading}
+            />
           </div>
-        )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Any dietary preferences or restrictions?
-          </label>
-          <input
-            type="text"
-            value={preferences}
-            onChange={(e) => setPreferences(e.target.value)}
-            placeholder="e.g., vegetarian, gluten-free, low-carb..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading || ingredients.length === 0}
-          className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Generating recipes...' : 'What should I cook?'}
-        </button>
-      </form>
-    </div>
-  )
+          <Button
+            type="submit"
+            disabled={loading || ingredients.length === 0}
+            className="h-12 w-full text-base"
+            size="lg"
+          >
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Generating recipes...
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <ChefHat className="h-5 w-5" />
+                What should I cook?
+              </div>
+            )}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
 }

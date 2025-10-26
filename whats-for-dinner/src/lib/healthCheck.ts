@@ -1,95 +1,95 @@
-import { createClient } from '@supabase/supabase-js'
-import { monitoringSystem } from './monitoring'
-import { observabilitySystem } from './observability'
-import { logger } from './logger'
+import { createClient } from '@supabase/supabase-js';
+import { monitoringSystem } from './monitoring';
+import { observabilitySystem } from './observability';
+import { logger } from './logger';
 
 interface HealthCheckResult {
-  name: string
-  status: 'healthy' | 'degraded' | 'unhealthy'
-  message: string
-  duration: number
-  details?: any
-  timestamp: string
+  name: string;
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  message: string;
+  duration: number;
+  details?: any;
+  timestamp: string;
 }
 
 interface SystemHealth {
-  overall: 'healthy' | 'degraded' | 'unhealthy'
-  checks: HealthCheckResult[]
-  timestamp: string
-  version: string
-  uptime: number
-  environment: string
+  overall: 'healthy' | 'degraded' | 'unhealthy';
+  checks: HealthCheckResult[];
+  timestamp: string;
+  version: string;
+  uptime: number;
+  environment: string;
 }
 
 class HealthCheckSystem {
-  private supabase: any
-  private startTime: number
+  private supabase: any;
+  private startTime: number;
 
   constructor() {
     this.supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-    this.startTime = Date.now()
+    );
+    this.startTime = Date.now();
   }
 
   async runHealthChecks(): Promise<SystemHealth> {
-    const checks: HealthCheckResult[] = []
-    
-    // Database connectivity
-    checks.push(await this.checkDatabase())
-    
-    // API endpoints
-    checks.push(await this.checkAPIEndpoints())
-    
-    // External services
-    checks.push(await this.checkExternalServices())
-    
-    // Security systems
-    checks.push(await this.checkSecuritySystems())
-    
-    // Performance metrics
-    checks.push(await this.checkPerformance())
-    
-    // Monitoring systems
-    checks.push(await this.checkMonitoring())
-    
-    // AI services
-    checks.push(await this.checkAIServices())
-    
-    // Storage systems
-    checks.push(await this.checkStorage())
-    
-    // Network connectivity
-    checks.push(await this.checkNetwork())
-    
-    // Memory and CPU
-    checks.push(await this.checkSystemResources())
+    const checks: HealthCheckResult[] = [];
 
-    const overall = this.determineOverallStatus(checks)
-    
+    // Database connectivity
+    checks.push(await this.checkDatabase());
+
+    // API endpoints
+    checks.push(await this.checkAPIEndpoints());
+
+    // External services
+    checks.push(await this.checkExternalServices());
+
+    // Security systems
+    checks.push(await this.checkSecuritySystems());
+
+    // Performance metrics
+    checks.push(await this.checkPerformance());
+
+    // Monitoring systems
+    checks.push(await this.checkMonitoring());
+
+    // AI services
+    checks.push(await this.checkAIServices());
+
+    // Storage systems
+    checks.push(await this.checkStorage());
+
+    // Network connectivity
+    checks.push(await this.checkNetwork());
+
+    // Memory and CPU
+    checks.push(await this.checkSystemResources());
+
+    const overall = this.determineOverallStatus(checks);
+
     return {
       overall,
       checks,
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '1.0.0',
       uptime: Date.now() - this.startTime,
-      environment: process.env.NODE_ENV || 'development'
-    }
+      environment: process.env.NODE_ENV || 'development',
+    };
   }
 
   private async checkDatabase(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
       // Test basic connectivity
       const { data, error } = await this.supabase
         .from('system_metrics')
         .select('count')
-        .limit(1)
+        .limit(1);
 
       if (error) {
-        throw new Error(`Database query failed: ${error.message}`)
+        throw new Error(`Database query failed: ${error.message}`);
       }
 
       // Test write capability
@@ -97,15 +97,15 @@ class HealthCheckSystem {
         metric_type: 'health_check',
         value: 1,
         metadata: { test: true },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
 
       const { error: insertError } = await this.supabase
         .from('system_metrics')
-        .insert(testData)
+        .insert(testData);
 
       if (insertError) {
-        throw new Error(`Database write failed: ${insertError.message}`)
+        throw new Error(`Database write failed: ${insertError.message}`);
       }
 
       // Test read capability
@@ -114,14 +114,14 @@ class HealthCheckSystem {
         .select('*')
         .eq('metric_type', 'health_check')
         .order('timestamp', { ascending: false })
-        .limit(1)
+        .limit(1);
 
       if (readError) {
-        throw new Error(`Database read failed: ${readError.message}`)
+        throw new Error(`Database read failed: ${readError.message}`);
       }
 
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'database',
         status: 'healthy',
@@ -130,13 +130,13 @@ class HealthCheckSystem {
         details: {
           connected: true,
           readWrite: true,
-          responseTime: duration
+          responseTime: duration,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'database',
         status: 'unhealthy',
@@ -144,46 +144,50 @@ class HealthCheckSystem {
         duration,
         details: {
           error: error.message,
-          connected: false
+          connected: false,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
   private async checkAPIEndpoints(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-      const endpoints = [
-        '/api/health',
-        '/api/recipes',
-        '/api/pantry'
-      ]
+      const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+      const endpoints = ['/api/health', '/api/recipes', '/api/pantry'];
 
       const results = await Promise.allSettled(
-        endpoints.map(async (endpoint) => {
+        endpoints.map(async endpoint => {
           const response = await fetch(`${baseUrl}${endpoint}`, {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json'
-            }
-          })
+              'Content-Type': 'application/json',
+            },
+          });
           return {
             endpoint,
             status: response.status,
-            ok: response.ok
-          }
+            ok: response.ok,
+          };
         })
-      )
+      );
 
-      const failed = results.filter(r => r.status === 'rejected' || !r.value.ok)
-      const successCount = results.length - failed.length
-      const successRate = successCount / results.length
+      const failed = results.filter(
+        r => r.status === 'rejected' || !r.value.ok
+      );
+      const successCount = results.length - failed.length;
+      const successRate = successCount / results.length;
 
-      const duration = Date.now() - start
-      const status = successRate >= 0.8 ? 'healthy' : successRate >= 0.5 ? 'degraded' : 'unhealthy'
+      const duration = Date.now() - start;
+      const status =
+        successRate >= 0.8
+          ? 'healthy'
+          : successRate >= 0.5
+            ? 'degraded'
+            : 'unhealthy';
 
       return {
         name: 'api_endpoints',
@@ -194,66 +198,77 @@ class HealthCheckSystem {
           totalEndpoints: results.length,
           healthyEndpoints: successCount,
           successRate,
-          failures: failed.map(f => f.status === 'rejected' ? f.reason : f.value)
+          failures: failed.map(f =>
+            f.status === 'rejected' ? f.reason : f.value
+          ),
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'api_endpoints',
         status: 'unhealthy',
         message: `API endpoints check failed: ${error.message}`,
         duration,
         details: {
-          error: error.message
+          error: error.message,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
   private async checkExternalServices(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
       const services = [
         {
           name: 'OpenAI',
           url: 'https://api.openai.com/v1/models',
           headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-          }
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          },
         },
         {
           name: 'Supabase',
           url: process.env.NEXT_PUBLIC_SUPABASE_URL + '/rest/v1/',
           headers: {
-            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-          }
-        }
-      ]
+            apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+          },
+        },
+      ];
 
       const results = await Promise.allSettled(
-        services.map(async (service) => {
+        services.map(async service => {
           const response = await fetch(service.url, {
             method: 'GET',
-            headers: service.headers
-          })
+            headers: service.headers,
+          });
           return {
             name: service.name,
             status: response.status,
-            ok: response.ok
-          }
+            ok: response.ok,
+          };
         })
-      )
+      );
 
-      const healthy = results.filter(r => r.status === 'fulfilled' && r.value.ok)
-      const unhealthy = results.filter(r => r.status === 'rejected' || !r.value.ok)
+      const healthy = results.filter(
+        r => r.status === 'fulfilled' && r.value.ok
+      );
+      const unhealthy = results.filter(
+        r => r.status === 'rejected' || !r.value.ok
+      );
 
-      const duration = Date.now() - start
-      const status = unhealthy.length === 0 ? 'healthy' : unhealthy.length < services.length ? 'degraded' : 'unhealthy'
+      const duration = Date.now() - start;
+      const status =
+        unhealthy.length === 0
+          ? 'healthy'
+          : unhealthy.length < services.length
+            ? 'degraded'
+            : 'unhealthy';
 
       return {
         name: 'external_services',
@@ -262,60 +277,71 @@ class HealthCheckSystem {
         duration,
         details: {
           healthy: healthy.map(h => h.value),
-          unhealthy: unhealthy.map(u => u.status === 'rejected' ? u.reason : u.value)
+          unhealthy: unhealthy.map(u =>
+            u.status === 'rejected' ? u.reason : u.value
+          ),
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'external_services',
         status: 'unhealthy',
         message: `External services check failed: ${error.message}`,
         duration,
         details: {
-          error: error.message
+          error: error.message,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
   private async checkSecuritySystems(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
       const securityChecks = [
         {
           name: 'Environment Variables',
-          check: () => this.checkEnvironmentVariables()
+          check: () => this.checkEnvironmentVariables(),
         },
         {
           name: 'Security Headers',
-          check: () => this.checkSecurityHeaders()
+          check: () => this.checkSecurityHeaders(),
         },
         {
           name: 'Rate Limiting',
-          check: () => this.checkRateLimiting()
-        }
-      ]
+          check: () => this.checkRateLimiting(),
+        },
+      ];
 
       const results = await Promise.allSettled(
-        securityChecks.map(async (check) => {
-          const result = await check.check()
+        securityChecks.map(async check => {
+          const result = await check.check();
           return {
             name: check.name,
-            ...result
-          }
+            ...result,
+          };
         })
-      )
+      );
 
-      const healthy = results.filter(r => r.status === 'fulfilled' && r.value.status === 'healthy')
-      const unhealthy = results.filter(r => r.status === 'rejected' || r.value.status !== 'healthy')
+      const healthy = results.filter(
+        r => r.status === 'fulfilled' && r.value.status === 'healthy'
+      );
+      const unhealthy = results.filter(
+        r => r.status === 'rejected' || r.value.status !== 'healthy'
+      );
 
-      const duration = Date.now() - start
-      const status = unhealthy.length === 0 ? 'healthy' : unhealthy.length < securityChecks.length ? 'degraded' : 'unhealthy'
+      const duration = Date.now() - start;
+      const status =
+        unhealthy.length === 0
+          ? 'healthy'
+          : unhealthy.length < securityChecks.length
+            ? 'degraded'
+            : 'unhealthy';
 
       return {
         name: 'security_systems',
@@ -323,74 +349,87 @@ class HealthCheckSystem {
         message: `${healthy.length}/${securityChecks.length} security checks passed`,
         duration,
         details: {
-          checks: results.map(r => r.status === 'fulfilled' ? r.value : { name: 'Unknown', status: 'unhealthy', error: r.reason })
+          checks: results.map(r =>
+            r.status === 'fulfilled'
+              ? r.value
+              : { name: 'Unknown', status: 'unhealthy', error: r.reason }
+          ),
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'security_systems',
         status: 'unhealthy',
         message: `Security systems check failed: ${error.message}`,
         duration,
         details: {
-          error: error.message
+          error: error.message,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
-  private async checkEnvironmentVariables(): Promise<{ status: string; message: string }> {
+  private async checkEnvironmentVariables(): Promise<{
+    status: string;
+    message: string;
+  }> {
     const requiredVars = [
       'NEXT_PUBLIC_SUPABASE_URL',
       'NEXT_PUBLIC_SUPABASE_ANON_KEY',
       'SUPABASE_SERVICE_ROLE_KEY',
-      'OPENAI_API_KEY'
-    ]
+      'OPENAI_API_KEY',
+    ];
 
-    const missing = requiredVars.filter(varName => !process.env[varName])
-    
+    const missing = requiredVars.filter(varName => !process.env[varName]);
+
     if (missing.length === 0) {
       return {
         status: 'healthy',
-        message: 'All required environment variables are set'
-      }
+        message: 'All required environment variables are set',
+      };
     } else {
       return {
         status: 'unhealthy',
-        message: `Missing environment variables: ${missing.join(', ')}`
-      }
+        message: `Missing environment variables: ${missing.join(', ')}`,
+      };
     }
   }
 
-  private async checkSecurityHeaders(): Promise<{ status: string; message: string }> {
+  private async checkSecurityHeaders(): Promise<{
+    status: string;
+    message: string;
+  }> {
     // This would check if security headers are properly configured
     // For now, return healthy as this is handled by Next.js
     return {
       status: 'healthy',
-      message: 'Security headers are configured'
-    }
+      message: 'Security headers are configured',
+    };
   }
 
-  private async checkRateLimiting(): Promise<{ status: string; message: string }> {
+  private async checkRateLimiting(): Promise<{
+    status: string;
+    message: string;
+  }> {
     // This would check if rate limiting is working
     // For now, return healthy as this is handled by middleware
     return {
       status: 'healthy',
-      message: 'Rate limiting is active'
-    }
+      message: 'Rate limiting is active',
+    };
   }
 
   private async checkPerformance(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
-      const metrics = await monitoringSystem.getMetrics('response_time_ms')
-      const recentMetrics = metrics.slice(-10) // Last 10 metrics
-      
+      const metrics = await monitoringSystem.getMetrics('response_time_ms');
+      const recentMetrics = metrics.slice(-10); // Last 10 metrics
+
       if (recentMetrics.length === 0) {
         return {
           name: 'performance',
@@ -398,20 +437,22 @@ class HealthCheckSystem {
           message: 'No performance metrics available',
           duration: Date.now() - start,
           details: {
-            metricsAvailable: false
+            metricsAvailable: false,
           },
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        };
       }
 
-      const avgResponseTime = recentMetrics.reduce((sum, m) => sum + m.value, 0) / recentMetrics.length
-      const maxResponseTime = Math.max(...recentMetrics.map(m => m.value))
-      
-      let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy'
-      if (avgResponseTime > 5000) status = 'unhealthy'
-      else if (avgResponseTime > 2000) status = 'degraded'
+      const avgResponseTime =
+        recentMetrics.reduce((sum, m) => sum + m.value, 0) /
+        recentMetrics.length;
+      const maxResponseTime = Math.max(...recentMetrics.map(m => m.value));
 
-      const duration = Date.now() - start
+      let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+      if (avgResponseTime > 5000) status = 'unhealthy';
+      else if (avgResponseTime > 2000) status = 'degraded';
+
+      const duration = Date.now() - start;
 
       return {
         name: 'performance',
@@ -421,32 +462,32 @@ class HealthCheckSystem {
         details: {
           averageResponseTime: avgResponseTime,
           maxResponseTime,
-          metricsCount: recentMetrics.length
+          metricsCount: recentMetrics.length,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'performance',
         status: 'unhealthy',
         message: `Performance check failed: ${error.message}`,
         duration,
         details: {
-          error: error.message
+          error: error.message,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
   private async checkMonitoring(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
-      const health = await monitoringSystem.getHealthStatus()
-      const duration = Date.now() - start
+      const health = await monitoringSystem.getHealthStatus();
+      const duration = Date.now() - start;
 
       return {
         name: 'monitoring',
@@ -455,39 +496,39 @@ class HealthCheckSystem {
         duration,
         details: {
           activeAlerts: health.alerts.length,
-          metrics: health.metrics
+          metrics: health.metrics,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'monitoring',
         status: 'unhealthy',
         message: `Monitoring check failed: ${error.message}`,
         duration,
         details: {
-          error: error.message
+          error: error.message,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
   private async checkAIServices(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
       // Check if OpenAI API key is valid
       const response = await fetch('https://api.openai.com/v1/models', {
         headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-        }
-      })
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+      });
 
-      const duration = Date.now() - start
-      const status = response.ok ? 'healthy' : 'unhealthy'
+      const duration = Date.now() - start;
+      const status = response.ok ? 'healthy' : 'unhealthy';
 
       return {
         name: 'ai_services',
@@ -496,38 +537,37 @@ class HealthCheckSystem {
         duration,
         details: {
           openaiStatus: response.status,
-          responseTime: duration
+          responseTime: duration,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'ai_services',
         status: 'unhealthy',
         message: `AI services check failed: ${error.message}`,
         duration,
         details: {
-          error: error.message
+          error: error.message,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
   private async checkStorage(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
       // Check Supabase storage
-      const { data, error } = await this.supabase
-        .storage
+      const { data, error } = await this.supabase.storage
         .from('test-bucket')
-        .list('', { limit: 1 })
+        .list('', { limit: 1 });
 
-      const duration = Date.now() - start
-      const status = error ? 'unhealthy' : 'healthy'
+      const duration = Date.now() - start;
+      const status = error ? 'unhealthy' : 'healthy';
 
       return {
         name: 'storage',
@@ -536,50 +576,50 @@ class HealthCheckSystem {
         duration,
         details: {
           error: error?.message,
-          accessible: !error
+          accessible: !error,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'storage',
         status: 'unhealthy',
         message: `Storage check failed: ${error.message}`,
         duration,
         details: {
-          error: error.message
+          error: error.message,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
   private async checkNetwork(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
       // Test network connectivity
-      const testUrls = [
-        'https://www.google.com',
-        'https://www.cloudflare.com'
-      ]
+      const testUrls = ['https://www.google.com', 'https://www.cloudflare.com'];
 
       const results = await Promise.allSettled(
-        testUrls.map(async (url) => {
-          const response = await fetch(url, { method: 'HEAD' })
+        testUrls.map(async url => {
+          const response = await fetch(url, { method: 'HEAD' });
           return {
             url,
             status: response.status,
-            ok: response.ok
-          }
+            ok: response.ok,
+          };
         })
-      )
+      );
 
-      const healthy = results.filter(r => r.status === 'fulfilled' && r.value.ok)
-      const duration = Date.now() - start
-      const status = healthy.length === testUrls.length ? 'healthy' : 'degraded'
+      const healthy = results.filter(
+        r => r.status === 'fulfilled' && r.value.ok
+      );
+      const duration = Date.now() - start;
+      const status =
+        healthy.length === testUrls.length ? 'healthy' : 'degraded';
 
       return {
         name: 'network',
@@ -587,40 +627,44 @@ class HealthCheckSystem {
         message: `${healthy.length}/${testUrls.length} network tests passed`,
         duration,
         details: {
-          testUrls: results.map(r => r.status === 'fulfilled' ? r.value : { url: 'Unknown', status: 'error' })
+          testUrls: results.map(r =>
+            r.status === 'fulfilled'
+              ? r.value
+              : { url: 'Unknown', status: 'error' }
+          ),
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'network',
         status: 'unhealthy',
         message: `Network check failed: ${error.message}`,
         duration,
         details: {
-          error: error.message
+          error: error.message,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
   private async checkSystemResources(): Promise<HealthCheckResult> {
-    const start = Date.now()
-    
+    const start = Date.now();
+
     try {
-      const memoryUsage = process.memoryUsage()
-      const memoryUsageMB = memoryUsage.heapUsed / 1024 / 1024
-      const memoryLimitMB = 512 // Assume 512MB limit
-      const memoryUsagePercent = (memoryUsageMB / memoryLimitMB) * 100
+      const memoryUsage = process.memoryUsage();
+      const memoryUsageMB = memoryUsage.heapUsed / 1024 / 1024;
+      const memoryLimitMB = 512; // Assume 512MB limit
+      const memoryUsagePercent = (memoryUsageMB / memoryLimitMB) * 100;
 
-      let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy'
-      if (memoryUsagePercent > 90) status = 'unhealthy'
-      else if (memoryUsagePercent > 75) status = 'degraded'
+      let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+      if (memoryUsagePercent > 90) status = 'unhealthy';
+      else if (memoryUsagePercent > 75) status = 'degraded';
 
-      const duration = Date.now() - start
+      const duration = Date.now() - start;
 
       return {
         name: 'system_resources',
@@ -632,91 +676,101 @@ class HealthCheckSystem {
           memoryUsagePercent,
           memoryLimitMB,
           heapTotal: memoryUsage.heapTotal / 1024 / 1024,
-          external: memoryUsage.external / 1024 / 1024
+          external: memoryUsage.external / 1024 / 1024,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     } catch (error) {
-      const duration = Date.now() - start
-      
+      const duration = Date.now() - start;
+
       return {
         name: 'system_resources',
         status: 'unhealthy',
         message: `System resources check failed: ${error.message}`,
         duration,
         details: {
-          error: error.message
+          error: error.message,
         },
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 
-  private determineOverallStatus(checks: HealthCheckResult[]): 'healthy' | 'degraded' | 'unhealthy' {
-    const unhealthyCount = checks.filter(c => c.status === 'unhealthy').length
-    const degradedCount = checks.filter(c => c.status === 'degraded').length
+  private determineOverallStatus(
+    checks: HealthCheckResult[]
+  ): 'healthy' | 'degraded' | 'unhealthy' {
+    const unhealthyCount = checks.filter(c => c.status === 'unhealthy').length;
+    const degradedCount = checks.filter(c => c.status === 'degraded').length;
 
-    if (unhealthyCount > 0) return 'unhealthy'
-    if (degradedCount > 0) return 'degraded'
-    return 'healthy'
+    if (unhealthyCount > 0) return 'unhealthy';
+    if (degradedCount > 0) return 'degraded';
+    return 'healthy';
   }
 
   async generateHealthReport(): Promise<string> {
-    const health = await this.runHealthChecks()
-    
-    let report = `# System Health Report\n\n`
-    report += `**Overall Status:** ${health.overall.toUpperCase()}\n`
-    report += `**Timestamp:** ${health.timestamp}\n`
-    report += `**Version:** ${health.version}\n`
-    report += `**Environment:** ${health.environment}\n`
-    report += `**Uptime:** ${Math.round(health.uptime / 1000)}s\n\n`
+    const health = await this.runHealthChecks();
 
-    report += `## Health Checks\n\n`
-    
+    let report = `# System Health Report\n\n`;
+    report += `**Overall Status:** ${health.overall.toUpperCase()}\n`;
+    report += `**Timestamp:** ${health.timestamp}\n`;
+    report += `**Version:** ${health.version}\n`;
+    report += `**Environment:** ${health.environment}\n`;
+    report += `**Uptime:** ${Math.round(health.uptime / 1000)}s\n\n`;
+
+    report += `## Health Checks\n\n`;
+
     for (const check of health.checks) {
-      const statusIcon = check.status === 'healthy' ? '✅' : check.status === 'degraded' ? '⚠️' : '❌'
-      report += `### ${statusIcon} ${check.name.replace('_', ' ').toUpperCase()}\n`
-      report += `- **Status:** ${check.status}\n`
-      report += `- **Message:** ${check.message}\n`
-      report += `- **Duration:** ${check.duration}ms\n`
-      
+      const statusIcon =
+        check.status === 'healthy'
+          ? '✅'
+          : check.status === 'degraded'
+            ? '⚠️'
+            : '❌';
+      report += `### ${statusIcon} ${check.name.replace('_', ' ').toUpperCase()}\n`;
+      report += `- **Status:** ${check.status}\n`;
+      report += `- **Message:** ${check.message}\n`;
+      report += `- **Duration:** ${check.duration}ms\n`;
+
       if (check.details) {
-        report += `- **Details:**\n`
+        report += `- **Details:**\n`;
         for (const [key, value] of Object.entries(check.details)) {
-          report += `  - ${key}: ${JSON.stringify(value)}\n`
+          report += `  - ${key}: ${JSON.stringify(value)}\n`;
         }
       }
-      report += `\n`
+      report += `\n`;
     }
 
-    return report
+    return report;
   }
 }
 
-export const healthCheckSystem = new HealthCheckSystem()
+export const healthCheckSystem = new HealthCheckSystem();
 
 // API endpoint for health checks
 export async function GET() {
   try {
-    const health = await healthCheckSystem.runHealthChecks()
-    
+    const health = await healthCheckSystem.runHealthChecks();
+
     return new Response(JSON.stringify(health), {
       status: health.overall === 'unhealthy' ? 503 : 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
-      }
-    })
+        'Cache-Control': 'no-cache',
+      },
+    });
   } catch (error) {
-    return new Response(JSON.stringify({
-      overall: 'unhealthy',
-      error: error.message,
-      timestamp: new Date().toISOString()
-    }), {
-      status: 503,
-      headers: {
-        'Content-Type': 'application/json'
+    return new Response(
+      JSON.stringify({
+        overall: 'unhealthy',
+        error: error.message,
+        timestamp: new Date().toISOString(),
+      }),
+      {
+        status: 503,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
-    })
+    );
   }
 }

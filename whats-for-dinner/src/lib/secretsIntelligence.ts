@@ -9,7 +9,12 @@ import crypto from 'crypto';
 export interface Secret {
   id: string;
   name: string;
-  type: 'api_key' | 'database_password' | 'jwt_secret' | 'encryption_key' | 'oauth_token';
+  type:
+    | 'api_key'
+    | 'database_password'
+    | 'jwt_secret'
+    | 'encryption_key'
+    | 'oauth_token';
   value: string;
   hash: string;
   createdAt: string;
@@ -44,7 +49,12 @@ export interface SecretVault {
 export interface SecurityScanResult {
   secretId: string;
   vulnerabilities: Array<{
-    type: 'weak_encryption' | 'exposed_in_logs' | 'hardcoded_value' | 'insecure_storage' | 'excessive_access';
+    type:
+      | 'weak_encryption'
+      | 'exposed_in_logs'
+      | 'hardcoded_value'
+      | 'insecure_storage'
+      | 'excessive_access';
     severity: 'low' | 'medium' | 'high' | 'critical';
     description: string;
     recommendation: string;
@@ -101,7 +111,7 @@ export class SecretsIntelligence {
    */
   private initializeDefaultVaults(): void {
     const environments = ['development', 'staging', 'production'];
-    
+
     for (const env of environments) {
       const vault: SecretVault = {
         id: `vault-${env}`,
@@ -116,7 +126,7 @@ export class SecretsIntelligence {
           requireMFA: env === 'production',
         },
       };
-      
+
       this.vaults.set(vault.id, vault);
       logger.info(`Initialized vault: ${vault.name}`);
     }
@@ -139,7 +149,7 @@ export class SecretsIntelligence {
     try {
       const vaultId = options.customVaultId || `vault-${environment}`;
       const vault = this.vaults.get(vaultId);
-      
+
       if (!vault) {
         throw new Error(`Vault not found: ${vaultId}`);
       }
@@ -147,7 +157,7 @@ export class SecretsIntelligence {
       // Generate secret ID and hash
       const secretId = this.generateSecretId();
       const hash = this.hashSecret(value);
-      
+
       // Create secret object
       const secret: Secret = {
         id: secretId,
@@ -157,7 +167,9 @@ export class SecretsIntelligence {
         hash,
         createdAt: new Date().toISOString(),
         lastRotated: new Date().toISOString(),
-        nextRotation: this.calculateNextRotation(options.rotationInterval || 30),
+        nextRotation: this.calculateNextRotation(
+          options.rotationInterval || 30
+        ),
         rotationInterval: options.rotationInterval || 30,
         isActive: true,
         environment,
@@ -167,18 +179,23 @@ export class SecretsIntelligence {
 
       // Store in vault
       vault.secrets.set(secretId, secret);
-      
+
       // Log access
       this.logSecretAccess(secretId, 'write', 'secrets-intelligence', true);
-      
+
       // Schedule rotation if needed
       this.scheduleSecretRotation(secret);
-      
+
       logger.info(`Secret stored: ${name} in ${vault.name}`);
-      
+
       return secretId;
     } catch (error) {
-      logger.error('Failed to store secret', { error, name, type, environment });
+      logger.error('Failed to store secret', {
+        error,
+        name,
+        type,
+        environment,
+      });
       throw error;
     }
   }
@@ -202,20 +219,22 @@ export class SecretsIntelligence {
 
       // Check access policy
       if (!this.validateAccess(secret, source, vault)) {
-        logger.warn(`Access denied for secret: ${secretId} by source: ${source}`);
+        logger.warn(
+          `Access denied for secret: ${secretId} by source: ${source}`
+        );
         this.logSecretAccess(secretId, 'read', source, false);
         return null;
       }
 
       // Log access
       this.logSecretAccess(secretId, 'read', source, true);
-      
+
       // Return decrypted secret
       const decryptedSecret = {
         ...secret,
         value: this.decryptSecret(secret.value, vault.encryptionKey),
       };
-      
+
       return decryptedSecret;
     } catch (error) {
       logger.error('Failed to retrieve secret', { error, secretId, source });
@@ -244,21 +263,21 @@ export class SecretsIntelligence {
       // Generate new value if not provided
       const rotatedValue = newValue || this.generateSecretValue(secret.type);
       const newHash = this.hashSecret(rotatedValue);
-      
+
       // Update secret
       secret.value = this.encryptSecret(rotatedValue, vault.encryptionKey);
       secret.hash = newHash;
       secret.lastRotated = new Date().toISOString();
       secret.nextRotation = this.calculateNextRotation(secret.rotationInterval);
-      
+
       // Log rotation
       this.logSecretAccess(secretId, 'rotate', 'secrets-intelligence', true);
-      
+
       // Reschedule rotation
       this.scheduleSecretRotation(secret);
-      
+
       logger.info(`Secret rotated: ${secret.name}`);
-      
+
       return true;
     } catch (error) {
       logger.error('Failed to rotate secret', { error, secretId });
@@ -292,19 +311,19 @@ export class SecretsIntelligence {
 
       // Remove from vault
       vault.secrets.delete(secretId);
-      
+
       // Cancel rotation schedule
       const rotationTimeout = this.rotationSchedule.get(secretId);
       if (rotationTimeout) {
         clearTimeout(rotationTimeout);
         this.rotationSchedule.delete(secretId);
       }
-      
+
       // Log deletion
       this.logSecretAccess(secretId, 'delete', source, true);
-      
+
       logger.info(`Secret deleted: ${secret.name}`);
-      
+
       return true;
     } catch (error) {
       logger.error('Failed to delete secret', { error, secretId, source });
@@ -318,14 +337,14 @@ export class SecretsIntelligence {
    */
   async scanSecretsForVulnerabilities(): Promise<SecurityScanResult[]> {
     const results: SecurityScanResult[] = [];
-    
+
     for (const vault of this.vaults.values()) {
       for (const secret of vault.secrets.values()) {
         const scanResult = await this.scanSecret(secret, vault);
         results.push(scanResult);
       }
     }
-    
+
     logger.info(`Security scan completed. Scanned ${results.length} secrets`);
     return results;
   }
@@ -374,7 +393,7 @@ export class SecretsIntelligence {
 
         manifest.securityStatus.totalSecrets++;
         if (secret.isActive) manifest.securityStatus.activeSecrets++;
-        
+
         if (new Date(secret.nextRotation) <= new Date()) {
           manifest.securityStatus.secretsNeedingRotation++;
         }
@@ -388,10 +407,10 @@ export class SecretsIntelligence {
     ).length;
 
     this.secretsManifest = manifest;
-    
+
     // Save manifest to file
     await this.saveSecretsManifest(manifest);
-    
+
     logger.info('Secrets manifest generated', { manifest });
     return manifest;
   }
@@ -401,10 +420,13 @@ export class SecretsIntelligence {
    */
   private startRotationScheduler(): void {
     // Check for secrets needing rotation every hour
-    setInterval(async () => {
-      await this.processRotationQueue();
-    }, 60 * 60 * 1000); // 1 hour
-    
+    setInterval(
+      async () => {
+        await this.processRotationQueue();
+      },
+      60 * 60 * 1000
+    ); // 1 hour
+
     logger.info('Secret rotation scheduler started');
   }
 
@@ -413,10 +435,13 @@ export class SecretsIntelligence {
    */
   private startSecurityScanning(): void {
     // Run security scan daily
-    this.scanSchedule = setInterval(async () => {
-      await this.scanSecretsForVulnerabilities();
-    }, 24 * 60 * 60 * 1000); // 24 hours
-    
+    this.scanSchedule = setInterval(
+      async () => {
+        await this.scanSecretsForVulnerabilities();
+      },
+      24 * 60 * 60 * 1000
+    ); // 24 hours
+
     logger.info('Security scanning scheduler started');
   }
 
@@ -426,7 +451,7 @@ export class SecretsIntelligence {
   private async processRotationQueue(): Promise<void> {
     const now = new Date();
     const secretsToRotate: string[] = [];
-    
+
     for (const vault of this.vaults.values()) {
       for (const secret of vault.secrets.values()) {
         if (secret.isActive && new Date(secret.nextRotation) <= now) {
@@ -434,10 +459,10 @@ export class SecretsIntelligence {
         }
       }
     }
-    
+
     if (secretsToRotate.length > 0) {
       logger.info(`Rotating ${secretsToRotate.length} secrets`);
-      
+
       for (const secretId of secretsToRotate) {
         await this.rotateSecret(secretId);
       }
@@ -449,12 +474,12 @@ export class SecretsIntelligence {
    */
   private scheduleSecretRotation(secret: Secret): void {
     const rotationTime = new Date(secret.nextRotation).getTime() - Date.now();
-    
+
     if (rotationTime > 0) {
       const timeout = setTimeout(async () => {
         await this.rotateSecret(secret.id);
       }, rotationTime);
-      
+
       this.rotationSchedule.set(secret.id, timeout);
     }
   }
@@ -462,10 +487,13 @@ export class SecretsIntelligence {
   /**
    * Scan individual secret for vulnerabilities
    */
-  private async scanSecret(secret: Secret, vault: SecretVault): Promise<SecurityScanResult> {
+  private async scanSecret(
+    secret: Secret,
+    vault: SecretVault
+  ): Promise<SecurityScanResult> {
     const vulnerabilities: SecurityScanResult['vulnerabilities'] = [];
     let riskScore = 0;
-    
+
     // Check for weak encryption
     if (secret.value.length < 32) {
       vulnerabilities.push({
@@ -477,12 +505,13 @@ export class SecretsIntelligence {
       });
       riskScore += 30;
     }
-    
+
     // Check for excessive access
     const recentAccess = secret.accessLog.filter(
-      log => new Date(log.timestamp) > new Date(Date.now() - 24 * 60 * 60 * 1000)
+      log =>
+        new Date(log.timestamp) > new Date(Date.now() - 24 * 60 * 60 * 1000)
     );
-    
+
     if (recentAccess.length > vault.accessPolicy.maxAccessPerHour * 24) {
       vulnerabilities.push({
         type: 'excessive_access',
@@ -493,12 +522,13 @@ export class SecretsIntelligence {
       });
       riskScore += 20;
     }
-    
+
     // Check rotation age
     const daysSinceRotation = Math.floor(
-      (Date.now() - new Date(secret.lastRotated).getTime()) / (1000 * 60 * 60 * 24)
+      (Date.now() - new Date(secret.lastRotated).getTime()) /
+        (1000 * 60 * 60 * 24)
     );
-    
+
     if (daysSinceRotation > secret.rotationInterval) {
       vulnerabilities.push({
         type: 'insecure_storage',
@@ -509,7 +539,7 @@ export class SecretsIntelligence {
       });
       riskScore += 25;
     }
-    
+
     // Check for hardcoded patterns
     if (this.detectHardcodedPattern(secret.value)) {
       vulnerabilities.push({
@@ -521,7 +551,7 @@ export class SecretsIntelligence {
       });
       riskScore += 50;
     }
-    
+
     return {
       secretId: secret.id,
       vulnerabilities,
@@ -543,7 +573,7 @@ export class SecretsIntelligence {
       /admin/,
       /test/,
     ];
-    
+
     return hardcodedPatterns.some(pattern => pattern.test(value));
   }
 
@@ -562,21 +592,25 @@ export class SecretsIntelligence {
   /**
    * Validate access to secret
    */
-  private validateAccess(secret: Secret, source: string, vault: SecretVault): boolean {
+  private validateAccess(
+    secret: Secret,
+    source: string,
+    vault: SecretVault
+  ): boolean {
     // Check if source is allowed
     if (!vault.accessPolicy.allowedSources.includes(source)) {
       return false;
     }
-    
+
     // Check access rate limits
     const recentAccess = secret.accessLog.filter(
       log => new Date(log.timestamp) > new Date(Date.now() - 60 * 60 * 1000)
     );
-    
+
     if (recentAccess.length >= vault.accessPolicy.maxAccessPerHour) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -599,7 +633,7 @@ export class SecretsIntelligence {
           source,
           success,
         });
-        
+
         // Keep only last 1000 access logs
         if (secret.accessLog.length > 1000) {
           secret.accessLog = secret.accessLog.slice(-1000);
@@ -704,13 +738,13 @@ export class SecretsIntelligence {
       clearTimeout(timeout);
     }
     this.rotationSchedule.clear();
-    
+
     // Clear security scan schedule
     if (this.scanSchedule) {
       clearInterval(this.scanSchedule);
       this.scanSchedule = null;
     }
-    
+
     logger.info('Secrets intelligence system shutdown');
   }
 }
