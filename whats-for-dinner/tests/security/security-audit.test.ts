@@ -20,7 +20,7 @@ describe('Security Audit Tests', () => {
         method: 'POST',
         url: '/api/recipes/generate',
         headers: {
-          'authorization': 'Bearer invalid-key',
+          authorization: 'Bearer invalid-key',
           'content-type': 'application/json',
         },
         body: JSON.stringify({
@@ -32,7 +32,7 @@ describe('Security Audit Tests', () => {
       // Mock the API route handler
       const handler = await import('@/app/api/recipes/generate/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(401);
     });
 
@@ -46,7 +46,7 @@ describe('Security Audit Tests', () => {
         method: 'POST',
         url: '/api/recipes/generate',
         headers: {
-          'authorization': 'Bearer valid-key',
+          authorization: 'Bearer valid-key',
           'content-type': 'application/json',
         },
         body: JSON.stringify(maliciousInput),
@@ -54,7 +54,7 @@ describe('Security Audit Tests', () => {
 
       const handler = await import('@/app/api/recipes/generate/route');
       const response = await handler.POST(req);
-      
+
       // Should sanitize input and still process
       expect(response.status).toBe(200);
       const data = await response.json();
@@ -63,20 +63,22 @@ describe('Security Audit Tests', () => {
     });
 
     it('should enforce rate limiting', async () => {
-      const requests = Array(100).fill(null).map(() => 
-        createMocks<NextRequest>({
-          method: 'POST',
-          url: '/api/recipes/generate',
-          headers: {
-            'authorization': 'Bearer valid-key',
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            ingredients: ['chicken'],
-            preferences: 'healthy',
-          }),
-        })
-      );
+      const requests = Array(100)
+        .fill(null)
+        .map(() =>
+          createMocks<NextRequest>({
+            method: 'POST',
+            url: '/api/recipes/generate',
+            headers: {
+              authorization: 'Bearer valid-key',
+              'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              ingredients: ['chicken'],
+              preferences: 'healthy',
+            }),
+          })
+        );
 
       const handler = await import('@/app/api/recipes/generate/route');
       const responses = await Promise.all(
@@ -92,18 +94,18 @@ describe('Security Audit Tests', () => {
   describe('Authentication Security', () => {
     it('should validate JWT tokens properly', async () => {
       const invalidToken = 'invalid.jwt.token';
-      
+
       const { req } = createMocks<NextRequest>({
         method: 'GET',
         url: '/api/user/profile',
         headers: {
-          'authorization': `Bearer ${invalidToken}`,
+          authorization: `Bearer ${invalidToken}`,
         },
       });
 
       const handler = await import('@/app/api/user/profile/route');
       const response = await handler.GET(req);
-      
+
       expect(response.status).toBe(401);
     });
 
@@ -130,13 +132,13 @@ describe('Security Audit Tests', () => {
         method: 'GET',
         url: '/api/user/profile',
         headers: {
-          'authorization': 'Bearer expired-token',
+          authorization: 'Bearer expired-token',
         },
       });
 
       const handler = await import('@/app/api/user/profile/route');
       const response = await handler.GET(req);
-      
+
       expect(response.status).toBe(401);
     });
   });
@@ -153,7 +155,7 @@ describe('Security Audit Tests', () => {
         method: 'POST',
         url: '/api/recipes/save',
         headers: {
-          'authorization': 'Bearer valid-key',
+          authorization: 'Bearer valid-key',
           'content-type': 'application/json',
         },
         body: JSON.stringify(invalidRecipe),
@@ -161,7 +163,7 @@ describe('Security Audit Tests', () => {
 
       const handler = await import('@/app/api/recipes/save/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(400);
     });
 
@@ -175,7 +177,7 @@ describe('Security Audit Tests', () => {
         method: 'POST',
         url: '/api/recipes/generate',
         headers: {
-          'authorization': 'Bearer valid-key',
+          authorization: 'Bearer valid-key',
           'content-type': 'application/json',
         },
         body: JSON.stringify(maliciousQuery),
@@ -183,7 +185,7 @@ describe('Security Audit Tests', () => {
 
       const handler = await import('@/app/api/recipes/generate/route');
       const response = await handler.POST(req);
-      
+
       // Should handle malicious input gracefully
       expect(response.status).toBe(200);
     });
@@ -198,7 +200,7 @@ describe('Security Audit Tests', () => {
 
       const handler = await import('@/app/api/health/route');
       const response = await handler.GET(req);
-      
+
       expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
       expect(response.headers.get('X-Frame-Options')).toBe('DENY');
       expect(response.headers.get('X-XSS-Protection')).toBe('1; mode=block');
@@ -209,14 +211,14 @@ describe('Security Audit Tests', () => {
         method: 'OPTIONS',
         url: '/api/recipes/generate',
         headers: {
-          'origin': 'https://malicious-site.com',
+          origin: 'https://malicious-site.com',
           'access-control-request-method': 'POST',
         },
       });
 
       const handler = await import('@/app/api/recipes/generate/route');
       const response = await handler.OPTIONS(req);
-      
+
       // Should reject requests from unauthorized origins
       expect(response.status).toBe(403);
     });
@@ -232,20 +234,24 @@ describe('Security Audit Tests', () => {
       };
 
       const formData = new FormData();
-      formData.append('file', new Blob([maliciousFile.content]), maliciousFile.name);
+      formData.append(
+        'file',
+        new Blob([maliciousFile.content]),
+        maliciousFile.name
+      );
 
       const { req } = createMocks<NextRequest>({
         method: 'POST',
         url: '/api/upload/recipe-image',
         headers: {
-          'authorization': 'Bearer valid-key',
+          authorization: 'Bearer valid-key',
         },
         body: formData,
       });
 
       const handler = await import('@/app/api/upload/recipe-image/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(400);
     });
   });

@@ -1,6 +1,6 @@
 /**
  * UI Enhancement System
- * 
+ *
  * Implements comprehensive UI/UX enhancements with:
  * - Dark mode support and theme management
  * - Micro-interactions and animations
@@ -392,13 +392,7 @@ export class UIEnhancementSystem {
       enabled: true,
       offlineMode: true,
       cacheStrategy: 'staleWhileRevalidate',
-      precachePages: [
-        '/',
-        '/recipes',
-        '/pantry',
-        '/favorites',
-        '/profile',
-      ],
+      precachePages: ['/', '/recipes', '/pantry', '/favorites', '/profile'],
       backgroundSync: true,
       pushNotifications: true,
       installPrompt: true,
@@ -485,7 +479,7 @@ export class UIEnhancementSystem {
   private async initializeTheme(): Promise<void> {
     // Apply initial theme
     await this.applyTheme(this.currentTheme);
-    
+
     // Listen for theme changes
     this.listenForThemeChanges();
   }
@@ -501,13 +495,13 @@ export class UIEnhancementSystem {
     }
 
     this.currentTheme = themeId;
-    
+
     // Apply theme to document
     this.applyThemeToDocument(theme);
-    
+
     // Store theme preference
     localStorage.setItem('theme', themeId);
-    
+
     logger.info('Theme applied', { themeId });
   }
 
@@ -516,28 +510,28 @@ export class UIEnhancementSystem {
    */
   private applyThemeToDocument(theme: ThemeConfig): void {
     const root = document.documentElement;
-    
+
     // Apply CSS custom properties
     Object.entries(theme.colors).forEach(([key, value]) => {
       root.style.setProperty(`--color-${key}`, value);
     });
-    
+
     Object.entries(theme.typography.fontSize).forEach(([key, value]) => {
       root.style.setProperty(`--font-size-${key}`, value);
     });
-    
+
     Object.entries(theme.spacing).forEach(([key, value]) => {
       root.style.setProperty(`--spacing-${key}`, value);
     });
-    
+
     Object.entries(theme.borderRadius).forEach(([key, value]) => {
       root.style.setProperty(`--border-radius-${key}`, value);
     });
-    
+
     Object.entries(theme.shadows).forEach(([key, value]) => {
       root.style.setProperty(`--shadow-${key}`, value);
     });
-    
+
     // Apply theme class
     root.className = root.className.replace(/theme-\w+/g, '');
     root.classList.add(`theme-${theme.id}`);
@@ -550,7 +544,7 @@ export class UIEnhancementSystem {
     // Listen for system theme changes
     if (window.matchMedia) {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      mediaQuery.addEventListener('change', (e) => {
+      mediaQuery.addEventListener('change', e => {
         if (this.currentTheme === 'auto') {
           this.applyTheme(e.matches ? 'dark' : 'light');
         }
@@ -571,11 +565,13 @@ export class UIEnhancementSystem {
    */
   async setAutoTheme(): Promise<void> {
     this.currentTheme = 'auto';
-    
+
     // Determine system preference
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
     const systemTheme = prefersDark ? 'dark' : 'light';
-    
+
     await this.applyTheme(systemTheme);
   }
 
@@ -661,8 +657,10 @@ export class UIEnhancementSystem {
     // Monitor responsive changes
     if (window.matchMedia) {
       this.responsiveBreakpoints.forEach(breakpoint => {
-        const mediaQuery = window.matchMedia(`(min-width: ${breakpoint.minWidth}px)${breakpoint.maxWidth ? ` and (max-width: ${breakpoint.maxWidth}px)` : ''}`);
-        mediaQuery.addEventListener('change', (e) => {
+        const mediaQuery = window.matchMedia(
+          `(min-width: ${breakpoint.minWidth}px)${breakpoint.maxWidth ? ` and (max-width: ${breakpoint.maxWidth}px)` : ''}`
+        );
+        mediaQuery.addEventListener('change', e => {
           if (e.matches) {
             this.handleResponsiveChange(breakpoint);
           }
@@ -675,8 +673,10 @@ export class UIEnhancementSystem {
    * Handle responsive change
    */
   private handleResponsiveChange(breakpoint: ResponsiveBreakpoint): void {
-    logger.info('Responsive breakpoint changed', { breakpoint: breakpoint.name });
-    
+    logger.info('Responsive breakpoint changed', {
+      breakpoint: breakpoint.name,
+    });
+
     // Apply responsive styles
     this.applyResponsiveStyles(breakpoint);
   }
@@ -722,7 +722,7 @@ export class UIEnhancementSystem {
     };
 
     this.enhancementReports.push(report);
-    
+
     // Keep only last 100 reports
     if (this.enhancementReports.length > 100) {
       this.enhancementReports = this.enhancementReports.slice(-100);

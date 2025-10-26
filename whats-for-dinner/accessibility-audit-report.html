@@ -1,2261 +1,2708 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Accessibility Audit Report</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .score { font-size: 2em; font-weight: bold; color: red; }
-        .issue { margin: 10px 0; padding: 10px; border-left: 4px solid #ccc; }
-        .critical { border-left-color: #ff0000; }
-        .high { border-left-color: #ff8800; }
-        .medium { border-left-color: #ffaa00; }
-        .low { border-left-color: #ffcc00; }
-        .recommendation { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .score {
+        font-size: 2em;
+        font-weight: bold;
+        color: red;
+      }
+      .issue {
+        margin: 10px 0;
+        padding: 10px;
+        border-left: 4px solid #ccc;
+      }
+      .critical {
+        border-left-color: #ff0000;
+      }
+      .high {
+        border-left-color: #ff8800;
+      }
+      .medium {
+        border-left-color: #ffaa00;
+      }
+      .low {
+        border-left-color: #ffcc00;
+      }
+      .recommendation {
+        margin: 10px 0;
+        padding: 10px;
+        background: #f0f0f0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Accessibility Audit Report</h1>
     <p>Generated: 10/26/2025, 1:18:51 PM</p>
     <p>Score: <span class="score">0/100</span></p>
     <p>Issues Found: 444</p>
-    
+
     <h2>Issues</h2>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/analytics/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/funnel/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/funnel/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/funnel/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/performance/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/performance/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/performance/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/performance/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/system/metrics.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/system/metrics.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/system/metrics.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/favorites/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/pantry/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/partners/portal/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/partners/portal/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/partners/portal/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/app/partners/portal/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/Navbar.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/Navbar.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/Navbar.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/Navbar.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/PWAInstaller.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/ui/input.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/components/ui/textarea.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/healAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/aiCommerceHub.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/aiCommerceHub.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/aiCommerceHub.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/aiCopywriter.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/autonomousSystem.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/complianceAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/complianceAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/complianceAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/complianceAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/monitoring.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/observability.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/observabilityAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/predictiveOptimization.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/predictiveOptimization.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/predictiveOptimization.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Interactive element missing ARIA label
-            <br><small>File: src/lib/theme.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/__tests__/security.test.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/app/__tests__/page.test.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/app/admin/layout.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/app/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/app/favorites/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/app/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/app/pantry/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/app/partners/portal/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/hooks/useTenant.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/lib/agents/healAgent.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/lib/cors.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/lib/franchiseAutomation.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/lib/predictiveOptimization.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/lib/workflowManager.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Missing skip to main content link
-            <br><small>File: src/middleware.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/app/admin/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/app/admin/funnel/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/app/admin/system/metrics.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/app/admin/system/metrics.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/app/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/components/RecipeCard.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Heading level skipped
-            <br><small>File: src/components/ui/card.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Image missing alt text
-            <br><small>File: src/lib/promptInjectionTests.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/admin/funnel/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/admin/funnel/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Required field missing aria-required attribute
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Required field missing aria-required attribute
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Required field missing aria-required attribute
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/app/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Required field missing aria-required attribute
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Form input missing label
-            <br><small>File: src/components/ui/input.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Multiple h1 elements found
-            <br><small>File: src/app/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/__tests__/security.test.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/app/admin/funnel/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/app/api/dinner/__tests__/route.test.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/app/api/observability/report/route.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/lib/healthCheck.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/lib/index.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/lib/openaiService.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/lib/promptInjectionTests.ts</small>
-        </div>
-    
-        <div class="issue medium">
-            <strong>MEDIUM:</strong> Foreign text without language indication
-            <br><small>File: src/lib/secretsManager.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/analytics/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/copywriter/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/funnel/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/performance/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/performance/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/performance/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/performance/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/settings/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/social/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/system/metrics.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/admin/system/metrics.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/admin/users/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/auth/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/billing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/developers/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/favorites/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/landing/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/pantry/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/partners/portal/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/partners/portal/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/app/partners/portal/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/app/partners/portal/page.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/InputPrompt.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/Navbar.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/Navbar.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/Navbar.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/Navbar.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/PWAInstaller.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/PantryManager.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/RecipeCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/RecipeCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/RecipeCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/RecipeFeedback.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Button missing accessible name
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/components/ShareableMealCard.tsx</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/ethicsAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/healAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/agents/insightAgent.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/aiCommerceHub.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/aiCommerceHub.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/aiCommerceHub.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/aiConfig.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/aiCopywriter.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/autonomousOrchestrator.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/autonomousSystem.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/cognitiveContinuity.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/complianceAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/complianceAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/complianceAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/complianceAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/federatedGateway.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/monitoring.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/observability.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/observabilityAudit.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/predictiveOptimization.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/predictiveOptimization.ts</small>
-        </div>
-    
-        <div class="issue high">
-            <strong>HIGH:</strong> Link missing accessible name
-            <br><small>File: src/lib/predictiveOptimization.ts</small>
-        </div>
-    
-    
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/analytics/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/funnel/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/funnel/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/funnel/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/performance/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/performance/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/performance/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/performance/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/system/metrics.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/system/metrics.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/system/metrics.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/auth/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/auth/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/auth/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/auth/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/auth/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/favorites/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/pantry/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/partners/portal/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/partners/portal/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/partners/portal/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/app/partners/portal/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/Navbar.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/Navbar.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/Navbar.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/Navbar.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/PWAInstaller.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/ui/input.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/components/ui/textarea.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/healAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/aiCommerceHub.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/aiCommerceHub.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/aiCommerceHub.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/aiCopywriter.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/autonomousSystem.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/complianceAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/complianceAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/complianceAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/complianceAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/monitoring.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/observability.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/observabilityAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/predictiveOptimization.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/predictiveOptimization.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/predictiveOptimization.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Interactive element missing ARIA label <br /><small
+        >File: src/lib/theme.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/__tests__/security.test.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/app/__tests__/page.test.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/app/admin/layout.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/app/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/app/favorites/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/app/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/app/pantry/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/app/partners/portal/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/hooks/useTenant.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/lib/agents/healAgent.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/lib/cors.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/lib/franchiseAutomation.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/lib/predictiveOptimization.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/lib/workflowManager.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Missing skip to main content link <br /><small
+        >File: src/middleware.ts</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/app/admin/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/app/admin/funnel/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/app/admin/system/metrics.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/app/admin/system/metrics.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/app/auth/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/app/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/components/RecipeCard.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Heading level skipped <br /><small
+        >File: src/components/ui/card.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Image missing alt text <br /><small
+        >File: src/lib/promptInjectionTests.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/admin/funnel/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/admin/funnel/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Required field missing aria-required attribute
+      <br /><small>File: src/app/auth/page.tsx</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Required field missing aria-required attribute
+      <br /><small>File: src/app/auth/page.tsx</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Required field missing aria-required attribute
+      <br /><small>File: src/app/auth/page.tsx</small>
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/app/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Required field missing aria-required attribute
+      <br /><small>File: src/components/PantryManager.tsx</small>
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/__tests__/InputPrompt.test.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Form input missing label <br /><small
+        >File: src/components/ui/input.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Multiple h1 elements found <br /><small
+        >File: src/app/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/__tests__/security.test.ts</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/app/admin/copywriter/page.tsx</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/app/admin/funnel/page.tsx</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/app/api/dinner/__tests__/route.test.ts</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/app/api/observability/report/route.ts</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/app/developers/page.tsx</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/components/__tests__/InputPrompt.test.tsx</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/lib/federatedGateway.ts</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/lib/healthCheck.ts</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/lib/index.ts</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/lib/openaiService.ts</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/lib/promptInjectionTests.ts</small>
+    </div>
+
+    <div class="issue medium">
+      <strong>MEDIUM:</strong> Foreign text without language indication
+      <br /><small>File: src/lib/secretsManager.ts</small>
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/analytics/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/copywriter/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/funnel/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/performance/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/performance/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/performance/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/performance/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/settings/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/social/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/system/metrics.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/admin/system/metrics.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/admin/users/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/auth/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/auth/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/billing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/developers/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/favorites/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/landing/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/pantry/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/partners/portal/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/partners/portal/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/app/partners/portal/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/app/partners/portal/page.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/InputPrompt.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/Navbar.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/Navbar.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/Navbar.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/Navbar.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/PWAInstaller.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/PantryManager.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/RecipeCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/RecipeCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/RecipeCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/RecipeFeedback.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Button missing accessible name <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/components/ShareableMealCard.tsx</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/ethicsAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/healAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/agents/insightAgent.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/aiCommerceHub.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/aiCommerceHub.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/aiCommerceHub.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/aiConfig.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/aiCopywriter.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/autonomousOrchestrator.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/autonomousSystem.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/cognitiveContinuity.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/complianceAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/complianceAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/complianceAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/complianceAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/federatedGateway.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/monitoring.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/observability.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/observabilityAudit.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/predictiveOptimization.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/predictiveOptimization.ts</small
+      >
+    </div>
+
+    <div class="issue high">
+      <strong>HIGH:</strong> Link missing accessible name <br /><small
+        >File: src/lib/predictiveOptimization.ts</small
+      >
+    </div>
+
     <h2>Recommendations</h2>
-    
-        <div class="recommendation">
-            <strong>HIGH:</strong> Add alt text to all images
-            <br>Ensure all images have descriptive alt text or are marked as decorative
-        </div>
-    
-        <div class="recommendation">
-            <strong>HIGH:</strong> Improve ARIA implementation
-            <br>Add proper ARIA labels and roles to interactive elements
-        </div>
-    
-</body>
+
+    <div class="recommendation">
+      <strong>HIGH:</strong> Add alt text to all images <br />Ensure all images
+      have descriptive alt text or are marked as decorative
+    </div>
+
+    <div class="recommendation">
+      <strong>HIGH:</strong> Improve ARIA implementation <br />Add proper ARIA
+      labels and roles to interactive elements
+    </div>
+  </body>
 </html>

@@ -50,6 +50,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -120,23 +121,25 @@ The API uses standard HTTP status codes and returns errors in a consistent forma
 
 ### Error Codes
 
-| Code | Status | Description |
-|------|--------|-------------|
-| `VALIDATION_ERROR` | 400 | Invalid input data |
-| `UNAUTHORIZED` | 401 | Authentication required |
-| `FORBIDDEN` | 403 | Insufficient permissions |
-| `NOT_FOUND` | 404 | Resource not found |
-| `RATE_LIMITED` | 429 | Rate limit exceeded |
-| `INTERNAL_ERROR` | 500 | Server error |
+| Code               | Status | Description              |
+| ------------------ | ------ | ------------------------ |
+| `VALIDATION_ERROR` | 400    | Invalid input data       |
+| `UNAUTHORIZED`     | 401    | Authentication required  |
+| `FORBIDDEN`        | 403    | Insufficient permissions |
+| `NOT_FOUND`        | 404    | Resource not found       |
+| `RATE_LIMITED`     | 429    | Rate limit exceeded      |
+| `INTERNAL_ERROR`   | 500    | Server error             |
 
 ## Endpoints
 
 ### Authentication
 
 #### POST /api/v2/auth/login
+
 Authenticate user and return JWT token.
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com",
@@ -145,6 +148,7 @@ Authenticate user and return JWT token.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -161,9 +165,11 @@ Authenticate user and return JWT token.
 ```
 
 #### POST /api/v2/auth/register
+
 Register new user account.
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com",
@@ -173,6 +179,7 @@ Register new user account.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -189,14 +196,17 @@ Register new user account.
 ```
 
 #### POST /api/v2/auth/logout
+
 Invalidate current token.
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -207,9 +217,11 @@ Authorization: Bearer <token>
 ### Meals
 
 #### GET /api/v2/meals
+
 Get list of meals with optional filtering.
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 20)
 - `category` (string): Meal category filter
@@ -218,11 +230,13 @@ Get list of meals with optional filtering.
 - `cooking_time` (number): Maximum cooking time in minutes
 
 **Example:**
+
 ```http
 GET /api/v2/meals?category=dinner&dietary=vegetarian&limit=10
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -255,9 +269,11 @@ GET /api/v2/meals?category=dinner&dietary=vegetarian&limit=10
 ```
 
 #### POST /api/v2/meals
+
 Create a new meal.
 
 **Request:**
+
 ```json
 {
   "name": "Vegetarian Pasta",
@@ -288,6 +304,7 @@ Create a new meal.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -300,9 +317,11 @@ Create a new meal.
 ```
 
 #### GET /api/v2/meals/:id
+
 Get specific meal by ID.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -325,9 +344,11 @@ Get specific meal by ID.
 ```
 
 #### PUT /api/v2/meals/:id
+
 Update existing meal.
 
 **Request:**
+
 ```json
 {
   "name": "Updated Vegetarian Pasta",
@@ -336,6 +357,7 @@ Update existing meal.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -348,9 +370,11 @@ Update existing meal.
 ```
 
 #### DELETE /api/v2/meals/:id
+
 Delete meal.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -361,9 +385,11 @@ Delete meal.
 ### Meal Generation
 
 #### POST /api/v2/meals/generate
+
 Generate AI-powered meal suggestions.
 
 **Request:**
+
 ```json
 {
   "preferences": {
@@ -383,6 +409,7 @@ Generate AI-powered meal suggestions.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -404,9 +431,11 @@ Generate AI-powered meal suggestions.
 ### Recipes
 
 #### GET /api/v2/recipes
+
 Get list of recipes.
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `search` (string): Search query
@@ -415,6 +444,7 @@ Get list of recipes.
 - `cooking_time` (number): Maximum cooking time
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -426,9 +456,11 @@ Get list of recipes.
 ```
 
 #### POST /api/v2/recipes
+
 Create new recipe.
 
 **Request:**
+
 ```json
 {
   "name": "Chocolate Chip Cookies",
@@ -446,14 +478,17 @@ Create new recipe.
 ### Ingredients
 
 #### GET /api/v2/ingredients
+
 Get list of ingredients.
 
 **Query Parameters:**
+
 - `search` (string): Search query
 - `category` (string): Ingredient category
 - `dietary` (string): Dietary restriction filter
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -475,9 +510,11 @@ Get list of ingredients.
 ### User Preferences
 
 #### GET /api/v2/user/preferences
+
 Get user preferences.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -494,9 +531,11 @@ Get user preferences.
 ```
 
 #### PUT /api/v2/user/preferences
+
 Update user preferences.
 
 **Request:**
+
 ```json
 {
   "dietary": ["vegetarian", "vegan"],
@@ -512,13 +551,16 @@ Update user preferences.
 ### Meal Plans
 
 #### GET /api/v2/meal-plans
+
 Get user's meal plans.
 
 **Query Parameters:**
+
 - `start_date` (string): Start date (ISO format)
 - `end_date` (string): End date (ISO format)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -538,9 +580,11 @@ Get user's meal plans.
 ```
 
 #### POST /api/v2/meal-plans
+
 Create new meal plan.
 
 **Request:**
+
 ```json
 {
   "start_date": "2024-01-15",
@@ -555,14 +599,17 @@ Create new meal plan.
 ### Search
 
 #### GET /api/v2/search
+
 Search across meals, recipes, and ingredients.
 
 **Query Parameters:**
+
 - `q` (string): Search query
 - `type` (string): Content type (meals, recipes, ingredients)
 - `filters` (object): Additional filters
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -652,18 +699,20 @@ const authResponse = await fetch('/api/v2/auth/login', {
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
     email: 'user@example.com',
-    password: 'password123'
-  })
+    password: 'password123',
+  }),
 });
 
-const { data: { token } } = await authResponse.json();
+const {
+  data: { token },
+} = await authResponse.json();
 
 // 2. Generate meals
 const mealResponse = await fetch('/api/v2/meals/generate', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   },
   body: JSON.stringify({
     preferences: {
@@ -672,18 +721,20 @@ const mealResponse = await fetch('/api/v2/meals/generate', {
       cuisine: ['italian'],
       difficulty: 'easy',
       cooking_time: 30,
-      servings: 4
-    }
-  })
+      servings: 4,
+    },
+  }),
 });
 
-const { data: { meals } } = await mealResponse.json();
+const {
+  data: { meals },
+} = await mealResponse.json();
 
 // 3. Get meal details
 const mealDetails = await Promise.all(
-  meals.map(meal => 
+  meals.map(meal =>
     fetch(`/api/v2/meals/${meal.id}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     }).then(res => res.json())
   )
 );
@@ -694,12 +745,12 @@ const mealDetails = await Promise.all(
 ```javascript
 try {
   const response = await fetch('/api/v2/meals');
-  
+
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error.message);
   }
-  
+
   const data = await response.json();
   console.log(data);
 } catch (error) {
@@ -720,15 +771,15 @@ import { WhatsForDinnerAPI } from '@whats-for-dinner/api-client';
 
 const api = new WhatsForDinnerAPI({
   baseURL: 'https://api.whats-for-dinner.com',
-  token: 'your-jwt-token'
+  token: 'your-jwt-token',
 });
 
 // Generate meals
 const meals = await api.meals.generate({
   preferences: {
     dietary: ['vegetarian'],
-    difficulty: 'easy'
-  }
+    difficulty: 'easy',
+  },
 });
 ```
 
@@ -828,7 +879,7 @@ function verifyWebhook(payload, signature, secret) {
     .createHmac('sha256', secret)
     .update(payload)
     .digest('hex');
-  
+
   return signature === expectedSignature;
 }
 ```

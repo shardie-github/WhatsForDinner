@@ -5,6 +5,7 @@ This document outlines the complete Supabase backend setup for the "What's for D
 ## 🏗️ Architecture Overview
 
 The backend consists of:
+
 - **PostgreSQL Database** with Row Level Security (RLS)
 - **Edge Functions** for API endpoints and AI meal generation
 - **Job Queue System** for asynchronous task processing
@@ -14,6 +15,7 @@ The backend consists of:
 ## 📊 Database Schema
 
 ### Core Tables
+
 - `users` - User profiles and authentication
 - `recipes` - Generated and saved recipes
 - `pantry_items` - User's available ingredients
@@ -23,6 +25,7 @@ The backend consists of:
 - `job_logs` - Detailed job logging
 
 ### Multi-tenant Tables
+
 - `tenants` - Organization/team management
 - `tenant_memberships` - User-tenant relationships
 - `subscriptions` - Billing and plan management
@@ -30,6 +33,7 @@ The backend consists of:
 - `ai_cache` - OpenAI response caching
 
 ### Analytics Tables
+
 - `analytics_events` - User behavior tracking
 - `recipe_metrics` - Recipe performance data
 - `system_metrics` - Infrastructure monitoring
@@ -38,6 +42,7 @@ The backend consists of:
 ## 🚀 Edge Functions
 
 ### 1. API Function (`/functions/v1/api`)
+
 - **Pantry Management**: CRUD operations for pantry items
 - **Recipe Management**: CRUD operations for recipes
 - **Favorites Management**: CRUD operations for user favorites
@@ -45,6 +50,7 @@ The backend consists of:
 - **CORS Support**: Cross-origin request handling
 
 ### 2. Meal Generation Function (`/functions/v1/generate-meal`)
+
 - **OpenAI Integration**: GPT-4 powered meal generation
 - **Caching**: Response caching for cost optimization
 - **Quota Management**: User plan-based usage limits
@@ -52,6 +58,7 @@ The backend consists of:
 - **Metrics Tracking**: Performance and usage analytics
 
 ### 3. Job Processor Function (`/functions/v1/job-processor`)
+
 - **Job Processing**: Asynchronous task execution
 - **Retry Logic**: Automatic retry with exponential backoff
 - **Error Handling**: Comprehensive error logging
@@ -60,12 +67,14 @@ The backend consists of:
 ## 🔄 Job Queue System
 
 ### Job Types
+
 1. **meal_generation** - AI-powered recipe creation
 2. **email_notification** - User communication
 3. **data_cleanup** - Database maintenance
 4. **analytics_processing** - Data analysis
 
 ### Job Management
+
 - **Priority System**: Higher priority jobs processed first
 - **Retry Logic**: Configurable retry attempts
 - **Dead Letter Queue**: Failed job handling
@@ -73,6 +82,7 @@ The backend consists of:
 - **Monitoring**: Real-time job statistics
 
 ### Job Queue Manager
+
 ```bash
 # Start the job processor
 npm run job-queue:start
@@ -90,12 +100,14 @@ npm run job-queue:cleanup
 ## 🛠️ Development Setup
 
 ### Prerequisites
+
 - Node.js 18+
 - Supabase CLI
 - Deno (for Edge Functions)
 - PostgreSQL (local development)
 
 ### Installation
+
 ```bash
 # Install dependencies
 npm install
@@ -111,6 +123,7 @@ npm run supabase:gen:types
 ```
 
 ### Environment Variables
+
 ```bash
 # Supabase Configuration
 SUPABASE_URL=your_supabase_url
@@ -128,7 +141,9 @@ SUPABASE_ACCESS_TOKEN=your_supabase_access_token
 ## 🚀 Deployment
 
 ### GitHub Actions CI/CD
+
 The deployment pipeline includes:
+
 1. **Linting & Testing**: Code quality checks
 2. **Database Migration**: Schema updates
 3. **Edge Function Deployment**: Function updates
@@ -136,6 +151,7 @@ The deployment pipeline includes:
 5. **Verification**: Post-deployment testing
 
 ### Manual Deployment
+
 ```bash
 # Deploy database changes
 npm run supabase:db:push
@@ -150,12 +166,14 @@ supabase secrets set OPENAI_API_KEY="your_key" --project-ref your_project_ref
 ## 🔒 Security Features
 
 ### Row Level Security (RLS)
+
 - **Tenant Isolation**: Data separated by organization
 - **User Authentication**: JWT-based access control
 - **Role-based Access**: Owner, Editor, Viewer permissions
 - **API Security**: Service role key for admin operations
 
 ### Data Protection
+
 - **Encryption**: All sensitive data encrypted at rest
 - **Audit Logging**: Comprehensive activity tracking
 - **Rate Limiting**: API usage throttling
@@ -164,12 +182,14 @@ supabase secrets set OPENAI_API_KEY="your_key" --project-ref your_project_ref
 ## 📈 Monitoring & Analytics
 
 ### Metrics Tracked
+
 - **API Performance**: Response times and error rates
 - **User Engagement**: Feature usage and retention
 - **Cost Analysis**: OpenAI token usage and costs
 - **System Health**: Database and function performance
 
 ### Logging
+
 - **Structured Logging**: JSON-formatted logs
 - **Error Tracking**: Detailed error reporting
 - **Audit Trails**: User action logging
@@ -178,6 +198,7 @@ supabase secrets set OPENAI_API_KEY="your_key" --project-ref your_project_ref
 ## 🧪 Testing
 
 ### Edge Function Testing
+
 ```bash
 # Lint functions
 npm run functions:lint
@@ -190,6 +211,7 @@ npm run functions:format
 ```
 
 ### Database Testing
+
 ```bash
 # Run migrations
 npm run supabase:db:migrate
@@ -204,7 +226,9 @@ npm run supabase:db:reset
 ## 📚 API Documentation
 
 ### Authentication
+
 All API endpoints require a valid JWT token in the Authorization header:
+
 ```
 Authorization: Bearer <jwt_token>
 ```
@@ -212,23 +236,28 @@ Authorization: Bearer <jwt_token>
 ### Endpoints
 
 #### Pantry Management
+
 - `GET /functions/v1/api/pantry` - Get pantry items
 - `POST /functions/v1/api/pantry` - Add pantry item
 - `DELETE /functions/v1/api/pantry?id={id}` - Remove pantry item
 
 #### Recipe Management
+
 - `GET /functions/v1/api/recipes` - Get recipes
 - `POST /functions/v1/api/recipes` - Add recipe
 
 #### Favorites Management
+
 - `GET /functions/v1/api/favorites` - Get favorites
 - `POST /functions/v1/api/favorites` - Add favorite
 - `DELETE /functions/v1/api/favorites?recipe_id={id}` - Remove favorite
 
 #### Meal Generation
+
 - `POST /functions/v1/generate-meal` - Generate meal from pantry items
 
 #### Job Processing
+
 - `POST /functions/v1/job-processor` - Process pending jobs
 
 ## 🔧 Troubleshooting
@@ -256,6 +285,7 @@ Authorization: Bearer <jwt_token>
    - Review request formatting
 
 ### Debug Commands
+
 ```bash
 # Check Supabase status
 supabase status
@@ -273,16 +303,19 @@ npm run job-queue:stats
 ## 📋 Maintenance
 
 ### Daily Tasks
+
 - Monitor job queue performance
 - Review error logs
 - Check API usage metrics
 
 ### Weekly Tasks
+
 - Clean up old job data
 - Review user feedback
 - Update analytics reports
 
 ### Monthly Tasks
+
 - Database optimization
 - Security audit
 - Performance review

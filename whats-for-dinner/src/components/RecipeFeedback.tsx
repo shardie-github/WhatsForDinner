@@ -8,7 +8,10 @@ import { logger } from '@/lib/logger';
 interface RecipeFeedbackProps {
   recipeId: number;
   userId?: string;
-  onFeedbackSubmitted?: (feedback: any) => void;
+  onFeedbackSubmitted?: (feedback: {
+    rating: number;
+    comment?: string;
+  }) => void;
 }
 
 export default function RecipeFeedback({

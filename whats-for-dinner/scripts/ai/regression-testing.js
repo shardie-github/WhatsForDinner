@@ -24,8 +24,8 @@ const config = {
     completeness: 0.8, // 80%
     creativity: 0.7, // 70%
     jsonValidity: 0.95, // 95%
-    userSatisfaction: 4.0 // 4.0/5.0
-  }
+    userSatisfaction: 4.0, // 4.0/5.0
+  },
 };
 
 // Colors for console output
@@ -36,7 +36,7 @@ const colors = {
   blue: '\x1b[34m',
   magenta: '\x1b[35m',
   cyan: '\x1b[36m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 function log(message, color = 'reset') {
@@ -66,7 +66,7 @@ const TEST_CASES = {
         cuisine: 'italian',
         difficulty: 'easy',
         cooking_time: 30,
-        servings: 4
+        servings: 4,
       },
       expectedOutput: {
         hasName: true,
@@ -76,8 +76,8 @@ const TEST_CASES = {
         hasNutrition: true,
         isVegetarian: true,
         cookingTime: 30,
-        servings: 4
-      }
+        servings: 4,
+      },
     },
     {
       name: 'Complex dietary requirements',
@@ -87,7 +87,7 @@ const TEST_CASES = {
         cuisine: 'asian',
         difficulty: 'medium',
         cooking_time: 45,
-        servings: 2
+        servings: 2,
       },
       expectedOutput: {
         hasName: true,
@@ -99,8 +99,8 @@ const TEST_CASES = {
         noNuts: true,
         noSoy: true,
         cookingTime: 45,
-        servings: 2
-      }
+        servings: 2,
+      },
     },
     {
       name: 'Quick meal generation',
@@ -110,7 +110,7 @@ const TEST_CASES = {
         cuisine: 'american',
         difficulty: 'easy',
         cooking_time: 15,
-        servings: 1
+        servings: 1,
       },
       expectedOutput: {
         hasName: true,
@@ -120,30 +120,16 @@ const TEST_CASES = {
         hasNutrition: true,
         isKeto: true,
         cookingTime: 15,
-        servings: 1
-      }
-    }
+        servings: 1,
+      },
+    },
   ],
-  
+
   recipe_enhancement: [
     {
       name: 'Basic recipe enhancement',
       input: {
-        recipe: 'Pasta with tomato sauce'
-      },
-      expectedOutput: {
-        hasEnhancedName: true,
-        hasDetailedDescription: true,
-        hasPreciseIngredients: true,
-        hasStepByStepInstructions: true,
-        hasNutritionInfo: true,
-        hasCookingTips: true
-      }
-    },
-    {
-      name: 'Complex recipe enhancement',
-      input: {
-        recipe: 'Chicken stir fry with vegetables'
+        recipe: 'Pasta with tomato sauce',
       },
       expectedOutput: {
         hasEnhancedName: true,
@@ -152,43 +138,57 @@ const TEST_CASES = {
         hasStepByStepInstructions: true,
         hasNutritionInfo: true,
         hasCookingTips: true,
-        hasVariations: true
-      }
-    }
+      },
+    },
+    {
+      name: 'Complex recipe enhancement',
+      input: {
+        recipe: 'Chicken stir fry with vegetables',
+      },
+      expectedOutput: {
+        hasEnhancedName: true,
+        hasDetailedDescription: true,
+        hasPreciseIngredients: true,
+        hasStepByStepInstructions: true,
+        hasNutritionInfo: true,
+        hasCookingTips: true,
+        hasVariations: true,
+      },
+    },
   ],
-  
+
   dietary_adaptation: [
     {
       name: 'Vegetarian adaptation',
       input: {
         recipe: 'Beef lasagna',
         dietary: 'vegetarian',
-        allergies: 'none'
+        allergies: 'none',
       },
       expectedOutput: {
         hasAdaptedRecipe: true,
         isVegetarian: true,
         hasSubstitutions: true,
         hasExplanation: true,
-        maintainsFlavor: true
-      }
+        maintainsFlavor: true,
+      },
     },
     {
       name: 'Gluten-free adaptation',
       input: {
         recipe: 'Chocolate cake',
         dietary: 'gluten-free',
-        allergies: 'none'
+        allergies: 'none',
       },
       expectedOutput: {
         hasAdaptedRecipe: true,
         isGlutenFree: true,
         hasSubstitutions: true,
         hasExplanation: true,
-        maintainsTexture: true
-      }
-    }
-  ]
+        maintainsTexture: true,
+      },
+    },
+  ],
 };
 
 /**
@@ -204,7 +204,7 @@ class RegressionTester {
   async runRegressionTests() {
     try {
       log('Starting regression tests...', 'blue');
-      
+
       const results = {
         timestamp: new Date().toISOString(),
         testSuites: {},
@@ -213,40 +213,42 @@ class RegressionTester {
           passedTests: 0,
           failedTests: 0,
           regressions: 0,
-          improvements: 0
-        }
+          improvements: 0,
+        },
       };
-      
+
       // Run tests for each AI scenario
       for (const [scenario, testCases] of Object.entries(TEST_CASES)) {
         log(`Running tests for ${scenario}...`, 'yellow');
-        
-        const scenarioResults = await this.runScenarioTests(scenario, testCases);
+
+        const scenarioResults = await this.runScenarioTests(
+          scenario,
+          testCases
+        );
         results.testSuites[scenario] = scenarioResults;
-        
+
         results.summary.totalTests += scenarioResults.totalTests;
         results.summary.passedTests += scenarioResults.passedTests;
         results.summary.failedTests += scenarioResults.failedTests;
         results.summary.regressions += scenarioResults.regressions;
         results.summary.improvements += scenarioResults.improvements;
       }
-      
+
       // Generate regression report
       const regressionReport = await this.generateRegressionReport(results);
       results.regressionReport = regressionReport;
-      
+
       // Save results
       this.saveResults(results);
-      
+
       log('Regression tests completed!', 'green');
       log(`Total tests: ${results.summary.totalTests}`, 'blue');
       log(`Passed: ${results.summary.passedTests}`, 'green');
       log(`Failed: ${results.summary.failedTests}`, 'red');
       log(`Regressions: ${results.summary.regressions}`, 'red');
       log(`Improvements: ${results.summary.improvements}`, 'green');
-      
+
       return results;
-      
     } catch (error) {
       log(`Regression testing failed: ${error.message}`, 'red');
       throw error;
@@ -261,32 +263,31 @@ class RegressionTester {
       failedTests: 0,
       regressions: 0,
       improvements: 0,
-      testResults: []
+      testResults: [],
     };
-    
+
     for (const testCase of testCases) {
       try {
         logVerbose(`Running test: ${testCase.name}`);
-        
+
         const testResult = await this.runSingleTest(scenario, testCase);
         results.testResults.push(testResult);
-        
+
         if (testResult.passed) {
           results.passedTests++;
         } else {
           results.failedTests++;
         }
-        
+
         // Check for regressions
         if (testResult.regression) {
           results.regressions++;
         }
-        
+
         // Check for improvements
         if (testResult.improvement) {
           results.improvements++;
         }
-        
       } catch (error) {
         log(`Test failed: ${testCase.name} - ${error.message}`, 'red');
         results.failedTests++;
@@ -294,42 +295,45 @@ class RegressionTester {
           testName: testCase.name,
           passed: false,
           error: error.message,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
     }
-    
+
     return results;
   }
 
   async runSingleTest(scenario, testCase) {
     const startTime = Date.now();
-    
+
     try {
       // Generate AI response
       const response = await this.generateAIResponse(scenario, testCase.input);
       const responseTime = Date.now() - startTime;
-      
+
       // Parse response
       const parsedResponse = this.parseResponse(response);
-      
+
       // Validate response
-      const validation = this.validateResponse(parsedResponse, testCase.expectedOutput);
-      
+      const validation = this.validateResponse(
+        parsedResponse,
+        testCase.expectedOutput
+      );
+
       // Check for regressions
       const regression = await this.checkRegression(scenario, testCase.name, {
         responseTime,
         validation,
-        parsedResponse
+        parsedResponse,
       });
-      
+
       // Check for improvements
       const improvement = await this.checkImprovement(scenario, testCase.name, {
         responseTime,
         validation,
-        parsedResponse
+        parsedResponse,
       });
-      
+
       return {
         testName: testCase.name,
         passed: validation.overallScore >= 0.8,
@@ -338,16 +342,15 @@ class RegressionTester {
         regression,
         improvement,
         parsedResponse,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
-      
     } catch (error) {
       return {
         testName: testCase.name,
         passed: false,
         error: error.message,
         responseTime: Date.now() - startTime,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
@@ -355,25 +358,25 @@ class RegressionTester {
   async generateAIResponse(scenario, input) {
     try {
       const prompt = this.buildPrompt(scenario, input);
-      
+
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful cooking assistant. Provide detailed, accurate, and creative meal suggestions.'
+            content:
+              'You are a helpful cooking assistant. Provide detailed, accurate, and creative meal suggestions.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         max_tokens: 1000,
-        temperature: 0.7
+        temperature: 0.7,
       });
-      
+
       return response.choices[0].message.content;
-      
     } catch (error) {
       throw new Error(`AI response generation failed: ${error.message}`);
     }
@@ -398,7 +401,7 @@ Please provide:
 6. Cooking tips
 
 Format the response as JSON.`,
-      
+
       recipe_enhancement: `Enhance this recipe to make it more appealing and detailed:
 ${input.recipe}
 
@@ -410,15 +413,15 @@ Please improve:
 5. Cooking tips and variations
 
 Format the response as JSON.`,
-      
+
       dietary_adaptation: `Adapt this recipe for the following dietary requirements:
 Recipe: ${input.recipe}
 Dietary needs: ${input.dietary}
 Allergies: ${input.allergies}
 
-Please modify the recipe accordingly and format as JSON.`
+Please modify the recipe accordingly and format as JSON.`,
     };
-    
+
     return prompts[scenario] || '';
   }
 
@@ -429,22 +432,24 @@ Please modify the recipe accordingly and format as JSON.`
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
       }
-      
+
       // Fallback to text parsing
       return this.parseTextResponse(response);
-      
     } catch (error) {
       return {
         raw: response,
         parseError: error.message,
-        isValidJson: false
+        isValidJson: false,
       };
     }
   }
 
   parseTextResponse(response) {
-    const lines = response.split('\n').map(line => line.trim()).filter(line => line);
-    
+    const lines = response
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line);
+
     const parsed = {
       raw: response,
       isValidJson: false,
@@ -453,13 +458,16 @@ Please modify the recipe accordingly and format as JSON.`
       ingredients: [],
       instructions: [],
       nutrition: {},
-      tips: []
+      tips: [],
     };
-    
+
     let currentSection = '';
-    
+
     for (const line of lines) {
-      if (line.toLowerCase().includes('name') || line.toLowerCase().includes('title')) {
+      if (
+        line.toLowerCase().includes('name') ||
+        line.toLowerCase().includes('title')
+      ) {
         currentSection = 'name';
         parsed.name = line.replace(/^.*?[:]\s*/, '');
       } else if (line.toLowerCase().includes('description')) {
@@ -467,13 +475,20 @@ Please modify the recipe accordingly and format as JSON.`
         parsed.description = line.replace(/^.*?[:]\s*/, '');
       } else if (line.toLowerCase().includes('ingredient')) {
         currentSection = 'ingredients';
-      } else if (line.toLowerCase().includes('instruction') || line.toLowerCase().includes('step')) {
+      } else if (
+        line.toLowerCase().includes('instruction') ||
+        line.toLowerCase().includes('step')
+      ) {
         currentSection = 'instructions';
       } else if (line.toLowerCase().includes('nutrition')) {
         currentSection = 'nutrition';
       } else if (line.toLowerCase().includes('tip')) {
         currentSection = 'tips';
-      } else if (line.startsWith('-') || line.startsWith('•') || line.match(/^\d+\./)) {
+      } else if (
+        line.startsWith('-') ||
+        line.startsWith('•') ||
+        line.match(/^\d+\./)
+      ) {
         const content = line.replace(/^[-•\d.\s]+/, '');
         if (currentSection === 'ingredients') {
           parsed.ingredients.push(content);
@@ -488,7 +503,7 @@ Please modify the recipe accordingly and format as JSON.`
         parsed.description = line;
       }
     }
-    
+
     return parsed;
   }
 
@@ -497,22 +512,25 @@ Please modify the recipe accordingly and format as JSON.`
       checks: {},
       overallScore: 0,
       passedChecks: 0,
-      totalChecks: 0
+      totalChecks: 0,
     };
-    
+
     // Check each expected output
     for (const [key, expected] of Object.entries(expectedOutput)) {
       const check = this.validateCheck(parsedResponse, key, expected);
       validation.checks[key] = check;
       validation.totalChecks++;
-      
+
       if (check.passed) {
         validation.passedChecks++;
       }
     }
-    
-    validation.overallScore = validation.totalChecks > 0 ? validation.passedChecks / validation.totalChecks : 0;
-    
+
+    validation.overallScore =
+      validation.totalChecks > 0
+        ? validation.passedChecks / validation.totalChecks
+        : 0;
+
     return validation;
   }
 
@@ -523,9 +541,9 @@ Please modify the recipe accordingly and format as JSON.`
       actual: null,
       passed: false,
       score: 0,
-      details: ''
+      details: '',
     };
-    
+
     switch (key) {
       case 'hasName':
         check.actual = !!parsedResponse.name;
@@ -533,115 +551,158 @@ Please modify the recipe accordingly and format as JSON.`
         check.score = check.actual ? 1 : 0;
         check.details = `Name: ${parsedResponse.name || 'Missing'}`;
         break;
-        
+
       case 'hasDescription':
         check.actual = !!parsedResponse.description;
         check.passed = check.actual;
         check.score = check.actual ? 1 : 0;
         check.details = `Description: ${parsedResponse.description || 'Missing'}`;
         break;
-        
+
       case 'hasIngredients':
-        check.actual = Array.isArray(parsedResponse.ingredients) && parsedResponse.ingredients.length > 0;
+        check.actual =
+          Array.isArray(parsedResponse.ingredients) &&
+          parsedResponse.ingredients.length > 0;
         check.passed = check.actual;
         check.score = check.actual ? 1 : 0;
         check.details = `Ingredients: ${parsedResponse.ingredients?.length || 0} items`;
         break;
-        
+
       case 'hasInstructions':
-        check.actual = Array.isArray(parsedResponse.instructions) && parsedResponse.instructions.length > 0;
+        check.actual =
+          Array.isArray(parsedResponse.instructions) &&
+          parsedResponse.instructions.length > 0;
         check.passed = check.actual;
         check.score = check.actual ? 1 : 0;
         check.details = `Instructions: ${parsedResponse.instructions?.length || 0} steps`;
         break;
-        
+
       case 'hasNutrition':
-        check.actual = !!parsedResponse.nutrition && Object.keys(parsedResponse.nutrition).length > 0;
+        check.actual =
+          !!parsedResponse.nutrition &&
+          Object.keys(parsedResponse.nutrition).length > 0;
         check.passed = check.actual;
         check.score = check.actual ? 1 : 0;
         check.details = `Nutrition: ${parsedResponse.nutrition ? 'Present' : 'Missing'}`;
         break;
-        
+
       case 'isVegetarian':
         check.actual = this.checkVegetarian(parsedResponse);
         check.passed = check.actual;
         check.score = check.actual ? 1 : 0;
         check.details = `Vegetarian: ${check.actual ? 'Yes' : 'No'}`;
         break;
-        
+
       case 'isVegan':
         check.actual = this.checkVegan(parsedResponse);
         check.passed = check.actual;
         check.score = check.actual ? 1 : 0;
         check.details = `Vegan: ${check.actual ? 'Yes' : 'No'}`;
         break;
-        
+
       case 'isKeto':
         check.actual = this.checkKeto(parsedResponse);
         check.passed = check.actual;
         check.score = check.actual ? 1 : 0;
         check.details = `Keto: ${check.actual ? 'Yes' : 'No'}`;
         break;
-        
+
       case 'noNuts':
         check.actual = this.checkNoNuts(parsedResponse);
         check.passed = check.actual;
         check.score = check.actual ? 1 : 0;
         check.details = `No Nuts: ${check.actual ? 'Yes' : 'No'}`;
         break;
-        
+
       case 'noSoy':
         check.actual = this.checkNoSoy(parsedResponse);
         check.passed = check.actual;
         check.score = check.actual ? 1 : 0;
         check.details = `No Soy: ${check.actual ? 'Yes' : 'No'}`;
         break;
-        
+
       case 'cookingTime':
         check.actual = this.extractCookingTime(parsedResponse);
         check.passed = Math.abs(check.actual - expected) <= 5; // Within 5 minutes
-        check.score = check.passed ? 1 : Math.max(0, 1 - Math.abs(check.actual - expected) / expected);
+        check.score = check.passed
+          ? 1
+          : Math.max(0, 1 - Math.abs(check.actual - expected) / expected);
         check.details = `Cooking Time: ${check.actual} minutes (expected: ${expected})`;
         break;
-        
+
       case 'servings':
         check.actual = this.extractServings(parsedResponse);
         check.passed = check.actual === expected;
         check.score = check.passed ? 1 : 0;
         check.details = `Servings: ${check.actual} (expected: ${expected})`;
         break;
-        
+
       default:
         check.actual = false;
         check.passed = false;
         check.score = 0;
         check.details = `Unknown check: ${key}`;
     }
-    
+
     return check;
   }
 
   checkVegetarian(parsedResponse) {
     const text = JSON.stringify(parsedResponse).toLowerCase();
-    const meatWords = ['beef', 'chicken', 'pork', 'lamb', 'fish', 'seafood', 'meat'];
+    const meatWords = [
+      'beef',
+      'chicken',
+      'pork',
+      'lamb',
+      'fish',
+      'seafood',
+      'meat',
+    ];
     return !meatWords.some(word => text.includes(word));
   }
 
   checkVegan(parsedResponse) {
     const text = JSON.stringify(parsedResponse).toLowerCase();
-    const nonVeganWords = ['beef', 'chicken', 'pork', 'lamb', 'fish', 'seafood', 'meat', 'dairy', 'milk', 'cheese', 'butter', 'egg'];
+    const nonVeganWords = [
+      'beef',
+      'chicken',
+      'pork',
+      'lamb',
+      'fish',
+      'seafood',
+      'meat',
+      'dairy',
+      'milk',
+      'cheese',
+      'butter',
+      'egg',
+    ];
     return !nonVeganWords.some(word => text.includes(word));
   }
 
   checkKeto(parsedResponse) {
     const text = JSON.stringify(parsedResponse).toLowerCase();
-    const highCarbWords = ['pasta', 'bread', 'rice', 'potato', 'sugar', 'flour'];
+    const highCarbWords = [
+      'pasta',
+      'bread',
+      'rice',
+      'potato',
+      'sugar',
+      'flour',
+    ];
     return !highCarbWords.some(word => text.includes(word));
   }
 
   checkNoNuts(parsedResponse) {
     const text = JSON.stringify(parsedResponse).toLowerCase();
-    const nutWords = ['nut', 'almond', 'walnut', 'pecan', 'cashew', 'pistachio'];
+    const nutWords = [
+      'nut',
+      'almond',
+      'walnut',
+      'pecan',
+      'cashew',
+      'pistachio',
+    ];
     return !nutWords.some(word => text.includes(word));
   }
 
@@ -667,22 +728,25 @@ Please modify the recipe accordingly and format as JSON.`
     try {
       const baselineKey = `${scenario}_${testName}`;
       const baseline = this.baselineResults.get(baselineKey);
-      
+
       if (!baseline) {
         // Store as new baseline
         this.baselineResults.set(baselineKey, currentResult);
         return false;
       }
-      
+
       // Compare with baseline
       const regression = {
         responseTime: currentResult.responseTime > baseline.responseTime * 1.2,
-        accuracy: currentResult.validation.overallScore < baseline.validation.overallScore * 0.9,
-        jsonValidity: currentResult.parsedResponse.isValidJson === false && baseline.parsedResponse.isValidJson === true
+        accuracy:
+          currentResult.validation.overallScore <
+          baseline.validation.overallScore * 0.9,
+        jsonValidity:
+          currentResult.parsedResponse.isValidJson === false &&
+          baseline.parsedResponse.isValidJson === true,
       };
-      
+
       return Object.values(regression).some(Boolean);
-      
     } catch (error) {
       log(`Error checking regression: ${error.message}`, 'red');
       return false;
@@ -693,20 +757,23 @@ Please modify the recipe accordingly and format as JSON.`
     try {
       const baselineKey = `${scenario}_${testName}`;
       const baseline = this.baselineResults.get(baselineKey);
-      
+
       if (!baseline) {
         return false;
       }
-      
+
       // Compare with baseline
       const improvement = {
         responseTime: currentResult.responseTime < baseline.responseTime * 0.8,
-        accuracy: currentResult.validation.overallScore > baseline.validation.overallScore * 1.1,
-        jsonValidity: currentResult.parsedResponse.isValidJson === true && baseline.parsedResponse.isValidJson === false
+        accuracy:
+          currentResult.validation.overallScore >
+          baseline.validation.overallScore * 1.1,
+        jsonValidity:
+          currentResult.parsedResponse.isValidJson === true &&
+          baseline.parsedResponse.isValidJson === false,
       };
-      
+
       return Object.values(improvement).some(Boolean);
-      
     } catch (error) {
       log(`Error checking improvement: ${error.message}`, 'red');
       return false;
@@ -719,75 +786,84 @@ Please modify the recipe accordingly and format as JSON.`
       summary: results.summary,
       regressions: [],
       improvements: [],
-      recommendations: []
+      recommendations: [],
     };
-    
+
     // Collect regressions and improvements
-    for (const [scenario, scenarioResults] of Object.entries(results.testSuites)) {
+    for (const [scenario, scenarioResults] of Object.entries(
+      results.testSuites
+    )) {
       for (const testResult of scenarioResults.testResults) {
         if (testResult.regression) {
           report.regressions.push({
             scenario,
             testName: testResult.testName,
-            details: testResult
+            details: testResult,
           });
         }
-        
+
         if (testResult.improvement) {
           report.improvements.push({
             scenario,
             testName: testResult.testName,
-            details: testResult
+            details: testResult,
           });
         }
       }
     }
-    
+
     // Generate recommendations
     report.recommendations = this.generateRecommendations(report);
-    
+
     return report;
   }
 
   generateRecommendations(report) {
     const recommendations = [];
-    
+
     // Response time recommendations
-    const slowTests = report.regressions.filter(r => r.details.responseTime > config.testThresholds.responseTime);
+    const slowTests = report.regressions.filter(
+      r => r.details.responseTime > config.testThresholds.responseTime
+    );
     if (slowTests.length > 0) {
       recommendations.push({
         category: 'performance',
         priority: 'high',
         issue: 'Slow response times detected',
-        recommendation: 'Optimize AI prompts, implement caching, or scale resources',
-        affectedTests: slowTests.length
+        recommendation:
+          'Optimize AI prompts, implement caching, or scale resources',
+        affectedTests: slowTests.length,
       });
     }
-    
+
     // Accuracy recommendations
-    const lowAccuracyTests = report.regressions.filter(r => r.details.validation.overallScore < config.testThresholds.accuracy);
+    const lowAccuracyTests = report.regressions.filter(
+      r => r.details.validation.overallScore < config.testThresholds.accuracy
+    );
     if (lowAccuracyTests.length > 0) {
       recommendations.push({
         category: 'quality',
         priority: 'high',
         issue: 'Low accuracy detected',
         recommendation: 'Review and improve AI prompts, add more training data',
-        affectedTests: lowAccuracyTests.length
+        affectedTests: lowAccuracyTests.length,
       });
     }
-    
+
     // JSON validity recommendations
-    const invalidJsonTests = report.regressions.filter(r => !r.details.parsedResponse.isValidJson);
+    const invalidJsonTests = report.regressions.filter(
+      r => !r.details.parsedResponse.isValidJson
+    );
     if (invalidJsonTests.length > 0) {
       recommendations.push({
         category: 'format',
         priority: 'medium',
         issue: 'Invalid JSON responses detected',
         recommendation: 'Strengthen JSON format requirements in prompts',
-        affectedTests: invalidJsonTests.length
+        affectedTests: invalidJsonTests.length,
       });
     }
-    
+
     return recommendations;
   }
 
@@ -797,29 +873,28 @@ Please modify the recipe accordingly and format as JSON.`
       if (!fs.existsSync(config.outputDir)) {
         fs.mkdirSync(config.outputDir, { recursive: true });
       }
-      
+
       // Save JSON results
       fs.writeFileSync(
         path.join(config.outputDir, 'regression-test-results.json'),
         JSON.stringify(results, null, 2)
       );
-      
+
       // Generate HTML report
       const htmlReport = this.generateHTMLReport(results);
       fs.writeFileSync(
         path.join(config.outputDir, 'regression-test-report.html'),
         htmlReport
       );
-      
+
       // Save baseline results
       const baselineData = Object.fromEntries(this.baselineResults);
       fs.writeFileSync(
         path.join(config.outputDir, 'baseline-results.json'),
         JSON.stringify(baselineData, null, 2)
       );
-      
+
       log(`Results saved to: ${config.outputDir}`, 'blue');
-      
     } catch (error) {
       log(`Error saving results: ${error.message}`, 'red');
     }
@@ -1066,7 +1141,9 @@ Please modify the recipe accordingly and format as JSON.`
         </div>
         
         <!-- Test Results by Scenario -->
-        ${Object.entries(results.testSuites).map(([scenario, scenarioResults]) => `
+        ${Object.entries(results.testSuites)
+          .map(
+            ([scenario, scenarioResults]) => `
             <div class="section">
                 <h2>${scenario.replace('_', ' ').toUpperCase()} Tests</h2>
                 <div class="metric">
@@ -1090,7 +1167,9 @@ Please modify the recipe accordingly and format as JSON.`
                     <span class="metric-value">${scenarioResults.improvements}</span>
                 </div>
                 
-                ${scenarioResults.testResults.map(testResult => `
+                ${scenarioResults.testResults
+                  .map(
+                    testResult => `
                     <div class="test-result ${testResult.passed ? 'passed' : 'failed'}">
                         <h3>${testResult.testName}</h3>
                         <p><strong>Status:</strong> ${testResult.passed ? 'PASSED' : 'FAILED'}</p>
@@ -1103,49 +1182,75 @@ Please modify the recipe accordingly and format as JSON.`
                         <div class="test-details">
                             <h4>Validation Checks:</h4>
                             <div class="validation-checks">
-                                ${Object.entries(testResult.validation.checks).map(([key, check]) => `
+                                ${Object.entries(testResult.validation.checks)
+                                  .map(
+                                    ([key, check]) => `
                                     <div class="check ${check.passed ? 'passed' : 'failed'}">
                                         <span class="check-name">${key}</span>
                                         <span class="check-score">${check.passed ? '✓' : '✗'} ${(check.score * 100).toFixed(0)}%</span>
                                     </div>
-                                `).join('')}
+                                `
+                                  )
+                                  .join('')}
                             </div>
                         </div>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join('')}
             </div>
-        `).join('')}
+        `
+          )
+          .join('')}
         
         <!-- Regression Report -->
         <div class="section">
             <h2>Regression Analysis</h2>
-            ${results.regressionReport.regressions.length > 0 ? `
+            ${
+              results.regressionReport.regressions.length > 0
+                ? `
                 <h3>Detected Regressions (${results.regressionReport.regressions.length})</h3>
-                ${results.regressionReport.regressions.map(regression => `
+                ${results.regressionReport.regressions
+                  .map(
+                    regression => `
                     <div class="test-result failed">
                         <h3>${regression.scenario} - ${regression.testName}</h3>
                         <p><strong>Response Time:</strong> ${regression.details.responseTime}ms</p>
                         <p><strong>Overall Score:</strong> ${(regression.details.validation.overallScore * 100).toFixed(1)}%</p>
                     </div>
-                `).join('')}
-            ` : '<p>No regressions detected.</p>'}
+                `
+                  )
+                  .join('')}
+            `
+                : '<p>No regressions detected.</p>'
+            }
             
-            ${results.regressionReport.improvements.length > 0 ? `
+            ${
+              results.regressionReport.improvements.length > 0
+                ? `
                 <h3>Detected Improvements (${results.regressionReport.improvements.length})</h3>
-                ${results.regressionReport.improvements.map(improvement => `
+                ${results.regressionReport.improvements
+                  .map(
+                    improvement => `
                     <div class="test-result passed">
                         <h3>${improvement.scenario} - ${improvement.testName}</h3>
                         <p><strong>Response Time:</strong> ${improvement.details.responseTime}ms</p>
                         <p><strong>Overall Score:</strong> ${(improvement.details.validation.overallScore * 100).toFixed(1)}%</p>
                     </div>
-                `).join('')}
-            ` : ''}
+                `
+                  )
+                  .join('')}
+            `
+                : ''
+            }
         </div>
         
         <!-- Recommendations -->
         <div class="section">
             <h2>Recommendations</h2>
-            ${results.regressionReport.recommendations.map(rec => `
+            ${results.regressionReport.recommendations
+              .map(
+                rec => `
                 <div class="recommendation ${rec.priority}">
                     <h4>${rec.issue}</h4>
                     <p><strong>Category:</strong> ${rec.category}</p>
@@ -1153,7 +1258,9 @@ Please modify the recipe accordingly and format as JSON.`
                     <p><strong>Affected Tests:</strong> ${rec.affectedTests}</p>
                     <p><strong>Recommendation:</strong> ${rec.recommendation}</p>
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
     </div>
 </body>
@@ -1167,23 +1274,22 @@ Please modify the recipe accordingly and format as JSON.`
 async function runRegressionTesting() {
   try {
     log('Starting AI regression testing...', 'blue');
-    
+
     // Ensure output directory exists
     if (!fs.existsSync(config.outputDir)) {
       fs.mkdirSync(config.outputDir, { recursive: true });
     }
-    
+
     // Initialize regression tester
     const tester = new RegressionTester();
-    
+
     // Run regression tests
     const results = await tester.runRegressionTests();
-    
+
     log('AI regression testing completed successfully!', 'green');
     log(`Results saved to: ${config.outputDir}`, 'blue');
-    
+
     return results;
-    
   } catch (error) {
     log(`AI regression testing failed: ${error.message}`, 'red');
     throw error;

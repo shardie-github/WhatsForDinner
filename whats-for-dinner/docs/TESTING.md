@@ -77,7 +77,7 @@ describe('MealCard', () => {
 
   it('renders meal information correctly', () => {
     render(<MealCard meal={mockMeal} />);
-    
+
     expect(screen.getByText('Vegetarian Pasta')).toBeInTheDocument();
     expect(screen.getByText('Delicious pasta with vegetables')).toBeInTheDocument();
     expect(screen.getByText('30 min')).toBeInTheDocument();
@@ -87,7 +87,7 @@ describe('MealCard', () => {
   it('calls onSelect when clicked', () => {
     const onSelect = jest.fn();
     render(<MealCard meal={mockMeal} onSelect={onSelect} />);
-    
+
     fireEvent.click(screen.getByRole('button'));
     expect(onSelect).toHaveBeenCalledWith(mockMeal);
   });
@@ -124,10 +124,8 @@ describe('Meal API Integration', () => {
       difficulty: 'easy',
       cooking_time: 30,
       servings: 4,
-      ingredients: [
-        { name: 'pasta', amount: '500g', unit: 'grams' }
-      ],
-      instructions: ['Cook pasta according to package directions']
+      ingredients: [{ name: 'pasta', amount: '500g', unit: 'grams' }],
+      instructions: ['Cook pasta according to package directions'],
     };
 
     const response = await request(app)
@@ -197,7 +195,9 @@ test.describe('Meal Generation Flow', () => {
     // Verify meal details
     const firstMeal = mealCards.first();
     await expect(firstMeal.locator('[data-testid="meal-name"]')).toBeVisible();
-    await expect(firstMeal.locator('[data-testid="meal-category"]')).toContainText('dinner');
+    await expect(
+      firstMeal.locator('[data-testid="meal-category"]')
+    ).toContainText('dinner');
   });
 });
 ```
@@ -217,33 +217,37 @@ export let options = {
   stages: [
     { duration: '2m', target: 100 }, // Ramp up
     { duration: '5m', target: 100 }, // Stay at 100 users
-    { duration: '2m', target: 0 },   // Ramp down
+    { duration: '2m', target: 0 }, // Ramp down
   ],
   thresholds: {
     http_req_duration: ['p(95)<500'], // 95% of requests under 500ms
-    http_req_failed: ['rate<0.1'],    // Error rate under 10%
+    http_req_failed: ['rate<0.1'], // Error rate under 10%
   },
 };
 
-export default function() {
+export default function () {
   // Test meal generation endpoint
-  let response = http.post('https://api.whats-for-dinner.com/api/v2/meals/generate', {
-    preferences: {
-      dietary: ['vegetarian'],
-      difficulty: 'easy',
-      cooking_time: 30
-    }
-  }, {
-    headers: {
-      'Authorization': 'Bearer ' + __ENV.AUTH_TOKEN,
-      'Content-Type': 'application/json',
+  let response = http.post(
+    'https://api.whats-for-dinner.com/api/v2/meals/generate',
+    {
+      preferences: {
+        dietary: ['vegetarian'],
+        difficulty: 'easy',
+        cooking_time: 30,
+      },
     },
-  });
+    {
+      headers: {
+        Authorization: 'Bearer ' + __ENV.AUTH_TOKEN,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 
   check(response, {
-    'status is 200': (r) => r.status === 200,
-    'response time < 500ms': (r) => r.timings.duration < 500,
-    'has meals': (r) => JSON.parse(r.body).data.meals.length > 0,
+    'status is 200': r => r.status === 200,
+    'response time < 500ms': r => r.timings.duration < 500,
+    'has meals': r => JSON.parse(r.body).data.meals.length > 0,
   });
 
   sleep(1);
@@ -280,7 +284,7 @@ describe('Meal Generation', () => {
     // Set preferences
     await element(by.id('dietary-select')).tap();
     await element(by.text('Vegetarian')).tap();
-    
+
     await element(by.id('difficulty-select')).tap();
     await element(by.text('Easy')).tap();
 
@@ -312,34 +316,34 @@ import AxeBuilder from '@axe-core/playwright';
 test.describe('Accessibility Tests', () => {
   test('should not have accessibility violations', async ({ page }) => {
     await page.goto('/');
-    
+
     const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-    
+
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 
   test('should be keyboard navigable', async ({ page }) => {
     await page.goto('/');
-    
+
     // Test keyboard navigation
     await page.keyboard.press('Tab');
     await expect(page.locator(':focus')).toBeVisible();
-    
+
     await page.keyboard.press('Tab');
     await expect(page.locator(':focus')).toBeVisible();
   });
 
   test('should have proper ARIA labels', async ({ page }) => {
     await page.goto('/');
-    
+
     const buttons = page.locator('button');
     const buttonCount = await buttons.count();
-    
+
     for (let i = 0; i < buttonCount; i++) {
       const button = buttons.nth(i);
       const ariaLabel = await button.getAttribute('aria-label');
       const textContent = await button.textContent();
-      
+
       expect(ariaLabel || textContent).toBeTruthy();
     }
   });
@@ -555,7 +559,7 @@ export const createTestUser = async (overrides = {}) => {
     email: 'test@example.com',
     password: 'password123',
     name: 'Test User',
-    ...overrides
+    ...overrides,
   };
 
   const response = await request(app)
@@ -573,16 +577,12 @@ export const createTestMeal = async (overrides = {}) => {
     difficulty: 'easy',
     cooking_time: 30,
     servings: 4,
-    ingredients: [
-      { name: 'pasta', amount: '500g', unit: 'grams' }
-    ],
+    ingredients: [{ name: 'pasta', amount: '500g', unit: 'grams' }],
     instructions: ['Cook pasta according to package directions'],
-    ...overrides
+    ...overrides,
   };
 
-  const response = await request(app)
-    .post('/api/v2/meals')
-    .send(mealData);
+  const response = await request(app).post('/api/v2/meals').send(mealData);
 
   return response.body.data;
 };
@@ -597,11 +597,13 @@ jest.mock('@supabase/supabase-js', () => ({
     from: jest.fn(() => ({
       select: jest.fn(() => ({
         eq: jest.fn(() => ({
-          single: jest.fn(() => Promise.resolve({ data: mockUser, error: null }))
-        }))
-      }))
-    }))
-  }))
+          single: jest.fn(() =>
+            Promise.resolve({ data: mockUser, error: null })
+          ),
+        })),
+      })),
+    })),
+  })),
 }));
 
 // Mock API calls
@@ -609,7 +611,7 @@ global.fetch = jest.fn(() =>
   Promise.resolve({
     json: () => Promise.resolve({ data: mockData }),
     ok: true,
-    status: 200
+    status: 200,
   })
 );
 ```
@@ -623,10 +625,10 @@ global.fetch = jest.fn(() =>
 export const setupTestDatabase = async () => {
   // Create test database
   await createTestDatabase();
-  
+
   // Run migrations
   await runMigrations();
-  
+
   // Seed test data
   await seedTestData();
 };
@@ -634,7 +636,7 @@ export const setupTestDatabase = async () => {
 export const cleanupTestDatabase = async () => {
   // Clean up test data
   await cleanupTestData();
-  
+
   // Drop test database
   await dropTestDatabase();
 };
@@ -652,14 +654,19 @@ export const userFactory = (overrides = {}) => ({
   role: 'user',
   created_at: faker.date.past(),
   updated_at: faker.date.recent(),
-  ...overrides
+  ...overrides,
 });
 
 export const mealFactory = (overrides = {}) => ({
   id: faker.datatype.uuid(),
   name: faker.lorem.words(3),
   description: faker.lorem.sentence(),
-  category: faker.helpers.arrayElement(['breakfast', 'lunch', 'dinner', 'snack']),
+  category: faker.helpers.arrayElement([
+    'breakfast',
+    'lunch',
+    'dinner',
+    'snack',
+  ]),
   difficulty: faker.helpers.arrayElement(['easy', 'medium', 'hard']),
   cooking_time: faker.datatype.number({ min: 15, max: 120 }),
   servings: faker.datatype.number({ min: 1, max: 8 }),
@@ -667,13 +674,13 @@ export const mealFactory = (overrides = {}) => ({
     {
       name: faker.lorem.word(),
       amount: faker.datatype.number({ min: 1, max: 500 }),
-      unit: faker.helpers.arrayElement(['g', 'ml', 'cups', 'tbsp'])
-    }
+      unit: faker.helpers.arrayElement(['g', 'ml', 'cups', 'tbsp']),
+    },
   ],
   instructions: [faker.lorem.sentence(), faker.lorem.sentence()],
   created_at: faker.date.past(),
   updated_at: faker.date.recent(),
-  ...overrides
+  ...overrides,
 });
 ```
 
@@ -692,28 +699,28 @@ jobs:
     strategy:
       matrix:
         node-version: [18, 20]
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run unit tests
         run: npm run test:unit
-      
+
       - name: Run integration tests
         run: npm run test:integration
-      
+
       - name: Run E2E tests
         run: npm run test:e2e
-      
+
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
         with:
@@ -727,15 +734,21 @@ jobs:
 module.exports = {
   reporters: [
     'default',
-    ['jest-html-reporters', {
-      publicPath: './test-results',
-      filename: 'report.html',
-      openReport: true,
-    }],
-    ['jest-junit', {
-      outputDirectory: './test-results',
-      outputName: 'junit.xml',
-    }],
+    [
+      'jest-html-reporters',
+      {
+        publicPath: './test-results',
+        filename: 'report.html',
+        openReport: true,
+      },
+    ],
+    [
+      'jest-junit',
+      {
+        outputDirectory: './test-results',
+        outputName: 'junit.xml',
+      },
+    ],
   ],
 };
 ```
@@ -761,11 +774,11 @@ export let options = {
   },
 };
 
-export default function() {
+export default function () {
   let response = http.get('https://api.whats-for-dinner.com/api/v2/meals');
   check(response, {
-    'status is 200': (r) => r.status === 200,
-    'response time < 500ms': (r) => r.timings.duration < 500,
+    'status is 200': r => r.status === 200,
+    'response time < 500ms': r => r.timings.duration < 500,
   });
   sleep(1);
 }
@@ -790,18 +803,21 @@ export let options = {
   },
 };
 
-export default function() {
-  let response = http.post('https://api.whats-for-dinner.com/api/v2/meals/generate', {
-    preferences: {
-      dietary: ['vegetarian'],
-      difficulty: 'easy',
-      cooking_time: 30
+export default function () {
+  let response = http.post(
+    'https://api.whats-for-dinner.com/api/v2/meals/generate',
+    {
+      preferences: {
+        dietary: ['vegetarian'],
+        difficulty: 'easy',
+        cooking_time: 30,
+      },
     }
-  });
-  
+  );
+
   check(response, {
-    'status is 200': (r) => r.status === 200,
-    'response time < 1000ms': (r) => r.timings.duration < 1000,
+    'status is 200': r => r.status === 200,
+    'response time < 1000ms': r => r.timings.duration < 1000,
   });
   sleep(1);
 }
@@ -818,8 +834,10 @@ module.exports = {
   runnerConfig: 'e2e/config.json',
   configurations: {
     'ios.sim.debug': {
-      binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/WhatsForDinner.app',
-      build: 'xcodebuild -workspace ios/WhatsForDinner.xcworkspace -scheme WhatsForDinner -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
+      binaryPath:
+        'ios/build/Build/Products/Debug-iphonesimulator/WhatsForDinner.app',
+      build:
+        'xcodebuild -workspace ios/WhatsForDinner.xcworkspace -scheme WhatsForDinner -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
       type: 'ios.simulator',
       device: {
         type: 'iPhone 14',
@@ -827,7 +845,8 @@ module.exports = {
     },
     'android.emu.debug': {
       binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
-      build: 'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
+      build:
+        'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
       type: 'android.emulator',
       device: {
         avdName: 'Pixel_4_API_30',
@@ -882,11 +901,11 @@ import AxeBuilder from '@axe-core/playwright';
 test.describe('Accessibility', () => {
   test('should not have accessibility violations', async ({ page }) => {
     await page.goto('/');
-    
+
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])
       .analyze();
-    
+
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 });

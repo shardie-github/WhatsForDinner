@@ -18,23 +18,27 @@ The AI Monitoring Suite consists of four main components:
 Automatically optimizes OpenAI prompts based on performance metrics and user feedback.
 
 **Features:**
+
 - A/B testing framework for prompt variants
 - Performance analysis and optimization suggestions
 - Automated prompt generation and testing
 - Comprehensive reporting and recommendations
 
 **Usage:**
+
 ```bash
 node auto-prompt-tuning.js
 ```
 
 **Configuration:**
+
 - `SUPABASE_URL` - Supabase project URL
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
 - `OPENAI_API_KEY` - OpenAI API key
 - `VERBOSE` - Enable verbose logging (true/false)
 
 **Output:**
+
 - `prompt-optimizations.json` - Detailed optimization results
 - `prompt-optimization-report.html` - HTML report
 - `optimized-prompts.js` - Generated optimized prompt templates
@@ -44,6 +48,7 @@ node auto-prompt-tuning.js
 Monitors system metrics, user behavior, and AI responses for anomalies.
 
 **Features:**
+
 - Statistical anomaly detection using Z-score
 - Moving average anomaly detection
 - Pattern-based anomaly detection
@@ -52,16 +57,19 @@ Monitors system metrics, user behavior, and AI responses for anomalies.
 - Critical alert generation
 
 **Usage:**
+
 ```bash
 node anomaly-detection.js
 ```
 
 **Configuration:**
+
 - `SUPABASE_URL` - Supabase project URL
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
 - `VERBOSE` - Enable verbose logging (true/false)
 
 **Output:**
+
 - `anomaly-detection-report.json` - Detailed anomaly analysis
 - `anomaly-detection-report.html` - HTML report
 - `critical-alerts.json` - Critical anomaly alerts
@@ -71,6 +79,7 @@ node anomaly-detection.js
 Tests AI responses for regressions and quality degradation.
 
 **Features:**
+
 - Automated test case execution
 - Response validation and scoring
 - Regression detection and tracking
@@ -78,17 +87,20 @@ Tests AI responses for regressions and quality degradation.
 - Comprehensive reporting
 
 **Usage:**
+
 ```bash
 node regression-testing.js
 ```
 
 **Configuration:**
+
 - `SUPABASE_URL` - Supabase project URL
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
 - `OPENAI_API_KEY` - OpenAI API key
 - `VERBOSE` - Enable verbose logging (true/false)
 
 **Output:**
+
 - `regression-test-results.json` - Test results and analysis
 - `regression-test-report.html` - HTML report
 - `baseline-results.json` - Baseline performance data
@@ -98,6 +110,7 @@ node regression-testing.js
 Ensures feature consistency between web and native mobile clients.
 
 **Features:**
+
 - Cross-platform feature testing
 - Parity issue detection
 - Platform comparison analysis
@@ -105,27 +118,32 @@ Ensures feature consistency between web and native mobile clients.
 - Comprehensive reporting
 
 **Usage:**
+
 ```bash
 node cross-platform-parity.js
 ```
 
 **Configuration:**
+
 - `SUPABASE_URL` - Supabase project URL
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
 - `VERBOSE` - Enable verbose logging (true/false)
 
 **Output:**
+
 - `cross-platform-parity-results.json` - Parity test results
 - `cross-platform-parity-report.html` - HTML report
 
 ## Installation
 
 1. Install dependencies:
+
 ```bash
 npm install @supabase/supabase-js openai
 ```
 
 2. Set environment variables:
+
 ```bash
 export SUPABASE_URL="your-supabase-url"
 export SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
@@ -134,6 +152,7 @@ export VERBOSE="true"
 ```
 
 3. Make scripts executable:
+
 ```bash
 chmod +x *.js
 ```
@@ -188,24 +207,26 @@ Add to crontab for automated monitoring:
 
 ### Environment Variables
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `SUPABASE_URL` | Supabase project URL | Yes | - |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | Yes | - |
-| `OPENAI_API_KEY` | OpenAI API key | Yes | - |
-| `VERBOSE` | Enable verbose logging | No | false |
+| Variable                    | Description               | Required | Default |
+| --------------------------- | ------------------------- | -------- | ------- |
+| `SUPABASE_URL`              | Supabase project URL      | Yes      | -       |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | Yes      | -       |
+| `OPENAI_API_KEY`            | OpenAI API key            | Yes      | -       |
+| `VERBOSE`                   | Enable verbose logging    | No       | false   |
 
 ### Thresholds
 
 Each script has configurable thresholds for different metrics:
 
 #### Auto-Prompt Tuning
+
 - Response time: 5000ms
 - User satisfaction: 3.0/5.0
 - Accuracy: 80%
 - JSON validity: 95%
 
 #### Anomaly Detection
+
 - Response time: 5000ms
 - Error rate: 5%
 - User satisfaction: 3.0/5.0
@@ -213,6 +234,7 @@ Each script has configurable thresholds for different metrics:
 - CPU usage: 80%
 
 #### Regression Testing
+
 - Response time: 5000ms
 - Accuracy: 80%
 - Relevance: 80%
@@ -220,6 +242,7 @@ Each script has configurable thresholds for different metrics:
 - Creativity: 70%
 
 #### Cross-Platform Parity
+
 - Response time: 2000ms
 - Accuracy: 90%
 - Feature completeness: 95%
@@ -231,16 +254,19 @@ Each script has configurable thresholds for different metrics:
 All scripts generate output files in the `../ai-monitoring` directory:
 
 ### JSON Reports
+
 - Detailed data in JSON format
 - Machine-readable for integration
 - Historical data tracking
 
 ### HTML Reports
+
 - Human-readable reports
 - Interactive charts and graphs
 - Detailed analysis and recommendations
 
 ### Alert Files
+
 - Critical alerts for immediate attention
 - Threshold violations
 - System health status
@@ -272,7 +298,7 @@ async function sendSlackAlert(message) {
     await fetch(SLACK_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: message })
+      body: JSON.stringify({ text: message }),
     });
   }
 }
@@ -370,7 +396,7 @@ async function getCachedData(key, fetchFunction) {
   if (cache.has(key)) {
     return cache.get(key);
   }
-  
+
   const data = await fetchFunction();
   cache.set(key, data);
   return data;
@@ -386,7 +412,7 @@ const scripts = [
   'auto-prompt-tuning.js',
   'anomaly-detection.js',
   'regression-testing.js',
-  'cross-platform-parity.js'
+  'cross-platform-parity.js',
 ];
 
 await Promise.all(scripts.map(script => runScript(script)));
@@ -399,7 +425,7 @@ Monitor and limit resource usage:
 ```javascript
 // Set memory limits
 process.setMaxListeners(0);
-process.on('warning', (warning) => {
+process.on('warning', warning => {
   console.warn('Warning:', warning.message);
 });
 ```
@@ -407,16 +433,19 @@ process.on('warning', (warning) => {
 ## Security Considerations
 
 ### API Key Management
+
 - Store API keys in environment variables
 - Use secure key management services
 - Rotate keys regularly
 
 ### Data Privacy
+
 - Anonymize user data in monitoring
 - Implement data retention policies
 - Comply with privacy regulations
 
 ### Access Control
+
 - Restrict access to monitoring scripts
 - Implement authentication for dashboards
 - Audit access logs
@@ -451,6 +480,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## Support
 
 For support and questions:
+
 - Create an issue in the repository
 - Contact the development team
 - Check the documentation
@@ -458,6 +488,7 @@ For support and questions:
 ## Changelog
 
 ### Version 1.0.0
+
 - Initial release
 - Auto-prompt tuning
 - Anomaly detection
@@ -465,6 +496,7 @@ For support and questions:
 - Cross-platform parity testing
 
 ### Future Versions
+
 - Machine learning integration
 - Advanced analytics
 - Real-time monitoring

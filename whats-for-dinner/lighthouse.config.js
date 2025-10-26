@@ -3,7 +3,7 @@
  * Comprehensive performance and accessibility auditing
  */
 
-const { chromium } = require('playwright');
+// const { chromium } = require('playwright'); // Unused import
 
 module.exports = {
   // Test URLs to audit
@@ -137,8 +137,8 @@ module.exports = {
         dietary_restrictions: ['vegetarian'],
         preferences: {
           cooking_time: 30,
-          difficulty: 'medium'
-        }
+          difficulty: 'medium',
+        },
       },
       threshold: 5000, // 5 seconds
     },
@@ -159,8 +159,8 @@ module.exports = {
         preferences: {
           cuisine_types: ['italian', 'mexican'],
           dietary_restrictions: ['vegetarian'],
-          cooking_time: 30
-        }
+          cooking_time: 30,
+        },
       },
       threshold: 3000, // 3 seconds
     },
@@ -202,7 +202,7 @@ module.exports = {
         id: 'meal-card-alt-text',
         description: 'Meal cards must have descriptive alt text',
         selector: '.meal-card img',
-        test: (element) => {
+        test: element => {
           const altText = element.getAttribute('alt');
           return altText && altText.length > 10;
         },
@@ -211,7 +211,7 @@ module.exports = {
         id: 'ingredient-list-aria-label',
         description: 'Ingredient lists must have aria-labels',
         selector: '.ingredient-list',
-        test: (element) => {
+        test: element => {
           const ariaLabel = element.getAttribute('aria-label');
           return ariaLabel && ariaLabel.length > 0;
         },
@@ -220,7 +220,7 @@ module.exports = {
         id: 'recipe-button-accessible',
         description: 'Recipe buttons must be accessible',
         selector: '.recipe-button',
-        test: (element) => {
+        test: element => {
           const hasAriaLabel = element.getAttribute('aria-label');
           const hasText = element.textContent.trim().length > 0;
           const isFocusable = element.tabIndex >= 0;
@@ -237,8 +237,8 @@ module.exports = {
       enabled: true,
       thresholds: {
         LCP: 2500, // Largest Contentful Paint
-        FID: 100,  // First Input Delay
-        CLS: 0.1,  // Cumulative Layout Shift
+        FID: 100, // First Input Delay
+        CLS: 0.1, // Cumulative Layout Shift
       },
     },
 
@@ -343,7 +343,7 @@ module.exports = {
   // Custom scripts
   scripts: {
     // Pre-audit setup
-    preAudit: async (page) => {
+    preAudit: async page => {
       // Login if needed
       await page.goto('http://localhost:3000/login');
       await page.fill('[data-testid="email"]', 'test@example.com');
@@ -353,20 +353,21 @@ module.exports = {
     },
 
     // Post-audit cleanup
-    postAudit: async (page) => {
+    postAudit: async page => {
       // Logout if needed
       await page.click('[data-testid="logout-button"]');
     },
 
     // Custom data collection
-    collectData: async (page) => {
+    collectData: async page => {
       const data = await page.evaluate(() => {
         return {
           mealCount: document.querySelectorAll('.meal-card').length,
           ingredientCount: document.querySelectorAll('.ingredient-item').length,
           recipeCount: document.querySelectorAll('.recipe-card').length,
           hasServiceWorker: 'serviceWorker' in navigator,
-          hasWebAppManifest: document.querySelector('link[rel="manifest"]') !== null,
+          hasWebAppManifest:
+            document.querySelector('link[rel="manifest"]') !== null,
         };
       });
       return data;

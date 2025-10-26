@@ -19,7 +19,7 @@ describe('API Integration Tests', () => {
         method: 'POST',
         url: '/api/recipes/generate',
         headers: {
-          'authorization': 'Bearer valid-token',
+          authorization: 'Bearer valid-token',
           'content-type': 'application/json',
         },
         body: JSON.stringify({
@@ -66,7 +66,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/recipes/generate/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(data.recipes).toHaveLength(1);
@@ -78,7 +78,7 @@ describe('API Integration Tests', () => {
         method: 'POST',
         url: '/api/recipes/generate',
         headers: {
-          'authorization': 'Bearer valid-token',
+          authorization: 'Bearer valid-token',
           'content-type': 'application/json',
         },
         body: JSON.stringify({
@@ -92,7 +92,9 @@ describe('API Integration Tests', () => {
         openai: {
           chat: {
             completions: {
-              create: jest.fn().mockRejectedValue(new Error('OpenAI API Error')),
+              create: jest
+                .fn()
+                .mockRejectedValue(new Error('OpenAI API Error')),
             },
           },
         },
@@ -100,7 +102,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/recipes/generate/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(500);
       const data = await response.json();
       expect(data.error).toContain('OpenAI API Error');
@@ -141,7 +143,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/auth/signin/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(data.user.email).toBe('test@example.com');
@@ -174,7 +176,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/auth/signin/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(401);
       const data = await response.json();
       expect(data.error).toBe('Invalid credentials');
@@ -187,7 +189,7 @@ describe('API Integration Tests', () => {
         method: 'POST',
         url: '/api/pantry/items',
         headers: {
-          'authorization': 'Bearer valid-token',
+          authorization: 'Bearer valid-token',
           'content-type': 'application/json',
         },
         body: JSON.stringify({
@@ -222,7 +224,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/pantry/items/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(201);
       const data = await response.json();
       expect(data.ingredient).toBe('chicken');
@@ -233,7 +235,7 @@ describe('API Integration Tests', () => {
         method: 'GET',
         url: '/api/pantry/items',
         headers: {
-          'authorization': 'Bearer valid-token',
+          authorization: 'Bearer valid-token',
         },
       });
 
@@ -258,7 +260,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/pantry/items/route');
       const response = await handler.GET(req);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(data).toHaveLength(2);
@@ -272,7 +274,7 @@ describe('API Integration Tests', () => {
         method: 'POST',
         url: '/api/recipes/favorites',
         headers: {
-          'authorization': 'Bearer valid-token',
+          authorization: 'Bearer valid-token',
           'content-type': 'application/json',
         },
         body: JSON.stringify({
@@ -315,7 +317,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/recipes/favorites/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(201);
       const data = await response.json();
       expect(data.recipe.title).toBe('Test Recipe');
@@ -326,7 +328,7 @@ describe('API Integration Tests', () => {
         method: 'GET',
         url: '/api/recipes/favorites',
         headers: {
-          'authorization': 'Bearer valid-token',
+          authorization: 'Bearer valid-token',
         },
       });
 
@@ -357,7 +359,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/recipes/favorites/route');
       const response = await handler.GET(req);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(data).toHaveLength(2);
@@ -371,7 +373,7 @@ describe('API Integration Tests', () => {
         method: 'GET',
         url: '/api/pantry/items',
         headers: {
-          'authorization': 'Bearer valid-token',
+          authorization: 'Bearer valid-token',
         },
       });
 
@@ -391,7 +393,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/pantry/items/route');
       const response = await handler.GET(req);
-      
+
       expect(response.status).toBe(500);
       const data = await response.json();
       expect(data.error).toContain('Database connection failed');
@@ -402,7 +404,7 @@ describe('API Integration Tests', () => {
         method: 'POST',
         url: '/api/recipes/generate',
         headers: {
-          'authorization': 'Bearer valid-token',
+          authorization: 'Bearer valid-token',
           'content-type': 'application/json',
         },
         body: JSON.stringify({
@@ -413,7 +415,7 @@ describe('API Integration Tests', () => {
 
       const handler = await import('@/app/api/recipes/generate/route');
       const response = await handler.POST(req);
-      
+
       expect(response.status).toBe(400);
       const data = await response.json();
       expect(data.error).toContain('validation');

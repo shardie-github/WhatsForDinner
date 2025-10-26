@@ -11,7 +11,7 @@ const path = require('path');
 // Configuration
 const config = {
   outputDir: path.join(__dirname, '../performance-configs'),
-  verbose: process.env.VERBOSE === 'true'
+  verbose: process.env.VERBOSE === 'true',
 };
 
 // Colors for console output
@@ -20,7 +20,7 @@ const colors = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 function log(message, color = 'reset') {
@@ -133,56 +133,56 @@ async function handleRequest(request) {
 function generatePageRules() {
   const pageRules = [
     {
-      name: "Static Assets - Maximum Caching",
-      url: "whats-for-dinner.vercel.app/_next/static/*",
+      name: 'Static Assets - Maximum Caching',
+      url: 'whats-for-dinner.vercel.app/_next/static/*',
       settings: {
-        cache_level: "cache_everything",
+        cache_level: 'cache_everything',
         edge_cache_ttl: 31536000,
         browser_cache_ttl: 31536000,
         always_online: true,
         mirage: true,
-        polish: "lossless",
+        polish: 'lossless',
         minify: {
           css: true,
           html: true,
-          js: true
-        }
-      }
+          js: true,
+        },
+      },
     },
     {
-      name: "API Routes - Moderate Caching",
-      url: "whats-for-dinner.vercel.app/api/*",
+      name: 'API Routes - Moderate Caching',
+      url: 'whats-for-dinner.vercel.app/api/*',
       settings: {
-        cache_level: "cache_everything",
+        cache_level: 'cache_everything',
         edge_cache_ttl: 600,
         browser_cache_ttl: 300,
         always_online: true,
         mirage: false,
-        polish: "off",
+        polish: 'off',
         minify: {
           css: false,
           html: false,
-          js: false
-        }
-      }
+          js: false,
+        },
+      },
     },
     {
-      name: "HTML Pages - Moderate Caching",
-      url: "whats-for-dinner.vercel.app/*",
+      name: 'HTML Pages - Moderate Caching',
+      url: 'whats-for-dinner.vercel.app/*',
       settings: {
-        cache_level: "cache_everything",
+        cache_level: 'cache_everything',
         edge_cache_ttl: 7200,
         browser_cache_ttl: 3600,
         always_online: true,
         mirage: true,
-        polish: "lossless",
+        polish: 'lossless',
         minify: {
           css: true,
           html: true,
-          js: true
-        }
-      }
-    }
+          js: true,
+        },
+      },
+    },
   ];
 
   return pageRules;
@@ -297,8 +297,8 @@ function generateVercelConfig() {
     version: 2,
     functions: {
       'api/**/*.ts': {
-        maxDuration: 30
-      }
+        maxDuration: 30,
+      },
     },
     headers: [
       {
@@ -306,35 +306,35 @@ function generateVercelConfig() {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable'
-          }
-        ]
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
       },
       {
         source: '/api/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=300, s-maxage=600'
-          }
-        ]
+            value: 'public, max-age=300, s-maxage=600',
+          },
+        ],
       },
       {
         source: '/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=3600, s-maxage=7200'
-          }
-        ]
-      }
+            value: 'public, max-age=3600, s-maxage=7200',
+          },
+        ],
+      },
     ],
     rewrites: [
       {
         source: '/api/:path*',
-        destination: '/api/:path*'
-      }
-    ]
+        destination: '/api/:path*',
+      },
+    ],
   };
 
   return vercelConfig;
@@ -510,48 +510,57 @@ module.exports = { monitorCDNPerformance };`;
  */
 function generateCDNConfigurations() {
   log('Generating CDN configurations...', 'blue');
-  
+
   // Ensure output directory exists
   if (!fs.existsSync(config.outputDir)) {
     fs.mkdirSync(config.outputDir, { recursive: true });
   }
-  
+
   // Generate CloudFlare Worker
   const workerCode = generateCloudFlareWorker();
-  fs.writeFileSync(path.join(config.outputDir, 'cloudflare-worker.js'), workerCode);
+  fs.writeFileSync(
+    path.join(config.outputDir, 'cloudflare-worker.js'),
+    workerCode
+  );
   log('Generated CloudFlare Worker configuration', 'green');
-  
+
   // Generate Page Rules
   const pageRules = generatePageRules();
   fs.writeFileSync(
-    path.join(config.outputDir, 'cloudflare-page-rules.json'), 
+    path.join(config.outputDir, 'cloudflare-page-rules.json'),
     JSON.stringify(pageRules, null, 2)
   );
   log('Generated CloudFlare Page Rules configuration', 'green');
-  
+
   // Generate Next.js config
   const nextConfig = generateNextJSConfig();
-  fs.writeFileSync(path.join(config.outputDir, 'next.config.cdn.js'), nextConfig);
+  fs.writeFileSync(
+    path.join(config.outputDir, 'next.config.cdn.js'),
+    nextConfig
+  );
   log('Generated Next.js CDN configuration', 'green');
-  
+
   // Generate Vercel config
   const vercelConfig = generateVercelConfig();
   fs.writeFileSync(
-    path.join(config.outputDir, 'vercel.json'), 
+    path.join(config.outputDir, 'vercel.json'),
     JSON.stringify(vercelConfig, null, 2)
   );
   log('Generated Vercel configuration', 'green');
-  
+
   // Generate CDN monitoring script
   const monitoringScript = generateCDNMonitoring();
-  fs.writeFileSync(path.join(config.outputDir, 'cdn-monitoring.js'), monitoringScript);
+  fs.writeFileSync(
+    path.join(config.outputDir, 'cdn-monitoring.js'),
+    monitoringScript
+  );
   log('Generated CDN monitoring script', 'green');
-  
+
   // Generate README
   const readme = generateCDNReadme();
   fs.writeFileSync(path.join(config.outputDir, 'README.md'), readme);
   log('Generated CDN setup README', 'green');
-  
+
   log('\\nCDN configurations generated successfully!', 'green');
   log(`Output directory: ${config.outputDir}`, 'blue');
 }

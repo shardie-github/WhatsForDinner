@@ -1,9 +1,9 @@
 /**
  * AI-Powered Decision Engine
- * 
+ *
  * Implements intelligent decision-making for automated remediation and optimization
  * using machine learning, rule-based systems, and contextual analysis.
- * 
+ *
  * Features:
  * - Multi-layered decision architecture
  * - Risk assessment and safety guardrails
@@ -106,7 +106,7 @@ export class AIDecisionEngine {
       maxConcurrentActions: 3,
       maxResourceImpact: 0.5,
       minTimeBetweenActions: 300, // 5 minutes
-      maxActionsPerHour: 10
+      maxActionsPerHour: 10,
     };
   }
 
@@ -118,54 +118,84 @@ export class AIDecisionEngine {
       type: 'optimization',
       description: 'Enable caching for improved performance',
       parameters: { cacheType: 'redis', ttl: 3600 },
-      estimatedImpact: { performance: 30, reliability: 10, cost: -5, userExperience: 25 },
+      estimatedImpact: {
+        performance: 30,
+        reliability: 10,
+        cost: -5,
+        userExperience: 25,
+      },
       executionTime: 30,
-      humanApprovalRequired: false
+      humanApprovalRequired: false,
     });
 
     this.actionTemplates.set('scale_resources', {
       type: 'remediation',
       description: 'Scale up resources to handle increased load',
       parameters: { scaleFactor: 1.5, resourceType: 'cpu' },
-      estimatedImpact: { performance: 40, reliability: 30, cost: 20, userExperience: 35 },
+      estimatedImpact: {
+        performance: 40,
+        reliability: 30,
+        cost: 20,
+        userExperience: 35,
+      },
       executionTime: 120,
-      humanApprovalRequired: true
+      humanApprovalRequired: true,
     });
 
     this.actionTemplates.set('optimize_query', {
       type: 'optimization',
       description: 'Optimize database query performance',
       parameters: { queryId: '', optimizationType: 'index' },
-      estimatedImpact: { performance: 25, reliability: 15, cost: -10, userExperience: 20 },
+      estimatedImpact: {
+        performance: 25,
+        reliability: 15,
+        cost: -10,
+        userExperience: 20,
+      },
       executionTime: 60,
-      humanApprovalRequired: false
+      humanApprovalRequired: false,
     });
 
     this.actionTemplates.set('enable_circuit_breaker', {
       type: 'remediation',
       description: 'Enable circuit breaker for failing service',
       parameters: { service: '', threshold: 0.5, timeout: 30000 },
-      estimatedImpact: { performance: 20, reliability: 40, cost: 0, userExperience: 30 },
+      estimatedImpact: {
+        performance: 20,
+        reliability: 40,
+        cost: 0,
+        userExperience: 30,
+      },
       executionTime: 45,
-      humanApprovalRequired: false
+      humanApprovalRequired: false,
     });
 
     this.actionTemplates.set('restart_service', {
       type: 'remediation',
       description: 'Restart failing service',
       parameters: { service: '', graceful: true },
-      estimatedImpact: { performance: 15, reliability: 35, cost: 0, userExperience: 25 },
+      estimatedImpact: {
+        performance: 15,
+        reliability: 35,
+        cost: 0,
+        userExperience: 25,
+      },
       executionTime: 90,
-      humanApprovalRequired: true
+      humanApprovalRequired: true,
     });
 
     this.actionTemplates.set('optimize_ai_model', {
       type: 'optimization',
       description: 'Optimize AI model configuration',
       parameters: { model: '', optimizationType: 'prompt' },
-      estimatedImpact: { performance: 20, reliability: 10, cost: -15, userExperience: 15 },
+      estimatedImpact: {
+        performance: 20,
+        reliability: 10,
+        cost: -15,
+        userExperience: 15,
+      },
       executionTime: 180,
-      humanApprovalRequired: false
+      humanApprovalRequired: false,
     });
   }
 
@@ -222,7 +252,6 @@ export class AIDecisionEngine {
 
       // Learn from recent outcomes
       await this.learnFromOutcomes();
-
     } catch (error) {
       logger.error('Decision cycle failed', { error });
     }
@@ -263,9 +292,8 @@ export class AIDecisionEngine {
         resourceUtilization,
         recentActions,
         timeOfDay,
-        dayOfWeek
+        dayOfWeek,
       };
-
     } catch (error) {
       logger.error('Failed to gather decision context', { error });
       throw error;
@@ -285,14 +313,14 @@ export class AIDecisionEngine {
           api: 'healthy',
           frontend: 'healthy',
           mobile: 'healthy',
-          ai: 'healthy'
-        }
+          ai: 'healthy',
+        },
       };
     } catch (error) {
       logger.error('Failed to get system health', { error });
       return {
         overall: 'degraded',
-        components: {}
+        components: {},
       };
     }
   }
@@ -342,14 +370,14 @@ export class AIDecisionEngine {
       return {
         activeUsers: 100,
         peakHours: true,
-        recentErrors: 5
+        recentErrors: 5,
       };
     } catch (error) {
       logger.error('Failed to get user activity', { error });
       return {
         activeUsers: 0,
         peakHours: false,
-        recentErrors: 0
+        recentErrors: 0,
       };
     }
   }
@@ -357,14 +385,16 @@ export class AIDecisionEngine {
   /**
    * Get resource utilization
    */
-  private async getResourceUtilization(): Promise<DecisionContext['resourceUtilization']> {
+  private async getResourceUtilization(): Promise<
+    DecisionContext['resourceUtilization']
+  > {
     try {
       // This would integrate with resource monitoring
       return {
         cpu: 0.6,
         memory: 0.7,
         database: 0.4,
-        ai: 0.3
+        ai: 0.3,
       };
     } catch (error) {
       logger.error('Failed to get resource utilization', { error });
@@ -372,7 +402,7 @@ export class AIDecisionEngine {
         cpu: 0,
         memory: 0,
         database: 0,
-        ai: 0
+        ai: 0,
       };
     }
   }
@@ -387,13 +417,18 @@ export class AIDecisionEngine {
   /**
    * Analyze context and generate decisions
    */
-  private async analyzeContext(context: DecisionContext): Promise<DecisionAction[]> {
+  private async analyzeContext(
+    context: DecisionContext
+  ): Promise<DecisionAction[]> {
     const decisions: DecisionAction[] = [];
 
     try {
       // Analyze anomalies
       if (context.anomaly) {
-        const anomalyDecisions = await this.analyzeAnomaly(context.anomaly, context);
+        const anomalyDecisions = await this.analyzeAnomaly(
+          context.anomaly,
+          context
+        );
         decisions.push(...anomalyDecisions);
       }
 
@@ -410,10 +445,12 @@ export class AIDecisionEngine {
       decisions.push(...resourceDecisions);
 
       // Filter and prioritize decisions
-      const filteredDecisions = this.filterAndPrioritizeDecisions(decisions, context);
+      const filteredDecisions = this.filterAndPrioritizeDecisions(
+        decisions,
+        context
+      );
 
       return filteredDecisions;
-
     } catch (error) {
       logger.error('Context analysis failed', { error });
       return [];
@@ -432,22 +469,33 @@ export class AIDecisionEngine {
     try {
       // Map anomaly to potential actions
       const actionMappings: Record<string, string[]> = {
-        error_rate: ['enable_circuit_breaker', 'restart_service', 'scale_resources'],
-        response_time_ms: ['optimize_query', 'enable_caching', 'scale_resources'],
+        error_rate: [
+          'enable_circuit_breaker',
+          'restart_service',
+          'scale_resources',
+        ],
+        response_time_ms: [
+          'optimize_query',
+          'enable_caching',
+          'scale_resources',
+        ],
         memory_usage_percent: ['restart_service', 'scale_resources'],
         cpu_usage_percent: ['scale_resources', 'optimize_query'],
-        ai_cost_per_hour: ['optimize_ai_model', 'enable_caching']
+        ai_cost_per_hour: ['optimize_ai_model', 'enable_caching'],
       };
 
       const potentialActions = actionMappings[anomaly.metric] || [];
-      
+
       for (const actionType of potentialActions) {
-        const decision = await this.createDecision(actionType, anomaly, context);
+        const decision = await this.createDecision(
+          actionType,
+          anomaly,
+          context
+        );
         if (decision) {
           decisions.push(decision);
         }
       }
-
     } catch (error) {
       logger.error('Anomaly analysis failed', { error });
     }
@@ -458,27 +506,39 @@ export class AIDecisionEngine {
   /**
    * Analyze system health
    */
-  private async analyzeSystemHealth(context: DecisionContext): Promise<DecisionAction[]> {
+  private async analyzeSystemHealth(
+    context: DecisionContext
+  ): Promise<DecisionAction[]> {
     const decisions: DecisionAction[] = [];
 
     try {
       if (context.systemHealth.overall === 'critical') {
-        const decision = await this.createDecision('restart_service', null, context);
+        const decision = await this.createDecision(
+          'restart_service',
+          null,
+          context
+        );
         if (decision) {
           decisions.push(decision);
         }
       }
 
       // Check individual components
-      for (const [component, health] of Object.entries(context.systemHealth.components)) {
+      for (const [component, health] of Object.entries(
+        context.systemHealth.components
+      )) {
         if (health === 'critical') {
-          const decision = await this.createDecision('restart_service', null, context, { service: component });
+          const decision = await this.createDecision(
+            'restart_service',
+            null,
+            context,
+            { service: component }
+          );
           if (decision) {
             decisions.push(decision);
           }
         }
       }
-
     } catch (error) {
       logger.error('System health analysis failed', { error });
     }
@@ -489,13 +549,19 @@ export class AIDecisionEngine {
   /**
    * Analyze performance metrics
    */
-  private async analyzePerformance(context: DecisionContext): Promise<DecisionAction[]> {
+  private async analyzePerformance(
+    context: DecisionContext
+  ): Promise<DecisionAction[]> {
     const decisions: DecisionAction[] = [];
 
     try {
       // Check response time
       if (context.recentMetrics.response_time_ms > 2000) {
-        const decision = await this.createDecision('optimize_query', null, context);
+        const decision = await this.createDecision(
+          'optimize_query',
+          null,
+          context
+        );
         if (decision) {
           decisions.push(decision);
         }
@@ -503,12 +569,15 @@ export class AIDecisionEngine {
 
       // Check error rate
       if (context.recentMetrics.error_rate > 0.05) {
-        const decision = await this.createDecision('enable_circuit_breaker', null, context);
+        const decision = await this.createDecision(
+          'enable_circuit_breaker',
+          null,
+          context
+        );
         if (decision) {
           decisions.push(decision);
         }
       }
-
     } catch (error) {
       logger.error('Performance analysis failed', { error });
     }
@@ -519,13 +588,20 @@ export class AIDecisionEngine {
   /**
    * Analyze resource utilization
    */
-  private async analyzeResourceUtilization(context: DecisionContext): Promise<DecisionAction[]> {
+  private async analyzeResourceUtilization(
+    context: DecisionContext
+  ): Promise<DecisionAction[]> {
     const decisions: DecisionAction[] = [];
 
     try {
       // Check CPU utilization
       if (context.resourceUtilization.cpu > 0.8) {
-        const decision = await this.createDecision('scale_resources', null, context, { resourceType: 'cpu' });
+        const decision = await this.createDecision(
+          'scale_resources',
+          null,
+          context,
+          { resourceType: 'cpu' }
+        );
         if (decision) {
           decisions.push(decision);
         }
@@ -533,12 +609,16 @@ export class AIDecisionEngine {
 
       // Check memory utilization
       if (context.resourceUtilization.memory > 0.9) {
-        const decision = await this.createDecision('scale_resources', null, context, { resourceType: 'memory' });
+        const decision = await this.createDecision(
+          'scale_resources',
+          null,
+          context,
+          { resourceType: 'memory' }
+        );
         if (decision) {
           decisions.push(decision);
         }
       }
-
     } catch (error) {
       logger.error('Resource utilization analysis failed', { error });
     }
@@ -570,12 +650,18 @@ export class AIDecisionEngine {
 
       // Check safety thresholds
       if (confidence < this.safetyThresholds.minConfidence) {
-        logger.debug('Decision rejected due to low confidence', { actionType, confidence });
+        logger.debug('Decision rejected due to low confidence', {
+          actionType,
+          confidence,
+        });
         return null;
       }
 
       if (riskLevel === 'high' && !template.humanApprovalRequired) {
-        logger.debug('Decision requires human approval due to high risk', { actionType, riskLevel });
+        logger.debug('Decision requires human approval due to high risk', {
+          actionType,
+          riskLevel,
+        });
         return null;
       }
 
@@ -592,11 +678,10 @@ export class AIDecisionEngine {
         prerequisites: [],
         rollbackPlan: this.generateRollbackPlan(actionType),
         executionTime: template.executionTime,
-        humanApprovalRequired: template.humanApprovalRequired
+        humanApprovalRequired: template.humanApprovalRequired,
       };
 
       return decision;
-
     } catch (error) {
       logger.error('Failed to create decision', { error, actionType });
       return null;
@@ -638,17 +723,20 @@ export class AIDecisionEngine {
   /**
    * Calculate risk level
    */
-  private calculateRiskLevel(actionType: string, context: DecisionContext): 'low' | 'medium' | 'high' {
+  private calculateRiskLevel(
+    actionType: string,
+    context: DecisionContext
+  ): 'low' | 'medium' | 'high' {
     let riskScore = 0;
 
     // Action type risk
     const actionRisks: Record<string, number> = {
-      'enable_caching': 0.1,
-      'optimize_query': 0.2,
-      'optimize_ai_model': 0.3,
-      'enable_circuit_breaker': 0.4,
-      'scale_resources': 0.6,
-      'restart_service': 0.8
+      enable_caching: 0.1,
+      optimize_query: 0.2,
+      optimize_ai_model: 0.3,
+      enable_circuit_breaker: 0.4,
+      scale_resources: 0.6,
+      restart_service: 0.8,
     };
 
     riskScore += actionRisks[actionType] || 0.5;
@@ -683,12 +771,12 @@ export class AIDecisionEngine {
    */
   private generateRollbackPlan(actionType: string): string {
     const rollbackPlans: Record<string, string> = {
-      'enable_caching': 'Disable caching and clear cache',
-      'scale_resources': 'Scale back to previous resource allocation',
-      'optimize_query': 'Revert query optimization changes',
-      'enable_circuit_breaker': 'Disable circuit breaker',
-      'restart_service': 'Monitor service and restart if needed',
-      'optimize_ai_model': 'Revert AI model configuration'
+      enable_caching: 'Disable caching and clear cache',
+      scale_resources: 'Scale back to previous resource allocation',
+      optimize_query: 'Revert query optimization changes',
+      enable_circuit_breaker: 'Disable circuit breaker',
+      restart_service: 'Monitor service and restart if needed',
+      optimize_ai_model: 'Revert AI model configuration',
     };
 
     return rollbackPlans[actionType] || 'Manual intervention required';
@@ -698,10 +786,11 @@ export class AIDecisionEngine {
    * Get historical success rate
    */
   private getHistoricalSuccessRate(actionType: string): number {
-    const outcomes = this.outcomeHistory.filter(outcome => 
-      this.decisionHistory.find(decision => 
-        decision.id === outcome.actionId && 
-        this.actionTemplates.get(actionType)?.type === decision.type
+    const outcomes = this.outcomeHistory.filter(outcome =>
+      this.decisionHistory.find(
+        decision =>
+          decision.id === outcome.actionId &&
+          this.actionTemplates.get(actionType)?.type === decision.type
       )
     );
 
@@ -719,14 +808,21 @@ export class AIDecisionEngine {
     context: DecisionContext
   ): DecisionAction[] {
     // Remove duplicates
-    const uniqueDecisions = decisions.filter((decision, index, self) =>
-      index === self.findIndex(d => d.type === decision.type && d.parameters.service === decision.parameters.service)
+    const uniqueDecisions = decisions.filter(
+      (decision, index, self) =>
+        index ===
+        self.findIndex(
+          d =>
+            d.type === decision.type &&
+            d.parameters.service === decision.parameters.service
+        )
     );
 
     // Sort by priority and confidence
     const sortedDecisions = uniqueDecisions.sort((a, b) => {
       const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-      const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
+      const priorityDiff =
+        priorityOrder[b.priority] - priorityOrder[a.priority];
       if (priorityDiff !== 0) return priorityDiff;
       return b.confidence - a.confidence;
     });
@@ -741,10 +837,10 @@ export class AIDecisionEngine {
    */
   private async executeDecision(decision: DecisionAction): Promise<void> {
     try {
-      logger.info('Executing decision', { 
-        id: decision.id, 
-        type: decision.type, 
-        priority: decision.priority 
+      logger.info('Executing decision', {
+        id: decision.id,
+        type: decision.type,
+        priority: decision.priority,
       });
 
       // Check if human approval is required
@@ -776,7 +872,10 @@ export class AIDecisionEngine {
         }
       } catch (error) {
         errors.push(error.message);
-        logger.error('Decision execution failed', { error, decisionId: decision.id });
+        logger.error('Decision execution failed', {
+          error,
+          decisionId: decision.id,
+        });
       }
 
       const executionTime = Date.now() - startTime;
@@ -789,7 +888,7 @@ export class AIDecisionEngine {
         executionTime,
         errors,
         metrics: {}, // This would be measured after execution
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       this.outcomeHistory.push(outcome);
@@ -801,17 +900,19 @@ export class AIDecisionEngine {
         execution_time: executionTime,
         errors,
         metrics: outcome.metrics,
-        timestamp: outcome.timestamp
+        timestamp: outcome.timestamp,
       });
 
-      logger.info('Decision executed', { 
-        id: decision.id, 
-        success, 
-        executionTime 
+      logger.info('Decision executed', {
+        id: decision.id,
+        success,
+        executionTime,
       });
-
     } catch (error) {
-      logger.error('Failed to execute decision', { error, decisionId: decision.id });
+      logger.error('Failed to execute decision', {
+        error,
+        decisionId: decision.id,
+      });
     }
   }
 
@@ -825,7 +926,9 @@ export class AIDecisionEngine {
       switch (decision.description) {
         case 'Enable circuit breaker for failing service':
           // Implement circuit breaker logic
-          logger.info('Enabling circuit breaker', { service: parameters.service });
+          logger.info('Enabling circuit breaker', {
+            service: parameters.service,
+          });
           return true;
 
         case 'Restart failing service':
@@ -839,7 +942,9 @@ export class AIDecisionEngine {
           return true;
 
         default:
-          logger.warn('Unknown remediation action', { description: decision.description });
+          logger.warn('Unknown remediation action', {
+            description: decision.description,
+          });
           return false;
       }
     } catch (error) {
@@ -851,7 +956,9 @@ export class AIDecisionEngine {
   /**
    * Execute optimization action
    */
-  private async executeOptimization(decision: DecisionAction): Promise<boolean> {
+  private async executeOptimization(
+    decision: DecisionAction
+  ): Promise<boolean> {
     try {
       const { parameters } = decision;
 
@@ -872,7 +979,9 @@ export class AIDecisionEngine {
           return true;
 
         default:
-          logger.warn('Unknown optimization action', { description: decision.description });
+          logger.warn('Unknown optimization action', {
+            description: decision.description,
+          });
           return false;
       }
     } catch (error) {
@@ -901,7 +1010,9 @@ export class AIDecisionEngine {
   private async executeMonitoring(decision: DecisionAction): Promise<boolean> {
     try {
       // Implement monitoring logic
-      logger.info('Executing monitoring action', { parameters: decision.parameters });
+      logger.info('Executing monitoring action', {
+        parameters: decision.parameters,
+      });
       return true;
     } catch (error) {
       logger.error('Monitoring execution failed', { error });
@@ -916,13 +1027,12 @@ export class AIDecisionEngine {
     try {
       // Analyze recent outcomes
       const recentOutcomes = this.outcomeHistory.slice(-100);
-      
+
       // Generate learning insights
       const insights = await this.generateLearningInsights(recentOutcomes);
-      
+
       // Update decision models
       await this.updateDecisionModels(insights);
-
     } catch (error) {
       logger.error('Learning from outcomes failed', { error });
     }
@@ -931,7 +1041,9 @@ export class AIDecisionEngine {
   /**
    * Generate learning insights
    */
-  private async generateLearningInsights(outcomes: DecisionOutcome[]): Promise<LearningInsight[]> {
+  private async generateLearningInsights(
+    outcomes: DecisionOutcome[]
+  ): Promise<LearningInsight[]> {
     const insights: LearningInsight[] = [];
 
     try {
@@ -941,48 +1053,62 @@ export class AIDecisionEngine {
 
       // Pattern: High confidence decisions tend to succeed
       if (successfulOutcomes.length > 10) {
-        const avgConfidence = successfulOutcomes.reduce((sum, o) => {
-          const decision = this.decisionHistory.find(d => d.id === o.actionId);
-          return sum + (decision?.confidence || 0);
-        }, 0) / successfulOutcomes.length;
+        const avgConfidence =
+          successfulOutcomes.reduce((sum, o) => {
+            const decision = this.decisionHistory.find(
+              d => d.id === o.actionId
+            );
+            return sum + (decision?.confidence || 0);
+          }, 0) / successfulOutcomes.length;
 
         if (avgConfidence > 0.8) {
           insights.push({
             id: `insight_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             pattern: 'High confidence decisions succeed',
             confidence: 0.9,
-            recommendation: 'Increase confidence threshold for better success rate',
+            recommendation:
+              'Increase confidence threshold for better success rate',
             evidence: successfulOutcomes.slice(0, 5),
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
         }
       }
 
       // Pattern: Certain action types fail more often
-      const actionTypeFailures = failedOutcomes.reduce((acc, outcome) => {
-        const decision = this.decisionHistory.find(d => d.id === outcome.actionId);
-        if (decision) {
-          acc[decision.type] = (acc[decision.type] || 0) + 1;
-        }
-        return acc;
-      }, {} as Record<string, number>);
+      const actionTypeFailures = failedOutcomes.reduce(
+        (acc, outcome) => {
+          const decision = this.decisionHistory.find(
+            d => d.id === outcome.actionId
+          );
+          if (decision) {
+            acc[decision.type] = (acc[decision.type] || 0) + 1;
+          }
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
-      for (const [actionType, failureCount] of Object.entries(actionTypeFailures)) {
+      for (const [actionType, failureCount] of Object.entries(
+        actionTypeFailures
+      )) {
         if (failureCount > 3) {
           insights.push({
             id: `insight_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             pattern: `${actionType} actions fail frequently`,
             confidence: 0.7,
             recommendation: `Review and improve ${actionType} action implementation`,
-            evidence: failedOutcomes.filter(o => {
-              const decision = this.decisionHistory.find(d => d.id === o.actionId);
-              return decision?.type === actionType;
-            }).slice(0, 3),
-            timestamp: new Date().toISOString()
+            evidence: failedOutcomes
+              .filter(o => {
+                const decision = this.decisionHistory.find(
+                  d => d.id === o.actionId
+                );
+                return decision?.type === actionType;
+              })
+              .slice(0, 3),
+            timestamp: new Date().toISOString(),
           });
         }
       }
-
     } catch (error) {
       logger.error('Learning insight generation failed', { error });
     }
@@ -993,14 +1119,19 @@ export class AIDecisionEngine {
   /**
    * Update decision models
    */
-  private async updateDecisionModels(insights: LearningInsight[]): Promise<void> {
+  private async updateDecisionModels(
+    insights: LearningInsight[]
+  ): Promise<void> {
     try {
       for (const insight of insights) {
         this.learningInsights.push(insight);
 
         // Update safety thresholds based on insights
         if (insight.pattern.includes('High confidence decisions succeed')) {
-          this.safetyThresholds.minConfidence = Math.min(0.8, this.safetyThresholds.minConfidence + 0.05);
+          this.safetyThresholds.minConfidence = Math.min(
+            0.8,
+            this.safetyThresholds.minConfidence + 0.05
+          );
         }
 
         // Update action templates based on insights
@@ -1013,8 +1144,9 @@ export class AIDecisionEngine {
         }
       }
 
-      logger.info('Decision models updated', { insightsCount: insights.length });
-
+      logger.info('Decision models updated', {
+        insightsCount: insights.length,
+      });
     } catch (error) {
       logger.error('Decision model update failed', { error });
     }
@@ -1032,21 +1164,30 @@ export class AIDecisionEngine {
     averageExecutionTime: number;
   } {
     const totalDecisions = this.decisionHistory.length;
-    const successfulDecisions = this.outcomeHistory.filter(o => o.success).length;
+    const successfulDecisions = this.outcomeHistory.filter(
+      o => o.success
+    ).length;
     const failedDecisions = this.outcomeHistory.filter(o => !o.success).length;
 
-    const decisionsByType = this.decisionHistory.reduce((acc, decision) => {
-      acc[decision.type] = (acc[decision.type] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const decisionsByType = this.decisionHistory.reduce(
+      (acc, decision) => {
+        acc[decision.type] = (acc[decision.type] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const averageConfidence = this.decisionHistory.length > 0
-      ? this.decisionHistory.reduce((sum, d) => sum + d.confidence, 0) / this.decisionHistory.length
-      : 0;
+    const averageConfidence =
+      this.decisionHistory.length > 0
+        ? this.decisionHistory.reduce((sum, d) => sum + d.confidence, 0) /
+          this.decisionHistory.length
+        : 0;
 
-    const averageExecutionTime = this.outcomeHistory.length > 0
-      ? this.outcomeHistory.reduce((sum, o) => sum + o.executionTime, 0) / this.outcomeHistory.length
-      : 0;
+    const averageExecutionTime =
+      this.outcomeHistory.length > 0
+        ? this.outcomeHistory.reduce((sum, o) => sum + o.executionTime, 0) /
+          this.outcomeHistory.length
+        : 0;
 
     return {
       totalDecisions,
@@ -1054,7 +1195,7 @@ export class AIDecisionEngine {
       failedDecisions,
       decisionsByType,
       averageConfidence,
-      averageExecutionTime
+      averageExecutionTime,
     };
   }
 

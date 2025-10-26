@@ -5,6 +5,7 @@ This document provides a comprehensive overview of the complete Finalization Sui
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+ and pnpm
 - Docker and Docker Compose
 - Git
@@ -12,6 +13,7 @@ This document provides a comprehensive overview of the complete Finalization Sui
 - Vercel CLI (for deployment)
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -54,6 +56,7 @@ whats-for-dinner/
 ### 1. CI/CD Pipeline (GitHub Actions)
 
 #### Main CI Pipeline (`.github/workflows/ci.yml`)
+
 - **Lint and TypeCheck**: ESLint, TypeScript, Prettier
 - **Unit Tests**: Jest with Codecov integration
 - **Integration Tests**: PostgreSQL service, Supabase DB push
@@ -65,6 +68,7 @@ whats-for-dinner/
 - **Build and Deploy**: Vercel and Supabase functions
 
 #### Security Audit (`.github/workflows/security-audit.yml`)
+
 - **Dependency Audit**: pnpm audit, Snyk vulnerability scanning
 - **Secrets Audit**: TruffleHog, GitLeaks secret detection
 - **RLS Audit**: Row Level Security policy validation
@@ -72,6 +76,7 @@ whats-for-dinner/
 - **Key Rotation**: Automated API key rotation
 
 #### Performance Monitoring (`.github/workflows/performance-monitoring.yml`)
+
 - **Lighthouse Audit**: Performance, accessibility, SEO, PWA
 - **Load Testing**: K6 load testing with 50 virtual users
 - **Stress Testing**: K6 stress testing with 1000 virtual users
@@ -81,10 +86,12 @@ whats-for-dinner/
 ### 2. Database Management (Supabase)
 
 #### Migration Scripts (`scripts/supabase/`)
+
 - **deploy.sh**: Branch-aware deployment with environment detection
 - **migrate.sh**: Migration management with validation and rollback
 
 #### Database Optimizations
+
 - **Performance Indexes** (`supabase/migrations/007_performance_indexes.sql`)
 - **Caching Policies** (`supabase/migrations/008_caching_policies.sql`)
 - **Admin Dashboard Schema** (`supabase/migrations/009_admin_dashboard_schema.sql`)
@@ -92,11 +99,13 @@ whats-for-dinner/
 ### 3. Security Framework
 
 #### Security Audit Scripts (`scripts/security/`)
+
 - **audit-rls.js**: Row Level Security policy validation
 - **audit-cors.js**: CORS configuration validation
 - **key-rotation.js**: Automated key rotation management
 
 #### Security Features
+
 - Automated vulnerability scanning
 - Secret detection and rotation
 - RLS policy validation
@@ -105,12 +114,14 @@ whats-for-dinner/
 ### 4. Performance Optimization
 
 #### CDN Configuration (`scripts/performance/cdn-setup.js`)
+
 - CloudFlare Worker configuration
 - Page rules for caching
 - Next.js CDN optimization
 - Vercel configuration
 
 #### Performance Testing
+
 - **Load Tests** (`tests/load/load-test.js`): K6 load testing
 - **Stress Tests** (`tests/load/stress-test.js`): K6 stress testing
 - **Concurrency Tests** (`tests/load/concurrency-test.js`): K6 concurrency testing
@@ -118,6 +129,7 @@ whats-for-dinner/
 ### 5. Testing Suite
 
 #### Test Configuration
+
 - **Jest**: Unit and integration testing
 - **Playwright**: E2E testing
 - **Detox**: Mobile E2E testing
@@ -126,6 +138,7 @@ whats-for-dinner/
 - **Axe**: Accessibility testing
 
 #### Test Files
+
 - Unit tests for all components
 - Integration tests for API endpoints
 - E2E tests for user workflows
@@ -135,11 +148,13 @@ whats-for-dinner/
 ### 6. Admin Dashboard
 
 #### Admin Scripts (`scripts/admin/`)
+
 - **dashboard-setup.js**: Dashboard configuration and setup
 - **role-management.js**: User role and permission management
 - **audit-log-reader.js**: Audit log analysis and reporting
 
 #### Admin Features
+
 - User analytics and management
 - System performance monitoring
 - Audit log analysis
@@ -148,12 +163,14 @@ whats-for-dinner/
 ### 7. AI Monitoring and Optimization
 
 #### AI Scripts (`scripts/ai/`)
+
 - **auto-prompt-tuning.js**: Automated prompt optimization
 - **anomaly-detection.js**: System and behavior anomaly detection
 - **regression-testing.js**: AI response regression testing
 - **cross-platform-parity.js**: Cross-platform feature consistency
 
 #### AI Features
+
 - Automated prompt optimization
 - Anomaly detection and alerting
 - Regression testing and validation
@@ -162,6 +179,7 @@ whats-for-dinner/
 ### 8. Documentation
 
 #### Developer Documentation (`docs/`)
+
 - **ONBOARDING.md**: Developer onboarding guide
 - **CHANGELOG.md**: Version history and changes
 - **API.md**: API documentation and examples
@@ -174,6 +192,7 @@ whats-for-dinner/
 ### Environment Setup
 
 #### Development
+
 ```bash
 # Start local development
 pnpm dev
@@ -186,6 +205,7 @@ pnpm lint
 ```
 
 #### Staging
+
 ```bash
 # Deploy to staging
 pnpm deploy:staging
@@ -195,6 +215,7 @@ pnpm test:staging
 ```
 
 #### Production
+
 ```bash
 # Deploy to production
 pnpm deploy:production
@@ -232,24 +253,28 @@ pnpm mobile:deploy
 ## 📊 Monitoring and Analytics
 
 ### Performance Monitoring
+
 - Real-time performance metrics
 - Automated alerting for threshold violations
 - Historical performance trends
 - Resource usage monitoring
 
 ### Security Monitoring
+
 - Automated security scans
 - Vulnerability detection
 - Access log analysis
 - Compliance reporting
 
 ### AI Monitoring
+
 - Prompt performance tracking
 - Anomaly detection and alerting
 - Regression testing results
 - Cross-platform parity validation
 
 ### User Analytics
+
 - User behavior tracking
 - Feature usage analytics
 - Performance impact analysis
@@ -258,6 +283,7 @@ pnpm mobile:deploy
 ## 🔒 Security
 
 ### Security Measures
+
 - Row Level Security (RLS) policies
 - CORS configuration validation
 - API key rotation
@@ -266,6 +292,7 @@ pnpm mobile:deploy
 - Access control and auditing
 
 ### Compliance
+
 - GDPR compliance
 - Data privacy protection
 - Security audit trails
@@ -274,6 +301,7 @@ pnpm mobile:deploy
 ## 📈 Performance
 
 ### Optimization Features
+
 - Database indexing
 - Caching policies
 - CDN configuration
@@ -282,6 +310,7 @@ pnpm mobile:deploy
 - Lazy loading
 
 ### Performance Monitoring
+
 - Real-time metrics
 - Automated testing
 - Performance budgets
@@ -290,6 +319,7 @@ pnpm mobile:deploy
 ## 🧪 Testing
 
 ### Test Coverage
+
 - Unit tests: 90%+ coverage
 - Integration tests: All API endpoints
 - E2E tests: Critical user flows
@@ -297,6 +327,7 @@ pnpm mobile:deploy
 - Accessibility tests: WCAG 2.1 AA compliance
 
 ### Test Automation
+
 - Automated test execution
 - Continuous integration
 - Performance regression detection
@@ -305,6 +336,7 @@ pnpm mobile:deploy
 ## 📚 Documentation
 
 ### Developer Resources
+
 - Comprehensive onboarding guide
 - API documentation with examples
 - Architecture overview
@@ -312,6 +344,7 @@ pnpm mobile:deploy
 - Deployment procedures
 
 ### User Resources
+
 - User guides and tutorials
 - FAQ and troubleshooting
 - Feature documentation
@@ -322,6 +355,7 @@ pnpm mobile:deploy
 ### Environment Variables
 
 #### Required
+
 ```bash
 SUPABASE_URL=your-supabase-url
 SUPABASE_ANON_KEY=your-supabase-anon-key
@@ -333,6 +367,7 @@ POSTHOG_API_KEY=your-posthog-api-key
 ```
 
 #### Optional
+
 ```bash
 VERBOSE=true
 NODE_ENV=production
@@ -340,6 +375,7 @@ LOG_LEVEL=info
 ```
 
 ### Configuration Files
+
 - `next.config.ts`: Next.js configuration
 - `tailwind.config.js`: Tailwind CSS configuration
 - `tsconfig.json`: TypeScript configuration
@@ -352,6 +388,7 @@ LOG_LEVEL=info
 ### Common Issues
 
 #### Database Connection Issues
+
 ```bash
 # Check Supabase connection
 pnpm supabase:status
@@ -364,6 +401,7 @@ pnpm supabase:migration:list
 ```
 
 #### Build Issues
+
 ```bash
 # Clear cache
 pnpm clean
@@ -377,6 +415,7 @@ pnpm type-check
 ```
 
 #### Test Failures
+
 ```bash
 # Run specific test
 pnpm test:unit -- --testNamePattern="specific test"
@@ -391,6 +430,7 @@ pnpm test:coverage
 ### Debug Mode
 
 #### Enable Debug Logging
+
 ```bash
 export DEBUG=*
 export VERBOSE=true
@@ -398,6 +438,7 @@ pnpm dev
 ```
 
 #### Check Logs
+
 ```bash
 # Application logs
 tail -f logs/app.log
@@ -412,12 +453,14 @@ tail -f logs/performance.log
 ## 📞 Support
 
 ### Getting Help
+
 - Check the documentation in the `docs/` directory
 - Review the troubleshooting section
 - Check GitHub issues
 - Contact the development team
 
 ### Reporting Issues
+
 - Use GitHub issues for bug reports
 - Include detailed reproduction steps
 - Attach relevant logs and screenshots
@@ -426,12 +469,14 @@ tail -f logs/performance.log
 ## 🔄 Maintenance
 
 ### Regular Tasks
+
 - Update dependencies monthly
 - Run security audits weekly
 - Monitor performance metrics daily
 - Review and update documentation
 
 ### Automated Tasks
+
 - Dependency updates
 - Security scans
 - Performance monitoring
@@ -441,6 +486,7 @@ tail -f logs/performance.log
 ## 📝 Changelog
 
 ### Version 1.0.0 - Initial Release
+
 - Complete CI/CD pipeline
 - Security audit framework
 - Performance optimization
@@ -450,6 +496,7 @@ tail -f logs/performance.log
 - Cross-platform support
 
 ### Future Releases
+
 - Advanced AI features
 - Enhanced monitoring
 - Additional integrations
@@ -463,6 +510,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## 🤝 Contributing
 
 ### Development Setup
+
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
@@ -470,12 +518,14 @@ This project is licensed under the MIT License. See the LICENSE file for details
 5. Submit a pull request
 
 ### Code Standards
+
 - Follow TypeScript best practices
 - Write comprehensive tests
 - Update documentation
 - Follow the established patterns
 
 ### Pull Request Process
+
 1. Ensure all tests pass
 2. Update documentation
 3. Add appropriate labels

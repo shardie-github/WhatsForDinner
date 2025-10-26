@@ -1,6 +1,6 @@
 /**
  * Monetization System
- * 
+ *
  * Implements comprehensive monetization with:
  * - Affiliate marketing integration (UberEats, DoorDash, etc.)
  * - Dynamic grocery deal advertisements
@@ -113,7 +113,11 @@ export interface ChefPartnership {
   chefName: string;
   specialty: string;
   cuisine: string;
-  partnershipType: 'content_licensing' | 'recipe_development' | 'brand_ambassador' | 'exclusive';
+  partnershipType:
+    | 'content_licensing'
+    | 'recipe_development'
+    | 'brand_ambassador'
+    | 'exclusive';
   revenueShare: number;
   content: ChefContent[];
   licensing: LicensingInfo;
@@ -170,7 +174,12 @@ export interface Subscription {
 
 export interface RevenueTransaction {
   id: string;
-  type: 'affiliate_commission' | 'subscription' | 'chef_partnership' | 'grocery_deal' | 'content_sale';
+  type:
+    | 'affiliate_commission'
+    | 'subscription'
+    | 'chef_partnership'
+    | 'grocery_deal'
+    | 'content_sale';
   amount: number;
   currency: string;
   partnerId?: string;
@@ -235,7 +244,11 @@ export class MonetizationSystem {
           id: 'basic',
           name: 'Basic',
           price: 9.99,
-          features: ['Unlimited recipes', 'Basic meal planning', 'Grocery lists'],
+          features: [
+            'Unlimited recipes',
+            'Basic meal planning',
+            'Grocery lists',
+          ],
           maxRecipes: 1000,
           maxUsers: 1,
           prioritySupport: false,
@@ -244,7 +257,12 @@ export class MonetizationSystem {
           id: 'premium',
           name: 'Premium',
           price: 19.99,
-          features: ['Everything in Basic', 'AI meal recommendations', 'Chef partnerships', 'Priority support'],
+          features: [
+            'Everything in Basic',
+            'AI meal recommendations',
+            'Chef partnerships',
+            'Priority support',
+          ],
           maxRecipes: 5000,
           maxUsers: 5,
           prioritySupport: true,
@@ -253,20 +271,25 @@ export class MonetizationSystem {
           id: 'enterprise',
           name: 'Enterprise',
           price: 49.99,
-          features: ['Everything in Premium', 'Custom integrations', 'White-label options', 'Dedicated support'],
+          features: [
+            'Everything in Premium',
+            'Custom integrations',
+            'White-label options',
+            'Dedicated support',
+          ],
           maxRecipes: -1,
           maxUsers: -1,
           prioritySupport: true,
         },
       ],
       commissionRates: {
-        'uber_eats': 0.05,
-        'doordash': 0.06,
-        'grubhub': 0.04,
-        'amazon_fresh': 0.03,
-        'instacart': 0.04,
-        'chef_partnership': 0.30,
-        'grocery_deal': 0.08,
+        uber_eats: 0.05,
+        doordash: 0.06,
+        grubhub: 0.04,
+        amazon_fresh: 0.03,
+        instacart: 0.04,
+        chef_partnership: 0.3,
+        grocery_deal: 0.08,
       },
       revenueGoals: {
         monthly: 10000,
@@ -294,7 +317,13 @@ export class MonetizationSystem {
         trackingId: 'UE_123456',
         active: true,
         lastSync: new Date().toISOString(),
-        supportedCuisines: ['mexican', 'italian', 'chinese', 'indian', 'american'],
+        supportedCuisines: [
+          'mexican',
+          'italian',
+          'chinese',
+          'indian',
+          'american',
+        ],
         deliveryAreas: ['US', 'CA', 'UK', 'AU'],
         averageDeliveryTime: 30,
         minimumOrder: 15,
@@ -312,7 +341,14 @@ export class MonetizationSystem {
         trackingId: 'DD_789012',
         active: true,
         lastSync: new Date().toISOString(),
-        supportedCuisines: ['mexican', 'italian', 'chinese', 'indian', 'american', 'thai'],
+        supportedCuisines: [
+          'mexican',
+          'italian',
+          'chinese',
+          'indian',
+          'american',
+          'thai',
+        ],
         deliveryAreas: ['US', 'CA'],
         averageDeliveryTime: 25,
         minimumOrder: 12,
@@ -351,7 +387,14 @@ export class MonetizationSystem {
         trackingId: 'IC_901234',
         active: true,
         lastSync: new Date().toISOString(),
-        supportedCategories: ['produce', 'meat', 'dairy', 'pantry', 'frozen', 'health'],
+        supportedCategories: [
+          'produce',
+          'meat',
+          'dairy',
+          'pantry',
+          'frozen',
+          'health',
+        ],
         storeLocations: ['US', 'CA'],
         onlineOrdering: true,
         pickupAvailable: true,
@@ -408,9 +451,9 @@ export class MonetizationSystem {
    * Generate affiliate link
    */
   async generateAffiliateLink(
-    partnerId: string, 
-    recipeId: string, 
-    userId: string, 
+    partnerId: string,
+    recipeId: string,
+    userId: string,
     originalUrl: string
   ): Promise<AffiliateLink> {
     const partner = this.affiliatePartners.get(partnerId);
@@ -436,9 +479,9 @@ export class MonetizationSystem {
 
     this.affiliateLinks.set(affiliateLink.id, affiliateLink);
 
-    logger.info('Affiliate link generated', { 
-      partnerId, 
-      recipeId, 
+    logger.info('Affiliate link generated', {
+      partnerId,
+      recipeId,
       userId,
       affiliateUrl: affiliateLink.affiliateUrl,
     });
@@ -459,8 +502,8 @@ export class MonetizationSystem {
     link.clickCount++;
     link.lastClicked = new Date().toISOString();
 
-    logger.info('Affiliate link clicked', { 
-      linkId, 
+    logger.info('Affiliate link clicked', {
+      linkId,
       clickCount: link.clickCount,
     });
   }
@@ -468,7 +511,10 @@ export class MonetizationSystem {
   /**
    * Track affiliate conversion
    */
-  async trackAffiliateConversion(linkId: string, orderValue: number): Promise<void> {
+  async trackAffiliateConversion(
+    linkId: string,
+    orderValue: number
+  ): Promise<void> {
     const link = this.affiliateLinks.get(linkId);
     if (!link) {
       logger.warn('Affiliate link not found', { linkId });
@@ -482,7 +528,7 @@ export class MonetizationSystem {
     }
 
     const commission = orderValue * partner.commissionRate;
-    
+
     link.conversionCount++;
     link.revenue += orderValue;
     link.commission += commission;
@@ -507,9 +553,9 @@ export class MonetizationSystem {
 
     this.revenueTransactions.push(transaction);
 
-    logger.info('Affiliate conversion tracked', { 
-      linkId, 
-      orderValue, 
+    logger.info('Affiliate conversion tracked', {
+      linkId,
+      orderValue,
       commission,
       partnerName: partner.name,
     });
@@ -518,7 +564,9 @@ export class MonetizationSystem {
   /**
    * Create grocery deal
    */
-  async createGroceryDeal(dealData: Omit<GroceryDeal, 'id' | 'createdAt' | 'status'>): Promise<GroceryDeal> {
+  async createGroceryDeal(
+    dealData: Omit<GroceryDeal, 'id' | 'createdAt' | 'status'>
+  ): Promise<GroceryDeal> {
     const deal: GroceryDeal = {
       ...dealData,
       id: `deal_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -528,7 +576,7 @@ export class MonetizationSystem {
 
     this.groceryDeals.set(deal.id, deal);
 
-    logger.info('Grocery deal created', { 
+    logger.info('Grocery deal created', {
       dealId: deal.id,
       title: deal.title,
       discount: deal.discount,
@@ -549,8 +597,8 @@ export class MonetizationSystem {
 
     deal.clickCount++;
 
-    logger.info('Grocery deal clicked', { 
-      dealId, 
+    logger.info('Grocery deal clicked', {
+      dealId,
       clickCount: deal.clickCount,
     });
   }
@@ -558,7 +606,10 @@ export class MonetizationSystem {
   /**
    * Track grocery deal conversion
    */
-  async trackGroceryDealConversion(dealId: string, orderValue: number): Promise<void> {
+  async trackGroceryDealConversion(
+    dealId: string,
+    orderValue: number
+  ): Promise<void> {
     const deal = this.groceryDeals.get(dealId);
     if (!deal) {
       logger.warn('Grocery deal not found', { dealId });
@@ -572,7 +623,7 @@ export class MonetizationSystem {
     }
 
     const commission = orderValue * partner.commissionRate;
-    
+
     deal.conversionCount++;
     deal.revenue += orderValue;
     deal.commission += commission;
@@ -597,9 +648,9 @@ export class MonetizationSystem {
 
     this.revenueTransactions.push(transaction);
 
-    logger.info('Grocery deal conversion tracked', { 
-      dealId, 
-      orderValue, 
+    logger.info('Grocery deal conversion tracked', {
+      dealId,
+      orderValue,
       commission,
     });
   }
@@ -607,7 +658,9 @@ export class MonetizationSystem {
   /**
    * Create chef partnership
    */
-  async createChefPartnership(partnershipData: Omit<ChefPartnership, 'id' | 'revenue' | 'active'>): Promise<ChefPartnership> {
+  async createChefPartnership(
+    partnershipData: Omit<ChefPartnership, 'id' | 'revenue' | 'active'>
+  ): Promise<ChefPartnership> {
     const partnership: ChefPartnership = {
       ...partnershipData,
       id: `chef_partnership_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -617,7 +670,7 @@ export class MonetizationSystem {
 
     this.chefPartnerships.set(partnership.id, partnership);
 
-    logger.info('Chef partnership created', { 
+    logger.info('Chef partnership created', {
       partnershipId: partnership.id,
       chefName: partnership.chefName,
       partnershipType: partnership.partnershipType,
@@ -629,7 +682,18 @@ export class MonetizationSystem {
   /**
    * Create chef content
    */
-  async createChefContent(contentData: Omit<ChefContent, 'id' | 'downloads' | 'views' | 'rating' | 'revenue' | 'createdAt' | 'status'>): Promise<ChefContent> {
+  async createChefContent(
+    contentData: Omit<
+      ChefContent,
+      | 'id'
+      | 'downloads'
+      | 'views'
+      | 'rating'
+      | 'revenue'
+      | 'createdAt'
+      | 'status'
+    >
+  ): Promise<ChefContent> {
     const content: ChefContent = {
       ...contentData,
       id: `chef_content_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -647,7 +711,7 @@ export class MonetizationSystem {
       partnership.content.push(content);
     }
 
-    logger.info('Chef content created', { 
+    logger.info('Chef content created', {
       contentId: content.id,
       chefId: content.chefId,
       type: content.type,
@@ -660,7 +724,11 @@ export class MonetizationSystem {
   /**
    * Track chef content purchase
    */
-  async trackChefContentPurchase(contentId: string, userId: string, price: number): Promise<void> {
+  async trackChefContentPurchase(
+    contentId: string,
+    userId: string,
+    price: number
+  ): Promise<void> {
     const content = this.findChefContent(contentId);
     if (!content) {
       logger.warn('Chef content not found', { contentId });
@@ -674,7 +742,7 @@ export class MonetizationSystem {
     }
 
     const revenueShare = price * partnership.revenueShare;
-    
+
     content.downloads++;
     content.revenue += price;
     partnership.revenue += revenueShare;
@@ -700,10 +768,10 @@ export class MonetizationSystem {
 
     this.revenueTransactions.push(transaction);
 
-    logger.info('Chef content purchase tracked', { 
-      contentId, 
-      userId, 
-      price, 
+    logger.info('Chef content purchase tracked', {
+      contentId,
+      userId,
+      price,
       revenueShare,
     });
   }
@@ -711,7 +779,9 @@ export class MonetizationSystem {
   /**
    * Create subscription
    */
-  async createSubscription(subscriptionData: Omit<Subscription, 'id' | 'lastPayment' | 'nextPayment'>): Promise<Subscription> {
+  async createSubscription(
+    subscriptionData: Omit<Subscription, 'id' | 'lastPayment' | 'nextPayment'>
+  ): Promise<Subscription> {
     const subscription: Subscription = {
       ...subscriptionData,
       id: `subscription_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -740,7 +810,7 @@ export class MonetizationSystem {
 
     this.revenueTransactions.push(transaction);
 
-    logger.info('Subscription created', { 
+    logger.info('Subscription created', {
       subscriptionId: subscription.id,
       userId: subscription.userId,
       tierId: subscription.tierId,
@@ -763,26 +833,36 @@ export class MonetizationSystem {
       .reduce((sum, t) => sum + t.amount, 0);
 
     const monthlyRevenue = this.revenueTransactions
-      .filter(t => t.status === 'completed' && new Date(t.timestamp) >= oneMonthAgo)
+      .filter(
+        t => t.status === 'completed' && new Date(t.timestamp) >= oneMonthAgo
+      )
       .reduce((sum, t) => sum + t.amount, 0);
 
     const yearlyRevenue = this.revenueTransactions
-      .filter(t => t.status === 'completed' && new Date(t.timestamp) >= oneYearAgo)
+      .filter(
+        t => t.status === 'completed' && new Date(t.timestamp) >= oneYearAgo
+      )
       .reduce((sum, t) => sum + t.amount, 0);
 
     const revenueBySource = this.revenueTransactions
       .filter(t => t.status === 'completed')
-      .reduce((acc, t) => {
-        acc[t.type] = (acc[t.type] || 0) + t.amount;
-        return acc;
-      }, {} as Record<string, number>);
+      .reduce(
+        (acc, t) => {
+          acc[t.type] = (acc[t.type] || 0) + t.amount;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
     const revenueByPartner = this.revenueTransactions
       .filter(t => t.status === 'completed' && t.partnerId)
-      .reduce((acc, t) => {
-        acc[t.partnerId!] = (acc[t.partnerId!] || 0) + t.amount;
-        return acc;
-      }, {} as Record<string, number>);
+      .reduce(
+        (acc, t) => {
+          acc[t.partnerId!] = (acc[t.partnerId!] || 0) + t.amount;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
     const topPerformingContent = Array.from(this.chefPartnerships.values())
       .flatMap(p => p.content)
@@ -820,14 +900,16 @@ export class MonetizationSystem {
     // Affiliate link conversion rates
     for (const link of this.affiliateLinks.values()) {
       if (link.clickCount > 0) {
-        rates[`affiliate_${link.partnerId}`] = link.conversionCount / link.clickCount;
+        rates[`affiliate_${link.partnerId}`] =
+          link.conversionCount / link.clickCount;
       }
     }
 
     // Grocery deal conversion rates
     for (const deal of this.groceryDeals.values()) {
       if (deal.clickCount > 0) {
-        rates[`grocery_${deal.partnerId}`] = deal.conversionCount / deal.clickCount;
+        rates[`grocery_${deal.partnerId}`] =
+          deal.conversionCount / deal.clickCount;
       }
     }
 
@@ -838,8 +920,8 @@ export class MonetizationSystem {
    * Calculate average order value
    */
   private calculateAverageOrderValue(): number {
-    const orders = this.revenueTransactions.filter(t => 
-      t.type === 'affiliate_commission' || t.type === 'grocery_deal'
+    const orders = this.revenueTransactions.filter(
+      t => t.type === 'affiliate_commission' || t.type === 'grocery_deal'
     );
 
     if (orders.length === 0) return 0;
@@ -858,28 +940,38 @@ export class MonetizationSystem {
   private calculateCustomerLifetimeValue(): number {
     const userRevenue = this.revenueTransactions
       .filter(t => t.status === 'completed')
-      .reduce((acc, t) => {
-        acc[t.userId] = (acc[t.userId] || 0) + t.amount;
-        return acc;
-      }, {} as Record<string, number>);
+      .reduce(
+        (acc, t) => {
+          acc[t.userId] = (acc[t.userId] || 0) + t.amount;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
     const values = Object.values(userRevenue);
-    return values.length > 0 ? values.reduce((sum, v) => sum + v, 0) / values.length : 0;
+    return values.length > 0
+      ? values.reduce((sum, v) => sum + v, 0) / values.length
+      : 0;
   }
 
   /**
    * Calculate churn rate
    */
   private calculateChurnRate(): number {
-    const activeSubscriptions = Array.from(this.subscriptions.values())
-      .filter(s => s.status === 'active');
+    const activeSubscriptions = Array.from(this.subscriptions.values()).filter(
+      s => s.status === 'active'
+    );
 
-    const cancelledSubscriptions = Array.from(this.subscriptions.values())
-      .filter(s => s.status === 'cancelled');
+    const cancelledSubscriptions = Array.from(
+      this.subscriptions.values()
+    ).filter(s => s.status === 'cancelled');
 
-    const totalSubscriptions = activeSubscriptions.length + cancelledSubscriptions.length;
-    
-    return totalSubscriptions > 0 ? cancelledSubscriptions.length / totalSubscriptions : 0;
+    const totalSubscriptions =
+      activeSubscriptions.length + cancelledSubscriptions.length;
+
+    return totalSubscriptions > 0
+      ? cancelledSubscriptions.length / totalSubscriptions
+      : 0;
   }
 
   /**
@@ -891,17 +983,24 @@ export class MonetizationSystem {
     const twoMonthsAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
     const currentMonthRevenue = this.revenueTransactions
-      .filter(t => t.status === 'completed' && new Date(t.timestamp) >= oneMonthAgo)
+      .filter(
+        t => t.status === 'completed' && new Date(t.timestamp) >= oneMonthAgo
+      )
       .reduce((sum, t) => sum + t.amount, 0);
 
     const previousMonthRevenue = this.revenueTransactions
-      .filter(t => t.status === 'completed' && 
-        new Date(t.timestamp) >= twoMonthsAgo && 
-        new Date(t.timestamp) < oneMonthAgo)
+      .filter(
+        t =>
+          t.status === 'completed' &&
+          new Date(t.timestamp) >= twoMonthsAgo &&
+          new Date(t.timestamp) < oneMonthAgo
+      )
       .reduce((sum, t) => sum + t.amount, 0);
 
-    return previousMonthRevenue > 0 ? 
-      ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100 : 0;
+    return previousMonthRevenue > 0
+      ? ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) *
+          100
+      : 0;
   }
 
   /**
@@ -926,7 +1025,7 @@ export class MonetizationSystem {
    */
   private async calculateRevenue(): Promise<void> {
     const analytics = await this.calculateRevenueAnalytics();
-    
+
     logger.info('Revenue calculated', {
       totalRevenue: analytics.totalRevenue,
       monthlyRevenue: analytics.monthlyRevenue,
@@ -937,7 +1036,10 @@ export class MonetizationSystem {
   /**
    * Build affiliate URL
    */
-  private buildAffiliateUrl(partner: AffiliatePartner, originalUrl: string): string {
+  private buildAffiliateUrl(
+    partner: AffiliatePartner,
+    originalUrl: string
+  ): string {
     const url = new URL(originalUrl);
     url.searchParams.set('affiliate_id', partner.trackingId);
     url.searchParams.set('source', 'whats_for_dinner');
@@ -960,7 +1062,7 @@ export class MonetizationSystem {
    */
   private calculateNextPayment(billingCycle: 'monthly' | 'yearly'): string {
     const nextPayment = new Date();
-    
+
     if (billingCycle === 'monthly') {
       nextPayment.setMonth(nextPayment.getMonth() + 1);
     } else {

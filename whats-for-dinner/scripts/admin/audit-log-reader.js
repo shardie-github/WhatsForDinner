@@ -14,7 +14,7 @@ const config = {
   supabaseUrl: process.env.SUPABASE_URL || 'http://localhost:54321',
   supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
   outputDir: path.join(__dirname, '../admin-dashboard'),
-  verbose: process.env.VERBOSE === 'true'
+  verbose: process.env.VERBOSE === 'true',
 };
 
 // Colors for console output
@@ -23,7 +23,7 @@ const colors = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 function log(message, color = 'reset') {
@@ -45,48 +45,50 @@ const supabase = createClient(config.supabaseUrl, config.supabaseServiceKey);
 async function getAuditLogs(filters = {}) {
   try {
     log('Fetching audit logs...', 'yellow');
-    
+
     let query = supabase
       .from('admin_audit_logs')
-      .select(`
+      .select(
+        `
         *,
         admin_users!inner(
           user_id,
           role,
           permissions
         )
-      `)
+      `
+      )
       .order('created_at', { ascending: false });
-    
+
     // Apply filters
     if (filters.userId) {
       query = query.eq('admin_user_id', filters.userId);
     }
-    
+
     if (filters.action) {
       query = query.eq('action', filters.action);
     }
-    
+
     if (filters.resource) {
       query = query.eq('resource', filters.resource);
     }
-    
+
     if (filters.startDate) {
       query = query.gte('created_at', filters.startDate);
     }
-    
+
     if (filters.endDate) {
       query = query.lte('created_at', filters.endDate);
     }
-    
+
     if (filters.limit) {
       query = query.limit(filters.limit);
     }
-    
+
     const { data, error } = await query;
-    
+
     if (error) throw error;
-    
+
     log(`Found ${data.length} audit log entries`, 'green');
     return data;
   } catch (error) {
@@ -101,37 +103,37 @@ async function getAuditLogs(filters = {}) {
 async function getSystemLogs(filters = {}) {
   try {
     log('Fetching system logs...', 'yellow');
-    
+
     let query = supabase
       .from('system_logs')
       .select('*')
       .order('created_at', { ascending: false });
-    
+
     // Apply filters
     if (filters.level) {
       query = query.eq('level', filters.level);
     }
-    
+
     if (filters.component) {
       query = query.eq('component', filters.component);
     }
-    
+
     if (filters.startDate) {
       query = query.gte('created_at', filters.startDate);
     }
-    
+
     if (filters.endDate) {
       query = query.lte('created_at', filters.endDate);
     }
-    
+
     if (filters.limit) {
       query = query.limit(filters.limit);
     }
-    
+
     const { data, error } = await query;
-    
+
     if (error) throw error;
-    
+
     log(`Found ${data.length} system log entries`, 'green');
     return data;
   } catch (error) {
@@ -150,70 +152,71 @@ function analyzeAuditLogs(auditLogs) {
     failedActions: [],
     permissionViolations: [],
     unusualPatterns: [],
-    summary: {}
+    summary: {},
   };
-  
+
   // Analyze each log entry
   auditLogs.forEach(log => {
     // Check for suspicious activities
     if (log.action === 'login' && log.details?.ip_address) {
       // Check for multiple failed logins
-      const failedLogins = auditLogs.filter(l => 
-        l.action === 'login' && 
-        l.details?.ip_address === log.details.ip_address &&
-        l.details?.success === false
+      const failedLogins = auditLogs.filter(
+        l =>
+          l.action === 'login' &&
+          l.details?.ip_address === log.details.ip_address &&
+          l.details?.success === false
       );
-      
+
       if (failedLogins.length > 5) {
         analysis.suspiciousActivities.push({
           type: 'multiple_failed_logins',
           ip: log.details.ip_address,
           count: failedLogins.length,
-          timestamp: log.created_at
+          timestamp: log.created_at,
         });
       }
     }
-    
+
     // Check for failed actions
     if (log.details?.success === false) {
       analysis.failedActions.push({
         action: log.action,
         resource: log.resource,
         error: log.details.error,
-        timestamp: log.created_at
+        timestamp: log.created_at,
       });
     }
-    
+
     // Check for permission violations
     if (log.details?.permission_denied) {
       analysis.permissionViolations.push({
         action: log.action,
         resource: log.resource,
         user: log.admin_users?.user_id,
-        timestamp: log.created_at
+        timestamp: log.created_at,
       });
     }
-    
+
     // Check for unusual patterns
     if (log.action === 'delete' && log.resource === 'admin_users') {
       analysis.unusualPatterns.push({
         type: 'admin_user_deletion',
         user: log.admin_users?.user_id,
         target: log.details?.target_user,
-        timestamp: log.created_at
+        timestamp: log.created_at,
       });
     }
   });
-  
+
   // Generate summary
   analysis.summary = {
     totalEntries: analysis.totalEntries,
     suspiciousActivities: analysis.suspiciousActivities.length,
     failedActions: analysis.failedActions.length,
     permissionViolations: analysis.permissionViolations.length,
-    unusualPatterns: analysis.unusualPatterns.length
+    unusualPatterns: analysis.unusualPatterns.length,
   };
-  
+
   return analysis;
 }
 
@@ -227,46 +230,50 @@ function generateAuditReport(auditLogs, systemLogs, analysis) {
     auditLogs: auditLogs.slice(0, 100), // Limit to first 100 entries
     systemLogs: systemLogs.slice(0, 100), // Limit to first 100 entries
     analysis: analysis,
-    recommendations: []
+    recommendations: [],
   };
-  
+
   // Generate recommendations based on analysis
   if (analysis.suspiciousActivities.length > 0) {
     report.recommendations.push({
       type: 'security',
       priority: 'high',
-      message: 'Multiple suspicious activities detected. Review IP addresses and user behavior.',
-      count: analysis.suspiciousActivities.length
+      message:
+        'Multiple suspicious activities detected. Review IP addresses and user behavior.',
+      count: analysis.suspiciousActivities.length,
     });
   }
-  
+
   if (analysis.failedActions.length > 10) {
     report.recommendations.push({
       type: 'reliability',
       priority: 'medium',
-      message: 'High number of failed actions. Check system health and user permissions.',
-      count: analysis.failedActions.length
+      message:
+        'High number of failed actions. Check system health and user permissions.',
+      count: analysis.failedActions.length,
     });
   }
-  
+
   if (analysis.permissionViolations.length > 0) {
     report.recommendations.push({
       type: 'security',
       priority: 'high',
-      message: 'Permission violations detected. Review user roles and access controls.',
-      count: analysis.permissionViolations.length
+      message:
+        'Permission violations detected. Review user roles and access controls.',
+      count: analysis.permissionViolations.length,
     });
   }
-  
+
   if (analysis.unusualPatterns.length > 0) {
     report.recommendations.push({
       type: 'security',
       priority: 'high',
-      message: 'Unusual patterns detected. Review admin user management activities.',
-      count: analysis.unusualPatterns.length
+      message:
+        'Unusual patterns detected. Review admin user management activities.',
+      count: analysis.unusualPatterns.length,
     });
   }
-  
+
   return report;
 }
 
@@ -527,33 +534,49 @@ function generateAuditHTMLReport(auditLogs, systemLogs, analysis) {
         <!-- Security Recommendations -->
         <div class="section">
             <h2>Security Recommendations</h2>
-            ${analysis.suspiciousActivities.length > 0 ? `
+            ${
+              analysis.suspiciousActivities.length > 0
+                ? `
                 <div class="alert alert-high">
                     <strong>High Priority:</strong> ${analysis.suspiciousActivities.length} suspicious activities detected. 
                     Review IP addresses and user behavior patterns.
                 </div>
-            ` : ''}
+            `
+                : ''
+            }
             
-            ${analysis.permissionViolations.length > 0 ? `
+            ${
+              analysis.permissionViolations.length > 0
+                ? `
                 <div class="alert alert-high">
                     <strong>High Priority:</strong> ${analysis.permissionViolations.length} permission violations detected. 
                     Review user roles and access controls.
                 </div>
-            ` : ''}
+            `
+                : ''
+            }
             
-            ${analysis.failedActions.length > 10 ? `
+            ${
+              analysis.failedActions.length > 10
+                ? `
                 <div class="alert alert-medium">
                     <strong>Medium Priority:</strong> ${analysis.failedActions.length} failed actions detected. 
                     Check system health and user permissions.
                 </div>
-            ` : ''}
+            `
+                : ''
+            }
             
-            ${analysis.unusualPatterns.length > 0 ? `
+            ${
+              analysis.unusualPatterns.length > 0
+                ? `
                 <div class="alert alert-high">
                     <strong>High Priority:</strong> ${analysis.unusualPatterns.length} unusual patterns detected. 
                     Review admin user management activities.
                 </div>
-            ` : ''}
+            `
+                : ''
+            }
         </div>
         
         <!-- Audit Logs Table -->
@@ -571,7 +594,10 @@ function generateAuditHTMLReport(auditLogs, systemLogs, analysis) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${auditLogs.slice(0, 50).map(log => `
+                    ${auditLogs
+                      .slice(0, 50)
+                      .map(
+                        log => `
                         <tr>
                             <td>${new Date(log.created_at).toLocaleString()}</td>
                             <td>${log.admin_users?.user_id || 'N/A'}</td>
@@ -584,7 +610,9 @@ function generateAuditHTMLReport(auditLogs, systemLogs, analysis) {
                             </td>
                             <td>${log.details ? JSON.stringify(log.details).substring(0, 100) + '...' : 'N/A'}</td>
                         </tr>
-                    `).join('')}
+                    `
+                      )
+                      .join('')}
                 </tbody>
             </table>
         </div>
@@ -603,13 +631,19 @@ function generateAuditHTMLReport(auditLogs, systemLogs, analysis) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${systemLogs.slice(0, 50).map(log => `
+                    ${systemLogs
+                      .slice(0, 50)
+                      .map(
+                        log => `
                         <tr>
                             <td>${new Date(log.created_at).toLocaleString()}</td>
                             <td>
                                 <span class="status-badge ${
-                                    log.level === 'error' ? 'status-error' : 
-                                    log.level === 'warning' ? 'status-warning' : 'status-success'
+                                  log.level === 'error'
+                                    ? 'status-error'
+                                    : log.level === 'warning'
+                                      ? 'status-warning'
+                                      : 'status-success'
                                 }">
                                     ${log.level.toUpperCase()}
                                 </span>
@@ -618,7 +652,9 @@ function generateAuditHTMLReport(auditLogs, systemLogs, analysis) {
                             <td>${log.message}</td>
                             <td>${log.details ? JSON.stringify(log.details).substring(0, 100) + '...' : 'N/A'}</td>
                         </tr>
-                    `).join('')}
+                    `
+                      )
+                      .join('')}
                 </tbody>
             </table>
         </div>
@@ -896,42 +932,50 @@ function analyzeAuditLogs(auditLogs) {
 async function setupAuditLogReader() {
   try {
     log('Setting up audit log reader...', 'blue');
-    
+
     // Ensure output directory exists
     if (!fs.existsSync(config.outputDir)) {
       fs.mkdirSync(config.outputDir, { recursive: true });
     }
-    
+
     // Get audit logs and system logs
     const auditLogs = await getAuditLogs({ limit: 1000 });
     const systemLogs = await getSystemLogs({ limit: 1000 });
-    
+
     // Analyze logs
     const analysis = analyzeAuditLogs(auditLogs);
-    
+
     // Generate HTML report
     const htmlReport = generateAuditHTMLReport(auditLogs, systemLogs, analysis);
-    fs.writeFileSync(path.join(config.outputDir, 'audit-report.html'), htmlReport);
+    fs.writeFileSync(
+      path.join(config.outputDir, 'audit-report.html'),
+      htmlReport
+    );
     log('Generated audit log HTML report', 'green');
-    
+
     // Generate JSON report
     const jsonReport = generateAuditReport(auditLogs, systemLogs, analysis);
-    fs.writeFileSync(path.join(config.outputDir, 'audit-report.json'), JSON.stringify(jsonReport, null, 2));
+    fs.writeFileSync(
+      path.join(config.outputDir, 'audit-report.json'),
+      JSON.stringify(jsonReport, null, 2)
+    );
     log('Generated audit log JSON report', 'green');
-    
+
     // Generate API endpoints
     const auditAPI = generateAuditLogAPI();
     fs.writeFileSync(path.join(config.outputDir, 'audit-log-api.js'), auditAPI);
     log('Generated audit log API endpoints', 'green');
-    
+
     // Generate README
     const readme = generateAuditLogReadme();
-    fs.writeFileSync(path.join(config.outputDir, 'AUDIT_LOG_README.md'), readme);
+    fs.writeFileSync(
+      path.join(config.outputDir, 'AUDIT_LOG_README.md'),
+      readme
+    );
     log('Generated audit log README', 'green');
-    
+
     log('Audit log reader setup completed successfully!', 'green');
     log(`Output directory: ${config.outputDir}`, 'blue');
-    
   } catch (error) {
     log(`Error setting up audit log reader: ${error.message}`, 'red');
     throw error;
@@ -1185,10 +1229,10 @@ if (require.main === module) {
     });
 }
 
-module.exports = { 
+module.exports = {
   setupAuditLogReader,
   getAuditLogs,
   getSystemLogs,
   analyzeAuditLogs,
-  generateAuditReport
+  generateAuditReport,
 };

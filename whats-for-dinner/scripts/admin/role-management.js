@@ -14,7 +14,7 @@ const config = {
   supabaseUrl: process.env.SUPABASE_URL || 'http://localhost:54321',
   supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
   outputDir: path.join(__dirname, '../admin-dashboard'),
-  verbose: process.env.VERBOSE === 'true'
+  verbose: process.env.VERBOSE === 'true',
 };
 
 // Colors for console output
@@ -23,7 +23,7 @@ const colors = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 function log(message, color = 'reset') {
@@ -54,8 +54,8 @@ const ADMIN_ROLES = {
       ingredients: { read: true, write: true, delete: true },
       analytics: { read: true, write: true },
       system: { read: true, write: true, delete: true },
-      admin: { read: true, write: true, delete: true }
-    }
+      admin: { read: true, write: true, delete: true },
+    },
   },
   admin: {
     name: 'Admin',
@@ -68,8 +68,8 @@ const ADMIN_ROLES = {
       ingredients: { read: true, write: true, delete: true },
       analytics: { read: true, write: false },
       system: { read: true, write: false, delete: false },
-      admin: { read: true, write: false, delete: false }
-    }
+      admin: { read: true, write: false, delete: false },
+    },
   },
   moderator: {
     name: 'Moderator',
@@ -82,8 +82,8 @@ const ADMIN_ROLES = {
       ingredients: { read: true, write: true, delete: false },
       analytics: { read: true, write: false },
       system: { read: false, write: false, delete: false },
-      admin: { read: false, write: false, delete: false }
-    }
+      admin: { read: false, write: false, delete: false },
+    },
   },
   analyst: {
     name: 'Analyst',
@@ -96,9 +96,9 @@ const ADMIN_ROLES = {
       ingredients: { read: true, write: false, delete: false },
       analytics: { read: true, write: false },
       system: { read: false, write: false, delete: false },
-      admin: { read: false, write: false, delete: false }
-    }
-  }
+      admin: { read: false, write: false, delete: false },
+    },
+  },
 };
 
 /**
@@ -107,34 +107,38 @@ const ADMIN_ROLES = {
 async function createAdminUser(userId, role, customPermissions = {}) {
   try {
     log(`Creating admin user with role: ${role}`, 'yellow');
-    
+
     // Validate role
     if (!ADMIN_ROLES[role]) {
-      throw new Error(`Invalid role: ${role}. Available roles: ${Object.keys(ADMIN_ROLES).join(', ')}`);
+      throw new Error(
+        `Invalid role: ${role}. Available roles: ${Object.keys(ADMIN_ROLES).join(', ')}`
+      );
     }
-    
+
     // Get role permissions
     const rolePermissions = ADMIN_ROLES[role].permissions;
-    
+
     // Merge with custom permissions if provided
-    const finalPermissions = customPermissions.all ? customPermissions : {
-      ...rolePermissions,
-      ...customPermissions
-    };
-    
+    const finalPermissions = customPermissions.all
+      ? customPermissions
+      : {
+          ...rolePermissions,
+          ...customPermissions,
+        };
+
     const { data, error } = await supabase
       .from('admin_users')
       .insert({
         user_id: userId,
         role: role,
         permissions: finalPermissions,
-        is_active: true
+        is_active: true,
       })
       .select()
       .single();
 
     if (error) throw error;
-    
+
     log(`Admin user created successfully: ${data.id}`, 'green');
     return data;
   } catch (error) {
@@ -149,34 +153,38 @@ async function createAdminUser(userId, role, customPermissions = {}) {
 async function updateAdminUserRole(userId, newRole, customPermissions = {}) {
   try {
     log(`Updating admin user role: ${userId} -> ${newRole}`, 'yellow');
-    
+
     // Validate role
     if (!ADMIN_ROLES[newRole]) {
-      throw new Error(`Invalid role: ${newRole}. Available roles: ${Object.keys(ADMIN_ROLES).join(', ')}`);
+      throw new Error(
+        `Invalid role: ${newRole}. Available roles: ${Object.keys(ADMIN_ROLES).join(', ')}`
+      );
     }
-    
+
     // Get role permissions
     const rolePermissions = ADMIN_ROLES[newRole].permissions;
-    
+
     // Merge with custom permissions if provided
-    const finalPermissions = customPermissions.all ? customPermissions : {
-      ...rolePermissions,
-      ...customPermissions
-    };
-    
+    const finalPermissions = customPermissions.all
+      ? customPermissions
+      : {
+          ...rolePermissions,
+          ...customPermissions,
+        };
+
     const { data, error } = await supabase
       .from('admin_users')
       .update({
         role: newRole,
         permissions: finalPermissions,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('user_id', userId)
       .select()
       .single();
 
     if (error) throw error;
-    
+
     log(`Admin user role updated successfully`, 'green');
     return data;
   } catch (error) {
@@ -191,19 +199,19 @@ async function updateAdminUserRole(userId, newRole, customPermissions = {}) {
 async function deactivateAdminUser(userId) {
   try {
     log(`Deactivating admin user: ${userId}`, 'yellow');
-    
+
     const { data, error } = await supabase
       .from('admin_users')
       .update({
         is_active: false,
-        deactivated_at: new Date().toISOString()
+        deactivated_at: new Date().toISOString(),
       })
       .eq('user_id', userId)
       .select()
       .single();
 
     if (error) throw error;
-    
+
     log(`Admin user deactivated successfully`, 'green');
     return data;
   } catch (error) {
@@ -218,7 +226,7 @@ async function deactivateAdminUser(userId) {
 async function getAdminUser(userId) {
   try {
     log(`Fetching admin user: ${userId}`, 'yellow');
-    
+
     const { data, error } = await supabase
       .from('admin_users')
       .select('*')
@@ -226,7 +234,7 @@ async function getAdminUser(userId) {
       .single();
 
     if (error) throw error;
-    
+
     log(`Admin user fetched successfully`, 'green');
     return data;
   } catch (error) {
@@ -241,14 +249,14 @@ async function getAdminUser(userId) {
 async function listAdminUsers() {
   try {
     log('Fetching all admin users...', 'yellow');
-    
+
     const { data, error } = await supabase
       .from('admin_users')
       .select('*')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    
+
     log(`Found ${data.length} admin users`, 'green');
     return data;
   } catch (error) {
@@ -262,36 +270,42 @@ async function listAdminUsers() {
  */
 async function checkUserPermissions(userId, resource, action) {
   try {
-    log(`Checking permissions for user ${userId}: ${resource}.${action}`, 'yellow');
-    
+    log(
+      `Checking permissions for user ${userId}: ${resource}.${action}`,
+      'yellow'
+    );
+
     const adminUser = await getAdminUser(userId);
-    
+
     if (!adminUser) {
       log('User is not an admin', 'red');
       return false;
     }
-    
+
     if (!adminUser.is_active) {
       log('Admin user is not active', 'red');
       return false;
     }
-    
+
     // Check if user has all permissions
     if (adminUser.permissions.all) {
       log('User has all permissions', 'green');
       return true;
     }
-    
+
     // Check specific resource permission
     const resourcePermissions = adminUser.permissions[resource];
     if (!resourcePermissions) {
       log(`No permissions for resource: ${resource}`, 'red');
       return false;
     }
-    
+
     const hasPermission = resourcePermissions[action];
-    log(`Permission ${resource}.${action}: ${hasPermission ? 'GRANTED' : 'DENIED'}`, hasPermission ? 'green' : 'red');
-    
+    log(
+      `Permission ${resource}.${action}: ${hasPermission ? 'GRANTED' : 'DENIED'}`,
+      hasPermission ? 'green' : 'red'
+    );
+
     return hasPermission;
   } catch (error) {
     log(`Error checking permissions: ${error.message}`, 'red');
@@ -580,7 +594,9 @@ function generateRoleManagementHTML(adminUsers = []) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${adminUsers.map(user => `
+                    ${adminUsers
+                      .map(
+                        user => `
                         <tr>
                             <td>${user.user_id}</td>
                             <td><span class="role-badge">${user.role}</span></td>
@@ -592,7 +608,9 @@ function generateRoleManagementHTML(adminUsers = []) {
                             <td>${new Date(user.created_at).toLocaleDateString()}</td>
                             <td>${user.last_active_at ? new Date(user.last_active_at).toLocaleDateString() : 'Never'}</td>
                         </tr>
-                    `).join('')}
+                    `
+                      )
+                      .join('')}
                 </tbody>
             </table>
         </div>
@@ -1022,7 +1040,7 @@ export async function POST(request) {
     if (!resourcePermissions) {
       return Response.json({ 
         success: false, 
-        error: \`No permissions for resource: \${resource}` 
+        error: 'No permissions for resource: ' + resource
       }, { status: 403 });
     }
     
@@ -1046,38 +1064,49 @@ export async function POST(request) {
 async function setupRoleManagement() {
   try {
     log('Setting up role management...', 'blue');
-    
+
     // Ensure output directory exists
     if (!fs.existsSync(config.outputDir)) {
       fs.mkdirSync(config.outputDir, { recursive: true });
     }
-    
+
     // List existing admin users
     const adminUsers = await listAdminUsers();
-    
+
     // Generate HTML interface
     const htmlInterface = generateRoleManagementHTML(adminUsers);
-    fs.writeFileSync(path.join(config.outputDir, 'role-management.html'), htmlInterface);
+    fs.writeFileSync(
+      path.join(config.outputDir, 'role-management.html'),
+      htmlInterface
+    );
     log('Generated role management HTML interface', 'green');
-    
+
     // Generate API endpoints
     const roleAPI = generateRoleManagementAPI();
-    fs.writeFileSync(path.join(config.outputDir, 'role-management-api.js'), roleAPI);
+    fs.writeFileSync(
+      path.join(config.outputDir, 'role-management-api.js'),
+      roleAPI
+    );
     log('Generated role management API endpoints', 'green');
-    
+
     // Generate permission checker API
     const permissionAPI = generatePermissionCheckerAPI();
-    fs.writeFileSync(path.join(config.outputDir, 'permission-checker-api.js'), permissionAPI);
+    fs.writeFileSync(
+      path.join(config.outputDir, 'permission-checker-api.js'),
+      permissionAPI
+    );
     log('Generated permission checker API', 'green');
-    
+
     // Generate README
     const readme = generateRoleManagementReadme();
-    fs.writeFileSync(path.join(config.outputDir, 'ROLE_MANAGEMENT_README.md'), readme);
+    fs.writeFileSync(
+      path.join(config.outputDir, 'ROLE_MANAGEMENT_README.md'),
+      readme
+    );
     log('Generated role management README', 'green');
-    
+
     log('Role management setup completed successfully!', 'green');
     log(`Output directory: ${config.outputDir}`, 'blue');
-    
   } catch (error) {
     log(`Error setting up role management: ${error.message}`, 'red');
     throw error;
@@ -1326,12 +1355,12 @@ if (require.main === module) {
     });
 }
 
-module.exports = { 
+module.exports = {
   setupRoleManagement,
   createAdminUser,
   updateAdminUserRole,
   deactivateAdminUser,
   getAdminUser,
   listAdminUsers,
-  checkUserPermissions
+  checkUserPermissions,
 };

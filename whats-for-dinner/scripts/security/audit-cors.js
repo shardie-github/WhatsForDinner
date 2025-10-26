@@ -16,7 +16,7 @@ const config = {
   supabaseUrl: process.env.SUPABASE_URL || 'http://localhost:54321',
   outputDir: path.join(__dirname, '../security-audit'),
   verbose: process.env.VERBOSE === 'true',
-  timeout: 5000
+  timeout: 5000,
 };
 
 // Colors for console output
@@ -25,7 +25,7 @@ const colors = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 function log(message, color = 'reset') {
@@ -42,26 +42,30 @@ function logVerbose(message) {
  * Test CORS configuration for a given URL
  */
 async function testCORS(url, method = 'GET') {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const options = {
       method: 'OPTIONS',
       headers: {
-        'Origin': 'https://malicious-site.com',
+        Origin: 'https://malicious-site.com',
         'Access-Control-Request-Method': method,
-        'Access-Control-Request-Headers': 'Content-Type,Authorization'
+        'Access-Control-Request-Headers': 'Content-Type,Authorization',
       },
-      timeout: config.timeout
+      timeout: config.timeout,
     };
 
     const protocol = url.startsWith('https') ? https : http;
-    
-    const req = protocol.request(url, options, (res) => {
+
+    const req = protocol.request(url, options, res => {
       const corsHeaders = {
-        'Access-Control-Allow-Origin': res.headers['access-control-allow-origin'],
-        'Access-Control-Allow-Methods': res.headers['access-control-allow-methods'],
-        'Access-Control-Allow-Headers': res.headers['access-control-allow-headers'],
-        'Access-Control-Allow-Credentials': res.headers['access-control-allow-credentials'],
-        'Access-Control-Max-Age': res.headers['access-control-max-age']
+        'Access-Control-Allow-Origin':
+          res.headers['access-control-allow-origin'],
+        'Access-Control-Allow-Methods':
+          res.headers['access-control-allow-methods'],
+        'Access-Control-Allow-Headers':
+          res.headers['access-control-allow-headers'],
+        'Access-Control-Allow-Credentials':
+          res.headers['access-control-allow-credentials'],
+        'Access-Control-Max-Age': res.headers['access-control-max-age'],
       };
 
       resolve({
@@ -69,17 +73,17 @@ async function testCORS(url, method = 'GET') {
         method,
         statusCode: res.statusCode,
         corsHeaders,
-        issues: validateCORSHeaders(corsHeaders)
+        issues: validateCORSHeaders(corsHeaders),
       });
     });
 
-    req.on('error', (error) => {
+    req.on('error', error => {
       resolve({
         url,
         method,
         statusCode: 0,
         corsHeaders: {},
-        issues: [`Connection error: ${error.message}`]
+        issues: [`Connection error: ${error.message}`],
       });
     });
 
@@ -90,7 +94,7 @@ async function testCORS(url, method = 'GET') {
         method,
         statusCode: 0,
         corsHeaders: {},
-        issues: ['Request timeout']
+        issues: ['Request timeout'],
       });
     });
 
@@ -110,8 +114,10 @@ function validateCORSHeaders(headers) {
   }
 
   // Check for wildcard with credentials
-  if (headers['Access-Control-Allow-Origin'] === '*' && 
-      headers['Access-Control-Allow-Credentials'] === 'true') {
+  if (
+    headers['Access-Control-Allow-Origin'] === '*' &&
+    headers['Access-Control-Allow-Credentials'] === 'true'
+  ) {
     issues.push('Wildcard origin with credentials is not allowed by browsers');
   }
 
@@ -121,8 +127,10 @@ function validateCORSHeaders(headers) {
   }
 
   // Check for overly permissive methods
-  if (headers['Access-Control-Allow-Methods'] && 
-      headers['Access-Control-Allow-Methods'].includes('*')) {
+  if (
+    headers['Access-Control-Allow-Methods'] &&
+    headers['Access-Control-Allow-Methods'].includes('*')
+  ) {
     issues.push('Wildcard methods (*) allows any HTTP method');
   }
 
@@ -132,8 +140,10 @@ function validateCORSHeaders(headers) {
   }
 
   // Check for overly permissive headers
-  if (headers['Access-Control-Allow-Headers'] && 
-      headers['Access-Control-Allow-Headers'].includes('*')) {
+  if (
+    headers['Access-Control-Allow-Headers'] &&
+    headers['Access-Control-Allow-Headers'].includes('*')
+  ) {
     issues.push('Wildcard headers (*) allows any request header');
   }
 
@@ -160,12 +170,12 @@ async function testSupabaseFunctions() {
   for (const func of functions) {
     const url = `${config.supabaseUrl}/functions/v1/${func}`;
     logVerbose(`Testing Supabase function: ${func}`);
-    
+
     const result = await testCORS(url, 'POST');
     results.push({
       ...result,
       type: 'supabase-function',
-      function: func
+      function: func,
     });
   }
 
@@ -181,20 +191,20 @@ async function testAPIRoutes() {
     '/api/meals',
     '/api/ingredients',
     '/api/recipes',
-    '/api/analytics'
+    '/api/analytics',
   ];
-  
+
   const results = [];
 
   for (const route of routes) {
     const url = `${config.baseUrl}${route}`;
     logVerbose(`Testing API route: ${route}`);
-    
+
     const result = await testCORS(url, 'GET');
     results.push({
       ...result,
       type: 'api-route',
-      route: route
+      route: route,
     });
   }
 
@@ -208,20 +218,20 @@ async function testStaticAssets() {
   const assets = [
     '/_next/static/chunks/main.js',
     '/_next/static/css/main.css',
-    '/favicon.ico'
+    '/favicon.ico',
   ];
-  
+
   const results = [];
 
   for (const asset of assets) {
     const url = `${config.baseUrl}${asset}`;
     logVerbose(`Testing static asset: ${asset}`);
-    
+
     const result = await testCORS(url, 'GET');
     results.push({
       ...result,
       type: 'static-asset',
-      asset: asset
+      asset: asset,
     });
   }
 
@@ -235,19 +245,19 @@ async function testExternalDomains() {
   const domains = [
     'https://api.openai.com',
     'https://api.stripe.com',
-    'https://api.posthog.com'
+    'https://api.posthog.com',
   ];
-  
+
   const results = [];
 
   for (const domain of domains) {
     logVerbose(`Testing external domain: ${domain}`);
-    
+
     const result = await testCORS(domain, 'GET');
     results.push({
       ...result,
       type: 'external-domain',
-      domain: domain
+      domain: domain,
     });
   }
 
@@ -261,11 +271,12 @@ function generateReport(results) {
   const totalTests = results.length;
   const failedTests = results.filter(r => r.statusCode === 0).length;
   const testsWithIssues = results.filter(r => r.issues.length > 0).length;
-  const criticalIssues = results.filter(r => 
-    r.issues.some(issue => 
-      issue.includes('Wildcard') || 
-      issue.includes('credentials') ||
-      issue.includes('any domain')
+  const criticalIssues = results.filter(r =>
+    r.issues.some(
+      issue =>
+        issue.includes('Wildcard') ||
+        issue.includes('credentials') ||
+        issue.includes('any domain')
     )
   ).length;
 
@@ -276,9 +287,10 @@ function generateReport(results) {
       failedTests,
       testsWithIssues,
       criticalIssues,
-      successRate: ((totalTests - failedTests) / totalTests * 100).toFixed(2) + '%'
+      successRate:
+        (((totalTests - failedTests) / totalTests) * 100).toFixed(2) + '%',
     },
-    results: results
+    results: results,
   };
 
   return report;
@@ -289,7 +301,7 @@ function generateReport(results) {
  */
 async function auditCORS() {
   log('Starting CORS audit...', 'blue');
-  
+
   // Ensure output directory exists
   if (!fs.existsSync(config.outputDir)) {
     fs.mkdirSync(config.outputDir, { recursive: true });
@@ -319,7 +331,7 @@ async function auditCORS() {
 
   // Generate report
   const report = generateReport(results);
-  
+
   // Save report
   const reportFile = path.join(config.outputDir, 'cors-results.json');
   fs.writeFileSync(reportFile, JSON.stringify(report, null, 2));
@@ -333,11 +345,12 @@ async function auditCORS() {
   log(`Success rate: ${report.summary.successRate}`, 'green');
 
   // Print critical issues
-  const criticalResults = results.filter(r => 
-    r.issues.some(issue => 
-      issue.includes('Wildcard') || 
-      issue.includes('credentials') ||
-      issue.includes('any domain')
+  const criticalResults = results.filter(r =>
+    r.issues.some(
+      issue =>
+        issue.includes('Wildcard') ||
+        issue.includes('credentials') ||
+        issue.includes('any domain')
     )
   );
 

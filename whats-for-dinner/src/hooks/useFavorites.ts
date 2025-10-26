@@ -36,7 +36,7 @@ export function useFavorites() {
 
       return (data || []).map(fav => ({
         id: fav.id,
-        recipe: fav.recipes as any as Recipe,
+        recipe: fav.recipes as Recipe,
       }));
     },
     enabled: !!tenant,

@@ -52,7 +52,7 @@ jobs:
     needs: lint-and-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -97,7 +97,7 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -113,7 +113,7 @@ jobs:
           curl -X GET "${{ secrets.SUPABASE_URL }}/functions/v1/api/pantry" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Content-Type: application/json" || echo "API test failed (expected for unauthenticated request)"
-          
+
           # Test job processor
           curl -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/job-processor" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     needs: [deploy, test-deployment]
-    
+
     steps:
       - name: Cleanup old jobs
         run: |

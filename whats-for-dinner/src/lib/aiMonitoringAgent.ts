@@ -1,6 +1,6 @@
 /**
  * AI Monitoring Agent - Advanced Log Analysis and Self-Healing
- * 
+ *
  * Implements intelligent monitoring with:
  * - Real-time log analysis and pattern recognition
  * - Predictive failure detection using ML
@@ -69,7 +69,8 @@ export class AIMonitoringAgent {
     const patterns: LogPattern[] = [
       {
         id: 'database_connection_error',
-        pattern: /database connection.*failed|connection.*timeout|connection.*refused/i,
+        pattern:
+          /database connection.*failed|connection.*timeout|connection.*refused/i,
         severity: 'critical',
         category: 'error',
         description: 'Database connection issues detected',
@@ -154,7 +155,8 @@ export class AIMonitoringAgent {
       {
         id: 'restart_database_connection',
         name: 'Restart Database Connection Pool',
-        description: 'Restart database connection pool to resolve connection issues',
+        description:
+          'Restart database connection pool to resolve connection issues',
         confidence: 0.8,
         estimatedImpact: 'medium',
         executionTime: 5000,
@@ -279,10 +281,10 @@ export class AIMonitoringAgent {
     try {
       // Collect system metrics
       const metrics = await this.collectSystemMetrics();
-      
+
       // Analyze metrics for anomalies
       const anomalies = await this.detectAnomalies(metrics);
-      
+
       // Process each anomaly
       for (const anomaly of anomalies) {
         await this.processAnomaly(anomaly);
@@ -290,7 +292,6 @@ export class AIMonitoringAgent {
 
       // Update autonomous system with findings
       await this.updateAutonomousSystem(anomalies);
-
     } catch (error) {
       logger.error('Monitoring cycle failed', { error });
     }
@@ -300,12 +301,14 @@ export class AIMonitoringAgent {
    * Collect comprehensive system metrics
    */
   private async collectSystemMetrics(): Promise<Record<string, any>> {
-    const traceId = await observabilitySystem.startTrace('collect_system_metrics');
-    
+    const traceId = await observabilitySystem.startTrace(
+      'collect_system_metrics'
+    );
+
     try {
       const monitoringData = await monitoringSystem.getSystemHealth();
       const performanceData = await monitoringSystem.getPerformanceMetrics();
-      
+
       const metrics = {
         timestamp: new Date().toISOString(),
         errorRate: monitoringData.errorRate,
@@ -330,7 +333,9 @@ export class AIMonitoringAgent {
   /**
    * Detect anomalies in system metrics
    */
-  private async detectAnomalies(metrics: Record<string, any>): Promise<AnomalyDetection[]> {
+  private async detectAnomalies(
+    metrics: Record<string, any>
+  ): Promise<AnomalyDetection[]> {
     const anomalies: AnomalyDetection[] = [];
 
     // Check error rate
@@ -360,7 +365,8 @@ export class AIMonitoringAgent {
         metric: 'response_time',
         value: metrics.responseTime,
         baseline: this.alertThresholds.get('response_time')!,
-        deviation: metrics.responseTime - this.alertThresholds.get('response_time')!,
+        deviation:
+          metrics.responseTime - this.alertThresholds.get('response_time')!,
         confidence: 0.8,
         suggestedAction: 'Optimize database queries and implement caching',
         autoRemediation: true,
@@ -377,7 +383,8 @@ export class AIMonitoringAgent {
         metric: 'memory_usage',
         value: metrics.memoryUsage,
         baseline: this.alertThresholds.get('memory_usage')!,
-        deviation: metrics.memoryUsage - this.alertThresholds.get('memory_usage')!,
+        deviation:
+          metrics.memoryUsage - this.alertThresholds.get('memory_usage')!,
         confidence: 0.85,
         suggestedAction: 'Clear memory cache and investigate memory leaks',
         autoRemediation: true,
@@ -412,7 +419,7 @@ export class AIMonitoringAgent {
 
     // Store anomaly in history
     this.anomalyHistory.push(anomaly);
-    
+
     // Keep only last 1000 anomalies
     if (this.anomalyHistory.length > 1000) {
       this.anomalyHistory = this.anomalyHistory.slice(-1000);
@@ -451,7 +458,9 @@ export class AIMonitoringAgent {
   /**
    * Attempt automatic remediation
    */
-  private async attemptAutoRemediation(anomaly: AnomalyDetection): Promise<void> {
+  private async attemptAutoRemediation(
+    anomaly: AnomalyDetection
+  ): Promise<void> {
     try {
       const action = this.selectRemediationAction(anomaly);
       if (!action) {
@@ -477,7 +486,6 @@ export class AIMonitoringAgent {
         lastAction: action.name,
         successRate: 0.8, // This would be calculated based on historical success
       });
-
     } catch (error) {
       logger.error('Auto-remediation failed', { error, anomaly });
     }
@@ -486,9 +494,11 @@ export class AIMonitoringAgent {
   /**
    * Select appropriate remediation action
    */
-  private selectRemediationAction(anomaly: AnomalyDetection): SelfHealingAction | null {
+  private selectRemediationAction(
+    anomaly: AnomalyDetection
+  ): SelfHealingAction | null {
     const actions = Array.from(this.selfHealingActions.values());
-    
+
     // Simple rule-based selection (in production, this would use ML)
     switch (anomaly.metric) {
       case 'error_rate':
@@ -507,7 +517,9 @@ export class AIMonitoringAgent {
   /**
    * Check if prerequisites are met for action
    */
-  private async checkPrerequisites(action: SelfHealingAction): Promise<boolean> {
+  private async checkPrerequisites(
+    action: SelfHealingAction
+  ): Promise<boolean> {
     // Simplified prerequisite checking
     // In production, this would check actual system state
     return true;
@@ -516,14 +528,17 @@ export class AIMonitoringAgent {
   /**
    * Execute remediation action
    */
-  private async executeRemediationAction(action: SelfHealingAction, anomaly: AnomalyDetection): Promise<void> {
+  private async executeRemediationAction(
+    action: SelfHealingAction,
+    anomaly: AnomalyDetection
+  ): Promise<void> {
     logger.info('Executing remediation action', { action, anomaly });
 
     // Simulate action execution
     await new Promise(resolve => setTimeout(resolve, action.executionTime));
 
     // Log the action
-    logger.info('Remediation action completed', { 
+    logger.info('Remediation action completed', {
       action: action.name,
       anomaly: anomaly.id,
       success: true,
@@ -555,7 +570,9 @@ export class AIMonitoringAgent {
   /**
    * Update autonomous system with findings
    */
-  private async updateAutonomousSystem(anomalies: AnomalyDetection[]): Promise<void> {
+  private async updateAutonomousSystem(
+    anomalies: AnomalyDetection[]
+  ): Promise<void> {
     if (anomalies.length === 0) return;
 
     const criticalAnomalies = anomalies.filter(a => a.severity === 'critical');
@@ -603,14 +620,16 @@ export class AIMonitoringAgent {
    */
   getSystemHealthScore(): number {
     const recentAnomalies = this.anomalyHistory.slice(-100);
-    const criticalCount = recentAnomalies.filter(a => a.severity === 'critical').length;
+    const criticalCount = recentAnomalies.filter(
+      a => a.severity === 'critical'
+    ).length;
     const highCount = recentAnomalies.filter(a => a.severity === 'high').length;
-    
+
     // Calculate health score (0-100)
     const criticalPenalty = criticalCount * 20;
     const highPenalty = highCount * 10;
     const healthScore = Math.max(0, 100 - criticalPenalty - highPenalty);
-    
+
     return healthScore;
   }
 }

@@ -78,8 +78,8 @@ function HomeContent() {
       // Track successful generation
       await analytics.trackEvent('recipe_generation_completed', {
         recipes_count: result.recipes.length,
-        api_latency: result.metadata?.apiLatencyMs ?? 0,
-        confidence_score: result.metadata?.confidenceScore ?? 0,
+        tokens_used: result.metadata?.tokensUsed ?? 0,
+        cost_usd: result.metadata?.costUsd ?? 0,
       });
 
       await logger.info(
@@ -93,20 +93,22 @@ function HomeContent() {
         'recipe_generation'
       );
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       await logger.error(
         'Recipe generation failed',
         {
-          error: error.message,
+          error: errorMessage,
           ingredients: ingredients.length,
           user_id: user?.id,
         },
         'frontend',
         'recipe_generation',
-        error as Error
+        error instanceof Error ? error : new Error(errorMessage)
       );
 
       await analytics.trackEvent('recipe_generation_failed', {
-        error: error.message,
+        error: errorMessage,
         ingredients_count: ingredients.length,
       });
 
@@ -137,16 +139,18 @@ function HomeContent() {
         'recipe_save'
       );
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       await logger.error(
         'Recipe save failed',
         {
-          error: error.message,
+          error: errorMessage,
           recipe_title: recipe.title,
           user_id: user.id,
         },
         'frontend',
         'recipe_save',
-        error as Error
+        error instanceof Error ? error : new Error(errorMessage)
       );
 
       // Error already logged above
@@ -274,7 +278,7 @@ function HomeContent() {
                     recipe={recipe}
                     canSave={!!user}
                     recipeId={index + 1}
-                    userId={user?.id}
+                    userId={user?.id ?? undefined}
                     onSave={handleSave}
                   />
                 );

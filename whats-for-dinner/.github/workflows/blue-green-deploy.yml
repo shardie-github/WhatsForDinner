@@ -104,7 +104,7 @@ jobs:
         run: |
           echo "🚀 Deploying to Blue environment..."
           echo "Deployment ID: ${{ needs.validate-deployment.outputs.deployment-id }}"
-          
+
           # Deploy to Vercel with blue environment
           npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }} \
             --scope ${{ secrets.VERCEL_ORG_ID }} \
@@ -116,26 +116,26 @@ jobs:
         run: |
           echo "🔍 Running health checks on Blue environment..."
           sleep 30
-          
+
           # Health check endpoints
           BLUE_URL="https://whats-for-dinner-blue.vercel.app"
-          
+
           # Test API endpoints
           curl -f "$BLUE_URL/api/health" || exit 1
           curl -f "$BLUE_URL/api/pantry" -H "Authorization: Bearer test" || echo "Auth test completed"
-          
+
           echo "✅ Blue environment health checks passed"
 
       - name: Run Blue Environment Smoke Tests
         run: |
           echo "🧪 Running smoke tests on Blue environment..."
-          
+
           # Install Playwright
           npx playwright install --with-deps
-          
+
           # Run smoke tests
           npx playwright test --config=playwright.blue.config.ts || exit 1
-          
+
           echo "✅ Blue environment smoke tests passed"
 
   # Database migration with rollback capability
@@ -219,7 +219,7 @@ jobs:
         run: |
           echo "🚀 Deploying to Green environment..."
           echo "Deployment ID: ${{ needs.validate-deployment.outputs.deployment-id }}"
-          
+
           # Deploy to Vercel with green environment
           npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }} \
             --scope ${{ secrets.VERCEL_ORG_ID }} \
@@ -231,14 +231,14 @@ jobs:
         run: |
           echo "🔍 Running health checks on Green environment..."
           sleep 30
-          
+
           # Health check endpoints
           GREEN_URL="https://whats-for-dinner-green.vercel.app"
-          
+
           # Test API endpoints
           curl -f "$GREEN_URL/api/health" || exit 1
           curl -f "$GREEN_URL/api/pantry" -H "Authorization: Bearer test" || echo "Auth test completed"
-          
+
           echo "✅ Green environment health checks passed"
 
   # Traffic switching and validation
@@ -250,7 +250,7 @@ jobs:
       - name: Switch traffic to Green
         run: |
           echo "🔄 Switching traffic to Green environment..."
-          
+
           # Update DNS/load balancer to point to Green
           # This would typically involve updating DNS records or load balancer config
           echo "Traffic switched to Green environment"
@@ -259,14 +259,14 @@ jobs:
         run: |
           echo "📊 Monitoring traffic switch..."
           sleep 60
-          
+
           # Monitor key metrics for 5 minutes
           for i in {1..5}; do
             echo "Monitoring cycle $i/5..."
             # Check error rates, response times, etc.
             sleep 60
           done
-          
+
           echo "✅ Traffic switch monitoring completed"
 
   # Rollback capability
@@ -279,10 +279,10 @@ jobs:
       - name: Rollback to Blue
         run: |
           echo "🔄 Rolling back to Blue environment..."
-          
+
           # Switch traffic back to Blue
           echo "Traffic switched back to Blue environment"
-          
+
           # Restore database from backup if needed
           echo "Database rollback initiated if needed"
 

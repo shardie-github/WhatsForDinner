@@ -177,7 +177,8 @@ jobs:
   security-report:
     name: Generate Security Report
     runs-on: ubuntu-latest
-    needs: [dependency-audit, secrets-audit, rls-audit, cors-audit, key-rotation]
+    needs:
+      [dependency-audit, secrets-audit, rls-audit, cors-audit, key-rotation]
     if: always()
     steps:
       - name: Checkout code

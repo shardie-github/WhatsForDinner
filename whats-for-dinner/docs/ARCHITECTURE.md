@@ -40,52 +40,52 @@ graph TB
         MOBILE[Mobile App]
         ADMIN[Admin Dashboard]
     end
-    
+
     subgraph "API Gateway"
         GATEWAY[API Gateway]
         AUTH[Authentication]
         RATE[Rate Limiting]
     end
-    
+
     subgraph "Core Services"
         MEAL[Meal Service]
         RECIPE[Recipe Service]
         USER[User Service]
         AI[AI Service]
     end
-    
+
     subgraph "Data Layer"
         DB[(PostgreSQL)]
         CACHE[(Redis)]
         FILES[(File Storage)]
     end
-    
+
     subgraph "External Services"
         OPENAI[OpenAI API]
         STRIPE[Stripe]
         EMAIL[Email Service]
     end
-    
+
     WEB --> GATEWAY
     MOBILE --> GATEWAY
     ADMIN --> GATEWAY
-    
+
     GATEWAY --> AUTH
     GATEWAY --> RATE
     GATEWAY --> MEAL
     GATEWAY --> RECIPE
     GATEWAY --> USER
     GATEWAY --> AI
-    
+
     MEAL --> DB
     RECIPE --> DB
     USER --> DB
     AI --> DB
-    
+
     MEAL --> CACHE
     RECIPE --> CACHE
     USER --> CACHE
-    
+
     AI --> OPENAI
     USER --> STRIPE
     USER --> EMAIL
@@ -94,6 +94,7 @@ graph TB
 ### Service Architecture
 
 #### Web Application
+
 - **Framework**: Next.js 14 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
@@ -101,6 +102,7 @@ graph TB
 - **Authentication**: NextAuth.js with JWT
 
 #### Mobile Application
+
 - **Framework**: React Native with Expo
 - **Language**: TypeScript
 - **Navigation**: React Navigation
@@ -108,6 +110,7 @@ graph TB
 - **Offline Support**: Redux Persist
 
 #### API Services
+
 - **Framework**: Node.js with Express
 - **Language**: TypeScript
 - **Database**: PostgreSQL with Supabase
@@ -115,6 +118,7 @@ graph TB
 - **Authentication**: JWT with refresh tokens
 
 #### AI Service
+
 - **Provider**: OpenAI GPT-4
 - **Integration**: Custom prompt engineering
 - **Caching**: Redis for response caching
@@ -124,49 +128,49 @@ graph TB
 
 ### Frontend Technologies
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Next.js | 14.0.0 | Web framework |
-| React | 18.2.0 | UI library |
-| TypeScript | 5.0.0 | Type safety |
-| Tailwind CSS | 3.3.0 | Styling |
-| Zustand | 4.4.0 | State management |
-| React Query | 4.0.0 | Data fetching |
-| Framer Motion | 10.0.0 | Animations |
+| Technology    | Version | Purpose          |
+| ------------- | ------- | ---------------- |
+| Next.js       | 14.0.0  | Web framework    |
+| React         | 18.2.0  | UI library       |
+| TypeScript    | 5.0.0   | Type safety      |
+| Tailwind CSS  | 3.3.0   | Styling          |
+| Zustand       | 4.4.0   | State management |
+| React Query   | 4.0.0   | Data fetching    |
+| Framer Motion | 10.0.0  | Animations       |
 
 ### Backend Technologies
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Node.js | 18.17.0 | Runtime |
-| Express | 4.18.0 | Web framework |
-| TypeScript | 5.0.0 | Type safety |
-| PostgreSQL | 15.0 | Database |
-| Redis | 7.0.0 | Caching |
-| Supabase | 1.0.0 | Backend-as-a-Service |
-| Prisma | 5.0.0 | ORM |
+| Technology | Version | Purpose              |
+| ---------- | ------- | -------------------- |
+| Node.js    | 18.17.0 | Runtime              |
+| Express    | 4.18.0  | Web framework        |
+| TypeScript | 5.0.0   | Type safety          |
+| PostgreSQL | 15.0    | Database             |
+| Redis      | 7.0.0   | Caching              |
+| Supabase   | 1.0.0   | Backend-as-a-Service |
+| Prisma     | 5.0.0   | ORM                  |
 
 ### Mobile Technologies
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| React Native | 0.72.0 | Mobile framework |
-| Expo | 49.0.0 | Development platform |
-| TypeScript | 5.0.0 | Type safety |
-| Redux Toolkit | 1.9.0 | State management |
-| React Navigation | 6.0.0 | Navigation |
-| AsyncStorage | 1.19.0 | Local storage |
+| Technology       | Version | Purpose              |
+| ---------------- | ------- | -------------------- |
+| React Native     | 0.72.0  | Mobile framework     |
+| Expo             | 49.0.0  | Development platform |
+| TypeScript       | 5.0.0   | Type safety          |
+| Redux Toolkit    | 1.9.0   | State management     |
+| React Navigation | 6.0.0   | Navigation           |
+| AsyncStorage     | 1.19.0  | Local storage        |
 
 ### DevOps Technologies
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Docker | 24.0.0 | Containerization |
-| Kubernetes | 1.28.0 | Orchestration |
-| Vercel | Latest | Web deployment |
-| GitHub Actions | Latest | CI/CD |
-| Terraform | 1.5.0 | Infrastructure |
-| Prometheus | 2.45.0 | Monitoring |
+| Technology     | Version | Purpose          |
+| -------------- | ------- | ---------------- |
+| Docker         | 24.0.0  | Containerization |
+| Kubernetes     | 1.28.0  | Orchestration    |
+| Vercel         | Latest  | Web deployment   |
+| GitHub Actions | Latest  | CI/CD            |
+| Terraform      | 1.5.0   | Infrastructure   |
+| Prometheus     | 2.45.0  | Monitoring       |
 
 ## Database Design
 
@@ -303,13 +307,13 @@ erDiagram
     USERS ||--o{ MEAL_PLANS : creates
     USERS ||--o{ USER_ANALYTICS : generates
     USERS ||--o{ MEAL_ANALYTICS : interacts
-    
+
     MEALS ||--o{ MEAL_ANALYTICS : tracked
     MEALS ||--o{ MEAL_PLANS : included_in
-    
+
     INGREDIENTS ||--o{ MEALS : used_in
     INGREDIENTS ||--o{ RECIPES : used_in
-    
+
     RECIPES ||--o{ MEAL_PLANS : included_in
 ```
 
@@ -533,16 +537,16 @@ spec:
         app: whats-for-dinner-api
     spec:
       containers:
-      - name: api
-        image: whats-for-dinner/api:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: database-secret
-              key: url
+        - name: api
+          image: whats-for-dinner/api:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: url
 ```
 
 ### CI/CD Pipeline
@@ -557,13 +561,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: |
-        docker build -t whats-for-dinner/api .
-    - name: Deploy
-      run: |
-        kubectl apply -f kubernetes/
+      - uses: actions/checkout@v3
+      - name: Build
+        run: |
+          docker build -t whats-for-dinner/api .
+      - name: Deploy
+        run: |
+          kubectl apply -f kubernetes/
 ```
 
 ## Security Architecture
@@ -576,7 +580,7 @@ sequenceDiagram
     participant A as Auth Service
     participant D as Database
     participant R as Redis
-    
+
     C->>A: Login Request
     A->>D: Validate Credentials
     D-->>A: User Data
@@ -615,10 +619,10 @@ const encrypt = (data: string, key: string): string => {
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipher('aes-256-gcm', key);
   cipher.setAAD(Buffer.from('whats-for-dinner'));
-  
+
   let encrypted = cipher.update(data, 'utf8', 'hex');
   encrypted += cipher.final('hex');
-  
+
   const tag = cipher.getAuthTag();
   return iv.toString('hex') + ':' + tag.toString('hex') + ':' + encrypted;
 };
@@ -641,14 +645,14 @@ const cache = {
     const value = await redis.get(key);
     return value ? JSON.parse(value) : null;
   },
-  
+
   set: async (key: string, value: any, ttl: number): Promise<void> => {
     await redis.setex(key, ttl, JSON.stringify(value));
   },
-  
+
   del: async (key: string): Promise<void> => {
     await redis.del(key);
-  }
+  },
 };
 ```
 
@@ -656,14 +660,14 @@ const cache = {
 
 ```sql
 -- Query Optimization
-EXPLAIN ANALYZE SELECT * FROM meals 
-WHERE category = 'dinner' 
-AND dietary @> '["vegetarian"]' 
+EXPLAIN ANALYZE SELECT * FROM meals
+WHERE category = 'dinner'
+AND dietary @> '["vegetarian"]'
 AND cooking_time <= 30;
 
 -- Index Usage
-CREATE INDEX CONCURRENTLY idx_meals_optimized 
-ON meals(category, cooking_time) 
+CREATE INDEX CONCURRENTLY idx_meals_optimized
+ON meals(category, cooking_time)
 WHERE dietary @> '["vegetarian"]';
 ```
 
@@ -725,9 +729,9 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'error.log', level: 'error' }),
     new winston.transports.File({ filename: 'combined.log' }),
     new winston.transports.Console({
-      format: winston.format.simple()
-    })
-  ]
+      format: winston.format.simple(),
+    }),
+  ],
 });
 ```
 
@@ -743,9 +747,9 @@ app.get('/health', async (req, res) => {
       database: await checkDatabase(),
       redis: await checkRedis(),
       openai: await checkOpenAI(),
-    }
+    },
   };
-  
+
   res.json(health);
 });
 ```

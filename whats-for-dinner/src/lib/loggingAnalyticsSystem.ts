@@ -1,6 +1,6 @@
 /**
  * Logging & Analytics Integration System
- * 
+ *
  * Implements comprehensive logging and analytics with:
  * - Sentry integration for error tracking
  * - LogRocket for session replay
@@ -148,13 +148,19 @@ export class LoggingAnalyticsSystem {
         dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
         environment: process.env.NODE_ENV || 'development',
         release: process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
-        sampleRate: parseFloat(process.env.NEXT_PUBLIC_SENTRY_SAMPLE_RATE || '1.0'),
-        tracesSampleRate: parseFloat(process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE || '1.0'),
+        sampleRate: parseFloat(
+          process.env.NEXT_PUBLIC_SENTRY_SAMPLE_RATE || '1.0'
+        ),
+        tracesSampleRate: parseFloat(
+          process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE || '1.0'
+        ),
       },
       logrocket: {
         enabled: process.env.NEXT_PUBLIC_LOGROCKET_ENABLED === 'true',
         appId: process.env.NEXT_PUBLIC_LOGROCKET_APP_ID || '',
-        sampleRate: parseFloat(process.env.NEXT_PUBLIC_LOGROCKET_SAMPLE_RATE || '0.1'),
+        sampleRate: parseFloat(
+          process.env.NEXT_PUBLIC_LOGROCKET_SAMPLE_RATE || '0.1'
+        ),
         maskAllInputs: process.env.NEXT_PUBLIC_LOGROCKET_MASK_INPUTS === 'true',
         maskAllText: process.env.NEXT_PUBLIC_LOGROCKET_MASK_TEXT === 'true',
       },
@@ -162,9 +168,12 @@ export class LoggingAnalyticsSystem {
         enabled: process.env.NEXT_PUBLIC_POSTHOG_ENABLED === 'true',
         apiKey: process.env.NEXT_PUBLIC_POSTHOG_API_KEY || '',
         host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
-        personProfiles: process.env.NEXT_PUBLIC_POSTHOG_PERSON_PROFILES === 'true',
-        capturePageview: process.env.NEXT_PUBLIC_POSTHOG_CAPTURE_PAGEVIEW === 'true',
-        capturePageleave: process.env.NEXT_PUBLIC_POSTHOG_CAPTURE_PAGELEAVE === 'true',
+        personProfiles:
+          process.env.NEXT_PUBLIC_POSTHOG_PERSON_PROFILES === 'true',
+        capturePageview:
+          process.env.NEXT_PUBLIC_POSTHOG_CAPTURE_PAGEVIEW === 'true',
+        capturePageleave:
+          process.env.NEXT_PUBLIC_POSTHOG_CAPTURE_PAGELEAVE === 'true',
       },
     };
   }
@@ -202,7 +211,9 @@ export class LoggingAnalyticsSystem {
       this.isInitialized = true;
       logger.info('Logging and analytics system initialized successfully');
     } catch (error) {
-      logger.error('Failed to initialize logging and analytics system', { error });
+      logger.error('Failed to initialize logging and analytics system', {
+        error,
+      });
       throw error;
     }
   }
@@ -269,7 +280,10 @@ export class LoggingAnalyticsSystem {
   /**
    * Capture error event
    */
-  async captureError(error: Error, context: Record<string, any> = {}): Promise<void> {
+  async captureError(
+    error: Error,
+    context: Record<string, any> = {}
+  ): Promise<void> {
     const errorEvent: ErrorEvent = {
       id: `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),
@@ -279,11 +293,13 @@ export class LoggingAnalyticsSystem {
       context: {
         ...context,
         url: typeof window !== 'undefined' ? window.location.href : '',
-        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : '',
+        userAgent:
+          typeof window !== 'undefined' ? window.navigator.userAgent : '',
       },
       sessionId: this.getSessionId(),
       url: typeof window !== 'undefined' ? window.location.href : '',
-      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : '',
+      userAgent:
+        typeof window !== 'undefined' ? window.navigator.userAgent : '',
       tags: this.extractTags(error, context),
       fingerprint: this.generateFingerprint(error, context),
     };
@@ -306,7 +322,10 @@ export class LoggingAnalyticsSystem {
   /**
    * Capture user event
    */
-  async captureUserEvent(event: string, properties: Record<string, any> = {}): Promise<void> {
+  async captureUserEvent(
+    event: string,
+    properties: Record<string, any> = {}
+  ): Promise<void> {
     const userEvent: UserEvent = {
       id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),
@@ -317,7 +336,8 @@ export class LoggingAnalyticsSystem {
       context: {
         url: typeof window !== 'undefined' ? window.location.href : '',
         referrer: typeof window !== 'undefined' ? document.referrer : undefined,
-        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : '',
+        userAgent:
+          typeof window !== 'undefined' ? window.navigator.userAgent : '',
         screen: {
           width: typeof window !== 'undefined' ? window.screen.width : 0,
           height: typeof window !== 'undefined' ? window.screen.height : 0,
@@ -347,7 +367,12 @@ export class LoggingAnalyticsSystem {
   /**
    * Capture performance event
    */
-  async capturePerformanceEvent(metric: string, value: number, unit: string, context: Record<string, any> = {}): Promise<void> {
+  async capturePerformanceEvent(
+    metric: string,
+    value: number,
+    unit: string,
+    context: Record<string, any> = {}
+  ): Promise<void> {
     const performanceEvent: PerformanceEvent = {
       id: `perf_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),
@@ -375,7 +400,7 @@ export class LoggingAnalyticsSystem {
    */
   async startSessionReplay(userId?: string): Promise<string> {
     const sessionId = this.getSessionId();
-    
+
     const sessionReplay: SessionReplay = {
       sessionId,
       userId,
@@ -413,14 +438,19 @@ export class LoggingAnalyticsSystem {
     if (!sessionReplay) return;
 
     sessionReplay.endTime = new Date().toISOString();
-    sessionReplay.duration = new Date(sessionReplay.endTime).getTime() - new Date(sessionReplay.startTime).getTime();
+    sessionReplay.duration =
+      new Date(sessionReplay.endTime).getTime() -
+      new Date(sessionReplay.startTime).getTime();
 
     // Send to LogRocket
     if (this.config.logrocket.enabled) {
       await this.sendToLogRocket(sessionReplay);
     }
 
-    logger.info('Session replay ended', { sessionId, duration: sessionReplay.duration });
+    logger.info('Session replay ended', {
+      sessionId,
+      duration: sessionReplay.duration,
+    });
   }
 
   /**
@@ -457,9 +487,15 @@ export class LoggingAnalyticsSystem {
     const now = new Date();
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
 
-    const recentErrors = this.errorEvents.filter(e => new Date(e.timestamp) > oneHourAgo);
-    const recentUserEvents = this.userEvents.filter(e => new Date(e.timestamp) > oneHourAgo);
-    const recentPerformanceEvents = this.performanceEvents.filter(e => new Date(e.timestamp) > oneHourAgo);
+    const recentErrors = this.errorEvents.filter(
+      e => new Date(e.timestamp) > oneHourAgo
+    );
+    const recentUserEvents = this.userEvents.filter(
+      e => new Date(e.timestamp) > oneHourAgo
+    );
+    const recentPerformanceEvents = this.performanceEvents.filter(
+      e => new Date(e.timestamp) > oneHourAgo
+    );
 
     const errorCount = recentErrors.length;
     const warningCount = recentErrors.filter(e => e.level === 'warning').length;
@@ -507,7 +543,9 @@ export class LoggingAnalyticsSystem {
   /**
    * Get top errors
    */
-  private getTopErrors(errors: ErrorEvent[]): Array<{ message: string; count: number; lastSeen: string }> {
+  private getTopErrors(
+    errors: ErrorEvent[]
+  ): Array<{ message: string; count: number; lastSeen: string }> {
     const errorCounts = new Map<string, { count: number; lastSeen: string }>();
 
     errors.forEach(error => {
@@ -536,7 +574,10 @@ export class LoggingAnalyticsSystem {
     const sessions = Array.from(this.sessionReplays.values());
     if (sessions.length === 0) return 0;
 
-    const totalDuration = sessions.reduce((sum, session) => sum + session.duration, 0);
+    const totalDuration = sessions.reduce(
+      (sum, session) => sum + session.duration,
+      0
+    );
     return totalDuration / sessions.length;
   }
 
@@ -564,7 +605,7 @@ export class LoggingAnalyticsSystem {
    */
   private getSessionId(): string {
     if (typeof window === 'undefined') return 'server-session';
-    
+
     let sessionId = sessionStorage.getItem('sessionId');
     if (!sessionId) {
       sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -586,18 +627,21 @@ export class LoggingAnalyticsSystem {
    */
   private extractTags(error: Error, context: Record<string, any>): string[] {
     const tags: string[] = [];
-    
+
     if (error.name) tags.push(`error:${error.name}`);
     if (context.component) tags.push(`component:${context.component}`);
     if (context.action) tags.push(`action:${context.action}`);
-    
+
     return tags;
   }
 
   /**
    * Generate fingerprint for error
    */
-  private generateFingerprint(error: Error, context: Record<string, any>): string {
+  private generateFingerprint(
+    error: Error,
+    context: Record<string, any>
+  ): string {
     const key = `${error.name}:${error.message}:${context.component || 'unknown'}`;
     return btoa(key).substr(0, 16);
   }
@@ -605,12 +649,15 @@ export class LoggingAnalyticsSystem {
   /**
    * Extract performance tags
    */
-  private extractPerformanceTags(metric: string, context: Record<string, any>): string[] {
+  private extractPerformanceTags(
+    metric: string,
+    context: Record<string, any>
+  ): string[] {
     const tags: string[] = [`metric:${metric}`];
-    
+
     if (context.component) tags.push(`component:${context.component}`);
     if (context.page) tags.push(`page:${context.page}`);
-    
+
     return tags;
   }
 
@@ -619,7 +666,7 @@ export class LoggingAnalyticsSystem {
    */
   private getBrowserInfo(): string {
     if (typeof window === 'undefined') return 'unknown';
-    
+
     const userAgent = window.navigator.userAgent;
     if (userAgent.includes('Chrome')) return 'Chrome';
     if (userAgent.includes('Firefox')) return 'Firefox';
@@ -633,7 +680,7 @@ export class LoggingAnalyticsSystem {
    */
   private getOSInfo(): string {
     if (typeof window === 'undefined') return 'unknown';
-    
+
     const userAgent = window.navigator.userAgent;
     if (userAgent.includes('Windows')) return 'Windows';
     if (userAgent.includes('Mac')) return 'macOS';
@@ -648,7 +695,7 @@ export class LoggingAnalyticsSystem {
    */
   private getDeviceInfo(): string {
     if (typeof window === 'undefined') return 'unknown';
-    
+
     const userAgent = window.navigator.userAgent;
     if (userAgent.includes('Mobile')) return 'Mobile';
     if (userAgent.includes('Tablet')) return 'Tablet';

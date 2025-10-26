@@ -240,7 +240,14 @@ jobs:
   performance-report:
     name: Generate Performance Report
     runs-on: ubuntu-latest
-    needs: [lighthouse-audit, load-testing, stress-testing, memory-profiling, database-performance]
+    needs:
+      [
+        lighthouse-audit,
+        load-testing,
+        stress-testing,
+        memory-profiling,
+        database-performance,
+      ]
     if: always()
     steps:
       - name: Checkout code

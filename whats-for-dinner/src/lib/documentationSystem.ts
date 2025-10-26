@@ -1,6 +1,6 @@
 /**
  * Documentation & Changelog Automation System
- * 
+ *
  * Automates generation of:
  * - Complete onboarding documentation
  * - API references and guides
@@ -110,7 +110,13 @@ export interface ChangelogEntry {
   id: string;
   version: string;
   date: string;
-  type: 'feature' | 'bugfix' | 'breaking' | 'deprecated' | 'security' | 'performance';
+  type:
+    | 'feature'
+    | 'bugfix'
+    | 'breaking'
+    | 'deprecated'
+    | 'security'
+    | 'performance';
   title: string;
   description: string;
   impact: 'low' | 'medium' | 'high' | 'critical';
@@ -126,7 +132,14 @@ export interface TroubleshootingGuide {
   id: string;
   title: string;
   description: string;
-  category: 'authentication' | 'api' | 'performance' | 'ui' | 'mobile' | 'sync' | 'general';
+  category:
+    | 'authentication'
+    | 'api'
+    | 'performance'
+    | 'ui'
+    | 'mobile'
+    | 'sync'
+    | 'general';
   severity: 'low' | 'medium' | 'high' | 'critical';
   symptoms: string[];
   causes: string[];
@@ -151,7 +164,12 @@ export interface UserGuide {
   id: string;
   title: string;
   description: string;
-  category: 'getting_started' | 'features' | 'advanced' | 'troubleshooting' | 'faq';
+  category:
+    | 'getting_started'
+    | 'features'
+    | 'advanced'
+    | 'troubleshooting'
+    | 'faq';
   targetAudience: 'beginner' | 'intermediate' | 'advanced';
   platform: 'web' | 'mobile' | 'all';
   content: string;
@@ -262,7 +280,11 @@ export class DocumentationSystem {
             description: 'Maximum number of recipes to return',
             example: 20,
             validation: [
-              { type: 'range', value: [1, 100], message: 'Limit must be between 1 and 100' }
+              {
+                type: 'range',
+                value: [1, 100],
+                message: 'Limit must be between 1 and 100',
+              },
             ],
           },
           {
@@ -272,7 +294,11 @@ export class DocumentationSystem {
             description: 'Number of recipes to skip',
             example: 0,
             validation: [
-              { type: 'range', value: [0, 10000], message: 'Offset must be between 0 and 10000' }
+              {
+                type: 'range',
+                value: [0, 10000],
+                message: 'Offset must be between 0 and 10000',
+              },
             ],
           },
           {
@@ -282,7 +308,11 @@ export class DocumentationSystem {
             description: 'Filter by cuisine type',
             example: 'italian',
             validation: [
-              { type: 'enum', value: ['italian', 'mexican', 'chinese', 'indian', 'american'], message: 'Invalid cuisine type' }
+              {
+                type: 'enum',
+                value: ['italian', 'mexican', 'chinese', 'indian', 'american'],
+                message: 'Invalid cuisine type',
+              },
             ],
           },
         ],
@@ -293,7 +323,10 @@ export class DocumentationSystem {
             schema: {
               type: 'object',
               properties: {
-                recipes: { type: 'array', items: { $ref: '#/components/schemas/Recipe' } },
+                recipes: {
+                  type: 'array',
+                  items: { $ref: '#/components/schemas/Recipe' },
+                },
                 total: { type: 'number' },
                 limit: { type: 'number' },
                 offset: { type: 'number' },
@@ -341,7 +374,7 @@ export class DocumentationSystem {
             description: 'Retrieve the first 10 Italian recipes',
             request: {
               headers: {
-                'Authorization': 'Bearer your_token_here',
+                Authorization: 'Bearer your_token_here',
                 'Content-Type': 'application/json',
               },
               body: {},
@@ -399,8 +432,16 @@ export class DocumentationSystem {
             example: 'Chocolate Chip Cookies',
             validation: [
               { type: 'required', value: true, message: 'Title is required' },
-              { type: 'min_length', value: 3, message: 'Title must be at least 3 characters' },
-              { type: 'max_length', value: 100, message: 'Title must be less than 100 characters' },
+              {
+                type: 'min_length',
+                value: 3,
+                message: 'Title must be at least 3 characters',
+              },
+              {
+                type: 'max_length',
+                value: 100,
+                message: 'Title must be less than 100 characters',
+              },
             ],
           },
           {
@@ -410,7 +451,11 @@ export class DocumentationSystem {
             description: 'Recipe description',
             example: 'Delicious homemade chocolate chip cookies',
             validation: [
-              { type: 'max_length', value: 500, message: 'Description must be less than 500 characters' },
+              {
+                type: 'max_length',
+                value: 500,
+                message: 'Description must be less than 500 characters',
+              },
             ],
           },
         ],
@@ -467,8 +512,8 @@ export class DocumentationSystem {
     const guides: UserGuide[] = [
       {
         id: 'getting_started',
-        title: 'Getting Started with What\'s for Dinner',
-        description: 'Learn how to get started with the What\'s for Dinner app',
+        title: "Getting Started with What's for Dinner",
+        description: "Learn how to get started with the What's for Dinner app",
         category: 'getting_started',
         targetAudience: 'beginner',
         platform: 'all',
@@ -613,7 +658,8 @@ Learn how to effectively manage and organize your recipes in What's for Dinner.
       {
         id: 'api_setup',
         title: 'API Setup and Authentication',
-        description: 'Learn how to set up and authenticate with the What\'s for Dinner API',
+        description:
+          "Learn how to set up and authenticate with the What's for Dinner API",
         category: 'api',
         technology: ['REST', 'JWT', 'OAuth2'],
         content: `# API Setup and Authentication
@@ -733,7 +779,8 @@ getRecipes();`,
   "limit": 10,
   "offset": 0
 }`,
-            explanation: 'This example shows how to fetch Italian recipes using the JavaScript SDK.',
+            explanation:
+              'This example shows how to fetch Italian recipes using the JavaScript SDK.',
           },
         ],
         prerequisites: ['Basic knowledge of REST APIs', 'JavaScript/Node.js'],
@@ -781,7 +828,8 @@ getRecipes();`,
               'Log back in with your credentials',
               'Check if the new token works',
             ],
-            expectedResult: 'You should be able to access the application normally',
+            expectedResult:
+              'You should be able to access the application normally',
             successRate: 85,
             difficulty: 'easy',
           },
@@ -827,7 +875,7 @@ getRecipes();`,
         date: '2024-01-15',
         type: 'feature',
         title: 'Initial Release',
-        description: 'First public release of What\'s for Dinner',
+        description: "First public release of What's for Dinner",
         impact: 'high',
         author: 'Development Team',
         prNumber: 'PR-1',
@@ -910,28 +958,38 @@ ${endpoint.description}
 
 ## Parameters
 
-${endpoint.parameters.map(param => `
+${endpoint.parameters
+  .map(
+    param => `
 ### ${param.name}
 - **Type**: ${param.type}
 - **Required**: ${param.required ? 'Yes' : 'No'}
 - **Description**: ${param.description}
 - **Example**: ${JSON.stringify(param.example)}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Responses
 
-${endpoint.responses.map(response => `
+${endpoint.responses
+  .map(
+    response => `
 ### ${response.statusCode}
 ${response.description}
 
 \`\`\`json
 ${JSON.stringify(response.examples[0], null, 2)}
 \`\`\`
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Examples
 
-${endpoint.examples.map(example => `
+${endpoint.examples
+  .map(
+    example => `
 ### ${example.title}
 ${example.description}
 
@@ -940,14 +998,18 @@ ${example.description}
 curl -X ${endpoint.method} ${endpoint.path} \\
   -H "Authorization: ${example.request.headers.Authorization}" \\
   -H "Content-Type: ${example.request.headers['Content-Type']}" \\
-  ${Object.entries(example.request.query).map(([key, value]) => `-d "${key}=${value}"`).join(' \\\n  ')}
+  ${Object.entries(example.request.query)
+    .map(([key, value]) => `-d "${key}=${value}"`)
+    .join(' \\\n  ')}
 \`\`\`
 
 **Response:**
 \`\`\`json
 ${JSON.stringify(example.response.body, null, 2)}
 \`\`\`
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Authentication
 
@@ -1056,7 +1118,9 @@ ${guide.estimatedTime} minutes
 
 ## Code Examples
 
-${guide.codeExamples.map(example => `
+${guide.codeExamples
+  .map(
+    example => `
 ### ${example.title}
 ${example.description}
 
@@ -1064,13 +1128,19 @@ ${example.description}
 ${example.code}
 \`\`\`
 
-${example.output ? `**Output:**
+${
+  example.output
+    ? `**Output:**
 \`\`\`
 ${example.output}
-\`\`\`` : ''}
+\`\`\``
+    : ''
+}
 
 ${example.explanation}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Last Updated
 
@@ -1100,7 +1170,9 @@ ${guide.version}
   /**
    * Generate troubleshooting guide content
    */
-  private generateTroubleshootingGuideContent(guide: TroubleshootingGuide): string {
+  private generateTroubleshootingGuideContent(
+    guide: TroubleshootingGuide
+  ): string {
     return `# ${guide.title}
 
 ${guide.description}
@@ -1115,24 +1187,32 @@ ${guide.causes.map(cause => `- ${cause}`).join('\n')}
 
 ## Solutions
 
-${guide.solutions.map(solution => `
+${guide.solutions
+  .map(
+    solution => `
 ### ${solution.title}
 ${solution.description}
 
 **Steps:**
 ${solution.steps.map((step, index) => `${index + 1}. ${step}`).join('\n')}
 
-${solution.code ? `**Code:**
+${
+  solution.code
+    ? `**Code:**
 \`\`\`
 ${solution.code}
-\`\`\`` : ''}
+\`\`\``
+    : ''
+}
 
 **Expected Result:** ${solution.expectedResult}
 
 **Success Rate:** ${solution.successRate}%
 
 **Difficulty:** ${solution.difficulty}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Prevention
 
@@ -1173,33 +1253,49 @@ ${guide.version}
 
 All notable changes to What's for Dinner will be documented in this file.
 
-${this.changelogEntries.map(entry => `
+${this.changelogEntries
+  .map(
+    entry => `
 ## [${entry.version}] - ${entry.date}
 
 ### ${entry.type === 'feature' ? 'Added' : entry.type === 'bugfix' ? 'Fixed' : entry.type === 'breaking' ? 'Breaking Changes' : entry.type === 'deprecated' ? 'Deprecated' : entry.type === 'security' ? 'Security' : entry.type === 'performance' ? 'Performance' : 'Changed'}
 
 - **${entry.title}**: ${entry.description}
 
-${entry.breakingChanges.length > 0 ? `
+${
+  entry.breakingChanges.length > 0
+    ? `
 ### Breaking Changes
 ${entry.breakingChanges.map(change => `- ${change}`).join('\n')}
-` : ''}
+`
+    : ''
+}
 
-${entry.migrationGuide ? `
+${
+  entry.migrationGuide
+    ? `
 ### Migration Guide
 ${entry.migrationGuide}
-` : ''}
+`
+    : ''
+}
 
-${entry.relatedIssues.length > 0 ? `
+${
+  entry.relatedIssues.length > 0
+    ? `
 ### Related Issues
 ${entry.relatedIssues.map(issue => `- ${issue}`).join('\n')}
-` : ''}
+`
+    : ''
+}
 
 **Impact:** ${entry.impact}
 **Author:** ${entry.author}
 ${entry.prNumber ? `**PR:** ${entry.prNumber}` : ''}
 ${entry.commitHash ? `**Commit:** ${entry.commitHash}` : ''}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 `;
   }
 
@@ -1240,8 +1336,9 @@ ${entry.commitHash ? `**Commit:** ${entry.commitHash}` : ''}
     const coverage: Record<string, number> = {};
 
     categories.forEach(category => {
-      const sections = Array.from(this.sections.values())
-        .filter(s => s.category === category);
+      const sections = Array.from(this.sections.values()).filter(
+        s => s.category === category
+      );
       coverage[category] = sections.length;
     });
 
@@ -1252,12 +1349,20 @@ ${entry.commitHash ? `**Commit:** ${entry.commitHash}` : ''}
    * Calculate coverage by type
    */
   private calculateCoverageByType(): Record<string, number> {
-    const types = ['overview', 'guide', 'api', 'troubleshooting', 'changelog', 'faq'];
+    const types = [
+      'overview',
+      'guide',
+      'api',
+      'troubleshooting',
+      'changelog',
+      'faq',
+    ];
     const coverage: Record<string, number> = {};
 
     types.forEach(type => {
-      const sections = Array.from(this.sections.values())
-        .filter(s => s.type === type);
+      const sections = Array.from(this.sections.values()).filter(
+        s => s.type === type
+      );
       coverage[type] = sections.length;
     });
 
@@ -1269,9 +1374,10 @@ ${entry.commitHash ? `**Commit:** ${entry.commitHash}` : ''}
    */
   private findOutdatedSections(): DocumentationSection[] {
     const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    
-    return Array.from(this.sections.values())
-      .filter(section => new Date(section.lastUpdated) < oneMonthAgo);
+
+    return Array.from(this.sections.values()).filter(
+      section => new Date(section.lastUpdated) < oneMonthAgo
+    );
   }
 
   /**
@@ -1287,8 +1393,10 @@ ${entry.commitHash ? `**Commit:** ${entry.commitHash}` : ''}
     ];
 
     const existingSections = Array.from(this.sections.keys());
-    
-    return requiredSections.filter(section => !existingSections.includes(section));
+
+    return requiredSections.filter(
+      section => !existingSections.includes(section)
+    );
   }
 
   /**
@@ -1300,25 +1408,27 @@ ${entry.commitHash ? `**Commit:** ${entry.commitHash}` : ''}
 
     for (const section of this.sections.values()) {
       let sectionScore = 0;
-      
+
       // Base score for having content
       if (section.content.length > 0) sectionScore += 20;
-      
+
       // Score for being published
       if (section.status === 'published') sectionScore += 30;
-      
+
       // Score for recent updates
-      const daysSinceUpdate = (Date.now() - new Date(section.lastUpdated).getTime()) / (1000 * 60 * 60 * 24);
+      const daysSinceUpdate =
+        (Date.now() - new Date(section.lastUpdated).getTime()) /
+        (1000 * 60 * 60 * 24);
       if (daysSinceUpdate < 30) sectionScore += 25;
       else if (daysSinceUpdate < 90) sectionScore += 15;
       else if (daysSinceUpdate < 180) sectionScore += 10;
-      
+
       // Score for having tags
       if (section.tags.length > 0) sectionScore += 15;
-      
+
       // Score for having version
       if (section.version) sectionScore += 10;
-      
+
       score += sectionScore;
       totalSections++;
     }
@@ -1335,13 +1445,17 @@ ${entry.commitHash ? `**Commit:** ${entry.commitHash}` : ''}
     // Check for outdated sections
     const outdatedSections = this.findOutdatedSections();
     if (outdatedSections.length > 0) {
-      recommendations.push(`Update ${outdatedSections.length} outdated documentation sections`);
+      recommendations.push(
+        `Update ${outdatedSections.length} outdated documentation sections`
+      );
     }
 
     // Check for missing sections
     const missingSections = this.identifyMissingSections();
     if (missingSections.length > 0) {
-      recommendations.push(`Create ${missingSections.length} missing documentation sections`);
+      recommendations.push(
+        `Create ${missingSections.length} missing documentation sections`
+      );
     }
 
     // Check for low quality score

@@ -1,6 +1,6 @@
 /**
  * Admin Dashboard System
- * 
+ *
  * Implements comprehensive admin dashboards with:
  * - User metrics and analytics
  * - Job queue monitoring
@@ -230,7 +230,12 @@ export class AdminDashboardSystem {
         id: 'admin',
         name: 'Administrator',
         description: 'Administrative access',
-        permissions: ['view_dashboard', 'manage_users', 'view_analytics', 'view_audit_logs'],
+        permissions: [
+          'view_dashboard',
+          'manage_users',
+          'view_analytics',
+          'view_audit_logs',
+        ],
         level: 80,
       },
       {
@@ -307,16 +312,15 @@ export class AdminDashboardSystem {
     try {
       // Collect user metrics
       this.userMetrics = await this.collectUserMetrics();
-      
+
       // Collect job queue metrics
       this.jobQueueMetrics = await this.collectJobQueueMetrics();
-      
+
       // Collect billing metrics
       this.billingMetrics = await this.collectBillingMetrics();
-      
+
       // Collect system health
       this.systemHealth = await this.collectSystemHealth();
-
     } catch (error) {
       logger.error('Failed to collect dashboard data', { error });
     }
@@ -461,8 +465,9 @@ export class AdminDashboardSystem {
    */
   private async collectSystemHealth(): Promise<SystemHealth> {
     const monitoringStatus = aiMonitoringAgent.getMonitoringStatus();
-    const performanceReport = performanceOptimizationSystem.getPerformanceReport();
-    
+    const performanceReport =
+      performanceOptimizationSystem.getPerformanceReport();
+
     const components: ComponentHealth[] = [
       {
         name: 'Database',
@@ -510,10 +515,10 @@ export class AdminDashboardSystem {
       },
     ];
 
-    const overallHealth = components.every(c => c.status === 'healthy') 
-      ? 'healthy' 
-      : components.some(c => c.status === 'critical') 
-        ? 'critical' 
+    const overallHealth = components.every(c => c.status === 'healthy')
+      ? 'healthy'
+      : components.some(c => c.status === 'critical')
+        ? 'critical'
         : 'degraded';
 
     return {
@@ -544,7 +549,7 @@ export class AdminDashboardSystem {
     };
 
     this.auditLogs.push(mockAuditLog);
-    
+
     // Keep only last 10000 audit logs
     if (this.auditLogs.length > 10000) {
       this.auditLogs = this.auditLogs.slice(-10000);
@@ -571,34 +576,49 @@ export class AdminDashboardSystem {
   /**
    * Get audit logs
    */
-  getAuditLogs(limit: number = 100, filters?: {
-    userId?: string;
-    action?: string;
-    resource?: string;
-    result?: string;
-    startDate?: string;
-    endDate?: string;
-  }): AuditLog[] {
+  getAuditLogs(
+    limit: number = 100,
+    filters?: {
+      userId?: string;
+      action?: string;
+      resource?: string;
+      result?: string;
+      startDate?: string;
+      endDate?: string;
+    }
+  ): AuditLog[] {
     let filteredLogs = [...this.auditLogs];
 
     if (filters) {
       if (filters.userId) {
-        filteredLogs = filteredLogs.filter(log => log.userId === filters.userId);
+        filteredLogs = filteredLogs.filter(
+          log => log.userId === filters.userId
+        );
       }
       if (filters.action) {
-        filteredLogs = filteredLogs.filter(log => log.action === filters.action);
+        filteredLogs = filteredLogs.filter(
+          log => log.action === filters.action
+        );
       }
       if (filters.resource) {
-        filteredLogs = filteredLogs.filter(log => log.resource === filters.resource);
+        filteredLogs = filteredLogs.filter(
+          log => log.resource === filters.resource
+        );
       }
       if (filters.result) {
-        filteredLogs = filteredLogs.filter(log => log.result === filters.result);
+        filteredLogs = filteredLogs.filter(
+          log => log.result === filters.result
+        );
       }
       if (filters.startDate) {
-        filteredLogs = filteredLogs.filter(log => log.timestamp >= filters.startDate!);
+        filteredLogs = filteredLogs.filter(
+          log => log.timestamp >= filters.startDate!
+        );
       }
       if (filters.endDate) {
-        filteredLogs = filteredLogs.filter(log => log.timestamp <= filters.endDate!);
+        filteredLogs = filteredLogs.filter(
+          log => log.timestamp <= filters.endDate!
+        );
       }
     }
 
@@ -647,22 +667,24 @@ export class AdminDashboardSystem {
     };
 
     this.auditLogs.push(auditLog);
-    
+
     logger.info('Audit log created', { auditLog });
   }
 
   /**
    * Get system alerts
    */
-  getSystemAlerts(severity?: 'low' | 'medium' | 'high' | 'critical'): SystemAlert[] {
+  getSystemAlerts(
+    severity?: 'low' | 'medium' | 'high' | 'critical'
+  ): SystemAlert[] {
     if (!this.systemHealth) return [];
-    
+
     let alerts = this.systemHealth.alerts;
-    
+
     if (severity) {
       alerts = alerts.filter(alert => alert.severity === severity);
     }
-    
+
     return alerts;
   }
 
@@ -671,13 +693,13 @@ export class AdminDashboardSystem {
    */
   resolveSystemAlert(alertId: string): boolean {
     if (!this.systemHealth) return false;
-    
+
     const alert = this.systemHealth.alerts.find(a => a.id === alertId);
     if (!alert) return false;
-    
+
     alert.resolved = true;
     alert.resolvedAt = new Date().toISOString();
-    
+
     logger.info('System alert resolved', { alertId });
     return true;
   }
@@ -705,9 +727,9 @@ export class AdminDashboardSystem {
       ...user,
       id: userId,
     };
-    
+
     this.rbacUsers.set(userId, rbacUser);
-    
+
     this.createAuditLog({
       userId: 'system',
       action: 'user_created',
@@ -717,7 +739,7 @@ export class AdminDashboardSystem {
       userAgent: 'system',
       metadata: { targetUserId: userId, roles: user.roles },
     });
-    
+
     return userId;
   }
 
@@ -727,10 +749,10 @@ export class AdminDashboardSystem {
   updateRBACUser(userId: string, updates: Partial<RBACUser>): boolean {
     const user = this.rbacUsers.get(userId);
     if (!user) return false;
-    
+
     const updatedUser = { ...user, ...updates };
     this.rbacUsers.set(userId, updatedUser);
-    
+
     this.createAuditLog({
       userId: 'system',
       action: 'user_updated',
@@ -740,7 +762,7 @@ export class AdminDashboardSystem {
       userAgent: 'system',
       metadata: { targetUserId: userId, updates },
     });
-    
+
     return true;
   }
 
@@ -750,9 +772,9 @@ export class AdminDashboardSystem {
   deleteRBACUser(userId: string): boolean {
     const user = this.rbacUsers.get(userId);
     if (!user) return false;
-    
+
     this.rbacUsers.delete(userId);
-    
+
     this.createAuditLog({
       userId: 'system',
       action: 'user_deleted',
@@ -762,7 +784,7 @@ export class AdminDashboardSystem {
       userAgent: 'system',
       metadata: { targetUserId: userId },
     });
-    
+
     return true;
   }
 }

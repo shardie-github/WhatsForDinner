@@ -2,7 +2,7 @@
 
 /**
  * Performance Optimization Script for What's for Dinner
- * 
+ *
  * This script performs comprehensive performance optimization including:
  * - Database query analysis and optimization
  * - Index creation and optimization
@@ -27,8 +27,8 @@ class PerformanceOptimizer {
         bundleSize: 0,
         loadTime: 0,
         dbQueryTime: 0,
-        cacheHitRate: 0
-      }
+        cacheHitRate: 0,
+      },
     };
   }
 
@@ -49,10 +49,12 @@ class PerformanceOptimizer {
 
       this.calculateOverallScore();
       this.generateReport();
-      
+
       console.log('\n✅ Performance optimization completed successfully!');
-      console.log(`📊 Overall Performance Score: ${this.optimizationResults.overallScore}/100`);
-      
+      console.log(
+        `📊 Overall Performance Score: ${this.optimizationResults.overallScore}/100`
+      );
+
       return this.optimizationResults;
     } catch (error) {
       console.error('❌ Performance optimization failed:', error);
@@ -62,7 +64,7 @@ class PerformanceOptimizer {
 
   async analyzeDatabaseQueries() {
     console.log('🔍 Analyzing database queries...');
-    
+
     try {
       // Analyze Supabase queries
       const queryFiles = this.findFiles('src/**/*.ts');
@@ -70,17 +72,17 @@ class PerformanceOptimizer {
 
       queryFiles.forEach(file => {
         const content = fs.readFileSync(file, 'utf8');
-        
+
         // Check for N+1 queries
         if (content.includes('.select(') && content.includes('.from(')) {
           const selectCount = (content.match(/\.select\(/g) || []).length;
           const fromCount = (content.match(/\.from\(/g) || []).length;
-          
+
           if (selectCount > fromCount * 2) {
             queryIssues.push({
               file,
               issue: 'Potential N+1 query pattern detected',
-              severity: 'high'
+              severity: 'high',
             });
           }
         }
@@ -90,7 +92,7 @@ class PerformanceOptimizer {
           queryIssues.push({
             file,
             issue: 'Query may benefit from database index',
-            severity: 'medium'
+            severity: 'medium',
           });
         }
 
@@ -99,7 +101,7 @@ class PerformanceOptimizer {
           queryIssues.push({
             file,
             issue: 'SELECT * without LIMIT may be inefficient',
-            severity: 'medium'
+            severity: 'medium',
           });
         }
       });
@@ -109,7 +111,7 @@ class PerformanceOptimizer {
           category: 'Database Queries',
           issue: `Found ${queryIssues.length} query optimization opportunities`,
           impact: 'High',
-          recommendations: queryIssues.map(q => q.issue)
+          recommendations: queryIssues.map(q => q.issue),
         });
       }
 
@@ -121,7 +123,7 @@ class PerformanceOptimizer {
 
   async optimizeDatabaseIndexes() {
     console.log('🗄️  Optimizing database indexes...');
-    
+
     try {
       // Create optimized indexes
       const indexOptimizations = [
@@ -129,40 +131,44 @@ class PerformanceOptimizer {
           table: 'recipes',
           columns: ['user_id', 'created_at'],
           type: 'btree',
-          name: 'idx_recipes_user_created'
+          name: 'idx_recipes_user_created',
         },
         {
           table: 'pantry_items',
           columns: ['user_id', 'expiry_date'],
           type: 'btree',
-          name: 'idx_pantry_user_expiry'
+          name: 'idx_pantry_user_expiry',
         },
         {
           table: 'favorites',
           columns: ['user_id', 'recipe_id'],
           type: 'btree',
-          name: 'idx_favorites_user_recipe'
+          name: 'idx_favorites_user_recipe',
         },
         {
           table: 'analytics_events',
           columns: ['event_type', 'created_at'],
           type: 'btree',
-          name: 'idx_analytics_event_created'
-        }
+          name: 'idx_analytics_event_created',
+        },
       ];
 
-      const indexSQL = indexOptimizations.map(index => {
-        return `CREATE INDEX IF NOT EXISTS ${index.name} ON ${index.table} (${index.columns.join(', ')});`;
-      }).join('\n');
+      const indexSQL = indexOptimizations
+        .map(index => {
+          return `CREATE INDEX IF NOT EXISTS ${index.name} ON ${index.table} (${index.columns.join(', ')});`;
+        })
+        .join('\n');
 
       // Write index optimization SQL
       fs.writeFileSync('database-indexes.sql', indexSQL);
-      
+
       this.optimizationResults.optimizations.push({
         category: 'Database Indexes',
         issue: 'Created optimized database indexes',
         impact: 'High',
-        recommendations: ['Apply database indexes for better query performance']
+        recommendations: [
+          'Apply database indexes for better query performance',
+        ],
       });
 
       console.log('✅ Database index optimization completed');
@@ -173,7 +179,7 @@ class PerformanceOptimizer {
 
   async implementCachingLayers() {
     console.log('💾 Implementing caching layers...');
-    
+
     try {
       // Create Redis caching configuration
       const redisConfig = `
@@ -221,7 +227,7 @@ module.exports = { client, cacheConfig, cacheMiddleware };
 `;
 
       fs.writeFileSync('src/lib/cache.ts', redisConfig);
-      
+
       // Create SWR configuration
       const swrConfig = `
 // SWR configuration for client-side caching
@@ -258,12 +264,15 @@ export const useAnalytics = (eventType) => {
 `;
 
       fs.writeFileSync('src/hooks/useCache.ts', swrConfig);
-      
+
       this.optimizationResults.optimizations.push({
         category: 'Caching',
         issue: 'Implemented Redis and SWR caching layers',
         impact: 'High',
-        recommendations: ['Configure Redis instance', 'Implement cache invalidation strategies']
+        recommendations: [
+          'Configure Redis instance',
+          'Implement cache invalidation strategies',
+        ],
       });
 
       console.log('✅ Caching layers implemented');
@@ -274,7 +283,7 @@ export const useAnalytics = (eventType) => {
 
   async configureCDN() {
     console.log('🌐 Configuring CDN...');
-    
+
     try {
       // Create CDN configuration
       const cdnConfig = `
@@ -317,7 +326,7 @@ export const optimizeFont = (fontFamily, weights = [400, 600, 700]) => {
 `;
 
       fs.writeFileSync('src/lib/cdn.ts', cdnConfig);
-      
+
       // Create Next.js image optimization config
       const nextConfig = `
 /** @type {import('next').NextConfig} */
@@ -347,12 +356,15 @@ module.exports = nextConfig;
 `;
 
       fs.writeFileSync('next.config.optimized.js', nextConfig);
-      
+
       this.optimizationResults.optimizations.push({
         category: 'CDN',
         issue: 'Configured CDN and image optimization',
         impact: 'High',
-        recommendations: ['Set up CDN provider', 'Configure image optimization service']
+        recommendations: [
+          'Set up CDN provider',
+          'Configure image optimization service',
+        ],
       });
 
       console.log('✅ CDN configuration completed');
@@ -363,11 +375,13 @@ module.exports = nextConfig;
 
   async optimizeBundleSize() {
     console.log('📦 Optimizing bundle size...');
-    
+
     try {
       // Analyze bundle size
-      const bundleAnalysis = execSync('npm run build 2>&1', { encoding: 'utf8' });
-      
+      const bundleAnalysis = execSync('npm run build 2>&1', {
+        encoding: 'utf8',
+      });
+
       // Create bundle optimization config
       const bundleConfig = `
 // Bundle optimization configuration
@@ -418,12 +432,12 @@ module.exports = withBundleAnalyzer(nextConfig);
 `;
 
       fs.writeFileSync('next.config.bundle.js', bundleConfig);
-      
+
       this.optimizationResults.optimizations.push({
         category: 'Bundle Size',
         issue: 'Optimized bundle size and tree shaking',
         impact: 'Medium',
-        recommendations: ['Enable bundle analysis', 'Implement code splitting']
+        recommendations: ['Enable bundle analysis', 'Implement code splitting'],
       });
 
       console.log('✅ Bundle size optimization completed');
@@ -434,7 +448,7 @@ module.exports = withBundleAnalyzer(nextConfig);
 
   async setupPerformanceMonitoring() {
     console.log('📊 Setting up performance monitoring...');
-    
+
     try {
       // Create performance monitoring configuration
       const monitoringConfig = `
@@ -556,12 +570,15 @@ export default PerformanceMonitor;
 `;
 
       fs.writeFileSync('src/lib/performance-monitor.ts', monitoringConfig);
-      
+
       this.optimizationResults.optimizations.push({
         category: 'Performance Monitoring',
         issue: 'Set up comprehensive performance monitoring',
         impact: 'High',
-        recommendations: ['Configure analytics service', 'Set up alerting for performance issues']
+        recommendations: [
+          'Configure analytics service',
+          'Set up alerting for performance issues',
+        ],
       });
 
       console.log('✅ Performance monitoring setup completed');
@@ -572,7 +589,7 @@ export default PerformanceMonitor;
 
   async optimizeImages() {
     console.log('🖼️  Optimizing images...');
-    
+
     try {
       // Create image optimization script
       const imageOptimizationScript = `
@@ -625,12 +642,15 @@ optimizer.optimizeAllImages('./public/images', './public/images/optimized');
 `;
 
       fs.writeFileSync('scripts/optimize-images.js', imageOptimizationScript);
-      
+
       this.optimizationResults.optimizations.push({
         category: 'Image Optimization',
         issue: 'Created image optimization script',
         impact: 'Medium',
-        recommendations: ['Run image optimization script', 'Implement responsive images']
+        recommendations: [
+          'Run image optimization script',
+          'Implement responsive images',
+        ],
       });
 
       console.log('✅ Image optimization completed');
@@ -641,7 +661,7 @@ optimizer.optimizeAllImages('./public/images', './public/images/optimized');
 
   async implementLazyLoading() {
     console.log('⏳ Implementing lazy loading...');
-    
+
     try {
       // Create lazy loading components
       const lazyLoadingComponents = `
@@ -712,12 +732,15 @@ export const LazyImage = ({ src, alt, ...props }) => {
 `;
 
       fs.writeFileSync('src/components/LazyLoading.tsx', lazyLoadingComponents);
-      
+
       this.optimizationResults.optimizations.push({
         category: 'Lazy Loading',
         issue: 'Implemented lazy loading for components and images',
         impact: 'Medium',
-        recommendations: ['Apply lazy loading to heavy components', 'Implement progressive loading']
+        recommendations: [
+          'Apply lazy loading to heavy components',
+          'Implement progressive loading',
+        ],
       });
 
       console.log('✅ Lazy loading implementation completed');
@@ -728,7 +751,7 @@ export const LazyImage = ({ src, alt, ...props }) => {
 
   async optimizeAPIs() {
     console.log('🔌 Optimizing APIs...');
-    
+
     try {
       // Create API optimization middleware
       const apiOptimization = `
@@ -831,12 +854,15 @@ export const monitorAPITime = (req: NextRequest, handler: Function) => {
 `;
 
       fs.writeFileSync('src/lib/api-optimization.ts', apiOptimization);
-      
+
       this.optimizationResults.optimizations.push({
         category: 'API Optimization',
         issue: 'Implemented API optimization middleware',
         impact: 'High',
-        recommendations: ['Apply optimization middleware to all APIs', 'Monitor API performance']
+        recommendations: [
+          'Apply optimization middleware to all APIs',
+          'Monitor API performance',
+        ],
       });
 
       console.log('✅ API optimization completed');
@@ -847,7 +873,7 @@ export const monitorAPITime = (req: NextRequest, handler: Function) => {
 
   async setupServiceWorkers() {
     console.log('⚙️  Setting up service workers...');
-    
+
     try {
       // Create service worker for caching
       const serviceWorker = `
@@ -896,7 +922,7 @@ self.addEventListener('activate', (event) => {
 `;
 
       fs.writeFileSync('public/sw.js', serviceWorker);
-      
+
       // Create service worker registration
       const swRegistration = `
 // Service worker registration
@@ -914,12 +940,15 @@ if ('serviceWorker' in navigator) {
 `;
 
       fs.writeFileSync('src/lib/sw-registration.ts', swRegistration);
-      
+
       this.optimizationResults.optimizations.push({
         category: 'Service Workers',
         issue: 'Set up service workers for caching and offline support',
         impact: 'Medium',
-        recommendations: ['Register service worker in app', 'Implement cache strategies']
+        recommendations: [
+          'Register service worker in app',
+          'Implement cache strategies',
+        ],
       });
 
       console.log('✅ Service workers setup completed');
@@ -930,14 +959,14 @@ if ('serviceWorker' in navigator) {
 
   calculateOverallScore() {
     let score = 100;
-    
+
     // Deduct points for missing optimizations
     const missingOptimizations = this.optimizationResults.optimizations.filter(
       opt => opt.impact === 'High' && !opt.recommendations.includes('Completed')
     );
-    
+
     score -= missingOptimizations.length * 10;
-    
+
     this.optimizationResults.overallScore = Math.max(0, Math.min(100, score));
   }
 
@@ -946,19 +975,28 @@ if ('serviceWorker' in navigator) {
       ...this.optimizationResults,
       summary: {
         totalOptimizations: this.optimizationResults.optimizations.length,
-        highImpact: this.optimizationResults.optimizations.filter(opt => opt.impact === 'High').length,
-        mediumImpact: this.optimizationResults.optimizations.filter(opt => opt.impact === 'Medium').length,
-        lowImpact: this.optimizationResults.optimizations.filter(opt => opt.impact === 'Low').length
-      }
+        highImpact: this.optimizationResults.optimizations.filter(
+          opt => opt.impact === 'High'
+        ).length,
+        mediumImpact: this.optimizationResults.optimizations.filter(
+          opt => opt.impact === 'Medium'
+        ).length,
+        lowImpact: this.optimizationResults.optimizations.filter(
+          opt => opt.impact === 'Low'
+        ).length,
+      },
     };
 
     // Write report to file
-    fs.writeFileSync('PERFORMANCE_OPTIMIZATION_REPORT.json', JSON.stringify(report, null, 2));
-    
+    fs.writeFileSync(
+      'PERFORMANCE_OPTIMIZATION_REPORT.json',
+      JSON.stringify(report, null, 2)
+    );
+
     // Generate markdown report
     const markdownReport = this.generateMarkdownReport(report);
     fs.writeFileSync('PERFORMANCE_OPTIMIZATION_REPORT.md', markdownReport);
-    
+
     console.log('\n📊 Performance optimization report generated:');
     console.log('  - PERFORMANCE_OPTIMIZATION_REPORT.json');
     console.log('  - PERFORMANCE_OPTIMIZATION_REPORT.md');
@@ -979,12 +1017,16 @@ if ('serviceWorker' in navigator) {
 
 ## Optimizations
 
-${report.optimizations.map(opt => `### ${opt.category}
+${report.optimizations
+  .map(
+    opt => `### ${opt.category}
 - **Issue:** ${opt.issue}
 - **Impact:** ${opt.impact}
 - **Recommendations:**
 ${opt.recommendations.map(rec => `  - ${rec}`).join('\n')}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Recommendations
 
@@ -998,8 +1040,13 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
   // Helper methods
   findFiles(pattern) {
     try {
-      const result = execSync(`find . -name "${pattern}" -type f`, { encoding: 'utf8' });
-      return result.trim().split('\n').filter(file => file.length > 0);
+      const result = execSync(`find . -name "${pattern}" -type f`, {
+        encoding: 'utf8',
+      });
+      return result
+        .trim()
+        .split('\n')
+        .filter(file => file.length > 0);
     } catch (error) {
       return [];
     }
@@ -1009,7 +1056,8 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
 // Run the optimization if this script is executed directly
 if (require.main === module) {
   const optimizer = new PerformanceOptimizer();
-  optimizer.runFullOptimization()
+  optimizer
+    .runFullOptimization()
     .then(results => {
       console.log('\n✅ Performance optimization completed successfully!');
       process.exit(0);
