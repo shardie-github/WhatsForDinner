@@ -1,17 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabaseClient'
 import { Recipe } from '@/lib/validation'
+import { useTenant } from './useTenant'
 
 interface Favorite {
   id: number
   recipe: Recipe
 }
 
-export function useFavorites(userId?: string) {
+export function useFavorites() {
+  const { tenant } = useTenant()
+
   return useQuery({
-    queryKey: ['favorites', userId],
+    queryKey: ['favorites', tenant?.id],
     queryFn: async (): Promise<Favorite[]> => {
-      if (!userId) return []
+      if (!tenant) return []
       
       const { data, error } = await supabase
         .from('favorites')
@@ -25,7 +28,7 @@ export function useFavorites(userId?: string) {
             time
           )
         `)
-        .eq('user_id', userId)
+        .eq('tenant_id', tenant.id)
 
       if (error) throw error
       
@@ -34,69 +37,60 @@ export function useFavorites(userId?: string) {
         recipe: fav.recipes as any as Recipe
       }))
     },
-    enabled: !!userId,
+    enabled: !!tenant,
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
 }
 
-export function useSaveRecipe() {
+export function useAddToFavorites() {
   const queryClient = useQueryClient()
+  const { tenant } = useTenant()
 
   return useMutation<
     void,
     Error,
-    { recipe: Recipe; userId: string }
+    { recipeId: number }
   >({
-    mutationFn: async ({ recipe, userId }) => {
-      // First save the recipe
-      const { data: recipeData, error: recipeError } = await supabase
-        .from('recipes')
-        .insert({
-          user_id: userId,
-          title: recipe.title,
-          details: recipe,
-          calories: recipe.calories,
-          time: recipe.cookTime,
-        })
-        .select()
-        .single()
+    mutationFn: async ({ recipeId }) => {
+      if (!tenant) throw new Error('No tenant found')
 
-      if (recipeError) throw recipeError
-
-      // Then add to favorites
-      const { error: favoriteError } = await supabase
+      const { error } = await supabase
         .from('favorites')
         .insert({
-          user_id: userId,
-          recipe_id: recipeData.id,
+          tenant_id: tenant.id,
+          recipe_id: recipeId,
         })
 
-      if (favoriteError) throw favoriteError
+      if (error) throw error
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', variables.userId] })
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] })
     },
   })
 }
 
 export function useRemoveFavorite() {
   const queryClient = useQueryClient()
+  const { tenant } = useTenant()
 
   return useMutation<
     void,
     Error,
-    { favoriteId: number; userId: string }
+    { favoriteId: number }
   >({
     mutationFn: async ({ favoriteId }) => {
+      if (!tenant) throw new Error('No tenant found')
+
       const { error } = await supabase
         .from('favorites')
         .delete()
         .eq('id', favoriteId)
+        .eq('tenant_id', tenant.id)
 
       if (error) throw error
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', variables.userId] })
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] })
     },
   })
 }

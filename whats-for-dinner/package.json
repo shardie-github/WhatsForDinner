@@ -29,7 +29,9 @@
     "zod": "^3.22.4",
     "posthog-js": "^1.200.0",
     "@sentry/nextjs": "^8.0.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "stripe": "^14.21.0",
+    "@stripe/stripe-js": "^2.4.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",

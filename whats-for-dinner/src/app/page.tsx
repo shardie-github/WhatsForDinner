@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabaseClient'
 import { Recipe } from '@/lib/validation'
-import { useGenerateRecipes } from '@/hooks/useRecipes'
+import { useGenerateRecipes, useSaveRecipe } from '@/hooks/useRecipes'
 import { usePantryItems } from '@/hooks/usePantry'
-import { useSaveRecipe } from '@/hooks/useFavorites'
+import { useTenant } from '@/hooks/useTenant'
 import RecipeCard from '@/components/RecipeCard'
 import InputPrompt from '@/components/InputPrompt'
 import Navbar from '@/components/Navbar'
@@ -21,7 +21,8 @@ function HomeContent() {
   
   const generateRecipesMutation = useGenerateRecipes()
   const saveRecipeMutation = useSaveRecipe()
-  const { data: pantryItems = [], isLoading: pantryLoading } = usePantryItems(user?.id)
+  const { data: pantryItems = [], isLoading: pantryLoading } = usePantryItems()
+  const { tenant, usage } = useTenant()
   const pantryItemNames = (pantryItems as any[]).map(item => item.ingredient)
 
   useEffect(() => {
@@ -89,7 +90,7 @@ function HomeContent() {
     if (!user) return
 
     try {
-      await saveRecipeMutation.mutateAsync({ recipe, userId: user.id })
+      await saveRecipeMutation.mutateAsync(recipe)
       
       // Track recipe save
       await analytics.trackEvent('recipe_saved', {
@@ -121,9 +122,40 @@ function HomeContent() {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             What's for Dinner?
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 mb-4">
             Get AI-powered meal suggestions based on your pantry and preferences
           </p>
+          
+          {tenant && usage && (
+            <div className="inline-flex items-center space-x-4 bg-white rounded-lg shadow-sm border p-4">
+              <div className="text-center">
+                <p className="text-sm text-gray-500">Plan</p>
+                <p className="font-semibold text-gray-900">{tenant.plan.toUpperCase()}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-gray-500">Meals Today</p>
+                <p className="font-semibold text-gray-900">
+                  {usage.total_meals_today} / {usage.plan_quota}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-gray-500">Remaining</p>
+                <p className="font-semibold text-green-600">
+                  {usage.remaining_quota}
+                </p>
+              </div>
+              {tenant.plan === 'free' && (
+                <div className="text-center">
+                  <a 
+                    href="/billing" 
+                    className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  >
+                    Upgrade
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {pantryLoading ? (
