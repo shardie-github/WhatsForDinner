@@ -1,29 +1,172 @@
 {
-  "name": "What's for Dinner?",
-  "short_name": "Dinner AI",
-  "description": "AI-powered meal suggestions based on your pantry and preferences",
+  "name": "What's for Dinner",
+  "short_name": "WFD",
+  "description": "AI-powered meal planning and recipe generation app",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["food", "lifestyle", "productivity"],
   "icons": [
     {
-      "src": "/icon-192x192.png",
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icon-512x512.png",
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
     }
   ],
-  "categories": ["food", "lifestyle", "utilities"],
-  "lang": "en",
-  "dir": "ltr",
-  "scope": "/",
-  "prefer_related_applications": false
+  "shortcuts": [
+    {
+      "name": "Generate Recipe",
+      "short_name": "Generate",
+      "description": "Generate a new recipe based on your pantry",
+      "url": "/generate",
+      "icons": [
+        {
+          "src": "/icons/shortcut-generate.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "My Pantry",
+      "short_name": "Pantry",
+      "description": "View and manage your pantry items",
+      "url": "/pantry",
+      "icons": [
+        {
+          "src": "/icons/shortcut-pantry.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "short_name": "Favorites",
+      "description": "View your favorite recipes",
+      "url": "/favorites",
+      "icons": [
+        {
+          "src": "/icons/shortcut-favorites.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Home screen on desktop"
+    },
+    {
+      "src": "/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Home screen on mobile"
+    },
+    {
+      "src": "/screenshots/desktop-recipe.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Recipe view on desktop"
+    },
+    {
+      "src": "/screenshots/mobile-recipe.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Recipe view on mobile"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "handle_links": "preferred",
+  "capture_links": "new-client",
+  "file_handlers": [
+    {
+      "action": "/import",
+      "accept": {
+        "text/csv": [".csv"],
+        "application/json": [".json"]
+      }
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+wfd",
+      "url": "/recipe?id=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "image",
+          "accept": ["image/*"]
+        }
+      ]
+    }
+  }
 }

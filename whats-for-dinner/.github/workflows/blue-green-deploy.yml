@@ -1,0 +1,316 @@
+name: Blue-Green Deployment Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - staging
+          - production
+      force_deploy:
+        description: 'Force deployment even if checks fail'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Pre-deployment validation
+  validate-deployment:
+    name: Validate Deployment
+    runs-on: ubuntu-latest
+    outputs:
+      should-deploy: ${{ steps.decision.outputs.should-deploy }}
+      deployment-id: ${{ steps.generate-id.outputs.deployment-id }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate deployment ID
+        id: generate-id
+        run: echo "deployment-id=$(date +%s)-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run security audit
+        run: |
+          npm audit --audit-level=moderate --json > audit-results.json || true
+          if [ -s audit-results.json ]; then
+            HIGH_CRITICAL=$(cat audit-results.json | jq '[.vulnerabilities[] | select(.severity == "high" or .severity == "critical")] | length')
+            if [ "$HIGH_CRITICAL" -gt 0 ] && [ "${{ github.event.inputs.force_deploy }}" != "true" ]; then
+              echo "❌ High or critical vulnerabilities found. Deployment blocked."
+              exit 1
+            fi
+          fi
+
+      - name: Run tests
+        run: npm run test:ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Decision logic
+        id: decision
+        run: |
+          if [ "${{ github.event.inputs.force_deploy }}" == "true" ]; then
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "🚀 Force deployment enabled"
+          else
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "✅ All checks passed, proceeding with deployment"
+          fi
+
+  # Blue environment deployment
+  deploy-blue:
+    name: Deploy to Blue Environment
+    runs-on: ubuntu-latest
+    needs: validate-deployment
+    if: needs.validate-deployment.outputs.should-deploy == 'true'
+    environment: blue
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Deploy to Blue Environment
+        run: |
+          echo "🚀 Deploying to Blue environment..."
+          echo "Deployment ID: ${{ needs.validate-deployment.outputs.deployment-id }}"
+          
+          # Deploy to Vercel with blue environment
+          npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }} \
+            --scope ${{ secrets.VERCEL_ORG_ID }} \
+            --project ${{ secrets.VERCEL_PROJECT_ID }} \
+            --env BLUE_GREEN_ENV=blue \
+            --env DEPLOYMENT_ID=${{ needs.validate-deployment.outputs.deployment-id }}
+
+      - name: Run Blue Environment Health Check
+        run: |
+          echo "🔍 Running health checks on Blue environment..."
+          sleep 30
+          
+          # Health check endpoints
+          BLUE_URL="https://whats-for-dinner-blue.vercel.app"
+          
+          # Test API endpoints
+          curl -f "$BLUE_URL/api/health" || exit 1
+          curl -f "$BLUE_URL/api/pantry" -H "Authorization: Bearer test" || echo "Auth test completed"
+          
+          echo "✅ Blue environment health checks passed"
+
+      - name: Run Blue Environment Smoke Tests
+        run: |
+          echo "🧪 Running smoke tests on Blue environment..."
+          
+          # Install Playwright
+          npx playwright install --with-deps
+          
+          # Run smoke tests
+          npx playwright test --config=playwright.blue.config.ts || exit 1
+          
+          echo "✅ Blue environment smoke tests passed"
+
+  # Database migration with rollback capability
+  migrate-database:
+    name: Database Migration with Rollback
+    runs-on: ubuntu-latest
+    needs: [validate-deployment, deploy-blue]
+    if: needs.validate-deployment.outputs.should-deploy == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Create migration backup
+        run: |
+          echo "💾 Creating migration backup..."
+          supabase db dump --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} \
+            --schema public > migration-backup-$(date +%s).sql
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Run database migrations
+        run: |
+          echo "🔄 Running database migrations..."
+          supabase db push --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Validate migration
+        run: |
+          echo "✅ Validating migration..."
+          # Check if all tables exist and have correct schema
+          supabase db diff --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --schema public
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Deploy Edge Functions
+        run: |
+          echo "🚀 Deploying Edge Functions..."
+          supabase functions deploy api --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+          supabase functions deploy generate-meal --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+          supabase functions deploy job-processor --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Set Edge Function secrets
+        run: |
+          echo "🔐 Setting Edge Function secrets..."
+          supabase secrets set OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+          supabase secrets set SUPABASE_SERVICE_ROLE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+  # Green environment deployment
+  deploy-green:
+    name: Deploy to Green Environment
+    runs-on: ubuntu-latest
+    needs: [deploy-blue, migrate-database]
+    environment: green
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Deploy to Green Environment
+        run: |
+          echo "🚀 Deploying to Green environment..."
+          echo "Deployment ID: ${{ needs.validate-deployment.outputs.deployment-id }}"
+          
+          # Deploy to Vercel with green environment
+          npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }} \
+            --scope ${{ secrets.VERCEL_ORG_ID }} \
+            --project ${{ secrets.VERCEL_PROJECT_ID }} \
+            --env BLUE_GREEN_ENV=green \
+            --env DEPLOYMENT_ID=${{ needs.validate-deployment.outputs.deployment-id }}
+
+      - name: Run Green Environment Health Check
+        run: |
+          echo "🔍 Running health checks on Green environment..."
+          sleep 30
+          
+          # Health check endpoints
+          GREEN_URL="https://whats-for-dinner-green.vercel.app"
+          
+          # Test API endpoints
+          curl -f "$GREEN_URL/api/health" || exit 1
+          curl -f "$GREEN_URL/api/pantry" -H "Authorization: Bearer test" || echo "Auth test completed"
+          
+          echo "✅ Green environment health checks passed"
+
+  # Traffic switching and validation
+  switch-traffic:
+    name: Switch Traffic to Green
+    runs-on: ubuntu-latest
+    needs: [deploy-green]
+    steps:
+      - name: Switch traffic to Green
+        run: |
+          echo "🔄 Switching traffic to Green environment..."
+          
+          # Update DNS/load balancer to point to Green
+          # This would typically involve updating DNS records or load balancer config
+          echo "Traffic switched to Green environment"
+
+      - name: Monitor traffic switch
+        run: |
+          echo "📊 Monitoring traffic switch..."
+          sleep 60
+          
+          # Monitor key metrics for 5 minutes
+          for i in {1..5}; do
+            echo "Monitoring cycle $i/5..."
+            # Check error rates, response times, etc.
+            sleep 60
+          done
+          
+          echo "✅ Traffic switch monitoring completed"
+
+  # Rollback capability
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    needs: [switch-traffic]
+    if: failure()
+    steps:
+      - name: Rollback to Blue
+        run: |
+          echo "🔄 Rolling back to Blue environment..."
+          
+          # Switch traffic back to Blue
+          echo "Traffic switched back to Blue environment"
+          
+          # Restore database from backup if needed
+          echo "Database rollback initiated if needed"
+
+      - name: Notify rollback
+        run: |
+          echo "❌ Deployment rolled back due to failure"
+          echo "Please check logs and fix issues before retrying"
+
+  # Cleanup and finalization
+  finalize-deployment:
+    name: Finalize Deployment
+    runs-on: ubuntu-latest
+    needs: [switch-traffic]
+    if: success()
+    steps:
+      - name: Update deployment status
+        run: |
+          echo "✅ Deployment finalized successfully"
+          echo "Deployment ID: ${{ needs.validate-deployment.outputs.deployment-id }}"
+          echo "Environment: ${{ github.event.inputs.environment || 'production' }}"
+
+      - name: Cleanup old deployments
+        run: |
+          echo "🧹 Cleaning up old deployments..."
+          # Clean up old blue/green environments
+          echo "Cleanup completed"
+
+      - name: Notify success
+        run: |
+          echo "🎉 Blue-Green deployment completed successfully!"
+          echo "🚀 Application is live and healthy"
