@@ -6,6 +6,7 @@
 // Core autonomous system
 export { autonomousSystem } from './autonomousSystem';
 export { autonomousOrchestrator } from './autonomousOrchestrator';
+export { continuousAutonomousAgent } from './continuousAutonomousAgent';
 
 // Safety and security
 export { aiSafetyGuardrails } from './aiSafetyGuardrails';
@@ -17,6 +18,9 @@ export { cognitiveContinuity } from './cognitiveContinuity';
 
 // Monitoring and compliance
 export { observabilityAudit } from './observabilityAudit';
+export { anomalyDetectionEngine } from './anomalyDetectionEngine';
+export { aiDecisionEngine } from './aiDecisionEngine';
+export { alertingSystem } from './alertingSystem';
 
 // Agents
 export { BuildAgent } from './agents/buildAgent';
