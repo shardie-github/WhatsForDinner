@@ -13,16 +13,171 @@ export type Database = {
           id: string
           name: string | null
           preferences: any | null
+          tenant_id: string | null
+          role: 'owner' | 'editor' | 'viewer'
         }
         Insert: {
           id: string
           name?: string | null
           preferences?: any | null
+          tenant_id?: string | null
+          role?: 'owner' | 'editor' | 'viewer'
         }
         Update: {
           id?: string
           name?: string | null
           preferences?: any | null
+          tenant_id?: string | null
+          role?: 'owner' | 'editor' | 'viewer'
+        }
+      }
+      tenants: {
+        Row: {
+          id: string
+          name: string
+          plan: 'free' | 'pro' | 'family'
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          status: 'active' | 'inactive' | 'suspended' | 'cancelled'
+          created_at: string
+          updated_at: string
+          settings: any
+          metadata: any
+        }
+        Insert: {
+          id?: string
+          name: string
+          plan?: 'free' | 'pro' | 'family'
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          status?: 'active' | 'inactive' | 'suspended' | 'cancelled'
+          created_at?: string
+          updated_at?: string
+          settings?: any
+          metadata?: any
+        }
+        Update: {
+          id?: string
+          name?: string
+          plan?: 'free' | 'pro' | 'family'
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          status?: 'active' | 'inactive' | 'suspended' | 'cancelled'
+          created_at?: string
+          updated_at?: string
+          settings?: any
+          metadata?: any
+        }
+      }
+      tenant_memberships: {
+        Row: {
+          id: string
+          tenant_id: string
+          user_id: string
+          role: 'owner' | 'editor' | 'viewer'
+          invited_by: string | null
+          joined_at: string
+          status: 'active' | 'pending' | 'suspended'
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          user_id: string
+          role: 'owner' | 'editor' | 'viewer'
+          invited_by?: string | null
+          joined_at?: string
+          status?: 'active' | 'pending' | 'suspended'
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          user_id?: string
+          role?: 'owner' | 'editor' | 'viewer'
+          invited_by?: string | null
+          joined_at?: string
+          status?: 'active' | 'pending' | 'suspended'
+        }
+      }
+      subscriptions: {
+        Row: {
+          id: string
+          user_id: string | null
+          tenant_id: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          plan: 'free' | 'pro' | 'family'
+          status: 'active' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'past_due' | 'trialing' | 'unpaid'
+          current_period_start: string | null
+          current_period_end: string | null
+          cancel_at_period_end: boolean
+          created_at: string
+          updated_at: string
+          metadata: any
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          tenant_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          plan: 'free' | 'pro' | 'family'
+          status: 'active' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'past_due' | 'trialing' | 'unpaid'
+          current_period_start?: string | null
+          current_period_end?: string | null
+          cancel_at_period_end?: boolean
+          created_at?: string
+          updated_at?: string
+          metadata?: any
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          tenant_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          plan?: 'free' | 'pro' | 'family'
+          status?: 'active' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'past_due' | 'trialing' | 'unpaid'
+          current_period_start?: string | null
+          current_period_end?: string | null
+          cancel_at_period_end?: boolean
+          created_at?: string
+          updated_at?: string
+          metadata?: any
+        }
+      }
+      usage_logs: {
+        Row: {
+          id: number
+          user_id: string | null
+          tenant_id: string | null
+          action: string
+          tokens_used: number
+          cost_usd: number
+          model_used: string | null
+          timestamp: string
+          metadata: any
+        }
+        Insert: {
+          id?: number
+          user_id?: string | null
+          tenant_id?: string | null
+          action: string
+          tokens_used?: number
+          cost_usd?: number
+          model_used?: string | null
+          timestamp?: string
+          metadata?: any
+        }
+        Update: {
+          id?: number
+          user_id?: string | null
+          tenant_id?: string | null
+          action?: string
+          tokens_used?: number
+          cost_usd?: number
+          model_used?: string | null
+          timestamp?: string
+          metadata?: any
         }
       }
       pantry_items: {
