@@ -1,184 +1,319 @@
-# What's for Dinner? 🍽️
+# What's for Dinner - Ecosystem SaaS Platform
 
-An AI-powered meal recommendation application that suggests delicious recipes based on your pantry ingredients and dietary preferences. Built with Next.js 16, React 19, TypeScript, and Supabase.
+A comprehensive, enterprise-grade meal planning and recipe platform with full automation across growth, compliance, monetization, and development workflows.
 
-## ✨ Features
+## 🚀 Features
 
-- 🤖 **AI-Powered Recipe Generation** - Get personalized meal suggestions using OpenAI GPT-4o-mini
-- 🥘 **Pantry Management** - Track your ingredients and quantities
-- ❤️ **Save Favorites** - Keep your favorite recipes for later
-- 📱 **Progressive Web App** - Install as a native app on your device
-- 🔄 **Offline Support** - Browse saved recipes even without internet
-- 🎨 **Modern UI** - Beautiful, responsive design with Tailwind CSS
-- ⚡ **Fast Performance** - Optimized with React Query and caching
-- 🔒 **Secure** - Built with TypeScript and comprehensive validation
+### Core Platform
+- **AI-Powered Meal Planning**: Personalized meal recommendations based on dietary preferences
+- **Recipe Management**: Create, save, and share recipes with advanced search
+- **Pantry Integration**: Track ingredients and suggest recipes based on available items
+- **Multi-Platform**: Web and mobile applications with real-time sync
+
+### Enterprise Features
+- **Multi-Tenant Architecture**: Support for organizations and teams
+- **API Ecosystem**: Comprehensive REST and GraphQL APIs for partners
+- **AI Agent System**: Specialized agents for dietary coaching, chef guidance, and trend analysis
+- **Internationalization**: Full i18n support with 10+ languages
+
+### Automation & Growth
+- **Feature Flags**: A/B testing and gradual feature rollouts
+- **Growth Automation**: Conversion optimization and retention strategies
+- **Affiliate Monetization**: Integration with delivery apps and grocery chains
+- **Compliance Automation**: GDPR/CCPA compliant with automated legal document generation
+
+## 🏗️ Architecture
+
+### Tech Stack
+- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
+- **Backend**: Supabase (PostgreSQL, Auth, Real-time)
+- **AI**: OpenAI GPT-4 with specialized agents
+- **Deployment**: Vercel with GitHub Actions CI/CD
+- **Monitoring**: Sentry, PostHog Analytics
+
+### Key Systems
+1. **Release Management**: Automated semantic versioning and deployment
+2. **Feature Flags**: Real-time experimentation platform
+3. **Internationalization**: Multi-language support pipeline
+4. **AI Agents**: Domain-specific intelligent assistants
+5. **Partner APIs**: B2B integration ecosystem
+6. **Compliance**: Legal document automation
+7. **Monetization**: Affiliate and subscription revenue
+8. **Growth**: A/B testing and conversion optimization
+9. **Repo Hygiene**: Automated code quality and onboarding
+10. **Support**: AI-powered customer service
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-
-- Node.js 20 or later
-- npm or yarn
+- Node.js 18+
+- pnpm 8+
 - Supabase account
 - OpenAI API key
 
 ### Installation
 
 1. **Clone the repository**
-
    ```bash
-   git clone https://github.com/yourusername/whats-for-dinner.git
+   git clone https://github.com/your-org/whats-for-dinner.git
    cd whats-for-dinner
    ```
 
 2. **Install dependencies**
-
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Set up environment variables**
-
    ```bash
-   cp .env.local.example .env.local
+   cp .env.example .env.local
    ```
-
-   Fill in your environment variables:
-
-   ```bash
-   # Supabase Configuration
+   
+   Configure the following variables:
+   ```env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-   # OpenAI Configuration
    OPENAI_API_KEY=your_openai_api_key
+   STRIPE_SECRET_KEY=your_stripe_secret_key
    ```
 
 4. **Set up the database**
-   - Create a new Supabase project
-   - Run the SQL migration from `supabase/migrations/001_create_tables.sql`
-   - Enable Row Level Security (RLS) policies
+   ```bash
+   pnpm supabase:db:push
+   ```
 
 5. **Start the development server**
-
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 6. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 🛠️ Available Scripts
+## 📁 Project Structure
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run test` - Run tests
-- `npm run test:ci` - Run tests in CI mode
-- `npm run type-check` - Run TypeScript type checking
+```
+whats-for-dinner/
+├── src/
+│   ├── app/                    # Next.js app directory
+│   │   ├── api/               # API routes
+│   │   ├── admin/             # Admin dashboard
+│   │   └── ...
+│   ├── components/            # Reusable UI components
+│   │   ├── feedback/          # Feedback and support
+│   │   ├── i18n/             # Internationalization
+│   │   ├── monetization/     # Affiliate integration
+│   │   └── ui/               # Base UI components
+│   ├── lib/                  # Utility libraries
+│   │   ├── ai-agents/        # AI agent system
+│   │   ├── compliance/       # Legal and compliance
+│   │   ├── growth/           # Growth automation
+│   │   ├── monetization/     # Revenue systems
+│   │   └── partner-api/      # Partner integrations
+│   ├── hooks/                # Custom React hooks
+│   └── types/                # TypeScript definitions
+├── scripts/                  # Automation scripts
+├── docs/                    # Documentation
+└── .github/workflows/       # CI/CD pipelines
+```
 
-## 🏗️ Tech Stack
+## 🛠️ Development
 
-- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
-- **Backend**: Supabase (Database, Auth, Real-time)
-- **AI**: OpenAI GPT-4o-mini
-- **State Management**: TanStack Query
-- **Testing**: Jest, React Testing Library
-- **PWA**: Service Worker, Web App Manifest
-- **Deployment**: Vercel
+### Available Scripts
 
-## 📱 PWA Features
+```bash
+# Development
+pnpm dev              # Start development server
+pnpm build            # Build for production
+pnpm start            # Start production server
 
-This app is a Progressive Web App (PWA) that can be installed on your device:
+# Code Quality
+pnpm lint             # Run ESLint
+pnpm lint:fix         # Fix linting issues
+pnpm type-check       # Check TypeScript types
+pnpm format           # Format code with Prettier
 
-- **Install Prompt**: Click the install button when it appears
-- **Offline Support**: Browse saved recipes without internet
-- **App-like Experience**: Full-screen, native app feel
-- **Fast Loading**: Cached resources for quick access
+# Testing
+pnpm test             # Run tests
+pnpm test:watch       # Run tests in watch mode
+pnpm test:coverage    # Run tests with coverage
 
-## 🔧 Configuration
+# Database
+pnpm supabase:start   # Start local Supabase
+pnpm supabase:stop    # Stop local Supabase
+pnpm supabase:db:push # Push schema changes
 
-### Supabase Setup
+# Automation
+pnpm autonomous:start # Start autonomous systems
+pnpm hygiene:check    # Run repository hygiene check
+```
 
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to Settings > API to get your URL and anon key
-3. Run the database migration from `supabase/migrations/`
-4. Enable Row Level Security (RLS) policies
+### Code Standards
 
-### OpenAI Setup
+- **TypeScript**: All new code must be written in TypeScript
+- **ESLint**: Follow the configured ESLint rules
+- **Prettier**: Code formatting is enforced
+- **Testing**: Write tests for new features
+- **Commits**: Use conventional commit messages
 
-1. Get an API key from [OpenAI](https://platform.openai.com)
-2. Add it to your `.env.local` file
-3. Ensure you have credits available
+### Git Workflow
+
+1. Create a feature branch: `git checkout -b feature/your-feature`
+2. Make your changes
+3. Run tests: `pnpm test`
+4. Run linting: `pnpm lint`
+5. Commit changes: `git commit -m "feat: your feature"`
+6. Push and create a pull request
+
+## 🌍 Internationalization
+
+The platform supports multiple languages with automatic detection and manual switching:
+
+- **Supported Languages**: English, Spanish, French, German, Italian, Portuguese, Japanese, Korean, Chinese, Arabic
+- **Features**: RTL support, currency formatting, date/time localization
+- **Management**: Admin interface for translation management
+
+## 🤖 AI Agents
+
+The platform includes specialized AI agents:
+
+- **Dietary Coach**: Personalized nutrition guidance
+- **Master Chef**: Recipe creation and cooking tips
+- **eBook Generator**: Personalized cookbook creation
+- **Trend Analyzer**: Food trend insights and recommendations
+
+## 🔌 API Integration
+
+### Partner APIs
+
+- **Delivery**: UberEats, DoorDash, Grubhub
+- **Grocery**: Instacart, Amazon Fresh
+- **Chef Partnerships**: Premium recipe packages
+
+### Public APIs
+
+- **Recipes API**: Search and manage recipes
+- **Meal Plans API**: Create and manage meal plans
+- **Nutrition API**: Analyze nutritional content
+- **Partners API**: B2B integration endpoints
+
+## 📊 Analytics & Monitoring
+
+### Built-in Analytics
+- **User Behavior**: Track user journeys and conversions
+- **A/B Testing**: Statistical significance testing
+- **Revenue Tracking**: Affiliate and subscription analytics
+- **Performance**: Real-time performance monitoring
+
+### External Integrations
+- **Sentry**: Error tracking and performance monitoring
+- **PostHog**: Product analytics and feature flags
+- **Stripe**: Payment processing and analytics
+
+## 🔒 Security & Compliance
+
+### Security Features
+- **Authentication**: Supabase Auth with JWT tokens
+- **Authorization**: Role-based access control
+- **Data Encryption**: End-to-end encryption
+- **API Security**: Rate limiting and key management
+
+### Compliance
+- **GDPR**: European data protection compliance
+- **CCPA**: California privacy compliance
+- **COPPA**: Children's privacy protection
+- **Automated Legal**: AI-generated terms and privacy policies
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Production Deployment
 
-1. Connect your GitHub repository to Vercel
-2. Add environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
+1. **Configure Environment Variables**
+   ```bash
+   # Production environment variables
+   NEXT_PUBLIC_SUPABASE_URL=your_production_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_production_key
+   OPENAI_API_KEY=your_openai_key
+   STRIPE_SECRET_KEY=your_stripe_key
+   ```
 
-### Manual Deployment
+2. **Deploy to Vercel**
+   ```bash
+   vercel --prod
+   ```
 
-1. Build the application: `npm run build`
-2. Start the production server: `npm start`
-3. Configure your reverse proxy
+3. **Set up Monitoring**
+   - Configure Sentry for error tracking
+   - Set up PostHog for analytics
+   - Configure alerting thresholds
 
-## 🧪 Testing
+### CI/CD Pipeline
 
-Run the test suite:
+The platform includes automated CI/CD with:
+- **Automated Testing**: Runs on every PR
+- **Code Quality**: Linting and type checking
+- **Security Scanning**: Vulnerability detection
+- **Automated Deployment**: Staging and production
+- **Release Management**: Semantic versioning
 
-```bash
-# Run all tests
-npm run test
+## 📈 Growth & Monetization
 
-# Run tests in watch mode
-npm run test:watch
+### Revenue Streams
+- **Subscriptions**: Free, Pro ($9.99/month), Enterprise ($29.99/month)
+- **Affiliate Commissions**: 2.5-5% from delivery/grocery orders
+- **Chef Partnerships**: 15% commission on premium packages
+- **API Access**: Tiered pricing for partner integrations
 
-# Run tests with coverage
-npm run test:coverage
-
-# Run tests in CI mode
-npm run test:ci
-```
-
-## 📚 Documentation
-
-- [Technical Documentation](./TECH_DOCS.md) - Comprehensive technical details
-- [API Reference](./TECH_DOCS.md#api-endpoints) - API endpoint documentation
-- [Database Schema](./TECH_DOCS.md#database-schema) - Database structure
-- [Deployment Guide](./TECH_DOCS.md#deployment) - Deployment instructions
+### Growth Features
+- **A/B Testing**: Conversion optimization
+- **Referral Program**: User acquisition
+- **Feature Flags**: Gradual rollouts
+- **Analytics**: Data-driven decisions
 
 ## 🤝 Contributing
 
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🆘 Support
 
-- [Next.js](https://nextjs.org) for the amazing React framework
-- [Supabase](https://supabase.com) for the backend services
-- [OpenAI](https://openai.com) for the AI capabilities
-- [Tailwind CSS](https://tailwindcss.com) for the styling system
-- [Vercel](https://vercel.com) for the deployment platform
+- **Documentation**: [docs/](docs/)
+- **Issues**: [GitHub Issues](https://github.com/your-org/whats-for-dinner/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-org/whats-for-dinner/discussions)
+- **Email**: support@whatsfordinner.com
 
-## 📞 Support
+## 🎯 Roadmap
 
-If you have any questions or need help, please:
+### Q1 2024
+- [ ] Advanced AI agent training
+- [ ] Mobile app release
+- [ ] Enterprise SSO integration
+- [ ] Advanced analytics dashboard
 
-1. Check the [documentation](./TECH_DOCS.md)
-2. Search [existing issues](https://github.com/yourusername/whats-for-dinner/issues)
-3. Create a [new issue](https://github.com/yourusername/whats-for-dinner/issues/new)
+### Q2 2024
+- [ ] Voice integration
+- [ ] Smart home integration
+- [ ] Advanced meal planning AI
+- [ ] Community features
+
+### Q3 2024
+- [ ] International expansion
+- [ ] Advanced personalization
+- [ ] Machine learning optimization
+- [ ] Enterprise features
 
 ---
 
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+**Built with ❤️ by the What's for Dinner team**
+
+For more information, visit [whatsfordinner.com](https://whatsfordinner.com)
