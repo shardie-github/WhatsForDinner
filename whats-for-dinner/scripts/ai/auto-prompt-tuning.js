@@ -16,7 +16,7 @@ const config = {
   supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
   openaiApiKey: process.env.OPENAI_API_KEY,
   outputDir: path.join(__dirname, '../ai-monitoring'),
-  verbose: process.env.VERBOSE === 'true'
+  verbose: process.env.VERBOSE === 'true',
 };
 
 // Colors for console output
@@ -25,7 +25,7 @@ const colors = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 function log(message, color = 'reset') {
@@ -64,7 +64,7 @@ Please provide:
 6. Cooking tips
 
 Format the response as JSON.`,
-    
+
     optimized_v1: `You are a professional chef and nutritionist. Create a meal that perfectly matches the user's preferences:
 
 DIETARY REQUIREMENTS: {dietary}
@@ -83,7 +83,7 @@ Generate a complete meal plan with:
 - Pro cooking tips and variations
 
 Respond in valid JSON format only.`,
-    
+
     optimized_v2: `Create the perfect meal for this user profile:
 
 🎯 TARGET: {dietary} diet, {cuisine} cuisine
@@ -100,9 +100,9 @@ Deliver a restaurant-quality meal suggestion with:
 - Complete nutrition facts
 - Chef's tips and substitutions
 
-JSON format required.`
+JSON format required.`,
   },
-  
+
   recipe_enhancement: {
     base: `Enhance this recipe to make it more appealing and detailed:
 {recipe}
@@ -113,7 +113,7 @@ Please improve:
 3. Cooking instructions with more detail
 4. Nutritional information
 5. Cooking tips and variations`,
-    
+
     optimized: `Transform this recipe into a culinary masterpiece:
 
 ORIGINAL RECIPE: {recipe}
@@ -126,9 +126,9 @@ Enhance with:
 - Expert tips and creative variations
 - Difficulty assessment and time estimates
 
-Make it restaurant-quality while keeping it accessible.`
+Make it restaurant-quality while keeping it accessible.`,
   },
-  
+
   dietary_adaptation: {
     base: `Adapt this recipe for the following dietary requirements:
 Recipe: {recipe}
@@ -136,7 +136,7 @@ Dietary needs: {dietary}
 Allergies: {allergies}
 
 Please modify the recipe accordingly.`,
-    
+
     optimized: `Intelligently adapt this recipe for specific dietary needs:
 
 ORIGINAL: {recipe}
@@ -149,8 +149,8 @@ Provide:
 - Alternative ingredient options
 - Adjusted cooking instructions if needed
 - Nutritional impact of modifications
-- Tips for maintaining flavor and texture`
-  }
+- Tips for maintaining flavor and texture`,
+  },
 };
 
 /**
@@ -164,7 +164,7 @@ class PromptMetrics {
       accuracy: [],
       creativity: [],
       completeness: [],
-      json_validity: []
+      json_validity: [],
     };
   }
 
@@ -172,7 +172,7 @@ class PromptMetrics {
     if (this.metrics[type]) {
       this.metrics[type].push({
         value,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   }
@@ -188,12 +188,14 @@ class PromptMetrics {
     const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
     const recent = values.filter(item => new Date(item.timestamp) > cutoff);
     const older = values.filter(item => new Date(item.timestamp) <= cutoff);
-    
+
     if (recent.length === 0 || older.length === 0) return 0;
-    
-    const recentAvg = recent.reduce((sum, item) => sum + item.value, 0) / recent.length;
-    const olderAvg = older.reduce((sum, item) => sum + item.value, 0) / older.length;
-    
+
+    const recentAvg =
+      recent.reduce((sum, item) => sum + item.value, 0) / recent.length;
+    const olderAvg =
+      older.reduce((sum, item) => sum + item.value, 0) / older.length;
+
     return ((recentAvg - olderAvg) / olderAvg) * 100;
   }
 }
@@ -214,11 +216,19 @@ class PromptABTesting {
       start_date: new Date().toISOString(),
       status: 'active',
       results: {
-        variant_a: { impressions: 0, conversions: 0, metrics: new PromptMetrics() },
-        variant_b: { impressions: 0, conversions: 0, metrics: new PromptMetrics() }
-      }
+        variant_a: {
+          impressions: 0,
+          conversions: 0,
+          metrics: new PromptMetrics(),
+        },
+        variant_b: {
+          impressions: 0,
+          conversions: 0,
+          metrics: new PromptMetrics(),
+        },
+      },
     };
-    
+
     this.experiments.set(name, experiment);
     return experiment;
   }
@@ -229,8 +239,8 @@ class PromptABTesting {
 
     // Simple hash-based selection for consistency
     const hash = this.hashString(userId + experimentName);
-    const isVariantA = hash % 100 < (experiment.traffic_split * 100);
-    
+    const isVariantA = hash % 100 < experiment.traffic_split * 100;
+
     return isVariantA ? 'variant_a' : 'variant_b';
   }
 
@@ -247,12 +257,15 @@ class PromptABTesting {
     if (!experiment) return;
 
     experiment.results[variant].conversions++;
-    
+
     // Record detailed metrics
     Object.keys(metrics).forEach(metricType => {
-      experiment.results[variant].metrics.addMetric(metricType, metrics[metricType]);
+      experiment.results[variant].metrics.addMetric(
+        metricType,
+        metrics[metricType]
+      );
     });
-    
+
     logVerbose(`Recorded conversion for ${experimentName} - ${variant}`);
   }
 
@@ -261,7 +274,7 @@ class PromptABTesting {
     if (!experiment) return null;
 
     const { variant_a, variant_b } = experiment.results;
-    
+
     return {
       name: experimentName,
       status: experiment.status,
@@ -270,17 +283,23 @@ class PromptABTesting {
         variant_a: {
           impressions: variant_a.impressions,
           conversions: variant_a.conversions,
-          conversion_rate: variant_a.impressions > 0 ? variant_a.conversions / variant_a.impressions : 0,
-          avg_metrics: this.calculateAverageMetrics(variant_a.metrics)
+          conversion_rate:
+            variant_a.impressions > 0
+              ? variant_a.conversions / variant_a.impressions
+              : 0,
+          avg_metrics: this.calculateAverageMetrics(variant_a.metrics),
         },
         variant_b: {
           impressions: variant_b.impressions,
           conversions: variant_b.conversions,
-          conversion_rate: variant_b.impressions > 0 ? variant_b.conversions / variant_b.impressions : 0,
-          avg_metrics: this.calculateAverageMetrics(variant_b.metrics)
-        }
+          conversion_rate:
+            variant_b.impressions > 0
+              ? variant_b.conversions / variant_b.impressions
+              : 0,
+          avg_metrics: this.calculateAverageMetrics(variant_b.metrics),
+        },
       },
-      winner: this.determineWinner(variant_a, variant_b)
+      winner: this.determineWinner(variant_a, variant_b),
     };
   }
 
@@ -293,9 +312,15 @@ class PromptABTesting {
   }
 
   determineWinner(variant_a, variant_b) {
-    const rate_a = variant_a.impressions > 0 ? variant_a.conversions / variant_a.impressions : 0;
-    const rate_b = variant_b.impressions > 0 ? variant_b.conversions / variant_b.impressions : 0;
-    
+    const rate_a =
+      variant_a.impressions > 0
+        ? variant_a.conversions / variant_a.impressions
+        : 0;
+    const rate_b =
+      variant_b.impressions > 0
+        ? variant_b.conversions / variant_b.impressions
+        : 0;
+
     if (rate_a > rate_b) return 'variant_a';
     if (rate_b > rate_a) return 'variant_b';
     return 'tie';
@@ -305,7 +330,7 @@ class PromptABTesting {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash);
@@ -324,22 +349,31 @@ class PromptOptimizer {
   async optimizePrompt(promptType, userContext, performanceData) {
     try {
       log(`Optimizing prompt for type: ${promptType}`, 'yellow');
-      
+
       // Analyze current performance
-      const analysis = await this.analyzePerformance(promptType, performanceData);
-      
+      const analysis = await this.analyzePerformance(
+        promptType,
+        performanceData
+      );
+
       // Generate optimization suggestions
-      const suggestions = await this.generateOptimizationSuggestions(promptType, analysis);
-      
+      const suggestions = await this.generateOptimizationSuggestions(
+        promptType,
+        analysis
+      );
+
       // Create optimized prompt
-      const optimizedPrompt = await this.createOptimizedPrompt(promptType, suggestions);
-      
+      const optimizedPrompt = await this.createOptimizedPrompt(
+        promptType,
+        suggestions
+      );
+
       // Set up A/B test
       const experiment = this.abTesting.createExperiment(
         `${promptType}_optimization_${Date.now()}`,
         ['current', 'optimized']
       );
-      
+
       // Store optimization
       this.optimizationHistory.push({
         promptType,
@@ -348,16 +382,15 @@ class PromptOptimizer {
         suggestions,
         analysis,
         experimentId: experiment.name,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       });
-      
+
       log(`Prompt optimization completed for ${promptType}`, 'green');
       return {
         optimizedPrompt,
         suggestions,
-        experimentId: experiment.name
+        experimentId: experiment.name,
       };
-      
     } catch (error) {
       log(`Error optimizing prompt: ${error.message}`, 'red');
       throw error;
@@ -367,103 +400,126 @@ class PromptOptimizer {
   async analyzePerformance(promptType, performanceData) {
     const analysis = {
       responseTime: this.calculateAverage(performanceData, 'response_time'),
-      userSatisfaction: this.calculateAverage(performanceData, 'user_satisfaction'),
+      userSatisfaction: this.calculateAverage(
+        performanceData,
+        'user_satisfaction'
+      ),
       accuracy: this.calculateAverage(performanceData, 'accuracy'),
       creativity: this.calculateAverage(performanceData, 'creativity'),
       completeness: this.calculateAverage(performanceData, 'completeness'),
       jsonValidity: this.calculateAverage(performanceData, 'json_validity'),
-      trends: this.calculateTrends(performanceData)
+      trends: this.calculateTrends(performanceData),
     };
-    
+
     return analysis;
   }
 
   calculateAverage(data, metric) {
     if (!data || data.length === 0) return 0;
-    const values = data.map(item => item[metric]).filter(val => val !== undefined);
-    return values.length > 0 ? values.reduce((sum, val) => sum + val, 0) / values.length : 0;
+    const values = data
+      .map(item => item[metric])
+      .filter(val => val !== undefined);
+    return values.length > 0
+      ? values.reduce((sum, val) => sum + val, 0) / values.length
+      : 0;
   }
 
   calculateTrends(data) {
     const trends = {};
-    const metrics = ['response_time', 'user_satisfaction', 'accuracy', 'creativity', 'completeness', 'json_validity'];
-    
+    const metrics = [
+      'response_time',
+      'user_satisfaction',
+      'accuracy',
+      'creativity',
+      'completeness',
+      'json_validity',
+    ];
+
     metrics.forEach(metric => {
-      const values = data.map(item => item[metric]).filter(val => val !== undefined);
+      const values = data
+        .map(item => item[metric])
+        .filter(val => val !== undefined);
       if (values.length > 1) {
         const firstHalf = values.slice(0, Math.floor(values.length / 2));
         const secondHalf = values.slice(Math.floor(values.length / 2));
-        
-        const firstAvg = firstHalf.reduce((sum, val) => sum + val, 0) / firstHalf.length;
-        const secondAvg = secondHalf.reduce((sum, val) => sum + val, 0) / secondHalf.length;
-        
+
+        const firstAvg =
+          firstHalf.reduce((sum, val) => sum + val, 0) / firstHalf.length;
+        const secondAvg =
+          secondHalf.reduce((sum, val) => sum + val, 0) / secondHalf.length;
+
         trends[metric] = ((secondAvg - firstAvg) / firstAvg) * 100;
       }
     });
-    
+
     return trends;
   }
 
   async generateOptimizationSuggestions(promptType, analysis) {
     const suggestions = [];
-    
+
     // Response time optimization
     if (analysis.responseTime > 3000) {
       suggestions.push({
         type: 'response_time',
         priority: 'high',
-        suggestion: 'Simplify prompt structure and reduce complexity to improve response time',
-        impact: 'Reduce response time by 20-30%'
+        suggestion:
+          'Simplify prompt structure and reduce complexity to improve response time',
+        impact: 'Reduce response time by 20-30%',
       });
     }
-    
+
     // User satisfaction optimization
     if (analysis.userSatisfaction < 4.0) {
       suggestions.push({
         type: 'user_satisfaction',
         priority: 'high',
-        suggestion: 'Add more specific instructions and examples to improve output quality',
-        impact: 'Increase user satisfaction by 15-25%'
+        suggestion:
+          'Add more specific instructions and examples to improve output quality',
+        impact: 'Increase user satisfaction by 15-25%',
       });
     }
-    
+
     // Accuracy optimization
     if (analysis.accuracy < 0.8) {
       suggestions.push({
         type: 'accuracy',
         priority: 'high',
-        suggestion: 'Add validation criteria and specific requirements to improve accuracy',
-        impact: 'Improve accuracy by 10-20%'
+        suggestion:
+          'Add validation criteria and specific requirements to improve accuracy',
+        impact: 'Improve accuracy by 10-20%',
       });
     }
-    
+
     // Creativity optimization
     if (analysis.creativity < 3.5) {
       suggestions.push({
         type: 'creativity',
         priority: 'medium',
-        suggestion: 'Add creative constraints and inspiration prompts to enhance creativity',
-        impact: 'Increase creativity score by 15-30%'
+        suggestion:
+          'Add creative constraints and inspiration prompts to enhance creativity',
+        impact: 'Increase creativity score by 15-30%',
       });
     }
-    
+
     // JSON validity optimization
     if (analysis.jsonValidity < 0.95) {
       suggestions.push({
         type: 'json_validity',
         priority: 'high',
-        suggestion: 'Strengthen JSON format requirements and add validation examples',
-        impact: 'Improve JSON validity to 98%+'
+        suggestion:
+          'Strengthen JSON format requirements and add validation examples',
+        impact: 'Improve JSON validity to 98%+',
       });
     }
-    
+
     return suggestions;
   }
 
   async createOptimizedPrompt(promptType, suggestions) {
     const basePrompt = PROMPT_TEMPLATES[promptType].base;
     let optimizedPrompt = basePrompt;
-    
+
     // Apply optimizations based on suggestions
     suggestions.forEach(suggestion => {
       switch (suggestion.type) {
@@ -484,7 +540,7 @@ class PromptOptimizer {
           break;
       }
     });
-    
+
     return optimizedPrompt;
   }
 
@@ -499,22 +555,34 @@ class PromptOptimizer {
 
   optimizeForUserSatisfaction(prompt) {
     // Add more specific instructions and examples
-    return prompt + '\n\nIMPORTANT: Be specific, detailed, and helpful. Include practical tips and variations.';
+    return (
+      prompt +
+      '\n\nIMPORTANT: Be specific, detailed, and helpful. Include practical tips and variations.'
+    );
   }
 
   optimizeForAccuracy(prompt) {
     // Add validation criteria
-    return prompt + '\n\nVALIDATION: Ensure all measurements are precise, instructions are clear, and nutritional data is accurate.';
+    return (
+      prompt +
+      '\n\nVALIDATION: Ensure all measurements are precise, instructions are clear, and nutritional data is accurate.'
+    );
   }
 
   optimizeForCreativity(prompt) {
     // Add creative constraints
-    return prompt + '\n\nCREATIVITY: Think outside the box while staying practical. Suggest unique flavor combinations and presentation ideas.';
+    return (
+      prompt +
+      '\n\nCREATIVITY: Think outside the box while staying practical. Suggest unique flavor combinations and presentation ideas.'
+    );
   }
 
   optimizeForJsonValidity(prompt) {
     // Strengthen JSON requirements
-    return prompt + '\n\nFORMAT: Respond ONLY with valid JSON. No additional text, explanations, or markdown formatting.';
+    return (
+      prompt +
+      '\n\nFORMAT: Respond ONLY with valid JSON. No additional text, explanations, or markdown formatting.'
+    );
   }
 
   async getOptimizationReport() {
@@ -522,28 +590,35 @@ class PromptOptimizer {
       totalOptimizations: this.optimizationHistory.length,
       activeExperiments: Array.from(this.abTesting.experiments.keys()),
       recentOptimizations: this.optimizationHistory.slice(-10),
-      performanceImprovements: this.calculatePerformanceImprovements()
+      performanceImprovements: this.calculatePerformanceImprovements(),
     };
-    
+
     return report;
   }
 
   calculatePerformanceImprovements() {
     const improvements = {};
-    const metrics = ['response_time', 'user_satisfaction', 'accuracy', 'creativity', 'completeness', 'json_validity'];
-    
+    const metrics = [
+      'response_time',
+      'user_satisfaction',
+      'accuracy',
+      'creativity',
+      'completeness',
+      'json_validity',
+    ];
+
     metrics.forEach(metric => {
-      const values = this.optimizationHistory.map(opt => 
-        opt.analysis[metric] || 0
+      const values = this.optimizationHistory.map(
+        opt => opt.analysis[metric] || 0
       );
-      
+
       if (values.length > 1) {
         const first = values[0];
         const last = values[values.length - 1];
         improvements[metric] = ((last - first) / first) * 100;
       }
     });
-    
+
     return improvements;
   }
 }
@@ -554,72 +629,72 @@ class PromptOptimizer {
 async function runAutoPromptTuning() {
   try {
     log('Starting auto-prompt tuning process...', 'blue');
-    
+
     // Ensure output directory exists
     if (!fs.existsSync(config.outputDir)) {
       fs.mkdirSync(config.outputDir, { recursive: true });
     }
-    
+
     const optimizer = new PromptOptimizer();
-    
+
     // Get performance data from database
     const performanceData = await getPerformanceData();
-    
+
     // Optimize each prompt type
     const optimizations = {};
     for (const promptType of Object.keys(PROMPT_TEMPLATES)) {
       log(`Optimizing ${promptType}...`, 'yellow');
-      
+
       const optimization = await optimizer.optimizePrompt(
         promptType,
         {},
         performanceData[promptType] || []
       );
-      
+
       optimizations[promptType] = optimization;
     }
-    
+
     // Generate optimization report
     const report = await optimizer.getOptimizationReport();
-    
+
     // Save results
     const results = {
       timestamp: new Date().toISOString(),
       optimizations,
       report,
-      abTestingResults: {}
+      abTestingResults: {},
     };
-    
+
     // Get A/B testing results
     for (const experimentName of report.activeExperiments) {
-      results.abTestingResults[experimentName] = optimizer.abTesting.getExperimentResults(experimentName);
+      results.abTestingResults[experimentName] =
+        optimizer.abTesting.getExperimentResults(experimentName);
     }
-    
+
     // Save to files
     fs.writeFileSync(
       path.join(config.outputDir, 'prompt-optimizations.json'),
       JSON.stringify(results, null, 2)
     );
-    
+
     // Generate HTML report
     const htmlReport = generateOptimizationHTMLReport(results);
     fs.writeFileSync(
       path.join(config.outputDir, 'prompt-optimization-report.html'),
       htmlReport
     );
-    
+
     // Generate optimized prompt templates
     const optimizedTemplates = generateOptimizedTemplates(optimizations);
     fs.writeFileSync(
       path.join(config.outputDir, 'optimized-prompts.js'),
       optimizedTemplates
     );
-    
+
     log('Auto-prompt tuning completed successfully!', 'green');
     log(`Results saved to: ${config.outputDir}`, 'blue');
-    
+
     return results;
-    
   } catch (error) {
     log(`Auto-prompt tuning failed: ${error.message}`, 'red');
     throw error;
@@ -632,33 +707,41 @@ async function runAutoPromptTuning() {
 async function getPerformanceData() {
   try {
     log('Fetching performance data...', 'yellow');
-    
+
     // Get meal generation performance data
     const { data: mealData, error: mealError } = await supabase
       .from('meal_analytics')
       .select('*')
-      .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
-    
+      .gte(
+        'created_at',
+        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+      );
+
     if (mealError) throw mealError;
-    
+
     // Get user feedback data
     const { data: feedbackData, error: feedbackError } = await supabase
       .from('user_feedback')
       .select('*')
-      .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
-    
+      .gte(
+        'created_at',
+        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+      );
+
     if (feedbackError) throw feedbackError;
-    
+
     // Process data by prompt type
     const performanceData = {
       meal_generation: processMealGenerationData(mealData, feedbackData),
       recipe_enhancement: processRecipeEnhancementData(feedbackData),
-      dietary_adaptation: processDietaryAdaptationData(feedbackData)
+      dietary_adaptation: processDietaryAdaptationData(feedbackData),
     };
-    
-    log(`Fetched performance data for ${Object.keys(performanceData).length} prompt types`, 'green');
+
+    log(
+      `Fetched performance data for ${Object.keys(performanceData).length} prompt types`,
+      'green'
+    );
     return performanceData;
-    
   } catch (error) {
     log(`Error fetching performance data: ${error.message}`, 'red');
     return {};
@@ -670,10 +753,10 @@ async function getPerformanceData() {
  */
 function processMealGenerationData(mealData, feedbackData) {
   const data = [];
-  
+
   mealData.forEach(meal => {
     const feedback = feedbackData.find(f => f.meal_id === meal.id);
-    
+
     data.push({
       response_time: meal.response_time || 0,
       user_satisfaction: feedback?.satisfaction_rating || 0,
@@ -681,10 +764,10 @@ function processMealGenerationData(mealData, feedbackData) {
       creativity: feedback?.creativity_rating || 0,
       completeness: feedback?.completeness_rating || 0,
       json_validity: meal.json_valid ? 1 : 0,
-      timestamp: meal.created_at
+      timestamp: meal.created_at,
     });
   });
-  
+
   return data;
 }
 
@@ -701,7 +784,7 @@ function processRecipeEnhancementData(feedbackData) {
       creativity: feedback.creativity_rating || 0,
       completeness: feedback.completeness_rating || 0,
       json_validity: feedback.json_valid ? 1 : 0,
-      timestamp: feedback.created_at
+      timestamp: feedback.created_at,
     }));
 }
 
@@ -718,7 +801,7 @@ function processDietaryAdaptationData(feedbackData) {
       creativity: feedback.creativity_rating || 0,
       completeness: feedback.completeness_rating || 0,
       json_validity: feedback.json_valid ? 1 : 0,
-      timestamp: feedback.created_at
+      timestamp: feedback.created_at,
     }));
 }
 
@@ -914,42 +997,56 @@ function generateOptimizationHTMLReport(results) {
         <!-- Performance Improvements -->
         <div class="section">
             <h2>Performance Improvements</h2>
-            ${Object.entries(results.report.performanceImprovements).map(([metric, improvement]) => `
+            ${Object.entries(results.report.performanceImprovements)
+              .map(
+                ([metric, improvement]) => `
                 <div class="metric">
                     <span>${metric.replace('_', ' ').toUpperCase()}</span>
                     <span class="metric-value ${improvement > 0 ? 'improvement' : 'decline'}">
                         ${improvement > 0 ? '+' : ''}${improvement.toFixed(1)}%
                     </span>
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
         
         <!-- Optimizations by Prompt Type -->
         <div class="section">
             <h2>Optimizations by Prompt Type</h2>
-            ${Object.entries(results.optimizations).map(([promptType, optimization]) => `
+            ${Object.entries(results.optimizations)
+              .map(
+                ([promptType, optimization]) => `
                 <div class="optimization-item">
                     <h3>${promptType.replace('_', ' ').toUpperCase()}</h3>
                     <p><strong>Experiment ID:</strong> ${optimization.experimentId}</p>
                     
                     <div class="suggestions">
                         <h4>Optimization Suggestions:</h4>
-                        ${optimization.suggestions.map(suggestion => `
+                        ${optimization.suggestions
+                          .map(
+                            suggestion => `
                             <div class="suggestion ${suggestion.priority}">
                                 <strong>${suggestion.type.replace('_', ' ').toUpperCase()}</strong>
                                 <p>${suggestion.suggestion}</p>
                                 <small>Expected impact: ${suggestion.impact}</small>
                             </div>
-                        `).join('')}
+                        `
+                          )
+                          .join('')}
                     </div>
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
         
         <!-- A/B Testing Results -->
         <div class="section">
             <h2>A/B Testing Results</h2>
-            ${Object.entries(results.abTestingResults).map(([experimentName, result]) => `
+            ${Object.entries(results.abTestingResults)
+              .map(
+                ([experimentName, result]) => `
                 <div class="optimization-item">
                     <h3>${experimentName}</h3>
                     <p><strong>Status:</strong> ${result.status}</p>
@@ -971,7 +1068,9 @@ function generateOptimizationHTMLReport(results) {
                         </div>
                     </div>
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
     </div>
 </body>
@@ -986,13 +1085,17 @@ function generateOptimizedTemplates(optimizations) {
 // Generated by Auto-Prompt Tuning Agent
 
 const OPTIMIZED_PROMPT_TEMPLATES = {
-${Object.entries(optimizations).map(([promptType, optimization]) => `
+${Object.entries(optimizations)
+  .map(
+    ([promptType, optimization]) => `
   ${promptType}: {
     base: \`${PROMPT_TEMPLATES[promptType].base}\`,
     optimized: \`${optimization.optimizedPrompt}\`,
     suggestions: ${JSON.stringify(optimization.suggestions, null, 4)},
     experimentId: '${optimization.experimentId}'
-  },`).join('')}
+  },`
+  )
+  .join('')}
 };
 
 module.exports = { OPTIMIZED_PROMPT_TEMPLATES };`;

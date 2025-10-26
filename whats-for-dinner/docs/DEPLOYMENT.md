@@ -32,11 +32,11 @@ The What's for Dinner application uses a multi-environment deployment strategy w
 
 ### Environment Overview
 
-| Environment | Purpose | URL | Database | Features |
-|-------------|---------|-----|----------|----------|
-| **Development** | Local development | `http://localhost:3000` | Local PostgreSQL | Full features, debug mode |
-| **Staging** | Pre-production testing | `https://staging.whats-for-dinner.com` | Staging PostgreSQL | Production-like, test data |
-| **Production** | Live application | `https://whats-for-dinner.com` | Production PostgreSQL | Full features, optimized |
+| Environment     | Purpose                | URL                                    | Database              | Features                   |
+| --------------- | ---------------------- | -------------------------------------- | --------------------- | -------------------------- |
+| **Development** | Local development      | `http://localhost:3000`                | Local PostgreSQL      | Full features, debug mode  |
+| **Staging**     | Pre-production testing | `https://staging.whats-for-dinner.com` | Staging PostgreSQL    | Production-like, test data |
+| **Production**  | Live application       | `https://whats-for-dinner.com`         | Production PostgreSQL | Full features, optimized   |
 
 ### Environment Configuration
 
@@ -197,22 +197,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'pnpm'
-      
+
       - name: Install dependencies
         run: pnpm install
-      
+
       - name: Run tests
         run: pnpm test
-      
+
       - name: Build application
         run: pnpm build
-      
+
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
         with:
@@ -220,11 +220,11 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
-      
+
       - name: Deploy Supabase functions
         run: |
           supabase functions deploy --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
-      
+
       - name: Run database migrations
         run: |
           supabase db push --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
@@ -285,28 +285,28 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'pnpm'
-      
+
       - name: Install dependencies
         run: pnpm install
-      
+
       - name: Run full test suite
         run: pnpm test:all
-      
+
       - name: Run security scan
         run: pnpm security:scan
-      
+
       - name: Run performance tests
         run: pnpm test:performance
-      
+
       - name: Build application
         run: pnpm build
-      
+
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
         with:
@@ -314,20 +314,20 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
-      
+
       - name: Deploy Supabase functions
         run: |
           supabase functions deploy --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
-      
+
       - name: Run database migrations
         run: |
           supabase db push --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
-      
+
       - name: Verify deployment
         run: |
           curl https://whats-for-dinner.com/health
           pnpm test:smoke
-      
+
       - name: Notify team
         uses: 8398a7/action-slack@v3
         with:
@@ -471,10 +471,7 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
   tracesSampleRate: 1.0,
-  integrations: [
-    new Sentry.BrowserTracing(),
-    new Sentry.Replay(),
-  ],
+  integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
 });
 ```
 
@@ -510,9 +507,9 @@ app.get('/health', async (req, res) => {
       database: await checkDatabase(),
       redis: await checkRedis(),
       openai: await checkOpenAI(),
-    }
+    },
   };
-  
+
   res.json(health);
 });
 ```
@@ -534,9 +531,9 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'error.log', level: 'error' }),
     new winston.transports.File({ filename: 'combined.log' }),
     new winston.transports.Console({
-      format: winston.format.simple()
-    })
-  ]
+      format: winston.format.simple(),
+    }),
+  ],
 });
 ```
 

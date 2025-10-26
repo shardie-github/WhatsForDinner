@@ -1,6 +1,6 @@
 /**
  * Accessibility Audit System
- * 
+ *
  * Implements comprehensive accessibility auditing with:
  * - WCAG 2.2 compliance validation
  * - Automated accessibility testing
@@ -176,13 +176,13 @@ export class AccessibilityAuditSystem {
     try {
       const report = await this.performAudit();
       this.auditResults.push(report);
-      
+
       // Keep only last 100 reports
       if (this.auditResults.length > 100) {
         this.auditResults = this.auditResults.slice(-100);
       }
 
-      logger.info('Accessibility audit completed', { 
+      logger.info('Accessibility audit completed', {
         score: report.overallScore,
         issues: report.issues.length,
       });
@@ -211,7 +211,7 @@ export class AccessibilityAuditSystem {
       try {
         const testIssues = await test.testFunction();
         issues.push(...testIssues);
-        
+
         if (test.automated) {
           automatedChecks++;
         } else {
@@ -243,16 +243,26 @@ export class AccessibilityAuditSystem {
 
     // Calculate overall score
     const totalChecks = automatedChecks + manualChecks;
-    const overallScore = totalChecks > 0 ? Math.round((passedChecks / totalChecks) * 100) : 0;
+    const overallScore =
+      totalChecks > 0 ? Math.round((passedChecks / totalChecks) * 100) : 0;
 
     // Determine WCAG level
     const criticalIssues = issues.filter(i => i.severity === 'critical');
     const highIssues = issues.filter(i => i.severity === 'high');
-    const wcagLevel = criticalIssues.length === 0 && highIssues.length === 0 ? 'AAA' : 
-                     criticalIssues.length === 0 ? 'AA' : 'A';
+    const wcagLevel =
+      criticalIssues.length === 0 && highIssues.length === 0
+        ? 'AAA'
+        : criticalIssues.length === 0
+          ? 'AA'
+          : 'A';
 
     // Generate recommendations
-    const recommendations = this.generateRecommendations(issues, colorContrast, keyboardNavigation, screenReader);
+    const recommendations = this.generateRecommendations(
+      issues,
+      colorContrast,
+      keyboardNavigation,
+      screenReader
+    );
 
     return {
       timestamp: new Date().toISOString(),
@@ -275,7 +285,7 @@ export class AccessibilityAuditSystem {
    */
   private async testAltTextImages(): Promise<AccessibilityIssue[]> {
     const issues: AccessibilityIssue[] = [];
-    
+
     // This would analyze actual DOM elements
     // For now, we'll simulate the test
     const mockIssues: AccessibilityIssue[] = [
@@ -302,7 +312,7 @@ export class AccessibilityAuditSystem {
    */
   private async testHeadingStructure(): Promise<AccessibilityIssue[]> {
     const issues: AccessibilityIssue[] = [];
-    
+
     // This would analyze actual heading structure
     // For now, we'll simulate the test
     const mockIssues: AccessibilityIssue[] = [
@@ -329,7 +339,7 @@ export class AccessibilityAuditSystem {
    */
   private async testColorContrast(): Promise<AccessibilityIssue[]> {
     const issues: AccessibilityIssue[] = [];
-    
+
     // This would analyze actual color contrast
     // For now, we'll simulate the test
     const mockIssues: AccessibilityIssue[] = [
@@ -356,7 +366,7 @@ export class AccessibilityAuditSystem {
    */
   private async testKeyboardNavigation(): Promise<AccessibilityIssue[]> {
     const issues: AccessibilityIssue[] = [];
-    
+
     // This would analyze actual keyboard navigation
     // For now, we'll simulate the test
     const mockIssues: AccessibilityIssue[] = [
@@ -383,7 +393,7 @@ export class AccessibilityAuditSystem {
    */
   private async testFocusManagement(): Promise<AccessibilityIssue[]> {
     const issues: AccessibilityIssue[] = [];
-    
+
     // This would analyze actual focus management
     // For now, we'll simulate the test
     return issues;
@@ -394,7 +404,7 @@ export class AccessibilityAuditSystem {
    */
   private async testFormLabels(): Promise<AccessibilityIssue[]> {
     const issues: AccessibilityIssue[] = [];
-    
+
     // This would analyze actual form labels
     // For now, we'll simulate the test
     const mockIssues: AccessibilityIssue[] = [
@@ -421,7 +431,7 @@ export class AccessibilityAuditSystem {
    */
   private async testAriaLabels(): Promise<AccessibilityIssue[]> {
     const issues: AccessibilityIssue[] = [];
-    
+
     // This would analyze actual ARIA labels
     // For now, we'll simulate the test
     return issues;
@@ -432,7 +442,7 @@ export class AccessibilityAuditSystem {
    */
   private async testLinkPurpose(): Promise<AccessibilityIssue[]> {
     const issues: AccessibilityIssue[] = [];
-    
+
     // This would analyze actual link purposes
     // For now, we'll simulate the test
     const mockIssues: AccessibilityIssue[] = [
@@ -487,7 +497,9 @@ export class AccessibilityAuditSystem {
   /**
    * Analyze keyboard navigation
    */
-  private async analyzeKeyboardNavigation(): Promise<KeyboardNavigationIssue[]> {
+  private async analyzeKeyboardNavigation(): Promise<
+    KeyboardNavigationIssue[]
+  > {
     // This would analyze actual keyboard navigation
     // For now, we'll simulate the analysis
     const mockIssues: KeyboardNavigationIssue[] = [
@@ -513,8 +525,10 @@ export class AccessibilityAuditSystem {
       {
         element: '.recipe-ingredients',
         issue: 'Missing semantic structure',
-        description: 'Ingredient list not properly structured for screen readers',
-        suggestion: 'Use proper list elements (ul, ol) with appropriate ARIA labels',
+        description:
+          'Ingredient list not properly structured for screen readers',
+        suggestion:
+          'Use proper list elements (ul, ol) with appropriate ARIA labels',
         severity: 'medium',
       },
     ];
@@ -536,28 +550,40 @@ export class AccessibilityAuditSystem {
     // High priority recommendations
     const criticalIssues = issues.filter(i => i.severity === 'critical');
     if (criticalIssues.length > 0) {
-      recommendations.push(`Fix ${criticalIssues.length} critical accessibility issues immediately`);
+      recommendations.push(
+        `Fix ${criticalIssues.length} critical accessibility issues immediately`
+      );
     }
 
     // Color contrast recommendations
     const failedContrast = colorContrast.filter(c => c.level === 'fail');
     if (failedContrast.length > 0) {
-      recommendations.push(`Improve color contrast for ${failedContrast.length} elements`);
+      recommendations.push(
+        `Improve color contrast for ${failedContrast.length} elements`
+      );
     }
 
     // Keyboard navigation recommendations
     if (keyboardNavigation.length > 0) {
-      recommendations.push(`Make ${keyboardNavigation.length} elements keyboard accessible`);
+      recommendations.push(
+        `Make ${keyboardNavigation.length} elements keyboard accessible`
+      );
     }
 
     // Screen reader recommendations
     if (screenReader.length > 0) {
-      recommendations.push(`Improve screen reader compatibility for ${screenReader.length} elements`);
+      recommendations.push(
+        `Improve screen reader compatibility for ${screenReader.length} elements`
+      );
     }
 
     // General recommendations
-    recommendations.push('Implement automated accessibility testing in CI/CD pipeline');
-    recommendations.push('Conduct regular manual accessibility testing with real users');
+    recommendations.push(
+      'Implement automated accessibility testing in CI/CD pipeline'
+    );
+    recommendations.push(
+      'Conduct regular manual accessibility testing with real users'
+    );
     recommendations.push('Provide accessibility training for development team');
 
     return recommendations;
@@ -612,9 +638,13 @@ export class AccessibilityAuditSystem {
       };
     }
 
-    const critical = latestReport.issues.filter(i => i.severity === 'critical').length;
+    const critical = latestReport.issues.filter(
+      i => i.severity === 'critical'
+    ).length;
     const high = latestReport.issues.filter(i => i.severity === 'high').length;
-    const medium = latestReport.issues.filter(i => i.severity === 'medium').length;
+    const medium = latestReport.issues.filter(
+      i => i.severity === 'medium'
+    ).length;
     const low = latestReport.issues.filter(i => i.severity === 'low').length;
 
     return {

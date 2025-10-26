@@ -17,7 +17,7 @@ describe('Performance Tests', () => {
   describe('API Response Times', () => {
     it('should respond to recipe generation within acceptable time', async () => {
       const startTime = performance.now();
-      
+
       // Mock API call
       const mockResponse = {
         recipes: [
@@ -37,7 +37,7 @@ describe('Performance Tests', () => {
 
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
       const endTime = performance.now();
       const responseTime = endTime - startTime;
 
@@ -48,11 +48,13 @@ describe('Performance Tests', () => {
       const concurrentRequests = 10;
       const startTime = performance.now();
 
-      const requests = Array(concurrentRequests).fill(null).map(async () => {
-        // Simulate concurrent API calls
-        await new Promise(resolve => setTimeout(resolve, 100));
-        return { success: true };
-      });
+      const requests = Array(concurrentRequests)
+        .fill(null)
+        .map(async () => {
+          // Simulate concurrent API calls
+          await new Promise(resolve => setTimeout(resolve, 100));
+          return { success: true };
+        });
 
       const results = await Promise.all(requests);
       const endTime = performance.now();
@@ -67,17 +69,21 @@ describe('Performance Tests', () => {
   describe('Memory Usage', () => {
     it('should not leak memory during recipe generation', async () => {
       const initialMemory = process.memoryUsage();
-      
+
       // Simulate multiple recipe generations
       for (let i = 0; i < 100; i++) {
         const mockRecipe = {
           title: `Recipe ${i}`,
-          ingredients: Array(10).fill(null).map((_, idx) => `ingredient-${idx}`),
-          steps: Array(5).fill(null).map((_, idx) => `Step ${idx + 1}`),
+          ingredients: Array(10)
+            .fill(null)
+            .map((_, idx) => `ingredient-${idx}`),
+          steps: Array(5)
+            .fill(null)
+            .map((_, idx) => `Step ${idx + 1}`),
           cookTime: '30 minutes',
           calories: 500,
         };
-        
+
         // Simulate processing
         JSON.stringify(mockRecipe);
       }
@@ -98,21 +104,23 @@ describe('Performance Tests', () => {
   describe('Database Query Performance', () => {
     it('should execute pantry queries efficiently', async () => {
       const startTime = performance.now();
-      
+
       // Mock database query
-      const mockPantryItems = Array(1000).fill(null).map((_, idx) => ({
-        id: idx,
-        ingredient: `ingredient-${idx}`,
-        quantity: Math.floor(Math.random() * 10),
-        unit: 'pieces',
-        user_id: 'user123',
-      }));
+      const mockPantryItems = Array(1000)
+        .fill(null)
+        .map((_, idx) => ({
+          id: idx,
+          ingredient: `ingredient-${idx}`,
+          quantity: Math.floor(Math.random() * 10),
+          unit: 'pieces',
+          user_id: 'user123',
+        }));
 
       // Simulate query processing
-      const filteredItems = mockPantryItems.filter(item => 
+      const filteredItems = mockPantryItems.filter(item =>
         item.ingredient.includes('chicken')
       );
-      
+
       const endTime = performance.now();
       const queryTime = endTime - startTime;
 
@@ -121,15 +129,19 @@ describe('Performance Tests', () => {
     });
 
     it('should handle large result sets efficiently', async () => {
-      const largeDataset = Array(10000).fill(null).map((_, idx) => ({
-        id: idx,
-        title: `Recipe ${idx}`,
-        ingredients: Array(5).fill(null).map((_, i) => `ingredient-${i}`),
-        created_at: new Date().toISOString(),
-      }));
+      const largeDataset = Array(10000)
+        .fill(null)
+        .map((_, idx) => ({
+          id: idx,
+          title: `Recipe ${idx}`,
+          ingredients: Array(5)
+            .fill(null)
+            .map((_, i) => `ingredient-${i}`),
+          created_at: new Date().toISOString(),
+        }));
 
       const startTime = performance.now();
-      
+
       // Simulate pagination
       const pageSize = 50;
       const page = 1;
@@ -137,7 +149,7 @@ describe('Performance Tests', () => {
         (page - 1) * pageSize,
         page * pageSize
       );
-      
+
       const endTime = performance.now();
       const paginationTime = endTime - startTime;
 
@@ -149,15 +161,17 @@ describe('Performance Tests', () => {
   describe('Component Rendering Performance', () => {
     it('should render recipe cards efficiently', () => {
       const startTime = performance.now();
-      
+
       // Mock component rendering
-      const recipes = Array(100).fill(null).map((_, idx) => ({
-        title: `Recipe ${idx}`,
-        ingredients: ['ingredient1', 'ingredient2'],
-        steps: ['Step 1', 'Step 2'],
-        cookTime: '30 minutes',
-        calories: 500,
-      }));
+      const recipes = Array(100)
+        .fill(null)
+        .map((_, idx) => ({
+          title: `Recipe ${idx}`,
+          ingredients: ['ingredient1', 'ingredient2'],
+          steps: ['Step 1', 'Step 2'],
+          cookTime: '30 minutes',
+          calories: 500,
+        }));
 
       // Simulate rendering logic
       const renderedCards = recipes.map(recipe => ({
@@ -165,7 +179,7 @@ describe('Performance Tests', () => {
         rendered: true,
         timestamp: Date.now(),
       }));
-      
+
       const endTime = performance.now();
       const renderTime = endTime - startTime;
 
@@ -174,19 +188,19 @@ describe('Performance Tests', () => {
     });
 
     it('should handle large ingredient lists efficiently', () => {
-      const largeIngredientList = Array(1000).fill(null).map((_, idx) => 
-        `ingredient-${idx}`
-      );
+      const largeIngredientList = Array(1000)
+        .fill(null)
+        .map((_, idx) => `ingredient-${idx}`);
 
       const startTime = performance.now();
-      
+
       // Simulate ingredient processing
       const processedIngredients = largeIngredientList.map(ingredient => ({
         name: ingredient,
         normalized: ingredient.toLowerCase(),
         category: 'vegetable', // Mock categorization
       }));
-      
+
       const endTime = performance.now();
       const processingTime = endTime - startTime;
 
@@ -199,7 +213,7 @@ describe('Performance Tests', () => {
     it('should cache API responses effectively', async () => {
       const cache = new Map();
       const cacheKey = 'recipes:chicken:healthy';
-      
+
       // First request - should miss cache
       const startTime1 = performance.now();
       const mockData = { recipes: [], metadata: {} };
@@ -226,7 +240,7 @@ describe('Performance Tests', () => {
         'main.js': 245760, // 240KB
         'vendor.js': 512000, // 500KB
         'styles.css': 32768, // 32KB
-        'total': 790528, // ~772KB
+        total: 790528, // ~772KB
       };
 
       expect(bundleSizes['main.js']).toBeLessThan(300000); // Main bundle < 300KB
@@ -258,7 +272,7 @@ describe('Performance Tests', () => {
         // Simulate timeout
         await Promise.race([
           new Promise(resolve => setTimeout(resolve, timeout + 1000)),
-          new Promise((_, reject) => 
+          new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Timeout')), timeout)
           ),
         ]);

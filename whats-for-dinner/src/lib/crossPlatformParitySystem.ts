@@ -1,6 +1,6 @@
 /**
  * Cross-Platform Feature Parity System
- * 
+ *
  * Ensures functional consistency and offline data sync across:
  * - Expo iOS/Android mobile app
  * - Next.js web PWA
@@ -98,7 +98,13 @@ export interface TestCase {
 
 export interface OfflineData {
   id: string;
-  type: 'recipe' | 'user_profile' | 'pantry' | 'meal_plan' | 'shopping_list' | 'preferences';
+  type:
+    | 'recipe'
+    | 'user_profile'
+    | 'pantry'
+    | 'meal_plan'
+    | 'shopping_list'
+    | 'preferences';
   data: any;
   platform: string;
   userId: string;
@@ -136,7 +142,12 @@ export interface ParityReport {
 
 export interface ParityIssue {
   id: string;
-  type: 'missing_feature' | 'inconsistent_behavior' | 'performance_difference' | 'ui_difference' | 'sync_issue';
+  type:
+    | 'missing_feature'
+    | 'inconsistent_behavior'
+    | 'performance_difference'
+    | 'ui_difference'
+    | 'sync_issue';
   severity: 'critical' | 'high' | 'medium' | 'low';
   platform: string;
   feature: string;
@@ -263,7 +274,11 @@ export class CrossPlatformParitySystem {
           maxConcurrentRequests: 15,
           maxBackgroundTime: 60,
           restrictedApis: [],
-          performanceConstraints: ['battery_life', 'storage_space', 'memory_usage'],
+          performanceConstraints: [
+            'battery_life',
+            'storage_space',
+            'memory_usage',
+          ],
         },
       },
     ];
@@ -411,7 +426,9 @@ export class CrossPlatformParitySystem {
             status: 'partial',
             version: '0.9.0',
             lastUpdated: new Date().toISOString(),
-            notes: ['Basic functionality implemented, advanced features pending'],
+            notes: [
+              'Basic functionality implemented, advanced features pending',
+            ],
             issues: ['Barcode scanning not implemented', 'Voice input missing'],
           },
         },
@@ -469,7 +486,10 @@ export class CrossPlatformParitySystem {
             version: '0.8.0',
             lastUpdated: new Date().toISOString(),
             notes: ['Basic meal planning implemented'],
-            issues: ['Calendar integration missing', 'Advanced scheduling not available'],
+            issues: [
+              'Calendar integration missing',
+              'Advanced scheduling not available',
+            ],
           },
         },
         testing: {
@@ -643,8 +663,10 @@ export class CrossPlatformParitySystem {
     const platformScores = Object.values(report.platformScores);
     const featureScores = Object.values(report.featureScores);
     const allScores = [...platformScores, ...featureScores];
-    report.overallScore = allScores.length > 0 ? 
-      allScores.reduce((sum, score) => sum + score, 0) / allScores.length : 0;
+    report.overallScore =
+      allScores.length > 0
+        ? allScores.reduce((sum, score) => sum + score, 0) / allScores.length
+        : 0;
 
     // Identify issues
     report.issues = await this.identifyParityIssues();
@@ -673,7 +695,8 @@ export class CrossPlatformParitySystem {
 
     for (const feature of this.features.values()) {
       if (feature.platforms.includes(platform.id)) {
-        const implementation = feature.implementation[platform.type as keyof FeatureImplementation];
+        const implementation =
+          feature.implementation[platform.type as keyof FeatureImplementation];
         if (implementation) {
           switch (implementation.status) {
             case 'complete':
@@ -707,7 +730,8 @@ export class CrossPlatformParitySystem {
     for (const platformId of feature.platforms) {
       const platform = this.platforms.get(platformId);
       if (platform) {
-        const implementation = feature.implementation[platform.type as keyof FeatureImplementation];
+        const implementation =
+          feature.implementation[platform.type as keyof FeatureImplementation];
         if (implementation) {
           switch (implementation.status) {
             case 'complete':
@@ -742,7 +766,8 @@ export class CrossPlatformParitySystem {
         const platform = this.platforms.get(platformId);
         if (!platform) continue;
 
-        const implementation = feature.implementation[platform.type as keyof FeatureImplementation];
+        const implementation =
+          feature.implementation[platform.type as keyof FeatureImplementation];
         if (!implementation) continue;
 
         if (implementation.status === 'missing') {
@@ -765,7 +790,8 @@ export class CrossPlatformParitySystem {
             platform: platformId,
             feature: feature.id,
             description: `Feature ${feature.name} is partially implemented on ${platform.name}`,
-            impact: 'Users experience inconsistent functionality across platforms',
+            impact:
+              'Users experience inconsistent functionality across platforms',
             resolution: 'Complete the feature implementation for this platform',
             status: 'open',
           });
@@ -796,20 +822,26 @@ export class CrossPlatformParitySystem {
   /**
    * Generate recommendations
    */
-  private async generateRecommendations(report: ParityReport): Promise<string[]> {
+  private async generateRecommendations(
+    report: ParityReport
+  ): Promise<string[]> {
     const recommendations: string[] = [];
 
     // Platform-specific recommendations
     for (const [platformId, score] of Object.entries(report.platformScores)) {
       if (score < 80) {
-        recommendations.push(`Improve feature coverage for ${platformId} (current score: ${score.toFixed(1)}%)`);
+        recommendations.push(
+          `Improve feature coverage for ${platformId} (current score: ${score.toFixed(1)}%)`
+        );
       }
     }
 
     // Feature-specific recommendations
     for (const [featureId, score] of Object.entries(report.featureScores)) {
       if (score < 80) {
-        recommendations.push(`Improve cross-platform implementation for ${featureId} (current score: ${score.toFixed(1)}%)`);
+        recommendations.push(
+          `Improve cross-platform implementation for ${featureId} (current score: ${score.toFixed(1)}%)`
+        );
       }
     }
 
@@ -818,18 +850,26 @@ export class CrossPlatformParitySystem {
     const highIssues = report.issues.filter(i => i.severity === 'high');
 
     if (criticalIssues.length > 0) {
-      recommendations.push(`Address ${criticalIssues.length} critical parity issues immediately`);
+      recommendations.push(
+        `Address ${criticalIssues.length} critical parity issues immediately`
+      );
     }
 
     if (highIssues.length > 0) {
-      recommendations.push(`Address ${highIssues.length} high-priority parity issues`);
+      recommendations.push(
+        `Address ${highIssues.length} high-priority parity issues`
+      );
     }
 
     // Overall score recommendations
     if (report.overallScore < 70) {
-      recommendations.push('Overall parity score is below 70%. Consider a comprehensive parity improvement plan');
+      recommendations.push(
+        'Overall parity score is below 70%. Consider a comprehensive parity improvement plan'
+      );
     } else if (report.overallScore < 85) {
-      recommendations.push('Overall parity score is below 85%. Focus on completing partial implementations');
+      recommendations.push(
+        'Overall parity score is below 85%. Focus on completing partial implementations'
+      );
     }
 
     return recommendations;
@@ -872,14 +912,18 @@ export class CrossPlatformParitySystem {
    */
   private async getSyncStatus(): Promise<SyncStatus> {
     const totalData = this.offlineData.size;
-    const syncedData = Array.from(this.offlineData.values())
-      .filter(d => d.syncStatus === 'synced').length;
-    const pendingData = Array.from(this.offlineData.values())
-      .filter(d => d.syncStatus === 'pending').length;
-    const conflictedData = Array.from(this.offlineData.values())
-      .filter(d => d.syncStatus === 'conflict').length;
-    const errorData = Array.from(this.offlineData.values())
-      .filter(d => d.syncStatus === 'error').length;
+    const syncedData = Array.from(this.offlineData.values()).filter(
+      d => d.syncStatus === 'synced'
+    ).length;
+    const pendingData = Array.from(this.offlineData.values()).filter(
+      d => d.syncStatus === 'pending'
+    ).length;
+    const conflictedData = Array.from(this.offlineData.values()).filter(
+      d => d.syncStatus === 'conflict'
+    ).length;
+    const errorData = Array.from(this.offlineData.values()).filter(
+      d => d.syncStatus === 'error'
+    ).length;
 
     return {
       totalData,
@@ -907,8 +951,9 @@ export class CrossPlatformParitySystem {
 
     try {
       // Process pending sync operations
-      const pendingOperations = Array.from(this.syncOperations.values())
-        .filter(op => op.status === 'pending');
+      const pendingOperations = Array.from(this.syncOperations.values()).filter(
+        op => op.status === 'pending'
+      );
 
       for (const operation of pendingOperations) {
         await this.processSyncOperation(operation);
@@ -942,17 +987,18 @@ export class CrossPlatformParitySystem {
       logger.info('Sync operation completed', { operationId: operation.id });
     } catch (error) {
       operation.status = 'failed';
-      operation.error = error instanceof Error ? error.message : 'Unknown error';
+      operation.error =
+        error instanceof Error ? error.message : 'Unknown error';
       operation.retryCount++;
 
       if (operation.retryCount < operation.maxRetries) {
         operation.status = 'pending';
-        logger.warn('Sync operation failed, will retry', { 
-          operationId: operation.id, 
+        logger.warn('Sync operation failed, will retry', {
+          operationId: operation.id,
           retryCount: operation.retryCount,
         });
       } else {
-        logger.error('Sync operation failed permanently', { 
+        logger.error('Sync operation failed permanently', {
           operationId: operation.id,
           error: operation.error,
         });
@@ -964,15 +1010,16 @@ export class CrossPlatformParitySystem {
    * Clean up completed operations
    */
   private cleanupCompletedOperations(): void {
-    const completedOperations = Array.from(this.syncOperations.values())
-      .filter(op => op.status === 'completed' || op.status === 'failed');
+    const completedOperations = Array.from(this.syncOperations.values()).filter(
+      op => op.status === 'completed' || op.status === 'failed'
+    );
 
     for (const operation of completedOperations) {
       this.syncOperations.delete(operation.id);
     }
 
     if (completedOperations.length > 0) {
-      logger.info('Cleaned up completed sync operations', { 
+      logger.info('Cleaned up completed sync operations', {
         count: completedOperations.length,
       });
     }

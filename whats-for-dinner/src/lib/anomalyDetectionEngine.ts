@@ -1,9 +1,9 @@
 /**
  * Advanced Anomaly Detection Engine
- * 
+ *
  * Implements ML-based anomaly detection algorithms for real-time monitoring
  * of system metrics, error patterns, and performance indicators.
- * 
+ *
  * Features:
  * - Statistical anomaly detection (Z-score, IQR)
  * - Time series anomaly detection (LSTM, ARIMA)
@@ -83,7 +83,7 @@ export class AnomalyDetectionEngine {
         windowSize: 100,
         threshold: 2.0,
         minSamples: 20,
-        enabled: true
+        enabled: true,
       },
       response_time_ms: {
         algorithm: 'time_series',
@@ -91,7 +91,7 @@ export class AnomalyDetectionEngine {
         windowSize: 200,
         threshold: 1.5,
         minSamples: 50,
-        enabled: true
+        enabled: true,
       },
       memory_usage_percent: {
         algorithm: 'statistical',
@@ -99,7 +99,7 @@ export class AnomalyDetectionEngine {
         windowSize: 150,
         threshold: 2.5,
         minSamples: 30,
-        enabled: true
+        enabled: true,
       },
       cpu_usage_percent: {
         algorithm: 'statistical',
@@ -107,7 +107,7 @@ export class AnomalyDetectionEngine {
         windowSize: 150,
         threshold: 2.0,
         minSamples: 30,
-        enabled: true
+        enabled: true,
       },
       ai_cost_per_hour: {
         algorithm: 'time_series',
@@ -115,7 +115,7 @@ export class AnomalyDetectionEngine {
         windowSize: 100,
         threshold: 1.8,
         minSamples: 25,
-        enabled: true
+        enabled: true,
       },
       throughput: {
         algorithm: 'pattern',
@@ -123,16 +123,16 @@ export class AnomalyDetectionEngine {
         windowSize: 300,
         threshold: 1.2,
         minSamples: 100,
-        enabled: true
-      }
+        enabled: true,
+      },
     };
 
     for (const [metric, config] of Object.entries(defaultConfigs)) {
       this.configs.set(metric, config);
     }
 
-    logger.info('Anomaly detection configurations initialized', { 
-      count: Object.keys(defaultConfigs).length 
+    logger.info('Anomaly detection configurations initialized', {
+      count: Object.keys(defaultConfigs).length,
     });
   }
 
@@ -148,8 +148,14 @@ export class AnomalyDetectionEngine {
         pattern: 'spike',
         frequency: 0.1,
         severity: 'high',
-        examples: ['Error rate jumps from 1% to 15%', 'Response time increases by 500%'],
-        detectionRules: ['value > mean + 3 * std', 'rate_of_change > threshold']
+        examples: [
+          'Error rate jumps from 1% to 15%',
+          'Response time increases by 500%',
+        ],
+        detectionRules: [
+          'value > mean + 3 * std',
+          'rate_of_change > threshold',
+        ],
       },
       {
         id: 'drop_pattern',
@@ -158,8 +164,14 @@ export class AnomalyDetectionEngine {
         pattern: 'drop',
         frequency: 0.05,
         severity: 'medium',
-        examples: ['Throughput drops to zero', 'Memory usage drops unexpectedly'],
-        detectionRules: ['value < mean - 3 * std', 'rate_of_change < -threshold']
+        examples: [
+          'Throughput drops to zero',
+          'Memory usage drops unexpectedly',
+        ],
+        detectionRules: [
+          'value < mean - 3 * std',
+          'rate_of_change < -threshold',
+        ],
       },
       {
         id: 'trend_pattern',
@@ -168,8 +180,11 @@ export class AnomalyDetectionEngine {
         pattern: 'trend',
         frequency: 0.15,
         severity: 'medium',
-        examples: ['Gradual increase in error rate', 'Declining performance over time'],
-        detectionRules: ['trend_slope_changes', 'moving_average_divergence']
+        examples: [
+          'Gradual increase in error rate',
+          'Declining performance over time',
+        ],
+        detectionRules: ['trend_slope_changes', 'moving_average_divergence'],
       },
       {
         id: 'seasonal_pattern',
@@ -179,7 +194,7 @@ export class AnomalyDetectionEngine {
         frequency: 0.08,
         severity: 'low',
         examples: ['Unusual traffic pattern', 'Off-hours activity spike'],
-        detectionRules: ['deviates_from_seasonal', 'time_based_anomaly']
+        detectionRules: ['deviates_from_seasonal', 'time_based_anomaly'],
       },
       {
         id: 'collective_pattern',
@@ -189,11 +204,13 @@ export class AnomalyDetectionEngine {
         frequency: 0.03,
         severity: 'critical',
         examples: ['Multiple services failing', 'Cascade failure pattern'],
-        detectionRules: ['multiple_metrics_anomalous', 'correlation_high']
-      }
+        detectionRules: ['multiple_metrics_anomalous', 'correlation_high'],
+      },
     ];
 
-    logger.info('Anomaly patterns initialized', { count: this.patterns.length });
+    logger.info('Anomaly patterns initialized', {
+      count: this.patterns.length,
+    });
   }
 
   /**
@@ -238,7 +255,7 @@ export class AnomalyDetectionEngine {
 
       // Get recent metrics for all configured metrics
       const metrics = await this.getRecentMetrics();
-      
+
       // Detect anomalies for each metric
       const allAnomalies: AnomalyDetectionResult[] = [];
 
@@ -262,11 +279,13 @@ export class AnomalyDetectionEngine {
       }
 
       if (allAnomalies.length > 0) {
-        logger.warn(`🚨 Detected ${allAnomalies.length} anomalies`, { 
-          anomalies: allAnomalies.map(a => ({ metric: a.metric, severity: a.severity }))
+        logger.warn(`🚨 Detected ${allAnomalies.length} anomalies`, {
+          anomalies: allAnomalies.map(a => ({
+            metric: a.metric,
+            severity: a.severity,
+          })),
         });
       }
-
     } catch (error) {
       logger.error('Anomaly detection cycle failed', { error });
     }
@@ -280,7 +299,10 @@ export class AnomalyDetectionEngine {
       const { data } = await supabase
         .from('system_metrics')
         .select('*')
-        .gte('timestamp', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        .gte(
+          'timestamp',
+          new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        )
         .order('timestamp', { ascending: false });
 
       return data || [];
@@ -294,13 +316,16 @@ export class AnomalyDetectionEngine {
    * Detect anomalies for a specific metric
    */
   private async detectAnomaliesForMetric(
-    metric: any, 
+    metric: any,
     config: AnomalyDetectionConfig
   ): Promise<AnomalyDetectionResult[]> {
     try {
       // Get historical data for the metric
-      const historicalData = await this.getHistoricalData(metric.metric_type, config.windowSize);
-      
+      const historicalData = await this.getHistoricalData(
+        metric.metric_type,
+        config.windowSize
+      );
+
       if (historicalData.length < config.minSamples) {
         return []; // Not enough data for detection
       }
@@ -313,23 +338,41 @@ export class AnomalyDetectionEngine {
 
       switch (config.algorithm) {
         case 'statistical':
-          anomalies = await this.detectStatisticalAnomalies(metric, historicalData, config);
+          anomalies = await this.detectStatisticalAnomalies(
+            metric,
+            historicalData,
+            config
+          );
           break;
         case 'time_series':
-          anomalies = await this.detectTimeSeriesAnomalies(metric, historicalData, config);
+          anomalies = await this.detectTimeSeriesAnomalies(
+            metric,
+            historicalData,
+            config
+          );
           break;
         case 'pattern':
-          anomalies = await this.detectPatternAnomalies(metric, historicalData, config);
+          anomalies = await this.detectPatternAnomalies(
+            metric,
+            historicalData,
+            config
+          );
           break;
         case 'ensemble':
-          anomalies = await this.detectEnsembleAnomalies(metric, historicalData, config);
+          anomalies = await this.detectEnsembleAnomalies(
+            metric,
+            historicalData,
+            config
+          );
           break;
       }
 
       return anomalies;
-
     } catch (error) {
-      logger.error('Failed to detect anomalies for metric', { error, metric: metric.metric_type });
+      logger.error('Failed to detect anomalies for metric', {
+        error,
+        metric: metric.metric_type,
+      });
       return [];
     }
   }
@@ -337,7 +380,10 @@ export class AnomalyDetectionEngine {
   /**
    * Get historical data for a metric
    */
-  private async getHistoricalData(metricType: string, windowSize: number): Promise<TimeSeriesData[]> {
+  private async getHistoricalData(
+    metricType: string,
+    windowSize: number
+  ): Promise<TimeSeriesData[]> {
     try {
       const { data } = await supabase
         .from('system_metrics')
@@ -349,7 +395,7 @@ export class AnomalyDetectionEngine {
       return (data || []).map(item => ({
         timestamp: item.timestamp,
         value: item.value,
-        metadata: item.metadata
+        metadata: item.metadata,
       }));
     } catch (error) {
       logger.error('Failed to get historical data', { error, metricType });
@@ -366,19 +412,21 @@ export class AnomalyDetectionEngine {
     config: AnomalyDetectionConfig
   ): Promise<AnomalyDetectionResult[]> {
     const anomalies: AnomalyDetectionResult[] = [];
-    
+
     try {
       const values = historicalData.map(d => d.value);
       const currentValue = metric.value;
-      
+
       // Calculate statistics
       const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-      const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+      const variance =
+        values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) /
+        values.length;
       const stdDev = Math.sqrt(variance);
-      
+
       // Z-score method
       const zScore = Math.abs((currentValue - mean) / stdDev);
-      
+
       if (zScore > config.threshold) {
         const anomaly: AnomalyDetectionResult = {
           id: `anomaly_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -395,15 +443,18 @@ export class AnomalyDetectionEngine {
             mean,
             stdDev,
             zScore,
-            historicalCount: values.length
+            historicalCount: values.length,
           },
           explanation: `Value ${currentValue} is ${zScore.toFixed(2)} standard deviations from mean ${mean.toFixed(2)}`,
-          suggestedActions: this.getSuggestedActions(metric.metric_type, zScore)
+          suggestedActions: this.getSuggestedActions(
+            metric.metric_type,
+            zScore
+          ),
         };
-        
+
         anomalies.push(anomaly);
       }
-      
+
       // IQR method for additional validation
       const sortedValues = [...values].sort((a, b) => a - b);
       const q1 = sortedValues[Math.floor(sortedValues.length * 0.25)];
@@ -411,7 +462,7 @@ export class AnomalyDetectionEngine {
       const iqr = q3 - q1;
       const lowerBound = q1 - 1.5 * iqr;
       const upperBound = q3 + 1.5 * iqr;
-      
+
       if (currentValue < lowerBound || currentValue > upperBound) {
         const iqrAnomaly: AnomalyDetectionResult = {
           id: `anomaly_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -421,7 +472,10 @@ export class AnomalyDetectionEngine {
           predictedValue: (q1 + q3) / 2,
           anomalyScore: Math.abs(currentValue - (q1 + q3) / 2) / iqr,
           confidence: 0.8,
-          severity: this.calculateSeverity(Math.abs(currentValue - (q1 + q3) / 2) / iqr, config.sensitivity),
+          severity: this.calculateSeverity(
+            Math.abs(currentValue - (q1 + q3) / 2) / iqr,
+            config.sensitivity
+          ),
           type: 'point',
           algorithm: 'statistical_iqr',
           context: {
@@ -429,19 +483,21 @@ export class AnomalyDetectionEngine {
             q3,
             iqr,
             lowerBound,
-            upperBound
+            upperBound,
           },
           explanation: `Value ${currentValue} is outside IQR bounds [${lowerBound.toFixed(2)}, ${upperBound.toFixed(2)}]`,
-          suggestedActions: this.getSuggestedActions(metric.metric_type, Math.abs(currentValue - (q1 + q3) / 2) / iqr)
+          suggestedActions: this.getSuggestedActions(
+            metric.metric_type,
+            Math.abs(currentValue - (q1 + q3) / 2) / iqr
+          ),
         };
-        
+
         anomalies.push(iqrAnomaly);
       }
-      
     } catch (error) {
       logger.error('Statistical anomaly detection failed', { error });
     }
-    
+
     return anomalies;
   }
 
@@ -454,22 +510,22 @@ export class AnomalyDetectionEngine {
     config: AnomalyDetectionConfig
   ): Promise<AnomalyDetectionResult[]> {
     const anomalies: AnomalyDetectionResult[] = [];
-    
+
     try {
       const values = historicalData.map(d => d.value);
       const currentValue = metric.value;
-      
+
       // Calculate moving average
       const windowSize = Math.min(20, Math.floor(values.length / 3));
       const movingAverage = this.calculateMovingAverage(values, windowSize);
       const lastMovingAvg = movingAverage[movingAverage.length - 1];
-      
+
       // Calculate trend
       const trend = this.calculateTrend(values.slice(-10)); // Last 10 values
-      
+
       // Detect trend anomalies
       const trendDeviation = Math.abs(trend - 0) / Math.abs(trend + 0.001);
-      
+
       if (trendDeviation > config.threshold) {
         const anomaly: AnomalyDetectionResult = {
           id: `anomaly_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -486,25 +542,31 @@ export class AnomalyDetectionEngine {
             trend,
             movingAverage: lastMovingAvg,
             trendDeviation,
-            windowSize
+            windowSize,
           },
           explanation: `Trend deviation detected: ${trend > 0 ? 'increasing' : 'decreasing'} trend with ${trendDeviation.toFixed(2)} deviation`,
-          suggestedActions: this.getSuggestedActions(metric.metric_type, trendDeviation)
+          suggestedActions: this.getSuggestedActions(
+            metric.metric_type,
+            trendDeviation
+          ),
         };
-        
+
         anomalies.push(anomaly);
       }
-      
+
       // Detect seasonal anomalies
-      const seasonalAnomaly = await this.detectSeasonalAnomaly(metric, historicalData, config);
+      const seasonalAnomaly = await this.detectSeasonalAnomaly(
+        metric,
+        historicalData,
+        config
+      );
       if (seasonalAnomaly) {
         anomalies.push(seasonalAnomaly);
       }
-      
     } catch (error) {
       logger.error('Time series anomaly detection failed', { error });
     }
-    
+
     return anomalies;
   }
 
@@ -517,15 +579,20 @@ export class AnomalyDetectionEngine {
     config: AnomalyDetectionConfig
   ): Promise<AnomalyDetectionResult[]> {
     const anomalies: AnomalyDetectionResult[] = [];
-    
+
     try {
       const values = historicalData.map(d => d.value);
       const currentValue = metric.value;
-      
+
       // Check against known patterns
       for (const pattern of this.patterns) {
-        const patternMatch = await this.checkPatternMatch(metric.metric_type, values, currentValue, pattern);
-        
+        const patternMatch = await this.checkPatternMatch(
+          metric.metric_type,
+          values,
+          currentValue,
+          pattern
+        );
+
         if (patternMatch.isMatch) {
           const anomaly: AnomalyDetectionResult = {
             id: `anomaly_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -540,20 +607,22 @@ export class AnomalyDetectionEngine {
             context: {
               pattern: pattern.name,
               patternId: pattern.id,
-              matchScore: patternMatch.score
+              matchScore: patternMatch.score,
             },
             explanation: `Pattern "${pattern.name}" detected: ${pattern.description}`,
-            suggestedActions: this.getSuggestedActions(metric.metric_type, patternMatch.score)
+            suggestedActions: this.getSuggestedActions(
+              metric.metric_type,
+              patternMatch.score
+            ),
           };
-          
+
           anomalies.push(anomaly);
         }
       }
-      
     } catch (error) {
       logger.error('Pattern anomaly detection failed', { error });
     }
-    
+
     return anomalies;
   }
 
@@ -566,20 +635,41 @@ export class AnomalyDetectionEngine {
     config: AnomalyDetectionConfig
   ): Promise<AnomalyDetectionResult[]> {
     const anomalies: AnomalyDetectionResult[] = [];
-    
+
     try {
       // Run multiple detection algorithms
-      const statisticalAnomalies = await this.detectStatisticalAnomalies(metric, historicalData, config);
-      const timeSeriesAnomalies = await this.detectTimeSeriesAnomalies(metric, historicalData, config);
-      const patternAnomalies = await this.detectPatternAnomalies(metric, historicalData, config);
-      
+      const statisticalAnomalies = await this.detectStatisticalAnomalies(
+        metric,
+        historicalData,
+        config
+      );
+      const timeSeriesAnomalies = await this.detectTimeSeriesAnomalies(
+        metric,
+        historicalData,
+        config
+      );
+      const patternAnomalies = await this.detectPatternAnomalies(
+        metric,
+        historicalData,
+        config
+      );
+
       // Combine results using voting
-      const allAnomalies = [...statisticalAnomalies, ...timeSeriesAnomalies, ...patternAnomalies];
-      
-      if (allAnomalies.length >= 2) { // At least 2 algorithms agree
-        const avgScore = allAnomalies.reduce((sum, a) => sum + a.anomalyScore, 0) / allAnomalies.length;
-        const avgConfidence = allAnomalies.reduce((sum, a) => sum + a.confidence, 0) / allAnomalies.length;
-        
+      const allAnomalies = [
+        ...statisticalAnomalies,
+        ...timeSeriesAnomalies,
+        ...patternAnomalies,
+      ];
+
+      if (allAnomalies.length >= 2) {
+        // At least 2 algorithms agree
+        const avgScore =
+          allAnomalies.reduce((sum, a) => sum + a.anomalyScore, 0) /
+          allAnomalies.length;
+        const avgConfidence =
+          allAnomalies.reduce((sum, a) => sum + a.confidence, 0) /
+          allAnomalies.length;
+
         const ensembleAnomaly: AnomalyDetectionResult = {
           id: `anomaly_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           timestamp: new Date().toISOString(),
@@ -593,34 +683,39 @@ export class AnomalyDetectionEngine {
           context: {
             algorithmCount: allAnomalies.length,
             algorithms: allAnomalies.map(a => a.algorithm),
-            individualScores: allAnomalies.map(a => a.anomalyScore)
+            individualScores: allAnomalies.map(a => a.anomalyScore),
           },
           explanation: `Ensemble detection: ${allAnomalies.length} algorithms detected anomaly with average score ${avgScore.toFixed(2)}`,
-          suggestedActions: this.getSuggestedActions(metric.metric_type, avgScore)
+          suggestedActions: this.getSuggestedActions(
+            metric.metric_type,
+            avgScore
+          ),
         };
-        
+
         anomalies.push(ensembleAnomaly);
       }
-      
     } catch (error) {
       logger.error('Ensemble anomaly detection failed', { error });
     }
-    
+
     return anomalies;
   }
 
   /**
    * Calculate moving average
    */
-  private calculateMovingAverage(values: number[], windowSize: number): number[] {
+  private calculateMovingAverage(
+    values: number[],
+    windowSize: number
+  ): number[] {
     const movingAvg: number[] = [];
-    
+
     for (let i = windowSize - 1; i < values.length; i++) {
       const window = values.slice(i - windowSize + 1, i + 1);
       const avg = window.reduce((sum, val) => sum + val, 0) / window.length;
       movingAvg.push(avg);
     }
-    
+
     return movingAvg;
   }
 
@@ -629,18 +724,18 @@ export class AnomalyDetectionEngine {
    */
   private calculateTrend(values: number[]): number {
     if (values.length < 2) return 0;
-    
+
     const n = values.length;
     const x = Array.from({ length: n }, (_, i) => i);
     const y = values;
-    
+
     const sumX = x.reduce((sum, val) => sum + val, 0);
     const sumY = y.reduce((sum, val) => sum + val, 0);
     const sumXY = x.reduce((sum, val, i) => sum + val * y[i], 0);
     const sumXX = x.reduce((sum, val) => sum + val * val, 0);
-    
+
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-    
+
     return slope;
   }
 
@@ -675,20 +770,24 @@ export class AnomalyDetectionEngine {
       // Implement pattern matching logic based on pattern rules
       let score = 0;
       let confidence = 0;
-      
+
       switch (pattern.id) {
         case 'spike_pattern':
-          const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-          const stdDev = Math.sqrt(values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length);
+          const mean =
+            values.reduce((sum, val) => sum + val, 0) / values.length;
+          const stdDev = Math.sqrt(
+            values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) /
+              values.length
+          );
           const zScore = (currentValue - mean) / stdDev;
-          
+
           if (zScore > 3) {
             score = zScore;
             confidence = Math.min(0.95, zScore / 5);
             return { isMatch: true, score, confidence };
           }
           break;
-          
+
         case 'drop_pattern':
           const minValue = Math.min(...values);
           if (currentValue < minValue * 0.5) {
@@ -697,7 +796,7 @@ export class AnomalyDetectionEngine {
             return { isMatch: true, score, confidence };
           }
           break;
-          
+
         case 'trend_pattern':
           const trend = this.calculateTrend(values.slice(-10));
           if (Math.abs(trend) > 0.1) {
@@ -707,7 +806,7 @@ export class AnomalyDetectionEngine {
           }
           break;
       }
-      
+
       return { isMatch: false, score: 0, confidence: 0 };
     } catch (error) {
       logger.error('Pattern matching failed', { error });
@@ -718,15 +817,18 @@ export class AnomalyDetectionEngine {
   /**
    * Calculate severity based on score and sensitivity
    */
-  private calculateSeverity(score: number, sensitivity: string): 'low' | 'medium' | 'high' | 'critical' {
+  private calculateSeverity(
+    score: number,
+    sensitivity: string
+  ): 'low' | 'medium' | 'high' | 'critical' {
     const thresholds = {
       low: { critical: 5, high: 3, medium: 2 },
       medium: { critical: 4, high: 2.5, medium: 1.5 },
-      high: { critical: 3, high: 2, medium: 1 }
+      high: { critical: 3, high: 2, medium: 1 },
     };
-    
+
     const threshold = thresholds[sensitivity];
-    
+
     if (score >= threshold.critical) return 'critical';
     if (score >= threshold.high) return 'high';
     if (score >= threshold.medium) return 'medium';
@@ -742,35 +844,37 @@ export class AnomalyDetectionEngine {
         'Check application logs for error patterns',
         'Review recent deployments for issues',
         'Implement circuit breaker pattern',
-        'Scale up resources if needed'
+        'Scale up resources if needed',
       ],
       response_time_ms: [
         'Optimize database queries',
         'Implement caching layer',
         'Check for resource bottlenecks',
-        'Review API endpoint performance'
+        'Review API endpoint performance',
       ],
       memory_usage_percent: [
         'Check for memory leaks',
         'Optimize data structures',
         'Implement garbage collection tuning',
-        'Scale up memory resources'
+        'Scale up memory resources',
       ],
       cpu_usage_percent: [
         'Check for CPU-intensive operations',
         'Optimize algorithms',
         'Implement load balancing',
-        'Scale up CPU resources'
+        'Scale up CPU resources',
       ],
       ai_cost_per_hour: [
         'Optimize AI model usage',
         'Implement request batching',
         'Review prompt efficiency',
-        'Consider model alternatives'
-      ]
+        'Consider model alternatives',
+      ],
     };
-    
-    return actions[metricType] || ['Investigate the issue', 'Check system logs'];
+
+    return (
+      actions[metricType] || ['Investigate the issue', 'Check system logs']
+    );
   }
 
   /**
@@ -782,9 +886,9 @@ export class AnomalyDetectionEngine {
       await monitoringSystem.recordCounter('anomalies_detected', 1, {
         metric: anomaly.metric,
         severity: anomaly.severity,
-        algorithm: anomaly.algorithm
+        algorithm: anomaly.algorithm,
       });
-      
+
       // Store in database
       await supabase.from('anomaly_detections').insert({
         id: anomaly.id,
@@ -798,14 +902,13 @@ export class AnomalyDetectionEngine {
         algorithm: anomaly.algorithm,
         context: anomaly.context,
         explanation: anomaly.explanation,
-        suggested_actions: anomaly.suggestedActions
+        suggested_actions: anomaly.suggestedActions,
       });
-      
+
       // Send alert for high severity anomalies
       if (anomaly.severity === 'critical' || anomaly.severity === 'high') {
         await this.sendAnomalyAlert(anomaly);
       }
-      
     } catch (error) {
       logger.error('Failed to process anomaly', { error, anomaly });
     }
@@ -814,7 +917,9 @@ export class AnomalyDetectionEngine {
   /**
    * Send anomaly alert
    */
-  private async sendAnomalyAlert(anomaly: AnomalyDetectionResult): Promise<void> {
+  private async sendAnomalyAlert(
+    anomaly: AnomalyDetectionResult
+  ): Promise<void> {
     try {
       const message = `🚨 ANOMALY DETECTED
 Metric: ${anomaly.metric}
@@ -830,7 +935,6 @@ ${anomaly.suggestedActions.map(action => `• ${action}`).join('\n')}`;
 
       // This would integrate with alerting system
       logger.warn('Anomaly alert', { message });
-      
     } catch (error) {
       logger.error('Failed to send anomaly alert', { error });
     }
@@ -839,14 +943,20 @@ ${anomaly.suggestedActions.map(action => `• ${action}`).join('\n')}`;
   /**
    * Update detection configuration
    */
-  async updateConfig(metricType: string, config: Partial<AnomalyDetectionConfig>): Promise<void> {
+  async updateConfig(
+    metricType: string,
+    config: Partial<AnomalyDetectionConfig>
+  ): Promise<void> {
     try {
       const currentConfig = this.configs.get(metricType);
       if (currentConfig) {
         const updatedConfig = { ...currentConfig, ...config };
         this.configs.set(metricType, updatedConfig);
-        
-        logger.info('Detection configuration updated', { metricType, config: updatedConfig });
+
+        logger.info('Detection configuration updated', {
+          metricType,
+          config: updatedConfig,
+        });
       }
     } catch (error) {
       logger.error('Failed to update detection configuration', { error });
@@ -864,32 +974,45 @@ ${anomaly.suggestedActions.map(action => `• ${action}`).join('\n')}`;
     averageConfidence: number;
   } {
     const totalAnomalies = this.anomalyHistory.length;
-    
-    const anomaliesBySeverity = this.anomalyHistory.reduce((acc, anomaly) => {
-      acc[anomaly.severity] = (acc[anomaly.severity] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
-    const anomaliesByAlgorithm = this.anomalyHistory.reduce((acc, anomaly) => {
-      acc[anomaly.algorithm] = (acc[anomaly.algorithm] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
-    const anomaliesByMetric = this.anomalyHistory.reduce((acc, anomaly) => {
-      acc[anomaly.metric] = (acc[anomaly.metric] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
-    const averageConfidence = this.anomalyHistory.length > 0 
-      ? this.anomalyHistory.reduce((sum, anomaly) => sum + anomaly.confidence, 0) / this.anomalyHistory.length
-      : 0;
-    
+
+    const anomaliesBySeverity = this.anomalyHistory.reduce(
+      (acc, anomaly) => {
+        acc[anomaly.severity] = (acc[anomaly.severity] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    const anomaliesByAlgorithm = this.anomalyHistory.reduce(
+      (acc, anomaly) => {
+        acc[anomaly.algorithm] = (acc[anomaly.algorithm] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    const anomaliesByMetric = this.anomalyHistory.reduce(
+      (acc, anomaly) => {
+        acc[anomaly.metric] = (acc[anomaly.metric] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    const averageConfidence =
+      this.anomalyHistory.length > 0
+        ? this.anomalyHistory.reduce(
+            (sum, anomaly) => sum + anomaly.confidence,
+            0
+          ) / this.anomalyHistory.length
+        : 0;
+
     return {
       totalAnomalies,
       anomaliesBySeverity,
       anomaliesByAlgorithm,
       anomaliesByMetric,
-      averageConfidence
+      averageConfidence,
     };
   }
 

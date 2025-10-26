@@ -1,6 +1,6 @@
 /**
  * Comprehensive Testing Suite System
- * 
+ *
  * Implements comprehensive testing with:
  * - Unit test automation and coverage
  * - Integration test management
@@ -166,7 +166,8 @@ export class TestingSuiteSystem {
       {
         id: 'integration_tests',
         name: 'Integration Tests',
-        description: 'Integration tests for API endpoints and database interactions',
+        description:
+          'Integration tests for API endpoints and database interactions',
         type: 'integration',
         tests: [
           'src/app/api/**/*.test.ts',
@@ -192,9 +193,7 @@ export class TestingSuiteSystem {
         name: 'End-to-End Tests',
         description: 'End-to-end tests for complete user workflows',
         type: 'e2e',
-        tests: [
-          'tests/e2e/**/*.test.ts',
-        ],
+        tests: ['tests/e2e/**/*.test.ts'],
         config: {
           timeout: 30000,
           retries: 1,
@@ -214,9 +213,7 @@ export class TestingSuiteSystem {
         name: 'Load Tests',
         description: 'Load tests for performance and scalability validation',
         type: 'load',
-        tests: [
-          'tests/load/**/*.test.ts',
-        ],
+        tests: ['tests/load/**/*.test.ts'],
         config: {
           timeout: 300000,
           retries: 0,
@@ -236,9 +233,7 @@ export class TestingSuiteSystem {
         name: 'Concurrency Tests',
         description: 'Concurrency tests for race condition detection',
         type: 'concurrency',
-        tests: [
-          'tests/concurrency/**/*.test.ts',
-        ],
+        tests: ['tests/concurrency/**/*.test.ts'],
         config: {
           timeout: 60000,
           retries: 1,
@@ -319,7 +314,7 @@ export class TestingSuiteSystem {
         results.push(testResult);
       } catch (error) {
         logger.error('Test execution failed', { testPattern, error });
-        
+
         const failedResult: TestResult = {
           id: `test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           name: testPattern,
@@ -332,7 +327,7 @@ export class TestingSuiteSystem {
           retryCount: 0,
           maxRetries: suite.config.retries,
         };
-        
+
         results.push(failedResult);
       }
     }
@@ -343,7 +338,10 @@ export class TestingSuiteSystem {
   /**
    * Run individual test
    */
-  private async runTest(testPattern: string, suite: TestSuite): Promise<TestResult> {
+  private async runTest(
+    testPattern: string,
+    suite: TestSuite
+  ): Promise<TestResult> {
     const startTime = new Date();
     const testId = `test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -376,7 +374,8 @@ export class TestingSuiteSystem {
 
       // Add performance metrics if available
       if (suite.type === 'load' || suite.type === 'concurrency') {
-        result.performance = await this.calculatePerformanceMetrics(testPattern);
+        result.performance =
+          await this.calculatePerformanceMetrics(testPattern);
       }
 
       return result;
@@ -405,13 +404,17 @@ export class TestingSuiteSystem {
   /**
    * Simulate test execution
    */
-  private async simulateTestExecution(testPattern: string, suite: TestSuite): Promise<void> {
+  private async simulateTestExecution(
+    testPattern: string,
+    suite: TestSuite
+  ): Promise<void> {
     // Simulate test execution time
     const executionTime = Math.random() * suite.config.timeout;
     await new Promise(resolve => setTimeout(resolve, executionTime));
 
     // Simulate occasional failures
-    if (Math.random() < 0.1) { // 10% failure rate
+    if (Math.random() < 0.1) {
+      // 10% failure rate
       throw new Error(`Test failed: ${testPattern}`);
     }
   }
@@ -435,7 +438,9 @@ export class TestingSuiteSystem {
   /**
    * Calculate performance metrics
    */
-  private async calculatePerformanceMetrics(testPattern: string): Promise<PerformanceMetrics> {
+  private async calculatePerformanceMetrics(
+    testPattern: string
+  ): Promise<PerformanceMetrics> {
     // This would calculate actual performance metrics
     // For now, we'll simulate performance data
     return {
@@ -452,7 +457,10 @@ export class TestingSuiteSystem {
   /**
    * Generate test report
    */
-  private async generateTestReport(results: TestResult[], startTime: Date): Promise<TestReport> {
+  private async generateTestReport(
+    results: TestResult[],
+    startTime: Date
+  ): Promise<TestReport> {
     const endTime = new Date();
     const duration = endTime.getTime() - startTime.getTime();
 
@@ -463,33 +471,85 @@ export class TestingSuiteSystem {
     const flakyTests = results.filter(r => r.status === 'flaky').length;
 
     // Calculate overall coverage
-    const coverageResults = results.filter(r => r.coverage).map(r => r.coverage!);
+    const coverageResults = results
+      .filter(r => r.coverage)
+      .map(r => r.coverage!);
     const overallCoverage: TestCoverage = {
-      statements: coverageResults.length > 0 ? coverageResults.reduce((sum, c) => sum + c.statements, 0) / coverageResults.length : 0,
-      branches: coverageResults.length > 0 ? coverageResults.reduce((sum, c) => sum + c.branches, 0) / coverageResults.length : 0,
-      functions: coverageResults.length > 0 ? coverageResults.reduce((sum, c) => sum + c.functions, 0) / coverageResults.length : 0,
-      lines: coverageResults.length > 0 ? coverageResults.reduce((sum, c) => sum + c.lines, 0) / coverageResults.length : 0,
+      statements:
+        coverageResults.length > 0
+          ? coverageResults.reduce((sum, c) => sum + c.statements, 0) /
+            coverageResults.length
+          : 0,
+      branches:
+        coverageResults.length > 0
+          ? coverageResults.reduce((sum, c) => sum + c.branches, 0) /
+            coverageResults.length
+          : 0,
+      functions:
+        coverageResults.length > 0
+          ? coverageResults.reduce((sum, c) => sum + c.functions, 0) /
+            coverageResults.length
+          : 0,
+      lines:
+        coverageResults.length > 0
+          ? coverageResults.reduce((sum, c) => sum + c.lines, 0) /
+            coverageResults.length
+          : 0,
       uncoveredLines: [],
       uncoveredBranches: [],
     };
 
     // Calculate overall performance
-    const performanceResults = results.filter(r => r.performance).map(r => r.performance!);
+    const performanceResults = results
+      .filter(r => r.performance)
+      .map(r => r.performance!);
     const overallPerformance: PerformanceMetrics = {
-      responseTime: performanceResults.length > 0 ? performanceResults.reduce((sum, p) => sum + p.responseTime, 0) / performanceResults.length : 0,
-      throughput: performanceResults.length > 0 ? performanceResults.reduce((sum, p) => sum + p.throughput, 0) / performanceResults.length : 0,
-      memoryUsage: performanceResults.length > 0 ? performanceResults.reduce((sum, p) => sum + p.memoryUsage, 0) / performanceResults.length : 0,
-      cpuUsage: performanceResults.length > 0 ? performanceResults.reduce((sum, p) => sum + p.cpuUsage, 0) / performanceResults.length : 0,
-      errorRate: performanceResults.length > 0 ? performanceResults.reduce((sum, p) => sum + p.errorRate, 0) / performanceResults.length : 0,
-      p95ResponseTime: performanceResults.length > 0 ? performanceResults.reduce((sum, p) => sum + p.p95ResponseTime, 0) / performanceResults.length : 0,
-      p99ResponseTime: performanceResults.length > 0 ? performanceResults.reduce((sum, p) => sum + p.p99ResponseTime, 0) / performanceResults.length : 0,
+      responseTime:
+        performanceResults.length > 0
+          ? performanceResults.reduce((sum, p) => sum + p.responseTime, 0) /
+            performanceResults.length
+          : 0,
+      throughput:
+        performanceResults.length > 0
+          ? performanceResults.reduce((sum, p) => sum + p.throughput, 0) /
+            performanceResults.length
+          : 0,
+      memoryUsage:
+        performanceResults.length > 0
+          ? performanceResults.reduce((sum, p) => sum + p.memoryUsage, 0) /
+            performanceResults.length
+          : 0,
+      cpuUsage:
+        performanceResults.length > 0
+          ? performanceResults.reduce((sum, p) => sum + p.cpuUsage, 0) /
+            performanceResults.length
+          : 0,
+      errorRate:
+        performanceResults.length > 0
+          ? performanceResults.reduce((sum, p) => sum + p.errorRate, 0) /
+            performanceResults.length
+          : 0,
+      p95ResponseTime:
+        performanceResults.length > 0
+          ? performanceResults.reduce((sum, p) => sum + p.p95ResponseTime, 0) /
+            performanceResults.length
+          : 0,
+      p99ResponseTime:
+        performanceResults.length > 0
+          ? performanceResults.reduce((sum, p) => sum + p.p99ResponseTime, 0) /
+            performanceResults.length
+          : 0,
     };
 
     // Analyze flaky tests
     const flakyTestAnalysis = await this.analyzeFlakyTests(results);
 
     // Generate recommendations
-    const recommendations = this.generateRecommendations(results, overallCoverage, overallPerformance);
+    const recommendations = this.generateRecommendations(
+      results,
+      overallCoverage,
+      overallPerformance
+    );
 
     const report: TestReport = {
       id: `report_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -513,7 +573,9 @@ export class TestingSuiteSystem {
   /**
    * Analyze flaky tests
    */
-  private async analyzeFlakyTests(results: TestResult[]): Promise<FlakyTestAnalysis[]> {
+  private async analyzeFlakyTests(
+    results: TestResult[]
+  ): Promise<FlakyTestAnalysis[]> {
     const flakyAnalysis: FlakyTestAnalysis[] = [];
 
     // Group results by test name
@@ -534,7 +596,8 @@ export class TestingSuiteSystem {
       const failedRuns = testResults.filter(r => r.status === 'failed').length;
       const flakinessScore = failedRuns / totalRuns;
 
-      if (flakinessScore > 0.1 && flakinessScore < 0.9) { // 10-90% failure rate indicates flakiness
+      if (flakinessScore > 0.1 && flakinessScore < 0.9) {
+        // 10-90% failure rate indicates flakiness
         const analysis: FlakyTestAnalysis = {
           testName,
           flakinessScore,
@@ -567,8 +630,9 @@ export class TestingSuiteSystem {
       }
     });
 
-    const mostCommonError = Array.from(errorTypes.entries())
-      .sort((a, b) => b[1] - a[1])[0];
+    const mostCommonError = Array.from(errorTypes.entries()).sort(
+      (a, b) => b[1] - a[1]
+    )[0];
 
     return mostCommonError ? mostCommonError[0] : 'Unknown pattern';
   }
@@ -581,21 +645,28 @@ export class TestingSuiteSystem {
 
     // Check for timing issues
     const durations = results.map(r => r.duration);
-    const avgDuration = durations.reduce((sum, d) => sum + d, 0) / durations.length;
-    const durationVariance = durations.reduce((sum, d) => sum + Math.pow(d - avgDuration, 2), 0) / durations.length;
-    
+    const avgDuration =
+      durations.reduce((sum, d) => sum + d, 0) / durations.length;
+    const durationVariance =
+      durations.reduce((sum, d) => sum + Math.pow(d - avgDuration, 2), 0) /
+      durations.length;
+
     if (durationVariance > avgDuration * 0.5) {
       causes.push('Timing issues - inconsistent execution times');
     }
 
     // Check for resource issues
-    const memoryIssues = results.filter(r => r.performance && r.performance.memoryUsage > 100);
+    const memoryIssues = results.filter(
+      r => r.performance && r.performance.memoryUsage > 100
+    );
     if (memoryIssues.length > 0) {
       causes.push('Memory issues - high memory usage');
     }
 
     // Check for network issues
-    const networkIssues = results.filter(r => r.performance && r.performance.errorRate > 0.01);
+    const networkIssues = results.filter(
+      r => r.performance && r.performance.errorRate > 0.01
+    );
     if (networkIssues.length > 0) {
       causes.push('Network issues - high error rates');
     }
@@ -611,23 +682,28 @@ export class TestingSuiteSystem {
 
     // Check for timing issues
     const durations = results.map(r => r.duration);
-    const avgDuration = durations.reduce((sum, d) => sum + d, 0) / durations.length;
+    const avgDuration =
+      durations.reduce((sum, d) => sum + d, 0) / durations.length;
     const maxDuration = Math.max(...durations);
-    
+
     if (maxDuration > avgDuration * 2) {
       fixes.push('Add explicit waits and timeouts');
       fixes.push('Use retry mechanisms for transient failures');
     }
 
     // Check for resource issues
-    const memoryIssues = results.filter(r => r.performance && r.performance.memoryUsage > 100);
+    const memoryIssues = results.filter(
+      r => r.performance && r.performance.memoryUsage > 100
+    );
     if (memoryIssues.length > 0) {
       fixes.push('Optimize memory usage and cleanup resources');
       fixes.push('Use memory profiling to identify leaks');
     }
 
     // Check for concurrency issues
-    const concurrencyIssues = results.filter(r => r.type === 'concurrency' && r.status === 'failed');
+    const concurrencyIssues = results.filter(
+      r => r.type === 'concurrency' && r.status === 'failed'
+    );
     if (concurrencyIssues.length > 0) {
       fixes.push('Add proper synchronization mechanisms');
       fixes.push('Use atomic operations where possible');
@@ -639,34 +715,58 @@ export class TestingSuiteSystem {
   /**
    * Generate recommendations
    */
-  private generateRecommendations(results: TestResult[], coverage: TestCoverage, performance: PerformanceMetrics): string[] {
+  private generateRecommendations(
+    results: TestResult[],
+    coverage: TestCoverage,
+    performance: PerformanceMetrics
+  ): string[] {
     const recommendations: string[] = [];
 
     // Coverage recommendations
     if (coverage.statements < 80) {
-      recommendations.push('Increase test coverage for statements (currently ' + coverage.statements.toFixed(1) + '%)');
+      recommendations.push(
+        'Increase test coverage for statements (currently ' +
+          coverage.statements.toFixed(1) +
+          '%)'
+      );
     }
     if (coverage.branches < 70) {
-      recommendations.push('Increase test coverage for branches (currently ' + coverage.branches.toFixed(1) + '%)');
+      recommendations.push(
+        'Increase test coverage for branches (currently ' +
+          coverage.branches.toFixed(1) +
+          '%)'
+      );
     }
 
     // Performance recommendations
     if (performance.responseTime > 1000) {
-      recommendations.push('Optimize response times (currently ' + performance.responseTime.toFixed(0) + 'ms)');
+      recommendations.push(
+        'Optimize response times (currently ' +
+          performance.responseTime.toFixed(0) +
+          'ms)'
+      );
     }
     if (performance.memoryUsage > 100) {
-      recommendations.push('Optimize memory usage (currently ' + performance.memoryUsage.toFixed(0) + 'MB)');
+      recommendations.push(
+        'Optimize memory usage (currently ' +
+          performance.memoryUsage.toFixed(0) +
+          'MB)'
+      );
     }
 
     // Test quality recommendations
     const flakyTests = results.filter(r => r.status === 'flaky').length;
     if (flakyTests > 0) {
-      recommendations.push('Fix ' + flakyTests + ' flaky tests to improve reliability');
+      recommendations.push(
+        'Fix ' + flakyTests + ' flaky tests to improve reliability'
+      );
     }
 
     const failedTests = results.filter(r => r.status === 'failed').length;
     if (failedTests > 0) {
-      recommendations.push('Investigate and fix ' + failedTests + ' failing tests');
+      recommendations.push(
+        'Investigate and fix ' + failedTests + ' failing tests'
+      );
     }
 
     return recommendations;
@@ -707,17 +807,20 @@ export class TestingSuiteSystem {
   /**
    * Simulate load test user
    */
-  private async simulateLoadTestUser(config: LoadTestConfig, userIndex: number): Promise<TestResult[]> {
+  private async simulateLoadTestUser(
+    config: LoadTestConfig,
+    userIndex: number
+  ): Promise<TestResult[]> {
     const results: TestResult[] = [];
 
     for (const scenario of config.scenarios) {
       for (const request of scenario.requests) {
         const startTime = new Date();
-        
+
         try {
           // Simulate request execution
           await this.simulateRequest(request);
-          
+
           const endTime = new Date();
           const duration = endTime.getTime() - startTime.getTime();
 
@@ -777,7 +880,8 @@ export class TestingSuiteSystem {
     await new Promise(resolve => setTimeout(resolve, executionTime));
 
     // Simulate occasional failures
-    if (Math.random() < 0.05) { // 5% failure rate
+    if (Math.random() < 0.05) {
+      // 5% failure rate
       throw new Error(`Request failed: ${request.url}`);
     }
   }

@@ -1,6 +1,6 @@
 /**
  * Theme Management for What's for Dinner
- * 
+ *
  * This module provides dark mode functionality and theme management
  * with system preference detection and persistent storage.
  */
@@ -35,7 +35,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const updateResolvedTheme = () => {
       if (theme === 'system') {
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+          .matches
+          ? 'dark'
+          : 'light';
         setResolvedTheme(systemTheme);
       } else {
         setResolvedTheme(theme);
@@ -61,11 +64,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(resolvedTheme);
-    
+
     // Update meta theme-color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', resolvedTheme === 'dark' ? '#1f2937' : '#ffffff');
+      metaThemeColor.setAttribute(
+        'content',
+        resolvedTheme === 'dark' ? '#1f2937' : '#ffffff'
+      );
     }
   }, [resolvedTheme]);
 
@@ -79,7 +85,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme, toggleTheme }}>
+    <ThemeContext.Provider
+      value={{ theme, setTheme, resolvedTheme, toggleTheme }}
+    >
       {children}
     </ThemeContext.Provider>
   );
@@ -145,7 +153,7 @@ export const themeVariables = {
 export function applyThemeVariables(theme: 'light' | 'dark') {
   const root = document.documentElement;
   const variables = themeVariables[theme];
-  
+
   Object.entries(variables).forEach(([key, value]) => {
     root.style.setProperty(key, value);
   });
@@ -186,7 +194,7 @@ export function ThemeSelector() {
       <label className="text-sm font-medium">Theme</label>
       <select
         value={theme}
-        onChange={(e) => setTheme(e.target.value as Theme)}
+        onChange={e => setTheme(e.target.value as Theme)}
         className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
       >
         <option value="light">Light</option>

@@ -19,6 +19,7 @@ Welcome to the What's for Dinner development team! This guide will help you get 
 Before you begin, ensure you have the following installed:
 
 ### Required Software
+
 - **Node.js** (v18.0.0 or higher)
 - **pnpm** (v8.0.0 or higher)
 - **Git** (v2.30.0 or higher)
@@ -26,12 +27,14 @@ Before you begin, ensure you have the following installed:
 - **Supabase CLI** (v1.0.0 or higher)
 
 ### Recommended Tools
+
 - **VS Code** with recommended extensions
 - **Postman** or **Insomnia** for API testing
 - **DBeaver** or **pgAdmin** for database management
 - **Figma** for design collaboration
 
 ### Browser Requirements
+
 - **Chrome** (latest)
 - **Firefox** (latest)
 - **Safari** (latest)

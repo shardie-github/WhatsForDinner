@@ -2,7 +2,7 @@
 
 /**
  * Automated Secrets Rotation Script for What's for Dinner
- * 
+ *
  * This script handles automated rotation of:
  * - API keys (OpenAI, Stripe, etc.)
  * - Database credentials
@@ -24,10 +24,10 @@ class SecretsRotationManager {
         apiKeys: '30d', // Rotate every 30 days
         dbCredentials: '90d', // Rotate every 90 days
         jwtSecrets: '7d', // Rotate every 7 days
-        encryptionKeys: '180d' // Rotate every 180 days
+        encryptionKeys: '180d', // Rotate every 180 days
       },
       backupRetention: '90d', // Keep backups for 90 days
-      notificationChannels: ['email', 'slack', 'webhook']
+      notificationChannels: ['email', 'slack', 'webhook'],
     };
   }
 
@@ -46,7 +46,7 @@ class SecretsRotationManager {
 
       console.log('\n✅ Secrets rotation completed successfully!');
       this.generateRotationReport();
-      
+
       return this.rotationLog;
     } catch (error) {
       console.error('❌ Secrets rotation failed:', error);
@@ -57,24 +57,24 @@ class SecretsRotationManager {
 
   async rotateAPIKeys() {
     console.log('🔑 Rotating API keys...');
-    
+
     const apiKeys = [
       'OPENAI_API_KEY',
       'STRIPE_SECRET_KEY',
       'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY',
-      'SUPABASE_SERVICE_ROLE_KEY'
+      'SUPABASE_SERVICE_ROLE_KEY',
     ];
 
     for (const keyName of apiKeys) {
       try {
         const newKey = await this.generateSecureKey(keyName);
         await this.updateSecret(keyName, newKey);
-        
+
         this.rotationLog.push({
           type: 'API_KEY_ROTATION',
           key: keyName,
           timestamp: new Date().toISOString(),
-          status: 'success'
+          status: 'success',
         });
 
         console.log(`✅ Rotated ${keyName}`);
@@ -85,7 +85,7 @@ class SecretsRotationManager {
           key: keyName,
           timestamp: new Date().toISOString(),
           status: 'failed',
-          error: error.message
+          error: error.message,
         });
       }
     }
@@ -93,21 +93,21 @@ class SecretsRotationManager {
 
   async rotateDatabaseCredentials() {
     console.log('🗄️  Rotating database credentials...');
-    
+
     try {
       // Generate new database password
       const newPassword = this.generateSecurePassword(32);
-      
+
       // Update Supabase project settings
       await this.updateSupabaseCredentials(newPassword);
-      
+
       // Update environment variables
       await this.updateSecret('SUPABASE_DB_PASSWORD', newPassword);
-      
+
       this.rotationLog.push({
         type: 'DB_CREDENTIALS_ROTATION',
         timestamp: new Date().toISOString(),
-        status: 'success'
+        status: 'success',
       });
 
       console.log('✅ Database credentials rotated');
@@ -117,25 +117,25 @@ class SecretsRotationManager {
         type: 'DB_CREDENTIALS_ROTATION',
         timestamp: new Date().toISOString(),
         status: 'failed',
-        error: error.message
+        error: error.message,
       });
     }
   }
 
   async rotateJWTSecrets() {
     console.log('🔐 Rotating JWT secrets...');
-    
+
     try {
       const newJWTSecret = this.generateSecureKey('JWT_SECRET');
       await this.updateSecret('JWT_SECRET', newJWTSecret);
-      
+
       // Update Supabase JWT settings
       await this.updateSupabaseJWTSecret(newJWTSecret);
-      
+
       this.rotationLog.push({
         type: 'JWT_SECRET_ROTATION',
         timestamp: new Date().toISOString(),
-        status: 'success'
+        status: 'success',
       });
 
       console.log('✅ JWT secrets rotated');
@@ -145,25 +145,25 @@ class SecretsRotationManager {
         type: 'JWT_SECRET_ROTATION',
         timestamp: new Date().toISOString(),
         status: 'failed',
-        error: error.message
+        error: error.message,
       });
     }
   }
 
   async rotateEncryptionKeys() {
     console.log('🔒 Rotating encryption keys...');
-    
+
     try {
       const newEncryptionKey = this.generateSecureKey('ENCRYPTION_KEY');
       await this.updateSecret('ENCRYPTION_KEY', newEncryptionKey);
-      
+
       // Re-encrypt existing data with new key
       await this.reencryptData(newEncryptionKey);
-      
+
       this.rotationLog.push({
         type: 'ENCRYPTION_KEY_ROTATION',
         timestamp: new Date().toISOString(),
-        status: 'success'
+        status: 'success',
       });
 
       console.log('✅ Encryption keys rotated');
@@ -173,19 +173,19 @@ class SecretsRotationManager {
         type: 'ENCRYPTION_KEY_ROTATION',
         timestamp: new Date().toISOString(),
         status: 'failed',
-        error: error.message
+        error: error.message,
       });
     }
   }
 
   async rotateThirdPartyTokens() {
     console.log('🔗 Rotating third-party tokens...');
-    
+
     const thirdPartyServices = [
       'SENTRY_DSN',
       'ANALYTICS_TOKEN',
       'MONITORING_TOKEN',
-      'CDN_TOKEN'
+      'CDN_TOKEN',
     ];
 
     for (const tokenName of thirdPartyServices) {
@@ -193,12 +193,12 @@ class SecretsRotationManager {
         if (process.env[tokenName]) {
           const newToken = await this.generateSecureToken(tokenName);
           await this.updateSecret(tokenName, newToken);
-          
+
           this.rotationLog.push({
             type: 'THIRD_PARTY_TOKEN_ROTATION',
             token: tokenName,
             timestamp: new Date().toISOString(),
-            status: 'success'
+            status: 'success',
           });
 
           console.log(`✅ Rotated ${tokenName}`);
@@ -210,7 +210,7 @@ class SecretsRotationManager {
           token: tokenName,
           timestamp: new Date().toISOString(),
           status: 'failed',
-          error: error.message
+          error: error.message,
         });
       }
     }
@@ -218,55 +218,58 @@ class SecretsRotationManager {
 
   async updateEnvironmentVariables() {
     console.log('🌍 Updating environment variables...');
-    
+
     try {
       // Update .env files
       await this.updateEnvFile('.env.local');
       await this.updateEnvFile('.env.production');
-      
+
       // Update Vercel environment variables
       await this.updateVercelSecrets();
-      
+
       // Update Supabase Edge Function secrets
       await this.updateSupabaseEdgeFunctionSecrets();
-      
+
       this.rotationLog.push({
         type: 'ENV_VAR_UPDATE',
         timestamp: new Date().toISOString(),
-        status: 'success'
+        status: 'success',
       });
 
       console.log('✅ Environment variables updated');
     } catch (error) {
-      console.error('❌ Failed to update environment variables:', error.message);
+      console.error(
+        '❌ Failed to update environment variables:',
+        error.message
+      );
       this.rotationLog.push({
         type: 'ENV_VAR_UPDATE',
         timestamp: new Date().toISOString(),
         status: 'failed',
-        error: error.message
+        error: error.message,
       });
     }
   }
 
   async notifyRotationComplete() {
     console.log('📢 Sending rotation notifications...');
-    
+
     try {
       const notificationData = {
         timestamp: new Date().toISOString(),
         rotationLog: this.rotationLog,
-        summary: this.generateRotationSummary()
+        summary: this.generateRotationSummary(),
       };
 
       // Send email notification
       await this.sendEmailNotification(notificationData);
-      
+
       // Send Slack notification
       await this.sendSlackNotification(notificationData);
-      
+
       // Send webhook notification
       await this.sendWebhookNotification(notificationData);
-      
+
       console.log('✅ Notifications sent');
     } catch (error) {
       console.error('❌ Failed to send notifications:', error.message);
@@ -275,14 +278,14 @@ class SecretsRotationManager {
 
   async cleanupOldSecrets() {
     console.log('🧹 Cleaning up old secrets...');
-    
+
     try {
       // Remove old secret backups older than retention period
       await this.removeOldBackups();
-      
+
       // Clean up temporary files
       await this.cleanupTempFiles();
-      
+
       console.log('✅ Cleanup completed');
     } catch (error) {
       console.error('❌ Cleanup failed:', error.message);
@@ -291,14 +294,14 @@ class SecretsRotationManager {
 
   async rollbackRotation() {
     console.log('🔄 Rolling back rotation...');
-    
+
     try {
       // Restore from latest backup
       await this.restoreFromBackup();
-      
+
       // Revert environment variables
       await this.revertEnvironmentVariables();
-      
+
       console.log('✅ Rollback completed');
     } catch (error) {
       console.error('❌ Rollback failed:', error.message);
@@ -308,10 +311,10 @@ class SecretsRotationManager {
   // Helper methods
   generateSecureKey(keyType) {
     const keyLengths = {
-      'OPENAI_API_KEY': 64,
-      'STRIPE_SECRET_KEY': 128,
-      'JWT_SECRET': 64,
-      'ENCRYPTION_KEY': 32
+      OPENAI_API_KEY: 64,
+      STRIPE_SECRET_KEY: 128,
+      JWT_SECRET: 64,
+      ENCRYPTION_KEY: 32,
     };
 
     const length = keyLengths[keyType] || 32;
@@ -319,13 +322,14 @@ class SecretsRotationManager {
   }
 
   generateSecurePassword(length = 32) {
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    const charset =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
     let password = '';
-    
+
     for (let i = 0; i < length; i++) {
       password += charset.charAt(Math.floor(Math.random() * charset.length));
     }
-    
+
     return password;
   }
 
@@ -336,13 +340,13 @@ class SecretsRotationManager {
   async updateSecret(keyName, newValue) {
     // Store in secure vault (implement based on your vault solution)
     console.log(`Updating secret: ${keyName}`);
-    
+
     // For now, just log the update
     this.rotationLog.push({
       type: 'SECRET_UPDATE',
       key: keyName,
       timestamp: new Date().toISOString(),
-      status: 'success'
+      status: 'success',
     });
   }
 
@@ -415,14 +419,18 @@ class SecretsRotationManager {
 
   generateRotationSummary() {
     const totalRotations = this.rotationLog.length;
-    const successfulRotations = this.rotationLog.filter(log => log.status === 'success').length;
-    const failedRotations = this.rotationLog.filter(log => log.status === 'failed').length;
+    const successfulRotations = this.rotationLog.filter(
+      log => log.status === 'success'
+    ).length;
+    const failedRotations = this.rotationLog.filter(
+      log => log.status === 'failed'
+    ).length;
 
     return {
       totalRotations,
       successfulRotations,
       failedRotations,
-      successRate: (successfulRotations / totalRotations) * 100
+      successRate: (successfulRotations / totalRotations) * 100,
     };
   }
 
@@ -431,16 +439,19 @@ class SecretsRotationManager {
       timestamp: new Date().toISOString(),
       summary: this.generateRotationSummary(),
       rotationLog: this.rotationLog,
-      recommendations: this.generateRecommendations()
+      recommendations: this.generateRecommendations(),
     };
 
     // Write report to file
-    fs.writeFileSync('SECRETS_ROTATION_REPORT.json', JSON.stringify(report, null, 2));
-    
+    fs.writeFileSync(
+      'SECRETS_ROTATION_REPORT.json',
+      JSON.stringify(report, null, 2)
+    );
+
     // Generate markdown report
     const markdownReport = this.generateMarkdownReport(report);
     fs.writeFileSync('SECRETS_ROTATION_REPORT.md', markdownReport);
-    
+
     console.log('\n📊 Secrets rotation report generated:');
     console.log('  - SECRETS_ROTATION_REPORT.json');
     console.log('  - SECRETS_ROTATION_REPORT.md');
@@ -448,15 +459,17 @@ class SecretsRotationManager {
 
   generateRecommendations() {
     const recommendations = [];
-    
+
     if (this.rotationLog.some(log => log.status === 'failed')) {
       recommendations.push('Review failed rotations and implement fixes');
     }
-    
+
     recommendations.push('Implement automated testing after each rotation');
     recommendations.push('Set up monitoring for secret rotation failures');
-    recommendations.push('Document rotation procedures for manual intervention');
-    
+    recommendations.push(
+      'Document rotation procedures for manual intervention'
+    );
+
     return recommendations;
   }
 
@@ -474,12 +487,16 @@ class SecretsRotationManager {
 
 ## Rotation Log
 
-${report.rotationLog.map(log => `### ${log.type}
+${report.rotationLog
+  .map(
+    log => `### ${log.type}
 - **Timestamp:** ${log.timestamp}
 - **Status:** ${log.status}
 - **Key/Token:** ${log.key || log.token || 'N/A'}
 - **Error:** ${log.error || 'None'}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Recommendations
 
@@ -494,7 +511,8 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
 // Run the rotation if this script is executed directly
 if (require.main === module) {
   const rotationManager = new SecretsRotationManager();
-  rotationManager.rotateAllSecrets()
+  rotationManager
+    .rotateAllSecrets()
     .then(results => {
       console.log('\n✅ Secrets rotation completed successfully!');
       process.exit(0);

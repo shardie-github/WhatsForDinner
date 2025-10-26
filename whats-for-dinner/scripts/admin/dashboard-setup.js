@@ -14,7 +14,7 @@ const config = {
   supabaseUrl: process.env.SUPABASE_URL || 'http://localhost:54321',
   supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
   outputDir: path.join(__dirname, '../admin-dashboard'),
-  verbose: process.env.VERBOSE === 'true'
+  verbose: process.env.VERBOSE === 'true',
 };
 
 // Colors for console output
@@ -23,7 +23,7 @@ const colors = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 function log(message, color = 'reset') {
@@ -45,20 +45,20 @@ const supabase = createClient(config.supabaseUrl, config.supabaseServiceKey);
 async function createAdminUser(userId, role = 'admin', permissions = {}) {
   try {
     log(`Creating admin user with role: ${role}`, 'yellow');
-    
+
     const { data, error } = await supabase
       .from('admin_users')
       .insert({
         user_id: userId,
         role: role,
         permissions: permissions,
-        is_active: true
+        is_active: true,
       })
       .select()
       .single();
 
     if (error) throw error;
-    
+
     log(`Admin user created successfully: ${data.id}`, 'green');
     return data;
   } catch (error) {
@@ -73,12 +73,11 @@ async function createAdminUser(userId, role = 'admin', permissions = {}) {
 async function getDashboardStats() {
   try {
     log('Fetching dashboard statistics...', 'yellow');
-    
-    const { data, error } = await supabase
-      .rpc('get_admin_dashboard_stats');
+
+    const { data, error } = await supabase.rpc('get_admin_dashboard_stats');
 
     if (error) throw error;
-    
+
     log('Dashboard statistics fetched successfully', 'green');
     return data;
   } catch (error) {
@@ -93,12 +92,13 @@ async function getDashboardStats() {
 async function getUserActivityTrends(days = 30) {
   try {
     log(`Fetching user activity trends for last ${days} days...`, 'yellow');
-    
-    const { data, error } = await supabase
-      .rpc('get_user_activity_trends', { days });
+
+    const { data, error } = await supabase.rpc('get_user_activity_trends', {
+      days,
+    });
 
     if (error) throw error;
-    
+
     log('User activity trends fetched successfully', 'green');
     return data;
   } catch (error) {
@@ -113,12 +113,13 @@ async function getUserActivityTrends(days = 30) {
 async function getPopularContent(limit = 10) {
   try {
     log(`Fetching popular content (limit: ${limit})...`, 'yellow');
-    
-    const { data, error } = await supabase
-      .rpc('get_popular_content', { limit_count: limit });
+
+    const { data, error } = await supabase.rpc('get_popular_content', {
+      limit_count: limit,
+    });
 
     if (error) throw error;
-    
+
     log('Popular content fetched successfully', 'green');
     return data;
   } catch (error) {
@@ -133,12 +134,11 @@ async function getPopularContent(limit = 10) {
 async function getSystemHealthMetrics() {
   try {
     log('Fetching system health metrics...', 'yellow');
-    
-    const { data, error } = await supabase
-      .rpc('get_system_health_metrics');
+
+    const { data, error } = await supabase.rpc('get_system_health_metrics');
 
     if (error) throw error;
-    
+
     log('System health metrics fetched successfully', 'green');
     return data;
   } catch (error) {
@@ -150,7 +150,12 @@ async function getSystemHealthMetrics() {
 /**
  * Generate admin dashboard HTML
  */
-function generateAdminDashboardHTML(stats, trends, popularContent, healthMetrics) {
+function generateAdminDashboardHTML(
+  stats,
+  trends,
+  popularContent,
+  healthMetrics
+) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -380,14 +385,18 @@ function generateAdminDashboardHTML(stats, trends, popularContent, healthMetrics
                         </tr>
                     </thead>
                     <tbody>
-                        ${popularContent.map(item => `
+                        ${popularContent
+                          .map(
+                            item => `
                             <tr>
                                 <td>${item.content_type}</td>
                                 <td>${item.name}</td>
                                 <td>${item.usage_count}</td>
                                 <td>${item.rating ? item.rating.toFixed(1) : 'N/A'}</td>
                             </tr>
-                        `).join('')}
+                        `
+                          )
+                          .join('')}
                     </tbody>
                 </table>
             </div>
@@ -797,41 +806,54 @@ export function AdminDashboard() {
 async function setupAdminDashboard() {
   try {
     log('Setting up admin dashboard...', 'blue');
-    
+
     // Ensure output directory exists
     if (!fs.existsSync(config.outputDir)) {
       fs.mkdirSync(config.outputDir, { recursive: true });
     }
-    
+
     // Fetch dashboard data
     const stats = await getDashboardStats();
     const trends = await getUserActivityTrends(30);
     const popularContent = await getPopularContent(10);
     const healthMetrics = await getSystemHealthMetrics();
-    
+
     // Generate HTML dashboard
-    const htmlDashboard = generateAdminDashboardHTML(stats, trends, popularContent, healthMetrics);
-    fs.writeFileSync(path.join(config.outputDir, 'dashboard.html'), htmlDashboard);
+    const htmlDashboard = generateAdminDashboardHTML(
+      stats,
+      trends,
+      popularContent,
+      healthMetrics
+    );
+    fs.writeFileSync(
+      path.join(config.outputDir, 'dashboard.html'),
+      htmlDashboard
+    );
     log('Generated HTML dashboard', 'green');
-    
+
     // Generate API endpoints
     const apiEndpoints = generateAdminAPIEndpoints();
-    fs.writeFileSync(path.join(config.outputDir, 'api-endpoints.js'), apiEndpoints);
+    fs.writeFileSync(
+      path.join(config.outputDir, 'api-endpoints.js'),
+      apiEndpoints
+    );
     log('Generated API endpoints', 'green');
-    
+
     // Generate React components
     const reactComponents = generateAdminReactComponents();
-    fs.writeFileSync(path.join(config.outputDir, 'react-components.tsx'), reactComponents);
+    fs.writeFileSync(
+      path.join(config.outputDir, 'react-components.tsx'),
+      reactComponents
+    );
     log('Generated React components', 'green');
-    
+
     // Generate README
     const readme = generateAdminReadme();
     fs.writeFileSync(path.join(config.outputDir, 'README.md'), readme);
     log('Generated README', 'green');
-    
+
     log('Admin dashboard setup completed successfully!', 'green');
     log(`Output directory: ${config.outputDir}`, 'blue');
-    
   } catch (error) {
     log(`Error setting up admin dashboard: ${error.message}`, 'red');
     throw error;

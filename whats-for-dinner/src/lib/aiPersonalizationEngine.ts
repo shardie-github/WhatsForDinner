@@ -1,6 +1,6 @@
 /**
  * AI Personalization Engine
- * 
+ *
  * Implements comprehensive AI-driven personalization with:
  * - User profile modeling (taste, mood, dietary preferences)
  * - GPT-powered meal recommendations
@@ -42,7 +42,13 @@ export interface TastePreferences {
 }
 
 export interface MoodProfile {
-  currentMood: 'happy' | 'stressed' | 'energetic' | 'tired' | 'celebratory' | 'comfort_seeking';
+  currentMood:
+    | 'happy'
+    | 'stressed'
+    | 'energetic'
+    | 'tired'
+    | 'celebratory'
+    | 'comfort_seeking';
   energyLevel: 'low' | 'medium' | 'high';
   stressLevel: 'low' | 'medium' | 'high';
   socialContext: 'alone' | 'couple' | 'family' | 'friends' | 'party';
@@ -54,13 +60,29 @@ export interface MoodProfile {
 export interface DietaryRestrictions {
   allergies: string[];
   intolerances: string[];
-  dietaryChoices: ('vegetarian' | 'vegan' | 'pescatarian' | 'keto' | 'paleo' | 'gluten_free' | 'dairy_free' | 'low_carb' | 'low_fat' | 'mediterranean')[];
+  dietaryChoices: (
+    | 'vegetarian'
+    | 'vegan'
+    | 'pescatarian'
+    | 'keto'
+    | 'paleo'
+    | 'gluten_free'
+    | 'dairy_free'
+    | 'low_carb'
+    | 'low_fat'
+    | 'mediterranean'
+  )[];
   religiousRestrictions: string[];
   medicalRestrictions: string[];
 }
 
 export interface NutritionalGoals {
-  primaryGoal: 'weight_loss' | 'weight_gain' | 'muscle_building' | 'maintenance' | 'health_improvement';
+  primaryGoal:
+    | 'weight_loss'
+    | 'weight_gain'
+    | 'muscle_building'
+    | 'maintenance'
+    | 'health_improvement';
   targetCalories: number;
   targetProtein: number;
   targetCarbs: number;
@@ -273,7 +295,8 @@ export interface RecipeEBook {
 export class AIPersonalizationEngine {
   private userProfiles: Map<string, UserProfile> = new Map();
   private chefPartnerships: Map<string, ChefPartnership> = new Map();
-  private recommendations: Map<string, PersonalizedRecommendation[]> = new Map();
+  private recommendations: Map<string, PersonalizedRecommendation[]> =
+    new Map();
   private isLearning: boolean = false;
 
   constructor() {
@@ -367,26 +390,36 @@ export class AIPersonalizationEngine {
   /**
    * Create or update user profile
    */
-  async createUserProfile(userId: string, profileData: Partial<UserProfile>): Promise<UserProfile> {
+  async createUserProfile(
+    userId: string,
+    profileData: Partial<UserProfile>
+  ): Promise<UserProfile> {
     const existingProfile = this.userProfiles.get(userId);
-    
+
     const profile: UserProfile = {
       id: `profile_${userId}`,
       userId,
-      tastePreferences: profileData.tastePreferences || this.getDefaultTastePreferences(),
+      tastePreferences:
+        profileData.tastePreferences || this.getDefaultTastePreferences(),
       moodProfile: profileData.moodProfile || this.getDefaultMoodProfile(),
-      dietaryRestrictions: profileData.dietaryRestrictions || this.getDefaultDietaryRestrictions(),
-      nutritionalGoals: profileData.nutritionalGoals || this.getDefaultNutritionalGoals(),
+      dietaryRestrictions:
+        profileData.dietaryRestrictions || this.getDefaultDietaryRestrictions(),
+      nutritionalGoals:
+        profileData.nutritionalGoals || this.getDefaultNutritionalGoals(),
       cookingSkill: profileData.cookingSkill || 'intermediate',
-      timeConstraints: profileData.timeConstraints || this.getDefaultTimeConstraints(),
-      budgetPreferences: profileData.budgetPreferences || this.getDefaultBudgetPreferences(),
-      culturalPreferences: profileData.culturalPreferences || this.getDefaultCulturalPreferences(),
+      timeConstraints:
+        profileData.timeConstraints || this.getDefaultTimeConstraints(),
+      budgetPreferences:
+        profileData.budgetPreferences || this.getDefaultBudgetPreferences(),
+      culturalPreferences:
+        profileData.culturalPreferences || this.getDefaultCulturalPreferences(),
       lastUpdated: new Date().toISOString(),
-      learningData: existingProfile?.learningData || this.getDefaultLearningData(),
+      learningData:
+        existingProfile?.learningData || this.getDefaultLearningData(),
     };
 
     this.userProfiles.set(userId, profile);
-    
+
     logger.info('User profile created/updated', { userId });
     return profile;
   }
@@ -401,7 +434,10 @@ export class AIPersonalizationEngine {
   /**
    * Generate personalized recommendations
    */
-  async generateRecommendations(userId: string, limit: number = 10): Promise<PersonalizedRecommendation[]> {
+  async generateRecommendations(
+    userId: string,
+    limit: number = 10
+  ): Promise<PersonalizedRecommendation[]> {
     const profile = this.getUserProfile(userId);
     if (!profile) {
       throw new Error('User profile not found');
@@ -433,10 +469,12 @@ export class AIPersonalizationEngine {
     // Store recommendations
     this.recommendations.set(userId, recommendations);
 
-    logger.info('Personalized recommendations generated', { 
-      userId, 
+    logger.info('Personalized recommendations generated', {
+      userId,
       count: recommendations.length,
-      averageConfidence: recommendations.reduce((sum, r) => sum + r.confidence, 0) / recommendations.length,
+      averageConfidence:
+        recommendations.reduce((sum, r) => sum + r.confidence, 0) /
+        recommendations.length,
     });
 
     return recommendations;
@@ -445,7 +483,9 @@ export class AIPersonalizationEngine {
   /**
    * Generate recipe using GPT
    */
-  async generateRecipe(request: RecipeGenerationRequest): Promise<GeneratedRecipe> {
+  async generateRecipe(
+    request: RecipeGenerationRequest
+  ): Promise<GeneratedRecipe> {
     logger.info('Generating personalized recipe', { userId: request.userId });
 
     // This would integrate with GPT-4o-mini for actual recipe generation
@@ -466,7 +506,7 @@ export class AIPersonalizationEngine {
       generatedAt: new Date().toISOString(),
     };
 
-    logger.info('Recipe generated successfully', { 
+    logger.info('Recipe generated successfully', {
       recipeId: recipe.id,
       personalizationScore: recipe.personalizationScore,
     });
@@ -477,10 +517,14 @@ export class AIPersonalizationEngine {
   /**
    * Generate recipe eBook
    */
-  async generateRecipeEBook(userId: string, theme: string, chefId: string): Promise<RecipeEBook> {
+  async generateRecipeEBook(
+    userId: string,
+    theme: string,
+    chefId: string
+  ): Promise<RecipeEBook> {
     const profile = this.getUserProfile(userId);
     const chef = this.chefPartnerships.get(chefId);
-    
+
     if (!profile || !chef) {
       throw new Error('User profile or chef not found');
     }
@@ -526,7 +570,7 @@ export class AIPersonalizationEngine {
       rating: 0,
     };
 
-    logger.info('Recipe eBook generated', { 
+    logger.info('Recipe eBook generated', {
       eBookId: eBook.id,
       recipeCount: recipes.length,
     });
@@ -537,7 +581,10 @@ export class AIPersonalizationEngine {
   /**
    * Record user interaction
    */
-  async recordInteraction(userId: string, interaction: RecipeInteraction): Promise<void> {
+  async recordInteraction(
+    userId: string,
+    interaction: RecipeInteraction
+  ): Promise<void> {
     const profile = this.getUserProfile(userId);
     if (!profile) return;
 
@@ -570,26 +617,42 @@ export class AIPersonalizationEngine {
   /**
    * Update profile from interactions
    */
-  private async updateProfileFromInteractions(profile: UserProfile): Promise<void> {
-    const recentInteractions = profile.learningData.recipeInteractions
-      .filter(i => new Date(i.timestamp) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)); // Last 7 days
+  private async updateProfileFromInteractions(
+    profile: UserProfile
+  ): Promise<void> {
+    const recentInteractions = profile.learningData.recipeInteractions.filter(
+      i =>
+        new Date(i.timestamp) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    ); // Last 7 days
 
     if (recentInteractions.length === 0) return;
 
     // Analyze interaction patterns
-    const likedRecipes = recentInteractions.filter(i => i.action === 'like' || i.rating && i.rating > 3);
-    const dislikedRecipes = recentInteractions.filter(i => i.action === 'dislike' || i.rating && i.rating < 3);
+    const likedRecipes = recentInteractions.filter(
+      i => i.action === 'like' || (i.rating && i.rating > 3)
+    );
+    const dislikedRecipes = recentInteractions.filter(
+      i => i.action === 'dislike' || (i.rating && i.rating < 3)
+    );
 
     // Update taste preferences based on interactions
     if (likedRecipes.length > 0) {
-      this.updateTastePreferencesFromInteractions(profile, likedRecipes, 'positive');
+      this.updateTastePreferencesFromInteractions(
+        profile,
+        likedRecipes,
+        'positive'
+      );
     }
 
     if (dislikedRecipes.length > 0) {
-      this.updateTastePreferencesFromInteractions(profile, dislikedRecipes, 'negative');
+      this.updateTastePreferencesFromInteractions(
+        profile,
+        dislikedRecipes,
+        'negative'
+      );
     }
 
-    logger.info('Profile updated from interactions', { 
+    logger.info('Profile updated from interactions', {
       userId: profile.userId,
       recentInteractions: recentInteractions.length,
     });
@@ -599,14 +662,14 @@ export class AIPersonalizationEngine {
    * Update taste preferences from interactions
    */
   private updateTastePreferencesFromInteractions(
-    profile: UserProfile, 
-    interactions: RecipeInteraction[], 
+    profile: UserProfile,
+    interactions: RecipeInteraction[],
     sentiment: 'positive' | 'negative'
   ): void {
     // This would analyze recipe data to extract taste preferences
     // For now, we'll simulate the update
     const weight = sentiment === 'positive' ? 0.1 : -0.1;
-    
+
     // Update adaptation weights
     Object.keys(profile.learningData.adaptationWeights).forEach(key => {
       profile.learningData.adaptationWeights[key] += weight;
@@ -616,22 +679,28 @@ export class AIPersonalizationEngine {
   /**
    * Update adaptation weights
    */
-  private updateAdaptationWeights(profile: UserProfile, interaction: RecipeInteraction): void {
+  private updateAdaptationWeights(
+    profile: UserProfile,
+    interaction: RecipeInteraction
+  ): void {
     const weight = this.calculateInteractionWeight(interaction);
-    
+
     // Update weights based on interaction type
     switch (interaction.action) {
       case 'like':
-        profile.learningData.adaptationWeights[interaction.recipeId] = 
-          (profile.learningData.adaptationWeights[interaction.recipeId] || 0) + weight;
+        profile.learningData.adaptationWeights[interaction.recipeId] =
+          (profile.learningData.adaptationWeights[interaction.recipeId] || 0) +
+          weight;
         break;
       case 'dislike':
-        profile.learningData.adaptationWeights[interaction.recipeId] = 
-          (profile.learningData.adaptationWeights[interaction.recipeId] || 0) - weight;
+        profile.learningData.adaptationWeights[interaction.recipeId] =
+          (profile.learningData.adaptationWeights[interaction.recipeId] || 0) -
+          weight;
         break;
       case 'cook':
-        profile.learningData.adaptationWeights[interaction.recipeId] = 
-          (profile.learningData.adaptationWeights[interaction.recipeId] || 0) + weight * 2;
+        profile.learningData.adaptationWeights[interaction.recipeId] =
+          (profile.learningData.adaptationWeights[interaction.recipeId] || 0) +
+          weight * 2;
         break;
     }
   }
@@ -641,20 +710,20 @@ export class AIPersonalizationEngine {
    */
   private calculateInteractionWeight(interaction: RecipeInteraction): number {
     const baseWeights = {
-      'view': 0.1,
-      'like': 0.5,
-      'dislike': -0.5,
-      'save': 0.3,
-      'cook': 1.0,
-      'rate': 0.7,
-      'share': 0.8,
+      view: 0.1,
+      like: 0.5,
+      dislike: -0.5,
+      save: 0.3,
+      cook: 1.0,
+      rate: 0.7,
+      share: 0.8,
     };
 
     let weight = baseWeights[interaction.action] || 0;
 
     // Adjust based on rating
     if (interaction.rating) {
-      weight *= (interaction.rating / 5);
+      weight *= interaction.rating / 5;
     }
 
     return weight;
@@ -676,11 +745,15 @@ export class AIPersonalizationEngine {
     const reasoning: string[] = [];
 
     if (profile.tastePreferences.cuisines.length > 0) {
-      reasoning.push(`Based on your preference for ${profile.tastePreferences.cuisines.join(', ')} cuisine`);
+      reasoning.push(
+        `Based on your preference for ${profile.tastePreferences.cuisines.join(', ')} cuisine`
+      );
     }
 
     if (profile.dietaryRestrictions.dietaryChoices.length > 0) {
-      reasoning.push(`Accommodates your ${profile.dietaryRestrictions.dietaryChoices.join(', ')} dietary preferences`);
+      reasoning.push(
+        `Accommodates your ${profile.dietaryRestrictions.dietaryChoices.join(', ')} dietary preferences`
+      );
     }
 
     if (profile.timeConstraints.availableTime < 30) {
@@ -755,9 +828,11 @@ export class AIPersonalizationEngine {
   /**
    * Generate recipe ingredients
    */
-  private generateRecipeIngredients(request: RecipeGenerationRequest): RecipeIngredient[] {
+  private generateRecipeIngredients(
+    request: RecipeGenerationRequest
+  ): RecipeIngredient[] {
     const ingredients: RecipeIngredient[] = [];
-    
+
     request.constraints.ingredients.forEach(ingredient => {
       ingredients.push({
         name: ingredient,
@@ -773,7 +848,9 @@ export class AIPersonalizationEngine {
   /**
    * Generate recipe instructions
    */
-  private generateRecipeInstructions(request: RecipeGenerationRequest): RecipeInstruction[] {
+  private generateRecipeInstructions(
+    request: RecipeGenerationRequest
+  ): RecipeInstruction[] {
     const instructions: RecipeInstruction[] = [
       {
         step: 1,
@@ -796,7 +873,9 @@ export class AIPersonalizationEngine {
   /**
    * Generate nutrition info
    */
-  private generateNutritionInfo(request: RecipeGenerationRequest): NutritionInfo {
+  private generateNutritionInfo(
+    request: RecipeGenerationRequest
+  ): NutritionInfo {
     return {
       calories: Math.floor(Math.random() * 500) + 200,
       protein: Math.floor(Math.random() * 30) + 10,
@@ -815,11 +894,11 @@ export class AIPersonalizationEngine {
    */
   private generateRecipeTags(request: RecipeGenerationRequest): string[] {
     const tags = [...request.constraints.dietaryRestrictions];
-    
+
     if (request.constraints.cuisine) {
       tags.push(request.constraints.cuisine);
     }
-    
+
     if (request.constraints.mood) {
       tags.push(request.constraints.mood);
     }
@@ -830,7 +909,9 @@ export class AIPersonalizationEngine {
   /**
    * Calculate personalization score
    */
-  private calculatePersonalizationScore(request: RecipeGenerationRequest): number {
+  private calculatePersonalizationScore(
+    request: RecipeGenerationRequest
+  ): number {
     let score = 0.5; // Base score
 
     // Increase score based on constraints met

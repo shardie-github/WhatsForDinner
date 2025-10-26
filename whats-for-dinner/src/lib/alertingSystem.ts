@@ -1,9 +1,9 @@
 /**
  * Comprehensive Alerting System
- * 
+ *
  * Implements multi-channel alerting with Slack, email, SMS, and webhook support
  * for critical system failures and important notifications.
- * 
+ *
  * Features:
  * - Multi-channel alerting (Slack, email, SMS, webhooks)
  * - Intelligent alert routing and prioritization
@@ -40,7 +40,13 @@ export interface AlertRoutingRule {
 
 export interface AlertCondition {
   field: string;
-  operator: 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains' | 'regex';
+  operator:
+    | 'equals'
+    | 'not_equals'
+    | 'greater_than'
+    | 'less_than'
+    | 'contains'
+    | 'regex';
   value: any;
 }
 
@@ -62,7 +68,13 @@ export interface Alert {
   title: string;
   message: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  category: 'system' | 'performance' | 'security' | 'anomaly' | 'decision' | 'compliance';
+  category:
+    | 'system'
+    | 'performance'
+    | 'security'
+    | 'anomaly'
+    | 'decision'
+    | 'compliance';
   source: string;
   metadata: Record<string, any>;
   timestamp: string;
@@ -122,21 +134,21 @@ export class AlertingSystem {
         configuration: {
           webhookUrl: process.env.SLACK_WEBHOOK_URL || '',
           channel: '#alerts-critical',
-          username: 'What\'s for Dinner Bot',
-          icon_emoji: ':rotating_light:'
+          username: "What's for Dinner Bot",
+          icon_emoji: ':rotating_light:',
         },
         routingRules: [
           {
             id: 'critical_rule',
             name: 'Critical Severity',
             conditions: [
-              { field: 'severity', operator: 'equals', value: 'critical' }
+              { field: 'severity', operator: 'equals', value: 'critical' },
             ],
             channelId: 'slack_critical',
             priority: 'critical',
-            enabled: true
-          }
-        ]
+            enabled: true,
+          },
+        ],
       },
       {
         id: 'email_team',
@@ -150,24 +162,24 @@ export class AlertingSystem {
             secure: false,
             auth: {
               user: process.env.SMTP_USER || '',
-              pass: process.env.SMTP_PASS || ''
-            }
+              pass: process.env.SMTP_PASS || '',
+            },
           },
           from: process.env.ALERT_EMAIL_FROM || 'alerts@whatsfordinner.com',
-          to: process.env.ALERT_EMAIL_TO || 'team@whatsfordinner.com'
+          to: process.env.ALERT_EMAIL_TO || 'team@whatsfordinner.com',
         },
         routingRules: [
           {
             id: 'high_severity_rule',
             name: 'High Severity',
             conditions: [
-              { field: 'severity', operator: 'equals', value: 'high' }
+              { field: 'severity', operator: 'equals', value: 'high' },
             ],
             channelId: 'email_team',
             priority: 'high',
-            enabled: true
-          }
-        ]
+            enabled: true,
+          },
+        ],
       },
       {
         id: 'pagerduty_ops',
@@ -176,7 +188,7 @@ export class AlertingSystem {
         enabled: true,
         configuration: {
           integrationKey: process.env.PAGERDUTY_INTEGRATION_KEY || '',
-          serviceKey: process.env.PAGERDUTY_SERVICE_KEY || ''
+          serviceKey: process.env.PAGERDUTY_SERVICE_KEY || '',
         },
         routingRules: [
           {
@@ -184,21 +196,23 @@ export class AlertingSystem {
             name: 'Critical PagerDuty',
             conditions: [
               { field: 'severity', operator: 'equals', value: 'critical' },
-              { field: 'category', operator: 'equals', value: 'system' }
+              { field: 'category', operator: 'equals', value: 'system' },
             ],
             channelId: 'pagerduty_ops',
             priority: 'critical',
-            enabled: true
-          }
-        ]
-      }
+            enabled: true,
+          },
+        ],
+      },
     ];
 
     for (const channel of defaultChannels) {
       this.channels.set(channel.id, channel);
     }
 
-    logger.info('Alert channels initialized', { count: defaultChannels.length });
+    logger.info('Alert channels initialized', {
+      count: defaultChannels.length,
+    });
   }
 
   /**
@@ -227,7 +241,7 @@ export class AlertingSystem {
 {{/each}}`,
         severity: 'critical',
         channels: ['slack_critical', 'pagerduty_ops'],
-        enabled: true
+        enabled: true,
       },
       {
         id: 'anomaly_detected',
@@ -250,7 +264,7 @@ export class AlertingSystem {
 {{/each}}`,
         severity: 'high',
         channels: ['slack_critical', 'email_team'],
-        enabled: true
+        enabled: true,
       },
       {
         id: 'decision_executed',
@@ -271,7 +285,7 @@ export class AlertingSystem {
 {{/each}}`,
         severity: 'medium',
         channels: ['slack_critical'],
-        enabled: true
+        enabled: true,
       },
       {
         id: 'performance_degraded',
@@ -289,15 +303,17 @@ export class AlertingSystem {
 *Recommendations:* {{recommendations}}`,
         severity: 'medium',
         channels: ['email_team'],
-        enabled: true
-      }
+        enabled: true,
+      },
     ];
 
     for (const template of defaultTemplates) {
       this.templates.set(template.id, template);
     }
 
-    logger.info('Alert templates initialized', { count: defaultTemplates.length });
+    logger.info('Alert templates initialized', {
+      count: defaultTemplates.length,
+    });
   }
 
   /**
@@ -311,7 +327,7 @@ export class AlertingSystem {
         maxAlerts: 10,
         timeWindow: 60,
         currentCount: 0,
-        lastAlert: ''
+        lastAlert: '',
       },
       {
         id: 'decision_throttle',
@@ -319,7 +335,7 @@ export class AlertingSystem {
         maxAlerts: 5,
         timeWindow: 30,
         currentCount: 0,
-        lastAlert: ''
+        lastAlert: '',
       },
       {
         id: 'system_throttle',
@@ -327,15 +343,17 @@ export class AlertingSystem {
         maxAlerts: 3,
         timeWindow: 15,
         currentCount: 0,
-        lastAlert: ''
-      }
+        lastAlert: '',
+      },
     ];
 
     for (const throttle of defaultThrottles) {
       this.throttles.set(throttle.id, throttle);
     }
 
-    logger.info('Alert throttles initialized', { count: defaultThrottles.length });
+    logger.info('Alert throttles initialized', {
+      count: defaultThrottles.length,
+    });
   }
 
   /**
@@ -384,7 +402,13 @@ export class AlertingSystem {
     title: string,
     message: string,
     severity: 'low' | 'medium' | 'high' | 'critical',
-    category: 'system' | 'performance' | 'security' | 'anomaly' | 'decision' | 'compliance',
+    category:
+      | 'system'
+      | 'performance'
+      | 'security'
+      | 'anomaly'
+      | 'decision'
+      | 'compliance',
     source: string,
     metadata: Record<string, any> = {},
     suggestedActions: string[] = []
@@ -410,7 +434,7 @@ export class AlertingSystem {
         timestamp: new Date().toISOString(),
         status: 'pending',
         channels: [],
-        escalationLevel: 0
+        escalationLevel: 0,
       };
 
       // Determine channels
@@ -432,21 +456,20 @@ export class AlertingSystem {
         timestamp: alert.timestamp,
         status: alert.status,
         channels: alert.channels,
-        escalation_level: alert.escalationLevel
+        escalation_level: alert.escalationLevel,
       });
 
       // Update throttle
       this.updateThrottle(category, severity);
 
-      logger.info('Alert queued', { 
-        id: alertId, 
-        severity, 
-        category, 
-        channels: channels.length 
+      logger.info('Alert queued', {
+        id: alertId,
+        severity,
+        category,
+        channels: channels.length,
       });
 
       return alertId;
-
     } catch (error) {
       logger.error('Failed to send alert', { error, title, severity });
       throw error;
@@ -464,7 +487,7 @@ export class AlertingSystem {
 
     const title = this.renderTemplate(template.titleTemplate, {
       metric: anomaly.metric,
-      severity: anomaly.severity
+      severity: anomaly.severity,
     });
 
     const message = this.renderTemplate(template.messageTemplate, {
@@ -475,7 +498,7 @@ export class AlertingSystem {
       algorithm: anomaly.algorithm,
       timestamp: new Date(anomaly.timestamp).toLocaleString(),
       explanation: anomaly.explanation,
-      suggestedActions: anomaly.suggestedActions
+      suggestedActions: anomaly.suggestedActions,
     });
 
     return this.sendAlert(
@@ -491,7 +514,7 @@ export class AlertingSystem {
         anomalyScore: anomaly.anomalyScore,
         confidence: anomaly.confidence,
         algorithm: anomaly.algorithm,
-        type: anomaly.type
+        type: anomaly.type,
       },
       anomaly.suggestedActions
     );
@@ -508,7 +531,7 @@ export class AlertingSystem {
 
     const title = this.renderTemplate(template.titleTemplate, {
       type: decision.type,
-      priority: decision.priority
+      priority: decision.priority,
     });
 
     const message = this.renderTemplate(template.messageTemplate, {
@@ -518,7 +541,7 @@ export class AlertingSystem {
       riskLevel: decision.riskLevel,
       description: decision.description,
       timestamp: new Date().toLocaleString(),
-      parameters: decision.parameters
+      parameters: decision.parameters,
     });
 
     return this.sendAlert(
@@ -534,7 +557,7 @@ export class AlertingSystem {
         confidence: decision.confidence,
         riskLevel: decision.riskLevel,
         parameters: decision.parameters,
-        estimatedImpact: decision.estimatedImpact
+        estimatedImpact: decision.estimatedImpact,
       }
     );
   }
@@ -544,14 +567,17 @@ export class AlertingSystem {
    */
   private isThrottled(category: string, severity: string): boolean {
     const throttleKey = `${category}:${severity}`;
-    
+
     for (const [id, throttle] of this.throttles) {
       if (this.matchesPattern(throttleKey, throttle.pattern)) {
         const now = Date.now();
         const lastAlertTime = new Date(throttle.lastAlert).getTime();
         const timeDiff = (now - lastAlertTime) / (1000 * 60); // minutes
 
-        if (timeDiff < throttle.timeWindow && throttle.currentCount >= throttle.maxAlerts) {
+        if (
+          timeDiff < throttle.timeWindow &&
+          throttle.currentCount >= throttle.maxAlerts
+        ) {
           return true;
         }
       }
@@ -565,7 +591,7 @@ export class AlertingSystem {
    */
   private updateThrottle(category: string, severity: string): void {
     const throttleKey = `${category}:${severity}`;
-    
+
     for (const [id, throttle] of this.throttles) {
       if (this.matchesPattern(throttleKey, throttle.pattern)) {
         const now = Date.now();
@@ -644,7 +670,9 @@ export class AlertingSystem {
       case 'contains':
         return typeof value === 'string' && value.includes(condition.value);
       case 'regex':
-        return typeof value === 'string' && new RegExp(condition.value).test(value);
+        return (
+          typeof value === 'string' && new RegExp(condition.value).test(value)
+        );
       default:
         return false;
     }
@@ -659,7 +687,7 @@ export class AlertingSystem {
       category: alert.category,
       source: alert.source,
       title: alert.title,
-      message: alert.message
+      message: alert.message,
     };
 
     return fieldMap[field] || alert.metadata[field];
@@ -670,12 +698,13 @@ export class AlertingSystem {
    */
   private async processAlertQueue(): Promise<void> {
     try {
-      const pendingAlerts = this.alertQueue.filter(alert => alert.status === 'pending');
-      
+      const pendingAlerts = this.alertQueue.filter(
+        alert => alert.status === 'pending'
+      );
+
       for (const alert of pendingAlerts) {
         await this.processAlert(alert);
       }
-
     } catch (error) {
       logger.error('Alert queue processing failed', { error });
     }
@@ -694,12 +723,15 @@ export class AlertingSystem {
 
         try {
           await this.sendToChannel(alert, channel);
-          logger.debug('Alert sent to channel', { alertId: alert.id, channelId });
+          logger.debug('Alert sent to channel', {
+            alertId: alert.id,
+            channelId,
+          });
         } catch (error) {
-          logger.error('Failed to send alert to channel', { 
-            error, 
-            alertId: alert.id, 
-            channelId 
+          logger.error('Failed to send alert to channel', {
+            error,
+            alertId: alert.id,
+            channelId,
           });
           allChannelsSent = false;
         }
@@ -718,7 +750,6 @@ export class AlertingSystem {
       if (alert.severity === 'critical' && allChannelsSent) {
         this.setupEscalation(alert);
       }
-
     } catch (error) {
       logger.error('Alert processing failed', { error, alertId: alert.id });
       alert.status = 'failed';
@@ -728,7 +759,10 @@ export class AlertingSystem {
   /**
    * Send alert to specific channel
    */
-  private async sendToChannel(alert: Alert, channel: AlertChannel): Promise<void> {
+  private async sendToChannel(
+    alert: Alert,
+    channel: AlertChannel
+  ): Promise<void> {
     switch (channel.type) {
       case 'slack':
         await this.sendToSlack(alert, channel);
@@ -753,8 +787,16 @@ export class AlertingSystem {
   /**
    * Send alert to Slack
    */
-  private async sendToSlack(alert: Alert, channel: AlertChannel): Promise<void> {
-    const { webhookUrl, channel: slackChannel, username, icon_emoji } = channel.configuration;
+  private async sendToSlack(
+    alert: Alert,
+    channel: AlertChannel
+  ): Promise<void> {
+    const {
+      webhookUrl,
+      channel: slackChannel,
+      username,
+      icon_emoji,
+    } = channel.configuration;
 
     if (!webhookUrl) {
       throw new Error('Slack webhook URL not configured');
@@ -772,54 +814,59 @@ export class AlertingSystem {
             {
               title: 'Message',
               value: alert.message,
-              short: false
+              short: false,
             },
             {
               title: 'Severity',
               value: alert.severity.toUpperCase(),
-              short: true
+              short: true,
             },
             {
               title: 'Category',
               value: alert.category,
-              short: true
+              short: true,
             },
             {
               title: 'Source',
               value: alert.source,
-              short: true
+              short: true,
             },
             {
               title: 'Time',
               value: new Date(alert.timestamp).toLocaleString(),
-              short: true
-            }
+              short: true,
+            },
           ],
-          footer: 'What\'s for Dinner Alerting System',
-          ts: Math.floor(new Date(alert.timestamp).getTime() / 1000)
-        }
-      ]
+          footer: "What's for Dinner Alerting System",
+          ts: Math.floor(new Date(alert.timestamp).getTime() / 1000),
+        },
+      ],
     };
 
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
-      throw new Error(`Slack API error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Slack API error: ${response.status} ${response.statusText}`
+      );
     }
   }
 
   /**
    * Send alert to email
    */
-  private async sendToEmail(alert: Alert, channel: AlertChannel): Promise<void> {
+  private async sendToEmail(
+    alert: Alert,
+    channel: AlertChannel
+  ): Promise<void> {
     // This would integrate with an email service like SendGrid, AWS SES, etc.
-    logger.info('Email alert sent', { 
-      alertId: alert.id, 
-      to: channel.configuration.to 
+    logger.info('Email alert sent', {
+      alertId: alert.id,
+      to: channel.configuration.to,
     });
   }
 
@@ -828,16 +875,19 @@ export class AlertingSystem {
    */
   private async sendToSMS(alert: Alert, channel: AlertChannel): Promise<void> {
     // This would integrate with an SMS service like Twilio, AWS SNS, etc.
-    logger.info('SMS alert sent', { 
-      alertId: alert.id, 
-      to: channel.configuration.to 
+    logger.info('SMS alert sent', {
+      alertId: alert.id,
+      to: channel.configuration.to,
     });
   }
 
   /**
    * Send alert to webhook
    */
-  private async sendToWebhook(alert: Alert, channel: AlertChannel): Promise<void> {
+  private async sendToWebhook(
+    alert: Alert,
+    channel: AlertChannel
+  ): Promise<void> {
     const { url, headers = {} } = channel.configuration;
 
     if (!url) {
@@ -848,20 +898,25 @@ export class AlertingSystem {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...headers
+        ...headers,
       },
-      body: JSON.stringify(alert)
+      body: JSON.stringify(alert),
     });
 
     if (!response.ok) {
-      throw new Error(`Webhook error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Webhook error: ${response.status} ${response.statusText}`
+      );
     }
   }
 
   /**
    * Send alert to PagerDuty
    */
-  private async sendToPagerDuty(alert: Alert, channel: AlertChannel): Promise<void> {
+  private async sendToPagerDuty(
+    alert: Alert,
+    channel: AlertChannel
+  ): Promise<void> {
     const { integrationKey } = channel.configuration;
 
     if (!integrationKey) {
@@ -879,19 +934,21 @@ export class AlertingSystem {
         custom_details: {
           message: alert.message,
           category: alert.category,
-          metadata: alert.metadata
-        }
-      }
+          metadata: alert.metadata,
+        },
+      },
     };
 
     const response = await fetch('https://events.pagerduty.com/v2/enqueue', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
-      throw new Error(`PagerDuty API error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `PagerDuty API error: ${response.status} ${response.statusText}`
+      );
     }
   }
 
@@ -903,7 +960,7 @@ export class AlertingSystem {
       low: '#36a64f',
       medium: '#ff9500',
       high: '#ff0000',
-      critical: '#8b0000'
+      critical: '#8b0000',
     };
     return colors[severity] || '#36a64f';
   }
@@ -912,14 +969,19 @@ export class AlertingSystem {
    * Set up escalation for critical alerts
    */
   private setupEscalation(alert: Alert): void {
-    const escalationPolicy = this.channels.get(alert.channels[0])?.escalationPolicy;
+    const escalationPolicy = this.channels.get(
+      alert.channels[0]
+    )?.escalationPolicy;
     if (!escalationPolicy) return;
 
     const escalationId = `escalation_${alert.id}`;
-    
-    const interval = setTimeout(async () => {
-      await this.escalateAlert(alert, escalationPolicy);
-    }, escalationPolicy.steps[0]?.delay * 60 * 1000 || 30000);
+
+    const interval = setTimeout(
+      async () => {
+        await this.escalateAlert(alert, escalationPolicy);
+      },
+      escalationPolicy.steps[0]?.delay * 60 * 1000 || 30000
+    );
 
     this.escalationIntervals.set(escalationId, interval);
   }
@@ -927,7 +989,10 @@ export class AlertingSystem {
   /**
    * Escalate alert
    */
-  private async escalateAlert(alert: Alert, policy: EscalationPolicy): Promise<void> {
+  private async escalateAlert(
+    alert: Alert,
+    policy: EscalationPolicy
+  ): Promise<void> {
     try {
       const currentLevel = alert.escalationLevel;
       const nextStep = policy.steps[currentLevel];
@@ -936,7 +1001,7 @@ export class AlertingSystem {
 
       // Send escalation message
       const escalationMessage = `🚨 ESCALATION LEVEL ${currentLevel + 1}: ${nextStep.message}`;
-      
+
       await this.sendToChannel(alert, this.channels.get(nextStep.channelId)!);
 
       // Update escalation level
@@ -947,11 +1012,10 @@ export class AlertingSystem {
         this.setupEscalation(alert);
       }
 
-      logger.warn('Alert escalated', { 
-        alertId: alert.id, 
-        level: currentLevel + 1 
+      logger.warn('Alert escalated', {
+        alertId: alert.id,
+        level: currentLevel + 1,
       });
-
     } catch (error) {
       logger.error('Alert escalation failed', { error, alertId: alert.id });
     }
@@ -970,19 +1034,27 @@ export class AlertingSystem {
     }
 
     // Handle arrays
-    rendered = rendered.replace(/\{\{#each\s+(\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g, (match, arrayKey, content) => {
-      const array = data[arrayKey];
-      if (!Array.isArray(array)) return '';
+    rendered = rendered.replace(
+      /\{\{#each\s+(\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g,
+      (match, arrayKey, content) => {
+        const array = data[arrayKey];
+        if (!Array.isArray(array)) return '';
 
-      return array.map(item => {
-        let itemContent = content;
-        for (const [key, value] of Object.entries(item)) {
-          const placeholder = `{{${key}}}`;
-          itemContent = itemContent.replace(new RegExp(placeholder, 'g'), String(value));
-        }
-        return itemContent;
-      }).join('');
-    });
+        return array
+          .map(item => {
+            let itemContent = content;
+            for (const [key, value] of Object.entries(item)) {
+              const placeholder = `{{${key}}}`;
+              itemContent = itemContent.replace(
+                new RegExp(placeholder, 'g'),
+                String(value)
+              );
+            }
+            return itemContent;
+          })
+          .join('');
+      }
+    );
 
     return rendered;
   }
@@ -990,7 +1062,10 @@ export class AlertingSystem {
   /**
    * Acknowledge alert
    */
-  async acknowledgeAlert(alertId: string, acknowledgedBy: string): Promise<void> {
+  async acknowledgeAlert(
+    alertId: string,
+    acknowledgedBy: string
+  ): Promise<void> {
     try {
       const alert = this.alertQueue.find(a => a.id === alertId);
       if (!alert) {
@@ -1007,7 +1082,7 @@ export class AlertingSystem {
         .update({
           status: alert.status,
           acknowledged_by: alert.acknowledgedBy,
-          acknowledged_at: alert.acknowledgedAt
+          acknowledged_at: alert.acknowledgedAt,
         })
         .eq('id', alertId);
 
@@ -1020,7 +1095,6 @@ export class AlertingSystem {
       }
 
       logger.info('Alert acknowledged', { alertId, acknowledgedBy });
-
     } catch (error) {
       logger.error('Failed to acknowledge alert', { error, alertId });
       throw error;
@@ -1045,7 +1119,7 @@ export class AlertingSystem {
         .from('alerts')
         .update({
           status: alert.status,
-          resolved_at: alert.resolvedAt
+          resolved_at: alert.resolvedAt,
         })
         .eq('id', alertId);
 
@@ -1058,7 +1132,6 @@ export class AlertingSystem {
       }
 
       logger.info('Alert resolved', { alertId });
-
     } catch (error) {
       logger.error('Failed to resolve alert', { error, alertId });
       throw error;
@@ -1077,36 +1150,50 @@ export class AlertingSystem {
   } {
     const totalAlerts = this.alertQueue.length;
 
-    const alertsByStatus = this.alertQueue.reduce((acc, alert) => {
-      acc[alert.status] = (acc[alert.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const alertsByStatus = this.alertQueue.reduce(
+      (acc, alert) => {
+        acc[alert.status] = (acc[alert.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const alertsBySeverity = this.alertQueue.reduce((acc, alert) => {
-      acc[alert.severity] = (acc[alert.severity] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const alertsBySeverity = this.alertQueue.reduce(
+      (acc, alert) => {
+        acc[alert.severity] = (acc[alert.severity] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const alertsByCategory = this.alertQueue.reduce((acc, alert) => {
-      acc[alert.category] = (acc[alert.category] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const alertsByCategory = this.alertQueue.reduce(
+      (acc, alert) => {
+        acc[alert.category] = (acc[alert.category] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     // Calculate average response time (simplified)
     const acknowledgedAlerts = this.alertQueue.filter(a => a.acknowledgedAt);
-    const averageResponseTime = acknowledgedAlerts.length > 0
-      ? acknowledgedAlerts.reduce((sum, alert) => {
-          const responseTime = new Date(alert.acknowledgedAt!).getTime() - new Date(alert.timestamp).getTime();
-          return sum + responseTime;
-        }, 0) / acknowledgedAlerts.length / 1000 // seconds
-      : 0;
+    const averageResponseTime =
+      acknowledgedAlerts.length > 0
+        ? acknowledgedAlerts.reduce((sum, alert) => {
+            const responseTime =
+              new Date(alert.acknowledgedAt!).getTime() -
+              new Date(alert.timestamp).getTime();
+            return sum + responseTime;
+          }, 0) /
+          acknowledgedAlerts.length /
+          1000 // seconds
+        : 0;
 
     return {
       totalAlerts,
       alertsByStatus,
       alertsBySeverity,
       alertsByCategory,
-      averageResponseTime
+      averageResponseTime,
     };
   }
 
@@ -1122,7 +1209,10 @@ export class AlertingSystem {
    */
   async addChannel(channel: AlertChannel): Promise<void> {
     this.channels.set(channel.id, channel);
-    logger.info('Alert channel added', { channelId: channel.id, type: channel.type });
+    logger.info('Alert channel added', {
+      channelId: channel.id,
+      type: channel.type,
+    });
   }
 
   /**
@@ -1136,7 +1226,10 @@ export class AlertingSystem {
   /**
    * Update alert channel
    */
-  async updateChannel(channelId: string, updates: Partial<AlertChannel>): Promise<void> {
+  async updateChannel(
+    channelId: string,
+    updates: Partial<AlertChannel>
+  ): Promise<void> {
     const channel = this.channels.get(channelId);
     if (!channel) {
       throw new Error('Channel not found');

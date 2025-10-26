@@ -1,6 +1,6 @@
 /**
  * Real-time Analytics System
- * 
+ *
  * This module provides comprehensive real-time analytics including:
  * - User behavior tracking
  * - Performance monitoring
@@ -112,12 +112,17 @@ class RealTimeAnalytics {
     this.processEventQueue();
 
     // Log the event
-    logger.info(`Analytics event tracked: ${event}`, {
-      event,
-      properties,
-      userId,
-      sessionId,
-    }, 'analytics', 'event_tracking');
+    logger.info(
+      `Analytics event tracked: ${event}`,
+      {
+        event,
+        properties,
+        userId,
+        sessionId,
+      },
+      'analytics',
+      'event_tracking'
+    );
   }
 
   /**
@@ -128,10 +133,14 @@ class RealTimeAnalytics {
     properties: Record<string, any> = {},
     userId?: string
   ): void {
-    this.trackEvent('page_view', {
-      page,
-      ...properties,
-    }, userId);
+    this.trackEvent(
+      'page_view',
+      {
+        page,
+        ...properties,
+      },
+      userId
+    );
 
     // Update session
     this.updateSession(page, userId);
@@ -146,11 +155,15 @@ class RealTimeAnalytics {
     properties: Record<string, any> = {},
     userId?: string
   ): void {
-    this.trackEvent('user_action', {
-      action,
-      element,
-      ...properties,
-    }, userId);
+    this.trackEvent(
+      'user_action',
+      {
+        action,
+        element,
+        ...properties,
+      },
+      userId
+    );
   }
 
   /**
@@ -162,11 +175,15 @@ class RealTimeAnalytics {
     properties: Record<string, any> = {},
     userId?: string
   ): void {
-    this.trackEvent('conversion', {
-      conversion_type: conversionType,
-      value,
-      ...properties,
-    }, userId);
+    this.trackEvent(
+      'conversion',
+      {
+        conversion_type: conversionType,
+        value,
+        ...properties,
+      },
+      userId
+    );
 
     // Update conversion funnels
     this.updateConversionFunnels(conversionType, userId);
@@ -180,12 +197,16 @@ class RealTimeAnalytics {
     context: Record<string, any> = {},
     userId?: string
   ): void {
-    this.trackEvent('error', {
-      error_message: error.message,
-      error_stack: error.stack,
-      error_name: error.name,
-      ...context,
-    }, userId);
+    this.trackEvent(
+      'error',
+      {
+        error_message: error.message,
+        error_stack: error.stack,
+        error_name: error.name,
+        ...context,
+      },
+      userId
+    );
   }
 
   /**
@@ -197,11 +218,15 @@ class RealTimeAnalytics {
     properties: Record<string, any> = {},
     userId?: string
   ): void {
-    this.trackEvent('performance', {
-      metric,
-      value,
-      ...properties,
-    }, userId);
+    this.trackEvent(
+      'performance',
+      {
+        metric,
+        value,
+        ...properties,
+      },
+      userId
+    );
   }
 
   /**
@@ -218,10 +243,11 @@ class RealTimeAnalytics {
   } {
     const now = new Date();
     const lastHour = new Date(now.getTime() - 60 * 60 * 1000);
-    
+
     const recentEvents = this.events.filter(e => e.timestamp >= lastHour);
-    const recentSessions = Array.from(this.sessions.values())
-      .filter(s => s.lastActivity >= lastHour);
+    const recentSessions = Array.from(this.sessions.values()).filter(
+      s => s.lastActivity >= lastHour
+    );
 
     const pageViews = recentEvents.filter(e => e.event === 'page_view').length;
     const events = recentEvents.length;
@@ -230,10 +256,13 @@ class RealTimeAnalytics {
     // Top pages
     const pageCounts = recentEvents
       .filter(e => e.event === 'page_view')
-      .reduce((acc, e) => {
-        acc[e.page] = (acc[e.page] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      .reduce(
+        (acc, e) => {
+          acc[e.page] = (acc[e.page] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
     const topPages = Object.entries(pageCounts)
       .map(([page, views]) => ({ page, views }))
@@ -241,10 +270,13 @@ class RealTimeAnalytics {
       .slice(0, 10);
 
     // Top events
-    const eventCounts = recentEvents.reduce((acc, e) => {
-      acc[e.event] = (acc[e.event] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const eventCounts = recentEvents.reduce(
+      (acc, e) => {
+        acc[e.event] = (acc[e.event] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     const topEvents = Object.entries(eventCounts)
       .map(([event, count]) => ({ event, count }))
@@ -252,13 +284,17 @@ class RealTimeAnalytics {
       .slice(0, 10);
 
     // Conversion rate
-    const conversions = recentEvents.filter(e => e.event === 'conversion').length;
+    const conversions = recentEvents.filter(
+      e => e.event === 'conversion'
+    ).length;
     const conversionRate = pageViews > 0 ? (conversions / pageViews) * 100 : 0;
 
     // Average session duration
-    const averageSessionDuration = recentSessions.length > 0
-      ? recentSessions.reduce((sum, s) => sum + s.duration, 0) / recentSessions.length
-      : 0;
+    const averageSessionDuration =
+      recentSessions.length > 0
+        ? recentSessions.reduce((sum, s) => sum + s.duration, 0) /
+          recentSessions.length
+        : 0;
 
     return {
       activeUsers,
@@ -308,8 +344,8 @@ class RealTimeAnalytics {
     winner?: string;
     confidence: number;
   } {
-    const testEvents = this.events.filter(e => 
-      e.properties.testId === testId || e.event === 'ab_test_view'
+    const testEvents = this.events.filter(
+      e => e.properties.testId === testId || e.event === 'ab_test_view'
     );
 
     const variants = new Map<string, { users: number; conversions: number }>();
@@ -331,15 +367,18 @@ class RealTimeAnalytics {
       }
     }
 
-    const variantResults = Array.from(variants.entries()).map(([variant, data]) => ({
-      variant,
-      users: data.users,
-      conversions: data.conversions,
-      conversionRate: data.users > 0 ? (data.conversions / data.users) * 100 : 0,
-    }));
+    const variantResults = Array.from(variants.entries()).map(
+      ([variant, data]) => ({
+        variant,
+        users: data.users,
+        conversions: data.conversions,
+        conversionRate:
+          data.users > 0 ? (data.conversions / data.users) * 100 : 0,
+      })
+    );
 
     // Find winner
-    const winner = variantResults.reduce((prev, current) => 
+    const winner = variantResults.reduce((prev, current) =>
       current.conversionRate > prev.conversionRate ? current : prev
     );
 
@@ -366,7 +405,7 @@ class RealTimeAnalytics {
 
     try {
       const eventsToProcess = this.eventQueue.splice(0, 100); // Process in batches
-      
+
       for (const event of eventsToProcess) {
         this.events.push(event);
         this.updateActiveUsers(event);
@@ -377,7 +416,6 @@ class RealTimeAnalytics {
       if (this.events.length > 10000) {
         this.events = this.events.slice(-10000);
       }
-
     } finally {
       this.isProcessing = false;
     }
@@ -426,13 +464,17 @@ class RealTimeAnalytics {
 
     session.lastActivity = new Date();
     session.pageViews++;
-    session.duration = session.lastActivity.getTime() - session.startTime.getTime();
+    session.duration =
+      session.lastActivity.getTime() - session.startTime.getTime();
   }
 
   /**
    * Update conversion funnels
    */
-  private updateConversionFunnels(conversionType: string, userId?: string): void {
+  private updateConversionFunnels(
+    conversionType: string,
+    userId?: string
+  ): void {
     // This would update conversion funnel data
     // Implementation depends on specific funnel definitions
   }
@@ -446,11 +488,46 @@ class RealTimeAnalytics {
       id: 'recipe_generation',
       name: 'Recipe Generation Funnel',
       steps: [
-        { id: 'landing', name: 'Landing Page', event: 'page_view', order: 1, users: 0, conversionRate: 0 },
-        { id: 'ingredients', name: 'Enter Ingredients', event: 'ingredients_entered', order: 2, users: 0, conversionRate: 0 },
-        { id: 'generate', name: 'Generate Recipes', event: 'recipe_generation_started', order: 3, users: 0, conversionRate: 0 },
-        { id: 'view_recipes', name: 'View Recipes', event: 'recipes_viewed', order: 4, users: 0, conversionRate: 0 },
-        { id: 'save_recipe', name: 'Save Recipe', event: 'recipe_saved', order: 5, users: 0, conversionRate: 0 },
+        {
+          id: 'landing',
+          name: 'Landing Page',
+          event: 'page_view',
+          order: 1,
+          users: 0,
+          conversionRate: 0,
+        },
+        {
+          id: 'ingredients',
+          name: 'Enter Ingredients',
+          event: 'ingredients_entered',
+          order: 2,
+          users: 0,
+          conversionRate: 0,
+        },
+        {
+          id: 'generate',
+          name: 'Generate Recipes',
+          event: 'recipe_generation_started',
+          order: 3,
+          users: 0,
+          conversionRate: 0,
+        },
+        {
+          id: 'view_recipes',
+          name: 'View Recipes',
+          event: 'recipes_viewed',
+          order: 4,
+          users: 0,
+          conversionRate: 0,
+        },
+        {
+          id: 'save_recipe',
+          name: 'Save Recipe',
+          event: 'recipe_saved',
+          order: 5,
+          users: 0,
+          conversionRate: 0,
+        },
       ],
       conversionRate: 0,
       dropOffPoints: [],
@@ -462,12 +539,21 @@ class RealTimeAnalytics {
   /**
    * Calculate A/B test confidence
    */
-  private calculateConfidence(variants: Array<{ users: number; conversions: number; conversionRate: number }>): number {
+  private calculateConfidence(
+    variants: Array<{
+      users: number;
+      conversions: number;
+      conversionRate: number;
+    }>
+  ): number {
     // Simplified confidence calculation
     // In reality, you'd use proper statistical methods
     const totalUsers = variants.reduce((sum, v) => sum + v.users, 0);
-    const totalConversions = variants.reduce((sum, v) => sum + v.conversions, 0);
-    
+    const totalConversions = variants.reduce(
+      (sum, v) => sum + v.conversions,
+      0
+    );
+
     if (totalUsers < 100) return 0;
     if (totalUsers < 1000) return 50;
     if (totalUsers < 10000) return 80;
@@ -490,7 +576,9 @@ class RealTimeAnalytics {
   }
 
   private getUserAgent(): string {
-    return typeof window !== 'undefined' ? window.navigator.userAgent : 'server';
+    return typeof window !== 'undefined'
+      ? window.navigator.userAgent
+      : 'server';
   }
 
   private getClientIP(): string {
@@ -563,4 +651,10 @@ export const realTimeAnalytics = new RealTimeAnalytics();
 
 // Export types and utilities
 export { RealTimeAnalytics };
-export type { AnalyticsEvent, UserSession, ConversionFunnel, FunnelStep, DropOffPoint };
+export type {
+  AnalyticsEvent,
+  UserSession,
+  ConversionFunnel,
+  FunnelStep,
+  DropOffPoint,
+};

@@ -65,7 +65,7 @@ describe('Home Page', () => {
       select: jest.fn().mockReturnValue({
         eq: jest.fn().mockResolvedValue({ data: mockPantryItems, error: null }),
       }),
-    } as any);
+    } as unknown as typeof supabase);
 
     render(<Home />);
 
@@ -155,7 +155,7 @@ describe('Home Page', () => {
           single: jest.fn().mockResolvedValue({ data: { id: 1 }, error: null }),
         }),
       }),
-    } as any);
+    } as unknown as typeof supabase);
     (global.fetch as jest.Mock).mockResolvedValue({
       json: () => Promise.resolve({ recipes: [mockRecipe] }),
     });

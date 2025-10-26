@@ -1,6 +1,6 @@
 /**
  * Comprehensive Security Validation System
- * 
+ *
  * This module provides security validation including:
  * - Input sanitization
  * - SQL injection prevention
@@ -36,7 +36,8 @@ export interface SecurityViolation {
 
 class SecurityValidator {
   private config: SecurityConfig;
-  private rateLimitStore: Map<string, { count: number; resetTime: number }> = new Map();
+  private rateLimitStore: Map<string, { count: number; resetTime: number }> =
+    new Map();
   private blockedIPs: Set<string> = new Set();
   private violations: SecurityViolation[] = [];
 
@@ -95,7 +96,7 @@ class SecurityValidator {
       };
       violations.push(violation);
       this.logViolation(violation);
-      
+
       return {
         isValid: false,
         violations,
@@ -108,11 +109,11 @@ class SecurityValidator {
     if (rateLimitViolation) {
       violations.push(rateLimitViolation);
       this.logViolation(rateLimitViolation);
-      
+
       return {
         isValid: false,
         violations,
-        response: new NextResponse('Rate Limit Exceeded', { 
+        response: new NextResponse('Rate Limit Exceeded', {
           status: 429,
           headers: {
             'Retry-After': '900', // 15 minutes
@@ -146,13 +147,17 @@ class SecurityValidator {
     headerViolations.forEach(v => this.logViolation(v));
 
     // If there are critical violations, block the request
-    const criticalViolations = violations.filter(v => v.severity === 'critical');
+    const criticalViolations = violations.filter(
+      v => v.severity === 'critical'
+    );
     if (criticalViolations.length > 0) {
       this.blockIP(ip);
       return {
         isValid: false,
         violations,
-        response: new NextResponse('Security Violation Detected', { status: 403 }),
+        response: new NextResponse('Security Violation Detected', {
+          status: 403,
+        }),
       };
     }
 
@@ -168,9 +173,9 @@ class SecurityValidator {
   private checkRateLimit(ip: string): SecurityViolation | null {
     const now = Date.now();
     const windowStart = now - this.config.rateLimitWindow;
-    
+
     const current = this.rateLimitStore.get(ip);
-    
+
     if (!current || current.resetTime < now) {
       this.rateLimitStore.set(ip, {
         count: 1,
@@ -178,7 +183,7 @@ class SecurityValidator {
       });
       return null;
     }
-    
+
     if (current.count >= this.config.rateLimitMax) {
       return {
         type: 'rate_limit_exceeded',
@@ -195,7 +200,7 @@ class SecurityValidator {
         userAgent: '',
       };
     }
-    
+
     current.count++;
     return null;
   }
@@ -205,11 +210,11 @@ class SecurityValidator {
    */
   private validateCORS(request: NextRequest): SecurityViolation | null {
     const origin = request.headers.get('origin');
-    
+
     if (!origin) {
       return null; // No origin header, not a CORS request
     }
-    
+
     if (!this.config.allowedOrigins.includes(origin)) {
       return {
         type: 'cors_violation',
@@ -224,7 +229,7 @@ class SecurityValidator {
         userAgent: request.headers.get('user-agent') || '',
       };
     }
-    
+
     return null;
   }
 
@@ -233,7 +238,7 @@ class SecurityValidator {
    */
   private validateRequestSize(request: NextRequest): SecurityViolation | null {
     const contentLength = request.headers.get('content-length');
-    
+
     if (contentLength && parseInt(contentLength) > this.config.maxRequestSize) {
       return {
         type: 'request_size_exceeded',
@@ -248,47 +253,59 @@ class SecurityValidator {
         userAgent: request.headers.get('user-agent') || '',
       };
     }
-    
+
     return null;
   }
 
   /**
    * Validate inputs for malicious content
    */
-  private async validateInputs(request: NextRequest): Promise<SecurityViolation[]> {
+  private async validateInputs(
+    request: NextRequest
+  ): Promise<SecurityViolation[]> {
     const violations: SecurityViolation[] = [];
     const ip = this.getClientIP(request);
     const userAgent = request.headers.get('user-agent') || '';
-    
+
     try {
       // Check URL parameters
       const url = new URL(request.url);
       for (const [key, value] of url.searchParams) {
-        const violation = this.checkForMaliciousContent(key, value, 'url_param');
+        const violation = this.checkForMaliciousContent(
+          key,
+          value,
+          'url_param'
+        );
         if (violation) {
           violation.ip = ip;
           violation.userAgent = userAgent;
           violations.push(violation);
         }
       }
-      
+
       // Check request body for POST/PUT requests
       if (request.method === 'POST' || request.method === 'PUT') {
         const contentType = request.headers.get('content-type') || '';
-        
+
         if (contentType.includes('application/json')) {
           const body = await request.json();
           const bodyViolations = this.validateObject(body, 'request_body');
-          violations.push(...bodyViolations.map(v => ({
-            ...v,
-            ip,
-            userAgent,
-          })));
+          violations.push(
+            ...bodyViolations.map(v => ({
+              ...v,
+              ip,
+              userAgent,
+            }))
+          );
         } else if (contentType.includes('multipart/form-data')) {
           const formData = await request.formData();
           for (const [key, value] of formData) {
             if (typeof value === 'string') {
-              const violation = this.checkForMaliciousContent(key, value, 'form_data');
+              const violation = this.checkForMaliciousContent(
+                key,
+                value,
+                'form_data'
+              );
               if (violation) {
                 violation.ip = ip;
                 violation.userAgent = userAgent;
@@ -304,13 +321,15 @@ class SecurityValidator {
         type: 'malformed_request',
         severity: 'high',
         message: 'Unable to parse request body',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' },
+        details: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+        },
         timestamp: new Date(),
         ip,
         userAgent,
       });
     }
-    
+
     return violations;
   }
 
@@ -318,8 +337,8 @@ class SecurityValidator {
    * Check for malicious content in a string
    */
   private checkForMaliciousContent(
-    key: string, 
-    value: string, 
+    key: string,
+    value: string,
     source: string
   ): SecurityViolation | null {
     for (const pattern of this.config.blockedPatterns) {
@@ -340,7 +359,7 @@ class SecurityValidator {
         };
       }
     }
-    
+
     return null;
   }
 
@@ -349,9 +368,13 @@ class SecurityValidator {
    */
   private validateObject(obj: any, path: string = ''): SecurityViolation[] {
     const violations: SecurityViolation[] = [];
-    
+
     if (typeof obj === 'string') {
-      const violation = this.checkForMaliciousContent(path, obj, 'object_property');
+      const violation = this.checkForMaliciousContent(
+        path,
+        obj,
+        'object_property'
+      );
       if (violation) {
         violations.push(violation);
       }
@@ -361,10 +384,12 @@ class SecurityValidator {
       });
     } else if (obj && typeof obj === 'object') {
       for (const [key, value] of Object.entries(obj)) {
-        violations.push(...this.validateObject(value, path ? `${path}.${key}` : key));
+        violations.push(
+          ...this.validateObject(value, path ? `${path}.${key}` : key)
+        );
       }
     }
-    
+
     return violations;
   }
 
@@ -375,7 +400,7 @@ class SecurityValidator {
     const violations: SecurityViolation[] = [];
     const ip = this.getClientIP(request);
     const userAgent = request.headers.get('user-agent') || '';
-    
+
     // Check for suspicious headers
     const suspiciousHeaders = [
       'x-forwarded-for',
@@ -384,7 +409,7 @@ class SecurityValidator {
       'x-remote-ip',
       'x-remote-addr',
     ];
-    
+
     for (const header of suspiciousHeaders) {
       const value = request.headers.get(header);
       if (value && !this.isValidIP(value)) {
@@ -402,7 +427,7 @@ class SecurityValidator {
         });
       }
     }
-    
+
     return violations;
   }
 
@@ -410,9 +435,10 @@ class SecurityValidator {
    * Check if an IP address is valid
    */
   private isValidIP(ip: string): boolean {
-    const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    const ipv4Regex =
+      /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     const ipv6Regex = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
-    
+
     return ipv4Regex.test(ip) || ipv6Regex.test(ip);
   }
 
@@ -422,15 +448,15 @@ class SecurityValidator {
   private getClientIP(request: NextRequest): string {
     const forwarded = request.headers.get('x-forwarded-for');
     const realIP = request.headers.get('x-real-ip');
-    
+
     if (forwarded) {
       return forwarded.split(',')[0].trim();
     }
-    
+
     if (realIP) {
       return realIP;
     }
-    
+
     return 'unknown';
   }
 
@@ -439,21 +465,34 @@ class SecurityValidator {
    */
   private blockIP(ip: string): void {
     this.blockedIPs.add(ip);
-    
-    logger.warn(`IP address blocked: ${ip}`, {
-      ip,
-      reason: 'security_violation',
-      blocked_at: new Date(),
-    }, 'security', 'ip_blocking');
-    
-    // Auto-unblock after 24 hours
-    setTimeout(() => {
-      this.blockedIPs.delete(ip);
-      logger.info(`IP address unblocked: ${ip}`, {
+
+    logger.warn(
+      `IP address blocked: ${ip}`,
+      {
         ip,
-        unblocked_at: new Date(),
-      }, 'security', 'ip_blocking');
-    }, 24 * 60 * 60 * 1000);
+        reason: 'security_violation',
+        blocked_at: new Date(),
+      },
+      'security',
+      'ip_blocking'
+    );
+
+    // Auto-unblock after 24 hours
+    setTimeout(
+      () => {
+        this.blockedIPs.delete(ip);
+        logger.info(
+          `IP address unblocked: ${ip}`,
+          {
+            ip,
+            unblocked_at: new Date(),
+          },
+          'security',
+          'ip_blocking'
+        );
+      },
+      24 * 60 * 60 * 1000
+    );
   }
 
   /**
@@ -461,16 +500,21 @@ class SecurityValidator {
    */
   private logViolation(violation: SecurityViolation): void {
     this.violations.push(violation);
-    
-    logger.warn(`Security violation: ${violation.type}`, {
-      type: violation.type,
-      severity: violation.severity,
-      message: violation.message,
-      details: violation.details,
-      ip: violation.ip,
-      userAgent: violation.userAgent,
-      timestamp: violation.timestamp,
-    }, 'security', 'violation');
+
+    logger.warn(
+      `Security violation: ${violation.type}`,
+      {
+        type: violation.type,
+        severity: violation.severity,
+        message: violation.message,
+        details: violation.details,
+        ip: violation.ip,
+        userAgent: violation.userAgent,
+        timestamp: violation.timestamp,
+      },
+      'security',
+      'violation'
+    );
   }
 
   /**
@@ -513,12 +557,14 @@ class SecurityValidator {
   } {
     const violationsByType: Record<string, number> = {};
     const violationsBySeverity: Record<string, number> = {};
-    
+
     for (const violation of this.violations) {
-      violationsByType[violation.type] = (violationsByType[violation.type] || 0) + 1;
-      violationsBySeverity[violation.severity] = (violationsBySeverity[violation.severity] || 0) + 1;
+      violationsByType[violation.type] =
+        (violationsByType[violation.type] || 0) + 1;
+      violationsBySeverity[violation.severity] =
+        (violationsBySeverity[violation.severity] || 0) + 1;
     }
-    
+
     return {
       totalViolations: this.violations.length,
       violationsByType,
@@ -533,15 +579,15 @@ class SecurityValidator {
    */
   public cleanup(): void {
     const now = Date.now();
-    const cutoff = now - (24 * 60 * 60 * 1000); // 24 hours ago
-    
+    const cutoff = now - 24 * 60 * 60 * 1000; // 24 hours ago
+
     // Clean up old rate limit entries
     for (const [ip, data] of this.rateLimitStore) {
       if (data.resetTime < cutoff) {
         this.rateLimitStore.delete(ip);
       }
     }
-    
+
     // Clean up old violations (keep last 1000)
     if (this.violations.length > 1000) {
       this.violations = this.violations.slice(-1000);

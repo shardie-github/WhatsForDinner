@@ -29,7 +29,10 @@ export default function ShareableMealCard({
   onShare,
 }: ShareableMealCardProps) {
   const [mealCard, setMealCard] = useState<MealCard | null>(null);
-  const [shareSuggestions, setShareSuggestions] = useState<any>(null);
+  const [shareSuggestions, setShareSuggestions] = useState<Record<
+    string,
+    string
+  > | null>(null);
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [customMessage, setCustomMessage] = useState('');
   const [isSharing, setIsSharing] = useState(false);
@@ -45,7 +48,8 @@ export default function ShareableMealCard({
       const card = await UGCGrowth.createMealCard(userId, recipeData);
       setMealCard(card);
     } catch (error) {
-      console.error('Error creating meal card:', error);
+      // Error creating meal card - could be logged to analytics
+      // console.error('Error creating meal card:', error);
     }
   };
 
@@ -58,7 +62,8 @@ export default function ShareableMealCard({
       setShareSuggestions(suggestions);
       setSelectedPlatforms(suggestions.optimal_platforms);
     } catch (error) {
-      console.error('Error loading share suggestions:', error);
+      // Error loading share suggestions - could be logged to analytics
+      // console.error('Error loading share suggestions:', error);
     }
   };
 
@@ -92,7 +97,8 @@ export default function ShareableMealCard({
 
       alert('Content shared successfully!');
     } catch (error) {
-      console.error('Error sharing content:', error);
+      // Error sharing content - could be logged to analytics
+      // console.error('Error sharing content:', error);
       alert('Failed to share content');
     } finally {
       setIsSharing(false);
@@ -302,7 +308,7 @@ export default function ShareableMealCard({
                 Share links generated!
               </h4>
               <div className="space-y-2">
-                {Object.entries(shareUrls).map(([platform, url]) => (
+                {Object.entries(shareUrls).map(([platform, _url]) => (
                   <div
                     key={platform}
                     className="flex items-center justify-between"

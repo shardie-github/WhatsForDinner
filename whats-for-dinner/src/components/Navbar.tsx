@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useTenant } from '@/hooks/useTenant';
-import type { User } from '@supabase/supabase-js';
+import type { UserIcon } from '@supabase/supabase-js';
 import {
   Home,
   ChefHat,
@@ -14,13 +14,13 @@ import {
   LogOut,
   Menu,
   X,
-  User,
+  User as UserIcon,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 
 interface NavbarProps {
-  user: User | null;
+  user: UserIcon | null;
 }
 
 export default function Navbar({ user }: NavbarProps) {
@@ -53,7 +53,7 @@ export default function Navbar({ user }: NavbarProps) {
               <ChefHat className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground transition-colors group-hover:text-primary">
-              What's for Dinner?
+              What&apos;s for Dinner?
             </span>
           </Link>
 
@@ -98,10 +98,10 @@ export default function Navbar({ user }: NavbarProps) {
               <div className="flex items-center space-x-2">
                 <div className="flex items-center space-x-2 px-3 py-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                    <User className="h-4 w-4 text-primary" />
+                    <UserIcon className="h-4 w-4 text-primary" />
                   </div>
                   <span className="text-sm font-medium text-foreground">
-                    {user.email?.split('@')[0] || 'User'}
+                    {user.email?.split('@')[0] || 'UserIcon'}
                   </span>
                 </div>
                 <Button
@@ -117,7 +117,7 @@ export default function Navbar({ user }: NavbarProps) {
             ) : (
               <Link href="/auth">
                 <Button size="sm">
-                  <User className="mr-2 h-4 w-4" />
+                  <UserIcon className="mr-2 h-4 w-4" />
                   Sign In
                 </Button>
               </Link>
@@ -185,10 +185,10 @@ export default function Navbar({ user }: NavbarProps) {
                 <div className="space-y-2 px-3 py-2">
                   <div className="flex items-center space-x-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                      <User className="h-4 w-4 text-primary" />
+                      <UserIcon className="h-4 w-4 text-primary" />
                     </div>
                     <span className="text-base font-medium text-foreground">
-                      {user.email?.split('@')[0] || 'User'}
+                      {user.email?.split('@')[0] || 'UserIcon'}
                     </span>
                   </div>
                   <Button
@@ -210,7 +210,7 @@ export default function Navbar({ user }: NavbarProps) {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Button className="w-full justify-start">
-                    <User className="mr-2 h-4 w-4" />
+                    <UserIcon className="mr-2 h-4 w-4" />
                     Sign In
                   </Button>
                 </Link>

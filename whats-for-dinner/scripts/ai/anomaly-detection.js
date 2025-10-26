@@ -23,8 +23,8 @@ const config = {
     cpuUsage: 0.8, // 80%
     dbConnections: 0.8, // 80% of max
     apiLatency: 2000, // 2 seconds
-    anomalyScore: 0.7 // 70% confidence
-  }
+    anomalyScore: 0.7, // 70% confidence
+  },
 };
 
 // Colors for console output
@@ -35,7 +35,7 @@ const colors = {
   blue: '\x1b[34m',
   magenta: '\x1b[35m',
   cyan: '\x1b[36m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 function log(message, color = 'reset') {
@@ -66,22 +66,24 @@ class AnomalyDetector {
    */
   detectStatisticalAnomaly(values, threshold = 2.5) {
     if (values.length < 3) return { isAnomaly: false, score: 0 };
-    
+
     const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+    const variance =
+      values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) /
+      values.length;
     const stdDev = Math.sqrt(variance);
-    
+
     if (stdDev === 0) return { isAnomaly: false, score: 0 };
-    
+
     const zScores = values.map(val => Math.abs((val - mean) / stdDev));
     const maxZScore = Math.max(...zScores);
-    
+
     return {
       isAnomaly: maxZScore > threshold,
       score: maxZScore / threshold,
       mean,
       stdDev,
-      zScores
+      zScores,
     };
   }
 
@@ -90,23 +92,23 @@ class AnomalyDetector {
    */
   detectMovingAverageAnomaly(values, windowSize = 10, threshold = 0.3) {
     if (values.length < windowSize) return { isAnomaly: false, score: 0 };
-    
+
     const recent = values.slice(-windowSize);
     const older = values.slice(-windowSize * 2, -windowSize);
-    
+
     if (older.length === 0) return { isAnomaly: false, score: 0 };
-    
+
     const recentAvg = recent.reduce((sum, val) => sum + val, 0) / recent.length;
     const olderAvg = older.reduce((sum, val) => sum + val, 0) / older.length;
-    
+
     const changePercent = Math.abs((recentAvg - olderAvg) / olderAvg);
-    
+
     return {
       isAnomaly: changePercent > threshold,
       score: changePercent / threshold,
       recentAvg,
       olderAvg,
-      changePercent
+      changePercent,
     };
   }
 
@@ -114,17 +116,18 @@ class AnomalyDetector {
    * Pattern-based anomaly detection
    */
   detectPatternAnomaly(values, expectedPattern) {
-    if (values.length < expectedPattern.length) return { isAnomaly: false, score: 0 };
-    
+    if (values.length < expectedPattern.length)
+      return { isAnomaly: false, score: 0 };
+
     const recent = values.slice(-expectedPattern.length);
     const correlation = this.calculateCorrelation(recent, expectedPattern);
-    
+
     return {
       isAnomaly: correlation < 0.5,
       score: 1 - correlation,
       correlation,
       recent,
-      expectedPattern
+      expectedPattern,
     };
   }
 
@@ -133,17 +136,19 @@ class AnomalyDetector {
    */
   calculateCorrelation(x, y) {
     if (x.length !== y.length) return 0;
-    
+
     const n = x.length;
     const sumX = x.reduce((sum, val) => sum + val, 0);
     const sumY = y.reduce((sum, val) => sum + val, 0);
     const sumXY = x.reduce((sum, val, i) => sum + val * y[i], 0);
     const sumXX = x.reduce((sum, val) => sum + val * val, 0);
     const sumYY = y.reduce((sum, val) => sum + val * val, 0);
-    
+
     const numerator = n * sumXY - sumX * sumY;
-    const denominator = Math.sqrt((n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY));
-    
+    const denominator = Math.sqrt(
+      (n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY)
+    );
+
     return denominator === 0 ? 0 : numerator / denominator;
   }
 
@@ -151,19 +156,30 @@ class AnomalyDetector {
    * Detect anomalies in time series data
    */
   detectTimeSeriesAnomaly(data, metric, timeWindow = 24) {
-    const values = data.map(item => item[metric]).filter(val => val !== undefined);
-    
-    if (values.length < 10) return { isAnomaly: false, score: 0, details: 'Insufficient data' };
-    
+    const values = data
+      .map(item => item[metric])
+      .filter(val => val !== undefined);
+
+    if (values.length < 10)
+      return { isAnomaly: false, score: 0, details: 'Insufficient data' };
+
     // Apply multiple detection methods
     const statistical = this.detectStatisticalAnomaly(values);
     const movingAvg = this.detectMovingAverageAnomaly(values);
-    const pattern = this.detectPatternAnomaly(values, this.getExpectedPattern(metric));
-    
+    const pattern = this.detectPatternAnomaly(
+      values,
+      this.getExpectedPattern(metric)
+    );
+
     // Combine results
-    const scores = [statistical.score, movingAvg.score, pattern.score].filter(score => score > 0);
-    const avgScore = scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;
-    
+    const scores = [statistical.score, movingAvg.score, pattern.score].filter(
+      score => score > 0
+    );
+    const avgScore =
+      scores.length > 0
+        ? scores.reduce((sum, score) => sum + score, 0) / scores.length
+        : 0;
+
     return {
       isAnomaly: avgScore > this.alertThresholds.anomalyScore,
       score: avgScore,
@@ -173,8 +189,8 @@ class AnomalyDetector {
         pattern,
         values: values.slice(-10), // Last 10 values
         metric,
-        timeWindow
-      }
+        timeWindow,
+      },
     };
   }
 
@@ -183,12 +199,14 @@ class AnomalyDetector {
    */
   getExpectedPattern(metric) {
     const patterns = {
-      response_time: [1000, 1200, 1100, 1300, 1000, 1200, 1100, 1300, 1000, 1200],
+      response_time: [
+        1000, 1200, 1100, 1300, 1000, 1200, 1100, 1300, 1000, 1200,
+      ],
       user_satisfaction: [4.0, 4.2, 4.1, 4.3, 4.0, 4.2, 4.1, 4.3, 4.0, 4.2],
       error_rate: [0.02, 0.03, 0.02, 0.04, 0.02, 0.03, 0.02, 0.04, 0.02, 0.03],
-      memory_usage: [0.6, 0.65, 0.62, 0.68, 0.6, 0.65, 0.62, 0.68, 0.6, 0.65]
+      memory_usage: [0.6, 0.65, 0.62, 0.68, 0.6, 0.65, 0.62, 0.68, 0.6, 0.65],
     };
-    
+
     return patterns[metric] || Array(10).fill(0);
   }
 }
@@ -205,7 +223,7 @@ class SystemMetricsMonitor {
   async collectSystemMetrics() {
     try {
       log('Collecting system metrics...', 'yellow');
-      
+
       const metrics = {
         timestamp: new Date().toISOString(),
         responseTime: await this.getResponseTimeMetrics(),
@@ -214,21 +232,22 @@ class SystemMetricsMonitor {
         memoryUsage: await this.getMemoryUsageMetrics(),
         cpuUsage: await this.getCpuUsageMetrics(),
         dbConnections: await this.getDbConnectionMetrics(),
-        apiLatency: await this.getApiLatencyMetrics()
+        apiLatency: await this.getApiLatencyMetrics(),
       };
-      
+
       // Store metrics
       this.metrics.set(metrics.timestamp, metrics);
-      
+
       // Keep only last 1000 entries
       if (this.metrics.size > 1000) {
         const oldestKey = this.metrics.keys().next().value;
         this.metrics.delete(oldestKey);
       }
-      
-      logVerbose(`Collected metrics for ${Object.keys(metrics).length} categories`);
+
+      logVerbose(
+        `Collected metrics for ${Object.keys(metrics).length} categories`
+      );
       return metrics;
-      
     } catch (error) {
       log(`Error collecting system metrics: ${error.message}`, 'red');
       throw error;
@@ -242,16 +261,19 @@ class SystemMetricsMonitor {
         .select('response_time')
         .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString())
         .not('response_time', 'is', null);
-      
+
       if (error) throw error;
-      
+
       const times = data.map(item => item.response_time);
       return {
         current: times.length > 0 ? times[times.length - 1] : 0,
-        average: times.length > 0 ? times.reduce((sum, time) => sum + time, 0) / times.length : 0,
+        average:
+          times.length > 0
+            ? times.reduce((sum, time) => sum + time, 0) / times.length
+            : 0,
         max: times.length > 0 ? Math.max(...times) : 0,
         min: times.length > 0 ? Math.min(...times) : 0,
-        count: times.length
+        count: times.length,
       };
     } catch (error) {
       log(`Error getting response time metrics: ${error.message}`, 'red');
@@ -265,18 +287,18 @@ class SystemMetricsMonitor {
         .from('system_logs')
         .select('level, created_at')
         .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString());
-      
+
       if (error) throw error;
-      
+
       const total = data.length;
       const errors = data.filter(log => log.level === 'error').length;
       const errorRate = total > 0 ? errors / total : 0;
-      
+
       return {
         current: errorRate,
         total,
         errors,
-        warnings: data.filter(log => log.level === 'warning').length
+        warnings: data.filter(log => log.level === 'warning').length,
       };
     } catch (error) {
       log(`Error getting error rate metrics: ${error.message}`, 'red');
@@ -291,14 +313,17 @@ class SystemMetricsMonitor {
         .select('satisfaction_rating')
         .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString())
         .not('satisfaction_rating', 'is', null);
-      
+
       if (error) throw error;
-      
+
       const ratings = data.map(item => item.satisfaction_rating);
       return {
         current: ratings.length > 0 ? ratings[ratings.length - 1] : 0,
-        average: ratings.length > 0 ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length : 0,
-        count: ratings.length
+        average:
+          ratings.length > 0
+            ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
+            : 0,
+        count: ratings.length,
       };
     } catch (error) {
       log(`Error getting user satisfaction metrics: ${error.message}`, 'red');
@@ -315,12 +340,13 @@ class SystemMetricsMonitor {
         .not('memory_usage', 'is', null)
         .order('created_at', { ascending: false })
         .limit(1);
-      
+
       if (error) throw error;
-      
+
       return {
         current: data.length > 0 ? data[0].memory_usage : 0,
-        timestamp: data.length > 0 ? data[0].created_at : new Date().toISOString()
+        timestamp:
+          data.length > 0 ? data[0].created_at : new Date().toISOString(),
       };
     } catch (error) {
       log(`Error getting memory usage metrics: ${error.message}`, 'red');
@@ -337,12 +363,13 @@ class SystemMetricsMonitor {
         .not('cpu_usage', 'is', null)
         .order('created_at', { ascending: false })
         .limit(1);
-      
+
       if (error) throw error;
-      
+
       return {
         current: data.length > 0 ? data[0].cpu_usage : 0,
-        timestamp: data.length > 0 ? data[0].created_at : new Date().toISOString()
+        timestamp:
+          data.length > 0 ? data[0].created_at : new Date().toISOString(),
       };
     } catch (error) {
       log(`Error getting CPU usage metrics: ${error.message}`, 'red');
@@ -359,16 +386,16 @@ class SystemMetricsMonitor {
         .not('db_connections', 'is', null)
         .order('created_at', { ascending: false })
         .limit(1);
-      
+
       if (error) throw error;
-      
+
       const current = data.length > 0 ? data[0].db_connections : 0;
       const max = data.length > 0 ? data[0].max_connections : 100;
-      
+
       return {
         current,
         max,
-        usage: max > 0 ? current / max : 0
+        usage: max > 0 ? current / max : 0,
       };
     } catch (error) {
       log(`Error getting DB connection metrics: ${error.message}`, 'red');
@@ -383,15 +410,19 @@ class SystemMetricsMonitor {
         .select('latency')
         .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString())
         .not('latency', 'is', null);
-      
+
       if (error) throw error;
-      
+
       const latencies = data.map(item => item.latency);
       return {
         current: latencies.length > 0 ? latencies[latencies.length - 1] : 0,
-        average: latencies.length > 0 ? latencies.reduce((sum, latency) => sum + latency, 0) / latencies.length : 0,
+        average:
+          latencies.length > 0
+            ? latencies.reduce((sum, latency) => sum + latency, 0) /
+              latencies.length
+            : 0,
         p95: latencies.length > 0 ? this.calculatePercentile(latencies, 95) : 0,
-        p99: latencies.length > 0 ? this.calculatePercentile(latencies, 99) : 0
+        p99: latencies.length > 0 ? this.calculatePercentile(latencies, 99) : 0,
       };
     } catch (error) {
       log(`Error getting API latency metrics: ${error.message}`, 'red');
@@ -408,26 +439,37 @@ class SystemMetricsMonitor {
   async detectAnomalies() {
     try {
       log('Detecting anomalies...', 'yellow');
-      
+
       const anomalies = [];
       const metricsData = Array.from(this.metrics.values());
-      
+
       if (metricsData.length < 10) {
         log('Insufficient data for anomaly detection', 'yellow');
         return [];
       }
-      
+
       // Check each metric for anomalies
-      const metrics = ['responseTime', 'errorRate', 'userSatisfaction', 'memoryUsage', 'cpuUsage', 'dbConnections', 'apiLatency'];
-      
+      const metrics = [
+        'responseTime',
+        'errorRate',
+        'userSatisfaction',
+        'memoryUsage',
+        'cpuUsage',
+        'dbConnections',
+        'apiLatency',
+      ];
+
       for (const metric of metrics) {
         const data = metricsData.map(item => ({
           [metric]: item[metric]?.current || item[metric]?.average || 0,
-          timestamp: item.timestamp
+          timestamp: item.timestamp,
         }));
-        
-        const anomaly = this.anomalyDetector.detectTimeSeriesAnomaly(data, metric);
-        
+
+        const anomaly = this.anomalyDetector.detectTimeSeriesAnomaly(
+          data,
+          metric
+        );
+
         if (anomaly.isAnomaly) {
           anomalies.push({
             type: 'metric_anomaly',
@@ -435,26 +477,30 @@ class SystemMetricsMonitor {
             score: anomaly.score,
             details: anomaly.details,
             timestamp: new Date().toISOString(),
-            severity: this.calculateSeverity(anomaly.score)
+            severity: this.calculateSeverity(anomaly.score),
           });
         }
       }
-      
+
       // Check for threshold violations
-      const thresholdViolations = await this.checkThresholdViolations(metricsData[metricsData.length - 1]);
+      const thresholdViolations = await this.checkThresholdViolations(
+        metricsData[metricsData.length - 1]
+      );
       anomalies.push(...thresholdViolations);
-      
+
       // Store anomalies
       this.anomalyHistory.push(...anomalies);
-      
+
       // Keep only last 1000 anomalies
       if (this.anomalyHistory.length > 1000) {
         this.anomalyHistory = this.anomalyHistory.slice(-1000);
       }
-      
-      log(`Detected ${anomalies.length} anomalies`, anomalies.length > 0 ? 'red' : 'green');
+
+      log(
+        `Detected ${anomalies.length} anomalies`,
+        anomalies.length > 0 ? 'red' : 'green'
+      );
       return anomalies;
-      
     } catch (error) {
       log(`Error detecting anomalies: ${error.message}`, 'red');
       throw error;
@@ -463,19 +509,21 @@ class SystemMetricsMonitor {
 
   async checkThresholdViolations(currentMetrics) {
     const violations = [];
-    
+
     // Response time threshold
-    if (currentMetrics.responseTime?.current > this.alertThresholds.responseTime) {
+    if (
+      currentMetrics.responseTime?.current > this.alertThresholds.responseTime
+    ) {
       violations.push({
         type: 'threshold_violation',
         metric: 'responseTime',
         value: currentMetrics.responseTime.current,
         threshold: this.alertThresholds.responseTime,
         severity: 'high',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // Error rate threshold
     if (currentMetrics.errorRate?.current > this.alertThresholds.errorRate) {
       violations.push({
@@ -484,34 +532,39 @@ class SystemMetricsMonitor {
         value: currentMetrics.errorRate.current,
         threshold: this.alertThresholds.errorRate,
         severity: 'high',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // User satisfaction threshold
-    if (currentMetrics.userSatisfaction?.current < this.alertThresholds.userSatisfaction) {
+    if (
+      currentMetrics.userSatisfaction?.current <
+      this.alertThresholds.userSatisfaction
+    ) {
       violations.push({
         type: 'threshold_violation',
         metric: 'userSatisfaction',
         value: currentMetrics.userSatisfaction.current,
         threshold: this.alertThresholds.userSatisfaction,
         severity: 'medium',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // Memory usage threshold
-    if (currentMetrics.memoryUsage?.current > this.alertThresholds.memoryUsage) {
+    if (
+      currentMetrics.memoryUsage?.current > this.alertThresholds.memoryUsage
+    ) {
       violations.push({
         type: 'threshold_violation',
         metric: 'memoryUsage',
         value: currentMetrics.memoryUsage.current,
         threshold: this.alertThresholds.memoryUsage,
         severity: 'high',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // CPU usage threshold
     if (currentMetrics.cpuUsage?.current > this.alertThresholds.cpuUsage) {
       violations.push({
@@ -520,22 +573,24 @@ class SystemMetricsMonitor {
         value: currentMetrics.cpuUsage.current,
         threshold: this.alertThresholds.cpuUsage,
         severity: 'high',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // DB connections threshold
-    if (currentMetrics.dbConnections?.usage > this.alertThresholds.dbConnections) {
+    if (
+      currentMetrics.dbConnections?.usage > this.alertThresholds.dbConnections
+    ) {
       violations.push({
         type: 'threshold_violation',
         metric: 'dbConnections',
         value: currentMetrics.dbConnections.usage,
         threshold: this.alertThresholds.dbConnections,
         severity: 'high',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // API latency threshold
     if (currentMetrics.apiLatency?.current > this.alertThresholds.apiLatency) {
       violations.push({
@@ -544,10 +599,10 @@ class SystemMetricsMonitor {
         value: currentMetrics.apiLatency.current,
         threshold: this.alertThresholds.apiLatency,
         severity: 'medium',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     return violations;
   }
 
@@ -564,21 +619,29 @@ class SystemMetricsMonitor {
         timestamp: new Date().toISOString(),
         summary: {
           totalAnomalies: this.anomalyHistory.length,
-          criticalAnomalies: this.anomalyHistory.filter(a => a.severity === 'critical').length,
-          highAnomalies: this.anomalyHistory.filter(a => a.severity === 'high').length,
-          mediumAnomalies: this.anomalyHistory.filter(a => a.severity === 'medium').length,
-          lowAnomalies: this.anomalyHistory.filter(a => a.severity === 'low').length
+          criticalAnomalies: this.anomalyHistory.filter(
+            a => a.severity === 'critical'
+          ).length,
+          highAnomalies: this.anomalyHistory.filter(a => a.severity === 'high')
+            .length,
+          mediumAnomalies: this.anomalyHistory.filter(
+            a => a.severity === 'medium'
+          ).length,
+          lowAnomalies: this.anomalyHistory.filter(a => a.severity === 'low')
+            .length,
         },
         recentAnomalies: this.anomalyHistory.slice(-20),
         metrics: {
           totalMetrics: this.metrics.size,
-          lastUpdate: this.metrics.size > 0 ? Array.from(this.metrics.keys())[this.metrics.size - 1] : null
+          lastUpdate:
+            this.metrics.size > 0
+              ? Array.from(this.metrics.keys())[this.metrics.size - 1]
+              : null,
         },
-        recommendations: this.generateRecommendations()
+        recommendations: this.generateRecommendations(),
       };
-      
+
       return report;
-      
     } catch (error) {
       log(`Error generating anomaly report: ${error.message}`, 'red');
       throw error;
@@ -587,49 +650,62 @@ class SystemMetricsMonitor {
 
   generateRecommendations() {
     const recommendations = [];
-    
+
     // Analyze anomaly patterns
-    const criticalAnomalies = this.anomalyHistory.filter(a => a.severity === 'critical');
-    const highAnomalies = this.anomalyHistory.filter(a => a.severity === 'high');
-    
+    const criticalAnomalies = this.anomalyHistory.filter(
+      a => a.severity === 'critical'
+    );
+    const highAnomalies = this.anomalyHistory.filter(
+      a => a.severity === 'high'
+    );
+
     // Response time recommendations
-    const responseTimeAnomalies = this.anomalyHistory.filter(a => a.metric === 'responseTime');
+    const responseTimeAnomalies = this.anomalyHistory.filter(
+      a => a.metric === 'responseTime'
+    );
     if (responseTimeAnomalies.length > 5) {
       recommendations.push({
         category: 'performance',
         priority: 'high',
         issue: 'Frequent response time anomalies',
-        recommendation: 'Consider implementing caching, database optimization, or scaling resources',
-        impact: 'High'
+        recommendation:
+          'Consider implementing caching, database optimization, or scaling resources',
+        impact: 'High',
       });
     }
-    
+
     // Error rate recommendations
-    const errorRateAnomalies = this.anomalyHistory.filter(a => a.metric === 'errorRate');
+    const errorRateAnomalies = this.anomalyHistory.filter(
+      a => a.metric === 'errorRate'
+    );
     if (errorRateAnomalies.length > 3) {
       recommendations.push({
         category: 'reliability',
         priority: 'high',
         issue: 'High error rate anomalies',
-        recommendation: 'Review error handling, add monitoring, and implement circuit breakers',
-        impact: 'High'
+        recommendation:
+          'Review error handling, add monitoring, and implement circuit breakers',
+        impact: 'High',
       });
     }
-    
+
     // User satisfaction recommendations
-    const satisfactionAnomalies = this.anomalyHistory.filter(a => a.metric === 'userSatisfaction');
+    const satisfactionAnomalies = this.anomalyHistory.filter(
+      a => a.metric === 'userSatisfaction'
+    );
     if (satisfactionAnomalies.length > 3) {
       recommendations.push({
         category: 'user_experience',
         priority: 'medium',
         issue: 'User satisfaction anomalies',
-        recommendation: 'Review AI responses, improve prompt quality, and gather more user feedback',
-        impact: 'Medium'
+        recommendation:
+          'Review AI responses, improve prompt quality, and gather more user feedback',
+        impact: 'Medium',
       });
     }
-    
+
     // Resource usage recommendations
-    const resourceAnomalies = this.anomalyHistory.filter(a => 
+    const resourceAnomalies = this.anomalyHistory.filter(a =>
       ['memoryUsage', 'cpuUsage', 'dbConnections'].includes(a.metric)
     );
     if (resourceAnomalies.length > 5) {
@@ -637,11 +713,12 @@ class SystemMetricsMonitor {
         category: 'infrastructure',
         priority: 'high',
         issue: 'Resource usage anomalies',
-        recommendation: 'Consider auto-scaling, resource optimization, or infrastructure upgrades',
-        impact: 'High'
+        recommendation:
+          'Consider auto-scaling, resource optimization, or infrastructure upgrades',
+        impact: 'High',
       });
     }
-    
+
     return recommendations;
   }
 }
@@ -657,25 +734,33 @@ class UserBehaviorAnalyzer {
   async analyzeUserBehavior() {
     try {
       log('Analyzing user behavior...', 'yellow');
-      
+
       const behaviorMetrics = await this.collectBehaviorMetrics();
       const anomalies = [];
-      
+
       // Analyze session patterns
-      const sessionAnomalies = await this.analyzeSessionPatterns(behaviorMetrics.sessions);
+      const sessionAnomalies = await this.analyzeSessionPatterns(
+        behaviorMetrics.sessions
+      );
       anomalies.push(...sessionAnomalies);
-      
+
       // Analyze usage patterns
-      const usageAnomalies = await this.analyzeUsagePatterns(behaviorMetrics.usage);
+      const usageAnomalies = await this.analyzeUsagePatterns(
+        behaviorMetrics.usage
+      );
       anomalies.push(...usageAnomalies);
-      
+
       // Analyze feedback patterns
-      const feedbackAnomalies = await this.analyzeFeedbackPatterns(behaviorMetrics.feedback);
+      const feedbackAnomalies = await this.analyzeFeedbackPatterns(
+        behaviorMetrics.feedback
+      );
       anomalies.push(...feedbackAnomalies);
-      
-      log(`Detected ${anomalies.length} user behavior anomalies`, anomalies.length > 0 ? 'red' : 'green');
+
+      log(
+        `Detected ${anomalies.length} user behavior anomalies`,
+        anomalies.length > 0 ? 'red' : 'green'
+      );
       return anomalies;
-      
     } catch (error) {
       log(`Error analyzing user behavior: ${error.message}`, 'red');
       throw error;
@@ -687,11 +772,10 @@ class UserBehaviorAnalyzer {
       const [sessions, usage, feedback] = await Promise.all([
         this.getSessionMetrics(),
         this.getUsageMetrics(),
-        this.getFeedbackMetrics()
+        this.getFeedbackMetrics(),
       ]);
-      
+
       return { sessions, usage, feedback };
-      
     } catch (error) {
       log(`Error collecting behavior metrics: ${error.message}`, 'red');
       throw error;
@@ -703,18 +787,20 @@ class UserBehaviorAnalyzer {
       const { data, error } = await supabase
         .from('user_sessions')
         .select('*')
-        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
-      
+        .gte(
+          'created_at',
+          new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        );
+
       if (error) throw error;
-      
+
       return data.map(session => ({
         duration: session.duration || 0,
         page_views: session.page_views || 0,
         actions: session.actions || 0,
         user_id: session.user_id,
-        created_at: session.created_at
+        created_at: session.created_at,
       }));
-      
     } catch (error) {
       log(`Error getting session metrics: ${error.message}`, 'red');
       return [];
@@ -726,17 +812,19 @@ class UserBehaviorAnalyzer {
       const { data, error } = await supabase
         .from('meal_analytics')
         .select('*')
-        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
-      
+        .gte(
+          'created_at',
+          new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        );
+
       if (error) throw error;
-      
+
       return data.map(meal => ({
         user_id: meal.user_id,
         generated_at: meal.created_at,
         response_time: meal.response_time || 0,
-        success: meal.success || false
+        success: meal.success || false,
       }));
-      
     } catch (error) {
       log(`Error getting usage metrics: ${error.message}`, 'red');
       return [];
@@ -748,17 +836,19 @@ class UserBehaviorAnalyzer {
       const { data, error } = await supabase
         .from('user_feedback')
         .select('*')
-        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
-      
+        .gte(
+          'created_at',
+          new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        );
+
       if (error) throw error;
-      
+
       return data.map(feedback => ({
         user_id: feedback.user_id,
         rating: feedback.satisfaction_rating || 0,
         feedback_type: feedback.feedback_type,
-        created_at: feedback.created_at
+        created_at: feedback.created_at,
       }));
-      
     } catch (error) {
       log(`Error getting feedback metrics: ${error.message}`, 'red');
       return [];
@@ -767,13 +857,14 @@ class UserBehaviorAnalyzer {
 
   async analyzeSessionPatterns(sessions) {
     const anomalies = [];
-    
+
     if (sessions.length < 10) return anomalies;
-    
+
     // Analyze session duration
     const durations = sessions.map(s => s.duration);
-    const durationAnomaly = this.anomalyDetector.detectStatisticalAnomaly(durations);
-    
+    const durationAnomaly =
+      this.anomalyDetector.detectStatisticalAnomaly(durations);
+
     if (durationAnomaly.isAnomaly) {
       anomalies.push({
         type: 'session_duration_anomaly',
@@ -781,14 +872,15 @@ class UserBehaviorAnalyzer {
         score: durationAnomaly.score,
         details: durationAnomaly,
         severity: this.calculateSeverity(durationAnomaly.score),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // Analyze page views per session
     const pageViews = sessions.map(s => s.page_views);
-    const pageViewAnomaly = this.anomalyDetector.detectStatisticalAnomaly(pageViews);
-    
+    const pageViewAnomaly =
+      this.anomalyDetector.detectStatisticalAnomaly(pageViews);
+
     if (pageViewAnomaly.isAnomaly) {
       anomalies.push({
         type: 'page_view_anomaly',
@@ -796,22 +888,23 @@ class UserBehaviorAnalyzer {
         score: pageViewAnomaly.score,
         details: pageViewAnomaly,
         severity: this.calculateSeverity(pageViewAnomaly.score),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     return anomalies;
   }
 
   async analyzeUsagePatterns(usage) {
     const anomalies = [];
-    
+
     if (usage.length < 10) return anomalies;
-    
+
     // Analyze response times
     const responseTimes = usage.map(u => u.response_time);
-    const responseTimeAnomaly = this.anomalyDetector.detectStatisticalAnomaly(responseTimes);
-    
+    const responseTimeAnomaly =
+      this.anomalyDetector.detectStatisticalAnomaly(responseTimes);
+
     if (responseTimeAnomaly.isAnomaly) {
       anomalies.push({
         type: 'usage_response_time_anomaly',
@@ -819,10 +912,10 @@ class UserBehaviorAnalyzer {
         score: responseTimeAnomaly.score,
         details: responseTimeAnomaly,
         severity: this.calculateSeverity(responseTimeAnomaly.score),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // Analyze success rate
     const successRate = usage.filter(u => u.success).length / usage.length;
     if (successRate < 0.8) {
@@ -832,22 +925,23 @@ class UserBehaviorAnalyzer {
         score: 1 - successRate,
         details: { successRate, total: usage.length },
         severity: 'high',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     return anomalies;
   }
 
   async analyzeFeedbackPatterns(feedback) {
     const anomalies = [];
-    
+
     if (feedback.length < 10) return anomalies;
-    
+
     // Analyze rating distribution
     const ratings = feedback.map(f => f.rating);
-    const ratingAnomaly = this.anomalyDetector.detectStatisticalAnomaly(ratings);
-    
+    const ratingAnomaly =
+      this.anomalyDetector.detectStatisticalAnomaly(ratings);
+
     if (ratingAnomaly.isAnomaly) {
       anomalies.push({
         type: 'feedback_rating_anomaly',
@@ -855,10 +949,10 @@ class UserBehaviorAnalyzer {
         score: ratingAnomaly.score,
         details: ratingAnomaly,
         severity: this.calculateSeverity(ratingAnomaly.score),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // Analyze feedback frequency
     const feedbackCount = feedback.length;
     const expectedFeedback = 50; // Expected feedback per day
@@ -866,13 +960,13 @@ class UserBehaviorAnalyzer {
       anomalies.push({
         type: 'low_feedback_frequency',
         metric: 'feedback_count',
-        score: 1 - (feedbackCount / expectedFeedback),
+        score: 1 - feedbackCount / expectedFeedback,
         details: { feedbackCount, expected: expectedFeedback },
         severity: 'medium',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     return anomalies;
   }
 
@@ -890,28 +984,28 @@ class UserBehaviorAnalyzer {
 async function runAnomalyDetection() {
   try {
     log('Starting anomaly detection process...', 'blue');
-    
+
     // Ensure output directory exists
     if (!fs.existsSync(config.outputDir)) {
       fs.mkdirSync(config.outputDir, { recursive: true });
     }
-    
+
     // Initialize monitors
     const systemMonitor = new SystemMetricsMonitor();
     const behaviorAnalyzer = new UserBehaviorAnalyzer();
-    
+
     // Collect system metrics
     await systemMonitor.collectSystemMetrics();
-    
+
     // Detect system anomalies
     const systemAnomalies = await systemMonitor.detectAnomalies();
-    
+
     // Analyze user behavior
     const behaviorAnomalies = await behaviorAnalyzer.analyzeUserBehavior();
-    
+
     // Combine all anomalies
     const allAnomalies = [...systemAnomalies, ...behaviorAnomalies];
-    
+
     // Generate reports
     const systemReport = await systemMonitor.generateAnomalyReport();
     const behaviorReport = {
@@ -919,12 +1013,17 @@ async function runAnomalyDetection() {
       totalAnomalies: behaviorAnomalies.length,
       anomalies: behaviorAnomalies,
       summary: {
-        sessionAnomalies: behaviorAnomalies.filter(a => a.type.includes('session')).length,
-        usageAnomalies: behaviorAnomalies.filter(a => a.type.includes('usage')).length,
-        feedbackAnomalies: behaviorAnomalies.filter(a => a.type.includes('feedback')).length
-      }
+        sessionAnomalies: behaviorAnomalies.filter(a =>
+          a.type.includes('session')
+        ).length,
+        usageAnomalies: behaviorAnomalies.filter(a => a.type.includes('usage'))
+          .length,
+        feedbackAnomalies: behaviorAnomalies.filter(a =>
+          a.type.includes('feedback')
+        ).length,
+      },
     };
-    
+
     // Generate combined report
     const combinedReport = {
       timestamp: new Date().toISOString(),
@@ -932,44 +1031,47 @@ async function runAnomalyDetection() {
         totalAnomalies: allAnomalies.length,
         systemAnomalies: systemAnomalies.length,
         behaviorAnomalies: behaviorAnomalies.length,
-        criticalAnomalies: allAnomalies.filter(a => a.severity === 'critical').length,
+        criticalAnomalies: allAnomalies.filter(a => a.severity === 'critical')
+          .length,
         highAnomalies: allAnomalies.filter(a => a.severity === 'high').length,
-        mediumAnomalies: allAnomalies.filter(a => a.severity === 'medium').length,
-        lowAnomalies: allAnomalies.filter(a => a.severity === 'low').length
+        mediumAnomalies: allAnomalies.filter(a => a.severity === 'medium')
+          .length,
+        lowAnomalies: allAnomalies.filter(a => a.severity === 'low').length,
       },
       systemReport,
       behaviorReport,
       allAnomalies,
       recommendations: [
         ...systemReport.recommendations,
-        ...this.generateBehaviorRecommendations(behaviorAnomalies)
-      ]
+        ...this.generateBehaviorRecommendations(behaviorAnomalies),
+      ],
     };
-    
+
     // Save reports
     fs.writeFileSync(
       path.join(config.outputDir, 'anomaly-detection-report.json'),
       JSON.stringify(combinedReport, null, 2)
     );
-    
+
     // Generate HTML report
     const htmlReport = generateAnomalyHTMLReport(combinedReport);
     fs.writeFileSync(
       path.join(config.outputDir, 'anomaly-detection-report.html'),
       htmlReport
     );
-    
+
     // Generate alerts for critical anomalies
-    const criticalAnomalies = allAnomalies.filter(a => a.severity === 'critical');
+    const criticalAnomalies = allAnomalies.filter(
+      a => a.severity === 'critical'
+    );
     if (criticalAnomalies.length > 0) {
       await generateCriticalAlerts(criticalAnomalies);
     }
-    
+
     log('Anomaly detection completed successfully!', 'green');
     log(`Results saved to: ${config.outputDir}`, 'blue');
-    
+
     return combinedReport;
-    
   } catch (error) {
     log(`Anomaly detection failed: ${error.message}`, 'red');
     throw error;
@@ -981,7 +1083,7 @@ async function runAnomalyDetection() {
  */
 function generateBehaviorRecommendations(anomalies) {
   const recommendations = [];
-  
+
   // Session duration recommendations
   const sessionAnomalies = anomalies.filter(a => a.type.includes('session'));
   if (sessionAnomalies.length > 3) {
@@ -989,11 +1091,12 @@ function generateBehaviorRecommendations(anomalies) {
       category: 'user_experience',
       priority: 'medium',
       issue: 'Session duration anomalies',
-      recommendation: 'Review user interface, improve navigation, and optimize page load times',
-      impact: 'Medium'
+      recommendation:
+        'Review user interface, improve navigation, and optimize page load times',
+      impact: 'Medium',
     });
   }
-  
+
   // Usage pattern recommendations
   const usageAnomalies = anomalies.filter(a => a.type.includes('usage'));
   if (usageAnomalies.length > 3) {
@@ -1001,11 +1104,12 @@ function generateBehaviorRecommendations(anomalies) {
       category: 'performance',
       priority: 'high',
       issue: 'Usage pattern anomalies',
-      recommendation: 'Optimize API responses, improve error handling, and enhance user guidance',
-      impact: 'High'
+      recommendation:
+        'Optimize API responses, improve error handling, and enhance user guidance',
+      impact: 'High',
     });
   }
-  
+
   // Feedback recommendations
   const feedbackAnomalies = anomalies.filter(a => a.type.includes('feedback'));
   if (feedbackAnomalies.length > 3) {
@@ -1013,11 +1117,12 @@ function generateBehaviorRecommendations(anomalies) {
       category: 'user_satisfaction',
       priority: 'high',
       issue: 'Feedback pattern anomalies',
-      recommendation: 'Improve AI responses, enhance user experience, and implement better feedback collection',
-      impact: 'High'
+      recommendation:
+        'Improve AI responses, enhance user experience, and implement better feedback collection',
+      impact: 'High',
     });
   }
-  
+
   return recommendations;
 }
 
@@ -1032,20 +1137,19 @@ async function generateCriticalAlerts(criticalAnomalies) {
       message: `Critical anomaly detected: ${anomaly.metric}`,
       details: anomaly,
       timestamp: new Date().toISOString(),
-      requires_immediate_attention: true
+      requires_immediate_attention: true,
     }));
-    
+
     // Save alerts
     fs.writeFileSync(
       path.join(config.outputDir, 'critical-alerts.json'),
       JSON.stringify(alerts, null, 2)
     );
-    
+
     // Log alerts
     alerts.forEach(alert => {
       log(`🚨 CRITICAL ALERT: ${alert.message}`, 'red');
     });
-    
   } catch (error) {
     log(`Error generating critical alerts: ${error.message}`, 'red');
   }
@@ -1296,7 +1400,10 @@ function generateAnomalyHTMLReport(report) {
         <!-- Recent Anomalies -->
         <div class="section">
             <h2>Recent Anomalies</h2>
-            ${report.allAnomalies.slice(-10).map(anomaly => `
+            ${report.allAnomalies
+              .slice(-10)
+              .map(
+                anomaly => `
                 <div class="anomaly-item ${anomaly.severity}">
                     <h3>${anomaly.type.replace(/_/g, ' ').toUpperCase()}</h3>
                     <p><strong>Metric:</strong> ${anomaly.metric}</p>
@@ -1307,13 +1414,17 @@ function generateAnomalyHTMLReport(report) {
                         <pre>${JSON.stringify(anomaly.details, null, 2)}</pre>
                     </div>
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
         
         <!-- Recommendations -->
         <div class="section">
             <h2>Recommendations</h2>
-            ${report.recommendations.map(rec => `
+            ${report.recommendations
+              .map(
+                rec => `
                 <div class="recommendation ${rec.priority}">
                     <h4>${rec.issue}</h4>
                     <p><strong>Category:</strong> ${rec.category}</p>
@@ -1321,7 +1432,9 @@ function generateAnomalyHTMLReport(report) {
                     <p><strong>Impact:</strong> ${rec.impact}</p>
                     <p><strong>Recommendation:</strong> ${rec.recommendation}</p>
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
         
         <!-- System Metrics -->
@@ -1371,4 +1484,9 @@ if (require.main === module) {
     });
 }
 
-module.exports = { runAnomalyDetection, AnomalyDetector, SystemMetricsMonitor, UserBehaviorAnalyzer };
+module.exports = {
+  runAnomalyDetection,
+  AnomalyDetector,
+  SystemMetricsMonitor,
+  UserBehaviorAnalyzer,
+};

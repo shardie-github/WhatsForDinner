@@ -1,6 +1,6 @@
 /**
  * Production Deployment Manager
- * 
+ *
  * Implements zero-downtime blue/green deployment with:
  * - Health checks and rollback capabilities
  * - Security hardening and compliance validation
@@ -104,7 +104,7 @@ class DeploymentManager {
    */
   async startDeployment(config: DeploymentConfig): Promise<string> {
     const deploymentId = this.generateDeploymentId();
-    
+
     const deployment: DeploymentStatus = {
       id: deploymentId,
       status: 'pending',
@@ -122,11 +122,16 @@ class DeploymentManager {
     this.activeDeployments.set(deploymentId, deployment);
 
     try {
-      await logger.info('Deployment started', {
-        deploymentId,
-        environment: config.environment,
-        version: config.version,
-      }, 'deployment', 'start');
+      await logger.info(
+        'Deployment started',
+        {
+          deploymentId,
+          environment: config.environment,
+          version: config.version,
+        },
+        'deployment',
+        'start'
+      );
 
       // Pre-deployment checks
       await this.runPreDeploymentChecks(deploymentId, config);
@@ -146,26 +151,38 @@ class DeploymentManager {
       deployment.endTime = new Date().toISOString();
       this.activeDeployments.set(deploymentId, deployment);
 
-      await logger.info('Deployment completed successfully', {
-        deploymentId,
-        duration: this.calculateDeploymentDuration(deployment),
-      }, 'deployment', 'complete');
+      await logger.info(
+        'Deployment completed successfully',
+        {
+          deploymentId,
+          duration: this.calculateDeploymentDuration(deployment),
+        },
+        'deployment',
+        'complete'
+      );
 
       return deploymentId;
-
     } catch (error) {
       deployment.status = 'failed';
       deployment.endTime = new Date().toISOString();
       this.activeDeployments.set(deploymentId, deployment);
 
-      await logger.error('Deployment failed', {
-        deploymentId,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      }, 'deployment', 'error');
+      await logger.error(
+        'Deployment failed',
+        {
+          deploymentId,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        },
+        'deployment',
+        'error'
+      );
 
       // Attempt automatic rollback if configured
       if (config.rollbackThreshold > 0) {
-        await this.attemptRollback(deploymentId, error instanceof Error ? error.message : 'Unknown error');
+        await this.attemptRollback(
+          deploymentId,
+          error instanceof Error ? error.message : 'Unknown error'
+        );
       }
 
       throw error;
@@ -175,22 +192,30 @@ class DeploymentManager {
   /**
    * Run pre-deployment checks
    */
-  private async runPreDeploymentChecks(deploymentId: string, config: DeploymentConfig): Promise<void> {
-    const traceId = await observabilitySystem.startTrace('pre_deployment_checks', undefined, undefined, deploymentId);
+  private async runPreDeploymentChecks(
+    deploymentId: string,
+    config: DeploymentConfig
+  ): Promise<void> {
+    const traceId = await observabilitySystem.startTrace(
+      'pre_deployment_checks',
+      undefined,
+      undefined,
+      deploymentId
+    );
 
     try {
       // Security validation
       await this.validateSecurityConfiguration();
-      
+
       // Compliance checks
       await this.runComplianceChecks();
-      
+
       // Environment validation
       await this.validateEnvironment(config.environment);
-      
+
       // Dependency checks
       await this.checkDependencies();
-      
+
       // Resource availability
       await this.checkResourceAvailability(config.region);
 
@@ -204,19 +229,27 @@ class DeploymentManager {
   /**
    * Execute the actual deployment
    */
-  private async executeDeployment(deploymentId: string, config: DeploymentConfig): Promise<void> {
-    const traceId = await observabilitySystem.startTrace('deployment_execution', undefined, undefined, deploymentId);
+  private async executeDeployment(
+    deploymentId: string,
+    config: DeploymentConfig
+  ): Promise<void> {
+    const traceId = await observabilitySystem.startTrace(
+      'deployment_execution',
+      undefined,
+      undefined,
+      deploymentId
+    );
 
     try {
       // Blue/Green deployment strategy
       await this.deployToGreenEnvironment(config);
-      
+
       // Wait for deployment to stabilize
       await this.waitForStabilization(config);
-      
+
       // Switch traffic to green environment
       await this.switchTrafficToGreen(config);
-      
+
       // Clean up blue environment
       await this.cleanupBlueEnvironment(config);
 
@@ -230,12 +263,22 @@ class DeploymentManager {
   /**
    * Run post-deployment health checks
    */
-  private async runPostDeploymentChecks(deploymentId: string, config: DeploymentConfig): Promise<void> {
-    const traceId = await observabilitySystem.startTrace('post_deployment_checks', undefined, undefined, deploymentId);
+  private async runPostDeploymentChecks(
+    deploymentId: string,
+    config: DeploymentConfig
+  ): Promise<void> {
+    const traceId = await observabilitySystem.startTrace(
+      'post_deployment_checks',
+      undefined,
+      undefined,
+      deploymentId
+    );
 
     try {
-      const healthCheck = await this.performHealthCheck(config.healthCheckEndpoint);
-      
+      const healthCheck = await this.performHealthCheck(
+        config.healthCheckEndpoint
+      );
+
       const deployment = this.activeDeployments.get(deploymentId);
       if (deployment) {
         deployment.healthChecks.push(healthCheck);
@@ -285,7 +328,9 @@ class DeploymentManager {
     const auditValid = await this.validateAuditLogging();
     this.complianceStatus.set('audit_logging', auditValid);
 
-    const allValid = Array.from(this.complianceStatus.values()).every(status => status);
+    const allValid = Array.from(this.complianceStatus.values()).every(
+      status => status
+    );
     if (!allValid) {
       throw new Error('Security configuration validation failed');
     }
@@ -303,7 +348,9 @@ class DeploymentManager {
     const soc2Compliant = await this.checkSOC2Compliance();
     this.complianceStatus.set('soc2_compliance', soc2Compliant);
 
-    const allCompliant = Array.from(this.complianceStatus.values()).every(status => status);
+    const allCompliant = Array.from(this.complianceStatus.values()).every(
+      status => status
+    );
     if (!allCompliant) {
       throw new Error('Compliance checks failed');
     }
@@ -316,14 +363,20 @@ class DeploymentManager {
     try {
       // Check if CORS is properly configured
       const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
-      const hasSecureOrigins = allowedOrigins.every(origin => 
-        origin.startsWith('https://') || origin === 'http://localhost:3000'
+      const hasSecureOrigins = allowedOrigins.every(
+        origin =>
+          origin.startsWith('https://') || origin === 'http://localhost:3000'
       );
 
       if (!hasSecureOrigins) {
-        logger.warn('CORS configuration has insecure origins', {
-          allowedOrigins,
-        }, 'deployment', 'cors');
+        logger.warn(
+          'CORS configuration has insecure origins',
+          {
+            allowedOrigins,
+          },
+          'deployment',
+          'cors'
+        );
         return false;
       }
 
@@ -348,11 +401,16 @@ class DeploymentManager {
       // Check JWT expiration settings
       const jwtExpiration = process.env.JWT_EXPIRATION || '1h';
       const maxExpiration = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-      
+
       // Parse JWT expiration (simplified)
       const expirationMs = this.parseJWTExpiration(jwtExpiration);
       if (expirationMs > maxExpiration) {
-        logger.warn('JWT expiration is too long', { jwtExpiration }, 'deployment', 'jwt');
+        logger.warn(
+          'JWT expiration is too long',
+          { jwtExpiration },
+          'deployment',
+          'jwt'
+        );
         return false;
       }
 
@@ -368,10 +426,10 @@ class DeploymentManager {
    */
   private parseJWTExpiration(expiration: string): number {
     const units: Record<string, number> = {
-      's': 1000,
-      'm': 60 * 1000,
-      'h': 60 * 60 * 1000,
-      'd': 24 * 60 * 60 * 1000,
+      s: 1000,
+      m: 60 * 1000,
+      h: 60 * 60 * 1000,
+      d: 24 * 60 * 60 * 1000,
     };
 
     const match = expiration.match(/^(\d+)([smhd])$/);
@@ -390,7 +448,7 @@ class DeploymentManager {
       // This would check if RLS is enabled on all tables
       // For now, we'll simulate the check
       const rlsEnabled = process.env.RLS_ENABLED === 'true';
-      
+
       if (!rlsEnabled) {
         logger.warn('RLS is not enabled', {}, 'deployment', 'rls');
         return false;
@@ -411,22 +469,39 @@ class DeploymentManager {
       // Check if API keys are rotated regularly
       const lastRotation = process.env.LAST_API_KEY_ROTATION;
       if (!lastRotation) {
-        logger.warn('API key rotation not configured', {}, 'deployment', 'rotation');
+        logger.warn(
+          'API key rotation not configured',
+          {},
+          'deployment',
+          'rotation'
+        );
         return false;
       }
 
       const rotationDate = new Date(lastRotation);
       const now = new Date();
-      const daysSinceRotation = (now.getTime() - rotationDate.getTime()) / (1000 * 60 * 60 * 24);
+      const daysSinceRotation =
+        (now.getTime() - rotationDate.getTime()) / (1000 * 60 * 60 * 24);
 
-      if (daysSinceRotation > 90) { // Rotate every 90 days
-        logger.warn('API keys need rotation', { daysSinceRotation }, 'deployment', 'rotation');
+      if (daysSinceRotation > 90) {
+        // Rotate every 90 days
+        logger.warn(
+          'API keys need rotation',
+          { daysSinceRotation },
+          'deployment',
+          'rotation'
+        );
         return false;
       }
 
       return true;
     } catch (error) {
-      logger.error('API key rotation validation failed', { error }, 'deployment', 'rotation');
+      logger.error(
+        'API key rotation validation failed',
+        { error },
+        'deployment',
+        'rotation'
+      );
       return false;
     }
   }
@@ -438,15 +513,25 @@ class DeploymentManager {
     try {
       // Check if data encryption is enabled
       const encryptionEnabled = process.env.DATA_ENCRYPTION_ENABLED === 'true';
-      
+
       if (!encryptionEnabled) {
-        logger.warn('Data encryption is not enabled', {}, 'deployment', 'encryption');
+        logger.warn(
+          'Data encryption is not enabled',
+          {},
+          'deployment',
+          'encryption'
+        );
         return false;
       }
 
       return true;
     } catch (error) {
-      logger.error('Data encryption validation failed', { error }, 'deployment', 'encryption');
+      logger.error(
+        'Data encryption validation failed',
+        { error },
+        'deployment',
+        'encryption'
+      );
       return false;
     }
   }
@@ -458,7 +543,7 @@ class DeploymentManager {
     try {
       // Check if audit logging is enabled
       const auditEnabled = process.env.AUDIT_LOGGING_ENABLED === 'true';
-      
+
       if (!auditEnabled) {
         logger.warn('Audit logging is not enabled', {}, 'deployment', 'audit');
         return false;
@@ -466,7 +551,12 @@ class DeploymentManager {
 
       return true;
     } catch (error) {
-      logger.error('Audit logging validation failed', { error }, 'deployment', 'audit');
+      logger.error(
+        'Audit logging validation failed',
+        { error },
+        'deployment',
+        'audit'
+      );
       return false;
     }
   }
@@ -478,7 +568,7 @@ class DeploymentManager {
     try {
       // Check if GDPR compliance measures are in place
       const gdprCompliant = process.env.GDPR_COMPLIANT === 'true';
-      
+
       if (!gdprCompliant) {
         logger.warn('GDPR compliance not verified', {}, 'deployment', 'gdpr');
         return false;
@@ -486,7 +576,12 @@ class DeploymentManager {
 
       return true;
     } catch (error) {
-      logger.error('GDPR compliance check failed', { error }, 'deployment', 'gdpr');
+      logger.error(
+        'GDPR compliance check failed',
+        { error },
+        'deployment',
+        'gdpr'
+      );
       return false;
     }
   }
@@ -498,7 +593,7 @@ class DeploymentManager {
     try {
       // Check if SOC2 compliance measures are in place
       const soc2Compliant = process.env.SOC2_COMPLIANT === 'true';
-      
+
       if (!soc2Compliant) {
         logger.warn('SOC2 compliance not verified', {}, 'deployment', 'soc2');
         return false;
@@ -506,7 +601,12 @@ class DeploymentManager {
 
       return true;
     } catch (error) {
-      logger.error('SOC2 compliance check failed', { error }, 'deployment', 'soc2');
+      logger.error(
+        'SOC2 compliance check failed',
+        { error },
+        'deployment',
+        'soc2'
+      );
       return false;
     }
   }
@@ -523,15 +623,22 @@ class DeploymentManager {
     ];
 
     const missingVars = requiredVars.filter(varName => !process.env[varName]);
-    
+
     if (missingVars.length > 0) {
-      throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+      throw new Error(
+        `Missing required environment variables: ${missingVars.join(', ')}`
+      );
     }
 
-    logger.info('Environment validation passed', {
-      environment,
-      requiredVars: requiredVars.length,
-    }, 'deployment', 'environment');
+    logger.info(
+      'Environment validation passed',
+      {
+        environment,
+        requiredVars: requiredVars.length,
+      },
+      'deployment',
+      'environment'
+    );
   }
 
   /**
@@ -540,7 +647,7 @@ class DeploymentManager {
   private async checkDependencies(): Promise<void> {
     // Check if all required services are available
     const services = ['supabase', 'openai', 'stripe'];
-    
+
     for (const service of services) {
       const isAvailable = await this.checkServiceAvailability(service);
       if (!isAvailable) {
@@ -548,9 +655,14 @@ class DeploymentManager {
       }
     }
 
-    logger.info('Dependency checks passed', {
-      services: services.length,
-    }, 'deployment', 'dependencies');
+    logger.info(
+      'Dependency checks passed',
+      {
+        services: services.length,
+      },
+      'deployment',
+      'dependencies'
+    );
   }
 
   /**
@@ -562,7 +674,12 @@ class DeploymentManager {
       // For now, we'll simulate the check
       return true;
     } catch (error) {
-      logger.error(`Service ${service} health check failed`, { error }, 'deployment', 'health');
+      logger.error(
+        `Service ${service} health check failed`,
+        { error },
+        'deployment',
+        'health'
+      );
       return false;
     }
   }
@@ -573,14 +690,19 @@ class DeploymentManager {
   private async checkResourceAvailability(region: string): Promise<void> {
     // Check if resources are available in the specified region
     const resourcesAvailable = await this.checkRegionResources(region);
-    
+
     if (!resourcesAvailable) {
       throw new Error(`Resources not available in region ${region}`);
     }
 
-    logger.info('Resource availability check passed', {
-      region,
-    }, 'deployment', 'resources');
+    logger.info(
+      'Resource availability check passed',
+      {
+        region,
+      },
+      'deployment',
+      'resources'
+    );
   }
 
   /**
@@ -595,11 +717,18 @@ class DeploymentManager {
   /**
    * Deploy to green environment
    */
-  private async deployToGreenEnvironment(config: DeploymentConfig): Promise<void> {
-    logger.info('Deploying to green environment', {
-      environment: config.environment,
-      version: config.version,
-    }, 'deployment', 'green');
+  private async deployToGreenEnvironment(
+    config: DeploymentConfig
+  ): Promise<void> {
+    logger.info(
+      'Deploying to green environment',
+      {
+        environment: config.environment,
+        version: config.version,
+      },
+      'deployment',
+      'green'
+    );
 
     // This would implement actual deployment logic
     // For now, we'll simulate the deployment
@@ -610,8 +739,13 @@ class DeploymentManager {
    * Wait for deployment to stabilize
    */
   private async waitForStabilization(config: DeploymentConfig): Promise<void> {
-    logger.info('Waiting for deployment to stabilize', {}, 'deployment', 'stabilization');
-    
+    logger.info(
+      'Waiting for deployment to stabilize',
+      {},
+      'deployment',
+      'stabilization'
+    );
+
     // Wait for a period to ensure the deployment is stable
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
@@ -620,8 +754,13 @@ class DeploymentManager {
    * Switch traffic to green environment
    */
   private async switchTrafficToGreen(config: DeploymentConfig): Promise<void> {
-    logger.info('Switching traffic to green environment', {}, 'deployment', 'traffic');
-    
+    logger.info(
+      'Switching traffic to green environment',
+      {},
+      'deployment',
+      'traffic'
+    );
+
     // This would implement actual traffic switching
     // For now, we'll simulate the switch
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -630,9 +769,11 @@ class DeploymentManager {
   /**
    * Clean up blue environment
    */
-  private async cleanupBlueEnvironment(config: DeploymentConfig): Promise<void> {
+  private async cleanupBlueEnvironment(
+    config: DeploymentConfig
+  ): Promise<void> {
     logger.info('Cleaning up blue environment', {}, 'deployment', 'cleanup');
-    
+
     // This would implement actual cleanup logic
     // For now, we'll simulate the cleanup
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -641,7 +782,9 @@ class DeploymentManager {
   /**
    * Perform health check
    */
-  private async performHealthCheck(endpoint: string): Promise<HealthCheckResult> {
+  private async performHealthCheck(
+    endpoint: string
+  ): Promise<HealthCheckResult> {
     try {
       const response = await fetch(endpoint, {
         method: 'GET',
@@ -671,8 +814,13 @@ class DeploymentManager {
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Health check failed', { error, endpoint }, 'deployment', 'health');
-      
+      logger.error(
+        'Health check failed',
+        { error, endpoint },
+        'deployment',
+        'health'
+      );
+
       return {
         status: 'unhealthy',
         checks: {
@@ -693,14 +841,19 @@ class DeploymentManager {
   /**
    * Monitor deployment stability
    */
-  private async monitorDeploymentStability(deploymentId: string, config: DeploymentConfig): Promise<void> {
+  private async monitorDeploymentStability(
+    deploymentId: string,
+    config: DeploymentConfig
+  ): Promise<void> {
     const monitoringDuration = 5 * 60 * 1000; // 5 minutes
     const checkInterval = 30 * 1000; // 30 seconds
     const startTime = Date.now();
 
     while (Date.now() - startTime < monitoringDuration) {
-      const healthCheck = await this.performHealthCheck(config.healthCheckEndpoint);
-      
+      const healthCheck = await this.performHealthCheck(
+        config.healthCheckEndpoint
+      );
+
       if (healthCheck.status === 'unhealthy') {
         throw new Error('Deployment stability check failed');
       }
@@ -708,24 +861,37 @@ class DeploymentManager {
       await new Promise(resolve => setTimeout(resolve, checkInterval));
     }
 
-    logger.info('Deployment stability monitoring completed', {
-      deploymentId,
-      duration: monitoringDuration,
-    }, 'deployment', 'stability');
+    logger.info(
+      'Deployment stability monitoring completed',
+      {
+        deploymentId,
+        duration: monitoringDuration,
+      },
+      'deployment',
+      'stability'
+    );
   }
 
   /**
    * Attempt rollback
    */
-  private async attemptRollback(deploymentId: string, reason: string): Promise<void> {
+  private async attemptRollback(
+    deploymentId: string,
+    reason: string
+  ): Promise<void> {
     const deployment = this.activeDeployments.get(deploymentId);
     if (!deployment) return;
 
     try {
-      logger.info('Attempting rollback', {
-        deploymentId,
-        reason,
-      }, 'deployment', 'rollback');
+      logger.info(
+        'Attempting rollback',
+        {
+          deploymentId,
+          reason,
+        },
+        'deployment',
+        'rollback'
+      );
 
       // Switch traffic back to blue environment
       await this.switchTrafficToBlue(deployment);
@@ -735,25 +901,42 @@ class DeploymentManager {
       deployment.rollbackReason = reason;
       this.activeDeployments.set(deploymentId, deployment);
 
-      logger.info('Rollback completed', {
-        deploymentId,
-      }, 'deployment', 'rollback');
+      logger.info(
+        'Rollback completed',
+        {
+          deploymentId,
+        },
+        'deployment',
+        'rollback'
+      );
     } catch (error) {
-      logger.error('Rollback failed', {
-        deploymentId,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      }, 'deployment', 'rollback');
+      logger.error(
+        'Rollback failed',
+        {
+          deploymentId,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        },
+        'deployment',
+        'rollback'
+      );
     }
   }
 
   /**
    * Switch traffic back to blue environment
    */
-  private async switchTrafficToBlue(deployment: DeploymentStatus): Promise<void> {
-    logger.info('Switching traffic back to blue environment', {
-      deploymentId: deployment.id,
-    }, 'deployment', 'traffic');
-    
+  private async switchTrafficToBlue(
+    deployment: DeploymentStatus
+  ): Promise<void> {
+    logger.info(
+      'Switching traffic back to blue environment',
+      {
+        deploymentId: deployment.id,
+      },
+      'deployment',
+      'traffic'
+    );
+
     // This would implement actual traffic switching back
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
@@ -763,10 +946,10 @@ class DeploymentManager {
    */
   private calculateDeploymentDuration(deployment: DeploymentStatus): number {
     if (!deployment.endTime) return 0;
-    
+
     const start = new Date(deployment.startTime).getTime();
     const end = new Date(deployment.endTime).getTime();
-    
+
     return end - start;
   }
 
@@ -803,14 +986,14 @@ class DeploymentManager {
    */
   async rotateAPIKeys(): Promise<void> {
     logger.info('Rotating API keys', {}, 'deployment', 'rotation');
-    
+
     // This would implement actual API key rotation
     // For now, we'll simulate the rotation
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     // Update rotation timestamp
     process.env.LAST_API_KEY_ROTATION = new Date().toISOString();
-    
+
     logger.info('API keys rotated successfully', {}, 'deployment', 'rotation');
   }
 }

@@ -30,11 +30,14 @@ const eslintConfig = defineConfig([
       'no-debugger': 'error',
       'no-alert': 'warn',
       'no-unused-vars': 'off', // Use TypeScript version instead
-      '@typescript-eslint/no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_'
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/prefer-nullish-coalescing': 'warn',
@@ -70,15 +73,21 @@ const eslintConfig = defineConfig([
       'react/require-render-return': 'error',
       'react/self-closing-comp': 'error',
       'react/jsx-boolean-value': ['error', 'never'],
-      'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
+      'react/jsx-curly-brace-presence': [
+        'error',
+        { props: 'never', children: 'never' },
+      ],
       'react/jsx-fragments': ['error', 'syntax'],
       'react/jsx-no-useless-fragment': 'error',
-      'react/jsx-sort-props': ['warn', { 
-        callbacksLast: true, 
-        shorthandFirst: true,
-        noSortAlphabetically: true,
-        reservedFirst: true
-      }],
+      'react/jsx-sort-props': [
+        'warn',
+        {
+          callbacksLast: true,
+          shorthandFirst: true,
+          noSortAlphabetically: true,
+          reservedFirst: true,
+        },
+      ],
 
       // Performance rules
       'react-hooks/exhaustive-deps': 'error',

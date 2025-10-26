@@ -104,11 +104,14 @@ export function useTenant() {
     try {
       if (!user) return;
 
-      const { data, error } = await supabase.rpc('create_tenant_for_user', {
-        user_id: user.id,
-        tenant_name: `${user.email?.split('@')[0]}'s Kitchen`,
-        user_name: user.email?.split('@')[0] || 'User',
-      });
+      const { data: _data, error } = await supabase.rpc(
+        'create_tenant_for_user',
+        {
+          user_id: user.id,
+          tenant_name: `${user.email?.split('@')[0]}'s Kitchen`,
+          user_name: user.email?.split('@')[0] || 'User',
+        }
+      );
 
       if (error) {
         throw error;

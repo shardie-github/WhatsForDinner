@@ -20,12 +20,12 @@ export const options = {
     { duration: '5m', target: 20 }, // Stay at 20 users
     { duration: '2m', target: 50 }, // Ramp up to 50 users
     { duration: '5m', target: 50 }, // Stay at 50 users
-    { duration: '2m', target: 0 },  // Ramp down to 0 users
+    { duration: '2m', target: 0 }, // Ramp down to 0 users
   ],
   thresholds: {
     http_req_duration: ['p(95)<2000'], // 95% of requests must complete below 2s
-    http_req_failed: ['rate<0.1'],     // Error rate must be below 10%
-    error_rate: ['rate<0.1'],          // Custom error rate below 10%
+    http_req_failed: ['rate<0.1'], // Error rate must be below 10%
+    error_rate: ['rate<0.1'], // Custom error rate below 10%
   },
 };
 
@@ -43,7 +43,13 @@ const testUsers = [
 ];
 
 const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'];
-const cuisineTypes = ['italian', 'mexican', 'asian', 'american', 'mediterranean'];
+const cuisineTypes = [
+  'italian',
+  'mexican',
+  'asian',
+  'american',
+  'mediterranean',
+];
 
 // Helper function to get random user
 function getRandomUser() {
@@ -63,12 +69,12 @@ function getRandomCuisineType() {
 // Helper function to make authenticated request
 function makeAuthenticatedRequest(url, method = 'GET', payload = null) {
   const user = getRandomUser();
-  
+
   // In a real test, you would authenticate and get a token
   // For this example, we'll simulate with headers
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer mock-token-${user.email}`,
+    Authorization: `Bearer mock-token-${user.email}`,
   };
 
   const params = {
@@ -93,11 +99,12 @@ function makeAuthenticatedRequest(url, method = 'GET', payload = null) {
 // Test: Home page load
 export function testHomePageLoad() {
   const response = http.get(`${BASE_URL}/`);
-  
+
   check(response, {
-    'home page status is 200': (r) => r.status === 200,
-    'home page loads within 2s': (r) => r.timings.duration < 2000,
-    'home page has correct content type': (r) => r.headers['Content-Type']?.includes('text/html'),
+    'home page status is 200': r => r.status === 200,
+    'home page loads within 2s': r => r.timings.duration < 2000,
+    'home page has correct content type': r =>
+      r.headers['Content-Type']?.includes('text/html'),
   });
 
   errorRate.add(response.status !== 200);
@@ -115,11 +122,13 @@ export function testAPIEndpoints() {
 
   endpoints.forEach(endpoint => {
     const response = makeAuthenticatedRequest(`${BASE_URL}${endpoint}`);
-    
+
     check(response, {
-      [`${endpoint} status is 200 or 401`: (r) => r.status === 200 || r.status === 401,
-      [`${endpoint} loads within 1s`: (r) => r.timings.duration < 1000,
-      [`${endpoint} has JSON content type`: (r) => r.headers['Content-Type']?.includes('application/json'),
+      [`${endpoint} status is 200 or 401`]: r =>
+        r.status === 200 || r.status === 401,
+      [`${endpoint} loads within 1s`]: r => r.timings.duration < 1000,
+      [`${endpoint} has JSON content type`]: r =>
+        r.headers['Content-Type']?.includes('application/json'),
     });
 
     errorRate.add(response.status >= 400);
@@ -135,16 +144,22 @@ export function testMealGeneration() {
     dietary_restrictions: ['vegetarian'],
     preferences: {
       cooking_time: 30,
-      difficulty: 'medium'
-    }
+      difficulty: 'medium',
+    },
   };
 
-  const response = makeAuthenticatedRequest(`${BASE_URL}/api/meals/generate`, 'POST', payload);
-  
+  const response = makeAuthenticatedRequest(
+    `${BASE_URL}/api/meals/generate`,
+    'POST',
+    payload
+  );
+
   check(response, {
-    'meal generation status is 200 or 401': (r) => r.status === 200 || r.status === 401,
-    'meal generation completes within 10s': (r) => r.timings.duration < 10000,
-    'meal generation returns JSON': (r) => r.headers['Content-Type']?.includes('application/json'),
+    'meal generation status is 200 or 401': r =>
+      r.status === 200 || r.status === 401,
+    'meal generation completes within 10s': r => r.timings.duration < 10000,
+    'meal generation returns JSON': r =>
+      r.headers['Content-Type']?.includes('application/json'),
   });
 
   errorRate.add(response.status >= 400);
@@ -162,11 +177,12 @@ export function testDatabaseQueries() {
 
   queries.forEach(query => {
     const response = makeAuthenticatedRequest(`${BASE_URL}${query}`);
-    
+
     check(response, {
-      [`${query} status is 200 or 401`: (r) => r.status === 200 || r.status === 401,
-      [`${query} loads within 2s`: (r) => r.timings.duration < 2000,
-      [`${query} returns data`: (r) => {
+      [`${query} status is 200 or 401`]: r =>
+        r.status === 200 || r.status === 401,
+      [`${query} loads within 2s`]: r => r.timings.duration < 2000,
+      [`${query} returns data`]: r => {
         try {
           const data = JSON.parse(r.body);
           return data && (Array.isArray(data) || typeof data === 'object');
@@ -184,7 +200,7 @@ export function testDatabaseQueries() {
 // Test: Concurrent user sessions
 export function testConcurrentSessions() {
   const user = getRandomUser();
-  
+
   // Simulate user session with multiple requests
   const sessionRequests = [
     () => makeAuthenticatedRequest(`${BASE_URL}/api/meals`),
@@ -195,10 +211,11 @@ export function testConcurrentSessions() {
 
   sessionRequests.forEach(requestFn => {
     const response = requestFn();
-    
+
     check(response, {
-      'concurrent session request succeeds': (r) => r.status < 500,
-      'concurrent session request completes within 3s': (r) => r.timings.duration < 3000,
+      'concurrent session request succeeds': r => r.status < 500,
+      'concurrent session request completes within 3s': r =>
+        r.timings.duration < 3000,
     });
 
     errorRate.add(response.status >= 500);
@@ -209,11 +226,11 @@ export function testConcurrentSessions() {
 // Test: Memory usage under load
 export function testMemoryUsage() {
   const response = makeAuthenticatedRequest(`${BASE_URL}/api/meals?limit=100`);
-  
+
   check(response, {
-    'memory test request succeeds': (r) => r.status < 500,
-    'memory test completes within 5s': (r) => r.timings.duration < 5000,
-    'response size is reasonable': (r) => r.body.length < 1000000, // 1MB limit
+    'memory test request succeeds': r => r.status < 500,
+    'memory test completes within 5s': r => r.timings.duration < 5000,
+    'response size is reasonable': r => r.body.length < 1000000, // 1MB limit
   });
 
   errorRate.add(response.status >= 500);
@@ -231,11 +248,12 @@ export function testErrorHandling() {
 
   errorEndpoints.forEach(endpoint => {
     const response = makeAuthenticatedRequest(`${BASE_URL}${endpoint}`);
-    
+
     check(response, {
-      'error endpoint returns appropriate status': (r) => r.status >= 400 && r.status < 600,
-      'error response completes within 2s': (r) => r.timings.duration < 2000,
-      'error response has proper error format': (r) => {
+      'error endpoint returns appropriate status': r =>
+        r.status >= 400 && r.status < 600,
+      'error response completes within 2s': r => r.timings.duration < 2000,
+      'error response has proper error format': r => {
         try {
           const data = JSON.parse(r.body);
           return data && (data.error || data.message);
@@ -252,26 +270,26 @@ export function testErrorHandling() {
 }
 
 // Main test function
-export default function() {
+export default function () {
   // Run all test scenarios
   testHomePageLoad();
   sleep(1);
-  
+
   testAPIEndpoints();
   sleep(1);
-  
+
   testMealGeneration();
   sleep(2);
-  
+
   testDatabaseQueries();
   sleep(1);
-  
+
   testConcurrentSessions();
   sleep(1);
-  
+
   testMemoryUsage();
   sleep(1);
-  
+
   testErrorHandling();
   sleep(1);
 }
@@ -281,13 +299,13 @@ export function setup() {
   console.log('Starting load tests...');
   console.log(`Base URL: ${BASE_URL}`);
   console.log(`Supabase URL: ${SUPABASE_URL}`);
-  
+
   // Verify the application is running
   const response = http.get(`${BASE_URL}/`);
   if (response.status !== 200) {
     throw new Error(`Application not responding at ${BASE_URL}`);
   }
-  
+
   console.log('Application is running, starting load tests...');
 }
 

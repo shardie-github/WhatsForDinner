@@ -13,8 +13,11 @@ test.describe('User Journey Tests', () => {
       await expect(page.locator('h1')).toContainText("What's for Dinner?");
 
       // Fill in ingredients
-      await page.fill('[data-testid="ingredients-input"]', 'chicken, rice, vegetables');
-      
+      await page.fill(
+        '[data-testid="ingredients-input"]',
+        'chicken, rice, vegetables'
+      );
+
       // Add preferences
       await page.fill('[data-testid="preferences-input"]', 'healthy and quick');
 
@@ -22,10 +25,14 @@ test.describe('User Journey Tests', () => {
       await page.click('[data-testid="generate-recipes-button"]');
 
       // Wait for loading state
-      await expect(page.locator('[data-testid="loading-skeleton"]')).toBeVisible();
+      await expect(
+        page.locator('[data-testid="loading-skeleton"]')
+      ).toBeVisible();
 
       // Wait for recipes to appear
-      await expect(page.locator('[data-testid="recipe-card"]')).toBeVisible({ timeout: 10000 });
+      await expect(page.locator('[data-testid="recipe-card"]')).toBeVisible({
+        timeout: 10000,
+      });
 
       // Verify recipe content
       const recipeCards = page.locator('[data-testid="recipe-card"]');
@@ -34,8 +41,12 @@ test.describe('User Journey Tests', () => {
       // Check first recipe has expected content
       const firstRecipe = recipeCards.first();
       await expect(firstRecipe.locator('h3')).toContainText('Recipe');
-      await expect(firstRecipe.locator('[data-testid="ingredients"]')).toBeVisible();
-      await expect(firstRecipe.locator('[data-testid="cook-time"]')).toBeVisible();
+      await expect(
+        firstRecipe.locator('[data-testid="ingredients"]')
+      ).toBeVisible();
+      await expect(
+        firstRecipe.locator('[data-testid="cook-time"]')
+      ).toBeVisible();
     });
 
     test('should handle empty ingredients gracefully', async ({ page }) => {
@@ -43,7 +54,9 @@ test.describe('User Journey Tests', () => {
       await page.click('[data-testid="generate-recipes-button"]');
 
       // Should show validation error
-      await expect(page.locator('[data-testid="error-message"]')).toContainText('Please enter at least one ingredient');
+      await expect(page.locator('[data-testid="error-message"]')).toContainText(
+        'Please enter at least one ingredient'
+      );
     });
 
     test('should show error state when API fails', async ({ page }) => {
@@ -61,7 +74,9 @@ test.describe('User Journey Tests', () => {
 
       // Should show error state
       await expect(page.locator('[data-testid="error-state"]')).toBeVisible();
-      await expect(page.locator('[data-testid="error-message"]')).toContainText('API Error');
+      await expect(page.locator('[data-testid="error-message"]')).toContainText(
+        'API Error'
+      );
     });
   });
 
@@ -79,20 +94,22 @@ test.describe('User Journey Tests', () => {
 
       // Should redirect to home page
       await expect(page).toHaveURL('/');
-      
+
       // Should show user menu
       await expect(page.locator('[data-testid="user-menu"]')).toBeVisible();
     });
 
     test('should handle invalid credentials', async ({ page }) => {
       await page.click('[data-testid="sign-in-button"]');
-      
+
       await page.fill('[data-testid="email-input"]', 'test@example.com');
       await page.fill('[data-testid="password-input"]', 'wrongpassword');
       await page.click('[data-testid="sign-in-submit"]');
 
       // Should show error message
-      await expect(page.locator('[data-testid="auth-error"]')).toContainText('Invalid credentials');
+      await expect(page.locator('[data-testid="auth-error"]')).toContainText(
+        'Invalid credentials'
+      );
     });
 
     test('should sign out successfully', async ({ page }) => {
@@ -110,7 +127,9 @@ test.describe('User Journey Tests', () => {
 
       // Should redirect to home page and show sign in button
       await expect(page).toHaveURL('/');
-      await expect(page.locator('[data-testid="sign-in-button"]')).toBeVisible();
+      await expect(
+        page.locator('[data-testid="sign-in-button"]')
+      ).toBeVisible();
     });
   });
 
@@ -127,8 +146,12 @@ test.describe('User Journey Tests', () => {
       await page.click('[data-testid="add-ingredient-button"]');
 
       // Should appear in pantry list
-      await expect(page.locator('[data-testid="pantry-item"]')).toContainText('chicken');
-      await expect(page.locator('[data-testid="pantry-item"]')).toContainText('2 pieces');
+      await expect(page.locator('[data-testid="pantry-item"]')).toContainText(
+        'chicken'
+      );
+      await expect(page.locator('[data-testid="pantry-item"]')).toContainText(
+        '2 pieces'
+      );
 
       // Edit ingredient
       await page.click('[data-testid="edit-ingredient-button"]');
@@ -136,14 +159,18 @@ test.describe('User Journey Tests', () => {
       await page.click('[data-testid="save-edit-button"]');
 
       // Should update quantity
-      await expect(page.locator('[data-testid="pantry-item"]')).toContainText('3 pieces');
+      await expect(page.locator('[data-testid="pantry-item"]')).toContainText(
+        '3 pieces'
+      );
 
       // Delete ingredient
       await page.click('[data-testid="delete-ingredient-button"]');
       await page.click('[data-testid="confirm-delete-button"]');
 
       // Should remove from list
-      await expect(page.locator('[data-testid="pantry-item"]')).not.toBeVisible();
+      await expect(
+        page.locator('[data-testid="pantry-item"]')
+      ).not.toBeVisible();
     });
   });
 
@@ -152,26 +179,36 @@ test.describe('User Journey Tests', () => {
       // First generate some recipes
       await page.fill('[data-testid="ingredients-input"]', 'chicken, rice');
       await page.click('[data-testid="generate-recipes-button"]');
-      await expect(page.locator('[data-testid="recipe-card"]')).toBeVisible({ timeout: 10000 });
+      await expect(page.locator('[data-testid="recipe-card"]')).toBeVisible({
+        timeout: 10000,
+      });
 
       // Save first recipe to favorites
       await page.click('[data-testid="save-recipe-button"]');
-      await expect(page.locator('[data-testid="save-success-message"]')).toBeVisible();
+      await expect(
+        page.locator('[data-testid="save-success-message"]')
+      ).toBeVisible();
 
       // Navigate to favorites page
       await page.click('[data-testid="favorites-nav-link"]');
       await expect(page).toHaveURL('/favorites');
 
       // Should show saved recipe
-      await expect(page.locator('[data-testid="favorite-recipe"]')).toBeVisible();
-      await expect(page.locator('[data-testid="favorite-recipe"]')).toContainText('Recipe');
+      await expect(
+        page.locator('[data-testid="favorite-recipe"]')
+      ).toBeVisible();
+      await expect(
+        page.locator('[data-testid="favorite-recipe"]')
+      ).toContainText('Recipe');
 
       // Remove from favorites
       await page.click('[data-testid="remove-favorite-button"]');
       await page.click('[data-testid="confirm-remove-button"]');
 
       // Should remove from favorites list
-      await expect(page.locator('[data-testid="favorite-recipe"]')).not.toBeVisible();
+      await expect(
+        page.locator('[data-testid="favorite-recipe"]')
+      ).not.toBeVisible();
     });
   });
 
@@ -181,7 +218,9 @@ test.describe('User Journey Tests', () => {
       await page.setViewportSize({ width: 375, height: 667 });
 
       // Should show mobile menu
-      await expect(page.locator('[data-testid="mobile-menu-button"]')).toBeVisible();
+      await expect(
+        page.locator('[data-testid="mobile-menu-button"]')
+      ).toBeVisible();
 
       // Open mobile menu
       await page.click('[data-testid="mobile-menu-button"]');
@@ -198,7 +237,9 @@ test.describe('User Journey Tests', () => {
 
       // Should show desktop navigation
       await expect(page.locator('[data-testid="desktop-nav"]')).toBeVisible();
-      await expect(page.locator('[data-testid="mobile-menu-button"]')).not.toBeVisible();
+      await expect(
+        page.locator('[data-testid="mobile-menu-button"]')
+      ).not.toBeVisible();
     });
   });
 
@@ -214,14 +255,20 @@ test.describe('User Journey Tests', () => {
       await page.keyboard.press('Enter');
 
       // Should activate focused element
-      await expect(page.locator('[data-testid="ingredients-input"]')).toBeFocused();
+      await expect(
+        page.locator('[data-testid="ingredients-input"]')
+      ).toBeFocused();
     });
 
     test('should have proper ARIA labels', async ({ page }) => {
       // Check for ARIA labels on interactive elements
-      await expect(page.locator('[data-testid="generate-recipes-button"]')).toHaveAttribute('aria-label');
-      await expect(page.locator('[data-testid="ingredients-input"]')).toHaveAttribute('aria-label');
-      
+      await expect(
+        page.locator('[data-testid="generate-recipes-button"]')
+      ).toHaveAttribute('aria-label');
+      await expect(
+        page.locator('[data-testid="ingredients-input"]')
+      ).toHaveAttribute('aria-label');
+
       // Check for proper heading structure
       const headings = page.locator('h1, h2, h3, h4, h5, h6');
       await expect(headings.first()).toHaveText("What's for Dinner?");
@@ -231,23 +278,30 @@ test.describe('User Journey Tests', () => {
   test.describe('Performance', () => {
     test('should load within acceptable time', async ({ page }) => {
       const startTime = Date.now();
-      
+
       await page.goto('http://localhost:3000');
       await expect(page.locator('h1')).toContainText("What's for Dinner?");
-      
+
       const loadTime = Date.now() - startTime;
       expect(loadTime).toBeLessThan(3000); // Should load within 3 seconds
     });
 
-    test('should handle large ingredient lists efficiently', async ({ page }) => {
-      const largeIngredientList = Array(50).fill(null).map((_, i) => `ingredient${i}`).join(', ');
-      
+    test('should handle large ingredient lists efficiently', async ({
+      page,
+    }) => {
+      const largeIngredientList = Array(50)
+        .fill(null)
+        .map((_, i) => `ingredient${i}`)
+        .join(', ');
+
       const startTime = Date.now();
-      
+
       await page.fill('[data-testid="ingredients-input"]', largeIngredientList);
       await page.click('[data-testid="generate-recipes-button"]');
-      await expect(page.locator('[data-testid="recipe-card"]')).toBeVisible({ timeout: 15000 });
-      
+      await expect(page.locator('[data-testid="recipe-card"]')).toBeVisible({
+        timeout: 15000,
+      });
+
       const processingTime = Date.now() - startTime;
       expect(processingTime).toBeLessThan(10000); // Should process within 10 seconds
     });
@@ -272,7 +326,9 @@ test.describe('User Journey Tests', () => {
       await page.click('[data-testid="retry-button"]');
 
       // Should successfully generate recipes
-      await expect(page.locator('[data-testid="recipe-card"]')).toBeVisible({ timeout: 10000 });
+      await expect(page.locator('[data-testid="recipe-card"]')).toBeVisible({
+        timeout: 10000,
+      });
     });
   });
 });

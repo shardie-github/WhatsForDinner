@@ -2,7 +2,7 @@
 
 /**
  * Comprehensive Security Audit Script for What's for Dinner
- * 
+ *
  * This script performs a thorough security audit including:
  * - Dependency vulnerability scanning
  * - Code security analysis
@@ -38,7 +38,7 @@ class SecurityAuditor {
       await this.checkSecretsManagement();
       await this.generateComplianceDocs();
       await this.calculateSecurityScore();
-      
+
       this.generateReport();
     } catch (error) {
       console.error('❌ Security audit failed:', error.message);
@@ -48,23 +48,23 @@ class SecurityAuditor {
 
   async checkDependencies() {
     console.log('📦 Checking dependency vulnerabilities...');
-    
+
     try {
       // Run npm audit
       const auditOutput = execSync('npm audit --json', { encoding: 'utf8' });
       const auditData = JSON.parse(auditOutput);
-      
+
       if (auditData.vulnerabilities) {
         const vulns = Object.values(auditData.vulnerabilities);
         this.auditResults.vulnerabilities.push(...vulns);
-        
+
         console.log(`   Found ${vulns.length} vulnerabilities`);
-        
+
         // Check for high/critical vulnerabilities
-        const criticalVulns = vulns.filter(v => 
-          v.severity === 'critical' || v.severity === 'high'
+        const criticalVulns = vulns.filter(
+          v => v.severity === 'critical' || v.severity === 'high'
         );
-        
+
         if (criticalVulns.length > 0) {
           this.auditResults.recommendations.push({
             type: 'critical',
@@ -81,7 +81,7 @@ class SecurityAuditor {
 
   async analyzeCodeSecurity() {
     console.log('🔍 Analyzing code security patterns...');
-    
+
     const securityChecks = [
       {
         name: 'SQL Injection Prevention',
@@ -93,7 +93,8 @@ class SecurityAuditor {
         name: 'XSS Prevention',
         pattern: /dangerouslySetInnerHTML|innerHTML\s*=/gi,
         severity: 'medium',
-        description: 'Potential XSS vulnerability - ensure content is sanitized',
+        description:
+          'Potential XSS vulnerability - ensure content is sanitized',
       },
       {
         name: 'Hardcoded Secrets',
@@ -117,10 +118,10 @@ class SecurityAuditor {
 
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.ts', '.tsx', '.js', '.jsx']);
-    
+
     for (const file of files) {
       const content = fs.readFileSync(file, 'utf8');
-      
+
       for (const check of securityChecks) {
         const matches = content.match(check.pattern);
         if (matches) {
@@ -140,7 +141,7 @@ class SecurityAuditor {
 
   async validateConfiguration() {
     console.log('⚙️  Validating security configuration...');
-    
+
     const configChecks = [
       {
         name: 'CORS Configuration',
@@ -179,27 +180,27 @@ class SecurityAuditor {
 
   async auditRBAC() {
     console.log('👥 Auditing Role-Based Access Control...');
-    
+
     // Check for RLS policies in Supabase
     const supabaseDir = path.join(__dirname, '../supabase');
     if (fs.existsSync(supabaseDir)) {
       const sqlFiles = this.getAllFiles(supabaseDir, ['.sql']);
-      
+
       let hasRLS = false;
       let hasRBAC = false;
-      
+
       for (const file of sqlFiles) {
         const content = fs.readFileSync(file, 'utf8');
-        
+
         if (content.includes('ROW LEVEL SECURITY') || content.includes('RLS')) {
           hasRLS = true;
         }
-        
+
         if (content.includes('CREATE ROLE') || content.includes('GRANT')) {
           hasRBAC = true;
         }
       }
-      
+
       if (hasRLS) {
         console.log('   ✅ Row Level Security policies found');
       } else {
@@ -210,7 +211,7 @@ class SecurityAuditor {
           action: 'Enable RLS on all database tables',
         });
       }
-      
+
       if (hasRBAC) {
         console.log('   ✅ Role-based access control found');
       } else {
@@ -226,13 +227,16 @@ class SecurityAuditor {
 
   async checkSecretsManagement() {
     console.log('🔐 Auditing secrets management...');
-    
+
     const envFile = path.join(__dirname, '../.env.local');
     const envExampleFile = path.join(__dirname, '../.env.local.example');
-    
+
     // Check if .env.local exists and is gitignored
     if (fs.existsSync(envFile)) {
-      const gitignore = fs.readFileSync(path.join(__dirname, '../.gitignore'), 'utf8');
+      const gitignore = fs.readFileSync(
+        path.join(__dirname, '../.gitignore'),
+        'utf8'
+      );
       if (!gitignore.includes('.env.local')) {
         this.auditResults.recommendations.push({
           type: 'critical',
@@ -242,19 +246,19 @@ class SecurityAuditor {
         });
       }
     }
-    
+
     // Check for hardcoded secrets in code
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.ts', '.tsx', '.js', '.jsx']);
-    
+
     const secretPatterns = [
       /sk-[a-zA-Z0-9]{48}/g, // OpenAI API key pattern
       /[a-zA-Z0-9]{32,}/g, // Generic long strings
     ];
-    
+
     for (const file of files) {
       const content = fs.readFileSync(file, 'utf8');
-      
+
       for (const pattern of secretPatterns) {
         const matches = content.match(pattern);
         if (matches) {
@@ -278,7 +282,7 @@ class SecurityAuditor {
 
   async generateComplianceDocs() {
     console.log('📋 Generating compliance documentation...');
-    
+
     const complianceData = {
       gdpr: {
         dataProcessing: {
@@ -306,15 +310,15 @@ class SecurityAuditor {
         },
       },
     };
-    
+
     this.auditResults.compliance = complianceData;
-    
+
     // Generate compliance markdown files
     const complianceDir = path.join(__dirname, '../docs/compliance');
     if (!fs.existsSync(complianceDir)) {
       fs.mkdirSync(complianceDir, { recursive: true });
     }
-    
+
     // GDPR Compliance
     const gdprDoc = `# GDPR Compliance Documentation
 
@@ -341,9 +345,9 @@ Users have the right to:
 ## Contact Information
 For data protection inquiries, contact: privacy@whatsfordinner.com
 `;
-    
+
     fs.writeFileSync(path.join(complianceDir, 'GDPR.md'), gdprDoc);
-    
+
     // SOC2 Compliance
     const soc2Doc = `# SOC2 Compliance Documentation
 
@@ -360,17 +364,17 @@ For data protection inquiries, contact: privacy@whatsfordinner.com
 ## Audit Trail
 All system activities are logged and monitored for compliance.
 `;
-    
+
     fs.writeFileSync(path.join(complianceDir, 'SOC2.md'), soc2Doc);
-    
+
     console.log('   ✅ Compliance documentation generated');
   }
 
   async calculateSecurityScore() {
     console.log('📊 Calculating security score...');
-    
+
     let score = 100;
-    
+
     // Deduct points for vulnerabilities
     for (const vuln of this.auditResults.vulnerabilities) {
       switch (vuln.severity) {
@@ -388,7 +392,7 @@ All system activities are logged and monitored for compliance.
           break;
       }
     }
-    
+
     // Deduct points for missing recommendations
     for (const rec of this.auditResults.recommendations) {
       switch (rec.type) {
@@ -403,7 +407,7 @@ All system activities are logged and monitored for compliance.
           break;
       }
     }
-    
+
     this.auditResults.score = Math.max(0, score);
   }
 
@@ -411,17 +415,21 @@ All system activities are logged and monitored for compliance.
     console.log('\n📊 Security Audit Report');
     console.log('========================');
     console.log(`Overall Security Score: ${this.auditResults.score}/100`);
-    console.log(`Vulnerabilities Found: ${this.auditResults.vulnerabilities.length}`);
+    console.log(
+      `Vulnerabilities Found: ${this.auditResults.vulnerabilities.length}`
+    );
     console.log(`Recommendations: ${this.auditResults.recommendations.length}`);
-    
+
     if (this.auditResults.vulnerabilities.length > 0) {
       console.log('\n🚨 Vulnerabilities:');
       this.auditResults.vulnerabilities.forEach(vuln => {
-        console.log(`   ${vuln.severity.toUpperCase()}: ${vuln.type} - ${vuln.description}`);
+        console.log(
+          `   ${vuln.severity.toUpperCase()}: ${vuln.type} - ${vuln.description}`
+        );
         if (vuln.file) console.log(`     File: ${vuln.file}`);
       });
     }
-    
+
     if (this.auditResults.recommendations.length > 0) {
       console.log('\n💡 Recommendations:');
       this.auditResults.recommendations.forEach(rec => {
@@ -429,12 +437,12 @@ All system activities are logged and monitored for compliance.
         console.log(`     Action: ${rec.action}`);
       });
     }
-    
+
     // Save detailed report
     const reportPath = path.join(__dirname, '../security-audit-report.json');
     fs.writeFileSync(reportPath, JSON.stringify(this.auditResults, null, 2));
     console.log(`\n📄 Detailed report saved to: ${reportPath}`);
-    
+
     // Exit with error code if score is too low
     if (this.auditResults.score < 70) {
       console.log('\n❌ Security score below acceptable threshold (70)');
@@ -447,18 +455,18 @@ All system activities are logged and monitored for compliance.
   getAllFiles(dir, extensions) {
     let files = [];
     const items = fs.readdirSync(dir);
-    
+
     for (const item of items) {
       const fullPath = path.join(dir, item);
       const stat = fs.statSync(fullPath);
-      
+
       if (stat.isDirectory()) {
         files = files.concat(this.getAllFiles(fullPath, extensions));
       } else if (extensions.some(ext => item.endsWith(ext))) {
         files.push(fullPath);
       }
     }
-    
+
     return files;
   }
 }

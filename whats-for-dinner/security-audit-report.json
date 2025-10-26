@@ -252,18 +252,9 @@
     "gdpr": {
       "dataProcessing": {
         "lawfulBasis": "Consent",
-        "dataTypes": [
-          "email",
-          "recipe_preferences",
-          "pantry_items"
-        ],
+        "dataTypes": ["email", "recipe_preferences", "pantry_items"],
         "retentionPeriod": "2 years",
-        "userRights": [
-          "access",
-          "rectification",
-          "erasure",
-          "portability"
-        ]
+        "userRights": ["access", "rectification", "erasure", "portability"]
       },
       "technicalMeasures": {
         "encryption": "AES-256 for data at rest, TLS 1.3 for data in transit",

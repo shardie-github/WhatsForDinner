@@ -1,6 +1,6 @@
 /**
  * Comprehensive Secrets Management System
- * 
+ *
  * This module provides secure secrets management including:
  * - Environment variable validation
  * - Secrets rotation
@@ -100,10 +100,12 @@ class SecretsManager {
     if (!config) return;
 
     const envValue = process.env[name];
-    
+
     if (!envValue) {
       if (config.required) {
-        throw new Error(`Required secret ${name} not found in environment variables`);
+        throw new Error(
+          `Required secret ${name} not found in environment variables`
+        );
       }
       return;
     }
@@ -115,13 +117,18 @@ class SecretsManager {
     };
 
     this.secrets.set(name, secretValue);
-    
+
     // Log secret access for audit
-    logger.info(`Secret loaded: ${name}`, {
-      secret_name: name,
-      encrypted: secretValue.encrypted,
-      last_rotated: secretValue.lastRotated,
-    }, 'security', 'secrets_management');
+    logger.info(
+      `Secret loaded: ${name}`,
+      {
+        secret_name: name,
+        encrypted: secretValue.encrypted,
+        last_rotated: secretValue.lastRotated,
+      },
+      'security',
+      'secrets_management'
+    );
   }
 
   /**
@@ -130,17 +137,27 @@ class SecretsManager {
   public getSecret(name: string): string | undefined {
     const secret = this.secrets.get(name);
     if (!secret) {
-      logger.warn(`Secret not found: ${name}`, {
-        secret_name: name,
-      }, 'security', 'secrets_management');
+      logger.warn(
+        `Secret not found: ${name}`,
+        {
+          secret_name: name,
+        },
+        'security',
+        'secrets_management'
+      );
       return undefined;
     }
 
     // Log secret access
-    logger.info(`Secret accessed: ${name}`, {
-      secret_name: name,
-      encrypted: secret.encrypted,
-    }, 'security', 'secrets_management');
+    logger.info(
+      `Secret accessed: ${name}`,
+      {
+        secret_name: name,
+        encrypted: secret.encrypted,
+      },
+      'security',
+      'secrets_management'
+    );
 
     return secret.value;
   }
@@ -148,7 +165,11 @@ class SecretsManager {
   /**
    * Set a secret value
    */
-  public setSecret(name: string, value: string, encrypted: boolean = false): void {
+  public setSecret(
+    name: string,
+    value: string,
+    encrypted: boolean = false
+  ): void {
     const secretValue: SecretValue = {
       value,
       encrypted,
@@ -157,11 +178,16 @@ class SecretsManager {
 
     this.secrets.set(name, secretValue);
 
-    logger.info(`Secret set: ${name}`, {
-      secret_name: name,
-      encrypted,
-      last_rotated: secretValue.lastRotated,
-    }, 'security', 'secrets_management');
+    logger.info(
+      `Secret set: ${name}`,
+      {
+        secret_name: name,
+        encrypted,
+        last_rotated: secretValue.lastRotated,
+      },
+      'security',
+      'secrets_management'
+    );
   }
 
   /**
@@ -174,16 +200,21 @@ class SecretsManager {
     }
 
     const oldSecret = this.secrets.get(name);
-    
+
     // Set new secret
     this.setSecret(name, newValue, config.encrypted);
 
     // Log rotation
-    logger.info(`Secret rotated: ${name}`, {
-      secret_name: name,
-      old_last_rotated: oldSecret?.lastRotated,
-      new_last_rotated: new Date(),
-    }, 'security', 'secrets_management');
+    logger.info(
+      `Secret rotated: ${name}`,
+      {
+        secret_name: name,
+        old_last_rotated: oldSecret?.lastRotated,
+        new_last_rotated: new Date(),
+      },
+      'security',
+      'secrets_management'
+    );
 
     // Update environment variable if possible
     if (process.env[name]) {
@@ -197,7 +228,7 @@ class SecretsManager {
   public needsRotation(name: string): boolean {
     const config = this.configs.get(name);
     const secret = this.secrets.get(name);
-    
+
     if (!config || !secret || !config.rotationInterval) {
       return false;
     }
@@ -214,13 +245,13 @@ class SecretsManager {
    */
   public getSecretsNeedingRotation(): string[] {
     const secretsToRotate: string[] = [];
-    
+
     for (const [name] of this.secrets) {
       if (this.needsRotation(name)) {
         secretsToRotate.push(name);
       }
     }
-    
+
     return secretsToRotate;
   }
 
@@ -229,18 +260,26 @@ class SecretsManager {
    */
   private setupRotationJobs(): void {
     // Check for secrets needing rotation every hour
-    const rotationCheckInterval = setInterval(() => {
-      const secretsToRotate = this.getSecretsNeedingRotation();
-      
-      if (secretsToRotate.length > 0) {
-        logger.warn(`Secrets need rotation: ${secretsToRotate.join(', ')}`, {
-          secrets_needing_rotation: secretsToRotate,
-        }, 'security', 'secrets_management');
-        
-        // In a real implementation, this would trigger rotation workflows
-        this.notifyRotationNeeded(secretsToRotate);
-      }
-    }, 60 * 60 * 1000); // 1 hour
+    const rotationCheckInterval = setInterval(
+      () => {
+        const secretsToRotate = this.getSecretsNeedingRotation();
+
+        if (secretsToRotate.length > 0) {
+          logger.warn(
+            `Secrets need rotation: ${secretsToRotate.join(', ')}`,
+            {
+              secrets_needing_rotation: secretsToRotate,
+            },
+            'security',
+            'secrets_management'
+          );
+
+          // In a real implementation, this would trigger rotation workflows
+          this.notifyRotationNeeded(secretsToRotate);
+        }
+      },
+      60 * 60 * 1000
+    ); // 1 hour
 
     this.rotationJobs.set('rotation_check', rotationCheckInterval);
   }
@@ -260,10 +299,10 @@ class SecretsManager {
   public encrypt(value: string): string {
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipher('aes-256-cbc', this.encryptionKey);
-    
+
     let encrypted = cipher.update(value, 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    
+
     return iv.toString('hex') + ':' + encrypted;
   }
 
@@ -274,10 +313,10 @@ class SecretsManager {
     const [ivHex, encrypted] = encryptedValue.split(':');
     const iv = Buffer.from(ivHex, 'hex');
     const decipher = crypto.createDecipher('aes-256-cbc', this.encryptionKey);
-    
+
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-    
+
     return decrypted;
   }
 
@@ -286,25 +325,34 @@ class SecretsManager {
    */
   private getOrCreateEncryptionKey(): string {
     let key = process.env.ENCRYPTION_KEY;
-    
+
     if (!key) {
       // Generate a new key (in production, this should be stored securely)
       key = crypto.randomBytes(32).toString('hex');
-      logger.warn('No ENCRYPTION_KEY found, generated new key', {
-        generated_key: true,
-      }, 'security', 'secrets_management');
+      logger.warn(
+        'No ENCRYPTION_KEY found, generated new key',
+        {
+          generated_key: true,
+        },
+        'security',
+        'secrets_management'
+      );
     }
-    
+
     return key;
   }
 
   /**
    * Validate all required secrets
    */
-  public validateSecrets(): { valid: boolean; missing: string[]; invalid: string[] } {
+  public validateSecrets(): {
+    valid: boolean;
+    missing: string[];
+    invalid: string[];
+  } {
     const missing: string[] = [];
     const invalid: string[] = [];
-    
+
     for (const [name, config] of this.configs) {
       if (config.required) {
         const secret = this.secrets.get(name);
@@ -315,7 +363,7 @@ class SecretsManager {
         }
       }
     }
-    
+
     return {
       valid: missing.length === 0 && invalid.length === 0,
       missing,
@@ -352,10 +400,11 @@ class SecretsManager {
   } {
     const secrets = Array.from(this.secrets.values());
     const needsRotation = this.getSecretsNeedingRotation().length;
-    const lastRotated = secrets.length > 0 
-      ? new Date(Math.max(...secrets.map(s => s.lastRotated.getTime())))
-      : null;
-    
+    const lastRotated =
+      secrets.length > 0
+        ? new Date(Math.max(...secrets.map(s => s.lastRotated.getTime())))
+        : null;
+
     return {
       total: secrets.length,
       encrypted: secrets.filter(s => s.encrypted).length,
