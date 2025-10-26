@@ -1,0 +1,23 @@
+{
+  "name": "whats-for-dinner-functions",
+  "version": "1.0.0",
+  "description": "Edge Functions for What's for Dinner app",
+  "scripts": {
+    "build": "echo 'No build step required for Deno Edge Functions'",
+    "deploy": "supabase functions deploy",
+    "deploy:api": "supabase functions deploy api",
+    "deploy:generate-meal": "supabase functions deploy generate-meal",
+    "deploy:job-processor": "supabase functions deploy job-processor",
+    "deploy:all": "npm run deploy:api && npm run deploy:generate-meal && npm run deploy:job-processor",
+    "test": "deno test --allow-all",
+    "lint": "deno lint --config deno.json",
+    "format": "deno fmt",
+    "type-check": "deno check"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.76.1"
+  },
+  "engines": {
+    "deno": ">=1.28.0"
+  }
+}

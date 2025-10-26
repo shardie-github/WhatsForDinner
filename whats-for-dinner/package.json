@@ -21,7 +21,31 @@
     "autonomous:optimize": "node -e \"require('./src/lib/predictiveOptimization.ts').predictiveOptimization.generateOptimizationRecommendations().then(console.log)\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:reset": "supabase db reset",
+    "supabase:deploy": "supabase functions deploy",
+    "supabase:deploy:api": "supabase functions deploy api",
+    "supabase:deploy:generate-meal": "supabase functions deploy generate-meal",
+    "supabase:deploy:job-processor": "supabase functions deploy job-processor",
+    "supabase:deploy:all": "npm run supabase:deploy:api && npm run supabase:deploy:generate-meal && npm run supabase:deploy:job-processor",
+    "supabase:db:push": "supabase db push",
+    "supabase:db:pull": "supabase db pull",
+    "supabase:db:diff": "supabase db diff",
+    "supabase:db:migrate": "supabase migration up",
+    "supabase:db:reset": "supabase db reset",
+    "supabase:gen:types": "supabase gen types typescript --local > src/types/supabase.ts",
+    "supabase:gen:types:remote": "supabase gen types typescript --project-id $SUPABASE_PROJECT_REF > src/types/supabase.ts",
+    "job-queue:start": "node scripts/job-queue-manager.js start",
+    "job-queue:stats": "node scripts/job-queue-manager.js stats",
+    "job-queue:create-meal": "node scripts/job-queue-manager.js create-meal-job",
+    "job-queue:cleanup": "node scripts/job-queue-manager.js cleanup",
+    "functions:lint": "cd supabase/functions && deno lint --config deno.json",
+    "functions:format": "cd supabase/functions && deno fmt",
+    "functions:type-check": "cd supabase/functions && deno check",
+    "supabase:validate": "node -e \"require('./tests/supabase-validation.test.ts').runSupabaseValidation()\"",
+    "supabase:test": "jest tests/supabase-validation.test.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -82,6 +106,7 @@
     "tailwindcss": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5",
-    "@playwright/test": "^1.40.0"
+    "@playwright/test": "^1.40.0",
+    "node-cron": "^3.0.3"
   }
 }
