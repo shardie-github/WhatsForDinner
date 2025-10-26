@@ -7,13 +7,13 @@ export default function DemoPage() {
   const { items, addItem, removeItem, clearItems } = usePantry();
 
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="bg-background min-h-screen p-8">
       <div className="mx-auto max-w-4xl space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-foreground">
+          <h1 className="text-foreground text-4xl font-bold">
             What's for Dinner? - Demo
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="text-muted-foreground mt-4 text-lg">
             Demonstrating shared components across platforms
           </p>
         </div>
@@ -21,23 +21,23 @@ export default function DemoPage() {
         <div className="grid gap-8 md:grid-cols-2">
           {/* Pantry Management */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-foreground">
+            <h2 className="text-foreground text-2xl font-semibold">
               Pantry Items
             </h2>
-            
+
             <div className="space-y-2">
               <input
                 type="text"
                 placeholder="Add an item..."
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground"
-                onKeyPress={(e) => {
+                className="border-input bg-background text-foreground w-full rounded-md border px-3 py-2"
+                onKeyPress={e => {
                   if (e.key === 'Enter' && e.currentTarget.value) {
                     addItem(e.currentTarget.value);
                     e.currentTarget.value = '';
                   }
                 }}
               />
-              
+
               <div className="flex gap-2">
                 <Button
                   variant="primary"
@@ -48,11 +48,8 @@ export default function DemoPage() {
                 >
                   Add Item
                 </Button>
-                
-                <Button
-                  variant="outline"
-                  onPress={clearItems}
-                >
+
+                <Button variant="outline" onPress={clearItems}>
                   Clear All
                 </Button>
               </div>
@@ -65,7 +62,7 @@ export default function DemoPage() {
                 items.map((item, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between rounded-md border border-input bg-card p-3"
+                    className="border-input bg-card flex items-center justify-between rounded-md border p-3"
                   >
                     <span className="text-card-foreground">{item}</span>
                     <Button
@@ -83,13 +80,13 @@ export default function DemoPage() {
 
           {/* Button Variants */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-foreground">
+            <h2 className="text-foreground text-2xl font-semibold">
               Button Variants
             </h2>
-            
+
             <div className="space-y-4">
               <div className="space-y-2">
-                <h3 className="text-lg font-medium text-foreground">Sizes</h3>
+                <h3 className="text-foreground text-lg font-medium">Sizes</h3>
                 <div className="flex gap-2">
                   <Button size="sm" onPress={() => alert('Small button!')}>
                     Small
@@ -104,12 +101,17 @@ export default function DemoPage() {
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-lg font-medium text-foreground">Variants</h3>
+                <h3 className="text-foreground text-lg font-medium">
+                  Variants
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   <Button variant="primary" onPress={() => alert('Primary!')}>
                     Primary
                   </Button>
-                  <Button variant="secondary" onPress={() => alert('Secondary!')}>
+                  <Button
+                    variant="secondary"
+                    onPress={() => alert('Secondary!')}
+                  >
                     Secondary
                   </Button>
                   <Button variant="outline" onPress={() => alert('Outline!')}>
@@ -122,14 +124,10 @@ export default function DemoPage() {
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-lg font-medium text-foreground">States</h3>
+                <h3 className="text-foreground text-lg font-medium">States</h3>
                 <div className="flex gap-2">
-                  <Button onPress={() => alert('Normal!')}>
-                    Normal
-                  </Button>
-                  <Button disabled>
-                    Disabled
-                  </Button>
+                  <Button onPress={() => alert('Normal!')}>Normal</Button>
+                  <Button disabled>Disabled</Button>
                 </div>
               </div>
             </div>
@@ -138,22 +136,26 @@ export default function DemoPage() {
 
         {/* PWA Features */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-foreground">
+          <h2 className="text-foreground text-2xl font-semibold">
             PWA Features
           </h2>
-          <div className="rounded-lg border border-input bg-card p-6">
+          <div className="border-input bg-card rounded-lg border p-6">
             <p className="text-card-foreground">
               This web app is a Progressive Web App (PWA) with offline support.
-              You can install it on your device for a native app-like experience.
+              You can install it on your device for a native app-like
+              experience.
             </p>
             <div className="mt-4">
               <Button
                 variant="primary"
                 onPress={() => {
                   if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('/sw.js')
+                    navigator.serviceWorker
+                      .register('/sw.js')
                       .then(() => alert('Service Worker registered!'))
-                      .catch(() => alert('Service Worker registration failed!'));
+                      .catch(() =>
+                        alert('Service Worker registration failed!')
+                      );
                   } else {
                     alert('Service Workers not supported in this browser');
                   }

@@ -59,7 +59,7 @@ export default function InputPrompt({
     <Card className="mx-auto w-full max-w-2xl">
       <CardHeader className="text-center">
         <CardTitle className="flex items-center justify-center gap-2 text-2xl">
-          <ChefHat className="h-6 w-6 text-primary" />
+          <ChefHat className="text-primary h-6 w-6" />
           What ingredients do you have?
         </CardTitle>
       </CardHeader>
@@ -134,7 +134,7 @@ export default function InputPrompt({
                       onClick={() => removeIngredient(ingredient)}
                       variant="ghost"
                       size="icon"
-                      className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                      className="hover:bg-destructive hover:text-destructive-foreground h-4 w-4 p-0"
                       disabled={loading}
                     >
                       <X className="h-3 w-3" />

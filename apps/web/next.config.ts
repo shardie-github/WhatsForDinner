@@ -4,16 +4,21 @@ import withPWA from 'next-pwa';
 
 const nextConfig: NextConfig = {
   output: 'export',
-  transpilePackages: ["@whats-for-dinner/ui", "@whats-for-dinner/utils", "@whats-for-dinner/theme", "@whats-for-dinner/config"],
+  transpilePackages: [
+    '@whats-for-dinner/ui',
+    '@whats-for-dinner/utils',
+    '@whats-for-dinner/theme',
+    '@whats-for-dinner/config',
+  ],
   experimental: {
-    optimizePackageImports: ["@whats-for-dinner/ui"],
+    optimizePackageImports: ['@whats-for-dinner/ui'],
   },
   images: {
     unoptimized: true,
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "**",
+        protocol: 'https',
+        hostname: '**',
       },
     ],
   },

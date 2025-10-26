@@ -31,13 +31,13 @@ export default function RecipeCard({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <Card className="group animate-fade-in transition-all duration-300 hover:shadow-lg">
+    <Card className="animate-fade-in group transition-all duration-300 hover:shadow-lg">
       <CardHeader className="pb-3">
-        <CardTitle className="text-xl font-semibold text-card-foreground transition-colors group-hover:text-primary">
+        <CardTitle className="text-card-foreground group-hover:text-primary text-xl font-semibold transition-colors">
           {recipe.title}
         </CardTitle>
 
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex items-center gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
             <span>{recipe.cookTime}</span>
@@ -51,7 +51,7 @@ export default function RecipeCard({
 
       <CardContent className="space-y-4">
         <div>
-          <h4 className="mb-3 font-medium text-card-foreground">
+          <h4 className="text-card-foreground mb-3 font-medium">
             Ingredients:
           </h4>
           <div className="flex flex-wrap gap-2">
@@ -81,16 +81,16 @@ export default function RecipeCard({
           <div className="space-y-3">
             <Separator />
             <div>
-              <h4 className="mb-3 font-medium text-card-foreground">
+              <h4 className="text-card-foreground mb-3 font-medium">
                 Instructions:
               </h4>
               <ol className="space-y-3">
                 {recipe.steps.map((step, index) => (
                   <li key={index} className="flex gap-3">
-                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
+                    <span className="bg-primary text-primary-foreground flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-xs font-medium">
                       {index + 1}
                     </span>
-                    <span className="text-sm leading-relaxed text-muted-foreground">
+                    <span className="text-muted-foreground text-sm leading-relaxed">
                       {step}
                     </span>
                   </li>

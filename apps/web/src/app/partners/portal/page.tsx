@@ -87,10 +87,10 @@ export default function PartnerPortalPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 w-1/3 rounded bg-muted"></div>
+          <div className="bg-muted h-8 w-1/3 rounded"></div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-32 rounded bg-muted"></div>
+              <div key={i} className="bg-muted h-32 rounded"></div>
             ))}
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function PartnerPortalPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="mb-4 text-4xl font-bold">Partner Portal</h1>
-        <p className="text-xl text-muted-foreground">
+        <p className="text-muted-foreground text-xl">
           Manage your ecosystem partnerships and track performance
         </p>
       </div>
@@ -127,13 +127,13 @@ export default function PartnerPortalPage() {
                 <CardTitle className="text-sm font-medium">
                   Total Revenue
                 </CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <DollarSign className="text-muted-foreground h-4 w-4" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   ${stats?.totalRevenue.toLocaleString() || '0'}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   +{stats?.revenueGrowth.toFixed(1) || '0'}% from last month
                 </p>
               </CardContent>
@@ -144,13 +144,13 @@ export default function PartnerPortalPage() {
                 <CardTitle className="text-sm font-medium">
                   Total Requests
                 </CardTitle>
-                <Activity className="h-4 w-4 text-muted-foreground" />
+                <Activity className="text-muted-foreground h-4 w-4" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {stats?.totalRequests.toLocaleString() || '0'}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   +{stats?.requestGrowth.toFixed(1) || '0'}% from last month
                 </p>
               </CardContent>
@@ -161,13 +161,13 @@ export default function PartnerPortalPage() {
                 <CardTitle className="text-sm font-medium">
                   Active Users
                 </CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
+                <Users className="text-muted-foreground h-4 w-4" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {stats?.activeUsers.toLocaleString() || '0'}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   Across all partners
                 </p>
               </CardContent>
@@ -178,13 +178,13 @@ export default function PartnerPortalPage() {
                 <CardTitle className="text-sm font-medium">
                   Conversion Rate
                 </CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <TrendingUp className="text-muted-foreground h-4 w-4" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {(stats?.conversionRate * 100).toFixed(1) || '0'}%
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   Partner to paid conversion
                 </p>
               </CardContent>
@@ -200,7 +200,7 @@ export default function PartnerPortalPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex h-64 items-center justify-center text-muted-foreground">
+                <div className="text-muted-foreground flex h-64 items-center justify-center">
                   <BarChart3 className="h-12 w-12" />
                   <span className="ml-2">Revenue chart would go here</span>
                 </div>
@@ -222,14 +222,14 @@ export default function PartnerPortalPage() {
                       className="flex items-center justify-between"
                     >
                       <div className="flex items-center space-x-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                        <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-full">
                           <span className="text-sm font-medium">
                             {index + 1}
                           </span>
                         </div>
                         <div>
                           <div className="font-medium">{partner.name}</div>
-                          <div className="text-sm text-muted-foreground">
+                          <div className="text-muted-foreground text-sm">
                             {partner.requests.toLocaleString()} requests
                           </div>
                         </div>
@@ -238,7 +238,7 @@ export default function PartnerPortalPage() {
                         <div className="font-medium">
                           ${partner.revenue.toLocaleString()}
                         </div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="text-muted-foreground text-sm">
                           +{partner.growth.toFixed(1)}%
                         </div>
                       </div>
@@ -261,25 +261,25 @@ export default function PartnerPortalPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="rounded-lg bg-muted p-4 text-center">
+                  <div className="bg-muted rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold">$12,450</div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                       This Month
                     </div>
                   </div>
-                  <div className="rounded-lg bg-muted p-4 text-center">
+                  <div className="bg-muted rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold">$8,230</div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                       Last Month
                     </div>
                   </div>
-                  <div className="rounded-lg bg-muted p-4 text-center">
+                  <div className="bg-muted rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold">+51.2%</div>
-                    <div className="text-sm text-muted-foreground">Growth</div>
+                    <div className="text-muted-foreground text-sm">Growth</div>
                   </div>
                 </div>
 
-                <div className="flex h-64 items-center justify-center text-muted-foreground">
+                <div className="text-muted-foreground flex h-64 items-center justify-center">
                   <BarChart3 className="h-12 w-12" />
                   <span className="ml-2">Revenue chart would go here</span>
                 </div>
@@ -325,11 +325,11 @@ export default function PartnerPortalPage() {
                   <div key={index} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="font-medium">{item.type}</span>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-muted-foreground text-sm">
                         ${item.revenue.toLocaleString()} ({item.percentage}%)
                       </span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-muted">
+                    <div className="bg-muted h-2 w-full rounded-full">
                       <div
                         className={`h-2 rounded-full ${item.color}`}
                         style={{ width: `${item.percentage}%` }}
@@ -401,12 +401,12 @@ export default function PartnerPortalPage() {
                     className="flex items-center justify-between rounded-lg border p-4"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                      <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-lg">
                         <Globe className="h-5 w-5" />
                       </div>
                       <div>
                         <div className="font-medium">{partner.name}</div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="text-muted-foreground text-sm">
                           {partner.type}
                         </div>
                       </div>
@@ -423,7 +423,7 @@ export default function PartnerPortalPage() {
                         <div className="font-medium">
                           ${partner.revenue.toLocaleString()}
                         </div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="text-muted-foreground text-sm">
                           {partner.requests.toLocaleString()} requests
                         </div>
                       </div>
@@ -446,7 +446,7 @@ export default function PartnerPortalPage() {
                 <CardDescription>API requests over time</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex h-64 items-center justify-center text-muted-foreground">
+                <div className="text-muted-foreground flex h-64 items-center justify-center">
                   <BarChart3 className="h-12 w-12" />
                   <span className="ml-2">
                     Request volume chart would go here
@@ -474,12 +474,12 @@ export default function PartnerPortalPage() {
                     <div key={index} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="font-medium">{item.region}</span>
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-muted-foreground text-sm">
                           {item.requests.toLocaleString()} requests (
                           {item.percentage}%)
                         </span>
                       </div>
-                      <div className="h-2 w-full rounded-full bg-muted">
+                      <div className="bg-muted h-2 w-full rounded-full">
                         <div
                           className="h-2 rounded-full bg-blue-500"
                           style={{ width: `${item.percentage}%` }}
@@ -501,25 +501,25 @@ export default function PartnerPortalPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                <div className="rounded-lg bg-muted p-4 text-center">
+                <div className="bg-muted rounded-lg p-4 text-center">
                   <div className="text-2xl font-bold">98.5%</div>
-                  <div className="text-sm text-muted-foreground">Uptime</div>
+                  <div className="text-muted-foreground text-sm">Uptime</div>
                 </div>
-                <div className="rounded-lg bg-muted p-4 text-center">
+                <div className="bg-muted rounded-lg p-4 text-center">
                   <div className="text-2xl font-bold">245ms</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     Avg Response Time
                   </div>
                 </div>
-                <div className="rounded-lg bg-muted p-4 text-center">
+                <div className="bg-muted rounded-lg p-4 text-center">
                   <div className="text-2xl font-bold">99.2%</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     Success Rate
                   </div>
                 </div>
-                <div className="rounded-lg bg-muted p-4 text-center">
+                <div className="bg-muted rounded-lg p-4 text-center">
                   <div className="text-2xl font-bold">12</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     Active Partners
                   </div>
                 </div>
@@ -543,7 +543,7 @@ export default function PartnerPortalPage() {
                     Revenue Share Percentage
                   </label>
                   <div className="text-2xl font-bold">5.0%</div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     Your current revenue share rate
                   </p>
                 </div>
@@ -568,7 +568,7 @@ export default function PartnerPortalPage() {
 
                 <div>
                   <label className="text-sm font-medium">Webhook URL</label>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     https://your-domain.com/webhooks/whats-for-dinner
                   </div>
                 </div>

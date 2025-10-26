@@ -150,17 +150,17 @@ function HomeContent() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <Navbar user={user} />
 
       <main className="container mx-auto space-y-8 px-4 py-8">
         {/* Hero Section */}
         <div className="space-y-6 text-center">
           <div className="space-y-4">
-            <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-4xl font-bold text-foreground text-transparent md:text-6xl">
+            <h1 className="from-primary to-primary/60 text-foreground bg-gradient-to-r bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
               What's for Dinner?
             </h1>
-            <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
+            <p className="text-muted-foreground mx-auto max-w-2xl text-lg md:text-xl">
               Get AI-powered meal suggestions based on your pantry and
               preferences
             </p>
@@ -175,10 +175,10 @@ function HomeContent() {
               <CardContent>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                   <div className="space-y-2 text-center">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                      <ChefHat className="h-6 w-6 text-primary" />
+                    <div className="bg-primary/10 mx-auto flex h-12 w-12 items-center justify-center rounded-lg">
+                      <ChefHat className="text-primary h-6 w-6" />
                     </div>
-                    <p className="text-sm text-muted-foreground">Plan</p>
+                    <p className="text-muted-foreground text-sm">Plan</p>
                     <Badge variant="outline" className="font-semibold">
                       {tenant.plan.toUpperCase()}
                     </Badge>
@@ -187,8 +187,8 @@ function HomeContent() {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
                       <Clock className="h-6 w-6 text-blue-600" />
                     </div>
-                    <p className="text-sm text-muted-foreground">Meals Today</p>
-                    <p className="text-lg font-semibold text-foreground">
+                    <p className="text-muted-foreground text-sm">Meals Today</p>
+                    <p className="text-foreground text-lg font-semibold">
                       {usage.total_meals_today} / {usage.plan_quota}
                     </p>
                   </div>
@@ -196,7 +196,7 @@ function HomeContent() {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
                       <Zap className="h-6 w-6 text-green-600" />
                     </div>
-                    <p className="text-sm text-muted-foreground">Remaining</p>
+                    <p className="text-muted-foreground text-sm">Remaining</p>
                     <p className="text-lg font-semibold text-green-600">
                       {usage.remaining_quota}
                     </p>
@@ -206,10 +206,10 @@ function HomeContent() {
                       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-orange-100">
                         <Users className="h-6 w-6 text-orange-600" />
                       </div>
-                      <p className="text-sm text-muted-foreground">Upgrade</p>
+                      <p className="text-muted-foreground text-sm">Upgrade</p>
                       <a
                         href="/billing"
-                        className="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 inline-block rounded-md px-4 py-2 text-sm font-medium transition-colors"
                       >
                         Upgrade Plan
                       </a>
@@ -235,7 +235,7 @@ function HomeContent() {
         {/* Loading State */}
         {generateRecipesMutation.isPending && (
           <div className="space-y-6">
-            <h2 className="text-center text-2xl font-semibold text-foreground">
+            <h2 className="text-foreground text-center text-2xl font-semibold">
               Generating Recipes...
             </h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -250,7 +250,7 @@ function HomeContent() {
         {recipes.length > 0 && !generateRecipesMutation.isPending && (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="mb-2 text-2xl font-semibold text-foreground">
+              <h2 className="text-foreground mb-2 text-2xl font-semibold">
                 Suggested Recipes
               </h2>
               <p className="text-muted-foreground">
@@ -277,8 +277,8 @@ function HomeContent() {
         {generateRecipesMutation.error && (
           <Card className="border-destructive/50 bg-destructive/5">
             <CardContent className="pt-6">
-              <div className="flex items-center space-x-2 text-destructive">
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-destructive/20">
+              <div className="text-destructive flex items-center space-x-2">
+                <div className="bg-destructive/20 flex h-5 w-5 items-center justify-center rounded-full">
                   <span className="text-xs font-bold">!</span>
                 </div>
                 <p className="font-medium">

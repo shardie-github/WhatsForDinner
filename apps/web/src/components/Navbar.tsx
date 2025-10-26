@@ -44,14 +44,14 @@ export default function Navbar({ user }: NavbarProps) {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="group flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary transition-colors group-hover:bg-primary/90">
-              <ChefHat className="h-5 w-5 text-primary-foreground" />
+            <div className="bg-primary group-hover:bg-primary/90 flex h-8 w-8 items-center justify-center rounded-lg transition-colors">
+              <ChefHat className="text-primary-foreground h-5 w-5" />
             </div>
-            <span className="text-xl font-bold text-foreground transition-colors group-hover:text-primary">
+            <span className="text-foreground group-hover:text-primary text-xl font-bold transition-colors">
               What's for Dinner?
             </span>
           </Link>
@@ -64,7 +64,7 @@ export default function Navbar({ user }: NavbarProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  className="text-muted-foreground hover:bg-accent hover:text-foreground flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium transition-colors"
                 >
                   <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
@@ -81,7 +81,7 @@ export default function Navbar({ user }: NavbarProps) {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                      className="text-muted-foreground hover:bg-accent hover:text-foreground flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium transition-colors"
                     >
                       <Icon className="h-4 w-4" />
                       <span>{item.label}</span>
@@ -96,10 +96,10 @@ export default function Navbar({ user }: NavbarProps) {
             {user ? (
               <div className="flex items-center space-x-2">
                 <div className="flex items-center space-x-2 px-3 py-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                    <User className="h-4 w-4 text-primary" />
+                  <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
+                    <User className="text-primary h-4 w-4" />
                   </div>
-                  <span className="text-sm font-medium text-foreground">
+                  <span className="text-foreground text-sm font-medium">
                     {user.email?.split('@')[0] || 'User'}
                   </span>
                 </div>
@@ -141,7 +141,7 @@ export default function Navbar({ user }: NavbarProps) {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="border-t bg-background md:hidden">
+          <div className="bg-background border-t md:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navItems.map(item => {
                 const Icon = item.icon;
@@ -149,7 +149,7 @@ export default function Navbar({ user }: NavbarProps) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                    className="text-muted-foreground hover:bg-accent hover:text-foreground flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Icon className="h-5 w-5" />
@@ -167,7 +167,7 @@ export default function Navbar({ user }: NavbarProps) {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        className="text-muted-foreground hover:bg-accent hover:text-foreground flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <Icon className="h-5 w-5" />
@@ -183,10 +183,10 @@ export default function Navbar({ user }: NavbarProps) {
               {user ? (
                 <div className="space-y-2 px-3 py-2">
                   <div className="flex items-center space-x-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                      <User className="h-4 w-4 text-primary" />
+                    <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
+                      <User className="text-primary h-4 w-4" />
                     </div>
-                    <span className="text-base font-medium text-foreground">
+                    <span className="text-foreground text-base font-medium">
                       {user.email?.split('@')[0] || 'User'}
                     </span>
                   </div>
@@ -196,7 +196,7 @@ export default function Navbar({ user }: NavbarProps) {
                       setIsMenuOpen(false);
                     }}
                     variant="outline"
-                    className="w-full justify-start text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    className="text-destructive hover:bg-destructive hover:text-destructive-foreground w-full justify-start"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
