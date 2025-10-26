@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useDeviceMode } from './device';
 
 // Cross-platform hook for device detection
@@ -74,5 +74,110 @@ export function usePantry() {
     addItem,
     removeItem,
     clearItems,
+  };
+}
+
+// Theme management hooks
+export type ThemeMode = 'light' | 'dark' | 'system';
+
+export function useTheme() {
+  const [theme, setTheme] = useState<ThemeMode>('system');
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+  const { isWeb } = useDeviceMode();
+
+  // Get system theme preference
+  const getSystemTheme = useCallback((): 'light' | 'dark' => {
+    if (isWeb && typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    // For React Native, you might want to use Appearance API
+    return 'light';
+  }, [isWeb]);
+
+  // Update resolved theme based on current theme setting
+  useEffect(() => {
+    if (theme === 'system') {
+      setResolvedTheme(getSystemTheme());
+    } else {
+      setResolvedTheme(theme);
+    }
+  }, [theme, getSystemTheme]);
+
+  // Listen for system theme changes when using system mode
+  useEffect(() => {
+    if (theme === 'system' && isWeb && typeof window !== 'undefined') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => setResolvedTheme(getSystemTheme());
+      
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+  }, [theme, isWeb, getSystemTheme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => {
+      if (prev === 'light') return 'dark';
+      if (prev === 'dark') return 'system';
+      return 'light';
+    });
+  }, []);
+
+  return {
+    theme,
+    resolvedTheme,
+    setTheme,
+    toggleTheme,
+    isDark: resolvedTheme === 'dark',
+    isLight: resolvedTheme === 'light',
+  };
+}
+
+// Hook for syncing theme with NativeWind
+export function useThemeSync() {
+  const { resolvedTheme } = useTheme();
+  const { isWeb } = useDeviceMode();
+
+  useEffect(() => {
+    if (!isWeb) {
+      // For React Native, sync with NativeWind
+      try {
+        const { setNativeWindColorScheme } = require('nativewind');
+        setNativeWindColorScheme(resolvedTheme);
+      } catch (error) {
+        console.warn('NativeWind theme sync not available:', error);
+      }
+    } else {
+      // For web, apply theme class to document
+      const root = document.documentElement;
+      root.classList.remove('light', 'dark');
+      root.classList.add(resolvedTheme);
+    }
+  }, [resolvedTheme, isWeb]);
+}
+
+// Hook for theme-aware colors
+export function useThemeColors() {
+  const { isDark } = useTheme();
+  
+  return {
+    background: isDark ? '#0f172a' : '#ffffff',
+    foreground: isDark ? '#f8fafc' : '#0f172a',
+    card: isDark ? '#1e293b' : '#ffffff',
+    cardForeground: isDark ? '#f8fafc' : '#0f172a',
+    popover: isDark ? '#1e293b' : '#ffffff',
+    popoverForeground: isDark ? '#f8fafc' : '#0f172a',
+    primary: isDark ? '#10b981' : '#10b981',
+    primaryForeground: isDark ? '#ffffff' : '#ffffff',
+    secondary: isDark ? '#334155' : '#f1f5f9',
+    secondaryForeground: isDark ? '#f8fafc' : '#0f172a',
+    muted: isDark ? '#334155' : '#f1f5f9',
+    mutedForeground: isDark ? '#94a3b8' : '#64748b',
+    accent: isDark ? '#334155' : '#f1f5f9',
+    accentForeground: isDark ? '#f8fafc' : '#0f172a',
+    destructive: isDark ? '#ef4444' : '#ef4444',
+    destructiveForeground: isDark ? '#ffffff' : '#ffffff',
+    border: isDark ? '#334155' : '#e2e8f0',
+    input: isDark ? '#334155' : '#e2e8f0',
+    ring: isDark ? '#10b981' : '#10b981',
   };
 }

@@ -1,1 +1,2 @@
-export * from './Card';
+export * from './Card.web';
+export * from './Card.native';

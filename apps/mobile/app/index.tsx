@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import { View, ScrollView, RefreshControl, Text as RNText } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, Button, Card } from '@whats-for-dinner/ui';
-import { useDeviceInfo } from '@whats-for-dinner/utils';
+import { Text, Button, Card, ThemeToggle } from '@whats-for-dinner/ui';
+import { useDeviceInfo, useTheme } from '@whats-for-dinner/utils';
 import { RecipeCard } from '../src/components/RecipeCard';
 import { InputPrompt } from '../src/components/InputPrompt';
 import { Navbar } from '../src/components/Navbar';
@@ -16,6 +16,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const deviceInfo = useDeviceInfo();
+  const { isDark } = useTheme();
   const generateRecipesMutation = useGenerateRecipes();
   const saveRecipeMutation = useSaveRecipe();
   const { data: pantryItems = [], isLoading: pantryLoading } = usePantryItems();
@@ -51,7 +52,16 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background">
-      <Navbar user={user} />
+      {/* Header */}
+      <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
+        <View className="flex-row items-center space-x-2">
+          <RNText className="text-2xl">🥘</RNText>
+          <Text className="text-xl font-display font-bold text-brand-600">
+            What's for Dinner?
+          </Text>
+        </View>
+        <ThemeToggle />
+      </View>
       
       <ScrollView
         className="flex-1"
@@ -62,10 +72,10 @@ export default function HomeScreen() {
         <View className="flex-1 px-4 py-8">
           {/* Hero Section */}
           <View className="items-center space-y-6 mb-8">
-            <Text variant="h1" className="text-center text-primary">
+            <Text className="text-3xl font-display font-bold text-center text-brand-600">
               What's for Dinner?
             </Text>
-            <Text variant="body" className="text-center text-muted-foreground">
+            <Text className="text-base text-center text-gray-600">
               Get AI-powered meal suggestions based on your pantry and preferences
             </Text>
           </View>
