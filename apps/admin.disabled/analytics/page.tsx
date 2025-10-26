@@ -11,8 +11,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import {
-  BarChart3,
-  TrendingUp,
   Activity,
   DollarSign,
   Users,

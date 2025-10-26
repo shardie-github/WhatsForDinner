@@ -52,3 +52,27 @@ export function usePlatformStyles() {
     isMobile: !isWeb,
   };
 }
+
+// Hook for pantry management
+export function usePantry() {
+  const [items, setItems] = useState<string[]>([]);
+
+  const addItem = (item: string) => {
+    setItems(prev => [...prev, item]);
+  };
+
+  const removeItem = (index: number) => {
+    setItems(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const clearItems = () => {
+    setItems([]);
+  };
+
+  return {
+    items,
+    addItem,
+    removeItem,
+    clearItems,
+  };
+}
