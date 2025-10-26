@@ -1,0 +1,6 @@
+10011	IGNORE	(Cookie No HttpOnly Flag)
+10015	IGNORE	(Web Browser XSS Protection Not Enabled)
+10020	IGNORE	(X-Frame-Options Header Scanner)
+10021	IGNORE	(X-Content-Type-Options Header Missing)
+10023	IGNORE	(Information Disclosure - Debug Error Messages)
+10038	IGNORE	(Cookie SameSite Attribute Scanner)
