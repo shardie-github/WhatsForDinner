@@ -63,12 +63,43 @@
       "outputs": ["REPORTS/**"],
       "env": ["NODE_ENV"]
     },
+    "release": {
+      "dependsOn": ["build", "test", "lint", "type-check"],
+      "outputs": ["dist/**", "*.tgz"],
+      "env": ["NODE_ENV", "NPM_TOKEN"]
+    },
+    "doctor": {
+      "outputs": ["REPORTS/doctor-*.json"],
+      "env": ["NODE_ENV"]
+    },
+    "a11y": {
+      "dependsOn": ["build"],
+      "outputs": ["REPORTS/a11y-*.json"],
+      "env": ["NODE_ENV"]
+    },
+    "obs": {
+      "outputs": ["REPORTS/obs-*.json"],
+      "env": ["NODE_ENV"]
+    },
     "security:audit": {
       "outputs": ["security-audit-report.json"],
       "env": ["NODE_ENV"]
     },
     "security:scan": {
       "outputs": ["security-scan-report.json"],
+      "env": ["NODE_ENV"]
+    },
+    "security:deps": {
+      "outputs": ["REPORTS/security-deps-*.json"],
+      "env": ["NODE_ENV"]
+    },
+    "security:secrets": {
+      "outputs": ["REPORTS/security-secrets-*.json"],
+      "env": ["NODE_ENV"]
+    },
+    "security:headers": {
+      "dependsOn": ["build"],
+      "outputs": ["REPORTS/security-headers-*.json"],
       "env": ["NODE_ENV"]
     }
   }
