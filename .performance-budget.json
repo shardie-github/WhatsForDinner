@@ -1,0 +1,91 @@
+{
+  "name": "Performance Budget Configuration",
+  "version": "1.0.0",
+  "description": "Performance budgets for bundle size and Core Web Vitals monitoring",
+  "budgets": {
+    "bundleSize": {
+      "javascript": {
+        "max": 250000,
+        "warning": 200000,
+        "description": "JavaScript bundle size in bytes"
+      },
+      "css": {
+        "max": 50000,
+        "warning": 40000,
+        "description": "CSS bundle size in bytes"
+      },
+      "images": {
+        "max": 1000000,
+        "warning": 800000,
+        "description": "Image assets size in bytes"
+      },
+      "total": {
+        "max": 2000000,
+        "warning": 1600000,
+        "description": "Total bundle size in bytes"
+      }
+    },
+    "coreWebVitals": {
+      "LCP": {
+        "max": 2500,
+        "warning": 2000,
+        "description": "Largest Contentful Paint in milliseconds"
+      },
+      "FID": {
+        "max": 100,
+        "warning": 80,
+        "description": "First Input Delay in milliseconds"
+      },
+      "CLS": {
+        "max": 0.1,
+        "warning": 0.08,
+        "description": "Cumulative Layout Shift score"
+      },
+      "FCP": {
+        "max": 1800,
+        "warning": 1500,
+        "description": "First Contentful Paint in milliseconds"
+      },
+      "TTFB": {
+        "max": 800,
+        "warning": 600,
+        "description": "Time to First Byte in milliseconds"
+      }
+    },
+    "resourceLimits": {
+      "requests": {
+        "max": 50,
+        "warning": 40,
+        "description": "Maximum number of HTTP requests"
+      },
+      "domains": {
+        "max": 15,
+        "warning": 12,
+        "description": "Maximum number of unique domains"
+      },
+      "redirects": {
+        "max": 3,
+        "warning": 2,
+        "description": "Maximum number of redirects"
+      }
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "frequency": "daily",
+    "thresholds": {
+      "error": "max",
+      "warning": "warning"
+    },
+    "notifications": {
+      "onViolation": true,
+      "onImprovement": true,
+      "channels": ["slack", "email"]
+    }
+  },
+  "tools": {
+    "bundleAnalyzer": "webpack-bundle-analyzer",
+    "lighthouse": "lighthouse",
+    "coreWebVitals": "web-vitals"
+  }
+}
