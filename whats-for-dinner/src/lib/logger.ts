@@ -51,6 +51,20 @@ class Logger {
   }
 
   private async writeLog(entry: LogEntry) {
+    // Use requestIdleCallback for non-blocking logging
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        this.writeLogAsync(entry);
+      });
+    } else {
+      // Fallback for browsers without requestIdleCallback
+      setTimeout(() => {
+        this.writeLogAsync(entry);
+      }, 0);
+    }
+  }
+
+  private async writeLogAsync(entry: LogEntry) {
     try {
       const { error } = await supabase.from('logs').insert(entry);
 

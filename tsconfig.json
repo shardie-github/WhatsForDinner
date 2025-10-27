@@ -13,6 +13,9 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "exactOptionalPropertyTypes": true,
@@ -29,9 +32,22 @@
       "@/*": ["./src/*"],
       "@ui/*": ["./packages/ui/*"],
       "@utils/*": ["./packages/utils/*"],
-      "@theme/*": ["./packages/theme/*"]
+      "@theme/*": ["./packages/theme/*"],
+      "@whats-for-dinner/ui": ["./packages/ui/src"],
+      "@whats-for-dinner/utils": ["./packages/utils/src"],
+      "@whats-for-dinner/theme": ["./packages/theme/src"],
+      "@whats-for-dinner/config": ["./packages/config/src"]
     }
   },
+  "references": [
+    { "path": "./packages/ui" },
+    { "path": "./packages/utils" },
+    { "path": "./packages/theme" },
+    { "path": "./packages/config" },
+    { "path": "./whats-for-dinner" },
+    { "path": "./apps/web" },
+    { "path": "./apps/mobile" }
+  ],
   "include": [
     "next-env.d.ts",
     "**/*.ts",

@@ -51,7 +51,12 @@
     "functions:format": "cd supabase/functions && deno fmt",
     "functions:type-check": "cd supabase/functions && deno check",
     "supabase:validate": "node -e \"require('./tests/supabase-validation.test.ts').runSupabaseValidation()\"",
-    "supabase:test": "jest tests/supabase-validation.test.ts"
+    "supabase:test": "jest tests/supabase-validation.test.ts",
+    "perf:monitor": "node scripts/performance-monitor.js",
+    "perf:analyze": "npm run build && npm run perf:monitor",
+    "perf:lighthouse": "npx lighthouse http://localhost:3000 --output=html --output-path=REPORTS/lighthouse-report.html",
+    "security:audit": "npm audit --audit-level=moderate --json > security-audit-report.json",
+    "security:scan": "npm audit --audit-level=high --json > security-scan-report.json"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

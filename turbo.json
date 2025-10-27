@@ -4,24 +4,72 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*"]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*"]
     },
     "lint": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "outputs": ["eslint-report.json"],
+      "env": ["NODE_ENV"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^build"],
+      "env": ["NODE_ENV"]
     },
     "test": {
       "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
+      "outputs": ["coverage/**", "test-results/**"],
+      "env": ["NODE_ENV", "CI"]
+    },
+    "test:watch": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true,
+      "env": ["NODE_ENV"]
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV", "CI"]
     },
     "type-check": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "outputs": ["tsconfig.tsbuildinfo"],
+      "env": ["NODE_ENV"]
     },
     "clean": {
       "cache": false
+    },
+    "format": {
+      "outputs": [],
+      "env": ["NODE_ENV"]
+    },
+    "format:check": {
+      "outputs": [],
+      "env": ["NODE_ENV"]
+    },
+    "perf:monitor": {
+      "dependsOn": ["build"],
+      "outputs": ["REPORTS/**"],
+      "env": ["NODE_ENV"]
+    },
+    "perf:analyze": {
+      "dependsOn": ["build"],
+      "outputs": ["REPORTS/**"],
+      "env": ["NODE_ENV"]
+    },
+    "security:audit": {
+      "outputs": ["security-audit-report.json"],
+      "env": ["NODE_ENV"]
+    },
+    "security:scan": {
+      "outputs": ["security-scan-report.json"],
+      "env": ["NODE_ENV"]
     }
   }
 }
