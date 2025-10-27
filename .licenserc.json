@@ -1,0 +1,64 @@
+{
+  "name": "Supply Chain License Management",
+  "version": "1.0.0",
+  "description": "License compliance configuration for enterprise supply chain management",
+  "licenseConfig": {
+    "allowedLicenses": [
+      "MIT",
+      "Apache-2.0",
+      "BSD-2-Clause",
+      "BSD-3-Clause",
+      "ISC",
+      "Unlicense",
+      "0BSD",
+      "CC0-1.0",
+      "Public Domain"
+    ],
+    "restrictedLicenses": [
+      "GPL",
+      "AGPL",
+      "LGPL",
+      "Copyleft",
+      "CC-BY-NC",
+      "CC-BY-SA",
+      "Elastic-2.0",
+      "SSPL",
+      "Commons Clause"
+    ],
+    "exceptions": {
+      "packages": {
+        "typescript": "Apache-2.0",
+        "eslint": "MIT",
+        "prettier": "MIT"
+      }
+    },
+    "policies": {
+      "allowRestrictedInDev": true,
+      "requireApprovalForRestricted": true,
+      "autoApproveMIT": true,
+      "scanOnInstall": true
+    }
+  },
+  "vulnerabilityConfig": {
+    "severityThresholds": {
+      "critical": "fail",
+      "high": "warn",
+      "moderate": "info",
+      "low": "info"
+    },
+    "autoFix": {
+      "enabled": true,
+      "excludeDevDependencies": false,
+      "excludePeerDependencies": true
+    }
+  },
+  "supplyChainConfig": {
+    "auditFrequency": "daily",
+    "reportFormats": ["json", "markdown", "html"],
+    "notifications": {
+      "onVulnerability": true,
+      "onLicenseChange": true,
+      "onNewDependency": true
+    }
+  }
+}
