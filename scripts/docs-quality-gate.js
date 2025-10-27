@@ -59,8 +59,8 @@ class DocsQualityManager {
     
     const markdownFiles = this.findMarkdownFiles();
     
-    for (const file of markdownFiles) {
-      const analysis = this.analyzeMarkdownFile(file);
+    for (const filePath of markdownFiles) {
+      const analysis = this.analyzeMarkdownFile(filePath);
       this.results.markdownFiles.push(analysis);
     }
     
@@ -96,7 +96,7 @@ class DocsQualityManager {
       hasHeaders: this.hasHeaders(content),
       hasToc: this.hasTableOfContents(content),
       longLines: this.findLongLines(lines),
-      brokenLinks: this.findBrokenLinks(content),
+      brokenLinks: this.findBrokenLinks(content, filePath),
       spellingErrors: this.findSpellingErrors(content)
     };
     
@@ -129,7 +129,7 @@ class DocsQualityManager {
     return longLines;
   }
 
-  findBrokenLinks(content) {
+  findBrokenLinks(content, filePath) {
     const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
     const links = [];
     let match;
@@ -201,8 +201,8 @@ class DocsQualityManager {
     
     const adrFiles = this.findADRFiles();
     
-    for (const file of adrFiles) {
-      const analysis = this.analyzeADRFile(file);
+    for (const filePath of adrFiles) {
+      const analysis = this.analyzeADRFile(filePath);
       this.results.adrFiles.push(analysis);
     }
     

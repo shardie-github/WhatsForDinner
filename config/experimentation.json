@@ -1,0 +1,58 @@
+{
+  "experiments": {
+    "homepage-hero": {
+      "name": "Homepage Hero Test",
+      "description": "Test different hero section designs",
+      "variants": [
+        "control",
+        "variant-a",
+        "variant-b"
+      ],
+      "trafficAllocation": {
+        "control": 0.5,
+        "variant-a": 0.25,
+        "variant-b": 0.25
+      },
+      "status": "active",
+      "startDate": "2025-10-27T02:35:52.486Z",
+      "endDate": null
+    },
+    "checkout-flow": {
+      "name": "Checkout Flow Optimization",
+      "description": "Test streamlined checkout process",
+      "variants": [
+        "control",
+        "simplified"
+      ],
+      "trafficAllocation": {
+        "control": 0.5,
+        "simplified": 0.5
+      },
+      "status": "draft",
+      "startDate": null,
+      "endDate": null
+    }
+  },
+  "tracking": {
+    "enabled": true,
+    "provider": "custom",
+    "events": [
+      "experiment_view",
+      "experiment_conversion",
+      "experiment_click"
+    ],
+    "dataRetention": 90
+  },
+  "metrics": {
+    "primary": [
+      "conversion_rate",
+      "click_rate",
+      "engagement_rate"
+    ],
+    "secondary": [
+      "time_on_page",
+      "bounce_rate",
+      "revenue_per_user"
+    ]
+  }
+}

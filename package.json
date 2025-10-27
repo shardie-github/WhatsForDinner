@@ -51,7 +51,10 @@
     "security:scan": "turbo run security:scan",
     "security:deps": "turbo run security:deps",
     "security:secrets": "turbo run security:secrets",
-    "security:headers": "turbo run security:headers"
+    "security:headers": "turbo run security:headers",
+    "optimize:images": "node scripts/optimize-assets.js",
+    "optimize:assets": "node scripts/optimize-assets.js",
+    "analyze:assets": "node scripts/assets-discipline.js"
   },
   "devDependencies": {
     "@types/node": "^20",

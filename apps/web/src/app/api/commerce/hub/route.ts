@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { supabase } from '@/lib/supabaseClient';
 import { AICommerceHub } from '@/lib/aiCommerceHub';
 import { z } from 'zod';
 

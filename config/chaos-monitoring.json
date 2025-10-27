@@ -1,0 +1,44 @@
+{
+  "chaos": {
+    "enabled": true,
+    "experiments": {
+      "cpu-stress": {
+        "name": "CPU Stress Test",
+        "description": "Simulate high CPU usage",
+        "duration": 300,
+        "severity": "medium"
+      },
+      "memory-leak": {
+        "name": "Memory Leak Simulation",
+        "description": "Simulate memory pressure",
+        "duration": 600,
+        "severity": "high"
+      },
+      "network-latency": {
+        "name": "Network Latency Injection",
+        "description": "Add network delays",
+        "duration": 180,
+        "severity": "low"
+      },
+      "database-failure": {
+        "name": "Database Connection Failure",
+        "description": "Simulate database outages",
+        "duration": 120,
+        "severity": "high"
+      }
+    },
+    "monitoring": {
+      "metrics": [
+        "error_rate",
+        "response_time",
+        "availability",
+        "recovery_time"
+      ],
+      "alerts": {
+        "errorRate": 0.05,
+        "responseTime": 2000,
+        "availability": 0.95
+      }
+    }
+  }
+}

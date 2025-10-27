@@ -1,0 +1,50 @@
+{
+  "environments": {
+    "development": {
+      "branch": "main",
+      "autoDeploy": true,
+      "featureFlags": "all"
+    },
+    "staging": {
+      "branch": "staging",
+      "autoDeploy": true,
+      "featureFlags": "staging"
+    },
+    "canary": {
+      "branch": "canary",
+      "autoDeploy": false,
+      "featureFlags": "canary"
+    },
+    "production": {
+      "branch": "main",
+      "autoDeploy": false,
+      "featureFlags": "production"
+    }
+  },
+  "deployment": {
+    "strategy": "blue-green",
+    "rollback": {
+      "automatic": true,
+      "threshold": 0.05,
+      "timeWindow": 300
+    },
+    "healthChecks": {
+      "enabled": true,
+      "timeout": 30,
+      "interval": 10,
+      "retries": 3
+    }
+  },
+  "monitoring": {
+    "metrics": [
+      "response_time",
+      "error_rate",
+      "throughput"
+    ],
+    "alerts": {
+      "errorRate": 0.01,
+      "responseTime": 2000,
+      "availability": 0.999
+    }
+  }
+}

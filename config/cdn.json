@@ -1,0 +1,47 @@
+{
+  "provider": "cloudflare",
+  "regions": [
+    "us-east-1",
+    "eu-west-1",
+    "ap-southeast-1"
+  ],
+  "features": {
+    "compression": [
+      "gzip",
+      "brotli"
+    ],
+    "minification": true,
+    "imageOptimization": true
+  },
+  "rules": [
+    {
+      "path": "/static/*",
+      "ttl": 31536000,
+      "compression": [
+        "gzip",
+        "brotli"
+      ],
+      "minification": true
+    },
+    {
+      "path": "/api/*",
+      "ttl": 300,
+      "compression": [
+        "gzip"
+      ],
+      "minification": false
+    },
+    {
+      "path": "/*.jpg",
+      "ttl": 31536000,
+      "imageOptimization": {
+        "formats": [
+          "webp",
+          "avif"
+        ],
+        "quality": 85,
+        "resize": true
+      }
+    }
+  ]
+}

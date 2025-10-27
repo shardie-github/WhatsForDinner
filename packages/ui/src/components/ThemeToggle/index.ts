@@ -1,2 +1,2 @@
+// Platform-specific exports
 export * from './ThemeToggle.web';
-export * from './ThemeToggle.native';

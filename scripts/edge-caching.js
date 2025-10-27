@@ -50,7 +50,7 @@ class EdgeCachingManager {
       await this.analyzeCurrentCaching();
       await this.configureHttpCaching();
       await this.setupCdnConfiguration();
-      await this.createCacheHeaders();
+      await this.createCacheHeadersConfig();
       await this.optimizeStaticAssets();
       await this.generateCachingReport();
       

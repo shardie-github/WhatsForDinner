@@ -1,0 +1,86 @@
+{
+  "staticAssets": {
+    "html": {
+      "maxAge": 300,
+      "sMaxAge": 3600,
+      "staleWhileRevalidate": 86400
+    },
+    "css": {
+      "maxAge": 31536000,
+      "immutable": true
+    },
+    "js": {
+      "maxAge": 31536000,
+      "immutable": true
+    },
+    "images": {
+      "maxAge": 31536000,
+      "immutable": true
+    },
+    "fonts": {
+      "maxAge": 31536000,
+      "immutable": true
+    }
+  },
+  "api": {
+    "userData": {
+      "maxAge": 300,
+      "sMaxAge": 600,
+      "staleWhileRevalidate": 1800
+    },
+    "publicData": {
+      "maxAge": 3600,
+      "sMaxAge": 7200,
+      "staleWhileRevalidate": 86400
+    },
+    "searchResults": {
+      "maxAge": 1800,
+      "sMaxAge": 3600,
+      "staleWhileRevalidate": 7200
+    }
+  },
+  "cdn": {
+    "provider": "cloudflare",
+    "regions": [
+      "us-east-1",
+      "eu-west-1",
+      "ap-southeast-1"
+    ],
+    "compression": [
+      "gzip",
+      "brotli"
+    ],
+    "minification": true,
+    "imageOptimization": true
+  },
+  "rules": [
+    {
+      "path": "/static/*",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable",
+        "Vary": "Accept-Encoding"
+      }
+    },
+    {
+      "path": "/api/user/*",
+      "headers": {
+        "Cache-Control": "private, max-age=300, s-maxage=600, stale-while-revalidate=1800",
+        "Vary": "Authorization, Accept-Encoding"
+      }
+    },
+    {
+      "path": "/api/public/*",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, s-maxage=7200, stale-while-revalidate=86400",
+        "Vary": "Accept-Encoding"
+      }
+    },
+    {
+      "path": "/*.html",
+      "headers": {
+        "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
+        "Vary": "Accept-Encoding"
+      }
+    }
+  ]
+}

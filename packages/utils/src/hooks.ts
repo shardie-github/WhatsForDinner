@@ -138,20 +138,15 @@ export function useThemeSync() {
   const { isWeb } = useDeviceMode();
 
   useEffect(() => {
-    if (!isWeb) {
-      // For React Native, sync with NativeWind
-      try {
-        const { setNativeWindColorScheme } = require('nativewind');
-        setNativeWindColorScheme(resolvedTheme);
-      } catch (error) {
-        console.warn('NativeWind theme sync not available:', error);
-      }
-    } else {
+    if (isWeb) {
       // For web, apply theme class to document
-      const root = document.documentElement;
-      root.classList.remove('light', 'dark');
-      root.classList.add(resolvedTheme);
+      if (typeof document !== 'undefined') {
+        const root = document.documentElement;
+        root.classList.remove('light', 'dark');
+        root.classList.add(resolvedTheme);
+      }
     }
+    // Note: React Native theme sync would be handled by the native app
   }, [resolvedTheme, isWeb]);
 }
 
