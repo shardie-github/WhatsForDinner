@@ -45,15 +45,15 @@ export async function GET(request: NextRequest) {
     const stats = {
       total: errors.length,
       bySeverity: Object.entries(groupedErrors).reduce(
-        (acc, [severity, errors]) => {
-          acc[severity] = errors.length;
+        (acc, [severity, errorList]) => {
+          acc[severity] = (errorList as any[]).length;
           return acc;
         },
         {} as Record<string, number>
       ),
       byName: Object.entries(groupedByName).reduce(
-        (acc, [name, errors]) => {
-          acc[name] = errors.length;
+        (acc, [name, errorList]) => {
+          acc[name] = (errorList as any[]).length;
           return acc;
         },
         {} as Record<string, number>
@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
       }),
       {
         status: 500,

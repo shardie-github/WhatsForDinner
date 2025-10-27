@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { supabase } from '@/lib/supabaseClient';
 import { FederatedAPIGateway } from '@/lib/federatedGateway';
 import { z } from 'zod';
 
@@ -26,7 +25,7 @@ export async function POST(req: NextRequest) {
     } = FederationRequestSchema.parse(body);
 
     // Get tenant and user context
-    const headersList = headers();
+    const headersList = await headers();
     const tenantId = headersList.get('x-tenant-id');
     const userId = headersList.get('x-user-id');
     const requestId = headersList.get('x-request-id') || crypto.randomUUID();
@@ -46,11 +45,11 @@ export async function POST(req: NextRequest) {
       partner,
       endpoint,
       method,
-      data,
-      headers: customHeaders,
-      metadata,
+      data: data || {},
+      headers: customHeaders || {},
+      metadata: metadata || {},
       tenantId,
-      userId,
+      userId: userId || '',
       requestId,
     });
 
@@ -86,7 +85,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Get tenant context
-    const headersList = headers();
+    const headersList = await headers();
     const tenantId = headersList.get('x-tenant-id');
     const userId = headersList.get('x-user-id');
     const requestId = headersList.get('x-request-id') || crypto.randomUUID();
@@ -107,7 +106,7 @@ export async function GET(req: NextRequest) {
       endpoint,
       method: 'GET',
       tenantId,
-      userId,
+      userId: userId || '',
       requestId,
     });
 

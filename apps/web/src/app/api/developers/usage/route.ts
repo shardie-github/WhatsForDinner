@@ -5,9 +5,8 @@ import { supabase } from '@/lib/supabaseClient';
 export async function GET(req: NextRequest) {
   try {
     // Get user context
-    const headersList = headers();
+    const headersList = await headers();
     const userId = headersList.get('x-user-id');
-    const tenantId = headersList.get('x-tenant-id');
 
     if (!userId) {
       return NextResponse.json(

@@ -82,7 +82,7 @@ export async function GET() {
   } catch (error) {
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
       }),
       {

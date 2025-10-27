@@ -19,7 +19,7 @@ export async function PATCH(
     const updates = UpdateAPIKeySchema.parse(body);
 
     // Get user context
-    const headersList = headers();
+    const headersList = await headers();
     const userId = headersList.get('x-user-id');
 
     if (!userId) {
@@ -68,13 +68,13 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
     // Get user context
-    const headersList = headers();
+    const headersList = await headers();
     const userId = headersList.get('x-user-id');
 
     if (!userId) {

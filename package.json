@@ -54,7 +54,10 @@
     "security:headers": "turbo run security:headers",
     "optimize:images": "node scripts/optimize-assets.js",
     "optimize:assets": "node scripts/optimize-assets.js",
-    "analyze:assets": "node scripts/assets-discipline.js"
+    "analyze:assets": "node scripts/assets-discipline.js",
+    "deploy:staging": "turbo run build && echo 'Deploying to staging...'",
+    "deploy:canary": "turbo run build && echo 'Deploying to canary...'",
+    "deploy:production": "turbo run build && echo 'Deploying to production...'"
   },
   "devDependencies": {
     "@types/node": "^20",

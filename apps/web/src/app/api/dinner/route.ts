@@ -15,7 +15,7 @@ export async function POST(req: Request) {
       GenerateRecipesRequestSchema.parse(body);
 
     // Get tenant information from headers or user context
-    const headersList = headers();
+    const headersList = await headers();
     const tenantId = headersList.get('x-tenant-id');
 
     if (!tenantId) {
@@ -46,17 +46,13 @@ export async function POST(req: Request) {
       tenantId,
       tenant.plan,
       async (model: string) => {
-        const startTime = Date.now();
-
         const recipes = await generateRecipesWithFallback({
           ingredients,
           preferences,
           maxRetries: 3,
           retryDelay: 1000,
-          model: model as 'gpt-4o' | 'gpt-4o-mini',
         });
 
-        const endTime = Date.now();
         const tokens = Math.ceil(prompt.length / 4); // Rough estimation
         const cost =
           model === 'gpt-4o'

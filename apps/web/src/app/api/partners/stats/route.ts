@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 export async function GET(req: NextRequest) {
   try {
     // Get tenant context
-    const headersList = headers();
+    const headersList = await headers();
     const tenantId = headersList.get('x-tenant-id');
 
     if (!tenantId) {
