@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
 import type { Recipe } from '@/lib/validation';
 import { useGenerateRecipes, useSaveRecipe } from '@/hooks/useRecipes';
 import { usePantryItems } from '@/hooks/usePantry';
 import { useTenant } from '@/hooks/useTenant';
-import RecipeCard from '@/components/RecipeCard';
-import InputPrompt from '@/components/InputPrompt';
 import Navbar from '@/components/Navbar';
 import {
   RecipeCardSkeleton,
@@ -21,6 +19,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChefHat, Clock, Users, Zap } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
+
+// Lazy load heavy components
+const RecipeCard = lazy(() => import('@/components/RecipeCard'));
+const InputPrompt = lazy(() => import('@/components/InputPrompt'));
 
 function HomeContent() {
   const [user, setUser] = useState<User | null>(null);
@@ -230,11 +232,13 @@ function HomeContent() {
         {pantryLoading ? (
           <InputPromptSkeleton />
         ) : (
-          <InputPrompt
-            pantryItems={pantryItemNames}
-            loading={generateRecipesMutation.isPending}
-            onGenerate={generateRecipes}
-          />
+          <Suspense fallback={<InputPromptSkeleton />}>
+            <InputPrompt
+              pantryItems={pantryItemNames}
+              loading={generateRecipesMutation.isPending}
+              onGenerate={generateRecipes}
+            />
+          </Suspense>
         )}
 
         {/* Loading State */}
@@ -269,14 +273,15 @@ function HomeContent() {
                   void saveRecipe(recipe);
                 };
                 return (
-                  <RecipeCard
-                    key={`recipe-${recipe.title}-${index}`}
-                    recipe={recipe}
-                    canSave={!!user}
-                    recipeId={index + 1}
-                    userId={user?.id}
-                    onSave={handleSave}
-                  />
+                  <Suspense key={`recipe-${recipe.title}-${index}`} fallback={<RecipeCardSkeleton />}>
+                    <RecipeCard
+                      recipe={recipe}
+                      canSave={!!user}
+                      recipeId={index + 1}
+                      userId={user?.id}
+                      onSave={handleSave}
+                    />
+                  </Suspense>
                 );
               })}
             </div>

@@ -75,6 +75,20 @@ class AnalyticsService {
         typeof window !== 'undefined' ? navigator.userAgent : undefined,
     };
 
+    // Use requestIdleCallback for non-blocking analytics
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        this.trackEventAsync(event);
+      });
+    } else {
+      // Fallback for browsers without requestIdleCallback
+      setTimeout(() => {
+        this.trackEventAsync(event);
+      }, 0);
+    }
+  }
+
+  private async trackEventAsync(event: AnalyticsEvent) {
     try {
       const { error } = await supabase.from('analytics_events').insert(event);
 

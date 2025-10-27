@@ -91,6 +91,22 @@ pnpm dev:web
 pnpm dev:mobile
 ```
 
+#### Performance & Security Commands
+```bash
+# Performance monitoring
+pnpm perf:monitor
+pnpm perf:analyze
+pnpm perf:lighthouse
+
+# Security auditing
+pnpm security:audit
+pnpm security:scan
+
+# Format code
+pnpm format
+pnpm format:check
+```
+
 #### Mobile Development
 
 1. **Start Expo development server**

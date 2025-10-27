@@ -20,7 +20,11 @@
     "clean": "turbo run clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
-    "install:all": "pnpm install && pnpm run build:packages"
+    "install:all": "pnpm install && pnpm run build:packages",
+    "security:audit": "turbo run security:audit",
+    "security:scan": "turbo run security:scan",
+    "perf:monitor": "turbo run perf:monitor",
+    "perf:analyze": "turbo run perf:analyze"
   },
   "devDependencies": {
     "@types/node": "^20",
