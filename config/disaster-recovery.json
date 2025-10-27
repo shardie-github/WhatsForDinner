@@ -1,0 +1,21 @@
+{
+  "rto": 3600,
+  "rpo": 900,
+  "procedures": {
+    "database": {
+      "restore": "pg_restore $DATABASE_URL < backup.sql",
+      "validation": "psql $DATABASE_URL -c \"SELECT 1\"",
+      "rollback": "pg_restore --clean $DATABASE_URL < backup.sql"
+    },
+    "application": {
+      "restore": "git checkout main && npm ci && npm run build",
+      "validation": "npm run test:ci",
+      "rollback": "git checkout previous-version"
+    }
+  },
+  "contacts": {
+    "primary": "devops-team@company.com",
+    "secondary": "team-leads@company.com",
+    "escalation": "cto@company.com"
+  }
+}

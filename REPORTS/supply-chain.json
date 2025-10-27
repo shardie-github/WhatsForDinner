@@ -1,0 +1,2827 @@
+{
+  "timestamp": "2025-10-27T02:35:52.034Z",
+  "packages": [
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.76.1",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "openai",
+      "version": "^6.7.0",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "axios",
+      "version": "^1.6.0",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "node-cron",
+      "version": "^3.0.3",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "winston",
+      "version": "^3.11.0",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "dotenv",
+      "version": "^16.3.1",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/node-cron",
+      "version": "^3.0.11",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tsx",
+      "version": "^4.6.0",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.0.0",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "jest",
+      "version": "^29.7.0",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/jest",
+      "version": "^29.5.12",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^9.0.0",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "version": "^6.0.0",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "version": "^6.0.0",
+      "location": "agents/continuous-improvement/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@radix-ui/react-accordion",
+      "version": "^1.1.2",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-alert-dialog",
+      "version": "^1.0.5",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-avatar",
+      "version": "^1.0.4",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-checkbox",
+      "version": "^1.0.4",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-dialog",
+      "version": "^1.0.5",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-dropdown-menu",
+      "version": "^2.0.6",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-icons",
+      "version": "^1.3.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-label",
+      "version": "^2.0.2",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-popover",
+      "version": "^1.0.7",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-progress",
+      "version": "^1.0.3",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-radio-group",
+      "version": "^1.1.3",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-scroll-area",
+      "version": "^1.0.5",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-select",
+      "version": "^2.0.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-separator",
+      "version": "^1.0.3",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-slot",
+      "version": "^1.0.2",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-switch",
+      "version": "^1.0.3",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tabs",
+      "version": "^1.0.4",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-toast",
+      "version": "^1.1.5",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tooltip",
+      "version": "^1.0.7",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-nextjs",
+      "version": "^0.10.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-react",
+      "version": "^0.5.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.76.1",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@tanstack/react-query",
+      "version": "^5.17.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "class-variance-authority",
+      "version": "^0.7.1",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "clsx",
+      "version": "^2.1.1",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "lucide-react",
+      "version": "^0.548.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "next",
+      "version": "16.0.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "19.2.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-dom",
+      "version": "19.2.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-hook-form",
+      "version": "^7.48.2",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-syntax-highlighter",
+      "version": "^15.6.6",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "swagger-ui-react",
+      "version": "^5.9.0",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "swagger-jsdoc",
+      "version": "^6.2.8",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^3.3.1",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "apps/api-docs/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^19",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "^19",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-syntax-highlighter",
+      "version": "^15.5.11",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "autoprefixer",
+      "version": "^10.4.16",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^9",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-next",
+      "version": "16.0.0",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "postcss",
+      "version": "^8.4.32",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.0",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss-animate",
+      "version": "^1.0.7",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "apps/api-docs/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@radix-ui/react-accordion",
+      "version": "^1.1.2",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-alert-dialog",
+      "version": "^1.0.5",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-avatar",
+      "version": "^1.0.4",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-checkbox",
+      "version": "^1.0.4",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-dialog",
+      "version": "^1.0.5",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-dropdown-menu",
+      "version": "^2.0.6",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-icons",
+      "version": "^1.3.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-label",
+      "version": "^2.0.2",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-popover",
+      "version": "^1.0.7",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-progress",
+      "version": "^1.0.3",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-radio-group",
+      "version": "^1.1.3",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-scroll-area",
+      "version": "^1.0.5",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-select",
+      "version": "^2.0.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-separator",
+      "version": "^1.0.3",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-slot",
+      "version": "^1.0.2",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-switch",
+      "version": "^1.0.3",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tabs",
+      "version": "^1.0.4",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-toast",
+      "version": "^1.1.5",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tooltip",
+      "version": "^1.0.7",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-nextjs",
+      "version": "^0.10.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-react",
+      "version": "^0.5.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.76.1",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@tanstack/react-query",
+      "version": "^5.17.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "class-variance-authority",
+      "version": "^0.7.1",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "clsx",
+      "version": "^2.1.1",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "lucide-react",
+      "version": "^0.548.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "next",
+      "version": "16.0.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "19.2.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-dom",
+      "version": "19.2.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-hook-form",
+      "version": "^7.48.2",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-dropzone",
+      "version": "^14.2.3",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "recharts",
+      "version": "^2.8.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^3.3.1",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^19",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "^19",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "autoprefixer",
+      "version": "^10.4.16",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^9",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-next",
+      "version": "16.0.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "postcss",
+      "version": "^8.4.32",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.0",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss-animate",
+      "version": "^1.0.7",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "apps/chef-marketplace/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@radix-ui/react-accordion",
+      "version": "^1.1.2",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-alert-dialog",
+      "version": "^1.0.5",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-avatar",
+      "version": "^1.0.4",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-checkbox",
+      "version": "^1.0.4",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-dialog",
+      "version": "^1.0.5",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-dropdown-menu",
+      "version": "^2.0.6",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-icons",
+      "version": "^1.3.0",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-label",
+      "version": "^2.0.2",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-popover",
+      "version": "^1.0.7",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-progress",
+      "version": "^1.0.3",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-radio-group",
+      "version": "^1.1.3",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-scroll-area",
+      "version": "^1.0.5",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-select",
+      "version": "^2.0.0",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-separator",
+      "version": "^1.0.3",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-slot",
+      "version": "^1.0.2",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-switch",
+      "version": "^1.0.3",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tabs",
+      "version": "^1.0.4",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-toast",
+      "version": "^1.1.5",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tooltip",
+      "version": "^1.0.7",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-nextjs",
+      "version": "^0.10.0",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-react",
+      "version": "^0.5.0",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.76.1",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@tanstack/react-query",
+      "version": "^5.17.0",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "class-variance-authority",
+      "version": "^0.7.1",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "clsx",
+      "version": "^2.1.1",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "lucide-react",
+      "version": "^0.548.0",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "next",
+      "version": "16.0.0",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "19.2.0",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-dom",
+      "version": "19.2.0",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-hook-form",
+      "version": "^7.48.2",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-markdown",
+      "version": "^9.0.1",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-syntax-highlighter",
+      "version": "^15.6.6",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^3.3.1",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "apps/community-portal/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^19",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "^19",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-syntax-highlighter",
+      "version": "^15.5.11",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "autoprefixer",
+      "version": "^10.4.16",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^9",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-next",
+      "version": "16.0.0",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "postcss",
+      "version": "^8.4.32",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.0",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss-animate",
+      "version": "^1.0.7",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "apps/community-portal/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.76.1",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@tanstack/react-query",
+      "version": "^5.17.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/config",
+      "version": "workspace:*",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/theme",
+      "version": "workspace:*",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/ui",
+      "version": "workspace:*",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/utils",
+      "version": "workspace:*",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "clsx",
+      "version": "^2.1.1",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo",
+      "version": "~52.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-asset",
+      "version": "~11.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-constants",
+      "version": "~17.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-dev-client",
+      "version": "~5.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-file-system",
+      "version": "~18.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-font",
+      "version": "~13.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-linking",
+      "version": "~7.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-modules-core",
+      "version": "~2.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-network",
+      "version": "~7.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-router",
+      "version": "~4.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-secure-store",
+      "version": "~14.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-splash-screen",
+      "version": "~0.29.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-sqlite",
+      "version": "~15.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-status-bar",
+      "version": "~2.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-system-ui",
+      "version": "~4.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-updates",
+      "version": "~0.26.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-web-browser",
+      "version": "~14.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "lucide-react-native",
+      "version": "^0.460.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "nativewind",
+      "version": "^4.0.1",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "18.3.1",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native",
+      "version": "0.76.3",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-gesture-handler",
+      "version": "~2.20.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-reanimated",
+      "version": "~3.16.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-safe-area-context",
+      "version": "4.12.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-screens",
+      "version": "4.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-svg",
+      "version": "15.8.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-vector-icons",
+      "version": "^10.2.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-web",
+      "version": "^0.21.2",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "solito",
+      "version": "^4.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^3.3.1",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@babel/core",
+      "version": "^7.20.0",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@testing-library/jest-native",
+      "version": "^5.4.3",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@testing-library/react-native",
+      "version": "^12.4.0",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/jest",
+      "version": "^29.5.12",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^18.3.0",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-native",
+      "version": "^0.73.0",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "detox",
+      "version": "^20.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^9",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-expo",
+      "version": "^7.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "jest",
+      "version": "^29.7.0",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "jest-expo",
+      "version": "~52.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@radix-ui/react-accordion",
+      "version": "^1.1.2",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-alert-dialog",
+      "version": "^1.0.5",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-avatar",
+      "version": "^1.0.4",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-checkbox",
+      "version": "^1.0.4",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-dialog",
+      "version": "^1.0.5",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-dropdown-menu",
+      "version": "^2.0.6",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-icons",
+      "version": "^1.3.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-label",
+      "version": "^2.0.2",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-popover",
+      "version": "^1.0.7",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-progress",
+      "version": "^1.0.3",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-radio-group",
+      "version": "^1.1.3",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-scroll-area",
+      "version": "^1.0.5",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-select",
+      "version": "^2.0.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-separator",
+      "version": "^1.0.3",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-slot",
+      "version": "^1.0.2",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-switch",
+      "version": "^1.0.3",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tabs",
+      "version": "^1.0.4",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-toast",
+      "version": "^1.1.5",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tooltip",
+      "version": "^1.0.7",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-nextjs",
+      "version": "^0.10.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-react",
+      "version": "^0.5.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.76.1",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@tanstack/react-query",
+      "version": "^5.17.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "class-variance-authority",
+      "version": "^0.7.1",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "clsx",
+      "version": "^2.1.1",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "lucide-react",
+      "version": "^0.548.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "next",
+      "version": "16.0.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "19.2.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-dom",
+      "version": "19.2.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-hook-form",
+      "version": "^7.48.2",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-share",
+      "version": "^4.4.1",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "qrcode.react",
+      "version": "^3.1.0",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^3.3.1",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "apps/referral/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^19",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "^19",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "autoprefixer",
+      "version": "^10.4.16",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^9",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-next",
+      "version": "16.0.0",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "postcss",
+      "version": "^8.4.32",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.0",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss-animate",
+      "version": "^1.0.7",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "apps/referral/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@whats-for-dinner/ui",
+      "version": "workspace:*",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/utils",
+      "version": "workspace:*",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/theme",
+      "version": "workspace:*",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/config",
+      "version": "workspace:*",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-label",
+      "version": "^2.1.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-separator",
+      "version": "^1.1.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-slot",
+      "version": "^1.2.3",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-switch",
+      "version": "^1.1.1",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tabs",
+      "version": "^1.1.1",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-nextjs",
+      "version": "^0.10.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-react",
+      "version": "^0.5.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@sentry/nextjs",
+      "version": "^8.55.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@stripe/stripe-js",
+      "version": "^2.4.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.76.1",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@tanstack/react-query",
+      "version": "^5.17.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "class-variance-authority",
+      "version": "^0.7.1",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "clsx",
+      "version": "^2.1.1",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "lucide-react",
+      "version": "^0.548.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "next",
+      "version": "16.0.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "next-pwa",
+      "version": "^5.6.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "openai",
+      "version": "^6.7.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "posthog-js",
+      "version": "^1.200.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "19.2.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-dom",
+      "version": "19.2.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "resend",
+      "version": "^6.2.2",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "stripe",
+      "version": "^14.21.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^3.3.1",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "uuid",
+      "version": "^9.0.1",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@testing-library/jest-dom",
+      "version": "^6.4.2",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@testing-library/react",
+      "version": "^16.0.0",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@testing-library/user-event",
+      "version": "^14.5.2",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/jest",
+      "version": "^29.5.12",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^19",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "^19",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "autoprefixer",
+      "version": "^10.4.16",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^9",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-next",
+      "version": "15.0.0",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-prettier",
+      "version": "^9.1.0",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-plugin-prettier",
+      "version": "^5.1.3",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-plugin-jsx-a11y",
+      "version": "^6.8.0",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "husky",
+      "version": "^9.0.11",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "jest",
+      "version": "^29.7.0",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "jest-environment-jsdom",
+      "version": "^29.7.0",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "lint-staged",
+      "version": "^15.2.2",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "postcss",
+      "version": "^8.4.32",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "prettier",
+      "version": "^3.2.5",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "prettier-plugin-tailwindcss",
+      "version": "^0.5.11",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.0",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss-animate",
+      "version": "^1.0.7",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@playwright/test",
+      "version": "^1.40.0",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "version": "^7.0.0",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "version": "^7.0.0",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^9",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-expo",
+      "version": "^7.0.0",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-next",
+      "version": "16.0.0",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-prettier",
+      "version": "^9.1.0",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-plugin-jsx-a11y",
+      "version": "^6.8.0",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-plugin-prettier",
+      "version": "^5.1.3",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-plugin-react",
+      "version": "^7.33.0",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-plugin-react-hooks",
+      "version": "^4.6.0",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "nativewind",
+      "version": "^4.0.1",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.0",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss-animate",
+      "version": "^1.0.7",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "nativewind",
+      "version": "^4.0.1",
+      "location": "packages/theme/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.0",
+      "location": "packages/theme/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "packages/theme/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "packages/theme/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@whats-for-dinner/theme",
+      "version": "workspace:*",
+      "location": "packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/utils",
+      "version": "workspace:*",
+      "location": "packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "lucide-react-native",
+      "version": "^0.460.0",
+      "location": "packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "^19.2.0",
+      "location": "packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native",
+      "version": "^0.75.0",
+      "location": "packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-safe-area-context",
+      "version": "^4.10.0",
+      "location": "packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-svg",
+      "version": "^15.0.0",
+      "location": "packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@chromatic-com/storybook",
+      "version": "^4.1.1",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@storybook/addon-a11y",
+      "version": "^9.1.15",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@storybook/addon-docs",
+      "version": "^9.1.15",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@storybook/addon-onboarding",
+      "version": "^9.1.15",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@storybook/addon-vitest",
+      "version": "^9.1.15",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@storybook/react-vite",
+      "version": "^9.1.15",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^19",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-native",
+      "version": "^0.73.0",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "storybook",
+      "version": "^9.1.15",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "vitest",
+      "version": "^4.0.3",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "playwright",
+      "version": "^1.56.1",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@vitest/browser-playwright",
+      "version": "^4.0.3",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@vitest/coverage-v8",
+      "version": "^4.0.3",
+      "location": "packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "clsx",
+      "version": "^2.1.1",
+      "location": "packages/utils/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^3.3.1",
+      "location": "packages/utils/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "packages/utils/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "packages/utils/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@radix-ui/react-label",
+      "version": "^2.1.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-separator",
+      "version": "^1.1.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-slot",
+      "version": "^1.2.3",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-switch",
+      "version": "^1.1.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-tabs",
+      "version": "^1.1.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-nextjs",
+      "version": "^0.10.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-react",
+      "version": "^0.5.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@sentry/nextjs",
+      "version": "^8.55.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@stripe/stripe-js",
+      "version": "^2.4.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.76.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@tanstack/react-query",
+      "version": "^5.17.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "class-variance-authority",
+      "version": "^0.7.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "clsx",
+      "version": "^2.1.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "lucide-react",
+      "version": "^0.548.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "next",
+      "version": "16.0.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "openai",
+      "version": "^6.7.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "posthog-js",
+      "version": "^1.200.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "19.2.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-dom",
+      "version": "19.2.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "resend",
+      "version": "^6.2.2",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "stripe",
+      "version": "^14.21.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^3.3.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "uuid",
+      "version": "^9.0.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/api",
+      "version": "^1.8.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/sdk-node",
+      "version": "^0.45.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/auto-instrumentations-node",
+      "version": "^0.40.3",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/resources",
+      "version": "^1.18.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/semantic-conventions",
+      "version": "^1.18.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/sdk-metrics",
+      "version": "^1.18.1",
+      "location": "whats-for-dinner/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@testing-library/jest-dom",
+      "version": "^6.4.2",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@testing-library/react",
+      "version": "^16.0.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@testing-library/user-event",
+      "version": "^14.5.2",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/jest",
+      "version": "^29.5.12",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^19",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "^19",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "autoprefixer",
+      "version": "^10.4.16",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^9",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-next",
+      "version": "16.0.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-prettier",
+      "version": "^9.1.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-plugin-prettier",
+      "version": "^5.1.3",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-plugin-jsx-a11y",
+      "version": "^6.8.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "husky",
+      "version": "^9.0.11",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "jest",
+      "version": "^29.7.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "jest-environment-jsdom",
+      "version": "^29.7.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "lint-staged",
+      "version": "^15.2.2",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "postcss",
+      "version": "^8.4.32",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "prettier",
+      "version": "^3.2.5",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "prettier-plugin-tailwindcss",
+      "version": "^0.5.11",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tailwindcss-animate",
+      "version": "^1.0.7",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@playwright/test",
+      "version": "^1.40.0",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "node-cron",
+      "version": "^3.0.3",
+      "location": "whats-for-dinner/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.76.1",
+      "location": "whats-for-dinner/supabase/functions/package.json",
+      "type": "devDependency"
+    }
+  ],
+  "vulnerabilities": [],
+  "licenses": {},
+  "compliance": {
+    "approved": [],
+    "restricted": [],
+    "unknown": [
+      "@supabase/supabase-js",
+      "openai",
+      "axios",
+      "node-cron",
+      "winston",
+      "dotenv",
+      "zod",
+      "@types/node",
+      "@types/node-cron",
+      "tsx",
+      "typescript",
+      "jest",
+      "@types/jest",
+      "eslint",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-alert-dialog",
+      "@radix-ui/react-avatar",
+      "@radix-ui/react-checkbox",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-icons",
+      "@radix-ui/react-label",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-progress",
+      "@radix-ui/react-radio-group",
+      "@radix-ui/react-scroll-area",
+      "@radix-ui/react-select",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-switch",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-toast",
+      "@radix-ui/react-tooltip",
+      "@supabase/auth-helpers-nextjs",
+      "@supabase/auth-helpers-react",
+      "@supabase/supabase-js",
+      "@tanstack/react-query",
+      "class-variance-authority",
+      "clsx",
+      "lucide-react",
+      "next",
+      "react",
+      "react-dom",
+      "react-hook-form",
+      "react-syntax-highlighter",
+      "swagger-ui-react",
+      "swagger-jsdoc",
+      "tailwind-merge",
+      "zod",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "@types/react-syntax-highlighter",
+      "autoprefixer",
+      "eslint",
+      "eslint-config-next",
+      "postcss",
+      "tailwindcss",
+      "tailwindcss-animate",
+      "typescript",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-alert-dialog",
+      "@radix-ui/react-avatar",
+      "@radix-ui/react-checkbox",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-icons",
+      "@radix-ui/react-label",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-progress",
+      "@radix-ui/react-radio-group",
+      "@radix-ui/react-scroll-area",
+      "@radix-ui/react-select",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-switch",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-toast",
+      "@radix-ui/react-tooltip",
+      "@supabase/auth-helpers-nextjs",
+      "@supabase/auth-helpers-react",
+      "@supabase/supabase-js",
+      "@tanstack/react-query",
+      "class-variance-authority",
+      "clsx",
+      "lucide-react",
+      "next",
+      "react",
+      "react-dom",
+      "react-hook-form",
+      "react-dropzone",
+      "recharts",
+      "tailwind-merge",
+      "zod",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "autoprefixer",
+      "eslint",
+      "eslint-config-next",
+      "postcss",
+      "tailwindcss",
+      "tailwindcss-animate",
+      "typescript",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-alert-dialog",
+      "@radix-ui/react-avatar",
+      "@radix-ui/react-checkbox",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-icons",
+      "@radix-ui/react-label",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-progress",
+      "@radix-ui/react-radio-group",
+      "@radix-ui/react-scroll-area",
+      "@radix-ui/react-select",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-switch",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-toast",
+      "@radix-ui/react-tooltip",
+      "@supabase/auth-helpers-nextjs",
+      "@supabase/auth-helpers-react",
+      "@supabase/supabase-js",
+      "@tanstack/react-query",
+      "class-variance-authority",
+      "clsx",
+      "lucide-react",
+      "next",
+      "react",
+      "react-dom",
+      "react-hook-form",
+      "react-markdown",
+      "react-syntax-highlighter",
+      "tailwind-merge",
+      "zod",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "@types/react-syntax-highlighter",
+      "autoprefixer",
+      "eslint",
+      "eslint-config-next",
+      "postcss",
+      "tailwindcss",
+      "tailwindcss-animate",
+      "typescript",
+      "@supabase/supabase-js",
+      "@tanstack/react-query",
+      "@whats-for-dinner/config",
+      "@whats-for-dinner/theme",
+      "@whats-for-dinner/ui",
+      "@whats-for-dinner/utils",
+      "clsx",
+      "expo",
+      "expo-asset",
+      "expo-constants",
+      "expo-dev-client",
+      "expo-file-system",
+      "expo-font",
+      "expo-linking",
+      "expo-modules-core",
+      "expo-network",
+      "expo-router",
+      "expo-secure-store",
+      "expo-splash-screen",
+      "expo-sqlite",
+      "expo-status-bar",
+      "expo-system-ui",
+      "expo-updates",
+      "expo-web-browser",
+      "lucide-react-native",
+      "nativewind",
+      "react",
+      "react-native",
+      "react-native-gesture-handler",
+      "react-native-reanimated",
+      "react-native-safe-area-context",
+      "react-native-screens",
+      "react-native-svg",
+      "react-native-vector-icons",
+      "react-native-web",
+      "solito",
+      "tailwind-merge",
+      "tailwindcss",
+      "zod",
+      "@babel/core",
+      "@testing-library/jest-native",
+      "@testing-library/react-native",
+      "@types/jest",
+      "@types/react",
+      "@types/react-native",
+      "detox",
+      "eslint",
+      "eslint-config-expo",
+      "jest",
+      "jest-expo",
+      "typescript",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-alert-dialog",
+      "@radix-ui/react-avatar",
+      "@radix-ui/react-checkbox",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-icons",
+      "@radix-ui/react-label",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-progress",
+      "@radix-ui/react-radio-group",
+      "@radix-ui/react-scroll-area",
+      "@radix-ui/react-select",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-switch",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-toast",
+      "@radix-ui/react-tooltip",
+      "@supabase/auth-helpers-nextjs",
+      "@supabase/auth-helpers-react",
+      "@supabase/supabase-js",
+      "@tanstack/react-query",
+      "class-variance-authority",
+      "clsx",
+      "lucide-react",
+      "next",
+      "react",
+      "react-dom",
+      "react-hook-form",
+      "react-share",
+      "qrcode.react",
+      "tailwind-merge",
+      "zod",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "autoprefixer",
+      "eslint",
+      "eslint-config-next",
+      "postcss",
+      "tailwindcss",
+      "tailwindcss-animate",
+      "typescript",
+      "@whats-for-dinner/ui",
+      "@whats-for-dinner/utils",
+      "@whats-for-dinner/theme",
+      "@whats-for-dinner/config",
+      "@radix-ui/react-label",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-switch",
+      "@radix-ui/react-tabs",
+      "@supabase/auth-helpers-nextjs",
+      "@supabase/auth-helpers-react",
+      "@sentry/nextjs",
+      "@stripe/stripe-js",
+      "@supabase/supabase-js",
+      "@tanstack/react-query",
+      "class-variance-authority",
+      "clsx",
+      "lucide-react",
+      "next",
+      "next-pwa",
+      "openai",
+      "posthog-js",
+      "react",
+      "react-dom",
+      "resend",
+      "stripe",
+      "tailwind-merge",
+      "uuid",
+      "zod",
+      "@testing-library/jest-dom",
+      "@testing-library/react",
+      "@testing-library/user-event",
+      "@types/jest",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "autoprefixer",
+      "eslint",
+      "eslint-config-next",
+      "eslint-config-prettier",
+      "eslint-plugin-prettier",
+      "eslint-plugin-jsx-a11y",
+      "husky",
+      "jest",
+      "jest-environment-jsdom",
+      "lint-staged",
+      "postcss",
+      "prettier",
+      "prettier-plugin-tailwindcss",
+      "tailwindcss",
+      "tailwindcss-animate",
+      "typescript",
+      "@playwright/test",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "eslint",
+      "eslint-config-expo",
+      "eslint-config-next",
+      "eslint-config-prettier",
+      "eslint-plugin-jsx-a11y",
+      "eslint-plugin-prettier",
+      "eslint-plugin-react",
+      "eslint-plugin-react-hooks",
+      "nativewind",
+      "tailwindcss",
+      "tailwindcss-animate",
+      "typescript",
+      "nativewind",
+      "tailwindcss",
+      "@types/node",
+      "typescript",
+      "@whats-for-dinner/theme",
+      "@whats-for-dinner/utils",
+      "lucide-react-native",
+      "react",
+      "react-native",
+      "react-native-safe-area-context",
+      "react-native-svg",
+      "@chromatic-com/storybook",
+      "@storybook/addon-a11y",
+      "@storybook/addon-docs",
+      "@storybook/addon-onboarding",
+      "@storybook/addon-vitest",
+      "@storybook/react-vite",
+      "@types/node",
+      "@types/react",
+      "@types/react-native",
+      "storybook",
+      "typescript",
+      "vitest",
+      "playwright",
+      "@vitest/browser-playwright",
+      "@vitest/coverage-v8",
+      "clsx",
+      "tailwind-merge",
+      "@types/node",
+      "typescript",
+      "@radix-ui/react-label",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-switch",
+      "@radix-ui/react-tabs",
+      "@supabase/auth-helpers-nextjs",
+      "@supabase/auth-helpers-react",
+      "@sentry/nextjs",
+      "@stripe/stripe-js",
+      "@supabase/supabase-js",
+      "@tanstack/react-query",
+      "class-variance-authority",
+      "clsx",
+      "lucide-react",
+      "next",
+      "openai",
+      "posthog-js",
+      "react",
+      "react-dom",
+      "resend",
+      "stripe",
+      "tailwind-merge",
+      "uuid",
+      "zod",
+      "@opentelemetry/api",
+      "@opentelemetry/sdk-node",
+      "@opentelemetry/auto-instrumentations-node",
+      "@opentelemetry/resources",
+      "@opentelemetry/semantic-conventions",
+      "@opentelemetry/sdk-metrics",
+      "@testing-library/jest-dom",
+      "@testing-library/react",
+      "@testing-library/user-event",
+      "@types/jest",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "autoprefixer",
+      "eslint",
+      "eslint-config-next",
+      "eslint-config-prettier",
+      "eslint-plugin-prettier",
+      "eslint-plugin-jsx-a11y",
+      "husky",
+      "jest",
+      "jest-environment-jsdom",
+      "lint-staged",
+      "postcss",
+      "prettier",
+      "prettier-plugin-tailwindcss",
+      "tailwindcss",
+      "tailwindcss-animate",
+      "typescript",
+      "@playwright/test",
+      "node-cron",
+      "@supabase/supabase-js"
+    ],
+    "summary": {
+      "total": 399,
+      "approved": 0,
+      "restricted": 0,
+      "unknown": 399,
+      "complianceRate": "0.00"
+    }
+  },
+  "recommendations": [
+    {
+      "type": "license",
+      "priority": "medium",
+      "message": "Clarify licenses for 399 packages",
+      "action": "Manually verify license compatibility"
+    },
+    {
+      "type": "dependency",
+      "priority": "medium",
+      "message": "Consolidate 79 duplicate package versions",
+      "action": "Use pnpm resolutions to standardize versions"
+    }
+  ]
+}

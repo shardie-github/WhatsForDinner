@@ -1,0 +1,62 @@
+{
+  "dataTypes": {
+    "email": {
+      "retentionPeriod": 365,
+      "purpose": "communication",
+      "consentRequired": true,
+      "encryption": true
+    },
+    "name": {
+      "retentionPeriod": 2555,
+      "purpose": "identification",
+      "consentRequired": true,
+      "encryption": true
+    },
+    "phone": {
+      "retentionPeriod": 365,
+      "purpose": "communication",
+      "consentRequired": true,
+      "encryption": true
+    },
+    "address": {
+      "retentionPeriod": 2555,
+      "purpose": "shipping",
+      "consentRequired": true,
+      "encryption": true
+    },
+    "ip": {
+      "retentionPeriod": 90,
+      "purpose": "security",
+      "consentRequired": false,
+      "encryption": false
+    },
+    "cookies": {
+      "retentionPeriod": 30,
+      "purpose": "functionality",
+      "consentRequired": true,
+      "encryption": false
+    }
+  },
+  "lifecycle": {
+    "collection": {
+      "minimize": true,
+      "purposeLimitation": true,
+      "consentRequired": true
+    },
+    "processing": {
+      "lawfulness": true,
+      "transparency": true,
+      "accuracy": true
+    },
+    "storage": {
+      "encryption": true,
+      "accessControl": true,
+      "retentionManagement": true
+    },
+    "deletion": {
+      "automated": true,
+      "userRequest": true,
+      "auditTrail": true
+    }
+  }
+}

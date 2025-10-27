@@ -1,0 +1,53 @@
+{
+  "images": {
+    "supported": [
+      "jpg",
+      "jpeg",
+      "png",
+      "gif",
+      "svg",
+      "webp",
+      "avif"
+    ],
+    "modern": [
+      "webp",
+      "avif"
+    ],
+    "fallback": "jpeg",
+    "quality": {
+      "webp": 85,
+      "avif": 80,
+      "jpeg": 90,
+      "png": 95
+    }
+  },
+  "fonts": {
+    "supported": [
+      "woff",
+      "woff2",
+      "ttf",
+      "otf"
+    ],
+    "modern": [
+      "woff2"
+    ],
+    "fallback": "woff"
+  },
+  "videos": {
+    "supported": [
+      "mp4",
+      "webm",
+      "ogg"
+    ],
+    "modern": [
+      "webm"
+    ],
+    "fallback": "mp4"
+  },
+  "optimization": {
+    "enabled": true,
+    "quality": 85,
+    "progressive": true,
+    "interlaced": true
+  }
+}

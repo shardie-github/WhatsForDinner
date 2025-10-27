@@ -1,0 +1,21 @@
+{
+  "backups": {
+    "enabled": true,
+    "frequency": "daily",
+    "retention": 30,
+    "alerts": {
+      "onFailure": true,
+      "onSuccess": false,
+      "onSize": true
+    }
+  },
+  "dr": {
+    "enabled": true,
+    "rto": 3600,
+    "rpo": 900,
+    "testing": {
+      "frequency": "monthly",
+      "automated": true
+    }
+  }
+}

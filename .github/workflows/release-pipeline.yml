@@ -1,0 +1,83 @@
+name: Release Pipeline
+
+on:
+  push:
+    branches: [main, staging, canary]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm run test:ci
+      
+      - name: Build packages
+        run: npm run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            build/
+
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+      
+      - name: Deploy to staging
+        run: npm run deploy:staging
+        env:
+          ENVIRONMENT: staging
+          FEATURE_FLAGS: staging
+
+  deploy-canary:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: canary
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+      
+      - name: Deploy to canary
+        run: npm run deploy:canary
+        env:
+          ENVIRONMENT: canary
+          FEATURE_FLAGS: canary
+          ROLLOUT_PERCENTAGE: 10
+
+  deploy-production:
+    needs: deploy-canary
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+      
+      - name: Deploy to production
+        run: npm run deploy:production
+        env:
+          ENVIRONMENT: production
+          FEATURE_FLAGS: production

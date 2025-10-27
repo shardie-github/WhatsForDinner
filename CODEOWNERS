@@ -1,0 +1,38 @@
+# CODEOWNERS
+# This file defines who owns which parts of the codebase
+
+# Global owners
+* @team-leads @senior-developers
+
+# Core application code
+/apps/web/ @frontend-team @team-leads
+/apps/mobile/ @mobile-team @team-leads
+/packages/ @platform-team @team-leads
+
+# Infrastructure
+/infra/ @devops-team @team-leads
+/scripts/ @platform-team @devops-team
+
+# Documentation
+*.md @docs-team @team-leads
+/docs/ @docs-team
+
+# Configuration files
+package.json @platform-team
+tsconfig.json @platform-team
+turbo.json @platform-team
+
+# Security-related files
+SECURITY_CHECKLIST.md @security-team @team-leads
+SECURITY_AUDIT.md @security-team @team-leads
+scripts/security-*.js @security-team
+
+# Database
+/supabase/ @backend-team @database-team
+
+# Tests
+/tests/ @qa-team @team-leads
+*.test.* @qa-team
+
+# CI/CD
+.github/ @devops-team @team-leads

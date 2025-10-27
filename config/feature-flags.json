@@ -1,0 +1,76 @@
+{
+  "flags": {
+    "new-ui": {
+      "description": "New user interface design",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "advanced-search": {
+      "description": "Advanced search functionality",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": true,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 25,
+        "targetUsers": [],
+        "startDate": "2025-10-27T02:35:52.241Z",
+        "endDate": null
+      }
+    },
+    "beta-features": {
+      "description": "Beta testing features",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": true,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "user-list",
+        "percentage": 0,
+        "targetUsers": [
+          "beta@example.com"
+        ],
+        "startDate": "2025-10-27T02:35:52.241Z",
+        "endDate": null
+      }
+    },
+    "analytics-v2": {
+      "description": "Enhanced analytics tracking",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    }
+  },
+  "config": {
+    "provider": "custom",
+    "refreshInterval": 30000,
+    "fallbackValue": false,
+    "logging": true
+  }
+}
