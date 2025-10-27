@@ -51,7 +51,7 @@ export async function GET() {
       JSON.stringify({
         timestamp: new Date().toISOString(),
         overall: 'unhealthy',
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         system: { status: 'unhealthy', alerts: [], metrics: {} },
         observability: { status: 'unhealthy', components: {}, metrics: {} },
       }),

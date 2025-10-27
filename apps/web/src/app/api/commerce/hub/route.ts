@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       CommerceHubRequestSchema.parse(body);
 
     // Get tenant context
-    const headersList = headers();
+    const headersList = await headers();
     const requestTenantId = headersList.get('x-tenant-id') || tenant_id;
 
     if (!requestTenantId) {
@@ -102,7 +102,7 @@ export async function GET(req: NextRequest) {
     const tenant_id = searchParams.get('tenant_id');
 
     // Get tenant context
-    const headersList = headers();
+    const headersList = await headers();
     const requestTenantId = headersList.get('x-tenant-id') || tenant_id;
 
     if (!requestTenantId) {

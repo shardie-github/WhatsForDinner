@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 export async function GET(req: NextRequest) {
   try {
     // Get tenant context
-    const headersList = headers();
+    const headersList = await headers();
     const tenantId = headersList.get('x-tenant-id');
 
     if (!tenantId) {
@@ -44,9 +44,7 @@ export async function GET(req: NextRequest) {
       dailyRevenue.set(date, dailyRevenue.get(date) + record.revenue_usd);
       dailyRequests.set(date, dailyRequests.get(date) + 1);
 
-      if (record.user_id) {
-        dailyUsers.add(`${date}_${record.user_id}`);
-      }
+      // Note: user_id not available in revenue data
     });
 
     // Convert to array format
@@ -55,7 +53,7 @@ export async function GET(req: NextRequest) {
         date,
         revenue,
         requests: dailyRequests.get(date) || 0,
-        users: Array.from(dailyUsers).filter(user => user.startsWith(date))
+        users: (Array.from(dailyUsers) as string[]).filter(user => user.startsWith(date))
           .length,
       })
     );

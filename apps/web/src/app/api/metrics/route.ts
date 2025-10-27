@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
       }),
       {
         status: 500,
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
       }),
       {
         status: 500,

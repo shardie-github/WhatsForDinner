@@ -7,16 +7,11 @@ const CreateAPIKeySchema = z.object({
   name: z.string().min(1).max(100),
 });
 
-const UpdateAPIKeySchema = z.object({
-  isActive: z.boolean().optional(),
-  permissions: z.array(z.string()).optional(),
-  rateLimits: z.record(z.any()).optional(),
-});
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     // Get user context
-    const headersList = headers();
+    const headersList = await headers();
     const userId = headersList.get('x-user-id');
 
     if (!userId) {
@@ -56,7 +51,7 @@ export async function POST(req: NextRequest) {
     const { name } = CreateAPIKeySchema.parse(body);
 
     // Get user context
-    const headersList = headers();
+    const headersList = await headers();
     const userId = headersList.get('x-user-id');
 
     if (!userId) {

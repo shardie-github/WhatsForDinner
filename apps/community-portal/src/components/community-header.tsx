@@ -10,11 +10,7 @@ import {
   Plus, 
   Bell, 
   User, 
-  Menu,
-  ChefHat,
-  TrendingUp,
-  Users,
-  BookOpen
+  ChefHat
 } from 'lucide-react'
 
 export function CommunityHeader() {

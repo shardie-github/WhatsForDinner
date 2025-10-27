@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
         if (!acc[alert.severity]) {
           acc[alert.severity] = [];
         }
-        acc[alert.severity].push(alert);
+        acc[alert.severity]!.push(alert);
         return acc;
       },
       {} as Record<string, any[]>
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
       }),
       {
         status: 500,
@@ -128,7 +128,7 @@ export async function PATCH(request: NextRequest) {
   } catch (error) {
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
       }),
       {
         status: 500,

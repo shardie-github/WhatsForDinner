@@ -15,7 +15,7 @@ export async function GET() {
     return new Response(
       JSON.stringify({
         overall: 'unhealthy',
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
       }),
       {
