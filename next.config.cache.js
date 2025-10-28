@@ -56,6 +56,7 @@ const nextConfig = {
     optimizeCss: true,
     optimizePackageImports: ['@whats-for-dinner/ui'],
     serverComponentsExternalPackages: ['@supabase/supabase-js'],
+    runtime: 'edge',
   },
   
   // Bundle optimization
