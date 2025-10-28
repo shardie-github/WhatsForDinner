@@ -378,6 +378,77 @@ class SecretsManager {
 // Export singleton instance
 export const secretsManager = new SecretsManager();
 
+/**
+ * Validate environment variables for deployment readiness
+ */
+export function validateEnvironmentVariables(): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+  
+  // Required environment variables
+  const requiredVars = [
+    'NEXT_PUBLIC_SUPABASE_URL',
+    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    'SUPABASE_URL',
+    'SUPABASE_ANON_KEY',
+    'SUPABASE_SERVICE_ROLE_KEY',
+    'SUPABASE_PROJECT_REF',
+    'DATABASE_URL',
+  ];
+  
+  // Optional but recommended
+  const optionalVars = [
+    'OPENAI_API_KEY',
+    'STRIPE_SECRET_KEY',
+    'STRIPE_PUBLISHABLE_KEY',
+    'JWT_SECRET',
+    'ENCRYPTION_KEY',
+    'SENTRY_DSN',
+    'POSTHOG_KEY',
+    'RESEND_API_KEY',
+    'VERCEL_ORG_ID',
+    'VERCEL_PROJECT_ID',
+  ];
+  
+  // Check required variables
+  for (const varName of requiredVars) {
+    if (!process.env[varName]) {
+      errors.push(`Missing required environment variable: ${varName}`);
+    }
+  }
+  
+  // Validate Supabase project reference
+  if (process.env.SUPABASE_PROJECT_REF && process.env.SUPABASE_PROJECT_REF !== 'ghqyxhbyyirveptgwoqm') {
+    errors.push(`SUPABASE_PROJECT_REF should be 'ghqyxhbyyirveptgwoqm', got: ${process.env.SUPABASE_PROJECT_REF}`);
+  }
+  
+  // Validate Supabase URL format
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL && !process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('https://')) {
+    errors.push('NEXT_PUBLIC_SUPABASE_URL should start with https://');
+  }
+  
+  // Check for service role key in client-side environment
+  if (process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY) {
+    errors.push('SUPABASE_SERVICE_ROLE_KEY should not be exposed as NEXT_PUBLIC_ variable');
+  }
+  
+  // Validate DATABASE_URL format
+  if (process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith('postgresql://')) {
+    errors.push('DATABASE_URL should be a valid PostgreSQL connection string');
+  }
+  
+  // Check Node.js version compatibility
+  const nodeVersion = process.version;
+  const majorVersion = parseInt(nodeVersion.slice(1).split('.')[0]);
+  if (majorVersion < 18) {
+    errors.push(`Node.js version ${nodeVersion} is not supported. Minimum version is 18.x`);
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+
 // Export types and utilities
 export { SecretsManager };
 export type { SecretConfig, SecretValue };
