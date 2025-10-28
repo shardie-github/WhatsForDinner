@@ -65,7 +65,14 @@
     "analyze:assets": "node scripts/assets-discipline.js",
     "deploy:staging": "turbo run build && echo 'Deploying to staging...'",
     "deploy:canary": "turbo run build && echo 'Deploying to canary...'",
-    "deploy:production": "turbo run build && echo 'Deploying to production...'"
+    "deploy:production": "turbo run build && echo 'Deploying to production...'",
+    "migrate:emc": "node scripts/migrate-emc.ts",
+    "migrate:emc:check": "node scripts/migrate-emc.ts --check",
+    "dr:validate": "node scripts/clone-and-restore-check.ts",
+    "slo:check": "node scripts/slo-checker.ts --check",
+    "slo:report": "node scripts/slo-checker.ts",
+    "chaos:mini": "node scripts/chaos-mini.ts",
+    "chaos:mini:check": "node scripts/chaos-mini.ts --check"
   },
   "devDependencies": {
     "@types/node": "^20",
