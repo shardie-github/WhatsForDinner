@@ -39,6 +39,12 @@ jobs:
       - name: Type check
         run: pnpm type-check
 
+      - name: Bundle size check
+        run: pnpm bundle:check
+
+      - name: Secrets scan
+        run: node scripts/secrets-scan.mjs --check
+
   # Test
   test:
     name: Test
@@ -64,6 +70,25 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+      - name: RLS smoke test
+        run: node scripts/rls-smoke.ts --check
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Database performance check
+        run: node scripts/db-slowquery-check.mjs --check
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Health check
+        run: node scripts/healthcheck.js --check
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
       - name: Upload coverage
         uses: codecov/codecov-action@v3
@@ -228,6 +253,101 @@ jobs:
         run: |
           npm install -g @lhci/cli@0.12.x
           lhci autorun
+
+  # Micro-load Test
+  micro-load-test:
+    name: Micro-load Test
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/develop' && contains(github.event.pull_request.labels.*.name, 'perf-check')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install k6
+        run: |
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Run micro-load test
+        run: |
+          echo 'import http from "k6/http";
+          import { check } from "k6";
+          import { Rate } from "k6/metrics";
+
+          const errorRate = new Rate("errors");
+
+          export let options = {
+            stages: [
+              { duration: "30s", target: 10 },
+              { duration: "30s", target: 10 },
+            ],
+            thresholds: {
+              http_req_duration: ["p95<700"],
+              errors: ["rate<0.1"],
+            },
+          };
+
+          export default function() {
+            const response = http.get("${{ secrets.STAGING_URL || 'https://whats-for-dinner.vercel.app' }}/api/health");
+            check(response, {
+              "status is 200": (r) => r.status === 200,
+            });
+            errorRate.add(response.status !== 200);
+          }' > load-test.js
+          k6 run load-test.js
+
+  # Cost Guard
+  cost-guard:
+    name: Cost Guard
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run cost guard
+        run: node scripts/cost-guard.mjs --artifact --check
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Upload cost guard artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cost-guard-report
+          path: REPORTS/cost-guard.json
 
   # Notify
   notify:
