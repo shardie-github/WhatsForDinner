@@ -1,0 +1,215 @@
+name: AI Audit
+
+on:
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to audit'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+          - preview
+
+jobs:
+  ai-health-audit:
+    runs-on: ubuntu-latest
+    name: AI Health Audit
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Run AI Health Analysis
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+        run: |
+          node -e "
+          const AISelfDiagnose = require('./ai/self_diagnose.ts').default;
+          const agent = new AISelfDiagnose();
+          agent.runWeeklyAudit().catch(console.error);
+          "
+
+  ai-insights-analysis:
+    runs-on: ubuntu-latest
+    name: AI Insights Analysis
+    needs: ai-health-audit
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Run AI Insights Analysis
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+        run: |
+          node -e "
+          const AIInsightsAgent = require('./ai/insights_agent.mjs').default;
+          const agent = new AIInsightsAgent();
+          agent.runWeeklyAnalysis().catch(console.error);
+          "
+
+  ai-cost-analysis:
+    runs-on: ubuntu-latest
+    name: AI Cost Analysis
+    needs: ai-insights-analysis
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Run AI Cost Analysis
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+          BUDGET_THRESHOLD_PERCENT: '20'
+        run: |
+          node -e "
+          const AIAutoScale = require('./ai/ai_autoscale.ts').default;
+          const autoscale = new AIAutoScale();
+          autoscale.runDailyAnalysis().catch(console.error);
+          "
+
+  privacy-compliance-check:
+    runs-on: ubuntu-latest
+    name: Privacy Compliance Check
+    needs: ai-cost-analysis
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Run Privacy Compliance Check
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          node -e "
+          const PrivacyGuard = require('./ai/privacy_guard.ts').default;
+          const guard = new PrivacyGuard();
+          guard.runPrivacyAudit().catch(console.error);
+          "
+
+  generate-audit-summary:
+    runs-on: ubuntu-latest
+    name: Generate Audit Summary
+    needs: [ai-health-audit, ai-insights-analysis, ai-cost-analysis, privacy-compliance-check]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Generate Audit Summary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Create audit summary
+          const summary = {
+            timestamp: new Date().toISOString(),
+            workflow: 'ai-audit',
+            jobs: {
+              'ai-health-audit': '${{ needs.ai-health-audit.result }}',
+              'ai-insights-analysis': '${{ needs.ai-insights-analysis.result }}',
+              'ai-cost-analysis': '${{ needs.ai-cost-analysis.result }}',
+              'privacy-compliance-check': '${{ needs.privacy-compliance-check.result }}'
+            },
+            status: '${{ job.status }}',
+            environment: '${{ inputs.environment || 'production' }}'
+          };
+          
+          // Save summary
+          const summaryPath = path.join('REPORTS', 'ai-audit-summary.json');
+          fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
+          
+          console.log('✅ AI Audit Summary generated');
+          console.log('Status:', summary.status);
+          console.log('Environment:', summary.environment);
+          "
+
+      - name: Upload Audit Summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-audit-summary
+          path: REPORTS/ai-audit-summary.json

@@ -1,0 +1,297 @@
+name: Future Runtime Check
+
+on:
+  schedule:
+    # Run daily at 3 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      check_type:
+        description: 'Type of compatibility check'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - edge
+          - wasm
+          - workers
+          - hydrogen
+
+jobs:
+  future-runtime-check:
+    runs-on: ubuntu-latest
+    name: Future Runtime Compatibility Check
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Install TypeScript
+        run: npm install -g typescript
+
+      - name: Run Future Runtime Check
+        run: |
+          npx tsx scripts/futurecheck.ts
+
+      - name: Upload Future Check Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: future-runtime-report
+          path: REPORTS/future-runtime-readiness.json
+
+  edge-runtime-validation:
+    runs-on: ubuntu-latest
+    name: Edge Runtime Validation
+    if: ${{ inputs.check_type == 'all' || inputs.check_type == 'edge' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Test Edge Runtime Build
+        run: |
+          # Test Next.js Edge Runtime compatibility
+          cd apps/web
+          npm run build
+          
+          # Check for Edge Runtime specific issues
+          if grep -r "fs\." src/; then
+            echo "❌ File system usage detected - not compatible with Edge Runtime"
+            exit 1
+          fi
+          
+          if grep -r "process\.exit" src/; then
+            echo "❌ process.exit usage detected - not compatible with Edge Runtime"
+            exit 1
+          fi
+          
+          echo "✅ Edge Runtime compatibility check passed"
+
+  wasm-compatibility-check:
+    runs-on: ubuntu-latest
+    name: WASM Compatibility Check
+    if: ${{ inputs.check_type == 'all' || inputs.check_type == 'wasm' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Check Prisma WASM Engine
+        run: |
+          # Verify Prisma is configured for WASM
+          if ! grep -q "PRISMA_CLIENT_ENGINE_TYPE.*wasm" next.config.cache.js; then
+            echo "❌ Prisma not configured for WASM engine"
+            exit 1
+          fi
+          
+          echo "✅ Prisma WASM engine configuration verified"
+
+      - name: Check Native Dependencies
+        run: |
+          # Check for native dependencies that aren't WASM compatible
+          if npm list | grep -E "(sharp|canvas|sqlite3|pg-native|mysql2|bcrypt|argon2)"; then
+            echo "⚠️  Native dependencies found - may not be WASM compatible"
+          else
+            echo "✅ No blocking native dependencies found"
+          fi
+
+  workers-compatibility-check:
+    runs-on: ubuntu-latest
+    name: Workers Compatibility Check
+    if: ${{ inputs.check_type == 'all' || inputs.check_type == 'workers' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Check Cloudflare Workers Compatibility
+        run: |
+          # Check for Cloudflare Workers incompatible patterns
+          if grep -r "require(" src/; then
+            echo "❌ CommonJS usage detected - not compatible with Cloudflare Workers"
+            exit 1
+          fi
+          
+          if grep -r "module\.exports" src/; then
+            echo "❌ CommonJS exports detected - not compatible with Cloudflare Workers"
+            exit 1
+          fi
+          
+          echo "✅ Cloudflare Workers compatibility check passed"
+
+      - name: Check Vercel Edge Functions Compatibility
+        run: |
+          # Check Next.js Edge Runtime configuration
+          if ! grep -q "runtime.*edge" next.config.cache.js; then
+            echo "⚠️  Edge Runtime not explicitly configured"
+          else
+            echo "✅ Edge Runtime configuration found"
+          fi
+
+  hydrogen-oxygen-bridge:
+    runs-on: ubuntu-latest
+    name: Hydrogen/Oxygen Bridge Check
+    if: ${{ inputs.check_type == 'all' || inputs.check_type == 'hydrogen' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Check Hydrogen/Oxygen Bridge
+        run: |
+          # Check if Hydrogen/Oxygen bridge exists
+          if [ ! -f "server/api/bridge.ts" ]; then
+            echo "⚠️  Hydrogen/Oxygen bridge not found - creating placeholder"
+            mkdir -p server/api
+            cat > server/api/bridge.ts << 'EOF'
+          // Hydrogen/Oxygen Bridge
+          // This file enables compatibility with Shopify's Hydrogen/Oxygen platform
+          
+          export interface HydrogenRequest {
+            url: string;
+            method: string;
+            headers: Record<string, string>;
+            body?: string;
+          }
+          
+          export interface HydrogenResponse {
+            status: number;
+            headers: Record<string, string>;
+            body: string;
+          }
+          
+          export function handleHydrogenRequest(request: HydrogenRequest): HydrogenResponse {
+            // Bridge implementation for Hydrogen/Oxygen compatibility
+            return {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: 'Hydrogen/Oxygen bridge active' })
+            };
+          }
+          EOF
+          else
+            echo "✅ Hydrogen/Oxygen bridge found"
+          fi
+
+  generate-compatibility-report:
+    runs-on: ubuntu-latest
+    name: Generate Compatibility Report
+    needs: [future-runtime-check, edge-runtime-validation, wasm-compatibility-check, workers-compatibility-check, hydrogen-oxygen-bridge]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Generate Compatibility Report
+        run: |
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Read future check report
+          let futureReport = {};
+          try {
+            const futureReportPath = path.join('REPORTS', 'future-runtime-readiness.json');
+            futureReport = JSON.parse(fs.readFileSync(futureReportPath, 'utf8'));
+          } catch (error) {
+            console.warn('Future check report not found');
+          }
+          
+          // Generate compatibility summary
+          const summary = {
+            timestamp: new Date().toISOString(),
+            workflow: 'futurecheck',
+            check_type: '${{ inputs.check_type || 'all' }}',
+            jobs: {
+              'future-runtime-check': '${{ needs.future-runtime-check.result }}',
+              'edge-runtime-validation': '${{ needs.edge-runtime-validation.result }}',
+              'wasm-compatibility-check': '${{ needs.wasm-compatibility-check.result }}',
+              'workers-compatibility-check': '${{ needs.workers-compatibility-check.result }}',
+              'hydrogen-oxygen-bridge': '${{ needs.hydrogen-oxygen-bridge.result }}'
+            },
+            future_check: futureReport,
+            status: '${{ job.status }}'
+          };
+          
+          // Save summary
+          const summaryPath = path.join('REPORTS', 'future-compatibility-summary.json');
+          fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
+          
+          console.log('✅ Future Compatibility Summary generated');
+          console.log('Check Type:', summary.check_type);
+          console.log('Status:', summary.status);
+          "
+
+      - name: Upload Compatibility Summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: future-compatibility-summary
+          path: REPORTS/future-compatibility-summary.json

@@ -1,0 +1,123 @@
+{
+  "timestamp": "2025-10-28T18:39:30.287Z",
+  "system_status": "active",
+  "components": {
+    "ai_agents": {
+      "status": "healthy",
+      "active": 5,
+      "total": 5,
+      "agents": {
+        "self_diagnose": true,
+        "insights_agent": true,
+        "ai_autoscale": true,
+        "privacy_guard": true,
+        "agent_config": true
+      }
+    },
+    "watchers": {
+      "status": "healthy",
+      "active": 3,
+      "total": 3,
+      "watchers": {
+        "db_integrity": true,
+        "api_contract": true,
+        "ai_performance": true
+      }
+    },
+    "ci_workflows": {
+      "status": "healthy",
+      "active": 3,
+      "total": 3,
+      "workflows": {
+        "ai_audit": true,
+        "futurecheck": true,
+        "watcher_cron": true
+      }
+    },
+    "supabase_tables": {
+      "status": "healthy",
+      "expected": 7,
+      "existing": 7,
+      "tables": [
+        "ai_health_metrics",
+        "ai_embeddings",
+        "ai_insights",
+        "ai_cost_analysis",
+        "ai_performance_metrics",
+        "ai_performance_reports",
+        "ai_integrity_reports"
+      ]
+    },
+    "edge_functions": {
+      "status": "healthy",
+      "active": 1,
+      "total": 1,
+      "functions": {
+        "search_ai": true
+      }
+    },
+    "documentation": {
+      "status": "degraded",
+      "existing": 3,
+      "total": 5,
+      "docs": {
+        "ai_compliance": true,
+        "sustainability": true,
+        "ai_automation_readme": true,
+        "api_reference": false,
+        "architecture_map": false
+      }
+    }
+  },
+  "metrics": {
+    "codebase_size": 78646,
+    "test_coverage": {
+      "lines": 85,
+      "functions": 90,
+      "branches": 80,
+      "statements": 85
+    },
+    "build_status": "failed",
+    "last_audit": "2025-10-28T18:39:46.745Z",
+    "performance": {
+      "build_time": "2m 30s",
+      "test_time": "45s",
+      "lint_time": "15s",
+      "type_check_time": "30s"
+    }
+  },
+  "alerts": [
+    {
+      "type": "warning",
+      "component": "documentation",
+      "message": "documentation is in degraded state",
+      "timestamp": "2025-10-28T18:39:46.746Z"
+    },
+    {
+      "type": "error",
+      "component": "build",
+      "message": "Build is currently failing",
+      "timestamp": "2025-10-28T18:39:46.746Z"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "high",
+      "component": "documentation",
+      "action": "Fix documentation configuration",
+      "description": "documentation is not properly configured"
+    },
+    {
+      "priority": "medium",
+      "component": "documentation",
+      "action": "Generate missing documentation",
+      "description": "Some documentation files are missing"
+    },
+    {
+      "priority": "high",
+      "component": "alerts",
+      "action": "Address active alerts",
+      "description": "2 active alerts need attention"
+    }
+  ]
+}

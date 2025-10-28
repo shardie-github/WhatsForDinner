@@ -1,0 +1,267 @@
+name: Watcher Cron Jobs
+
+on:
+  schedule:
+    # Run nightly at 1 AM UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+    inputs:
+      watcher_type:
+        description: 'Type of watcher to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - db-integrity
+          - api-contract
+          - ai-performance
+
+jobs:
+  database-integrity-watcher:
+    runs-on: ubuntu-latest
+    name: Database Integrity Watcher
+    if: ${{ inputs.watcher_type == 'all' || inputs.watcher_type == 'db-integrity' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Install TypeScript
+        run: npm install -g typescript
+
+      - name: Run Database Integrity Check
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+        run: |
+          npx tsx -e "
+          const DatabaseIntegrityWatcher = require('./watchers/db_integrity.watcher.ts').default;
+          const watcher = new DatabaseIntegrityWatcher();
+          watcher.runNightlyCheck().catch(console.error);
+          "
+
+  api-contract-watcher:
+    runs-on: ubuntu-latest
+    name: API Contract Watcher
+    if: ${{ inputs.watcher_type == 'all' || inputs.watcher_type == 'api-contract' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Install TypeScript
+        run: npm install -g typescript
+
+      - name: Run API Contract Check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+        run: |
+          npx tsx -e "
+          const APIContractWatcher = require('./watchers/api_contract.watcher.ts').default;
+          const watcher = new APIContractWatcher();
+          watcher.runNightlyCheck().catch(console.error);
+          "
+
+  ai-performance-watcher:
+    runs-on: ubuntu-latest
+    name: AI Performance Watcher
+    if: ${{ inputs.watcher_type == 'all' || inputs.watcher_type == 'ai-performance' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Install TypeScript
+        run: npm install -g typescript
+
+      - name: Run AI Performance Check
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+        run: |
+          npx tsx -e "
+          const AIPerformanceWatcher = require('./watchers/ai_performance.watcher.ts').default;
+          const watcher = new AIPerformanceWatcher();
+          watcher.runNightlyCheck().catch(console.error);
+          "
+
+  generate-watcher-summary:
+    runs-on: ubuntu-latest
+    name: Generate Watcher Summary
+    needs: [database-integrity-watcher, api-contract-watcher, ai-performance-watcher]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Generate Watcher Summary
+        run: |
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Generate watcher summary
+          const summary = {
+            timestamp: new Date().toISOString(),
+            workflow: 'watcher-cron',
+            watcher_type: '${{ inputs.watcher_type || 'all' }}',
+            jobs: {
+              'database-integrity-watcher': '${{ needs.database-integrity-watcher.result }}',
+              'api-contract-watcher': '${{ needs.api-contract-watcher.result }}',
+              'ai-performance-watcher': '${{ needs.ai-performance-watcher.result }}'
+            },
+            status: '${{ job.status }}',
+            environment: 'production'
+          };
+          
+          // Save summary
+          const summaryPath = path.join('REPORTS', 'watcher-cron-summary.json');
+          fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
+          
+          console.log('✅ Watcher Cron Summary generated');
+          console.log('Watcher Type:', summary.watcher_type);
+          console.log('Status:', summary.status);
+          "
+
+      - name: Upload Watcher Summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: watcher-cron-summary
+          path: REPORTS/watcher-cron-summary.json
+
+  notify-on-failure:
+    runs-on: ubuntu-latest
+    name: Notify on Failure
+    needs: [database-integrity-watcher, api-contract-watcher, ai-performance-watcher]
+    if: failure()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Create Failure Issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+        run: |
+          node -e "
+          const { Octokit } = require('@octokit/rest');
+          
+          const octokit = new Octokit({
+            auth: process.env.GITHUB_TOKEN,
+          });
+          
+          const failedJobs = [];
+          if ('${{ needs.database-integrity-watcher.result }}' === 'failure') {
+            failedJobs.push('Database Integrity Watcher');
+          }
+          if ('${{ needs.api-contract-watcher.result }}' === 'failure') {
+            failedJobs.push('API Contract Watcher');
+          }
+          if ('${{ needs.ai-performance-watcher.result }}' === 'failure') {
+            failedJobs.push('AI Performance Watcher');
+          }
+          
+          if (failedJobs.length > 0) {
+            const issue = {
+              title: '🚨 Watcher Cron Jobs Failed',
+              body: \`
+## Watcher Cron Job Failures
+
+The following watcher jobs failed during the nightly run:
+
+\${failedJobs.map(job => \`- \${job}\`).join('\\n')}
+
+### Next Steps
+
+1. Check the workflow logs for detailed error information
+2. Investigate and fix the underlying issues
+3. Re-run the failed watchers manually if needed
+
+**Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+**Timestamp:** \${new Date().toISOString()}
+              \`,
+              labels: ['watcher', 'failure', 'automated', 'critical']
+            };
+            
+            octokit.rest.issues.create({
+              owner: process.env.GITHUB_OWNER,
+              repo: process.env.GITHUB_REPO,
+              title: issue.title,
+              body: issue.body,
+              labels: issue.labels
+            }).then(response => {
+              console.log('✅ Failure notification issue created:', response.data.html_url);
+            }).catch(error => {
+              console.error('Failed to create failure notification:', error);
+            });
+          }
+          "

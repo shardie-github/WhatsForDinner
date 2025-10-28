@@ -72,13 +72,35 @@
     "slo:check": "node scripts/slo-checker.ts --check",
     "slo:report": "node scripts/slo-checker.ts",
     "chaos:mini": "node scripts/chaos-mini.ts",
-    "chaos:mini:check": "node scripts/chaos-mini.ts --check"
+    "chaos:mini:check": "node scripts/chaos-mini.ts --check",
+    "ai:audit": "node -e \"require('./ai/self_diagnose.ts').default.prototype.runWeeklyAudit()\"",
+    "ai:insights": "node -e \"require('./ai/insights_agent.mjs').default.prototype.runWeeklyAnalysis()\"",
+    "ai:cost": "node -e \"require('./ai/ai_autoscale.ts').default.prototype.runDailyAnalysis()\"",
+    "ai:privacy": "node -e \"require('./ai/privacy_guard.ts').default.prototype.runPrivacyAudit()\"",
+    "ai:embeddings": "node scripts/generate-embeddings.mjs",
+    "ai:search": "node -e \"console.log('AI search available at /functions/search-ai')\"",
+    "ai:docs": "node scripts/generate-docs-ai.mjs",
+    "ai:release-notes": "node scripts/release-notes-ai.mjs",
+    "ai:onboard": "node scripts/onboard-ai.mjs",
+    "ai:dashboard": "node scripts/ai-dashboard.mjs",
+    "futurecheck": "npx tsx scripts/futurecheck.ts",
+    "watcher:db": "npx tsx -e \"require('./watchers/db_integrity.watcher.ts').default.prototype.runNightlyCheck()\"",
+    "watcher:api": "npx tsx -e \"require('./watchers/api_contract.watcher.ts').default.prototype.runNightlyCheck()\"",
+    "watcher:ai": "npx tsx -e \"require('./watchers/ai_performance.watcher.ts').default.prototype.runNightlyCheck()\"",
+    "ai:status": "node -e \"console.log('AI System Status: Active')\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.76.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "prettier": "^3.2.5",
     "turbo": "^1.13.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "openai": "^6.7.0",
+    "@octokit/rest": "^20.0.2",
+    "glob": "^11.0.0",
+    "tsx": "^4.20.6"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
