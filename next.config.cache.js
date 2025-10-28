@@ -3,6 +3,11 @@ const nextConfig = {
   // Enable static optimization
   trailingSlash: false,
   
+  // Enforce Prisma engine type
+  env: {
+    PRISMA_CLIENT_ENGINE_TYPE: 'wasm',
+  },
+  
   // Image optimization
   images: {
     domains: ['cdn.example.com'],
@@ -50,6 +55,35 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['@whats-for-dinner/ui'],
+    serverComponentsExternalPackages: ['@supabase/supabase-js'],
+  },
+  
+  // Bundle optimization
+  webpack: (config, { isServer, dev }) => {
+    if (!isServer && !dev) {
+      // Tree shaking optimization
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
+      
+      // Bundle splitting
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+          supabase: {
+            test: /[\\/]node_modules[\\/]@supabase[\\/]/,
+            name: 'supabase',
+            chunks: 'all',
+          },
+        },
+      };
+    }
+    
+    return config;
   },
 };
 

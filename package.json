@@ -23,7 +23,15 @@
     "performance:audit": "node scripts/performance-budgets.js",
     "performance:lighthouse": "lighthouse http://localhost:3000 --output=json --output-path=./REPORTS/lighthouse.json",
     "performance:budget": "node scripts/performance-budgets.js --check-budgets",
-    "analyze:bundle": "webpack-bundle-analyzer dist/static/js/*.js",
+    "analyze:bundle": "node scripts/bundle-report.mjs",
+    "bundle:check": "node scripts/bundle-report.mjs --check-budgets",
+    "secrets:scan": "node scripts/secrets-scan.mjs --check",
+    "db:perf": "node scripts/db-slowquery-check.mjs --check",
+    "rls:test": "node scripts/rls-smoke.ts --check",
+    "health:check": "node scripts/healthcheck.js --check",
+    "cost:guard": "node scripts/cost-guard.mjs --check",
+    "smoke:test": "cd apps/web && npx playwright test tests/smoke.spec.ts",
+    "check:all": "node scripts/run-all-checks.mjs",
     "experimentation:setup": "node scripts/experimentation-layer.js",
     "docs:lint": "node scripts/docs-quality-gate.js",
     "repo:hygiene": "node scripts/repo-hygiene.js",
@@ -67,7 +75,7 @@
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=18.0.0 <21.0.0",
     "pnpm": ">=8.0.0"
   }
 }
