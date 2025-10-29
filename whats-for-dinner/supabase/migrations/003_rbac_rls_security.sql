@@ -1,3 +1,13 @@
+-- DEPRECATED: This migration is replaced by 003_consolidated_rls_security.sql
+-- DO NOT RUN: Contains outdated references to non-existent tables
+-- This file is kept for reference only and will be removed in a future migration
+--
+-- Use 003_consolidated_rls_security.sql instead which:
+-- - Uses correct table names (profiles, not users)
+-- - Integrates with multi-tenant schema
+-- - Follows best practices for RLS
+-- - Covers all tables from all migrations
+
 -- Comprehensive RBAC and RLS Security Implementation
 -- This migration sets up role-based access control and row-level security
 
