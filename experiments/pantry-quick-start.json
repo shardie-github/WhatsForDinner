@@ -1,0 +1,64 @@
+{
+  "id": "pantry-quick-start",
+  "name": "Pantry Quick Start Feature Test",
+  "description": "Tests whether quick-start pantry feature improves time-to-first-recipe",
+  "status": "active",
+  "startDate": "2025-01-21",
+  "endDate": "2025-03-21",
+  "allocation": 0.50,
+  "variants": {
+    "control": {
+      "name": "Manual Entry Only",
+      "description": "Users must manually type ingredients",
+      "hypothesis": "Baseline conversion rate without quick-start",
+      "traffic": 0.50
+    },
+    "treatment": {
+      "name": "Quick Start Enabled",
+      "description": "Users see 'Use My Pantry' button and quick-select chips",
+      "hypothesis": "Quick-start reduces friction and increases conversion by 25%",
+      "traffic": 0.50
+    }
+  },
+  "successMetrics": {
+    "primary": {
+      "name": "Time to First Recipe",
+      "description": "Time from page load to recipe generation (seconds)",
+      "target": 20,
+      "current": null
+    },
+    "secondary": [
+      {
+        "name": "Recipe Generation Rate",
+        "description": "% of visitors who generate at least one recipe",
+        "target": 0.30,
+        "current": null
+      },
+      {
+        "name": "Pantry Quick Start Usage",
+        "description": "% of users who use quick-start vs. manual entry",
+        "target": 0.60,
+        "current": null
+      }
+    ]
+  },
+  "stopRules": {
+    "minExposures": 500,
+    "significanceLevel": 0.95,
+    "stopIf": {
+      "variantUnderperformsBaseline": -0.15,
+      "variantOutperformsBaseline": 0.25,
+      "noDifferenceAfter": 2000
+    }
+  },
+  "audience": {
+    "included": ["all"],
+    "excluded": ["users_with_existing_pantry"],
+    "targeting": {}
+  },
+  "guardrails": {
+    "maxTrafficRedirect": 0.50,
+    "requireApproval": false,
+    "autoStop": true
+  }
+}
