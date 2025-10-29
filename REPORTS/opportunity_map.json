@@ -1,0 +1,262 @@
+{
+  "metadata": {
+    "generated": "2025-01-21",
+    "review_scope": "Strategic opportunity identification",
+    "rating_scale": "1-10 (impact × feasibility)"
+  },
+  "opportunities": [
+    {
+      "id": "grocery-integration",
+      "title": "Grocery Delivery Integration",
+      "category": "Revenue / UX Enhancement",
+      "description": "Direct integration with Instacart, Amazon Fresh, Walmart to add recipe ingredients to cart",
+      "target_segment": "Consumer meal planners",
+      "impact_score": 9,
+      "feasibility_score": 7,
+      "overall_score": 63,
+      "time_to_market": "2-4 weeks",
+      "revenue_potential": "High - Affiliate commissions (2.5-5% per order), increased user retention",
+      "competitive_advantage": "Most recipe apps show ingredients but don't enable purchase",
+      "dependencies": ["API partnerships with grocery services", "Affiliate program setup"],
+      "validation_needed": [
+        "User willingness to purchase ingredients via app",
+        "Conversion rate from recipe view to cart add",
+        "Partnership interest from grocery services"
+      ],
+      "risk_level": "Medium",
+      "priority": "HIGH"
+    },
+    {
+      "id": "voice-interface",
+      "title": "Voice-Activated Recipe Generation",
+      "category": "UX Enhancement / Market Expansion",
+      "description": "Alexa/Google Home skills for hands-free recipe suggestions in kitchen",
+      "target_segment": "Cooking enthusiasts, busy families",
+      "impact_score": 8,
+      "feasibility_score": 6,
+      "overall_score": 48,
+      "time_to_market": "4-6 weeks",
+      "revenue_potential": "Medium - Increases engagement, potential voice commerce",
+      "competitive_advantage": "Natural use case (kitchen hands-free), unique in recipe space",
+      "dependencies": ["Voice platform SDKs", "Natural language processing improvements"],
+      "validation_needed": [
+        "User interest in voice interaction",
+        "Accuracy of voice-to-recipe matching"
+      ],
+      "risk_level": "Medium",
+      "priority": "MEDIUM"
+    },
+    {
+      "id": "diet-specialization",
+      "title": "Vertical Diet Specialization",
+      "category": "Market Positioning / Monetization",
+      "description": "Deep focus on specific diets: keto, autoimmune, FODMAP, vegan, etc. with specialized AI",
+      "target_segment": "Diet-restricted consumers (higher willingness to pay)",
+      "impact_score": 9,
+      "feasibility_score": 6,
+      "overall_score": 54,
+      "time_to_market": "2-3 months",
+      "revenue_potential": "High - Premium pricing ($15-25/month), dedicated user base",
+      "competitive_advantage": "Deeper expertise than generic apps, less competition",
+      "dependencies": ["Diet-specific recipe database", "Nutrition expert consultation", "Fine-tuned AI models"],
+      "validation_needed": [
+        "Market size for each diet",
+        "Willingness to pay premium",
+        "Competition analysis per vertical"
+      ],
+      "risk_level": "Low",
+      "priority": "HIGH"
+    },
+    {
+      "id": "b2b2c-wellness",
+      "title": "B2B2C Wellness Platform Integration",
+      "category": "B2B Revenue / Enterprise",
+      "description": "White-label meal planning for employer wellness programs, health insurance, healthcare platforms",
+      "target_segment": "Enterprise HR/Wellness teams",
+      "impact_score": 8,
+      "feasibility_score": 5,
+      "overall_score": 40,
+      "time_to_market": "3-6 months",
+      "revenue_potential": "Very High - $5-20 per employee/month, long contracts",
+      "competitive_advantage": "Multi-tenancy already built, existing enterprise infrastructure",
+      "dependencies": ["Enterprise sales process", "White-label customization", "Healthcare compliance"],
+      "validation_needed": [
+        "Enterprise customer demand",
+        "Sales pipeline",
+        "ROI for wellness platforms"
+      ],
+      "risk_level": "Medium-High",
+      "priority": "MEDIUM (after consumer validation)"
+    },
+    {
+      "id": "content-marketing",
+      "title": "SEO Content Marketing Strategy",
+      "category": "Growth / User Acquisition",
+      "description": "Publish 'What to make with X ingredients' articles for organic search traffic",
+      "target_segment": "Search-driven meal planners",
+      "impact_score": 7,
+      "feasibility_score": 9,
+      "overall_score": 63,
+      "time_to_market": "Ongoing (start immediately)",
+      "revenue_potential": "Medium - Low acquisition cost, high lifetime value",
+      "competitive_advantage": "Leverages existing AI for content generation, Yummly model proven",
+      "dependencies": ["Content creation workflow", "SEO optimization", "Distribution strategy"],
+      "validation_needed": [
+        "Keyword research",
+        "Content performance metrics",
+        "Traffic-to-signup conversion"
+      ],
+      "risk_level": "Low",
+      "priority": "HIGH"
+    },
+    {
+      "id": "ingredient-recognition",
+      "title": "Photo-Based Ingredient Recognition",
+      "category": "UX Innovation / Differentiation",
+      "description": "Computer vision to detect ingredients from pantry photos, auto-generate recipes",
+      "target_segment": "Tech-savvy meal planners",
+      "impact_score": 8,
+      "feasibility_score": 4,
+      "overall_score": 32,
+      "time_to_market": "6+ months",
+      "revenue_potential": "Medium - Unique feature, PR value",
+      "competitive_advantage": "Removes manual entry friction, no competitor has this",
+      "dependencies": ["CV model training", "Ingredient database", "App permissions"],
+      "validation_needed": [
+        "Accuracy of ingredient detection",
+        "User interest in photo feature",
+        "Technical feasibility at scale"
+      ],
+      "risk_level": "High",
+      "priority": "LOW (explore after core validated)"
+    },
+    {
+      "id": "meal-prep-optimization",
+      "title": "Batch Meal Prep Planner",
+      "category": "Feature Expansion / Retention",
+      "description": "Generate weekly meal prep plans that maximize efficiency, minimize waste",
+      "target_segment": "Meal prep enthusiasts, busy professionals",
+      "impact_score": 7,
+      "feasibility_score": 7,
+      "overall_score": 49,
+      "time_to_market": "2-3 months",
+      "revenue_potential": "Medium - Higher engagement, retention driver",
+      "competitive_advantage": "AI-powered optimization vs. manual planning",
+      "dependencies": ["Meal prep recipe database", "Portion calculations", "Storage recommendations"],
+      "validation_needed": [
+        "User interest in meal prep",
+        "Time-saving value",
+        "Recipe database size"
+      ],
+      "risk_level": "Low-Medium",
+      "priority": "MEDIUM"
+    },
+    {
+      "id": "ai-personalization",
+      "title": "User-Specific AI Fine-Tuning",
+      "category": "Product Moat / Retention",
+      "description": "Fine-tune models on user interaction data to improve personalization over time",
+      "target_segment": "All users (retention driver)",
+      "impact_score": 9,
+      "feasibility_score": 5,
+      "overall_score": 45,
+      "time_to_market": "4-6 months",
+      "revenue_potential": "High - Creates switching cost, data moat",
+      "competitive_advantage": "Improving recommendations = harder to leave",
+      "dependencies": ["ML infrastructure", "User data collection", "Model training pipeline"],
+      "validation_needed": [
+        "Improvement in recommendation accuracy",
+        "Retention impact",
+        "Technical feasibility"
+      ],
+      "risk_level": "Medium",
+      "priority": "MEDIUM (after core validated)"
+    },
+    {
+      "id": "restaurant-partnerships",
+      "title": "Restaurant Recipe Partnerships",
+      "category": "Content / Differentiation",
+      "description": "Partner with restaurants to feature official recipes, drive traffic",
+      "target_segment": "Food enthusiasts, restaurant fans",
+      "impact_score": 6,
+      "feasibility_score": 6,
+      "overall_score": 36,
+      "time_to_market": "3-4 months",
+      "revenue_potential": "Medium - Content marketing, potential revenue share",
+      "competitive_advantage": "Exclusive content, brand partnerships",
+      "dependencies": ["Restaurant relationships", "Recipe licensing", "Marketing partnerships"],
+      "validation_needed": [
+        "Restaurant interest",
+        "User engagement with restaurant recipes",
+        "Partnership terms"
+      ],
+      "risk_level": "Medium",
+      "priority": "LOW"
+    },
+    {
+      "id": "nutrition-tracking",
+      "title": "Integrated Nutrition Tracking",
+      "category": "Feature Expansion / Health Focus",
+      "description": "Add macro/micronutrient tracking, health goal alignment to recipes",
+      "target_segment": "Health-conscious meal planners",
+      "impact_score": 7,
+      "feasibility_score": 6,
+      "overall_score": 42,
+      "time_to_market": "2-3 months",
+      "revenue_potential": "Medium - Premium feature, health focus = higher willingness to pay",
+      "competitive_advantage": "Integrated (vs. separate apps like MyFitnessPal)",
+      "dependencies": ["Nutrition database", "API integrations", "Goal tracking UI"],
+      "validation_needed": [
+        "User demand for nutrition tracking",
+        "Competition from MyFitnessPal, Lose It",
+        "Technical accuracy"
+      ],
+      "risk_level": "Medium",
+      "priority": "MEDIUM"
+    }
+  ],
+  "prioritization_summary": {
+    "immediate_focus": [
+      "grocery-integration",
+      "content-marketing",
+      "diet-specialization"
+    ],
+    "next_quarter": [
+      "meal-prep-optimization",
+      "voice-interface",
+      "ai-personalization"
+    ],
+    "explore_after_validation": [
+      "b2b2c-wellness",
+      "ingredient-recognition",
+      "nutrition-tracking"
+    ],
+    "low_priority": [
+      "restaurant-partnerships"
+    ]
+  },
+  "market_insights": {
+    "highest_roi": "Grocery integration and content marketing (high impact, medium effort)",
+    "biggest_moat": "AI personalization and diet specialization (data moat, niche focus)",
+    "fastest_path_to_revenue": "Grocery affiliate commissions",
+    "biggest_risk": "Over-engineering innovation before validating core (ingredient recognition)",
+    "market_timing": "Grocery delivery and diet specialization are hot markets with proven demand"
+  },
+  "validation_roadmap": {
+    "week_1_2": [
+      "User interviews: grocery integration interest",
+      "Keyword research: content marketing opportunities",
+      "Diet market sizing: keto, vegan, autoimmune"
+    ],
+    "month_1": [
+      "Grocery API partnership conversations",
+      "Content publishing (10 articles)",
+      "Diet specialization MVP planning"
+    ],
+    "month_2_3": [
+      "Launch grocery integration (1 partner minimum)",
+      "Publish 30+ content pieces",
+      "Launch diet specialization (pick 1 vertical)"
+    ]
+  }
+}
