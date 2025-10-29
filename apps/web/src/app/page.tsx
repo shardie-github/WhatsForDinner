@@ -17,7 +17,7 @@ import {
 import { queryClient } from '@/lib/queryClient';
 import { analytics } from '@/lib/analytics';
 import { logger } from '@/lib/logger';
-import { getVariant, shouldShowExperiment } from '@/lib/experiments';
+import { getVariant, shouldShowExperiment, trackConversion } from '@/lib/experiments';
 import OnboardingChecklist from '@/components/OnboardingChecklist';
 import EmptyStateGuide from '@/components/EmptyStateGuide';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -193,11 +193,22 @@ function HomeContent() {
         <div className="space-y-6 text-center">
           <div className="space-y-4">
             <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-4xl font-bold text-foreground text-transparent md:text-6xl">
-              {variant === 'C' ? '10,000+ recipes generated this month' : "What's for Dinner?"}
+              {variant === 'C' 
+                ? '10,000+ recipes generated this month' 
+                : variant === 'A'
+                ? "Never stare at your pantry confused again"
+                : variant === 'B'
+                ? "From pantry to plate in 30 seconds"
+                : "What's for Dinner?"
+              }
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
               {variant === 'C' 
                 ? 'Join thousands using AI to plan meals from ingredients they already have. Save 15 minutes per meal.'
+                : variant === 'A'
+                ? "Our AI learns your pantry and suggests recipes you'll actually want to make—in under 30 seconds."
+                : variant === 'B'
+                ? "Stop wondering what's for dinner. Get AI-powered recipes that fit your kitchen, your diet, and your schedule."
                 : 'Get AI-powered meal suggestions based on your pantry and preferences'
               }
             </p>
@@ -245,7 +256,18 @@ function HomeContent() {
                       </div>
                       <p className="text-sm text-muted-foreground">Upgrade</p>
                       <a
-                        href="/billing"
+                        href="/pricing"
+                        onClick={async () => {
+                          await analytics.trackEvent('upgrade_cta_clicked', {
+                            location: 'homepage_usage_card',
+                            current_plan: tenant.plan,
+                            remaining_quota: usage.remaining_quota,
+                            user_id: user?.id,
+                          });
+                          await trackConversion('landing-hero-variant', 'upgrade_cta_clicked', user?.id, {
+                            location: 'homepage',
+                          });
+                        }}
                         className="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                       >
                         Upgrade Plan

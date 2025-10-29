@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { StripeService } from '@/lib/stripe';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { analytics } from '@/lib/analytics';
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,6 +45,14 @@ export async function POST(request: NextRequest) {
       plan,
       successUrl,
       cancelUrl,
+    });
+
+    // Track checkout initiation
+    await analytics.trackEvent('checkout_initiated', {
+      user_id: user.id,
+      tenant_id: profile.tenant_id,
+      plan,
+      session_id: session.id,
     });
 
     return NextResponse.json({ sessionId: session.id, url: session.url });
