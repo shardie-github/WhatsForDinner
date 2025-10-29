@@ -1,198 +1,295 @@
-# Messaging Map
+# Messaging Map: What's for Dinner
 
 **Last Updated**: 2025-01-21  
-**Purpose**: Consistent messaging across all channels and touchpoints
+**Purpose**: Define messaging variants by audience, channel, and use case
 
 ---
 
-## Core Value Proposition
+## Core Message Architecture
 
-**One Sentence:**
-> "What's for Dinner is the AI meal planner that learns your pantry, preferences, and cooking style—suggesting personalized recipes in seconds so you never stare at ingredients confused again."
+### Primary Message
+> "Never stare at your pantry confused again. Get dinner ideas from ingredients you already have—in 30 seconds."
 
-**Variations:**
-
-### For Consumers (Short)
-> "Stop wondering what's for dinner. Our AI learns your kitchen and suggests recipes you'll actually want to make—in 30 seconds."
-
-### For Consumers (Emotional)
-> "Never stare at your pantry confused again. Get dinner ideas from ingredients you already have."
-
-### For Investors
-> "We're building the personalized recipe assistant that knows your kitchen better than you do. Our AI creates a data moat through user-specific training."
+### Message Pillars
+1. **Speed**: 30 seconds to dinner plan
+2. **Pantry-First**: Start with what you have, not what you need
+3. **Personalization**: AI learns your kitchen
+4. **Proof**: Real results from real users
 
 ---
 
-## Message Hierarchy
+## By Audience (ICP)
 
-### Level 1: Headline (Primary Value)
+### Busy Families (Primary ICP)
 
-**Option A (Problem-Focused):**
-- "Never stare at your pantry confused again"
-- "Stop wondering what's for dinner"
+**Pain Points:**
+- "What should I cook tonight?" decision fatigue
+- Wasting ingredients
+- Need family-friendly recipes fast
 
-**Option B (Outcome-Focused):**
-- "From pantry to plate in 30 seconds"
-- "Dinner ideas you can make right now"
+**Message Variants:**
 
-**Option C (Differentiation-Focused):**
-- "AI that learns your kitchen"
-- "Recipes that fit YOUR family, YOUR diet, YOUR schedule"
+**Short (Social/Ads):**
+> "Dinner ideas in 30 seconds. Use ingredients you already have."
 
-### Level 2: Subheadline (How It Works)
+**Medium (Landing Page):**
+> "Never stare at your pantry confused again. Our AI suggests family-friendly recipes from ingredients you already have—in under 30 seconds."
 
-**Standard:**
-- "Our AI learns your pantry and suggests recipes you'll actually want to make—in under 30 seconds."
+**Long (Email/Content):**
+> "Every day, you stand in your kitchen wondering what to cook. You have ingredients, but no inspiration. What's for Dinner solves this with AI that learns your pantry and suggests recipes your whole family will love—in 30 seconds. Save 15 minutes per meal, reduce food waste, and finally use what you bought."
 
-**Proof-Based:**
-- "10,000+ recipes generated this month. Average user saves 15 minutes per meal."
-
-**Benefit-Based:**
-- "Saves time, reduces waste, personalizes to your preferences."
-
-### Level 3: Proof Points
-
-**Quantitative:**
+**Proof Points:**
+- "Save 15 minutes per meal"
+- "Reduce food waste by 30%"
 - "10,000+ recipes generated this month"
-- "Average user saves 15 minutes per meal decision"
-- "70% of users return within 7 days"
-- "Reduces food waste by 30%"
 
-**Qualitative (User Quotes):**
-- "I used to waste so much food—now I actually use what I buy"
-- "My kids are picky eaters, but the recipes it suggests actually work"
-- "I'm keto and it finally understands my restrictions"
+**Call-to-Action:**
+- "Try It Free" (primary)
+- "See What You Can Make" (secondary)
 
 ---
 
-## Messaging by Channel
+### Diet-Restricted Consumers (Secondary ICP)
 
-### Homepage / Landing Page
+**Pain Points:**
+- Generic apps don't respect strict diets
+- Constant ingredient checking
+- Limited recipe variety
 
-**Hero Section:**
-- Headline: Variant A/B/C (A/B testing)
-- Subhead: Outcome + Proof
-- CTA: "Get Started Free" / "Try It Now"
+**Message Variants:**
 
-**Features Section:**
-- Pantry-first approach
-- AI personalization
-- Dietary restrictions
-- Universal platform
+**Short:**
+> "Recipes that actually respect your diet. Keto, vegan, FODMAP—we get it."
 
-**Social Proof:**
-- Usage stats (recipes generated, time saved)
-- User testimonials (when available)
+**Medium:**
+> "Stop checking every ingredient. Our AI understands keto, vegan, FODMAP, and allergies—suggesting recipes that actually fit your restrictions."
 
-### Email Marketing
+**Long:**
+> "You have strict dietary needs. Generic meal apps don't cut it. You spend hours checking ingredients, adjusting recipes, and still run out of ideas. What's for Dinner learns your specific diet (keto, vegan, FODMAP, allergies) and generates recipes validated against your restrictions. No more ingredient anxiety—just recipes that work."
+
+**Proof Points:**
+- "Validated against 50+ dietary restrictions"
+- "Keto users find 50+ new recipes in first week"
+
+**Call-to-Action:**
+- "Start Free Trial" (emphasis on trial)
+- "See Diet Options" (secondary)
+
+---
+
+### Meal Prep Enthusiasts (Tertiary ICP)
+
+**Pain Points:**
+- Weekly planning is time-consuming
+- Ingredient optimization
+- Batch cooking efficiency
+
+**Message Variants:**
+
+**Short:**
+> "Weekly meal prep, optimized. Plan, shop, prep—all in one place."
+
+**Medium:**
+> "Stop spending hours planning weekly meal prep. Our AI optimizes your grocery list, maximizes batch cooking efficiency, and gives you variety that keeps."
+
+**Call-to-Action:**
+- "Plan Your Week" (action-oriented)
+- "See Meal Prep Plans" (secondary)
+
+---
+
+## By Channel
+
+### Homepage Hero
+
+**Variant A (Problem-Focused):**
+```
+Headline: "Never stare at your pantry confused again"
+Subhead: "Our AI learns your pantry and suggests recipes you'll actually want to make—in under 30 seconds."
+CTA: "Get Started Free"
+```
+
+**Variant B (Outcome-Focused):**
+```
+Headline: "From pantry to plate in 30 seconds"
+Subhead: "Stop wondering what's for dinner. Get AI-powered recipes that fit your kitchen, your diet, and your schedule."
+CTA: "Try It Now"
+```
+
+**Variant C (Proof-Focused):**
+```
+Headline: "10,000+ recipes generated this month"
+Subhead: "Join thousands using AI to plan meals from ingredients they already have. Save 15 minutes per meal."
+CTA: "Join Thousands"
+```
+
+---
+
+### Social Media (Instagram/Facebook)
+
+**Format**: Image + Short Copy
+
+**Hook Options:**
+1. "Spent 15 minutes deciding what to cook? We do it in 30 seconds."
+2. "What's in your pantry right now? We'll tell you what to make."
+3. "Stop wasting ingredients. Start making dinner."
+
+**CTA**: "Link in bio" → Landing page
+
+---
+
+### Email Campaigns
 
 **Welcome Email:**
-- Subject: "Welcome! Here's how to get started"
-- Body: "Add 3 ingredients → Get recipe ideas → Save your favorites"
+```
+Subject: "What's in your pantry? Let's find dinner."
+Body: "Every day, millions ask 'What's for dinner?' Our AI solves this in 30 seconds. Add your ingredients → Get recipes → Start cooking. Try it free."
+CTA: "Add Your Ingredients"
+```
 
-**Retention Email:**
-- Subject: "What's in your pantry? We can help"
-- Body: "Generate recipes from ingredients you already have"
-
-**Upgrade Email:**
-- Subject: "Unlock unlimited recipes"
-- Body: "Upgrade to Pro for unlimited recipes + advanced features"
-
-### Social Media
-
-**Twitter/X:**
-- "Tired of meal planning? We've got you covered. Add ingredients → Get recipes → Cook! [Link]"
-
-**Instagram:**
-- Visual: Recipe card
-- Caption: "What to make with chicken, rice, and tomatoes? Our AI has ideas 🍳 [Link in bio]"
-
-**LinkedIn (B2B):**
-- "Employee wellness programs: Add personalized meal planning to your benefits [Case Study]"
-
-### Paid Advertising
-
-**Google Ads:**
-- Headline: "What to Make With X Ingredients"
-- Description: "Get instant AI-powered recipe ideas from your pantry. Free trial."
-
-**Facebook/Instagram Ads:**
-- Headline: "Stop Wondering What's for Dinner"
-- Description: "Our AI suggests recipes from ingredients you already have. Try free."
+**Win-Back Email:**
+```
+Subject: "Haven't been back? Here's what you're missing"
+Body: "We've generated 10,000+ recipes this month. Your pantry is waiting. Come back and get dinner ideas in 30 seconds."
+CTA: "Get Recipe Ideas"
+```
 
 ---
 
-## Messaging Do's and Don'ts
+### Content Marketing (SEO)
 
-### ✅ DO
+**Article Titles:**
+- "What to Make with Chicken and Rice: 10 Instant Recipes"
+- "Pantry Staples: 20 Meals from Ingredients You Already Have"
+- "How to Reduce Food Waste: Use What You Bought"
 
-- Start with user pain ("Never wonder what's for dinner")
-- Use concrete benefits ("Saves 15 minutes per meal")
-- Show proof when available ("10K+ recipes generated")
-- Focus on ONE thing at a time (pantry-first, not everything)
-- Use emotional language ("Never stare confused again")
+**Message**: Practical, helpful content that demonstrates value
 
-### ❌ DON'T
-
-- Use jargon ("Enterprise-grade AI-powered platform")
-- Claim everything ("Best meal planner for everyone")
-- Build without proof ("We're building a marketplace...")
-- Overcomplicate ("Universal ecosystem with federated APIs")
-- Generic features ("AI-powered meal suggestions")
+**CTA**: Embedded recipe generator + signup CTA
 
 ---
 
-## Competitive Positioning
+### Paid Advertising (Google/Facebook)
+
+**Ad Copy Variants:**
+
+**Problem-Solution:**
+```
+Headline: "Tired of Staring at Your Pantry?"
+Description: "Get dinner ideas from ingredients you already have—in 30 seconds. Free to start."
+CTA: "Try Free"
+```
+
+**Benefit-Focused:**
+```
+Headline: "Save 15 Minutes Per Meal Decision"
+Description: "AI meal planner learns your pantry, suggests recipes. No grocery trip required."
+CTA: "Get Started"
+```
+
+**Social Proof:**
+```
+Headline: "10,000+ Recipes Generated This Month"
+Description: "Join thousands using AI to plan meals. Stop wondering what's for dinner."
+CTA: "Join Now"
+```
+
+---
+
+## Competitive Differentiation Messages
 
 ### vs. Yummly
-**Us**: "Pantry-first: Start with what you have"  
-**Them**: "Recipe discovery: Find what you want"
+> "Yummly shows recipes. We start with YOUR pantry."
 
 ### vs. AllRecipes
-**Us**: "Personalized AI generation"  
-**Them**: "Largest recipe database"
+> "AllRecipes has 50M recipes. We generate recipes FOR YOU."
 
 ### vs. Mealime
-**Us**: "Use existing ingredients"  
-**Them**: "Meal planning + grocery ordering"
+> "Mealime plans meals then you shop. We use what you HAVE."
 
-### Our Differentiation
-- **Pantry-first approach** (not grocery-first)
-- **AI that learns** (not static recommendations)
-- **Universal platform** (web + mobile, not single platform)
+### vs. Paprika
+> "Paprika organizes recipes. We GENERATE recipes from your pantry."
 
 ---
 
-## A/B Test Variants
+## Emotional Hooks
 
-### Variant A (Problem-Focused)
-**Headline**: "Never stare at your pantry confused again"  
-**Subhead**: "Our AI learns your pantry and suggests recipes you'll actually want to make—in under 30 seconds."
+### Replace Generic → Emotional
 
-### Variant B (Outcome-Focused)
-**Headline**: "From pantry to plate in 30 seconds"  
-**Subhead**: "Stop wondering what's for dinner. Get AI-powered recipes that fit your kitchen, your diet, and your schedule."
-
-### Variant C (Proof-Focused)
-**Headline**: "10,000+ recipes generated this month"  
-**Subhead**: "Join thousands using AI to plan meals from ingredients they already have. Save 15 minutes per meal."
+| Generic | Emotional |
+|---------|-----------|
+| "AI-powered meal suggestions" | "Never stare at your pantry confused again" |
+| "Based on your preferences" | "Recipes that fit YOUR family, YOUR diet" |
+| "Meal planning app" | "From pantry to plate in 30 seconds" |
+| "Recipe database" | "AI that learns your kitchen" |
 
 ---
 
-**Testing Plan:**
-- Week 1: Variant A vs. B (50/50 split)
-- Week 2: Winner vs. Variant C (50/50 split)
-- Week 3: Optimize winner based on conversion data
+## Proof Points (To Develop)
 
-**Success Metrics:**
-- Click-through rate to recipe generation
-- Time-to-first-recipe (< 30 seconds target)
-- Recipe generation conversion (view → generate)
+### Current (Missing)
+- User count
+- Recipe generation success rate
+- Time saved
+- Retention metrics
+
+### Target (90 Days)
+- "10,000 recipes generated this month"
+- "Average user saves 15 minutes per meal"
+- "70% of users return within 7 days"
+- "Generated $X in grocery orders"
 
 ---
 
-**Next Steps:**
-1. Deploy variants to production
-2. Monitor conversion rates
-3. Optimize based on data
-4. Update messaging quarterly
+## Message Testing Framework
+
+### A/B Test Candidates
+1. Problem-focused vs. Outcome-focused headlines
+2. "Free" vs. "No credit card" vs. "Try it"
+3. Social proof numbers (10K vs. thousands vs. join us)
+4. CTA copy ("Get Started" vs. "Try Free" vs. "See Recipes")
+
+### Success Metrics
+- Click-through rate (CTR)
+- Conversion rate (signup)
+- Time-to-value (first recipe)
+- Retention (return rate)
+
+---
+
+## Channel-Specific Guidelines
+
+### Website
+- **Above fold**: Clear value prop + primary CTA
+- **Below fold**: Proof points + how it works
+- **Footer**: Social proof + trust signals
+
+### Social Media
+- **Format**: Image + 1-2 sentences + CTA
+- **Frequency**: 3-5x/week
+- **Tone**: Friendly, helpful, not salesy
+
+### Email
+- **Subject lines**: Question format or benefit
+- **Body**: Short paragraphs, scannable
+- **CTA**: Single, clear action
+
+### Content/Blog
+- **Tone**: Educational, helpful
+- **Format**: How-to, lists, recipes
+- **Goal**: Demonstrate value, drive signups
+
+---
+
+## Next Steps
+
+1. Test hero variants (A/B/C) on homepage
+2. Create social media ad creative
+3. Develop email sequences
+4. Publish 10 SEO articles
+5. Measure and iterate based on conversion data
+
+---
+
+**Document Owner**: Product Marketing  
+**Review Schedule**: Weekly during sprint, monthly after

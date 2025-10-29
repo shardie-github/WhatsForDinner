@@ -26,9 +26,9 @@ export default function OnboardingChecklist({
   onDismiss,
 }: OnboardingChecklistProps) {
   const [items, setItems] = useState<ChecklistItem[]>([
-    { id: 'generate_recipe', label: 'Generate your first recipe', completed: false },
     { id: 'add_pantry', label: 'Add ingredients to your pantry', completed: false },
-    { id: 'set_preferences', label: 'Set dietary preferences', completed: false },
+    { id: 'try_sample', label: 'Try sample pantry (or add your own)', completed: false },
+    { id: 'generate_recipe', label: 'Generate your first recipe', completed: false },
     { id: 'save_recipe', label: 'Save a favorite recipe', completed: false },
   ]);
   const [show, setShow] = useState(false);
@@ -56,20 +56,29 @@ export default function OnboardingChecklist({
         }
 
         // Load current state
-        const updatedItems = items.map(item => {
+        const updatedItems = await Promise.all(items.map(async (item) => {
           switch (item.id) {
-            case 'generate_recipe':
-              return { ...item, completed: onboardingState?.first_recipe_generated || false };
             case 'add_pantry':
-              // Check if user has pantry items
+            case 'try_sample':
+              // Check if user has pantry items (sample or manual)
               const { data: pantryItems } = await supabase
                 .from('pantry_items')
-                .select('id')
+                .select('id, is_sample')
                 .eq('user_id', userId)
                 .limit(1);
-              return { ...item, completed: (pantryItems?.length || 0) > 0 };
-            case 'set_preferences':
-              return { ...item, completed: onboardingState?.preferences_set || false };
+              const hasPantryItems = (pantryItems?.length || 0) > 0;
+              if (item.id === 'try_sample') {
+                // Check if sample data seeded
+                const { data: sampleCheck } = await supabase
+                  .from('onboarding_state')
+                  .select('sample_data_seeded')
+                  .eq('user_id', userId)
+                  .single();
+                return { ...item, completed: sampleCheck?.sample_data_seeded || hasPantryItems };
+              }
+              return { ...item, completed: hasPantryItems };
+            case 'generate_recipe':
+              return { ...item, completed: onboardingState?.first_recipe_generated || false };
             case 'save_recipe':
               // Check if user has saved recipes
               const { data: favorites } = await supabase
@@ -81,7 +90,7 @@ export default function OnboardingChecklist({
             default:
               return item;
           }
-        });
+        }));
 
         setItems(updatedItems);
 
@@ -124,8 +133,20 @@ export default function OnboardingChecklist({
         case 'add_pantry':
           // State updated when pantry items are added
           break;
-        case 'set_preferences':
-          updateData.preferences_set = true;
+        case 'try_sample':
+          // Try sample data seeding
+          try {
+            const response = await fetch('/api/pantry/seed-sample', {
+              method: 'POST',
+            });
+            if (response.ok) {
+              updateData.sample_data_seeded = true;
+              // Reload page to show pantry items
+              window.location.reload();
+            }
+          } catch (error) {
+            console.error('Error seeding sample data:', error);
+          }
           break;
         case 'save_recipe':
           // State updated when recipe is saved

@@ -1,237 +1,274 @@
-# Gap Matrix & 2-Week Execution Plan
+# Gap Closure Execution Plan
 
-**Generated**: 2025-01-21  
-**Current Market Fit Score**: 42/100  
-**Target Score (90 days)**: 70/100  
-**Week 1 Target**: +2 points, 1 variant live, 1 JTBD gap closed
+**Date**: 2025-01-21  
+**Timeline**: 2-week sprint  
+**Target**: Close critical gaps → 42 → 55+ market fit score
 
 ---
 
 ## Gap Matrix: Impact × Effort × Risk
 
-| Gap ID | Gap | Impact | Effort | Risk | Priority | Owner | ETA |
-|--------|-----|--------|--------|------|----------|-------|-----|
-| **USER-VALIDATION** | No user validation / retention data | 🔴 Critical | 3 | Medium | **P0** | Product | 3 days |
-| **REVENUE-MODEL** | No proven revenue model | 🔴 Critical | 4 | Low | **P0** | Product + Eng | 5 days |
-| **DIFFERENTIATION** | Unclear unique selling proposition | 🟠 High | 5 | Medium | **P1** | Product + Marketing | 7 days |
-| **FEATURE-BLOAT** | Too many unvalidated features | 🟠 High | 2 | Low | **P1** | Product | 1 day |
-| **GTM-EXECUTION** | No go-to-market execution | 🟠 High | 4 | Medium | **P1** | Marketing | 10 days |
-| **MESSAGING** | Generic value prop, no emotional hooks | 🟡 Medium | 3 | Low | **P2** | Marketing | 2 days |
-| **ONBOARDING** | No guided first-run experience | 🟡 Medium | 3 | Low | **P2** | Eng | 4 days |
-| **MONETIZATION-INFRA** | No pricing tiers, feature gates | 🟡 Medium | 5 | Medium | **P1** | Eng | 6 days |
-| **EXPERIMENTS** | No A/B testing infrastructure | 🟡 Medium | 4 | Low | **P2** | Eng | 5 days |
-| **CONTENT-MARKETING** | SEO content not executed | 🟡 Medium | 2 | Low | **P2** | Marketing | Ongoing |
+| Gap ID | Gap Description | Category | Impact | Effort | Risk | Priority | Owner | ETA |
+|--------|----------------|----------|--------|--------|------|----------|-------|-----|
+| G1 | No validated user base | Market | 10 | 4 | 6 | P0 | Product | 7d |
+| G2 | Unclear value prop (vs Yummly) | Messaging | 9 | 3 | 5 | P0 | Product | 3d |
+| G3 | Feature bloat (unvalidated apps) | Product | 8 | 2 | 4 | P1 | Eng | 1d |
+| G4 | No proven revenue model | Monetization | 10 | 6 | 8 | P0 | Product | 14d |
+| G5 | Missing grocery integration | Product | 9 | 7 | 7 | P1 | Eng | 21d |
+| G6 | No onboarding flow | Product | 7 | 4 | 3 | P1 | Eng | 5d |
+| G7 | Empty state UX missing | UX | 6 | 3 | 2 | P2 | Eng | 3d |
+| G8 | No GTM materials | Messaging | 7 | 4 | 3 | P1 | Product | 4d |
+| G9 | No experiment infrastructure | Growth | 6 | 5 | 4 | P2 | Eng | 3d |
+| G10 | No content marketing | Growth | 7 | 5 | 2 | P1 | Product | Ongoing |
 
-**Legend**:  
-- Impact: 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low  
-- Effort: 1-10 (1=quick fix, 10=major project)  
-- Risk: Low / Medium / High  
-- Priority: P0 (Do Now) / P1 (This Sprint) / P2 (Next Sprint)
+**Priority Scale**: P0 = Critical, P1 = High, P2 = Medium  
+**Impact/Effort Scale**: 1-10 (1 = low, 10 = critical)
 
 ---
 
-## 2-Week Execution Plan
+## Sprint Plan: Week 1-2
 
-### Week 1: Foundations & Validation
+### Week 1 (Days 1-5): Foundation
 
-#### Days 1-3: Critical Gaps
+**Day 1-2: Positioning & Messaging**
+- [x] Update homepage hero (3 variants)
+- [x] Create landing variants A/B/C
+- [ ] Generate messaging_map.md
+- [ ] Generate one_pager.md, mini_deck.md
+- **Owner**: Product  
+- **Acceptance**: Hero variants live, GTM docs complete
 
-**Day 1 (Monday)**
-- ✅ Create gap matrix and plan (this doc)
-- ✅ Simplify UI: Hide non-core features (community, marketplace)
-- ✅ Create JTBD specs and value narrative refresh
-- 🎯 **Owner**: Product Lead
+**Day 3-4: Onboarding & Empty State**
+- [ ] Enhance onboarding checklist (sample data)
+- [ ] Build empty-state component with CTAs
+- [ ] Add pantry quick-start flow
+- **Owner**: Eng  
+- **Acceptance**: New users see checklist + empty state, can seed sample data
 
-**Day 2 (Tuesday)**
-- ✅ Implement landing page variant A (pantry-first, emotional hooks)
-- ✅ Implement landing page variant B (outcome-focused, proof points)
-- ✅ Set up experiment infrastructure (logging, variant assignment)
-- 🎯 **Owner**: Eng Lead
+**Day 5: Experiments Infrastructure**
+- [ ] Configure experiment stop rules
+- [ ] Add experiment logging endpoints
+- [ ] Wire up conversion tracking
+- **Owner**: Eng  
+- **Acceptance**: Experiments track exposures/conversions, stop rules active
 
-**Day 3 (Wednesday)**
-- ✅ Deploy both variants with tracking
-- ✅ Implement basic telemetry: user_id, variant, conversions
-- ✅ Create user interview script and outreach
-- 🎯 **Owner**: Product + Marketing
+### Week 2 (Days 6-10): Monetization & GTM
 
-#### Days 4-5: Revenue & Monetization
+**Day 6-7: Pricing & Upgrade Flow**
+- [ ] Improve upgrade CTA placement
+- [ ] Add telemetry to checkout flow
+- [ ] Create pricing experiments config
+- **Owner**: Eng  
+- **Acceptance**: Upgrade clicks tracked, checkout events logged
 
-**Day 4 (Thursday)**
-- ✅ Define 3 pricing tiers (Free, Pro $9.99, Premium $19.99)
-- ✅ Implement feature gates API
-- ✅ Create upgrade CTA component
-- 🎯 **Owner**: Eng Lead
+**Day 8-9: GTM Materials & Outreach**
+- [ ] Generate ICP profiles (enhance existing)
+- [ ] Create outreach-draft.mjs script
+- [ ] Produce sales snippets for ICPs
+- **Owner**: Product  
+- **Acceptance**: Outreach script generates 5 personalized emails from ICP inputs
 
-**Day 5 (Friday)**
-- ✅ Wire checkout flow (server-validated)
-- ✅ Add pricing page
-- ✅ Implement checkout/intake event telemetry
-- 🎯 **Owner**: Eng Lead
-
-#### Weekend: Content & GTM Prep
-
-**Days 6-7**
-- ✅ Write 3 variant headlines for A/B test
-- ✅ Draft GTM materials (ICP profiles, messaging map)
-- ✅ Create sales one-pager and mini-deck
-- 🎯 **Owner**: Marketing Lead
-
----
-
-### Week 2: Adoption & Experiments
-
-#### Days 8-10: Onboarding & Feature Gaps
-
-**Day 8 (Monday)**
-- ✅ Build onboarding checklist component
-- ✅ Create sample data seeder (opt-in)
-- ✅ Implement empty-state UX with "Import/Connect" CTAs
-- 🎯 **Owner**: Eng Lead
-
-**Day 9 (Tuesday)**
-- ✅ Close JTBD Gap #1: "Pantry Import" flow
-- ✅ Close JTBD Gap #2: "Dietary Preferences Wizard"
-- ✅ Test onboarding flow end-to-end
-- 🎯 **Owner**: Eng Lead + Product
-
-**Day 10 (Wednesday)**
-- ✅ Ship waitlist/referral toggle
-- ✅ Add share link generation + count tracking
-- ✅ Create experiments/*.json configs
-- 🎯 **Owner**: Eng Lead
-
-#### Days 11-12: GTM Execution & AI Leverage
-
-**Day 11 (Thursday)**
-- ✅ Publish ICP profiles and messaging map
-- ✅ Create outreach script generator
-- ✅ Stand up semantic search using existing ai_embeddings
-- 🎯 **Owner**: Marketing + Eng
-
-**Day 12 (Friday)**
-- ✅ Add prompt privacy-guard middleware to AI routes
-- ✅ Log outcomes to ai_health_metrics
-- ✅ Finalize all GTM materials
-- 🎯 **Owner**: Eng Lead + Marketing
-
-#### Days 13-14: Proof & CI
-
-**Weekend**
-- ✅ Create gap-closure proof artifact
-- ✅ Update RealityOps dashboard with experiment cards
-- ✅ Add CI workflows (gap-sprint.yml, reality-check extension)
-- ✅ Generate all PRs with acceptance tests
-- 🎯 **Owner**: Eng Lead + DevOps
+**Day 10: Proof & Documentation**
+- [ ] Generate gap-closure proof JSON
+- [ ] Update market_fit_score.json
+- [ ] Document all PRs and changes
+- **Owner**: Product  
+- **Acceptance**: Signed proof with checklist, updated score
 
 ---
 
-## Acceptance Tests & Success Metrics
+## Critical Actions by Category
 
-### Week 1 Targets
+### Product Fit & JTBD
 
-**Must Pass:**
-- ✅ Landing variants respond 200 OK
-- ✅ Experiment logs recorded (variant → conversion)
-- ✅ Upgrade CTA event captured
-- ✅ Pricing tiers defined and gated
-- ✅ No RLS regressions
-- ✅ All secrets propagate correctly
+**Gap**: Core value unclear, pantry-first not prominent
 
-**Nice to Have:**
-- ✅ Onboarding checklist renders
-- ✅ Sample data seeding works (opt-in)
-- ✅ ICP profiles published
+**Actions**:
+1. ✅ Implement "Use My Pantry" button (pantry-first flow)
+2. ✅ Add empty-state guidance ("Add ingredients to get started")
+3. ✅ Enhance onboarding to highlight core value
+4. ✅ Create JTBD specs (pantry-first, personalization, speed)
 
-### Week 2 Targets
+**Success Metrics**:
+- Time-to-first-recipe: < 30s (target)
+- % users using pantry vs. manual: 60%+ (target)
+- Onboarding completion: 70%+ (target)
 
-**Must Pass:**
-- ✅ Onboarding flow completes < 2 minutes
-- ✅ All 3 JTBD gaps closed (per specs)
-- ✅ Experiments have stop rules defined
-- ✅ Gap-closure proof signed
-- ✅ RealityOps dashboard updated
+---
 
-**Nice to Have:**
-- ✅ Semantic search returns results
-- ✅ Outreach script generates valid emails
-- ✅ Waitlist referral tracking functional
+### Value Narrative & Positioning
+
+**Gap**: Generic messaging, no differentiation proof
+
+**Actions**:
+1. ✅ Rewrite hero with 3 variants (Problem/Outcome/Proof)
+2. ✅ Create messaging_map.md with ICP-specific copy
+3. ✅ Generate one_pager.md (90-second sales pitch)
+4. ✅ Generate mini_deck.md (6 slides for investors)
+
+**Success Metrics**:
+- Recipe generation rate: 25%+ (from landing)
+- Time-to-understand-value: < 5s (target)
+
+---
+
+### Monetization & Pricing
+
+**Gap**: No paying customers, revenue model unproven
+
+**Actions**:
+1. ✅ Improve upgrade CTA visibility (homepage, recipe cards)
+2. ✅ Add checkout event telemetry
+3. ✅ Create pricing hypotheses doc (3 tiers, value metrics)
+4. ✅ Implement feature gates for premium features
+
+**Success Metrics**:
+- Upgrade CTA click rate: 5%+ (target)
+- Free → Paid conversion: 5%+ (target, 90-day goal)
+- First paying customer: Week 2-3 (goal)
+
+---
+
+### Acquisition Experiments
+
+**Gap**: No growth channels validated
+
+**Actions**:
+1. ✅ Deploy landing variants A/B/C
+2. ✅ Configure experiment stop rules
+3. ✅ Add experiment logging API endpoints
+4. ✅ Create waitlist/referral toggle (future)
+
+**Success Metrics**:
+- Landing conversion rate: 25%+ (target)
+- Experiment statistical significance: 95%+ (target)
+- Stop rules trigger correctly (validation)
+
+---
+
+### Adoption & Onboarding
+
+**Gap**: Users don't know how to get value
+
+**Actions**:
+1. ✅ Enhance onboarding checklist
+2. ✅ Add sample data seeding (opt-in)
+3. ✅ Build empty-state UX with import CTAs
+4. ✅ Add guided first-run flow
+
+**Success Metrics**:
+- Onboarding completion: 70%+ (target)
+- First recipe generated: < 5min from signup (target)
+- Sample data usage: 40%+ of new users (target)
+
+---
+
+### Tech & RLS Hardening
+
+**Gap**: Need to ensure no regressions
+
+**Actions**:
+1. ✅ Keep migrate-before-build
+2. ✅ Expand RLS tests for new tables
+3. ✅ Ensure env keys propagate (GitHub/Vercel)
+4. ✅ Run secrets scan
+
+**Success Metrics**:
+- All RLS tests pass
+- No secrets in code
+- CI/CD green
+
+---
+
+### GTM Starter Pack
+
+**Gap**: No sales/marketing materials
+
+**Actions**:
+1. ✅ Enhance ICP_profiles.md (already exists)
+2. ✅ Create messaging_map.md
+3. ✅ Generate one_pager.md, mini_deck.md
+4. ✅ Build outreach-draft.mjs script
+
+**Success Metrics**:
+- All GTM docs complete
+- Outreach script generates valid emails
+- Messaging aligned with positioning
+
+---
+
+## Acceptance Tests
+
+### Landing Variants
+- [ ] Variants A, B, C respond 200
+- [ ] Experiment assignment consistent (same user = same variant)
+- [ ] Conversion events tracked correctly
+- [ ] Stop rules configured and testable
+
+### Onboarding
+- [ ] Checklist appears for new users
+- [ ] Sample data seeding works
+- [ ] Checklist completion tracked
+- [ ] Empty state shows when pantry empty
+
+### Upgrade Flow
+- [ ] Upgrade CTA visible on homepage (free users)
+- [ ] Checkout event logged to telemetry
+- [ ] Feature gates enforce limits
+- [ ] Stripe integration works
+
+### Experiments
+- [ ] Experiment events logged via API
+- [ ] Exposures tracked correctly
+- [ ] Conversions tracked correctly
+- [ ] Stop rules can trigger pauses
 
 ---
 
 ## Risk Mitigation
 
 | Risk | Probability | Impact | Mitigation |
-|------|------------|--------|------------|
-| Landing variants break existing flow | Low | High | Feature flag rollback, shadow deploy |
-| Pricing changes break billing | Medium | High | Test in staging, gradual rollout |
-| RLS policies break user access | Low | Critical | Test all roles (anon, authenticated, server) |
-| Experiments corrupt data | Low | Medium | Write-only logging, no destructive ops |
-| Over-engineering (again) | Medium | Medium | Daily check: "Does this close a gap from matrix?" |
+|------|-------------|--------|------------|
+| Landing variants break | Low | High | Feature flag, canary deploy |
+| Experiments skew data | Medium | Medium | Statistical validation, stop rules |
+| RLS breaks existing auth | Low | High | Comprehensive tests, shadow env |
+| GTM materials too generic | Medium | Low | ICP-specific variants, user feedback |
+| Upgrade flow friction | Medium | High | A/B test checkout steps, analytics |
 
 ---
 
-## Dependencies & Blockers
+## Success Criteria (End of Sprint)
 
-**External Dependencies:**
-- Stripe account for checkout (assume exists)
-- Supabase RLS policies (extend existing)
-- Vercel deployment pipeline (assume exists)
+**Week 1 Targets**:
+- ✅ +2 pts market_fit_score (42 → 44+)
+- ✅ ≥1 variant live (landing A/B/C)
+- ✅ ≥1 JTBD gap closed (pantry-first flow)
 
-**Internal Blockers:**
-- None identified (all gaps are internal execution)
+**Week 2 Targets**:
+- ✅ Onboarding flow complete
+- ✅ GTM materials shipped
+- ✅ Upgrade flow with telemetry
 
-**If Blocked:**
-- Create scoped ticket, ship rest of plan
-- Document in proof artifact
-
----
-
-## Owners & Accountability
-
-| Owner | Role | Responsible For | Slack/Daily Standup |
-|-------|------|----------------|---------------------|
-| Product Lead | PM | Gap prioritization, JTBD specs, user interviews | Daily 9am |
-| Eng Lead | Engineering | Implementation, CI/CD, RLS, telemetry | Daily 9am |
-| Marketing Lead | Growth | GTM materials, messaging, variants | Daily 9am |
-| DevOps | Infrastructure | CI workflows, secrets, deployment | On-call |
+**90-Day Targets**:
+- Market fit score: 65+
+- 1,000 active users
+- First paying customer
+- 40% weekly retention
 
 ---
 
-## Daily Standup Template
+## Related Gaps (Out of Scope for Sprint)
 
-**Format**: 15 min, async or sync
+**Deferred**:
+- Grocery integration (21 days, requires partnerships)
+- Content marketing (ongoing, requires SEO strategy)
+- B2B sales (after consumer validation)
+- Diet specialization (2-3 months, requires domain expertise)
 
-**Questions:**
-1. What did I ship yesterday that closes a gap?
-2. What's blocking me today?
-3. What will I ship today?
-4. Any risks to Week 1/Week 2 targets?
-
----
-
-## Communication Plan
-
-**Daily**: Standup update (Slack/Async)  
-**End of Week 1**: Progress review + proof draft  
-**End of Week 2**: Final proof + PR summary + dashboard update
+**Rationale**: Focus on core validation first, then expand.
 
 ---
 
-## Success Criteria: Gap Closure
-
-✅ **USER-VALIDATION**: User interview script ready, variant tracking live  
-✅ **REVENUE-MODEL**: Pricing tiers defined, checkout functional  
-✅ **DIFFERENTIATION**: 3 value prop variants A/B testing  
-✅ **FEATURE-BLOAT**: UI simplified (non-core hidden)  
-✅ **GTM-EXECUTION**: ICP, messaging, one-pager, mini-deck published  
-✅ **MESSAGING**: Emotional hooks in variants, proof points added  
-✅ **ONBOARDING**: Checklist + sample data functional  
-✅ **MONETIZATION-INFRA**: Feature gates + upgrade flow wired  
-✅ **EXPERIMENTS**: Logging + variant assignment + stop rules  
-✅ **CONTENT-MARKETING**: Content plan documented (execution ongoing)
-
----
-
-**Next Review**: End of Week 2 (2025-02-04)  
-**Proof Artifact**: `/proofs/gap_closure_[timestamp].json`  
-**Dashboard**: RealityOps experiment cards + conversion funnel
+**Status**: ✅ Plan Complete  
+**Next Review**: End of Week 1  
+**Decision Point**: Week 2 - proceed with monetization or pivot if retention < 30%

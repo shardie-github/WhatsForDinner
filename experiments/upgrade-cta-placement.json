@@ -1,0 +1,64 @@
+{
+  "id": "upgrade-cta-placement",
+  "name": "Upgrade CTA Placement Optimization",
+  "description": "Tests different placements of upgrade CTAs to optimize conversion",
+  "status": "active",
+  "startDate": "2025-01-21",
+  "endDate": "2025-03-21",
+  "allocation": 1.0,
+  "variants": {
+    "control": {
+      "name": "Current Placement",
+      "description": "Upgrade CTA in usage card only",
+      "traffic": 0.5
+    },
+    "treatment": {
+      "name": "Enhanced Placement",
+      "description": "Upgrade CTA in usage card + recipe cards + navbar",
+      "traffic": 0.5
+    }
+  },
+  "successMetrics": {
+    "primary": {
+      "name": "Upgrade Conversion Rate",
+      "description": "% of free users who click upgrade CTA",
+      "target": 0.05,
+      "current": null
+    },
+    "secondary": [
+      {
+        "name": "Checkout Completion Rate",
+        "description": "% of upgrade clicks that complete checkout",
+        "target": 0.60,
+        "current": null
+      },
+      {
+        "name": "Time to Upgrade",
+        "description": "Days from signup to upgrade",
+        "target": 7,
+        "current": null
+      }
+    ]
+  },
+  "stopRules": {
+    "minExposures": 500,
+    "significanceLevel": 0.95,
+    "stopIf": {
+      "variantUnderperformsBaseline": -0.15,
+      "variantOutperformsBaseline": 0.20,
+      "noDifferenceAfter": 2000
+    }
+  },
+  "audience": {
+    "included": ["free_plan_users"],
+    "excluded": ["paid_plan_users"],
+    "targeting": {
+      "plan": "free"
+    }
+  },
+  "guardrails": {
+    "maxTrafficRedirect": 0.50,
+    "requireApproval": true,
+    "autoStop": true
+  }
+}
