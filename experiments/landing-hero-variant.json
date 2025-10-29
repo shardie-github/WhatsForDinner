@@ -1,0 +1,73 @@
+{
+  "id": "landing-hero-variant",
+  "name": "Landing Page Hero Copy A/B Test",
+  "description": "Tests three headline/subheadline variants for conversion optimization",
+  "status": "active",
+  "startDate": "2025-01-21",
+  "endDate": "2025-03-21",
+  "allocation": 1.0,
+  "variants": {
+    "A": {
+      "name": "Problem-Focused",
+      "headline": "Never stare at your pantry confused again",
+      "subheadline": "Our AI learns your pantry and suggests recipes you'll actually want to make—in under 30 seconds.",
+      "hypothesis": "Problem-focused messaging resonates with user pain and drives action",
+      "traffic": 0.33
+    },
+    "B": {
+      "name": "Outcome-Focused",
+      "headline": "From pantry to plate in 30 seconds",
+      "subheadline": "Stop wondering what's for dinner. Get AI-powered recipes that fit your kitchen, your diet, and your schedule.",
+      "hypothesis": "Outcome-focused messaging emphasizes value and drives conversions",
+      "traffic": 0.33
+    },
+    "C": {
+      "name": "Proof-Focused",
+      "headline": "10,000+ recipes generated this month",
+      "subheadline": "Join thousands using AI to plan meals from ingredients they already have. Save 15 minutes per meal.",
+      "hypothesis": "Social proof increases trust and conversion rates",
+      "traffic": 0.34
+    }
+  },
+  "successMetrics": {
+    "primary": {
+      "name": "Recipe Generation Rate",
+      "description": "% of visitors who generate at least one recipe",
+      "target": 0.25,
+      "current": null
+    },
+    "secondary": [
+      {
+        "name": "Time to First Recipe",
+        "description": "Time from page load to recipe generation (seconds)",
+        "target": 30,
+        "current": null
+      },
+      {
+        "name": "Recipe Save Rate",
+        "description": "% of generated recipes that are saved",
+        "target": 0.40,
+        "current": null
+      }
+    ]
+  },
+  "stopRules": {
+    "minExposures": 500,
+    "significanceLevel": 0.95,
+    "stopIf": {
+      "variantUnderperformsBaseline": -0.15,
+      "variantOutperformsBaseline": 0.20,
+      "noDifferenceAfter": 2000
+    }
+  },
+  "audience": {
+    "included": ["all"],
+    "excluded": [],
+    "targeting": {}
+  },
+  "guardrails": {
+    "maxTrafficRedirect": 0.50,
+    "requireApproval": false,
+    "autoStop": true
+  }
+}
