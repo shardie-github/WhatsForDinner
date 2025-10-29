@@ -27,7 +27,7 @@
     "bundle:check": "node scripts/bundle-report.mjs --check-budgets",
     "secrets:scan": "node scripts/secrets-scan.mjs --check",
     "db:perf": "node scripts/db-slowquery-check.mjs --check",
-    "rls:test": "node scripts/rls-smoke.ts --check",
+    "rls:test": "npx tsx scripts/rls-smoke.ts --check",
     "health:check": "node scripts/healthcheck.js --check",
     "cost:guard": "node scripts/cost-guard.mjs --check",
     "smoke:test": "cd apps/web && npx playwright test tests/smoke.spec.ts",

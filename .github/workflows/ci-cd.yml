@@ -72,7 +72,7 @@ jobs:
         run: pnpm test
 
       - name: RLS smoke test
-        run: node scripts/rls-smoke.ts --check
+        run: npx tsx scripts/rls-smoke.ts --check
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
