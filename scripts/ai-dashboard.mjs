@@ -190,7 +190,7 @@ class AIAutomationDashboard {
       sustainability: this.checkFile('SUSTAINABILITY.md'),
       ai_automation_readme: this.checkFile('AI_AUTOMATION_README.md'),
       api_reference: this.checkFile('docs/api_reference.md'),
-      architecture_map: this.checkFile('docs/architecture_map.svg')
+      architecture_map: this.checkFile('docs/architecture_map.md')
     };
 
     const existingDocs = Object.values(docs).filter(Boolean).length;

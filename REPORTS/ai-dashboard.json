@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-28T18:39:30.287Z",
+  "timestamp": "2025-10-29T20:45:46.304Z",
   "system_status": "active",
   "components": {
     "ai_agents": {
@@ -57,20 +57,20 @@
       }
     },
     "documentation": {
-      "status": "degraded",
-      "existing": 3,
+      "status": "healthy",
+      "existing": 5,
       "total": 5,
       "docs": {
         "ai_compliance": true,
         "sustainability": true,
         "ai_automation_readme": true,
-        "api_reference": false,
-        "architecture_map": false
+        "api_reference": true,
+        "architecture_map": true
       }
     }
   },
   "metrics": {
-    "codebase_size": 78646,
+    "codebase_size": 78658,
     "test_coverage": {
       "lines": 85,
       "functions": 90,
@@ -78,7 +78,7 @@
       "statements": 85
     },
     "build_status": "failed",
-    "last_audit": "2025-10-28T18:39:46.745Z",
+    "last_audit": "2025-10-29T20:46:01.265Z",
     "performance": {
       "build_time": "2m 30s",
       "test_time": "45s",
@@ -88,36 +88,18 @@
   },
   "alerts": [
     {
-      "type": "warning",
-      "component": "documentation",
-      "message": "documentation is in degraded state",
-      "timestamp": "2025-10-28T18:39:46.746Z"
-    },
-    {
       "type": "error",
       "component": "build",
       "message": "Build is currently failing",
-      "timestamp": "2025-10-28T18:39:46.746Z"
+      "timestamp": "2025-10-29T20:46:01.265Z"
     }
   ],
   "recommendations": [
     {
       "priority": "high",
-      "component": "documentation",
-      "action": "Fix documentation configuration",
-      "description": "documentation is not properly configured"
-    },
-    {
-      "priority": "medium",
-      "component": "documentation",
-      "action": "Generate missing documentation",
-      "description": "Some documentation files are missing"
-    },
-    {
-      "priority": "high",
       "component": "alerts",
       "action": "Address active alerts",
-      "description": "2 active alerts need attention"
+      "description": "1 active alerts need attention"
     }
   ]
 }
