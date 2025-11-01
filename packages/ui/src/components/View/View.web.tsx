@@ -3,7 +3,7 @@ import { cn } from '@whats-for-dinner/utils';
 
 export interface ViewProps {
   children: React.ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function View({ children, className, ...props }: ViewProps & React.HTMLAttributes<HTMLDivElement>) {

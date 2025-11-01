@@ -3,16 +3,16 @@ import { Text as RNText, TextStyle } from 'react-native';
 
 export interface TextProps {
   children: React.ReactNode;
-  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body' | 'caption' | 'small';
-  className?: string;
-  testID?: string;
-  style?: TextStyle;
+  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body' | 'caption' | 'small' | undefined;
+  className?: string | undefined;
+  testID?: string | undefined;
+  style?: TextStyle | undefined;
 }
 
 export function Text({
   children,
   variant = 'body',
-  className,
+  className: _className, // ignored in React Native
   testID,
   style,
   ...props

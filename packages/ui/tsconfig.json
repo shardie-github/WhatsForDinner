@@ -6,8 +6,15 @@
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "emitDeclarationOnly": false
+    "emitDeclarationOnly": false,
+    "noEmit": false,
+    "exactOptionalPropertyTypes": false,
+    "noUnusedLocals": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.*", "**/*.spec.*"]
+  "exclude": ["node_modules", "dist", "**/*.test.*", "**/*.spec.*"],
+  "references": [
+    { "path": "../utils" },
+    { "path": "../theme" }
+  ]
 }

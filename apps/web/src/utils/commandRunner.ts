@@ -109,7 +109,7 @@ export class CommandRunner {
     command: string,
     allowedCommands: string[]
   ): boolean {
-    const commandName = command.split(' ')[0];
+    const commandName = command.split(' ')[0] || '';
     return allowedCommands.includes(commandName);
   }
 
@@ -118,7 +118,7 @@ export class CommandRunner {
    */
   private async simulateCommandExecution(
     command: string,
-    options: any
+    _options: any
   ): Promise<{
     success: boolean;
     output: string;

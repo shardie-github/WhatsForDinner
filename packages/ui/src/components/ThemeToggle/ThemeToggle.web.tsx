@@ -1,9 +1,8 @@
-import React from 'react';
 import { Button } from '../Button';
 import { useTheme } from '@whats-for-dinner/utils';
 
 export interface ThemeToggleProps {
-  className?: string;
+  className?: string | undefined;
 }
 
 export function ThemeToggle({ className }: ThemeToggleProps) {

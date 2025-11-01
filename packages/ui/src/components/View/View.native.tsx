@@ -1,18 +1,16 @@
 import React from 'react';
-import { View as RNView } from 'react-native';
-import { cn } from '@whats-for-dinner/utils';
+import { View as RNView, ViewProps as RNViewProps } from 'react-native';
 
-export interface ViewProps {
+export interface ViewProps extends RNViewProps {
   children: React.ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function View({ children, className, ...props }: ViewProps) {
+  // Note: className is ignored in React Native - use style prop instead
+  // This is here for API compatibility with the web version
   return (
-    <RNView
-      className={cn(className)}
-      {...props}
-    >
+    <RNView {...props}>
       {children}
     </RNView>
   );

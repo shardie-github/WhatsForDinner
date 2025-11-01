@@ -3,13 +3,13 @@ import { cn } from '@whats-for-dinner/utils';
 
 export interface ButtonProps {
   children: React.ReactNode;
-  onPress?: () => void;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'brand' | 'accent' | 'destructive';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  disabled?: boolean;
-  loading?: boolean;
-  className?: string;
-  testID?: string;
+  onPress?: (() => void) | undefined;
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'brand' | 'accent' | 'destructive' | undefined;
+  size?: 'sm' | 'md' | 'lg' | 'xl' | undefined;
+  disabled?: boolean | undefined;
+  loading?: boolean | undefined;
+  className?: string | undefined;
+  testID?: string | undefined;
 }
 
 export function Button({

@@ -3,6 +3,9 @@
  * A/B testing and feature flag management
  */
 
+import * as path from 'path';
+import * as fs from 'fs';
+
 export interface Experiment {
   name: string;
   description: string;
@@ -82,7 +85,7 @@ class ExperimentationService {
       }
     }
 
-    return experiment.variants[0]; // Fallback to first variant
+    return experiment.variants[0] || null; // Fallback to first variant
   }
 
   /**

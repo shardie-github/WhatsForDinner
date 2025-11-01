@@ -1,4 +1,3 @@
-import React from 'react';
 import { cn } from '@whats-for-dinner/utils';
 
 export interface IconProps {

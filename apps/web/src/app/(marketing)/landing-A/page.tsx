@@ -17,7 +17,7 @@ import { logger } from '@/lib/logger';
 import { getVariant, trackConversion } from '@/lib/experiments';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChefHat, Clock, Zap, CheckCircle2 } from 'lucide-react';
+import { ChefHat, Clock, Zap } from 'lucide-react';
 
 /**
  * Landing Variant A: Pantry-First, Emotional Hooks
@@ -46,7 +46,7 @@ function LandingVariantA() {
       }
 
       // Assign and track variant
-      const variant = getVariant('landing-hero-variant', user?.id);
+      getVariant('landing-hero-variant', user?.id);
       setVariantLoaded(true);
 
       await analytics.trackEvent('page_viewed', {

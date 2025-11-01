@@ -229,30 +229,31 @@ export async function middleware(request: NextRequest) {
   } catch (error) {
     // Error handling
     const duration = Date.now() - startTime;
+    const err = error as Error;
 
     await monitoringSystem.recordCounter('middleware_errors', 1, {
       path: pathname,
       method,
-      error: error.message,
+      error: err.message,
     });
 
     await logger.error(
       'Middleware error',
       {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
         pathname,
         method,
         ip,
         userAgent,
         traceId,
       },
-      'middleware',
+      'edge_function',
       'error'
     );
 
     await observabilitySystem.finishSpan(spanId, 'error', {
-      error: error.message,
+      error: err.message,
       duration,
     });
     await observabilitySystem.finishTrace(traceId, 'error');

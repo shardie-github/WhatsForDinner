@@ -14,8 +14,8 @@ export function useDeviceMode() {
 
 export function getResponsiveValue<T>(
   mobile: T,
-  tablet?: T,
-  desktop?: T
+  _tablet?: T,
+  _desktop?: T
 ): T {
   // This would be implemented with actual responsive detection
   // For now, return mobile value
