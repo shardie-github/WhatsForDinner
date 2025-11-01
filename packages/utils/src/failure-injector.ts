@@ -76,16 +76,17 @@ class FailureInjector {
 
   private injectMemoryLeak(): void {
     // Allocate memory that won't be garbage collected
-    const chunks = [];
-    for (let i = 0; i < this.config.severity === 'high' ? 100 : 10; i++) {
+    const chunks: number[][] = [];
+    const limit = this.config.severity === 'high' ? 100 : 10;
+    for (let i = 0; i < limit; i++) {
       chunks.push(new Array(100000).fill(Math.random()));
     }
   }
 
-  private injectNetworkDelay(): void {
+  private async injectNetworkDelay(): Promise<void> {
     // Simulate network delay
     const delay = this.config.severity === 'high' ? 5000 : 1000;
-    return new Promise(resolve => setTimeout(resolve, delay));
+    await new Promise(resolve => setTimeout(resolve, delay));
   }
 
   private injectDatabaseError(): void {
