@@ -1065,6 +1065,12 @@ importers:
       '@types/node':
         specifier: ^20
         version: 20.19.23
+      '@types/react':
+        specifier: ^19
+        version: 19.2.2
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
       typescript:
         specifier: ^5
         version: 5.9.3
