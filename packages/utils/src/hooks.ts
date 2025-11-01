@@ -19,6 +19,7 @@ export function useDeviceInfo() {
         window.removeEventListener('offline', handleOffline);
       };
     }
+    return undefined;
   }, [deviceMode.isWeb]);
 
   return {
@@ -37,7 +38,10 @@ export function useResponsiveValue<T>(
   
   // In a real implementation, you'd use actual breakpoint detection
   // For now, return mobile for native, desktop for web
-  return isWeb ? (desktop ?? tablet ?? mobile) : mobile;
+  if (isWeb) {
+    return desktop ?? tablet ?? mobile;
+  }
+  return mobile;
 }
 
 // Hook for platform-specific styling
@@ -58,11 +62,11 @@ export function usePantry() {
   const [items, setItems] = useState<string[]>([]);
 
   const addItem = (item: string) => {
-    setItems(prev => [...prev, item]);
+    setItems((prev: string[]) => [...prev, item]);
   };
 
   const removeItem = (index: number) => {
-    setItems(prev => prev.filter((_, i) => i !== index));
+    setItems((prev: string[]) => prev.filter((_: string, i: number) => i !== index));
   };
 
   const clearItems = () => {
@@ -112,10 +116,11 @@ export function useTheme() {
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
+    return undefined;
   }, [theme, isWeb, getSystemTheme]);
 
   const toggleTheme = useCallback(() => {
-    setTheme(prev => {
+    setTheme((prev: ThemeMode) => {
       if (prev === 'light') return 'dark';
       if (prev === 'dark') return 'system';
       return 'light';

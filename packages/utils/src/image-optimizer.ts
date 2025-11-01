@@ -12,7 +12,8 @@ export interface ImageOptimizationOptions {
 }
 
 export class ImageOptimizer {
-  private static readonly MODERN_FORMATS = ['webp', 'avif'];
+  // Modern formats supported by most browsers
+  // private static readonly MODERN_FORMATS = ['webp', 'avif'];
   private static readonly FALLBACK_FORMAT = 'jpeg';
   
   /**
