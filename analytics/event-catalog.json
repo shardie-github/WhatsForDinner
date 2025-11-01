@@ -1,0 +1,362 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Analytics Event Catalog",
+  "description": "Catalog of all analytics events tracked in the application",
+  "version": "1.0.0",
+  "events": [
+    {
+      "name": "page_view",
+      "description": "Page view event fired when user navigates to a page",
+      "when_fired": "On every page navigation/load",
+      "properties": {
+        "page_url": {
+          "type": "string",
+          "description": "Full URL of the page",
+          "pii_class": "identifier"
+        },
+        "page_path": {
+          "type": "string",
+          "description": "Path portion of URL",
+          "pii_class": "none"
+        },
+        "referrer": {
+          "type": "string",
+          "description": "Referrer URL",
+          "pii_class": "identifier"
+        },
+        "user_agent": {
+          "type": "string",
+          "description": "User agent string",
+          "pii_class": "device_info"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "user_signed_up",
+      "description": "User completes registration",
+      "when_fired": "After successful user registration",
+      "properties": {
+        "signup_method": {
+          "type": "string",
+          "description": "Registration method (email, oauth_google, etc)",
+          "pii_class": "none"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "Tenant/organization ID",
+          "pii_class": "identifier"
+        }
+      },
+      "pii_class": "medium"
+    },
+    {
+      "name": "user_logged_in",
+      "description": "User successfully authenticates",
+      "when_fired": "After successful login",
+      "properties": {
+        "login_method": {
+          "type": "string",
+          "description": "Authentication method",
+          "pii_class": "none"
+        }
+      },
+      "pii_class": "medium"
+    },
+    {
+      "name": "pantry_item_added",
+      "description": "User adds item to pantry",
+      "when_fired": "When user adds ingredient to pantry",
+      "properties": {
+        "ingredient": {
+          "type": "string",
+          "description": "Ingredient name",
+          "pii_class": "none"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity added",
+          "pii_class": "none"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "recipe_generated",
+      "description": "AI generates a recipe for user",
+      "when_fired": "After successful recipe generation",
+      "properties": {
+        "recipe_id": {
+          "type": "number",
+          "description": "Generated recipe ID",
+          "pii_class": "identifier"
+        },
+        "ingredients_count": {
+          "type": "number",
+          "description": "Number of ingredients used",
+          "pii_class": "none"
+        },
+        "cuisine_type": {
+          "type": "string",
+          "description": "Type of cuisine",
+          "pii_class": "none"
+        },
+        "cook_time": {
+          "type": "string",
+          "description": "Estimated cook time",
+          "pii_class": "none"
+        },
+        "calories": {
+          "type": "number",
+          "description": "Estimated calories",
+          "pii_class": "none"
+        },
+        "api_latency_ms": {
+          "type": "number",
+          "description": "API response time in milliseconds",
+          "pii_class": "none"
+        },
+        "model_used": {
+          "type": "string",
+          "description": "OpenAI model used",
+          "pii_class": "none"
+        },
+        "retry_count": {
+          "type": "number",
+          "description": "Number of retries if needed",
+          "pii_class": "none"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "recipe_viewed",
+      "description": "User views a recipe",
+      "when_fired": "When recipe detail page is viewed",
+      "properties": {
+        "recipe_id": {
+          "type": "number",
+          "description": "Recipe ID",
+          "pii_class": "identifier"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "recipe_favorited",
+      "description": "User favorites a recipe",
+      "when_fired": "When user clicks favorite button",
+      "properties": {
+        "recipe_id": {
+          "type": "number",
+          "description": "Recipe ID",
+          "pii_class": "identifier"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "recipe_feedback",
+      "description": "User provides feedback on recipe",
+      "when_fired": "When user submits feedback (thumbs up/down, rating)",
+      "properties": {
+        "recipe_id": {
+          "type": "number",
+          "description": "Recipe ID",
+          "pii_class": "identifier"
+        },
+        "feedback_type": {
+          "type": "string",
+          "description": "Type of feedback (thumbs_up, thumbs_down, rating)",
+          "pii_class": "none"
+        },
+        "score": {
+          "type": "number",
+          "description": "Rating score if applicable",
+          "pii_class": "none"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "onboarding_step_completed",
+      "description": "User completes an onboarding step",
+      "when_fired": "When user completes a step in onboarding checklist",
+      "properties": {
+        "step_name": {
+          "type": "string",
+          "description": "Name of the onboarding step",
+          "pii_class": "none"
+        },
+        "step_number": {
+          "type": "number",
+          "description": "Step number",
+          "pii_class": "none"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "subscription_started",
+      "description": "User starts a paid subscription",
+      "when_fired": "After successful Stripe checkout",
+      "properties": {
+        "plan": {
+          "type": "string",
+          "description": "Subscription plan (pro, family)",
+          "pii_class": "none"
+        },
+        "stripe_customer_id": {
+          "type": "string",
+          "description": "Stripe customer ID",
+          "pii_class": "identifier"
+        },
+        "stripe_subscription_id": {
+          "type": "string",
+          "description": "Stripe subscription ID",
+          "pii_class": "identifier"
+        }
+      },
+      "pii_class": "medium"
+    },
+    {
+      "name": "subscription_cancelled",
+      "description": "User cancels subscription",
+      "when_fired": "When subscription is cancelled",
+      "properties": {
+        "plan": {
+          "type": "string",
+          "description": "Cancelled plan",
+          "pii_class": "none"
+        },
+        "cancel_at_period_end": {
+          "type": "boolean",
+          "description": "Whether cancellation is at period end",
+          "pii_class": "none"
+        }
+      },
+      "pii_class": "medium"
+    },
+    {
+      "name": "funnel_stage_reached",
+      "description": "User reaches a conversion funnel stage",
+      "when_fired": "When user progresses through funnel stages",
+      "properties": {
+        "funnel_stage": {
+          "type": "string",
+          "description": "Funnel stage (landing, signup, onboarding, first_recipe, recipe_feedback, subscription, activation, retention, churn)",
+          "pii_class": "none"
+        },
+        "utm_source": {
+          "type": "string",
+          "description": "UTM source parameter",
+          "pii_class": "none"
+        },
+        "utm_medium": {
+          "type": "string",
+          "description": "UTM medium parameter",
+          "pii_class": "none"
+        },
+        "utm_campaign": {
+          "type": "string",
+          "description": "UTM campaign parameter",
+          "pii_class": "none"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "experiment_assigned",
+      "description": "User assigned to A/B test experiment",
+      "when_fired": "When user is assigned to experiment variant",
+      "properties": {
+        "experiment_id": {
+          "type": "string",
+          "description": "Experiment ID",
+          "pii_class": "identifier"
+        },
+        "variant_id": {
+          "type": "string",
+          "description": "Assigned variant ID",
+          "pii_class": "identifier"
+        },
+        "variant_name": {
+          "type": "string",
+          "description": "Variant name",
+          "pii_class": "none"
+        },
+        "is_control": {
+          "type": "boolean",
+          "description": "Whether user is in control group",
+          "pii_class": "none"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "share_clicked",
+      "description": "User clicks share button",
+      "when_fired": "When user clicks to share recipe/meal card",
+      "properties": {
+        "share_type": {
+          "type": "string",
+          "description": "Type of content shared (meal_card, recipe, achievement)",
+          "pii_class": "none"
+        },
+        "platform": {
+          "type": "string",
+          "description": "Platform shared to",
+          "pii_class": "none"
+        },
+        "recipe_id": {
+          "type": "number",
+          "description": "Recipe ID if applicable",
+          "pii_class": "identifier"
+        }
+      },
+      "pii_class": "low"
+    },
+    {
+      "name": "error_occurred",
+      "description": "Application error occurs",
+      "when_fired": "When an error is caught and logged",
+      "properties": {
+        "error_type": {
+          "type": "string",
+          "description": "Error type/name",
+          "pii_class": "none"
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Error message",
+          "pii_class": "none"
+        },
+        "component": {
+          "type": "string",
+          "description": "Component where error occurred",
+          "pii_class": "none"
+        },
+        "severity": {
+          "type": "string",
+          "description": "Error severity (low, medium, high, critical)",
+          "pii_class": "none"
+        }
+      },
+      "pii_class": "low"
+    }
+  ],
+  "pii_classifications": {
+    "none": "No personally identifiable information",
+    "low": "Minimal PII, pseudonymous identifiers",
+    "medium": "Contains user identifiers but not sensitive data",
+    "high": "Contains sensitive PII (emails, addresses, etc)",
+    "identifier": "Technical identifier (UUID, ID) that can be linked to user",
+    "device_info": "Device/browser information",
+    "behavioral": "User behavior data"
+  },
+  "data_retention": {
+    "default": "24 months",
+    "events_with_pii": "12 months",
+    "events_high_pii": "6 months"
+  }
+}

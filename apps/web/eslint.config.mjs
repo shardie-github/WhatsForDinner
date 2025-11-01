@@ -2,6 +2,8 @@ import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
+import security from "eslint-plugin-security";
+import importPlugin from "eslint-plugin-import";
 
 const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
@@ -24,6 +26,8 @@ export default [
     },
     plugins: {
       "@typescript-eslint": typescriptEslint,
+      security: security,
+      import: importPlugin,
     },
     rules: {
       "react/jsx-key": "error",
@@ -31,6 +35,35 @@ export default [
       "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/no-explicit-any": "warn",
       "react-hooks/exhaustive-deps": "warn",
+      // Security rules
+      "security/detect-object-injection": "warn",
+      "security/detect-non-literal-regexp": "warn",
+      "security/detect-unsafe-regex": "error",
+      "security/detect-buffer-noassert": "error",
+      "security/detect-child-process": "warn",
+      "security/detect-disable-mustache-escape": "error",
+      "security/detect-eval-with-expression": "error",
+      "security/detect-no-csrf-before-method-override": "warn",
+      "security/detect-non-literal-fs-filename": "warn",
+      "security/detect-non-literal-require": "warn",
+      "security/detect-possible-timing-attacks": "warn",
+      "security/detect-pseudoRandomBytes": "error",
+      // Import order
+      "import/order": [
+        "warn",
+        {
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+          ],
+          "newlines-between": "always",
+          alphabetize: { order: "asc", caseInsensitive: true },
+        },
+      ],
     },
   },
   {
