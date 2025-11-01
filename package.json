@@ -32,6 +32,8 @@
     "cost:guard": "node scripts/cost-guard.mjs --check",
     "smoke:test": "cd apps/web && npx playwright test tests/smoke.spec.ts",
     "check:all": "node scripts/run-all-checks.mjs",
+    "browser:compat": "npx tsx scripts/browser-compatibility-test.ts",
+    "alerts:test": "npx tsx scripts/monitoring-alerts-config.ts",
     "experimentation:setup": "node scripts/experimentation-layer.js",
     "docs:lint": "node scripts/docs-quality-gate.js",
     "repo:hygiene": "node scripts/repo-hygiene.js",
