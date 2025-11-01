@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { GenerateRecipesRequestSchema } from '@/lib/validation';
 import { generateRecipesWithFallback } from '@/lib/openaiService';
@@ -6,8 +7,9 @@ import { aiOptimization } from '@/lib/aiOptimization';
 import { supabase } from '@/lib/supabaseClient';
 import { StripeService } from '@/lib/stripe';
 import { headers } from 'next/headers';
+import { withRateLimit } from '@/lib/rate-limiting';
 
-export async function POST(req: Request) {
+async function handler(req: NextRequest) {
   try {
     // Validate request body
     const body = await req.json();
@@ -68,9 +70,9 @@ export async function POST(req: Request) {
     );
 
     return NextResponse.json({
-      recipes: result.response.recipes,
+      recipes: result.response?.recipes || [],
       metadata: {
-        ...result.response.metadata,
+        ...result.response?.metadata,
         model: result.model,
         tokensUsed: result.tokens,
         costUsd: result.cost,
@@ -82,7 +84,7 @@ export async function POST(req: Request) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request', details: error.errors },
         { status: 400 }
       );
     }
@@ -93,3 +95,12 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// Apply rate limiting (20 requests per minute for recipe generation)
+export const POST = withRateLimit(
+  {
+    requests: 20,
+    window: 60,
+  },
+  handler
+);
