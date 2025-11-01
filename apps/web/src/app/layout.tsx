@@ -90,6 +90,9 @@ export default function RootLayout({
                     <a href="/support" className="text-muted-foreground hover:text-foreground">
                       Support
                     </a>
+                    <a href="/status" className="text-muted-foreground hover:text-foreground">
+                      Status
+                    </a>
                     <a href="/terms-of-service" className="text-muted-foreground hover:text-foreground">
                       Terms
                     </a>
