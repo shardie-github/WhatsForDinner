@@ -3,6 +3,9 @@
 **Status Tracking**: ? Complete | ?? In Progress | ?? Blocked | ?? Pending  
 **Priority**: P0 (Critical) | P1 (High) | P2 (Medium) | P3 (Low)
 
+**?? See `/config/service-config.json` for complete service configurations with cost factors and autoscaling**  
+**?? See `CRITICAL_HIGH_PRIORITY_SERVICES_SUMMARY.md` for detailed status**
+
 ---
 
 ## Phase 1: Foundation (Weeks 1-4)
@@ -15,17 +18,23 @@
   - **Effort**: 1h
   - **Status**: ?? Pending
   - **Dependencies**: None
+  - **?? Cost Factor**: FREE (0$/month, 1000 req/hour limit)
+  - **?? Autoscaling**: Configured - Rate limit aware, cache TTL 7 days, min 10/max 16 req/min
+  - **?? Manual Registration Required**: YES - Register at https://fdc.nal.usda.gov/api-guide.html, add `USDA_API_KEY` to env vars
 
 - [ ] **1.1.2** Create nutrition service layer (`lib/nutrition-service.ts`)
   - **Owner**: Backend Dev
   - **Effort**: 1d
   - **Status**: ?? Pending
   - **Dependencies**: 1.1.1
+  - **?? Cost Factor**: FREE (uses USDA API - already accounted above)
+  - **?? Autoscaling**: Implement rate limit aware scaling per config
   - **Requirements**:
-    - [ ] USDA API client wrapper
-    - [ ] Nutrition data caching (Redis or Supabase cache)
+    - [ ] USDA API client wrapper (with rate limiting)
+    - [ ] Nutrition data caching (Redis or Supabase cache, TTL: 7 days)
     - [ ] Error handling and fallbacks
-    - [ ] Rate limiting (USDA allows 1000 requests/hour)
+    - [ ] Rate limiting (1000 requests/hour max, scale at 80% threshold)
+    - [ ] Implement exponential backoff retry policy (3 retries, 1s base delay)
 
 - [ ] **1.1.3** Replace mock nutrition data in `/api/partners/v1/nutrition/route.ts`
   - **Owner**: Backend Dev
@@ -75,7 +84,10 @@
 - [ ] **1.1.7** Apply for Edamam API key (free tier)
   - **Owner**: Backend Lead
   - **Effort**: 1h
-  - **Status**: ?? Pending
+  - **Status**: ?? Pending (Deferred to Phase 3)
+  - **?? Cost Factor**: FREEMIUM (Free tier: 5,000 req/month, Paid: $99/month for 50K req/month)
+  - **?? Autoscaling**: Configured - Tier aware, monthly budget limit 5,000, cache TTL 7 days
+  - **?? Manual Registration Required**: YES - Sign up at https://www.edamam.com/ (defer to Phase 3)
 
 - [ ] **1.1.8** Integrate Edamam for food image recognition (future)
   - **Owner**: Backend Dev
@@ -149,11 +161,15 @@
   - **Owner**: Backend Lead
   - **Effort**: 0.5d
   - **Status**: ?? Pending
+  - **?? Cost Factor**: FREE public data (~$0.05/month for 2GB storage)
+  - **?? Manual Registration Required**: NO - Public data download
 
 - [ ] **1.3.2** Build cost calculator service (`lib/cost-calculator.ts`)
   - **Owner**: Backend Dev
   - **Effort**: 3d
   - **Status**: ?? Pending
+  - **?? Cost Factor**: Minimal storage cost (~$0.05/month)
+  - **?? Autoscaling**: Data refresh strategy, monthly updates, cache TTL 30 days
   - **Requirements**:
     - [ ] Calculate cost per recipe (ingredient-level)
     - [ ] Calculate cost per serving
@@ -168,6 +184,7 @@
     - [ ] `ingredient_prices` table (ingredient_id, price, unit, region, date)
     - [ ] Seed with USDA data
     - [ ] Update mechanism (weekly/monthly)
+    - [ ] Implement monthly refresh job
 
 - [ ] **1.3.4** Add "Cost per Serving" to recipe cards
   - **Owner**: Frontend Dev
@@ -241,19 +258,29 @@
   - **Owner**: Business Dev / Founder
   - **Effort**: 1w (approval time)
   - **Status**: ?? Pending
+  - **?? Cost Factor**: REVENUE SHARE (0$/month, 5% commission on orders)
+  - **?? Autoscaling**: Configured - Demand based, cache TTL 1 hour, min 5/max 60 req/min
+  - **?? Manual Registration Required**: YES - **PARTNERSHIP APPROVAL REQUIRED** (1-2 weeks)
   - **Requirements**:
     - [ ] Business verification
     - [ ] Integration proposal
     - [ ] Technical review
+    - [ ] Receive OAuth credentials
+    - [ ] Add `INSTACART_CLIENT_ID`, `INSTACART_CLIENT_SECRET`, `INSTACART_REDIRECT_URI` to env vars
+  - **?? BLOCKER**: Cannot implement until partnership approved
 
 - [ ] **2.1.2** Build grocery service abstraction layer (`lib/grocery-service.ts`)
   - **Owner**: Backend Dev
   - **Effort**: 2d
   - **Status**: ?? Pending
+  - **Dependencies**: 2.1.1 (requires partnership approval)
+  - **?? Cost Factor**: Uses Instacart API (revenue share only)
+  - **?? Autoscaling**: Implement demand-based scaling per config
   - **Requirements**:
     - [ ] Interface for multiple providers (Instacart, Amazon, etc.)
     - [ ] Provider-specific implementations
     - [ ] Error handling and fallbacks
+    - [ ] Implement retry policy (5 retries, 2s base delay, exponential backoff)
 
 - [ ] **2.1.3** Implement Instacart API client
   - **Owner**: Backend Dev
@@ -308,16 +335,22 @@
   - **Owner**: Business Dev
   - **Effort**: 1w (approval)
   - **Status**: ?? Pending
+  - **?? Cost Factor**: COMMISSION-BASED (0$/month, 4% commission on sales)
+  - **?? Autoscaling**: Configured - Rate limit aware (strict: 1 req/min), cache TTL 24 hours
+  - **?? Manual Registration Required**: YES - Apply at https://affiliate-program.amazon.com/ (1-2 weeks approval)
 
 - [ ] **2.2.2** Integrate Product Advertising API
   - **Owner**: Backend Dev
   - **Effort**: 4d
   - **Status**: ?? Pending
   - **Dependencies**: 2.2.1, 2.1.2
+  - **?? Cost Factor**: Free API, commission-based revenue only
+  - **?? Autoscaling**: Implement strict rate limiting (1 req/min max)
   - **Requirements**:
     - [ ] Product search
     - [ ] Price retrieval
     - [ ] Affiliate link generation
+    - [ ] Add `AMAZON_ACCESS_KEY`, `AMAZON_SECRET_KEY`, `AMAZON_ASSOCIATE_TAG` to env vars
 
 - [ ] **2.2.3** Add Amazon product links to shopping lists
   - **Owner**: Frontend Dev
@@ -334,10 +367,13 @@
   - **Effort**: 3d
   - **Status**: ?? Pending
   - **Dependencies**: 2.1.3, 2.2.2
+  - **?? Cost Factor**: No additional cost (uses Instacart + Amazon APIs already configured)
+  - **?? Autoscaling**: Inherits from underlying services
   - **Requirements**:
     - [ ] Query multiple providers for same product
     - [ ] Aggregate prices
     - [ ] Return best price + provider
+    - [ ] Implement caching to reduce API calls
 
 - [ ] **2.3.2** Create price comparison UI
   - **Owner**: Frontend Dev
@@ -359,10 +395,15 @@
   - **Owner**: Backend Dev
   - **Effort**: 2d
   - **Status**: ?? Pending
+  - **?? Cost Factor**: FREE (completely free, open source)
+  - **?? Autoscaling**: Configured - Rate limit aware (5 req/sec max), cache TTL 24 hours
+  - **?? Manual Registration Required**: NO - Can implement immediately
   - **Requirements**:
     - [ ] Barcode lookup endpoint
     - [ ] Product information retrieval
     - [ ] Nutrition data extraction
+    - [ ] Respectful rate limiting (5 req/sec)
+    - [ ] Implement caching strategy
 
 - [ ] **3.1.2** Build mobile barcode scanner component
   - **Owner**: Mobile Dev
@@ -388,21 +429,29 @@
   - **Owner**: Backend Dev
   - **Effort**: 1d
   - **Status**: ?? Pending
+  - **?? Cost Factor**: FREE (1M requests/day quota, sufficient for calendar sync)
+  - **?? Autoscaling**: Configured - Quota aware, cache TTL 5 minutes, min 1/max 60 req/min
+  - **?? Manual Registration Required**: YES - Google Cloud setup required
   - **Requirements**:
     - [ ] Google Cloud project setup
     - [ ] OAuth credentials
     - [ ] Calendar API enabled
+    - [ ] Configure OAuth consent screen
+    - [ ] Add `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` to env vars
 
 - [ ] **3.2.2** Build calendar sync service (`lib/calendar-sync.ts`)
   - **Owner**: Backend Dev
   - **Effort**: 2d
   - **Status**: ?? Pending
   - **Dependencies**: 3.2.1
+  - **?? Cost Factor**: Free (within generous quota)
+  - **?? Autoscaling**: Implement quota-aware scaling per config
   - **Requirements**:
     - [ ] Create calendar events from meal plans
     - [ ] Update events on meal plan changes
     - [ ] Delete events on meal plan deletion
     - [ ] Handle OAuth refresh tokens
+    - [ ] Implement retry policy with quota reset handling
 
 - [ ] **3.2.3** Create calendar UI components
   - **Owner**: Frontend Dev
@@ -518,18 +567,28 @@
 
 ---
 
-### 4.2 Recipe Browse (Spoonacular) (P2)
+### 4.2 Recipe Browse (Spoonacular) (P1 - High Priority, Phase 4)
 
 - [ ] **4.2.1** Integrate Spoonacular recipe search
   - **Owner**: Backend Dev
   - **Effort**: 2d
   - **Status**: ?? Pending
+  - **?? Cost Factor**: SUBSCRIPTION ($149/month for Medium tier, 15K requests/day included)
+  - **?? Autoscaling**: Configured - Budget aware, daily limit 15K requests, cache TTL 30 days
+  - **?? Manual Registration Required**: YES - Sign up at https://spoonacular.com/food-api (immediate approval)
+  - **Requirements**:
+    - [ ] Sign up and choose subscription tier (Medium: $149/month)
+    - [ ] Receive API key
+    - [ ] Add `SPOONACULAR_API_KEY` to environment variables
+    - [ ] Implement daily budget tracking (15K requests/day limit)
 
 - [ ] **4.2.2** Build recipe browse/discover UI
   - **Owner**: Frontend Dev
   - **Effort**: 3d
   - **Status**: ?? Pending
   - **Dependencies**: 4.2.1
+  - **?? Cost Factor**: No additional cost (uses Spoonacular API)
+  - **?? Autoscaling**: Inherits from Spoonacular service config
 
 ---
 
