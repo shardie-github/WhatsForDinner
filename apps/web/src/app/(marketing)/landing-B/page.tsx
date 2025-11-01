@@ -46,7 +46,7 @@ function LandingVariantB() {
       }
 
       // Assign and track variant
-      const variant = getVariant('landing-hero-variant', user?.id);
+      getVariant('landing-hero-variant', user?.id);
       setVariantLoaded(true);
 
       await analytics.trackEvent('page_viewed', {
@@ -82,7 +82,7 @@ function LandingVariantB() {
         ingredients,
         preferences,
       });
-      setRecipes(result.recipes);
+      setRecipes(result.recipes as any);
 
       await analytics.trackEvent('recipe_generation_completed', {
         recipes_count: result.recipes.length,
@@ -97,8 +97,9 @@ function LandingVariantB() {
         { variant: 'B', recipes_count: result.recipes.length }
       );
     } catch (error) {
+      const err = error as Error;
       await analytics.trackEvent('recipe_generation_failed', {
-        error: error.message,
+        error: err.message,
         variant: 'B',
       });
       console.error('Error generating recipes:', error);
@@ -109,7 +110,7 @@ function LandingVariantB() {
     if (!user) return;
 
     try {
-      await saveRecipeMutation.mutateAsync(recipe);
+      await saveRecipeMutation.mutateAsync(recipe as any);
       await analytics.trackEvent('recipe_saved', {
         recipe_title: recipe.title,
         variant: 'B',
@@ -283,7 +284,7 @@ function LandingVariantB() {
               {recipes.map((recipe, index) => (
                 <RecipeCard
                   key={index}
-                  recipe={recipe}
+                  recipe={recipe as any}
                   onSave={() => saveRecipe(recipe)}
                   canSave={!!user}
                   userId={user?.id}

@@ -6,9 +6,9 @@ import { headers } from 'next/headers';
  * GET /api/onboarding/checklist
  * Returns user's onboarding checklist state
  */
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
   try {
-    const headersList = await headers();
+    await headers(); // Ensure headers are awaited
     
     // Get user
     const { data: { user }, error: authError } = await supabase.auth.getUser();

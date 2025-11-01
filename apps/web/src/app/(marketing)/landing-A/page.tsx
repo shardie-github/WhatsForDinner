@@ -82,7 +82,7 @@ function LandingVariantA() {
         ingredients,
         preferences,
       });
-      setRecipes(result.recipes);
+      setRecipes(result.recipes as any); // Type assertion for demo data compatibility
 
       await analytics.trackEvent('recipe_generation_completed', {
         recipes_count: result.recipes.length,
@@ -97,8 +97,9 @@ function LandingVariantA() {
         { variant: 'A', recipes_count: result.recipes.length }
       );
     } catch (error) {
+      const err = error as Error;
       await analytics.trackEvent('recipe_generation_failed', {
-        error: error.message,
+        error: err.message,
         variant: 'A',
       });
       console.error('Error generating recipes:', error);
@@ -109,7 +110,7 @@ function LandingVariantA() {
     if (!user) return;
 
     try {
-      await saveRecipeMutation.mutateAsync(recipe);
+      await saveRecipeMutation.mutateAsync(recipe as any);
       await analytics.trackEvent('recipe_saved', {
         recipe_title: recipe.title,
         variant: 'A',
@@ -263,7 +264,7 @@ function LandingVariantA() {
               {recipes.map((recipe, index) => (
                 <RecipeCard
                   key={index}
-                  recipe={recipe}
+                  recipe={recipe as any}
                   onSave={() => saveRecipe(recipe)}
                   canSave={!!user}
                   userId={user?.id}

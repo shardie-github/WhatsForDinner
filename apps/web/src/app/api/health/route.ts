@@ -15,8 +15,10 @@ export async function GET() {
       version: process.env.npm_package_version || '1.0.0',
       buildSha: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
       environment: process.env.NODE_ENV || 'development',
+      uptime: 0,
+      responseTime: 0,
       checks: {
-        database: { status: 'unknown', duration: 0 }
+        database: { status: 'unknown' as string, duration: 0, error: undefined as string | undefined }
       }
     };
 
