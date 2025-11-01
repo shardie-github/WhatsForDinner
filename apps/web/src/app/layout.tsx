@@ -3,6 +3,7 @@ import { Inter, Poppins, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import PWAInstaller from '@/components/PWAInstaller';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { Analytics } from '@/components/Analytics';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const poppins = Poppins({ 
@@ -85,12 +86,24 @@ export default function RootLayout({
                   <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
                     © 2025 Hardonia Labs. All rights reserved.
                   </p>
+                  <div className="flex gap-4 text-sm">
+                    <a href="/support" className="text-muted-foreground hover:text-foreground">
+                      Support
+                    </a>
+                    <a href="/terms-of-service" className="text-muted-foreground hover:text-foreground">
+                      Terms
+                    </a>
+                    <a href="/privacy-policy" className="text-muted-foreground hover:text-foreground">
+                      Privacy
+                    </a>
+                  </div>
                 </div>
               </div>
             </footer>
           </div>
         </ThemeProvider>
         <PWAInstaller />
+        <Analytics />
       </body>
     </html>
   );

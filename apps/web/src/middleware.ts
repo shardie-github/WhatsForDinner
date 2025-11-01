@@ -6,19 +6,50 @@ import { logger } from '@/lib/logger';
 // Rate limiting store (in production, use Redis or similar)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
-// Rate limiting configuration
-const RATE_LIMITS = {
-  '/api/': { requests: 100, window: 60 * 1000 }, // 100 requests per minute
-  '/api/recipes': { requests: 20, window: 60 * 1000 }, // 20 requests per minute
-  '/api/ai': { requests: 10, window: 60 * 1000 }, // 10 requests per minute
-  '/api/health': { requests: 60, window: 60 * 1000 }, // 60 requests per minute
-  '/api/metrics': { requests: 30, window: 60 * 1000 }, // 30 requests per minute
-  '/api/alerts': { requests: 30, window: 60 * 1000 }, // 30 requests per minute
-  '/api/traces': { requests: 30, window: 60 * 1000 }, // 30 requests per minute
-  '/api/logs': { requests: 30, window: 60 * 1000 }, // 30 requests per minute
-  '/api/errors': { requests: 30, window: 60 * 1000 }, // 30 requests per minute
-  '/api/observability': { requests: 30, window: 60 * 1000 }, // 30 requests per minute
+// Rate limiting configuration (can be overridden via env vars)
+const getRateLimitConfig = () => {
+  const defaultLimits = {
+    '/api/': { requests: 100, window: 60 * 1000 },
+    '/api/auth': { requests: 5, window: 60 * 1000 }, // Stricter for auth
+    '/api/recipes': { requests: 20, window: 60 * 1000 },
+    '/api/ai': { requests: 10, window: 60 * 1000 },
+    '/api/billing': { requests: 10, window: 60 * 1000 }, // Stricter for billing
+    '/api/health': { requests: 60, window: 60 * 1000 },
+    '/api/metrics': { requests: 30, window: 60 * 1000 },
+    '/api/alerts': { requests: 30, window: 60 * 1000 },
+    '/api/traces': { requests: 30, window: 60 * 1000 },
+    '/api/logs': { requests: 30, window: 60 * 1000 },
+    '/api/errors': { requests: 30, window: 60 * 1000 },
+    '/api/observability': { requests: 30, window: 60 * 1000 },
+  };
+  
+  // Override with env vars if provided
+  const envRateLimit = process.env.RATE_LIMIT_REQUESTS 
+    ? parseInt(process.env.RATE_LIMIT_REQUESTS, 10) 
+    : null;
+  const envWindow = process.env.RATE_LIMIT_WINDOW
+    ? parseInt(process.env.RATE_LIMIT_WINDOW, 10) * 1000
+    : null;
+    
+  if (envRateLimit && envWindow) {
+    // Apply global rate limit if specified
+    return {
+      '/api/': { requests: envRateLimit, window: envWindow },
+      ...Object.fromEntries(
+        Object.entries(defaultLimits).map(([path, config]) => [
+          path,
+          path === '/api/' 
+            ? { requests: envRateLimit, window: envWindow }
+            : config
+        ])
+      ),
+    };
+  }
+  
+  return defaultLimits;
 };
+
+const RATE_LIMITS = getRateLimitConfig();
 
 export async function middleware(request: NextRequest) {
   const startTime = Date.now();
@@ -59,17 +90,28 @@ export async function middleware(request: NextRequest) {
     // Content Security Policy
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://js.sentry-cdn.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://api.openai.com https://*.supabase.co",
+      "connect-src 'self' https://api.openai.com https://*.supabase.co https://www.google-analytics.com https://*.sentry.io https://*.posthog.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
+      "frame-src 'none'",
+      "object-src 'none'",
+      "upgrade-insecure-requests",
     ].join('; ');
 
     response.headers.set('Content-Security-Policy', csp);
+    
+    // HSTS Header (only in production with HTTPS)
+    if (process.env.NODE_ENV === 'production') {
+      response.headers.set(
+        'Strict-Transport-Security',
+        'max-age=31536000; includeSubDomains; preload'
+      );
+    }
 
     // Rate limiting
     const rateLimit = getRateLimit(pathname);
