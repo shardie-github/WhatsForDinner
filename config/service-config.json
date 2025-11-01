@@ -1,0 +1,516 @@
+{
+  "services": {
+    "usda_fooddata_central": {
+      "name": "USDA FoodData Central API",
+      "priority": "P0",
+      "status": "pending",
+      "endpoint": "https://api.nal.usda.gov/fdc/v1",
+      "cost_factor": {
+        "type": "free",
+        "rate_limit": {
+          "requests_per_hour": 1000,
+          "requests_per_day": 10000,
+          "burst_limit": 100
+        },
+        "estimated_monthly_cost": 0,
+        "cost_per_request": 0,
+        "notes": "Free tier, requires API key registration"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "rate_limit_aware",
+        "min_requests_per_minute": 10,
+        "max_requests_per_minute": 16,
+        "scale_up_threshold": 0.8,
+        "scale_down_threshold": 0.3,
+        "cache_ttl": 604800,
+        "cache_strategy": "redis_or_supabase",
+        "retry_policy": {
+          "max_retries": 3,
+          "backoff": "exponential",
+          "base_delay_ms": 1000
+        }
+      },
+      "manual_registration_required": true,
+      "registration_steps": [
+        "Visit https://fdc.nal.usda.gov/api-guide.html",
+        "Register for API key",
+        "Add API key to environment variables as USDA_API_KEY"
+      ],
+      "environment_variables": [
+        "USDA_API_KEY"
+      ],
+      "implementation_effort_days": 5,
+      "notes": "Critical for nutrition data accuracy"
+    },
+    "instacart_connect": {
+      "name": "Instacart Connect API",
+      "priority": "P0",
+      "status": "pending",
+      "endpoint": "https://api.instacart.com",
+      "cost_factor": {
+        "type": "revenue_share",
+        "commission_rate": 0.05,
+        "setup_fee": 0,
+        "monthly_fee": 0,
+        "estimated_monthly_cost": 0,
+        "revenue_share_model": true,
+        "notes": "Revenue share only, no upfront costs. Requires partnership approval"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "demand_based",
+        "min_requests_per_minute": 5,
+        "max_requests_per_minute": 60,
+        "scale_up_threshold": 0.7,
+        "scale_down_threshold": 0.2,
+        "cache_ttl": 3600,
+        "rate_limit_handling": "queue_and_retry",
+        "retry_policy": {
+          "max_retries": 5,
+          "backoff": "exponential",
+          "base_delay_ms": 2000
+        }
+      },
+      "manual_registration_required": true,
+      "registration_steps": [
+        "Apply for Instacart Connect partner program at https://www.instacart.com/partners/connect",
+        "Complete business verification (1-2 weeks)",
+        "Submit integration proposal",
+        "Wait for technical review and approval",
+        "Receive OAuth credentials",
+        "Add credentials to environment variables"
+      ],
+      "environment_variables": [
+        "INSTACART_CLIENT_ID",
+        "INSTACART_CLIENT_SECRET",
+        "INSTACART_REDIRECT_URI"
+      ],
+      "implementation_effort_days": 10,
+      "notes": "Critical revenue driver, requires partnership approval"
+    },
+    "amazon_associates": {
+      "name": "Amazon Associates Product Advertising API",
+      "priority": "P1",
+      "status": "pending",
+      "endpoint": "https://webservices.amazon.com/paapi5",
+      "cost_factor": {
+        "type": "commission",
+        "commission_rate": 0.04,
+        "setup_fee": 0,
+        "monthly_fee": 0,
+        "estimated_monthly_cost": 0,
+        "api_cost_per_request": 0,
+        "notes": "Commission-based, free API access"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "rate_limit_aware",
+        "min_requests_per_minute": 1,
+        "max_requests_per_minute": 1,
+        "scale_up_threshold": 0.9,
+        "scale_down_threshold": 0.1,
+        "cache_ttl": 86400,
+        "rate_limit_handling": "strict",
+        "retry_policy": {
+          "max_retries": 3,
+          "backoff": "exponential",
+          "base_delay_ms": 5000
+        }
+      },
+      "manual_registration_required": true,
+      "registration_steps": [
+        "Apply for Amazon Associates program at https://affiliate-program.amazon.com/",
+        "Wait for approval (typically 1-2 weeks)",
+        "Create Product Advertising API credentials",
+        "Add credentials to environment variables"
+      ],
+      "environment_variables": [
+        "AMAZON_ACCESS_KEY",
+        "AMAZON_SECRET_KEY",
+        "AMAZON_ASSOCIATE_TAG",
+        "AMAZON_PARTNER_TYPE",
+        "AMAZON_MARKETPLACE"
+      ],
+      "implementation_effort_days": 7,
+      "notes": "Revenue opportunity via affiliate links"
+    },
+    "spoonacular": {
+      "name": "Spoonacular Recipe API",
+      "priority": "P1",
+      "status": "pending",
+      "endpoint": "https://api.spoonacular.com",
+      "cost_factor": {
+        "type": "subscription",
+        "tier": "medium",
+        "monthly_cost": 149,
+        "requests_per_day": 15000,
+        "cost_per_request_overage": 0.01,
+        "estimated_monthly_cost": 149,
+        "notes": "Subscription model, pay per request for overages"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "budget_aware",
+        "min_requests_per_minute": 5,
+        "max_requests_per_minute": 10,
+        "daily_budget_limit": 15000,
+        "scale_up_threshold": 0.6,
+        "scale_down_threshold": 0.3,
+        "cache_ttl": 2592000,
+        "rate_limit_handling": "budget_management",
+        "retry_policy": {
+          "max_retries": 2,
+          "backoff": "exponential",
+          "base_delay_ms": 3000
+        }
+      },
+      "manual_registration_required": true,
+      "registration_steps": [
+        "Sign up at https://spoonacular.com/food-api",
+        "Choose subscription tier (Free/Medium/Premium)",
+        "Receive API key",
+        "Add API key to environment variables"
+      ],
+      "environment_variables": [
+        "SPOONACULAR_API_KEY"
+      ],
+      "implementation_effort_days": 3,
+      "notes": "Optional but valuable for recipe browsing"
+    },
+    "google_calendar": {
+      "name": "Google Calendar API",
+      "priority": "P1",
+      "status": "pending",
+      "endpoint": "https://www.googleapis.com/calendar/v3",
+      "cost_factor": {
+        "type": "free",
+        "quota_per_day": 1000000,
+        "requests_per_100_seconds": 100,
+        "estimated_monthly_cost": 0,
+        "notes": "Free tier with generous quotas"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "quota_aware",
+        "min_requests_per_minute": 1,
+        "max_requests_per_minute": 60,
+        "scale_up_threshold": 0.7,
+        "scale_down_threshold": 0.2,
+        "cache_ttl": 300,
+        "rate_limit_handling": "quota_reset",
+        "retry_policy": {
+          "max_retries": 3,
+          "backoff": "exponential",
+          "base_delay_ms": 2000
+        }
+      },
+      "manual_registration_required": true,
+      "registration_steps": [
+        "Create Google Cloud Project",
+        "Enable Calendar API in Google Cloud Console",
+        "Create OAuth 2.0 credentials",
+        "Configure OAuth consent screen",
+        "Add credentials to environment variables"
+      ],
+      "environment_variables": [
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "GOOGLE_REDIRECT_URI",
+        "GOOGLE_PROJECT_ID"
+      ],
+      "implementation_effort_days": 3,
+      "notes": "Free tier sufficient for calendar sync"
+    },
+    "open_food_facts": {
+      "name": "Open Food Facts API",
+      "priority": "P1",
+      "status": "pending",
+      "endpoint": "https://world.openfoodfacts.org/api/v0",
+      "cost_factor": {
+        "type": "free",
+        "rate_limit": {
+          "requests_per_second": 5,
+          "notes": "Respectful rate limiting recommended"
+        },
+        "estimated_monthly_cost": 0,
+        "notes": "Completely free, open source"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "rate_limit_aware",
+        "min_requests_per_minute": 1,
+        "max_requests_per_minute": 5,
+        "scale_up_threshold": 0.5,
+        "scale_down_threshold": 0.2,
+        "cache_ttl": 86400,
+        "rate_limit_handling": "respectful",
+        "retry_policy": {
+          "max_retries": 3,
+          "backoff": "exponential",
+          "base_delay_ms": 2000
+        }
+      },
+      "manual_registration_required": false,
+      "registration_steps": [],
+      "environment_variables": [],
+      "implementation_effort_days": 3,
+      "notes": "No registration required, just implement"
+    },
+    "edamam": {
+      "name": "Edamam Food API",
+      "priority": "P1",
+      "status": "pending",
+      "endpoint": "https://api.edamam.com",
+      "cost_factor": {
+        "type": "freemium",
+        "free_tier": {
+          "requests_per_month": 5000,
+          "cost": 0
+        },
+        "paid_tier": {
+          "monthly_cost": 99,
+          "requests_per_month": 50000
+        },
+        "estimated_monthly_cost": 0,
+        "notes": "Start with free tier, upgrade if needed"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "tier_aware",
+        "min_requests_per_minute": 1,
+        "max_requests_per_minute": 10,
+        "monthly_budget_limit": 5000,
+        "scale_up_threshold": 0.8,
+        "scale_down_threshold": 0.3,
+        "cache_ttl": 604800,
+        "rate_limit_handling": "tier_management",
+        "retry_policy": {
+          "max_retries": 2,
+          "backoff": "exponential",
+          "base_delay_ms": 3000
+        }
+      },
+      "manual_registration_required": true,
+      "registration_steps": [
+        "Sign up at https://www.edamam.com/",
+        "Get free API key",
+        "Add API key and App ID to environment variables"
+      ],
+      "environment_variables": [
+        "EDAMAM_APP_ID",
+        "EDAMAM_APP_KEY"
+      ],
+      "implementation_effort_days": 3,
+      "notes": "Optional, defer to Phase 3"
+    },
+    "usda_price_database": {
+      "name": "USDA Price Database",
+      "priority": "P1",
+      "status": "pending",
+      "endpoint": "Public data download",
+      "cost_factor": {
+        "type": "free",
+        "data_download_cost": 0,
+        "storage_cost_per_gb": 0.023,
+        "estimated_storage_gb": 2,
+        "estimated_monthly_cost": 0.05,
+        "notes": "Public data, minimal storage costs"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "data_refresh",
+        "update_frequency": "monthly",
+        "cache_ttl": 2592000,
+        "data_refresh_schedule": "monthly",
+        "notes": "Static database with periodic updates"
+      },
+      "manual_registration_required": false,
+      "registration_steps": [
+        "Download USDA price data files",
+        "Set up database schema",
+        "Import initial data",
+        "Configure monthly refresh job"
+      ],
+      "environment_variables": [],
+      "implementation_effort_days": 3,
+      "notes": "Public data, no API registration needed"
+    },
+    "vercel": {
+      "name": "Vercel Hosting",
+      "priority": "P0",
+      "status": "configured",
+      "endpoint": "https://vercel.com",
+      "cost_factor": {
+        "type": "usage_based",
+        "free_tier": {
+          "bandwidth_gb": 100,
+          "serverless_function_executions": 100000,
+          "cost": 0
+        },
+        "pro_tier": {
+          "monthly_cost": 20,
+          "bandwidth_gb": 1000,
+          "serverless_function_executions": 1000000
+        },
+        "estimated_monthly_cost": 20,
+        "notes": "Already configured, monitor usage"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "platform_managed",
+        "auto_scale": true,
+        "scale_to_zero": true,
+        "max_instances": "unlimited",
+        "notes": "Vercel handles autoscaling automatically"
+      },
+      "manual_registration_required": false,
+      "registration_steps": [],
+      "environment_variables": [],
+      "implementation_effort_days": 0,
+      "notes": "Already configured"
+    },
+    "supabase": {
+      "name": "Supabase Database",
+      "priority": "P0",
+      "status": "configured",
+      "endpoint": "https://supabase.com",
+      "cost_factor": {
+        "type": "subscription",
+        "free_tier": {
+          "database_size_gb": 0.5,
+          "bandwidth_gb": 5,
+          "cost": 0
+        },
+        "pro_tier": {
+          "monthly_cost": 25,
+          "database_size_gb": 8,
+          "bandwidth_gb": 50
+        },
+        "estimated_monthly_cost": 25,
+        "notes": "Already configured, monitor usage"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "platform_managed",
+        "connection_pooling": true,
+        "read_replicas": false,
+        "notes": "Supabase handles autoscaling, configure connection pooling"
+      },
+      "manual_registration_required": false,
+      "registration_steps": [],
+      "environment_variables": [],
+      "implementation_effort_days": 0,
+      "notes": "Already configured"
+    },
+    "openai": {
+      "name": "OpenAI API (GPT-4)",
+      "priority": "P0",
+      "status": "configured",
+      "endpoint": "https://api.openai.com/v1",
+      "cost_factor": {
+        "type": "usage_based",
+        "gpt_4o_cost_per_1k_tokens": {
+          "input": 0.005,
+          "output": 0.015
+        },
+        "gpt_4o_mini_cost_per_1k_tokens": {
+          "input": 0.00015,
+          "output": 0.0006
+        },
+        "estimated_monthly_cost": 100,
+        "cost_optimization": "Use gpt-4o-mini when possible, cache responses",
+        "notes": "Already configured, monitor token usage"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "cost_optimized",
+        "model_selection": "dynamic",
+        "prefer_mini_model": true,
+        "cache_ttl": 86400,
+        "rate_limit_handling": "exponential_backoff",
+        "retry_policy": {
+          "max_retries": 3,
+          "backoff": "exponential",
+          "base_delay_ms": 1000
+        }
+      },
+      "manual_registration_required": false,
+      "registration_steps": [],
+      "environment_variables": [],
+      "implementation_effort_days": 0,
+      "notes": "Already configured"
+    },
+    "stripe": {
+      "name": "Stripe Payment Processing",
+      "priority": "P0",
+      "status": "configured",
+      "endpoint": "https://api.stripe.com",
+      "cost_factor": {
+        "type": "transaction_fee",
+        "fee_per_transaction": {
+          "online": 0.029,
+          "in_person": 0.0275,
+          "fixed_fee": 0.30
+        },
+        "estimated_monthly_cost": 0,
+        "notes": "Transaction-based, already configured"
+      },
+      "autoscaling": {
+        "enabled": true,
+        "strategy": "platform_managed",
+        "auto_scale": true,
+        "notes": "Stripe handles all scaling automatically"
+      },
+      "manual_registration_required": false,
+      "registration_steps": [],
+      "environment_variables": [],
+      "implementation_effort_days": 0,
+      "notes": "Already configured"
+    }
+  },
+  "cost_summary": {
+    "monthly_estimated_costs": {
+      "existing_services": 145,
+      "new_services": 149,
+      "total": 294
+    },
+    "revenue_opportunities": {
+      "instacart_affiliate": "5% commission",
+      "amazon_associates": "4% commission"
+    },
+    "cost_optimization_notes": [
+      "Use caching aggressively to reduce API calls",
+      "Implement rate limiting to stay within free tiers",
+      "Monitor Spoonacular usage to avoid overages",
+      "Use gpt-4o-mini for most requests to reduce OpenAI costs"
+    ]
+  },
+  "autoscaling_summary": {
+    "services_with_autoscaling": 12,
+    "autoscaling_strategies": {
+      "rate_limit_aware": 5,
+      "platform_managed": 4,
+      "demand_based": 1,
+      "budget_aware": 1,
+      "cost_optimized": 1
+    },
+    "implementation_status": "pending",
+    "next_steps": [
+      "Implement caching layers for all services",
+      "Set up rate limit monitoring",
+      "Configure budget alerts",
+      "Implement retry policies"
+    ]
+  },
+  "manual_registration_summary": {
+    "total_services_requiring_registration": 6,
+    "critical_priority": 2,
+    "high_priority": 4,
+    "estimated_approval_time_days": {
+      "instacart": 14,
+      "amazon": 7,
+      "others": 1
+    }
+  }
+}
