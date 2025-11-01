@@ -15,6 +15,15 @@ export { secretsIntelligence } from './secretsIntelligence';
 export { predictiveOptimization } from './predictiveOptimization';
 export { cognitiveContinuity } from './cognitiveContinuity';
 
+// Business readiness and monetization
+export { croOptimizer } from './croOptimizer';
+export { monetizationHub } from './monetizationHub';
+export { businessReadinessOrchestrator } from './businessReadinessOrchestrator';
+
+// Autonomous infrastructure and self-learning
+export { autonomousInfrastructure } from './autonomousInfrastructure';
+export { selfLearningSystem } from './selfLearningSystem';
+
 // Monitoring and compliance
 export { observabilityAudit } from './observabilityAudit';
 
@@ -72,6 +81,9 @@ export async function initializeAutonomousSystem(): Promise<void> {
   try {
     console.log('🚀 Initializing Autonomous "What\'s for Dinner" System...');
 
+    // Initialize business readiness orchestrator (includes infrastructure and learning systems)
+    await businessReadinessOrchestrator.initialize();
+
     // The orchestrator will handle all initialization
     console.log('✅ Autonomous system initialized successfully');
     console.log(
@@ -80,6 +92,8 @@ export async function initializeAutonomousSystem(): Promise<void> {
     console.log('🛡️ Security guardrails and compliance monitoring active');
     console.log('🧠 Cognitive continuity and knowledge evolution enabled');
     console.log('📊 Predictive optimization and behavioral analytics running');
+    console.log('💰 Monetization and CRO systems active');
+    console.log('🤖 Autonomous infrastructure management enabled');
   } catch (error) {
     console.error('❌ Failed to initialize autonomous system:', error);
     throw error;
