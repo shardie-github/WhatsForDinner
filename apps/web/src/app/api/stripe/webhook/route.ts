@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe, StripeService } from '@/lib/stripe';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@supabase/supabase-js';
 import { headers } from 'next/headers';
+
+// Webhook routes need service role access (no user auth)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text();
-    const signature = headers().get('stripe-signature');
+    const signature = (await headers()).get('stripe-signature');
 
     if (!signature) {
       console.error('No Stripe signature found');
@@ -23,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if we've already processed this event
-    const { data: existingEvent } = await supabase
+    const { data: existingEvent } = await supabaseAdmin
       .from('billing_events')
       .select('id')
       .eq('stripe_event_id', event.id)
@@ -35,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Store the event
-    await supabase.from('billing_events').insert({
+    await supabaseAdmin.from('billing_events').insert({
       stripe_event_id: event.id,
       event_type: event.type,
       data: event,
@@ -73,7 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Mark event as processed
-    await supabase
+    await supabaseAdmin
       .from('billing_events')
       .update({ processed: true })
       .eq('stripe_event_id', event.id);
@@ -97,7 +107,7 @@ async function handleCheckoutSessionCompleted(session: any) {
   }
 
   // Update tenant with Stripe customer ID
-  await supabase
+  await supabaseAdmin
     .from('tenants')
     .update({
       stripe_customer_id: session.customer,
@@ -118,7 +128,7 @@ async function handleSubscriptionCreated(subscription: any) {
   }
 
   // Create subscription record
-  await supabase.from('subscriptions').insert({
+  await supabaseAdmin.from('subscriptions').insert({
     user_id: userId,
     tenant_id: tenantId,
     stripe_customer_id: subscription.customer,
@@ -136,7 +146,7 @@ async function handleSubscriptionCreated(subscription: any) {
   });
 
   // Update tenant plan
-  await supabase
+  await supabaseAdmin
     .from('tenants')
     .update({
       plan: plan,
@@ -157,7 +167,7 @@ async function handleSubscriptionUpdated(subscription: any) {
   }
 
   // Update subscription record
-  await supabase
+  await supabaseAdmin
     .from('subscriptions')
     .update({
       status: subscription.status,
@@ -174,7 +184,7 @@ async function handleSubscriptionUpdated(subscription: any) {
 
   // Update tenant status if subscription is cancelled
   if (subscription.status === 'canceled') {
-    await supabase
+    await supabaseAdmin
       .from('tenants')
       .update({
         plan: 'free',
@@ -197,7 +207,7 @@ async function handleSubscriptionDeleted(subscription: any) {
   }
 
   // Update subscription record
-  await supabase
+  await supabaseAdmin
     .from('subscriptions')
     .update({
       status: 'canceled',
@@ -205,7 +215,7 @@ async function handleSubscriptionDeleted(subscription: any) {
     .eq('stripe_subscription_id', subscription.id);
 
   // Downgrade tenant to free plan
-  await supabase
+  await supabaseAdmin
     .from('tenants')
     .update({
       plan: 'free',
@@ -228,7 +238,7 @@ async function handleInvoicePaymentSucceeded(invoice: any) {
   }
 
   // Update tenant status to active
-  await supabase
+  await supabaseAdmin
     .from('tenants')
     .update({
       status: 'active',
@@ -250,7 +260,7 @@ async function handleInvoicePaymentFailed(invoice: any) {
   }
 
   // Update tenant status to suspended
-  await supabase
+  await supabaseAdmin
     .from('tenants')
     .update({
       status: 'suspended',

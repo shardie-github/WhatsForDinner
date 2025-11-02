@@ -184,6 +184,26 @@ async function handlePantryRoutes(
   } else if (method === 'POST') {
     // Add pantry item
     const body = await req.json();
+    
+    // Validate tenant_id if provided - must match user's tenant
+    if (body.tenant_id) {
+      const { data: profile } = await supabaseClient
+        .from('profiles')
+        .select('tenant_id')
+        .eq('id', userId)
+        .single();
+      
+      if (!profile || profile.tenant_id !== body.tenant_id) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid tenant_id' }),
+          {
+            status: 403,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
+      }
+    }
+    
     const { data, error } = await supabaseClient
       .from('pantry_items')
       .insert({
@@ -271,6 +291,26 @@ async function handleRecipeRoutes(
   } else if (method === 'POST') {
     // Add recipe
     const body = await req.json();
+    
+    // Validate tenant_id if provided - must match user's tenant
+    if (body.tenant_id) {
+      const { data: profile } = await supabaseClient
+        .from('profiles')
+        .select('tenant_id')
+        .eq('id', userId)
+        .single();
+      
+      if (!profile || profile.tenant_id !== body.tenant_id) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid tenant_id' }),
+          {
+            status: 403,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
+      }
+    }
+    
     const { data, error } = await supabaseClient
       .from('recipes')
       .insert({
@@ -336,6 +376,26 @@ async function handleFavoriteRoutes(
   } else if (method === 'POST') {
     // Add favorite
     const body = await req.json();
+    
+    // Validate tenant_id if provided - must match user's tenant
+    if (body.tenant_id) {
+      const { data: profile } = await supabaseClient
+        .from('profiles')
+        .select('tenant_id')
+        .eq('id', userId)
+        .single();
+      
+      if (!profile || profile.tenant_id !== body.tenant_id) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid tenant_id' }),
+          {
+            status: 403,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
+      }
+    }
+    
     const { data, error } = await supabaseClient
       .from('favorites')
       .insert({

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { headers } from 'next/headers';
-import { supabase } from '@/lib/supabaseClient';
+import { requireAuth } from '@/lib/auth-middleware';
 import { z } from 'zod';
 
 const UpdateAPIKeySchema = z.object({
@@ -14,27 +13,25 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Authenticate user via JWT
+    const authResult = await requireAuth(req);
+    if (!authResult.success) {
+      return authResult.response;
+    }
+
+    const { context } = authResult;
+    const { user, supabase } = context;
+
     const { id } = await params;
     const body = await req.json();
     const updates = UpdateAPIKeySchema.parse(body);
-
-    // Get user context
-    const headersList = await headers();
-    const userId = headersList.get('x-user-id');
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User authentication required' },
-        { status: 401 }
-      );
-    }
 
     // Update API key
     const { data: key, error } = await supabase
       .from('developer_portal_sessions')
       .update(updates)
       .eq('id', id)
-      .eq('developer_id', userId)
+      .eq('developer_id', user.id)
       .select()
       .single();
 
@@ -68,28 +65,27 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    // Get user context
-    const headersList = await headers();
-    const userId = headersList.get('x-user-id');
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User authentication required' },
-        { status: 401 }
-      );
+    // Authenticate user via JWT
+    const authResult = await requireAuth(req);
+    if (!authResult.success) {
+      return authResult.response;
     }
+
+    const { context } = authResult;
+    const { user, supabase } = context;
+
+    const { id } = await params;
 
     // Delete API key
     const { error } = await supabase
       .from('developer_portal_sessions')
       .delete()
       .eq('id', id)
-      .eq('developer_id', userId);
+      .eq('developer_id', user.id);
 
     if (error) {
       throw new Error(`Failed to delete API key: ${error.message}`);

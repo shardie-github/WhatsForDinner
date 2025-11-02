@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { headers } from 'next/headers';
-import { supabase } from '@/lib/supabaseClient';
+import { requireAuth } from '@/lib/auth-middleware';
 import { z } from 'zod';
 
 const CreateAPIKeySchema = z.object({
@@ -8,24 +7,22 @@ const CreateAPIKeySchema = z.object({
 });
 
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    // Get user context
-    const headersList = await headers();
-    const userId = headersList.get('x-user-id');
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User authentication required' },
-        { status: 401 }
-      );
+    // Authenticate user via JWT
+    const authResult = await requireAuth(req);
+    if (!authResult.success) {
+      return authResult.response;
     }
+
+    const { context } = authResult;
+    const { user, supabase } = context;
 
     // Get API keys for user
     const { data: keys, error } = await supabase
       .from('developer_portal_sessions')
       .select('*')
-      .eq('developer_id', userId)
+      .eq('developer_id', user.id)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -47,19 +44,17 @@ export async function GET(_req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    // Authenticate user via JWT
+    const authResult = await requireAuth(req);
+    if (!authResult.success) {
+      return authResult.response;
+    }
+
+    const { context } = authResult;
+    const { user, supabase } = context;
+
     const body = await req.json();
     const { name } = CreateAPIKeySchema.parse(body);
-
-    // Get user context
-    const headersList = await headers();
-    const userId = headersList.get('x-user-id');
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User authentication required' },
-        { status: 401 }
-      );
-    }
 
     // Generate API key
     const apiKey = `wfd_${crypto.randomUUID().replace(/-/g, '')}`;
@@ -68,7 +63,7 @@ export async function POST(req: NextRequest) {
     const { data: key, error } = await supabase
       .from('developer_portal_sessions')
       .insert({
-        developer_id: userId,
+        developer_id: user.id,
         api_key: apiKey,
         name: name,
         permissions: ['read:recipes', 'read:pantry', 'write:recipes'],
