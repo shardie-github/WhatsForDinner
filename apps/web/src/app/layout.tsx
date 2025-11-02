@@ -4,6 +4,7 @@ import './globals.css';
 import PWAInstaller from '@/components/PWAInstaller';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Analytics } from '@/components/Analytics';
+import { CapacitorInit } from '@/components/CapacitorInit';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const poppins = Poppins({ 
@@ -48,12 +49,20 @@ export default function RootLayout({
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js')
+                  // Try enhanced SW first, fallback to default
+                  navigator.serviceWorker.register('/sw-enhanced.js')
                     .then(function(registration) {
-                      console.log('SW registered: ', registration);
+                      console.log('Enhanced SW registered: ', registration);
                     })
-                    .catch(function(registrationError) {
-                      console.log('SW registration failed: ', registrationError);
+                    .catch(function() {
+                      // Fallback to default SW if enhanced doesn't exist
+                      navigator.serviceWorker.register('/sw.js')
+                        .then(function(registration) {
+                          console.log('SW registered: ', registration);
+                        })
+                        .catch(function(registrationError) {
+                          console.log('SW registration failed: ', registrationError);
+                        });
                     });
                 });
               }
@@ -107,6 +116,7 @@ export default function RootLayout({
         </ThemeProvider>
         <PWAInstaller />
         <Analytics />
+        <CapacitorInit />
       </body>
     </html>
   );

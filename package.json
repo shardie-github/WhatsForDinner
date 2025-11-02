@@ -89,7 +89,11 @@
     "watcher:db": "npx tsx -e \"require('./watchers/db_integrity.watcher.ts').default.prototype.runNightlyCheck()\"",
     "watcher:api": "npx tsx -e \"require('./watchers/api_contract.watcher.ts').default.prototype.runNightlyCheck()\"",
     "watcher:ai": "npx tsx -e \"require('./watchers/ai_performance.watcher.ts').default.prototype.runNightlyCheck()\"",
-    "ai:status": "node -e \"console.log('AI System Status: Active')\""
+    "ai:status": "node -e \"console.log('AI System Status: Active')\"",
+    "mobile:setup": "bash scripts/setup-mobile.sh",
+    "mobile:sync": "cd apps/web && npx cap sync",
+    "mobile:open:ios": "cd apps/web && npx cap open ios",
+    "mobile:open:android": "cd apps/web && npx cap open android"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"

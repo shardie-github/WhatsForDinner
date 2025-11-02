@@ -6,7 +6,7 @@
 import { supabase } from './supabaseClient';
 import { analytics } from './analytics';
 import { AICopywriter } from './aiCopywriter';
-import { experiments } from './experiments';
+// import { experiments } from './experiments'; // Commented out - experiments export doesn't exist
 
 export interface CTAPlacement {
   id: string;
