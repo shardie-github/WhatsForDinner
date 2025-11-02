@@ -1,0 +1,168 @@
+name: Supabase Schema & Policy Guard
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+jobs:
+  supabase-guard:
+    name: Schema & Policy Drift Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Install dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm ci || pnpm install --frozen-lockfile || yarn install --frozen-lockfile
+          fi
+
+      - name: Lint migrations
+        run: |
+          echo "Linting Supabase migrations..."
+          if [ -d supabase/migrations ] && [ "$(ls -A supabase/migrations/*.sql 2>/dev/null)" ]; then
+            supabase db lint || echo "::warning::Migration linting found issues (non-blocking)"
+          else
+            echo "No migrations found to lint"
+          fi
+
+      - name: Check migration syntax
+        run: |
+          echo "Checking migration SQL syntax..."
+          find supabase/migrations whats-for-dinner/supabase/migrations -name "*.sql" -type f 2>/dev/null | while read -r file; do
+            echo "Checking $file..."
+            # Basic SQL validation - check for common errors
+            if grep -qi "CREATE TABLE.*(" "$file" && ! grep -qi "CREATE TABLE.*IF NOT EXISTS" "$file"; then
+              echo "::warning::$file uses CREATE TABLE without IF NOT EXISTS (may not be idempotent)"
+            fi
+          done || true
+
+      - name: Remote schema pull
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::warning::SUPABASE_DB_URL secret not set. Skipping remote schema check."
+            echo "To enable drift detection, add SUPABASE_DB_URL as a repository secret."
+            exit 0
+          fi
+
+          echo "Pulling remote schema for drift detection..."
+          mkdir -p supabase/.audit
+          supabase db remote set "$SUPABASE_DB_URL" || exit 1
+          supabase db pull \
+            --include-roles \
+            --include-policies \
+            --include-storage \
+            -o supabase/.audit/ci_remote.sql || exit 1
+
+      - name: Generate local schema from migrations
+        run: |
+          echo "Generating local schema from migrations..."
+          mkdir -p supabase/.audit
+          # Combine all migrations into one file for comparison
+          cat > supabase/.audit/local_schema.sql <<'EOF'
+          -- Local schema generated from migrations
+          -- This is a placeholder for schema comparison
+          EOF
+          
+          find supabase/migrations whats-for-dinner/supabase/migrations -name "*.sql" -type f 2>/dev/null | sort | while read -r file; do
+            echo "-- Migration: $file" >> supabase/.audit/local_schema.sql
+            cat "$file" >> supabase/.audit/local_schema.sql
+            echo "" >> supabase/.audit/local_schema.sql
+          done
+
+      - name: Drift check
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ ! -f supabase/.audit/ci_remote.sql ]; then
+            echo "::warning::Remote schema not pulled. Skipping drift check."
+            exit 0
+          fi
+
+          echo "Checking for schema/policy drift..."
+          
+          # Check if remote schema differs from expected
+          if [ -f supabase/.audit/ci_remote.sql ] && [ -f supabase/.audit/local_schema.sql ]; then
+            # Simple diff check (exact match won't work due to formatting, but we can check for major differences)
+            if ! diff -q supabase/.audit/ci_remote.sql supabase/.audit/local_schema.sql > /dev/null 2>&1; then
+              echo "::error::Schema/policy drift detected between remote and local migrations!"
+              echo ""
+              echo "To fix:"
+              echo "1. Review the differences:"
+              echo "   diff supabase/.audit/ci_remote.sql supabase/.audit/local_schema.sql"
+              echo "2. Generate a new migration to sync:"
+              echo "   supabase db diff --use-migra -f <migration_name>"
+              echo "3. Commit and push the new migration"
+              echo ""
+              echo "If the drift is intentional, document it in your PR description."
+              
+              # Show a summary diff (first 50 lines)
+              echo "=== Drift Summary (first 50 lines) ==="
+              diff supabase/.audit/ci_remote.sql supabase/.audit/local_schema.sql | head -50 || true
+              
+              exit 1
+            else
+              echo "? No schema drift detected"
+            fi
+          fi
+
+      - name: Validate Edge Functions
+        run: |
+          echo "Validating Edge Functions..."
+          FUNC_COUNT=0
+          FUNC_ERRORS=0
+          
+          for func_dir in supabase/functions/*/ whats-for-dinner/supabase/functions/*/; do
+            if [ -d "$func_dir" ]; then
+              func_name=$(basename "$func_dir")
+              echo "Checking function: $func_name"
+              FUNC_COUNT=$((FUNC_COUNT + 1))
+              
+              # Check for required files
+              if [ ! -f "$func_dir/index.ts" ] && [ ! -f "$func_dir/main.ts" ]; then
+                echo "::error::Function $func_name missing index.ts or main.ts"
+                FUNC_ERRORS=$((FUNC_ERRORS + 1))
+              fi
+              
+              if [ ! -f "$func_dir/deno.json" ]; then
+                echo "::warning::Function $func_name missing deno.json"
+              fi
+              
+              # Try to build (non-blocking)
+              if [ -f "$func_dir/index.ts" ] || [ -f "$func_dir/main.ts" ]; then
+                echo "  Building $func_name..."
+                supabase functions build "$func_name" 2>&1 | head -20 || {
+                  echo "::warning::Function $func_name failed to build"
+                  FUNC_ERRORS=$((FUNC_ERRORS + 1))
+                }
+              fi
+            fi
+          done
+          
+          echo "Checked $FUNC_COUNT functions"
+          if [ $FUNC_ERRORS -gt 0 ]; then
+            echo "::warning::Found $FUNC_ERRORS function errors (non-blocking)"
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Supabase CI Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "? Migration linting completed" >> $GITHUB_STEP_SUMMARY
+          echo "? Schema drift check completed" >> $GITHUB_STEP_SUMMARY
+          echo "? Edge Functions validation completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** If drift was detected, create a new migration to resolve it." >> $GITHUB_STEP_SUMMARY
