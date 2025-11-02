@@ -1,0 +1,251 @@
+# Analytics Events Specification
+# Maps user actions to analytics events for tracking
+
+events:
+  # App Lifecycle
+  - name: "app_launched"
+    description: "App cold start or foreground"
+    platform: ["ios", "android", "web"]
+    properties:
+      - cold_start: boolean
+      - session_id: string
+      - app_version: string
+      - os_version: string
+    
+  - name: "app_backgrounded"
+    description: "App moved to background"
+    platform: ["ios", "android"]
+    properties:
+      - session_duration: number
+      
+  - name: "app_foregrounded"
+    description: "App returned to foreground"
+    platform: ["ios", "android"]
+    properties:
+      - time_in_background: number
+
+  # Authentication
+  - name: "sign_up_started"
+    description: "User initiated sign up"
+    properties:
+      - method: string  # "email" | "google" | "apple"
+      
+  - name: "sign_up_completed"
+    description: "User successfully signed up"
+    properties:
+      - method: string
+      - user_id: string
+      
+  - name: "sign_in_started"
+    description: "User initiated sign in"
+    properties:
+      - method: string
+      
+  - name: "sign_in_completed"
+    description: "User successfully signed in"
+    properties:
+      - method: string
+      
+  - name: "sign_out"
+    description: "User signed out"
+    
+  - name: "account_deleted"
+    description: "User deleted their account"
+    sensitive: true
+    properties:
+      - retention_days: number
+
+  # Core Features
+  - name: "pantry_item_added"
+    description: "User added item to pantry"
+    properties:
+      - item_name: string
+      - category: string
+      - quantity: number
+      
+  - name: "pantry_item_removed"
+    description: "User removed item from pantry"
+    properties:
+      - item_name: string
+      
+  - name: "recipe_viewed"
+    description: "User viewed a recipe"
+    properties:
+      - recipe_id: string
+      - recipe_name: string
+      - source: string  # "pantry_match" | "search" | "favorites"
+      
+  - name: "recipe_favorited"
+    description: "User favorited a recipe"
+    properties:
+      - recipe_id: string
+      
+  - name: "recipe_unfavorited"
+    description: "User unfavorited a recipe"
+    properties:
+      - recipe_id: string
+      
+  - name: "add_to_mealplan"
+    description: "User added recipe to meal plan"
+    properties:
+      - recipe_id: string
+      - date: string
+      - meal_type: string  # "breakfast" | "lunch" | "dinner" | "snack"
+      
+  - name: "meal_plan_viewed"
+    description: "User viewed meal plan"
+    properties:
+      - week_start: string
+      
+  - name: "share_recipe"
+    description: "User shared a recipe"
+    properties:
+      - recipe_id: string
+      - share_method: string  # "link" | "social" | "copy"
+      
+  - name: "recipe_feedback"
+    description: "User provided recipe feedback"
+    properties:
+      - recipe_id: string
+      - rating: number  # 1-5
+      - feedback_type: string  # "positive" | "negative" | "neutral"
+
+  # Search & Discovery
+  - name: "search_performed"
+    description: "User performed a search"
+    properties:
+      - query: string
+      - result_count: number
+      
+  - name: "search_result_clicked"
+    description: "User clicked a search result"
+    properties:
+      - query: string
+      - result_position: number
+      - recipe_id: string
+
+  # Monetization
+  - name: "paywall_viewed"
+    description: "User viewed paywall"
+    properties:
+      - source: string  # "feature_limit" | "upgrade_prompt"
+      - product_id: string
+      
+  - name: "purchase_start"
+    description: "User initiated purchase"
+    properties:
+      - product_id: string
+      - product_type: string  # "subscription" | "one_time"
+      - price: number
+      - currency: string
+      
+  - name: "purchase_success"
+    description: "Purchase completed successfully"
+    properties:
+      - product_id: string
+      - transaction_id: string
+      - revenue: number
+      - currency: string
+      
+  - name: "purchase_failed"
+    description: "Purchase failed"
+    properties:
+      - product_id: string
+      - error_code: string
+      - error_message: string
+      
+  - name: "purchase_restored"
+    description: "User restored previous purchases"
+    properties:
+      - restored_count: number
+      
+  - name: "subscription_cancelled"
+    description: "User cancelled subscription"
+    properties:
+      - product_id: string
+      - cancellation_reason: string
+
+  # Settings & Preferences
+  - name: "settings_opened"
+    description: "User opened settings"
+    
+  - name: "preference_changed"
+    description: "User changed a preference"
+    properties:
+      - preference_key: string
+      - preference_value: any
+      
+  - name: "analytics_opt_out"
+    description: "User opted out of analytics"
+    
+  - name: "notifications_enabled"
+    description: "User enabled push notifications"
+    
+  - name: "notifications_disabled"
+    description: "User disabled push notifications"
+
+  # Errors & Support
+  - name: "error_occurred"
+    description: "An error occurred in the app"
+    properties:
+      - error_type: string
+      - error_message: string
+      - screen: string
+      - user_action: string
+      
+  - name: "support_contacted"
+    description: "User contacted support"
+    properties:
+      - contact_method: string  # "in_app" | "email"
+      - issue_category: string
+
+  # Performance
+  - name: "screen_view"
+    description: "User viewed a screen"
+    properties:
+      - screen_name: string
+      - screen_class: string
+      - load_time: number
+      
+  - name: "api_call"
+    description: "API call made"
+    properties:
+      - endpoint: string
+      - method: string
+      - status_code: number
+      - duration: number
+      - success: boolean
+
+  # Deep Links
+  - name: "deep_link_opened"
+    description: "App opened via deep link"
+    properties:
+      - url: string
+      - source: string  # "notification" | "web" | "share"
+      
+  - name: "universal_link_opened"
+    description: "App opened via universal link"
+    properties:
+      - url: string
+
+providers:
+  primary: "posthog"
+  fallback: "google_analytics_4"
+  
+  posthog:
+    project_api_key: "${POSTHOG_API_KEY}"
+    host: "${POSTHOG_HOST:-https://app.posthog.com}"
+    
+  google_analytics_4:
+    measurement_id: "${GA4_MEASUREMENT_ID}"
+
+privacy:
+  anonymize_ip: true
+  respect_opt_out: true
+  sensitive_events: ["account_deleted", "purchase_success"]
+  pii_fields: []  # No PII in event properties
+  
+compliance:
+  gdpr_compliant: true
+  ccpa_compliant: true
+  data_retention_days: 730

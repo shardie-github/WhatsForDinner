@@ -1,0 +1,101 @@
+# Fastfile for Android
+# Automates Google Play Store uploads
+
+default_platform(:android)
+
+platform :android do
+  desc "Build and upload to Google Play Internal Testing"
+  lane :internal do
+    # Build the app
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "android"
+    )
+    
+    # Upload to Internal Testing track
+    supply(
+      track: "internal",
+      aab: "android/app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "app.whatsfordinner"
+    )
+  end
+
+  desc "Build and upload to Google Play Closed Testing"
+  lane :closed do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "android"
+    )
+    
+    supply(
+      track: "closed",
+      aab: "android/app/build/outputs/bundle/release/app-release.aab",
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "app.whatsfordinner"
+    )
+  end
+
+  desc "Build and upload to Google Play Open Testing"
+  lane :open do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "android"
+    )
+    
+    supply(
+      track: "open",
+      aab: "android/app/build/outputs/bundle/release/app-release.aab",
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "app.whatsfordinner"
+    )
+  end
+
+  desc "Build and upload to Google Play Production"
+  lane :production do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "android"
+    )
+    
+    supply(
+      track: "production",
+      aab: "android/app/build/outputs/bundle/release/app-release.aab",
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "app.whatsfordinner",
+      release_status: "draft" # Change to "completed" when ready
+    )
+  end
+
+  desc "Upload metadata only"
+  lane :metadata do
+    supply(
+      track: "internal",
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "app.whatsfordinner",
+      metadata_path: "./ops/store/google-play/metadata"
+    )
+  end
+
+  desc "Upload screenshots only"
+  lane :screenshots do
+    supply(
+      track: "internal",
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "app.whatsfordinner",
+      metadata_path: "./ops/store/google-play/metadata"
+    )
+  end
+end

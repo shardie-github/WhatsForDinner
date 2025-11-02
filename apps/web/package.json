@@ -21,7 +21,17 @@
     "autonomous:optimize": "node -e \"require('./src/lib/predictiveOptimization.ts').predictiveOptimization.generateOptimizationRecommendations().then(console.log)\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "cap:init": "npx cap init",
+    "cap:add:ios": "npx cap add ios",
+    "cap:add:android": "npx cap add android",
+    "cap:sync": "npx cap sync",
+    "cap:copy": "npx cap copy",
+    "cap:update": "npx cap update",
+    "cap:open:ios": "npx cap open ios",
+    "cap:open:android": "npx cap open android",
+    "cap:build:ios": "pnpm build && npx cap sync ios && cd ios && xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -archivePath App.xcarchive archive",
+    "cap:build:android": "pnpm build && npx cap sync android"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -33,21 +43,32 @@
     ]
   },
   "dependencies": {
-    "@whats-for-dinner/ui": "workspace:*",
-    "@whats-for-dinner/utils": "workspace:*",
-    "@whats-for-dinner/theme": "workspace:*",
-    "@whats-for-dinner/config": "workspace:*",
+    "@capacitor-community/http": "^1.4.1",
+    "@capacitor/app": "^7.1.0",
+    "@capacitor/app-launcher": "^7.0.2",
+    "@capacitor/browser": "^7.0.2",
+    "@capacitor/haptics": "^7.0.2",
+    "@capacitor/keyboard": "^7.0.3",
+    "@capacitor/local-notifications": "^7.0.3",
+    "@capacitor/preferences": "^7.0.2",
+    "@capacitor/push-notifications": "^7.0.3",
+    "@capacitor/splash-screen": "^7.0.3",
+    "@capacitor/status-bar": "^7.0.3",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-tabs": "^1.1.1",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
-    "@supabase/auth-helpers-react": "^0.5.0",
     "@sentry/nextjs": "^8.55.0",
     "@stripe/stripe-js": "^2.4.0",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/supabase-js": "^2.76.1",
     "@tanstack/react-query": "^5.17.0",
+    "@whats-for-dinner/config": "workspace:*",
+    "@whats-for-dinner/theme": "workspace:*",
+    "@whats-for-dinner/ui": "workspace:*",
+    "@whats-for-dinner/utils": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.548.0",
@@ -64,6 +85,11 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@capacitor/android": "^7.4.4",
+    "@capacitor/cli": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/ios": "^7.4.4",
+    "@playwright/test": "^1.40.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
@@ -75,8 +101,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.0.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-prettier": "^5.1.3",
     "husky": "^9.0.11",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -86,7 +112,6 @@
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5",
-    "@playwright/test": "^1.40.0"
+    "typescript": "^5"
   }
 }

@@ -1,0 +1,168 @@
+# Privacy & Data Safety Compliance Matrix
+# Maps data collection to store requirements (Google Data Safety / Apple Privacy Labels)
+
+app:
+  name: "What's for Dinner?"
+  bundle_id: "app.whatsfordinner"
+  platforms: ["ios", "android"]
+
+data_categories:
+  # Personal Information
+  - category: "Personal Identifiers"
+    collected: true
+    purpose: ["Account Management", "Authentication"]
+    shared: true
+    shared_with: ["Supabase (Auth Provider)"]
+    required: true
+    retention: "Until account deletion"
+    location: "Account settings, login forms"
+    
+  # Health & Fitness
+  - category: "Dietary Preferences"
+    collected: true
+    purpose: ["App Functionality", "Personalization"]
+    shared: false
+    required: false
+    retention: "Until account deletion"
+    location: "User preferences, meal planning"
+    
+  # Location
+  - category: "Approximate Location"
+    collected: true
+    purpose: ["Analytics", "Personalization"]
+    shared: true
+    shared_with: ["PostHog (Analytics)"]
+    required: false
+    opt_out: true
+    retention: "90 days"
+    location: "IP-based geolocation (general area only)"
+    
+  # User Content
+  - category: "Pantry Inventory"
+    collected: true
+    purpose: ["App Functionality", "Core Feature"]
+    shared: false
+    required: false
+    retention: "Until account deletion"
+    location: "Pantry management feature"
+    
+  - category: "Recipe Preferences"
+    collected: true
+    purpose: ["App Functionality", "Personalization"]
+    shared: false
+    required: false
+    retention: "Until account deletion"
+    location: "Recipe preferences, meal plans"
+    
+  # Financial
+  - category: "Payment Information"
+    collected: true
+    purpose: ["Payment Processing"]
+    shared: true
+    shared_with: ["Stripe (Payment Processor)"]
+    required: false
+    retention: "As required by payment processor"
+    location: "Subscription/payment flows"
+    
+  # Device/Technical
+  - category: "Device Identifiers"
+    collected: true
+    purpose: ["App Functionality", "Analytics", "Crash Reporting"]
+    shared: true
+    shared_with: ["Sentry (Crash Reporting)", "PostHog (Analytics)"]
+    required: true
+    retention: "2 years"
+    location: "Automatic collection"
+    
+  - category: "Crash Reports"
+    collected: true
+    purpose: ["App Functionality", "Diagnostics"]
+    shared: true
+    shared_with: ["Sentry (Crash Reporting)"]
+    required: false
+    opt_out: true
+    retention: "90 days"
+    location: "Automatic on crashes"
+    
+  - category: "Usage Analytics"
+    collected: true
+    purpose: ["Analytics", "App Improvement"]
+    shared: true
+    shared_with: ["PostHog (Analytics)"]
+    required: false
+    opt_out: true
+    retention: "2 years"
+    location: "Screen views, feature usage"
+
+third_party_services:
+  - name: "Supabase"
+    purpose: "Authentication, Database, Backend Services"
+    data_shared: ["Email", "User ID", "Pantry Data", "Preferences"]
+    privacy_policy: "https://supabase.com/privacy"
+    
+  - name: "Stripe"
+    purpose: "Payment Processing"
+    data_shared: ["Payment Information", "Transaction Data"]
+    privacy_policy: "https://stripe.com/privacy"
+    
+  - name: "PostHog"
+    purpose: "Analytics"
+    data_shared: ["Usage Events", "Device Info", "IP Address"]
+    privacy_policy: "https://posthog.com/privacy"
+    
+  - name: "Sentry"
+    purpose: "Crash Reporting and Error Tracking"
+    data_shared: ["Error Logs", "Device Info", "Stack Traces"]
+    privacy_policy: "https://sentry.io/privacy"
+    
+  - name: "Firebase Cloud Messaging (Android)"
+    purpose: "Push Notifications"
+    data_shared: ["Device Token", "Notification Preferences"]
+    privacy_policy: "https://firebase.google.com/support/privacy"
+    
+  - name: "Apple Push Notification Service (iOS)"
+    purpose: "Push Notifications"
+    data_shared: ["Device Token", "Notification Preferences"]
+    privacy_policy: "https://www.apple.com/privacy/"
+
+user_rights:
+  - right: "Access"
+    implementation: "Settings ? Account ? Export Data"
+    
+  - right: "Deletion"
+    implementation: "Settings ? Account ? Delete Account"
+    
+  - right: "Correction"
+    implementation: "Settings ? Account ? Edit Profile"
+    
+  - right: "Opt-out (Analytics)"
+    implementation: "Settings ? Privacy ? Disable Analytics"
+    
+  - right: "Opt-out (Crash Reporting)"
+    implementation: "Settings ? Privacy ? Disable Crash Reporting"
+    
+  - right: "Opt-out (Push Notifications)"
+    implementation: "Settings ? Notifications ? Toggle Off"
+
+age_rating:
+  google_play: "Everyone"
+  app_store: "4+" (Ages 4 and up)
+  rationale: "No objectionable content, suitable for all ages"
+
+data_security:
+  encryption_in_transit: true
+  encryption_at_rest: true
+  secure_storage: "Keychain (iOS) / Keystore (Android)"
+  token_storage: "Native secure storage via Capacitor"
+  api_authentication: "JWT tokens with refresh mechanism"
+
+compliance_frameworks:
+  - gdpr: true
+    description: "EU users have full GDPR rights"
+  - ccpa: true
+    description: "California residents have CCPA rights"
+  - coppa: true
+    description: "App is COPPA compliant (13+ requirement)"
+
+last_updated: "2025-01-01"
+next_review: "2025-07-01"
