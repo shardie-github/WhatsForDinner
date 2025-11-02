@@ -96,13 +96,15 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/pg": "^8.10.9",
     "prettier": "^3.2.5",
     "turbo": "^1.13.4",
     "typescript": "^5",
     "openai": "^6.7.0",
     "@octokit/rest": "^20.0.2",
     "glob": "^11.0.0",
-    "tsx": "^4.20.6"
+    "tsx": "^4.20.6",
+    "pg": "^8.11.3"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
