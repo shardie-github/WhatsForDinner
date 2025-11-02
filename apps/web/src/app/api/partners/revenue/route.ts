@@ -1,19 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { headers } from 'next/headers';
-import { supabase } from '@/lib/supabaseClient';
+import { getTenantContext } from '@/lib/auth-middleware';
 
 export async function GET(req: NextRequest) {
   try {
-    // Get tenant context
-    const headersList = await headers();
-    const tenantId = headersList.get('x-tenant-id');
-
-    if (!tenantId) {
-      return NextResponse.json(
-        { error: 'Tenant information required' },
-        { status: 400 }
-      );
+    // Authenticate and get tenant context (validates user access)
+    const tenantResult = await getTenantContext(req);
+    if (!tenantResult.success) {
+      return tenantResult.response;
     }
+
+    const { context, tenantId } = tenantResult;
+    const { supabase } = context;
 
     const { searchParams } = new URL(req.url);
     const period = searchParams.get('period') || '30d';

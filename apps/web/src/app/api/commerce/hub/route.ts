@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { headers } from 'next/headers';
+import { getTenantContext } from '@/lib/auth-middleware';
 import { AICommerceHub } from '@/lib/aiCommerceHub';
 import { z } from 'zod';
 
@@ -18,20 +18,17 @@ const CommerceHubRequestSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { action, period, region, tenant_id, partner_id } =
-      CommerceHubRequestSchema.parse(body);
-
-    // Get tenant context
-    const headersList = await headers();
-    const requestTenantId = headersList.get('x-tenant-id') || tenant_id;
-
-    if (!requestTenantId) {
-      return NextResponse.json(
-        { error: 'Tenant information required' },
-        { status: 400 }
-      );
+    // Authenticate and get tenant context (validates user access)
+    const tenantResult = await getTenantContext(req);
+    if (!tenantResult.success) {
+      return tenantResult.response;
     }
+
+    const { tenantId: requestTenantId } = tenantResult;
+
+    const body = await req.json();
+    const { action, period, region, partner_id } =
+      CommerceHubRequestSchema.parse(body);
 
     // Initialize AI Commerce Hub
     const commerceHub = new AICommerceHub();
@@ -95,22 +92,18 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    // Authenticate and get tenant context (validates user access)
+    const tenantResult = await getTenantContext(req);
+    if (!tenantResult.success) {
+      return tenantResult.response;
+    }
+
+    const { tenantId: requestTenantId } = tenantResult;
+
     const { searchParams } = new URL(req.url);
     const action = searchParams.get('action') || 'summary';
     const period = searchParams.get('period') || '30d';
     const region = searchParams.get('region') || 'global';
-    const tenant_id = searchParams.get('tenant_id');
-
-    // Get tenant context
-    const headersList = await headers();
-    const requestTenantId = headersList.get('x-tenant-id') || tenant_id;
-
-    if (!requestTenantId) {
-      return NextResponse.json(
-        { error: 'Tenant information required' },
-        { status: 400 }
-      );
-    }
 
     // Initialize AI Commerce Hub
     const commerceHub = new AICommerceHub();

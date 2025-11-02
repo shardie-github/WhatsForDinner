@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { headers } from 'next/headers';
+import { getTenantContext } from '@/lib/auth-middleware';
 import { FederatedAPIGateway } from '@/lib/federatedGateway';
 import { z } from 'zod';
 
@@ -14,6 +14,15 @@ const FederationRequestSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    // Authenticate and get tenant context (validates user access)
+    const tenantResult = await getTenantContext(req);
+    if (!tenantResult.success) {
+      return tenantResult.response;
+    }
+
+    const { context, tenantId } = tenantResult;
+    const { user } = context;
+
     const body = await req.json();
     const {
       partner,
@@ -24,18 +33,7 @@ export async function POST(req: NextRequest) {
       metadata,
     } = FederationRequestSchema.parse(body);
 
-    // Get tenant and user context
-    const headersList = await headers();
-    const tenantId = headersList.get('x-tenant-id');
-    const userId = headersList.get('x-user-id');
-    const requestId = headersList.get('x-request-id') || crypto.randomUUID();
-
-    if (!tenantId) {
-      return NextResponse.json(
-        { error: 'Tenant information required' },
-        { status: 400 }
-      );
-    }
+    const requestId = crypto.randomUUID();
 
     // Initialize federated gateway
     const gateway = new FederatedAPIGateway();
@@ -49,7 +47,7 @@ export async function POST(req: NextRequest) {
       headers: customHeaders || {},
       metadata: metadata || {},
       tenantId,
-      userId: userId || '',
+      userId: user.id,
       requestId,
     });
 
@@ -73,6 +71,15 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    // Authenticate and get tenant context (validates user access)
+    const tenantResult = await getTenantContext(req);
+    if (!tenantResult.success) {
+      return tenantResult.response;
+    }
+
+    const { context, tenantId } = tenantResult;
+    const { user } = context;
+
     const { searchParams } = new URL(req.url);
     const partner = searchParams.get('partner');
     const endpoint = searchParams.get('endpoint');
@@ -84,18 +91,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get tenant context
-    const headersList = await headers();
-    const tenantId = headersList.get('x-tenant-id');
-    const userId = headersList.get('x-user-id');
-    const requestId = headersList.get('x-request-id') || crypto.randomUUID();
-
-    if (!tenantId) {
-      return NextResponse.json(
-        { error: 'Tenant information required' },
-        { status: 400 }
-      );
-    }
+    const requestId = crypto.randomUUID();
 
     // Initialize federated gateway
     const gateway = new FederatedAPIGateway();
@@ -106,7 +102,7 @@ export async function GET(req: NextRequest) {
       endpoint,
       method: 'GET',
       tenantId,
-      userId: userId || '',
+      userId: user.id,
       requestId,
     });
 

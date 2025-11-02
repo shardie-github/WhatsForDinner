@@ -1,19 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { headers } from 'next/headers';
-import { supabase } from '@/lib/supabaseClient';
+import { requireAuth } from '@/lib/auth-middleware';
 
 export async function GET(req: NextRequest) {
   try {
-    // Get user context
-    const headersList = await headers();
-    const userId = headersList.get('x-user-id');
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User authentication required' },
-        { status: 401 }
-      );
+    // Authenticate user via JWT
+    const authResult = await requireAuth(req);
+    if (!authResult.success) {
+      return authResult.response;
     }
+
+    const { context } = authResult;
+    const { user, supabase } = context;
 
     const { searchParams } = new URL(req.url);
     const period = searchParams.get('period') || '30d';
@@ -24,7 +21,7 @@ export async function GET(req: NextRequest) {
     const { data: usageData, error } = await supabase
       .from('api_usage_tracking')
       .select('cost_usd, response_time_ms, status_code, endpoint, method')
-      .eq('user_id', userId)
+      .eq('user_id', user.id)
       .gte('timestamp', startDate.toISOString())
       .order('timestamp', { ascending: false });
 
@@ -72,7 +69,7 @@ export async function GET(req: NextRequest) {
     const { data: sdkDownloads } = await supabase
       .from('sdk_downloads')
       .select('sdk_language, download_count')
-      .eq('developer_id', userId);
+      .eq('developer_id', user.id);
 
     const sdkStats =
       sdkDownloads?.reduce(

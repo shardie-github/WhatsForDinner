@@ -4,28 +4,25 @@ import { z } from 'zod';
 import { GenerateRecipesRequestSchema } from '@/lib/validation';
 import { generateRecipesWithFallback } from '@/lib/openaiService';
 import { aiOptimization } from '@/lib/aiOptimization';
-import { supabase } from '@/lib/supabaseClient';
 import { StripeService } from '@/lib/stripe';
-import { headers } from 'next/headers';
 import { withRateLimit } from '@/lib/rate-limiting';
+import { getTenantContext } from '@/lib/auth-middleware';
 
 async function handler(req: NextRequest) {
   try {
+    // Authenticate and get tenant context (validates user access)
+    const tenantResult = await getTenantContext(req);
+    if (!tenantResult.success) {
+      return tenantResult.response;
+    }
+
+    const { context, tenantId } = tenantResult;
+    const { supabase } = context;
+
     // Validate request body
     const body = await req.json();
     const { ingredients, preferences } =
       GenerateRecipesRequestSchema.parse(body);
-
-    // Get tenant information from headers or user context
-    const headersList = await headers();
-    const tenantId = headersList.get('x-tenant-id');
-
-    if (!tenantId) {
-      return NextResponse.json(
-        { error: 'Tenant information required' },
-        { status: 400 }
-      );
-    }
 
     // Get tenant plan
     const { data: tenant } = await supabase
@@ -41,7 +38,7 @@ async function handler(req: NextRequest) {
     // Create prompt from ingredients and preferences
     const prompt = `Generate 3 diverse recipes using these ingredients: ${ingredients.join(', ')}. ${preferences ? `Preferences: ${preferences}` : ''}`;
 
-    // Use AI optimization service
+    // Use AI optimization service  
     const result = await aiOptimization.getOptimizedResponse(
       prompt,
       preferences || '',

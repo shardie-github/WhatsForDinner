@@ -31,9 +31,11 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error) {
+    // Don't expose internal error details to clients
+    console.error('Error fetching errors:', error);
     return new Response(
       JSON.stringify({
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: 'Failed to fetch errors',
       }),
       {
         status: 500,
