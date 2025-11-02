@@ -127,32 +127,40 @@ export default function Navbar({ user }: NavbarProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="md:hidden min-h-[44px] min-w-[44px]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
           >
             {isMenuOpen ? (
-              <X className="h-6 w-6" />
+              <X className="h-6 w-6" aria-hidden="true" />
             ) : (
-              <Menu className="h-6 w-6" />
+              <Menu className="h-6 w-6" aria-hidden="true" />
             )}
           </Button>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="border-t bg-background md:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
+          <div 
+            id="mobile-menu"
+            className="border-t bg-background md:hidden safe-area-inset-bottom"
+            role="navigation"
+            aria-label="Main navigation"
+          >
+            <div className="space-y-1 px-2 pb-safe-area-inset-bottom pt-2">
               {navItems.map(item => {
                 const Icon = item.icon;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                    className="flex items-center space-x-3 rounded-md px-3 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground active:bg-accent active:text-foreground min-h-[44px] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                     onClick={() => setIsMenuOpen(false)}
+                    aria-label={`Navigate to ${item.label}`}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-5 w-5" aria-hidden="true" />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -167,10 +175,11 @@ export default function Navbar({ user }: NavbarProps) {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        className="flex items-center space-x-3 rounded-md px-3 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground active:bg-accent active:text-foreground min-h-[44px] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                         onClick={() => setIsMenuOpen(false)}
+                        aria-label={`Navigate to ${item.label}`}
                       >
-                        <Icon className="h-5 w-5" />
+                        <Icon className="h-5 w-5" aria-hidden="true" />
                         <span>{item.label}</span>
                       </Link>
                     );
@@ -196,9 +205,10 @@ export default function Navbar({ user }: NavbarProps) {
                       setIsMenuOpen(false);
                     }}
                     variant="outline"
-                    className="w-full justify-start text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    className="w-full justify-start text-destructive hover:bg-destructive hover:text-destructive-foreground active:bg-destructive active:text-destructive-foreground min-h-[44px]"
+                    aria-label="Sign out"
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
                     Sign Out
                   </Button>
                 </div>
@@ -207,9 +217,10 @@ export default function Navbar({ user }: NavbarProps) {
                   href="/auth"
                   className="block px-3 py-2"
                   onClick={() => setIsMenuOpen(false)}
+                  aria-label="Sign in"
                 >
-                  <Button className="w-full justify-start">
-                    <User className="mr-2 h-4 w-4" />
+                  <Button className="w-full justify-start min-h-[44px]">
+                    <User className="mr-2 h-4 w-4" aria-hidden="true" />
                     Sign In
                   </Button>
                 </Link>
