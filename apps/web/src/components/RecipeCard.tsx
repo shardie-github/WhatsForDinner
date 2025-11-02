@@ -31,32 +31,32 @@ export default function RecipeCard({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <Card className="group animate-fade-in transition-all duration-300 hover:shadow-lg">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-xl font-semibold text-card-foreground transition-colors group-hover:text-primary">
+    <Card className="group animate-fade-in transition-all duration-300 hover:shadow-lg focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+      <CardHeader className="pb-3 px-4 sm:px-6">
+        <CardTitle className="text-lg sm:text-xl font-semibold text-card-foreground transition-colors group-hover:text-primary">
           {recipe.title}
         </CardTitle>
 
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground mt-2">
           <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4" />
+            <Clock className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
             <span>{recipe.cookTime}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Zap className="h-4 w-4" />
+            <Zap className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
             <span>{recipe.calories} cal</span>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 px-4 sm:px-6">
         <div>
-          <h4 className="mb-3 font-medium text-card-foreground">
+          <h4 className="mb-2 sm:mb-3 text-sm sm:text-base font-medium text-card-foreground">
             Ingredients:
           </h4>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {recipe.ingredients.map((ingredient, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
+              <Badge key={index} variant="secondary" className="text-xs px-2 py-1">
                 {ingredient}
               </Badge>
             ))}
@@ -67,30 +67,32 @@ export default function RecipeCard({
           variant="ghost"
           size="sm"
           onClick={() => setShowDetails(!showDetails)}
-          className="h-auto w-full justify-between p-0 font-normal"
+          className="h-auto w-full justify-between p-2 sm:p-0 font-normal min-h-[44px] text-sm sm:text-base"
+          aria-expanded={showDetails}
+          aria-controls="recipe-instructions"
         >
           <span>{showDetails ? 'Hide' : 'Show'} Instructions</span>
           {showDetails ? (
-            <ChevronDown className="h-4 w-4" />
+            <ChevronDown className="h-4 w-4" aria-hidden="true" />
           ) : (
-            <ChevronUp className="h-4 w-4" />
+            <ChevronUp className="h-4 w-4" aria-hidden="true" />
           )}
         </Button>
 
         {showDetails && (
-          <div className="space-y-3">
+          <div id="recipe-instructions" className="space-y-3" role="region" aria-label="Recipe instructions">
             <Separator />
             <div>
-              <h4 className="mb-3 font-medium text-card-foreground">
+              <h4 className="mb-2 sm:mb-3 text-sm sm:text-base font-medium text-card-foreground">
                 Instructions:
               </h4>
-              <ol className="space-y-3">
+              <ol className="space-y-2 sm:space-y-3">
                 {recipe.steps.map((step, index) => (
-                  <li key={index} className="flex gap-3">
-                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
+                  <li key={index} className="flex gap-2 sm:gap-3">
+                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground mt-0.5">
                       {index + 1}
                     </span>
-                    <span className="text-sm leading-relaxed text-muted-foreground">
+                    <span className="text-sm sm:text-base leading-relaxed text-muted-foreground flex-1">
                       {step}
                     </span>
                   </li>
@@ -102,7 +104,12 @@ export default function RecipeCard({
 
         <div className="flex gap-2 pt-2">
           {canSave && !isFavorite && (
-            <Button onClick={onSave} className="flex-1" size="sm">
+            <Button 
+              onClick={onSave} 
+              className="flex-1 min-h-[44px] text-sm sm:text-base" 
+              size="sm"
+              aria-label={`Save recipe: ${recipe.title}`}
+            >
               Save Recipe
             </Button>
           )}
@@ -110,8 +117,9 @@ export default function RecipeCard({
             <Button
               onClick={onRemove}
               variant="destructive"
-              className="flex-1"
+              className="flex-1 min-h-[44px] text-sm sm:text-base"
               size="sm"
+              aria-label={`Remove recipe: ${recipe.title}`}
             >
               Remove
             </Button>

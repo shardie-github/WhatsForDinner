@@ -51,11 +51,11 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
       {/* Header */}
-      <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
-        <View className="flex-row items-center space-x-2">
-          <RNText className="text-2xl">🥘</RNText>
+      <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200 bg-background">
+        <View className="flex-row items-center space-x-2" accessibilityRole="header">
+          <RNText className="text-2xl" accessibilityLabel="Recipe app icon">🥘</RNText>
           <Text className="text-xl font-display font-bold text-brand-600">
             What's for Dinner?
           </Text>
@@ -68,14 +68,16 @@ export default function HomeScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        contentContainerStyle={{ paddingBottom: 20 }}
+        accessibilityRole="scrollbar"
       >
-        <View className="flex-1 px-4 py-8">
+        <View className="flex-1 px-4 py-6">
           {/* Hero Section */}
-          <View className="items-center space-y-6 mb-8">
-            <Text className="text-3xl font-display font-bold text-center text-brand-600">
+          <View className="items-center space-y-4 mb-6" accessibilityRole="header">
+            <Text className="text-2xl sm:text-3xl font-display font-bold text-center text-brand-600">
               What's for Dinner?
             </Text>
-            <Text className="text-base text-center text-gray-600">
+            <Text className="text-sm sm:text-base text-center text-gray-600 px-2">
               Get AI-powered meal suggestions based on your pantry and preferences
             </Text>
           </View>

@@ -188,11 +188,11 @@ function HomeContent() {
     <div className="min-h-screen bg-background">
       <Navbar user={user} />
 
-      <main className="container mx-auto space-y-8 px-4 py-8">
+      <main className="container mx-auto space-y-6 sm:space-y-8 px-4 sm:px-6 py-6 sm:py-8">
         {/* Hero Section - Variant C (Proof-Focused) or Default */}
-        <div className="space-y-6 text-center">
-          <div className="space-y-4">
-            <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-4xl font-bold text-foreground text-transparent md:text-6xl">
+        <div className="space-y-4 sm:space-y-6 text-center">
+          <div className="space-y-3 sm:space-y-4">
+            <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-2xl sm:text-4xl font-bold text-foreground text-transparent md:text-6xl">
               {variant === 'C' 
                 ? '10,000+ recipes generated this month' 
                 : variant === 'A'
@@ -202,7 +202,7 @@ function HomeContent() {
                 : "What's for Dinner?"
               }
             </h1>
-            <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
+            <p className="mx-auto max-w-2xl text-base sm:text-lg text-muted-foreground md:text-xl px-2">
               {variant === 'C' 
                 ? 'Join thousands using AI to plan meals from ingredients they already have. Save 15 minutes per meal.'
                 : variant === 'A'
@@ -216,12 +216,12 @@ function HomeContent() {
 
           {/* Usage Stats */}
           {tenant && usage && (
-            <Card className="mx-auto max-w-2xl">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-center text-lg">Your Plan</CardTitle>
+            <Card className="mx-auto w-full max-w-2xl">
+              <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
+                <CardTitle className="text-center text-base sm:text-lg">Your Plan</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              <CardContent className="px-4 sm:px-6">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                   <div className="space-y-2 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                       <ChefHat className="h-6 w-6 text-primary" />
@@ -321,11 +321,11 @@ function HomeContent() {
 
         {/* Loading State */}
         {generateRecipesMutation.isPending && (
-          <div className="space-y-6">
-            <h2 className="text-center text-2xl font-semibold text-foreground">
+          <div className="space-y-4 sm:space-y-6">
+            <h2 className="text-center text-xl sm:text-2xl font-semibold text-foreground">
               Generating Recipes...
             </h2>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               <RecipeCardSkeleton />
               <RecipeCardSkeleton />
               <RecipeCardSkeleton />
@@ -335,17 +335,17 @@ function HomeContent() {
 
         {/* Results Section */}
         {recipes.length > 0 && !generateRecipesMutation.isPending && (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="mb-2 text-2xl font-semibold text-foreground">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="text-center px-2">
+              <h2 className="mb-2 text-xl sm:text-2xl font-semibold text-foreground">
                 Suggested Recipes
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Found {recipes.length} recipe{recipes.length !== 1 ? 's' : ''}{' '}
                 for you
               </p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {recipes.map((recipe, index) => (
                 <RecipeCard
                   key={index}
