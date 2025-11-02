@@ -1,0 +1,97 @@
+# Fastfile for iOS
+# Automates App Store Connect uploads
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Build and upload to TestFlight Internal Testing"
+  lane :internal do
+    # Build and archive
+    build_app(
+      workspace: "App.xcworkspace",
+      scheme: "App",
+      export_method: "app-store",
+      export_options: {
+        method: "app-store",
+        uploadBitcode: false,
+        uploadSymbols: true,
+        compileBitcode: false
+      }
+    )
+    
+    # Upload to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: false,
+      skip_submission: true,
+      distribute_external: false,
+      notify_external_testers: false
+    )
+  end
+
+  desc "Build and upload to TestFlight External Testing"
+  lane :external do
+    build_app(
+      workspace: "App.xcworkspace",
+      scheme: "App",
+      export_method: "app-store"
+    )
+    
+    upload_to_testflight(
+      skip_waiting_for_build_processing: false,
+      skip_submission: false,
+      distribute_external: true,
+      notify_external_testers: true,
+      groups: ["External Testers"]
+    )
+  end
+
+  desc "Submit to App Store for Review"
+  lane :production do
+    build_app(
+      workspace: "App.xcworkspace",
+      scheme: "App",
+      export_method: "app-store"
+    )
+    
+    upload_to_app_store(
+      skip_metadata: false,
+      skip_screenshots: false,
+      submit_for_review: false, # Set to true when ready
+      automatic_release: false,
+      force: false
+    )
+  end
+
+  desc "Upload metadata only"
+  lane :metadata do
+    deliver(
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      skip_app_version_update: true,
+      metadata_path: "./ops/store/app-store/metadata",
+      force: true
+    )
+  end
+
+  desc "Upload screenshots only"
+  lane :screenshots do
+    deliver(
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_app_version_update: true,
+      metadata_path: "./ops/store/app-store/metadata",
+      force: true
+    )
+  end
+
+  desc "Update app version in App Store Connect"
+  lane :update_version do
+    deliver(
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      skip_metadata: true,
+      app_version: ENV["APP_VERSION"] || "1.0.0",
+      force: true
+    )
+  end
+end

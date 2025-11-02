@@ -1,0 +1,10 @@
+# Appfile for Fastlane
+# App Store Connect and Google Play credentials
+
+# iOS
+app_identifier("app.whatsfordinner")
+apple_id(ENV["APPLE_ID"] || "your-apple-id@example.com")
+team_id(ENV["APPLE_TEAM_ID"] || "YOUR_TEAM_ID")
+
+# Android
+package_name("app.whatsfordinner")
