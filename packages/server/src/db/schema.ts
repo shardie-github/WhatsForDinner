@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, jsonb, timestamp, numeric, pgEnum, boolean, integer, date, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, jsonb, timestamp, numeric, pgEnum, boolean, integer, date, varchar, sql } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Enums
@@ -196,4 +196,233 @@ export const householdsRelations = relations(households, ({ many, one }) => ({
 export const mealPlansRelations = relations(mealPlans, ({ one }) => ({
   user: one(users, { fields: [mealPlans.user_id], references: [users.id] }),
   household: one(households, { fields: [mealPlans.household_id], references: [households.id] }),
+}));
+
+// ============================================================================
+// GROWTH SYSTEMS SCHEMA
+// ============================================================================
+
+// Enums
+export const emailSubscriptionStatusEnum = pgEnum('email_subscription_status', ['subscribed', 'unsubscribed', 'bounced']);
+export const referralStatusEnum = pgEnum('referral_status', ['clicked', 'signed_up', 'converted']);
+export const promoOfferKindEnum = pgEnum('promo_offer_kind', ['percentage', 'fixed', 'trial_days']);
+export const promoDurationEnum = pgEnum('promo_duration', ['once', 'repeat', 'lifecycle']);
+export const experimentStatusEnum = pgEnum('experiment_status', ['draft', 'running', 'paused', 'complete']);
+export const pricingPlatformEnum = pgEnum('pricing_platform', ['ios', 'android', 'web', 'any']);
+export const pricingPlanEnum = pgEnum('pricing_plan', ['monthly', 'annual']);
+
+// Email subscriptions table
+export const emailSubscriptions = pgTable('email_subscriptions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  email: varchar('email', { length: 255 }).notNull(),
+  status: emailSubscriptionStatusEnum('status').default('subscribed').notNull(),
+  source: text('source'),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdx: { index: 'email_subscriptions_user_id_idx', on: [table.user_id] },
+  emailIdx: { index: 'email_subscriptions_email_idx', on: [table.email] },
+  statusIdx: { index: 'email_subscriptions_status_idx', on: [table.status] },
+}));
+
+// Referral programs table
+export const referralPrograms = pgTable('referral_programs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').notNull().unique(),
+  active: boolean('active').default(true).notNull(),
+  reward_sender: jsonb('reward_sender').$type<{ type: string; value: number }>().default({}),
+  reward_receiver: jsonb('reward_receiver').$type<{ type: string; value: number }>().default({}),
+  terms_url: text('terms_url'),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Referral codes table
+export const referralCodes = pgTable('referral_codes', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  program_id: uuid('program_id').references(() => referralPrograms.id, { onDelete: 'cascade' }).notNull(),
+  code: text('code').notNull().unique(),
+  owner_user_id: uuid('owner_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  uses: integer('uses').default(0).notNull(),
+  max_uses: integer('max_uses'),
+  expires_at: timestamp('expires_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  programIdx: { index: 'referral_codes_program_id_idx', on: [table.program_id] },
+  ownerIdx: { index: 'referral_codes_owner_user_id_idx', on: [table.owner_user_id] },
+  codeIdx: { index: 'referral_codes_code_idx', on: [table.code] },
+}));
+
+// Referrals table
+export const referrals = pgTable('referrals', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  program_id: uuid('program_id').references(() => referralPrograms.id, { onDelete: 'cascade' }).notNull(),
+  code_id: uuid('code_id').references(() => referralCodes.id, { onDelete: 'cascade' }).notNull(),
+  referrer_user_id: uuid('referrer_user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  referee_user_id: uuid('referee_user_id').references(() => users.id, { onDelete: 'set null' }),
+  referee_email: varchar('referee_email', { length: 255 }),
+  status: referralStatusEnum('status').default('clicked').notNull(),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  codeIdx: { index: 'referrals_code_id_idx', on: [table.code_id] },
+  referrerIdx: { index: 'referrals_referrer_user_id_idx', on: [table.referrer_user_id] },
+  refereeIdx: { index: 'referrals_referee_user_id_idx', on: [table.referee_user_id] },
+  statusIdx: { index: 'referrals_status_idx', on: [table.status] },
+}));
+
+// Promo offers table
+export const promoOffers = pgTable('promo_offers', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').notNull().unique(),
+  kind: promoOfferKindEnum('kind').notNull(),
+  value: numeric('value').notNull(),
+  duration: promoDurationEnum('duration').default('once').notNull(),
+  constraints: jsonb('constraints').$type<{
+    max_uses_per_user?: number;
+    geo?: string[];
+    min_purchase_cents?: number;
+  }>().default({}),
+  active: boolean('active').default(true).notNull(),
+  starts_at: timestamp('starts_at', { withTimezone: true }),
+  ends_at: timestamp('ends_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  slugIdx: { index: 'promo_offers_slug_idx', on: [table.slug] },
+}));
+
+// Experiments table
+export const experiments = pgTable('experiments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  key: text('key').notNull().unique(),
+  description: text('description'),
+  status: experimentStatusEnum('status').default('draft').notNull(),
+  hypothesis: text('hypothesis'),
+  primary_metric: text('primary_metric').notNull(),
+  guardrail_metrics: jsonb('guardrail_metrics').$type<string[]>().default([]),
+  created_by: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+  started_at: timestamp('started_at', { withTimezone: true }),
+  stopped_at: timestamp('stopped_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  keyIdx: { index: 'experiments_key_idx', on: [table.key] },
+}));
+
+// Experiment variants table
+export const experimentVariants = pgTable('experiment_variants', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  experiment_id: uuid('experiment_id').references(() => experiments.id, { onDelete: 'cascade' }).notNull(),
+  key: text('key').notNull(),
+  weight: integer('weight').default(50).notNull(),
+  meta: jsonb('meta').$type<Record<string, unknown>>().default({}),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  experimentIdx: { index: 'experiment_variants_experiment_id_idx', on: [table.experiment_id] },
+  uniqueVariant: { unique: true, columns: [table.experiment_id, table.key] },
+}));
+
+// Experiment assignments table
+export const experimentAssignments = pgTable('experiment_assignments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  experiment_id: uuid('experiment_id').references(() => experiments.id, { onDelete: 'cascade' }).notNull(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  anon_id: text('anon_id'),
+  variant_key: text('variant_key').notNull(),
+  assigned_at: timestamp('assigned_at', { withTimezone: true }).defaultNow().notNull(),
+  sticky: boolean('sticky').default(true).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  experimentIdx: { index: 'experiment_assignments_experiment_id_idx', on: [table.experiment_id] },
+  userIdx: { index: 'experiment_assignments_user_id_idx', on: [table.user_id] },
+  anonIdx: { index: 'experiment_assignments_anon_id_idx', on: [table.anon_id] },
+  uniqueAssignment: { unique: true, columns: [table.experiment_id, table.user_id, table.anon_id] },
+}));
+
+// Pricing rules table
+export const pricingRules = pgTable('pricing_rules', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  country: varchar('country', { length: 3 }),
+  platform: pricingPlatformEnum('platform').default('any').notNull(),
+  plan: pricingPlanEnum('plan').notNull(),
+  price_cents: integer('price_cents').notNull(),
+  currency: varchar('currency', { length: 3 }).default('USD').notNull(),
+  promo_offer_id: uuid('promo_offer_id').references(() => promoOffers.id, { onDelete: 'set null' }),
+  active: boolean('active').default(true).notNull(),
+  starts_at: timestamp('starts_at', { withTimezone: true }),
+  ends_at: timestamp('ends_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  countryPlatformIdx: { index: 'pricing_rules_country_platform_idx', on: [table.country, table.platform] },
+}));
+
+// Lifecycle events table
+export const lifecycleEvents = pgTable('lifecycle_events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+  anon_id: text('anon_id'),
+  name: text('name').notNull(),
+  props: jsonb('props').$type<Record<string, unknown>>().default({}),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdx: { index: 'lifecycle_events_user_id_idx', on: [table.user_id] },
+  anonIdx: { index: 'lifecycle_events_anon_id_idx', on: [table.anon_id] },
+  nameTsIdx: { index: 'lifecycle_events_name_ts_idx', on: [table.name, table.ts] },
+}));
+
+// Journey states table
+export const journeyStates = pgTable('journey_states', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  key: text('key').notNull(),
+  step: text('step').notNull(),
+  last_sent_at: timestamp('last_sent_at', { withTimezone: true }),
+  meta: jsonb('meta').$type<Record<string, unknown>>().default({}),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdx: { index: 'journey_states_user_id_idx', on: [table.user_id] },
+  keyIdx: { index: 'journey_states_key_idx', on: [table.key] },
+  uniqueJourney: { unique: true, columns: [table.user_id, table.key] },
+}));
+
+// Relations for growth tables
+export const referralProgramsRelations = relations(referralPrograms, ({ many }) => ({
+  codes: many(referralCodes),
+  referrals: many(referrals),
+}));
+
+export const referralCodesRelations = relations(referralCodes, ({ one, many }) => ({
+  program: one(referralPrograms, { fields: [referralCodes.program_id], references: [referralPrograms.id] }),
+  owner: one(users, { fields: [referralCodes.owner_user_id], references: [users.id] }),
+  referrals: many(referrals),
+}));
+
+export const referralsRelations = relations(referrals, ({ one }) => ({
+  program: one(referralPrograms, { fields: [referrals.program_id], references: [referralPrograms.id] }),
+  code: one(referralCodes, { fields: [referrals.code_id], references: [referralCodes.id] }),
+  referrer: one(users, { fields: [referrals.referrer_user_id], references: [users.id] }),
+  referee: one(users, { fields: [referrals.referee_user_id], references: [users.id] }),
+}));
+
+export const experimentsRelations = relations(experiments, ({ one, many }) => ({
+  creator: one(users, { fields: [experiments.created_by], references: [users.id] }),
+  variants: many(experimentVariants),
+  assignments: many(experimentAssignments),
+}));
+
+export const experimentVariantsRelations = relations(experimentVariants, ({ one }) => ({
+  experiment: one(experiments, { fields: [experimentVariants.experiment_id], references: [experiments.id] }),
+}));
+
+export const experimentAssignmentsRelations = relations(experimentAssignments, ({ one }) => ({
+  experiment: one(experiments, { fields: [experimentAssignments.experiment_id], references: [experiments.id] }),
+  user: one(users, { fields: [experimentAssignments.user_id], references: [users.id] }),
 }));

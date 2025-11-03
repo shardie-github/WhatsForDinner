@@ -1,0 +1,14 @@
+{
+  "name": "@whats-for-dinner/adapters-crm",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}
