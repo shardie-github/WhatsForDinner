@@ -53,6 +53,18 @@ export async function startWorker() {
         case 'digest':
           const { digestProcessor } = await import('../jobs/digests.js');
           return await digestProcessor(job.data);
+        case 'journeys':
+          const { journeysRunnerProcessor } = await import('../jobs/journeysRunner.js');
+          return await journeysRunnerProcessor(job.data);
+        case 'digest_weekly':
+          const { digestRunnerProcessor } = await import('../jobs/digestRunner.js');
+          return await digestRunnerProcessor(job.data);
+        case 'anomaly_guard':
+          const { anomalyGuardProcessor } = await import('../jobs/anomalyGuard.js');
+          return await anomalyGuardProcessor();
+        case 'price_rollout':
+          const { priceRolloutProcessor } = await import('../jobs/priceRollout.js');
+          return await priceRolloutProcessor();
         default:
           throw new Error(`Unknown job type: ${job.name}`);
       }
