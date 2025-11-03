@@ -1,0 +1,101 @@
+{
+  "dashboard": {
+    "title": "Nomad SLO Dashboard",
+    "tags": ["nomad", "slo", "sre"],
+    "timezone": "browser",
+    "schemaVersion": 27,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Availability SLO - Error Budget Remaining",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "nomad_slo_error_budget_remaining{slo=\"availability\"}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 0},
+        "thresholds": [
+          {"value": 0, "color": "red"},
+          {"value": 20, "color": "yellow"},
+          {"value": 50, "color": "green"}
+        ],
+        "min": 0,
+        "max": 100
+      },
+      {
+        "id": 2,
+        "title": "Availability Current vs Target",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "nomad_slo_availability_current",
+            "legendFormat": "Current",
+            "refId": "A"
+          },
+          {
+            "expr": "nomad_slo_availability_target",
+            "legendFormat": "Target (99.9%)",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 16, "x": 8, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "P95 Latency SLO",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(nomad_slo_latency_seconds_bucket[5m]))",
+            "legendFormat": "P95 Latency",
+            "refId": "A"
+          },
+          {
+            "expr": "0.4",
+            "legendFormat": "Target (< 400ms)",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "yaxes": [
+          {"format": "s", "label": "Seconds"}
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Error Rate SLO",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(nomad_slo_errors_total[5m]) / rate(nomad_slo_availability_total[5m]) * 100",
+            "legendFormat": "Error Rate %",
+            "refId": "A"
+          },
+          {
+            "expr": "0.1",
+            "legendFormat": "Target (< 0.1%)",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "SLO Status Summary",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "nomad_slo_status",
+            "format": "table",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 24, "x": 0, "y": 16}
+      }
+    ]
+  }
+}

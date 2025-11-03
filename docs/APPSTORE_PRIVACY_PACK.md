@@ -1,205 +1,192 @@
-# App Store Privacy Attestation Pack
+# App Store Privacy Attestations
 
-## Overview
+## iOS App Store Privacy
 
-This document provides combined privacy attestations for iOS (App Store) and Android (Google Play) compliance.
+### Privacy Information Required by Apple
 
-## Privacy Policy Compliance
+#### Data Collection Categories
 
-- **Privacy Policy URL**: https://nomad.app/privacy
-- **Last Updated**: [Date]
-- **Next Review**: [Date + 1 year]
+**Location Data**
+- **Purpose:** Provide location-based meal recommendations
+- **Collected:** Approximate location (city-level)
+- **Linked to User:** Yes
+- **Used for Tracking:** No
+- **Third-Party Sharing:** No
 
-## Data Collection Disclosure
+**User Content**
+- **Purpose:** Personalized meal plans, dietary preferences
+- **Collected:** Meal preferences, dietary restrictions, pantry items
+- **Linked to User:** Yes
+- **Used for Tracking:** No
+- **Third-Party Sharing:** No (aggregated data only for analytics)
 
-### Data Collected
+**Identifiers**
+- **Purpose:** User authentication, account management
+- **Collected:** User ID, device ID
+- **Linked to User:** Yes
+- **Used for Tracking:** No
+- **Third-Party Sharing:** No
 
-#### User Account Data
-- **Purpose**: Account management, authentication
-- **Data Types**: Email, password (hashed), user ID
-- **Retention**: Until account deletion
-- **Third-Party Sharing**: None
+**Usage Data**
+- **Purpose:** Improve app performance, analytics
+- **Collected:** App interactions, feature usage, crash logs
+- **Linked to User:** Yes (anonymized)
+- **Used for Tracking:** No
+- **Third-Party Sharing:** Yes (analytics providers only)
 
-#### Payment Data
-- **Purpose**: Payment processing
-- **Data Types**: Payment method (via Stripe), transaction history
-- **Retention**: 7 years (legal requirement)
-- **Third-Party Sharing**: Stripe (payment processor)
+**Diagnostics**
+- **Purpose:** Crash reporting, performance monitoring
+- **Collected:** Crash logs, performance metrics
+- **Linked to User:** No (anonymized)
+- **Used for Tracking:** No
+- **Third-Party Sharing:** Yes (Sentry, analytics)
 
-#### Usage Analytics
-- **Purpose**: Product improvement
-- **Data Types**: App usage, feature interactions (anonymized)
-- **Retention**: 2 years
-- **Third-Party Sharing**: None (self-hosted analytics)
+### Data Use Disclosure
 
-#### Device Information
-- **Purpose**: Compatibility, performance
-- **Data Types**: Device model, OS version, app version
-- **Retention**: 1 year
-- **Third-Party Sharing**: None
+**Personalization**
+- Meal recommendations based on preferences
+- Dietary restriction filtering
+- Location-based suggestions
 
-#### Location Data (Optional)
-- **Purpose**: Localized content
-- **Data Types**: Country-level location (not precise)
-- **Retention**: 30 days
-- **Third-Party Sharing**: None
+**Analytics**
+- Usage analytics (anonymized)
+- Feature adoption tracking
+- Performance monitoring
 
-### Data NOT Collected
-- Precise location data
-- Contacts
-- Photos
-- Microphone access
-- Camera access (unless user explicitly grants for meal photos)
+**Advertising**
+- None (no third-party advertising)
 
-## User Rights (GDPR/CCPA)
+**Product Improvement**
+- Feature usage analysis
+- User feedback analysis
+- A/B testing (with consent)
 
-### Right to Access
-- **Implementation**: DSAR export via privacy dashboard
-- **Timeline**: 30 days (GDPR requirement)
-- **Contact**: privacy@nomad.app
+### Data Sharing
 
-### Right to Deletion
-- **Implementation**: Account deletion with data erasure
-- **Timeline**: 30 days
-- **Exceptions**: Legal hold, payment records (7 years)
+**No Sale of Data:** Nomad does not sell user data to third parties.
 
-### Right to Rectification
-- **Implementation**: User profile editing
-- **Timeline**: Immediate
+**Limited Sharing:**
+- Analytics providers (anonymized data only)
+- Payment processors (Stripe - transaction data only)
+- Infrastructure providers (Supabase, Vercel - encrypted at rest)
 
-### Right to Portability
-- **Implementation**: JSON export of user data
-- **Format**: Machine-readable JSON
+### User Rights
 
-### Right to Object
-- **Implementation**: Opt-out of analytics
-- **Timeline**: Immediate
+Users can:
+1. **Access Data:** Via in-app settings or DSAR request
+2. **Delete Data:** Account deletion removes all personal data
+3. **Export Data:** DSAR export available
+4. **Opt-Out:** Disable analytics in settings
 
-## Security Measures
+### Compliance
 
-### Data Encryption
-- **In Transit**: TLS 1.3
-- **At Rest**: AES-256-GCM
-- **Backup Encryption**: AES-256-GCM
+- **GDPR:** Compliant (EU users)
+- **CCPA:** Compliant (California users)
+- **COPPA:** Compliant (no data collection from children < 13)
 
-### Access Controls
-- **Authentication**: Multi-factor authentication (MFA)
-- **Authorization**: Role-based access control (RBAC)
-- **Audit Logging**: All admin actions logged
+## Android Play Store Privacy
 
-### Data Retention
-- **Active Users**: Until account deletion
-- **Inactive Users**: 2 years after last activity
-- **Payment Records**: 7 years (legal requirement)
-- **Audit Logs**: 1 year
+### Privacy Policy Location
 
-## Third-Party Services
-
-### Stripe (Payment Processing)
-- **Purpose**: Payment processing
-- **Data Shared**: Payment method, transaction amount
-- **Privacy Policy**: https://stripe.com/privacy
-- **GDPR Compliance**: Yes
-
-### Supabase (Backend Infrastructure)
-- **Purpose**: Database, authentication
-- **Data Shared**: User data, application data
-- **Privacy Policy**: https://supabase.com/privacy
-- **GDPR Compliance**: Yes
-
-### SendGrid (Email)
-- **Purpose**: Transactional emails
-- **Data Shared**: Email address, email content
-- **Privacy Policy**: https://www.twilio.com/legal/privacy
-- **GDPR Compliance**: Yes
-
-## Children's Privacy (COPPA)
-
-- **Age Requirement**: 13+ (enforced at registration)
-- **Parental Consent**: Required for users under 18
-- **Data Collection**: Limited to account essentials only
-
-## California Privacy Rights (CCPA)
-
-- **Do Not Sell**: We do not sell personal information
-- **Opt-Out**: Available via privacy settings
-- **Non-Discrimination**: Service provided regardless of privacy choices
-
-## International Data Transfers
-
-- **Mechanism**: Standard Contractual Clauses (SCCs)
-- **Countries**: EU ? US (via SCCs)
-- **Safeguards**: Encryption, access controls
-
-## Incident Response
-
-- **Breach Notification**: Within 72 hours (GDPR) or 30 days (CCPA)
-- **Process**: Documented in `docs/INCIDENT_RUNBOOK.md`
-- **Contact**: privacy@nomad.app
-
-## iOS App Store Specific
-
-### App Privacy Details
-- **Data Linked to User**: Email, user ID, purchase history
-- **Data Not Linked to User**: Aggregated analytics
-- **Tracking**: No cross-app tracking
-
-### Required Disclosures
-- ? Data collection purpose
-- ? Data sharing disclosure
-- ? User rights information
-- ? Security measures
-
-## Android (Google Play) Specific
+https://nomad.app/privacy
 
 ### Data Safety Section
-- **Data Collection**: Disclosed in Google Play Console
-- **Data Sharing**: Listed in Data Safety section
-- **Security Practices**: Encryption, secure authentication
 
-### Required Disclosures
-- ? Data types collected
-- ? Purpose of collection
-- ? Data sharing practices
-- ? Security practices
+**Data Collection:**
+- **Personal Info:** Email, name (account creation)
+- **Location:** Approximate location (optional)
+- **App Activity:** Interactions, feature usage
+- **Device IDs:** Device identifiers (for analytics)
+
+**Data Usage:**
+- App functionality
+- Analytics
+- Developer communications
+
+**Data Sharing:**
+- Analytics providers (anonymized)
+- Payment processors (transaction data only)
+
+**Security Practices:**
+- Data encryption in transit (TLS)
+- Data encryption at rest
+- User data can be deleted
+- No data sale
+
+### User Controls
+
+Users can:
+- Request data deletion
+- Export data (DSAR)
+- Opt-out of analytics
+- Manage location permissions
+
+## Combined Privacy Statement
+
+### Data Minimization
+
+Nomad collects only data necessary for:
+1. Account creation and authentication
+2. Meal plan generation
+3. Payment processing
+4. Service improvement (with consent)
+
+### Security Measures
+
+1. **Encryption:** All data encrypted in transit (TLS 1.3) and at rest (AES-256)
+2. **Access Controls:** Role-based access control (RBAC)
+3. **Audit Logging:** All access logged and monitored
+4. **Regular Audits:** Security assessments quarterly
+
+### Third-Party Services
+
+**Infrastructure:**
+- **Supabase:** Database and authentication (encrypted)
+- **Vercel:** Hosting (edge network)
+- **Stripe:** Payments (PCI DSS compliant)
+
+**Analytics:**
+- **Sentry:** Error tracking (anonymized)
+- **PostHog:** Analytics (with consent, anonymized)
+
+**No Advertising Networks:** Nomad does not use third-party advertising.
+
+### Data Retention
+
+- **Active Users:** Data retained while account is active
+- **Deleted Accounts:** Data purged within 30 days
+- **Inactive Accounts:** Auto-deleted after 2 years of inactivity
+- **Legal Holds:** Data retained if legal hold is active
+
+### International Data Transfers
+
+- **EU Users:** Data processed in EU region (Supabase EU)
+- **GDPR Compliance:** Standard Contractual Clauses (SCCs)
+- **Other Regions:** Processed in closest region
+
+### Updates to Privacy Practices
+
+Users notified of material changes:
+- In-app notification
+- Email notification
+- Updated privacy policy date
 
 ## Compliance Certifications
 
-### SOC 2 Type II
-- **Status**: In Progress
-- **Auditor**: [Auditor Name]
-- **Scope**: Infrastructure, data processing
-
-### ISO 27001
-- **Status**: In Progress
-- **Certification Body**: [CB Name]
-- **Scope**: Information security management
-
-## Attestation Statement
-
-We, Nomad, attest that:
-
-1. Our privacy policy accurately describes our data practices
-2. We collect only data necessary for app functionality
-3. We do not sell user data to third parties
-4. We comply with GDPR, CCPA, and COPPA requirements
-5. We have implemented appropriate security measures
-6. We provide users with data access, deletion, and portability rights
-7. We have documented incident response procedures
-
-**Attested By**: [Name, Title]
-**Date**: [Date]
-**Signature**: [Signature]
+- **SOC 2 Type II:** In progress
+- **ISO 27001:** In progress
+- **GDPR:** Compliant
+- **CCPA:** Compliant
 
 ## Contact Information
 
-- **Privacy Officer**: privacy@nomad.app
-- **Data Protection Officer**: dpo@nomad.app
-- **Support**: support@nomad.app
+**Privacy Officer:** privacy@nomad.app
+**Data Protection Officer:** dpo@nomad.app
 
-## Evidence Documents
+**Address:**
+Nomad Privacy Team
+[Company Address]
 
-- Privacy Policy: `public/privacy-policy.html`
-- Terms of Service: `public/terms.html`
-- DSAR Implementation: `packages/server/src/routes/privacy.dsar.ts`
-- RLS Policies: `supabase_tables_part*.sql`
+## Revision History
+
+- **v1.0** (2024-01-XX): Initial privacy pack

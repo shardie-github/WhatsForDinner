@@ -342,3 +342,59 @@ export async function loadBaseline(path: string): Promise<PerfBaseline> {
   const content = await fs.readFile(path, 'utf-8');
   return JSON.parse(content);
 }
+
+/**
+ * CLI entry point
+ */
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const args = process.argv.slice(2);
+  
+  if (args.includes('--generate-baseline')) {
+    const baseline = {
+      timestamp: new Date().toISOString(),
+      scenarios: {} as PerfBaseline['scenarios'],
+    };
+
+    // Generate placeholder baseline from scenario expectations
+    for (const scenario of [...apiScenarios, ...webScenarios]) {
+      baseline.scenarios[scenario.name] = {
+        p50: scenario.expectedP95 * 0.5,
+        p95: scenario.expectedP95,
+        p99: scenario.expectedP99,
+        min: scenario.expectedP95 * 0.1,
+        max: scenario.expectedP99 * 2,
+        avg: scenario.expectedP95 * 0.7,
+        requests: 1000,
+        errors: 0,
+        errorRate: 0,
+      };
+    }
+
+    saveBaseline(baseline, 'perf-baseline.json')
+      .then(() => {
+        console.log('? Baseline generated: perf-baseline.json');
+        process.exit(0);
+      })
+      .catch((error) => {
+        console.error('Failed to generate baseline:', error);
+        process.exit(1);
+      });
+  } else if (args.includes('--compare')) {
+    loadBaseline('perf-baseline.json')
+      .then((baseline) => {
+        // Placeholder comparison - in production would compare against actual test results
+        console.log('Baseline loaded:', baseline.timestamp);
+        console.log('Run k6 tests and compare results');
+        process.exit(0);
+      })
+      .catch((error) => {
+        console.error('Failed to load baseline:', error);
+        process.exit(1);
+      });
+  } else {
+    console.log('Available commands:');
+    console.log('  --generate-baseline  Generate performance baseline');
+    console.log('  --compare            Compare with baseline');
+    process.exit(1);
+  }
+}

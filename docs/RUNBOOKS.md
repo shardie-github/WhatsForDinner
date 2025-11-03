@@ -1,302 +1,332 @@
-# SRE Runbooks
-
-## Overview
-
-This document contains daily, weekly, and monthly operational runbooks for Site Reliability Engineering tasks.
+# Site Reliability Engineering Runbooks
 
 ## Daily Tasks
 
-### Morning Checks (9 AM UTC)
+### Morning Health Check (9:00 AM UTC)
 
-#### Health Check
+**Checklist:**
+- [ ] Review overnight error rates (Grafana dashboard)
+- [ ] Check SLO status (all green?)
+- [ ] Review overnight incidents (#incidents Slack channel)
+- [ ] Verify backup completion (check logs)
+- [ ] Check queue worker health
+
+**Commands:**
 ```bash
-# Check overall system health
-curl https://nomad.app/healthz
+# Check health
+curl https://api.nomad.app/healthz | jq
 
-# Check Prometheus metrics
-curl http://prometheus:9090/api/v1/query?query=up
+# Check SLO status
+# Query Grafana: nomad_slo_error_budget_remaining
 
-# Review overnight alerts
-# Check PagerDuty/Slack for any incidents
-```
-
-#### Error Rate Review
-- Check error rate in Grafana dashboard
-- Review error logs in Loki
-- Check for any new error patterns
-
-#### SLO Status
-- Verify SLOs are within budget
-- Check error budget consumption
-- Review any SLO violations
-
-### Backup Verification
-```bash
-# Verify backups completed successfully
+# Check backup status
+# Review backup logs or run verification
 pnpm backup:verify
-
-# Check backup storage
-# Verify backup checksums
 ```
 
-### Monitoring Review
-- Review Grafana dashboards
-- Check for anomalies
-- Verify alert rules are working
+**Alerts:**
+- Error rate > 0.1%
+- SLO status not green
+- Backup failures
+- Queue worker failures
 
-### Afternoon Checks (2 PM UTC)
+### Queue Monitoring
 
-#### Capacity Review
-- Check resource utilization (CPU, memory, disk)
-- Review queue backlogs
-- Check database connection pools
+**Check:**
+- Stalled jobs
+- Failed jobs count
+- Processing latency
 
-#### Performance Metrics
-- Review P95/P99 latency
-- Check database query performance
-- Review API response times
+**Actions:**
+```bash
+# Self-healing will auto-handle, but manual check:
+# Review BullMQ dashboard or Redis monitoring
+```
+
+### Performance Monitoring
+
+**Metrics to Watch:**
+- P95 latency < 400ms
+- Error rate < 0.1%
+- Database query performance
+- API response times
+
+**Grafana Dashboards:**
+- Service Overview
+- Database Performance
+- API Latency
+- Error Rates
 
 ## Weekly Tasks
 
-### Monday: Weekly Review
+### Monday: Performance Review
 
-#### Incident Review
-- Review all incidents from previous week
-- Update incident runbooks if needed
-- Share learnings with team
+**Tasks:**
+1. Review last week's performance metrics
+2. Identify performance regressions
+3. Review cost dashboard
+4. Plan capacity adjustments if needed
 
-#### SLO Review
+**Reports:**
+- Weekly performance summary
+- Cost trends
+- SLO compliance report
+
+### Tuesday: Security Scan Review
+
+**Tasks:**
+1. Review security scan results (GitHub Actions)
+2. Address high/critical vulnerabilities
+3. Update dependencies if needed
+
+**Commands:**
 ```bash
-# Generate weekly SLO report
-pnpm slo:report
+# Review latest security scan
+# GitHub Actions: security.yml workflow
+
+# Run dependency audit
+pnpm supply-chain:audit
 ```
 
-#### Capacity Planning
-- Review usage trends
-- Plan for upcoming capacity needs
-- Update scaling rules if needed
+### Wednesday: Backup Verification
 
-### Tuesday: Security Review
+**Tasks:**
+1. Run backup restore test (dry-run)
+2. Verify backup integrity
+3. Review backup retention
 
-#### Security Scans
-- Review Snyk scan results
-- Check for new vulnerabilities
-- Update dependencies if needed
-
-#### Access Review
-- Review admin access logs
-- Verify access controls
-- Check for unauthorized access
-
-### Wednesday: Performance Optimization
-
-#### Performance Analysis
-- Review slow queries
-- Optimize database indexes
-- Review API performance
-
-#### Load Testing
+**Commands:**
 ```bash
-# Run performance tests
-pnpm perf:analyze
-
-# Compare with baseline
-pnpm perf:monitor
-```
-
-### Thursday: Documentation Updates
-
-#### Documentation Review
-- Update runbooks based on incidents
-- Review and update architecture docs
-- Update onboarding docs
-
-#### Knowledge Sharing
-- Share learnings with team
-- Update post-mortems
-- Document new procedures
-
-### Friday: Backup & Restore Test
-
-#### Backup Verification
-```bash
-# Full backup verification
+# Verify backups
 pnpm backup:verify
 
 # Test restore (dry-run)
-pnpm restore:run --dry-run
+pnpm backup:restore --dry-run --backup=<latest>
 ```
 
-#### DR Readiness
-- Review DR documentation
-- Verify failover procedures
-- Check backup integrity
+### Thursday: Incident Review
+
+**Tasks:**
+1. Review incidents from past week
+2. Update incident documentation
+3. Follow up on action items
+4. Schedule post-mortems if needed
+
+### Friday: Capacity Planning
+
+**Tasks:**
+1. Review usage trends
+2. Forecast capacity needs
+3. Plan scaling actions
+4. Review cost optimization opportunities
+
+**Cost Dashboard:**
+- Access: `/admin/costs`
+- Review trends and forecasts
+- Set budget alerts
 
 ## Monthly Tasks
 
-### First Week: Capacity & Cost Review
+### First Monday: DR Drill
 
-#### Capacity Analysis
-- Review usage trends
-- Forecast capacity needs
-- Update scaling rules
-- Plan for peak periods
+**Procedure:**
+1. Schedule DR drill (quarterly is minimum, monthly preferred)
+2. Execute failover test
+3. Verify RTO/RPO targets
+4. Document results
 
-#### Cost Review
-- Review infrastructure costs
-- Identify cost optimization opportunities
-- Review budget vs. actual spending
+**Commands:**
+```bash
+# Simulate failover (staging environment)
+# Follow docs/DR_BCP.md procedures
+```
 
-### Second Week: Security Audit
+### Second Monday: Compliance Review
 
-#### Security Review
-- Full security audit
-- Review access controls
-- Update security policies
-- Review compliance status
+**Tasks:**
+1. Review compliance checklist
+2. Generate evidence bundle
+3. Review audit logs
+4. Update documentation
 
-#### Dependency Updates
-- Review dependency updates
-- Update critical dependencies
-- Test updates in staging
+**Commands:**
+```bash
+# Generate evidence bundle
+pnpm evidence:bundle
 
-### Third Week: Disaster Recovery Drill
+# Review audit logs
+# Query audit_logs table for anomalies
+```
 
-#### DR Drill
-- Run full DR drill
-- Test failover procedures
-- Verify backup/restore
-- Document drill results
+### Third Monday: Performance Baseline Update
 
-#### Runbook Updates
-- Update DR runbooks based on drill
-- Fix any issues found
-- Share learnings
+**Tasks:**
+1. Run performance tests
+2. Compare with baseline
+3. Update baseline if acceptable
+4. Document regressions
 
-### Fourth Week: Performance & Reliability Review
+**Commands:**
+```bash
+# Run performance tests
+pnpm perf:baseline
 
-#### Performance Review
-- Analyze performance trends
-- Identify optimization opportunities
-- Update performance budgets
-- Review SLO targets
+# Compare with existing baseline
+pnpm perf:compare
+```
 
-#### Reliability Metrics
-- Review availability metrics
-- Analyze incident trends
-- Update reliability targets
-- Plan improvements
+### Last Monday: Monthly Report
+
+**Generate:**
+1. Monthly SLO report
+2. Incident summary
+3. Performance metrics
+4. Cost summary
 
 ## Quarterly Tasks
 
-### Q1: Annual Planning
-- Review annual objectives
-- Plan capacity for year
-- Review security roadmap
-- Update compliance plans
+### Q1: Annual Security Assessment
 
-### Q2: Compliance Review
-- SOC 2 audit preparation
-- ISO 27001 audit preparation
-- Review compliance evidence
-- Update compliance docs
+**Tasks:**
+1. Penetration testing
+2. Security audit
+3. Compliance review
+4. Policy updates
 
-### Q3: Architecture Review
-- Review system architecture
-- Identify technical debt
-- Plan improvements
-- Review scalability
+### Q2: Capacity Planning Review
 
-### Q4: Year-End Review
-- Annual performance review
-- Incident summary
-- Lessons learned
-- Plan for next year
+**Tasks:**
+1. Review growth trends
+2. Plan infrastructure scaling
+3. Cost optimization review
 
-## On-Call Responsibilities
+### Q3: Disaster Recovery Full Test
+
+**Tasks:**
+1. Full DR drill
+2. Multi-region failover test
+3. Backup/restore validation
+4. Documentation update
+
+### Q4: Annual Review
+
+**Tasks:**
+1. Year-end performance review
+2. SLO target review
+3. Budget review
+4. Planning for next year
+
+## On-Demand Tasks
+
+### Deploy to Production
+
+**Pre-Deployment:**
+1. Check SLO status (must be green)
+2. Run tests
+3. Security scan
+4. Review changes
+
+**Deployment:**
+1. Deploy to staging
+2. Smoke tests
+3. Deploy to production (canary if configured)
+4. Monitor post-deployment
+
+**Post-Deployment:**
+1. Monitor error rates (5 minutes)
+2. Check latency metrics
+3. Verify health endpoints
+4. Rollback if needed
+
+**Commands:**
+```bash
+# Check SLO before deploy
+# Query Prometheus or use API
+
+# Deploy
+pnpm deploy:production
+
+# Monitor
+watch -n 5 'curl -s https://api.nomad.app/healthz | jq'
+```
 
 ### Incident Response
-- Respond within SLA (15 min for P1, 1 hour for P2)
-- Follow `docs/INCIDENT_RUNBOOK.md`
-- Document all actions
-- Escalate if needed
 
-### Monitoring
-- Monitor alerts
-- Review dashboards
-- Respond to alerts
-- Document incidents
+**See:** `docs/INCIDENT_RUNBOOK.md` for detailed procedures.
 
-### Communication
-- Update status page
-- Notify stakeholders
-- Communicate resolution
-- Write post-mortem
+**Quick Reference:**
+1. Acknowledge incident
+2. Assess severity
+3. Investigate
+4. Mitigate
+5. Resolve
+6. Post-mortem
 
-## Emergency Procedures
+### Scale Resources
 
-### Critical Incident (P1)
-1. **Assess**: Determine impact and scope
-2. **Communicate**: Notify team and stakeholders
-3. **Mitigate**: Apply fixes or workarounds
-4. **Resolve**: Fix root cause
-5. **Document**: Write post-mortem
+**Database Scaling:**
+- Supabase dashboard (if needed)
+- Monitor connection pool
 
-### Data Breach
-1. **Contain**: Isolate affected systems
-2. **Assess**: Determine scope of breach
-3. **Notify**: Inform stakeholders and authorities
-4. **Remediate**: Fix vulnerabilities
-5. **Document**: Document incident and response
+**Application Scaling:**
+- Vercel auto-scaling (configured)
+- Manual override if needed
 
-### Service Outage
-1. **Detect**: Monitor for outages
-2. **Diagnose**: Identify root cause
-3. **Mitigate**: Apply fixes or failover
-4. **Resolve**: Restore service
-5. **Review**: Post-mortem and improvements
+**Redis Scaling:**
+- Upstash dashboard (if using)
+- Monitor memory usage
 
-## Automation
+## Monitoring Dashboards
 
-### Automated Tasks
-- ? Daily backups
-- ? Health checks
-- ? Error rate monitoring
-- ? SLO tracking
-- ? Security scans
-- ? Performance monitoring
+### Grafana URLs
 
-### Manual Tasks
-- ?? Incident response
-- ?? Post-mortems
-- ?? Capacity planning
-- ?? Documentation updates
-- ?? Compliance reviews
+**Service Overview:**
+- URL: `http://grafana.nomad.app/d/service-overview`
+- Metrics: Request rate, error rate, latency
 
-## Metrics & KPIs
+**Database Performance:**
+- URL: `http://grafana.nomad.app/d/db-performance`
+- Metrics: Query time, connections, slow queries
 
-### Daily Metrics
-- Error rate
-- Latency (P95, P99)
-- Availability
-- SLO compliance
+**SLO Dashboard:**
+- URL: `http://grafana.nomad.app/d/slo`
+- Metrics: SLO status, error budgets
 
-### Weekly Metrics
-- Incident count
-- MTTR (Mean Time to Resolve)
-- MTBF (Mean Time Between Failures)
-- Error budget consumption
+**Cost Dashboard:**
+- URL: `https://nomad.app/admin/costs`
+- Metrics: Infrastructure costs, trends
 
-### Monthly Metrics
-- Uptime percentage
-- SLO compliance rate
-- Security scan results
-- Cost trends
+## Alert Thresholds
 
-## Tools & Resources
+### Critical Alerts (PagerDuty)
 
-- **Monitoring**: Grafana, Prometheus, Loki, Tempo
-- **Alerting**: PagerDuty, Slack
-- **Incidents**: Admin console
-- **Backups**: Backup scripts
-- **Documentation**: This repository
+- Error rate > 5%
+- Health check failed
+- SLO critical violation
+- Database unavailable
+
+### Warning Alerts (Slack)
+
+- Error rate > 1%
+- SLO yellow status
+- High latency (P95 > 500ms)
+- Backup failures
+
+## Escalation
+
+**Level 1:** On-Call Engineer
+**Level 2:** Engineering Lead
+**Level 3:** CTO
+
+## Tools Reference
+
+- **Monitoring:** Grafana + Prometheus
+- **Logs:** Loki
+- **Traces:** Tempo
+- **Alerts:** PagerDuty + Slack
+- **Incidents:** Internal incident system
+- **Costs:** Admin dashboard
+
+## Revision History
+
+- **v1.0** (2024-01-XX): Initial runbook
