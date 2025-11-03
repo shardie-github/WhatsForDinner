@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   User,
+  BarChart3,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
@@ -34,6 +35,7 @@ export default function Navbar({ user }: NavbarProps) {
     { href: '/', label: 'Home', icon: Home },
     { href: '/pantry', label: 'Pantry', icon: ChefHat },
     { href: '/favorites', label: 'Favorites', icon: Heart },
+    { href: '/analytics', label: 'Analytics', icon: BarChart3 },
   ];
 
   const userNavItems = [
