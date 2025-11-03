@@ -1,0 +1,55 @@
+global:
+  resolve_timeout: 5m
+  slack_api_url: '${SLACK_ALERT_WEBHOOK}'
+  pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
+
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'default'
+  routes:
+    # Critical alerts go to PagerDuty
+    - match:
+        severity: critical
+      receiver: 'pagerduty'
+      continue: true
+    
+    # Major alerts go to Slack
+    - match:
+        severity: major
+      receiver: 'slack'
+      continue: true
+    
+    # Warning alerts go to Slack (non-urgent)
+    - match:
+        severity: warning
+      receiver: 'slack-warning'
+
+receivers:
+  - name: 'default'
+    slack_configs:
+      - channel: '#incidents'
+        title: 'Nomad Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}'
+
+  - name: 'pagerduty'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_SERVICE_KEY}'
+        description: '{{ .GroupLabels.alertname }}: {{ .CommonAnnotations.summary }}'
+        severity: 'critical'
+
+  - name: 'slack'
+    slack_configs:
+      - channel: '#incidents'
+        title: '?? Major Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}'
+        send_resolved: true
+
+  - name: 'slack-warning'
+    slack_configs:
+      - channel: '#alerts'
+        title: '?? Warning: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}'
+        send_resolved: true

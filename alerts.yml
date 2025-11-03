@@ -1,0 +1,156 @@
+# Prometheus Alert Rules for Nomad
+
+groups:
+  - name: nomad_slo_alerts
+    interval: 30s
+    rules:
+      # SLO Availability Alert
+      - alert: SLOCriticalAvailability
+        expr: nomad_slo_error_budget_remaining{slo="availability"} < 0
+        for: 5m
+        labels:
+          severity: critical
+          team: sre
+        annotations:
+          summary: "SLO Availability is in critical state"
+          description: "Availability SLO has exhausted error budget. Current: {{ $value }}%"
+
+      - alert: SLORedAvailability
+        expr: nomad_slo_error_budget_remaining{slo="availability"} < 20 AND nomad_slo_error_budget_remaining{slo="availability"} > 0
+        for: 10m
+        labels:
+          severity: warning
+          team: sre
+        annotations:
+          summary: "Availability SLO error budget running low"
+          description: "Availability error budget remaining: {{ $value }}%"
+
+      # SLO Latency Alert
+      - alert: SLOCriticalLatency
+        expr: histogram_quantile(0.95, rate(nomad_slo_latency_seconds_bucket[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: critical
+          team: sre
+        annotations:
+          summary: "P95 latency exceeds SLO target"
+          description: "P95 latency is {{ $value }}s (target: < 0.4s)"
+
+      # SLO Error Rate Alert
+      - alert: SLOCriticalErrorRate
+        expr: rate(nomad_slo_errors_total[5m]) / rate(nomad_slo_availability_total[5m]) * 100 > 0.5
+        for: 5m
+        labels:
+          severity: critical
+          team: sre
+        annotations:
+          summary: "Error rate exceeds SLO target"
+          description: "Error rate is {{ $value }}% (target: < 0.1%)"
+
+  - name: nomad_service_alerts
+    interval: 30s
+    rules:
+      # High Error Rate
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100 > 1
+        for: 5m
+        labels:
+          severity: major
+          team: backend
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }}% (threshold: 1%)"
+
+      # Critical Error Rate
+      - alert: CriticalErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100 > 5
+        for: 2m
+        labels:
+          severity: critical
+          team: backend
+        annotations:
+          summary: "Critical error rate - service degradation"
+          description: "Error rate is {{ $value }}% (threshold: 5%)"
+
+      # Health Check Failure
+      - alert: HealthCheckFailed
+        expr: up{job="nomad-health"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: sre
+        annotations:
+          summary: "Health check failed"
+          description: "Service health check has been failing for {{ $for }}"
+
+      # Database Connection Issues
+      - alert: DatabaseConnectionHighLatency
+        expr: nomad_db_connection_latency_seconds > 1
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "Database connection latency is high"
+          description: "Database connection latency: {{ $value }}s"
+
+      # Redis Connection Issues
+      - alert: RedisConnectionFailed
+        expr: nomad_redis_connection_status == 0
+        for: 2m
+        labels:
+          severity: major
+          team: backend
+        annotations:
+          summary: "Redis connection failed"
+          description: "Redis connection has been down for {{ $for }}"
+
+  - name: nomad_capacity_alerts
+    interval: 1m
+    rules:
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+          team: infrastructure
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value }}%"
+
+      # High CPU Usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          team: infrastructure
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}%"
+
+  - name: nomad_backup_alerts
+    interval: 5m
+    rules:
+      # Backup Failure
+      - alert: BackupFailed
+        expr: increase(nomad_backup_failures_total[1h]) > 0
+        for: 0m
+        labels:
+          severity: major
+          team: sre
+        annotations:
+          summary: "Backup failed"
+          description: "Backup job has failed"
+
+      # Backup Not Completed
+      - alert: BackupNotCompleted
+        expr: time() - nomad_backup_last_success_timestamp > 86400
+        for: 1h
+        labels:
+          severity: warning
+          team: sre
+        annotations:
+          summary: "Backup not completed in last 24 hours"
+          description: "Last successful backup was {{ $value }} seconds ago"
