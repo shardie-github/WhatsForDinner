@@ -26,12 +26,24 @@ export type AdContext = {
 };
 
 export type AdDecision = {
-  type: 'admob' | 'gpt' | 'house' | 'none';
+  type: 'admob' | 'gpt' | 'house' | 'partner' | 'none';
   placementProps?: {
     adUnitId?: string;
     slotId?: string;
     size?: string;
     houseAdId?: string;
+    creative?: {
+      id: string;
+      campaign_id: string;
+      partner_id: string;
+      kind: 'tile' | 'banner' | 'video' | 'native';
+      assets: Record<string, unknown>;
+      click_url: string;
+      width?: number;
+      height?: number;
+    };
+    clickUrl?: string;
+    impressionUrl?: string;
   };
 };
 
@@ -69,6 +81,14 @@ export class AdEngine {
     // Frequency cap check
     if (this.isFrequencyCapped(context.slot)) {
       return this.selectHouseAd(context);
+    }
+
+    // Try partner marketplace first (if enabled)
+    if (context.flags?.ads && context.consent && context.userPlan !== 'premium') {
+      const partnerAd = await this.selectPartnerAd(context);
+      if (partnerAd) {
+        return partnerAd;
+      }
     }
 
     // Choose network based on platform
@@ -197,6 +217,40 @@ export class AdEngine {
       grocery_banner: '320x50',
     };
     return sizes[slot] || '320x50';
+  }
+
+  private async selectPartnerAd(context: AdContext): Promise<AdDecision | null> {
+    try {
+      // Import partner source dynamically to avoid circular deps
+      const { fetchPartnerCreatives, selectPartnerCreative, shouldUsePartnerMarketplace } } = await import('./partnerSource.js');
+
+      if (!shouldUsePartnerMarketplace(context)) {
+        return null;
+      }
+
+      const creatives = await fetchPartnerCreatives(context);
+      if (creatives.length === 0) {
+        return null;
+      }
+
+      const selected = selectPartnerCreative(creatives, context);
+      if (!selected) {
+        return null;
+      }
+
+      // Return partner ad decision
+      return {
+        type: 'partner',
+        placementProps: {
+          creative: selected,
+          clickUrl: selected.click_url, // Should be /r/ shortened link
+          impressionUrl: selected.click_url.replace('/r/', '/api/ads/partner/impression/'),
+        },
+      };
+    } catch (error) {
+      console.warn('Partner ad selection failed', error);
+      return null;
+    }
   }
 }
 
