@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { AdMobIntegration } from './AdMobIntegration';
 
 interface AdPlacementProps {
   tier?: 'free' | 'premium' | 'partner';
@@ -45,6 +46,19 @@ export function AdPlacement({ tier = 'free', type = 'feed-tile' }: AdPlacementPr
   };
 
   if (type === 'banner') {
+    const adUnitId = process.env.NEXT_PUBLIC_ADMOB_BANNER_UNIT_ID;
+    
+    if (adUnitId) {
+      return (
+        <AdMobIntegration
+          adUnitId={adUnitId}
+          type="banner"
+          className="w-full"
+        />
+      );
+    }
+    
+    // Fallback house ad
     return (
       <Card className="p-4 bg-gradient-to-r from-brand-50 to-accent-50 dark:from-brand-900/20 dark:to-accent-900/20 border-brand-200 dark:border-brand-800">
         <div className="flex items-center justify-between gap-4">

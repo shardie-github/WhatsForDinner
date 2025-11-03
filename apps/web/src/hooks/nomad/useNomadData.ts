@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
+import { useRealtimeFamilyChat as useRealtimeFamilyChatImpl } from '@/lib/nomad/realtime';
 
 // User Profile Hook
 export function useUserProfile() {
@@ -193,35 +194,14 @@ export function useSendFamilyMessage() {
 
 // Real-time chat hook using Supabase Realtime
 export function useRealtimeFamilyChat(familyId?: string) {
-  const [messages, setMessages] = useState<any[]>([]);
+  const { messages, setMessages } = useRealtimeFamilyChatImpl(familyId);
   const { data: initialMessages } = useFamilyChat(familyId);
 
   useEffect(() => {
-    if (initialMessages) {
-      setMessages(initialMessages.messages || []);
+    if (initialMessages?.messages) {
+      setMessages(initialMessages.messages);
     }
-  }, [initialMessages]);
-
-  // In production, set up Supabase Realtime subscription
-  // useEffect(() => {
-  //   if (!familyId) return;
-  //   
-  //   const channel = supabase
-  //     .channel(`family-chat:${familyId}`)
-  //     .on('postgres_changes', {
-  //       event: 'INSERT',
-  //       schema: 'public',
-  //       table: 'family_chat_messages',
-  //       filter: `family_id=eq.${familyId}`,
-  //     }, (payload) => {
-  //       setMessages((prev) => [...prev, payload.new]);
-  //     })
-  //     .subscribe();
-  //   
-  //   return () => {
-  //     supabase.removeChannel(channel);
-  //   };
-  // }, [familyId]);
+  }, [initialMessages, setMessages]);
 
   return { messages, setMessages };
 }
