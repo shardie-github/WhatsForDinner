@@ -111,7 +111,13 @@
     "seed:admin": "tsx scripts/seed-admin.ts",
     "verify-audit": "tsx scripts/verify-audit.ts",
     "retention:preview": "tsx -e \"import('./packages/server/src/jobs/retentionRunner.js').then(m => m.runRetentionPolicies(true))\"",
-    "retention:run": "tsx -e \"import('./packages/server/src/jobs/retentionRunner.js').then(m => m.runRetentionPolicies(false))\""
+    "retention:run": "tsx -e \"import('./packages/server/src/jobs/retentionRunner.js').then(m => m.runRetentionPolicies(false))\"",
+    "wiring:run": "tsx tools/wiring/harness.ts",
+    "wiring:doctor": "tsx tools/wiring/wire_doctor.ts",
+    "wiring:inventory": "tsx tools/wiring/env_inventory.ts",
+    "wiring:contracts": "vitest run packages/testing/contracts",
+    "wiring:test:jobs": "vitest run packages/testing/e2e/jobs.spec.ts",
+    "wiring:report": "node -e \"console.log(require('./reports/connectivity/connectivity.json'))\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"

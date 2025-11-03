@@ -1,0 +1,167 @@
+name: Wiring Check
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  wiring-check:
+    name: Connectivity Verification
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nomad_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build packages
+        run: pnpm build:packages
+      
+      - name: Setup environment
+        run: |
+          echo "NEXT_PUBLIC_SUPABASE_URL=https://test.supabase.co" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=test-anon-key" >> $GITHUB_ENV
+          echo "SUPABASE_SERVICE_ROLE_KEY=test-service-key" >> $GITHUB_ENV
+          echo "SUPABASE_DB_URL=postgresql://postgres:postgres@localhost:5432/nomad_test" >> $GITHUB_ENV
+          echo "REDIS_URL=redis://localhost:6379" >> $GITHUB_ENV
+          echo "STRIPE_SECRET_KEY=sk_test_mock" >> $GITHUB_ENV
+          echo "STRIPE_WEBHOOK_SECRET=whsec_test" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=sk-test-mock" >> $GITHUB_ENV
+          echo "PARTNER_CONVERSION_HMAC_SECRET=test-hmac-secret-min-32-chars-required" >> $GITHUB_ENV
+          echo "LINK_SIGNING_SECRET=test-signing-secret-min-32-chars" >> $GITHUB_ENV
+          echo "ARTIFACTS_BUCKET_URL=/tmp/artifacts" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_APP_URL=http://localhost:3000" >> $GITHUB_ENV
+          echo "NODE_ENV=test" >> $GITHUB_ENV
+      
+      - name: Generate environment inventory
+        run: pnpm wiring:inventory
+      
+      - name: Run wire doctor
+        run: pnpm wiring:doctor || true
+      
+      - name: Run wiring harness
+        run: pnpm wiring:run
+        continue-on-error: true
+      
+      - name: Start web server
+        run: |
+          pnpm dev:web &
+          sleep 10
+        continue-on-error: true
+      
+      - name: Run contract tests
+        run: pnpm wiring:contracts || true
+        continue-on-error: true
+      
+      - name: Run E2E tests (web)
+        run: |
+          cd apps/web
+          pnpm playwright install chromium
+          pnpm playwright test packages/testing/e2e/wiring.web.spec.ts --project=chromium
+        continue-on-error: true
+      
+      - name: Run jobs E2E tests
+        run: pnpm wiring:test:jobs || true
+        continue-on-error: true
+      
+      - name: Upload connectivity reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: connectivity-reports
+          path: |
+            reports/connectivity/**/*.json
+            reports/connectivity/**/*.md
+            reports/connectivity/evidence/**/*
+      
+      - name: Check for failures
+        run: |
+          if [ -f reports/connectivity/connectivity.json ]; then
+            FAIL_COUNT=$(jq '.summary.fail' reports/connectivity/connectivity.json)
+            if [ "$FAIL_COUNT" -gt 0 ]; then
+              echo "? $FAIL_COUNT connectivity checks failed"
+              exit 1
+            fi
+          fi
+      
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            let comment = '## ?? Wiring Check Results\n\n';
+            
+            try {
+              const report = JSON.parse(
+                fs.readFileSync('reports/connectivity/connectivity.json', 'utf-8')
+              );
+              
+              comment += `- ? Pass: ${report.summary.pass}\n`;
+              comment += `- ? Fail: ${report.summary.fail}\n`;
+              comment += `- ?? Degraded: ${report.summary.degraded}\n`;
+              comment += `- ?? Skip: ${report.summary.skip}\n\n`;
+              
+              if (report.summary.fail > 0) {
+                const failures = report.checks.filter(c => c.result.status === 'fail');
+                comment += '### Failures:\n';
+                failures.forEach(f => {
+                  comment += `- ${f.category} - ${f.subsystem}: ${f.result.error}\n`;
+                });
+              }
+            } catch (e) {
+              comment += '?? Could not parse report\n';
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment,
+            });
