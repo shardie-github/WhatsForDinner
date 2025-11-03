@@ -2,225 +2,302 @@
 
 ## Overview
 
-This document defines the change management process for Nomad, ensuring all changes are reviewed, tested, and approved before deployment.
+This document defines the process for managing changes to Nomad's production systems, ensuring:
+- **Idempotent** changes
+- **Auditable** process
+- **Zero-downtime** deployments
+- **Rollback** capability
 
 ## Change Types
 
-### Standard Change
-- **Approval**: Automatic (pre-approved)
-- **Risk**: Low
-- **Examples**: Documentation updates, dependency updates (minor), configuration changes
+### Standard Changes
 
-### Normal Change
-- **Approval**: Team Lead or Engineering Manager
-- **Risk**: Medium
-- **Examples**: Feature additions, API changes, infrastructure updates
+**Definition:** Pre-approved, low-risk changes
+- Configuration updates
+- Feature flag toggles
+- Non-breaking code changes
 
-### Emergency Change
-- **Approval**: On-call engineer (post-approval)
-- **Risk**: High
-- **Examples**: Security patches, critical bug fixes, incident response
+**Process:**
+1. Create PR with change
+2. Code review required
+3. Automated tests pass
+4. Deploy via CI/CD
 
-## Change Request Process
+### Normal Changes
 
-### 1. Change Request
-- Create GitHub issue or PR
-- Fill out change template
-- Assign reviewers
+**Definition:** Changes requiring approval
+- New features
+- Database migrations
+- Infrastructure changes
+- Breaking API changes
 
-### 2. Review
-- Code review (at least 2 reviewers)
-- Security review (if applicable)
-- Architecture review (if applicable)
+**Process:**
+1. Create PR with detailed description
+2. Code review + approval
+3. Run tests (unit, integration, e2e)
+4. Security scan
+5. Deploy to staging
+6. Staging validation
+7. Deploy to production (canary if applicable)
+8. Monitor post-deployment
+9. Document change
 
-### 3. Testing
-- Unit tests pass
-- Integration tests pass
-- E2E tests pass (if applicable)
-- Performance tests pass (if applicable)
+### Emergency Changes
 
-### 4. Approval
-- Approval from required reviewers
-- SLO compliance check
-- Security scan passed
+**Definition:** Critical fixes requiring immediate deployment
+- Security patches
+- Critical bug fixes
+- Incident mitigation
 
-### 5. Deployment
-- Deploy to staging
-- Smoke tests pass
-- Deploy to production
-- Post-deployment monitoring
+**Process:**
+1. Create emergency PR
+2. Expedited review (at least 1 reviewer)
+3. Deploy with enhanced monitoring
+4. Post-deployment review within 24 hours
+5. Post-mortem if incident-related
 
-## Change Approval Matrix
+## Change Request Template
 
-| Change Type | Reviewer | Approval Required |
-|------------|----------|-------------------|
-| Documentation | Any team member | No |
-| Bug fix | Team Lead | Yes |
-| Feature | Product + Team Lead | Yes |
-| Infrastructure | DevOps Lead | Yes |
-| Security | Security Team | Yes |
-| Emergency | On-call | Post-approval |
-
-## Pre-Deployment Checks
-
-### Code Quality
-- [ ] Lint passes
-- [ ] Type check passes
-- [ ] Tests pass
-- [ ] Code review approved
-
-### Security
-- [ ] Security scan passed
-- [ ] No secrets in code
-- [ ] Dependencies updated
-- [ ] SBOM generated
-
-### Performance
-- [ ] Performance tests pass
-- [ ] No regression > 10%
-- [ ] SLO compliance verified
-
-### Compliance
-- [ ] Privacy impact assessed
-- [ ] GDPR compliance verified
-- [ ] Audit log updated
-
-## Deployment Gates
-
-### Staging Deployment
-- [ ] All tests pass
-- [ ] Code review approved
-- [ ] Security scan passed
-- [ ] Staging smoke tests pass
-
-### Production Deployment
-- [ ] Staging deployment successful
-- [ ] SLOs within budget
-- [ ] Error budget > 20%
-- [ ] Rollback plan documented
-- [ ] Stakeholder notification (if needed)
-
-## Rollback Procedures
-
-### Automatic Rollback Triggers
-- Error rate > 5% for 5 minutes
-- P95 latency > 2s for 5 minutes
-- Health check failures for 2 minutes
-- Critical alerts triggered
-
-### Manual Rollback
-```bash
-# Vercel rollback
-vercel rollback --prod
-
-# GitHub Actions
-gh workflow run rollback.yml
-```
-
-### Rollback Decision Matrix
-- **Automatic**: If triggers met and no manual intervention
-- **Manual**: If uncertain or requires investigation
-- **No Rollback**: If fix is in progress and impact is acceptable
-
-## Post-Change Activities
-
-### Immediate (Within 1 hour)
-- [ ] Verify deployment success
-- [ ] Check monitoring dashboards
-- [ ] Run smoke tests
-- [ ] Monitor error rates
-
-### Within 24 Hours
-- [ ] Review post-deployment metrics
-- [ ] Verify SLO compliance
-- [ ] Check for regressions
-- [ ] Update documentation if needed
-
-### Within 1 Week
-- [ ] Review change impact
-- [ ] Document learnings
-- [ ] Update runbooks if needed
-- [ ] Share results with team
-
-## Change Communication
-
-### Internal Communication
-- **Slack**: #deployments channel
-- **Incident Management**: Admin console
-- **Status Page**: For production changes
-
-### External Communication
-- **Status Page**: For user-facing changes
-- **Email**: For breaking changes
-- **In-App**: For feature announcements
-
-## Change Templates
-
-### Feature Request Template
 ```markdown
 ## Change Request
 
-### Type
-[ ] Feature
-[ ] Bug Fix
-[ ] Infrastructure
-[ ] Documentation
+**Type:** [Standard/Normal/Emergency]
+**Change ID:** CHG-YYYYMMDD-XXX
+**Requester:** [Name]
+**Date:** [Date]
 
 ### Description
-[Description of change]
+[Detailed description of change]
 
-### Impact
-- User-facing: [Yes/No]
-- Breaking: [Yes/No]
-- Security: [Yes/No]
+### Risk Assessment
+- **Risk Level:** [Low/Medium/High]
+- **Impact:** [Description]
+- **Mitigation:** [Description]
 
 ### Testing
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] E2E tests
-- [ ] Performance tests
+- [ ] Security scan
+- [ ] Performance test
 
 ### Rollback Plan
-[Rollback procedure]
+[How to rollback if needed]
+
+### Approval
+- [ ] Code Review
+- [ ] Security Review (if applicable)
+- [ ] Architecture Review (if applicable)
+- [ ] Change Approval
 ```
 
-## Change Records
+## Deployment Process
 
-All changes are recorded in:
-- GitHub PRs (with change template)
+### Pre-Deployment Checks
+
+**Automated (CI/CD):**
+- [ ] All tests pass
+- [ ] Security scan passes
+- [ ] SLO status is green
+- [ ] No blocking incidents
+
+**Manual:**
+- [ ] Change approved
+- [ ] Staging validation passed
+- [ ] Rollback plan ready
+
+### Deployment Steps
+
+1. **Deploy to Staging**
+   ```bash
+   pnpm deploy:staging
+   ```
+
+2. **Validate Staging**
+   - Smoke tests
+   - Health checks
+   - Feature validation
+
+3. **Deploy to Production**
+   
+   **Option A: Canary Deployment**
+   ```bash
+   pnpm deploy:canary
+   # Monitor for 10 minutes
+   # If successful, promote to full
+   ```
+
+   **Option B: Full Deployment**
+   ```bash
+   pnpm deploy:production
+   ```
+
+4. **Post-Deployment Monitoring**
+   - Monitor error rate (5 minutes)
+   - Check latency metrics
+   - Verify health endpoints
+   - Review logs
+
+### Rollback Procedure
+
+**Automatic Rollback Triggers:**
+- Error rate > 5% (threshold configurable)
+- Health check failure
+- Manual rollback request
+
+**Manual Rollback:**
+```bash
+# Vercel rollback
+vercel rollback
+
+# Or via GitHub Actions
+# Re-run previous deployment
+```
+
+**Database Rollback:**
+```bash
+# Only if migration-related
+# Review migration files and rollback manually
+```
+
+## Approval Matrix
+
+| Change Type | Approval Required | Reviewers |
+|-------------|------------------|-----------|
+| **Standard** | Code review | 1 engineer |
+| **Normal** | Code review + approval | 2 engineers |
+| **Emergency** | Expedited review | 1 engineer + lead |
+
+### Special Approvals
+
+**Database Migrations:**
+- Architecture review required
+- DBA approval (if applicable)
+- Backup verification required
+
+**Infrastructure Changes:**
+- DevOps lead approval
+- Cost impact review
+- Capacity planning review
+
+**Security Changes:**
+- Security team review
+- Compliance review (if applicable)
+
+## Testing Requirements
+
+### Standard Changes
+- Unit tests
+- Integration tests (if applicable)
+
+### Normal Changes
+- Unit tests
+- Integration tests
+- E2E tests
+- Performance tests (if applicable)
+- Security scan
+
+### Emergency Changes
+- Critical path tests
+- Smoke tests
+- Security scan (if security-related)
+
+## Documentation Requirements
+
+**All Changes:**
+- Update CHANGELOG.md
+- Update API documentation (if API changes)
+- Update deployment notes
+
+**Normal Changes:**
+- Create change request
+- Document in deployment log
+- Update runbooks (if operational impact)
+
+**Emergency Changes:**
+- Post-incident review
+- Update incident documentation
+- Document lessons learned
+
+## Change Tracking
+
+### Change Log
+
+All changes tracked in:
+- GitHub commits (with PR references)
+- Deployment logs (Vercel/CI)
+- Incident system (if change-related)
+
+### Audit Trail
+
+Changes are auditable via:
+- Git history
+- Pull request history
 - Deployment logs
-- Audit logs
-- Incident management system (if incident occurs)
+- Audit logs (database)
 
-## Change Metrics
+## Communication
 
-### Weekly Metrics
-- Change volume
-- Change success rate
-- Rollback rate
-- Average change time
+### Pre-Deployment
 
-### Monthly Metrics
-- Change by type
-- Approval time
-- Deployment time
-- Post-change incidents
+**Standard Changes:**
+- No notification required
 
-## Emergency Change Process
+**Normal Changes:**
+- Slack notification to #engineering
+- Status page update (if user-facing)
 
-### When to Use
-- Critical security vulnerability
-- Service outage requiring immediate fix
-- Data corruption or loss risk
+**Emergency Changes:**
+- Immediate Slack notification
+- Status page update
+- On-call notification
 
-### Process
-1. **Implement Fix**: As quickly as possible
-2. **Minimal Testing**: Critical path only
-3. **Deploy**: With monitoring
-4. **Document**: After deployment
-5. **Post-Review**: Within 24 hours
+### Post-Deployment
 
-### Post-Approval Requirements
-- Full post-mortem
-- Documentation update
-- Process improvement (if needed)
+**All Changes:**
+- Deployment summary in #engineering
+- Update deployment dashboard
+
+**Rollbacks:**
+- Immediate notification
+- Post-mortem within 24 hours
+
+## Change Windows
+
+**Standard Maintenance Window:**
+- **Time:** 02:00-04:00 UTC (lowest traffic)
+- **Day:** Sunday (preferred)
+- **Notice:** 1 week advance notice
+
+**Emergency Changes:**
+- Can be deployed anytime
+- Enhanced monitoring required
+- Immediate rollback available
+
+## Continuous Improvement
+
+### Post-Change Review
+
+**After Each Deployment:**
+1. Review metrics (30 minutes post-deploy)
+2. Document any issues
+3. Update runbooks if needed
+
+**Monthly Review:**
+1. Analyze change success rate
+2. Review rollback frequency
+3. Identify process improvements
+4. Update change management process
+
+## Tools
+
+- **Version Control:** GitHub
+- **CI/CD:** GitHub Actions
+- **Deployment:** Vercel
+- **Monitoring:** Grafana + Prometheus
+- **Communication:** Slack
+- **Documentation:** GitHub Wiki / Markdown
+
+## Revision History
+
+- **v1.0** (2024-01-XX): Initial change management process

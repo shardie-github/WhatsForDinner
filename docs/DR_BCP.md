@@ -2,198 +2,153 @@
 
 ## Overview
 
-This document outlines the disaster recovery and business continuity procedures for Nomad, ensuring RTO ? 2 hours and RPO ? 15 minutes.
+This document outlines Nomad's disaster recovery and business continuity procedures to ensure RTO ? 2 hours and RPO ? 15 minutes.
 
 ## Recovery Objectives
 
-- **RTO (Recovery Time Objective)**: ? 2 hours
-- **RPO (Recovery Point Objective)**: ? 15 minutes
-- **Availability Target**: 99.9% (43.2 minutes downtime/month)
+- **RTO (Recovery Time Objective):** ? 2 hours
+- **RPO (Recovery Point Objective):** ? 15 minutes
 
 ## Backup Strategy
 
-### Database Backups
+### Daily Backups
 
-#### PostgreSQL (Supabase)
-- **Frequency**: Daily incremental backups
-- **Retention**: 30 days
-- **Location**: Object storage (S3/GCS) with versioning
-- **Encryption**: AES-256-GCM
-- **Verification**: Weekly checksum validation
+- **Database:** Postgres incremental backups (daily at 2 AM UTC)
+- **Redis:** Point-in-time snapshots (daily at 3 AM UTC)
+- **Storage:** Artifacts and evidence buckets (versioned, immutable)
+- **Retention:** 30 days
 
-#### Redis
-- **Frequency**: Daily snapshots
-- **Retention**: 30 days
-- **Location**: Object storage
-- **Verification**: Restore test weekly
+### Backup Verification
 
-### Storage Backups
+- Weekly automated restore tests
+- Checksum verification on all backups
+- Automated alerts on backup failures
 
-#### Artifacts
-- **Frequency**: Daily incremental
-- **Retention**: 30 days
-- **Location**: Versioned object storage bucket
+### Backup Locations
 
-#### Evidence (Immutable)
-- **Frequency**: Daily snapshots
-- **Retention**: 7 years (compliance requirement)
-- **Location**: Immutable, versioned object storage bucket
-
-### Backup Automation
-
-```bash
-# Run daily backup
-pnpm backup:run
-
-# Verify backup
-pnpm backup:verify
-
-# Weekly restore test
-pnpm backup:restore-test
-```
+1. **Primary:** Object storage (S3/GCS) in primary region
+2. **Secondary:** Object storage in different region (failover)
 
 ## Failover Procedures
 
-### Multi-Region Supabase Replica
+### Database Failover
 
-1. **Primary Region**: us-east-1 (Supabase Primary)
-2. **Failover Region**: us-west-2 (Supabase Read Replica)
-3. **DNS Failover**: Cloudflare Load Balancer
+1. **Primary Database Failure:**
+   - Automated detection via health checks (< 30 seconds)
+   - Automatic failover to Supabase replica (multi-region)
+   - DNS update via Cloudflare (TTL: 60 seconds)
+   - Estimated RTO: 5 minutes
 
-### DNS Failover Steps
+2. **Manual Failover Steps:**
+   ```bash
+   # 1. Verify backup availability
+   pnpm backup:verify
+   
+   # 2. Initiate failover (updates DNS)
+   # Configured in Cloudflare dashboard or via API
+   
+   # 3. Verify connection to replica
+   curl https://api.nomad.app/healthz
+   ```
 
-1. **Detection**: Health check failure > 5 minutes
-2. **Manual Trigger**: Via Cloudflare dashboard or API
-3. **DNS Update**: Point to failover region (< 5 minutes TTL)
-4. **Verification**: Confirm failover region health
-5. **Monitoring**: Monitor application metrics
+### Application Failover
 
-### Cloudflare Load Balancer Configuration
+1. **Vercel Deployment:**
+   - Automatic failover to edge regions
+   - Canary deployment rollback available
+   - Rollback command: `vercel rollback`
 
-```yaml
-pools:
-  - name: primary
-    origins:
-      - name: supabase-primary
-        address: db.primary.supabase.co
-        enabled: true
-  - name: failover
-    origins:
-      - name: supabase-failover
-        address: db.failover.supabase.co
-        enabled: true
+2. **Redis Failover:**
+   - Failover to replica (if configured)
+   - Fallback to database for critical operations
+
+### Multi-Region Strategy
+
+- **Primary Region:** us-east-1 (Supabase primary)
+- **Secondary Region:** eu-west-1 (Supabase replica)
+- **DNS Failover:** Cloudflare Load Balancer with health checks
+
+## Restoration Procedures
+
+### Database Restoration
+
+```bash
+# 1. Identify backup to restore
+pnpm backup:list
+
+# 2. Restore from backup
+pnpm backup:restore --type=postgres --backup=<backup-id> --dry-run
+
+# 3. Verify restore (dry-run first)
+pnpm backup:restore --type=postgres --backup=<backup-id>
+
+# 4. Verify data integrity
+psql $DATABASE_URL -c "SELECT COUNT(*) FROM users;"
 ```
 
-## Restore Procedures
+### Complete System Restoration
 
-### Full Database Restore
+1. **Prerequisites:**
+   - Access to backup storage
+   - Database credentials
+   - DNS control (Cloudflare)
 
-1. **Identify Backup**: Select backup point (? 15 min RPO)
-2. **Download Backup**: From object storage
-3. **Decrypt**: Using backup encryption key
-4. **Verify Checksum**: Ensure integrity
-5. **Restore**: `pnpm restore:run --backup=<path>`
-6. **Verify**: Run smoke tests
+2. **Steps:**
+   ```bash
+   # 1. Restore database
+   pnpm backup:restore --type=postgres --backup=<latest>
+   
+   # 2. Restore Redis (if needed)
+   pnpm backup:restore --type=redis --backup=<latest>
+   
+   # 3. Restore artifacts
+   pnpm backup:restore --type=artifacts --backup=<latest>
+   
+   # 4. Verify health
+   curl https://api.nomad.app/healthz
+   
+   # 5. Update DNS if needed
+   # Cloudflare dashboard or API
+   ```
 
-### Point-in-Time Recovery
+## Communication Plan
 
-1. **Identify Timestamp**: Determine recovery point
-2. **Base Backup**: Restore most recent full backup
-3. **WAL Replay**: Replay transaction logs to target time
-4. **Verification**: Validate data consistency
+### Incident Notification
 
-## DR Drill Schedule
+- **Slack:** #incidents channel
+- **PagerDuty:** Critical alerts
+- **Status Page:** https://status.nomad.app (if configured)
 
-- **Quarterly Full DR Drill**: Complete failover and restore test
-- **Monthly Partial Drill**: Backup verification and restore test
-- **Weekly Automated Tests**: Checksum verification
+### Stakeholder Communication
 
-## Failover Runbook
+1. **Internal:** Immediate notification via Slack
+2. **Customers:** Status page update within 15 minutes
+3. **External:** Public status updates every 30 minutes
 
-### Step 1: Assess Situation
-- [ ] Confirm primary region failure
-- [ ] Check health endpoints
-- [ ] Verify external dependencies
+## Testing & Validation
 
-### Step 2: Activate Failover
-- [ ] Notify on-call team
-- [ ] Trigger DNS failover (Cloudflare)
-- [ ] Update environment variables (if needed)
-- [ ] Verify failover region health
+### Quarterly DR Drill
 
-### Step 3: Post-Failover
-- [ ] Monitor application metrics
-- [ ] Verify data consistency
-- [ ] Notify stakeholders
-- [ ] Document incident
+1. **Test Scenario:** Simulate primary region failure
+2. **Execution:** Manual failover to secondary region
+3. **Validation:**
+   - Verify all services operational
+   - Check data consistency
+   - Validate RTO/RPO targets
+4. **Documentation:** Post-mortem report within 48 hours
 
-### Step 4: Recovery
-- [ ] Investigate root cause
-- [ ] Plan primary region restoration
-- [ ] Schedule cutback window
-- [ ] Execute cutback
+### Weekly Backup Verification
 
-## Business Continuity
+- Automated weekly restore test
+- Checksum verification
+- Alert on any failures
 
-### Critical Systems
+## Contact Information
 
-1. **User Authentication**: Must remain available
-2. **Payment Processing**: Must remain available
-3. **Data Privacy (DSAR)**: Must remain available
-4. **Admin Console**: Degraded acceptable
+- **On-Call Engineer:** PagerDuty rotation
+- **Infrastructure Lead:** infrastructure@nomad.app
+- **Emergency:** +1-XXX-XXX-XXXX (if available)
 
-### Communication Plan
+## Revision History
 
-- **Internal**: Slack #incidents channel
-- **External**: Status page (status.nomad.app)
-- **Stakeholders**: Email notification
-
-## Backup Verification
-
-### Daily Automated Checks
-- Checksum validation
-- Backup size verification
-- Storage accessibility test
-
-### Weekly Manual Tests
-- Restore test (dry-run)
-- Checksum match verification
-- Performance validation
-
-## Retention Policy
-
-- **Database Backups**: 30 days
-- **Storage Backups**: 30 days
-- **Evidence Backups**: 7 years (compliance)
-- **Audit Logs**: 1 year
-
-## Restoration Contacts
-
-- **Database Admin**: [Contact]
-- **Infrastructure Lead**: [Contact]
-- **On-Call Engineer**: [Contact]
-- **Cloud Provider Support**: [Contact]
-
-## Testing Checklist
-
-- [ ] Backup creation works
-- [ ] Backup encryption verified
-- [ ] Backup restore works
-- [ ] Checksum validation works
-- [ ] Failover DNS works
-- [ ] Failover region accessible
-- [ ] Point-in-time recovery works
-- [ ] Notification system works
-
-## Evidence Collection
-
-All DR activities are logged and stored in:
-- Incident management system
-- Audit logs
-- Backup verification reports
-
-## Compliance Notes
-
-- **GDPR**: Backup encryption required
-- **SOC 2**: DR procedures must be tested quarterly
-- **ISO 27001**: BCP must be documented and tested
+- **v1.0** (2024-01-XX): Initial DR/BCP document
