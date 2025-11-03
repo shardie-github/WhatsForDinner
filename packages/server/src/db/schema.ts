@@ -426,3 +426,118 @@ export const experimentAssignmentsRelations = relations(experimentAssignments, (
   experiment: one(experiments, { fields: [experimentAssignments.experiment_id], references: [experiments.id] }),
   user: one(users, { fields: [experimentAssignments.user_id], references: [users.id] }),
 }));
+
+// ============================================================================
+// REVENUE OPTIMIZATION SCHEMA
+// ============================================================================
+
+// Enums
+export const transactionStatusEnum = pgEnum('transaction_status', ['success', 'failed', 'refunded', 'trial']);
+export const transactionPlatformEnum = pgEnum('transaction_platform', ['ios', 'android', 'web']);
+export const ltvSegmentEnum = pgEnum('ltv_segment', ['new', 'retained', 'churned', 'reactivated']);
+
+// Transactions table
+export const transactions = pgTable('transactions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+  plan: text('plan').notNull(),
+  platform: transactionPlatformEnum('platform').notNull(),
+  currency: varchar('currency', { length: 3 }).default('USD').notNull(),
+  amount_cents: integer('amount_cents').notNull(),
+  country: varchar('country', { length: 3 }),
+  promo_offer_id: uuid('promo_offer_id').references(() => promoOffers.id, { onDelete: 'set null' }),
+  status: transactionStatusEnum('status').default('success').notNull(),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: { index: 'transactions_user_id_idx', on: [table.user_id] },
+  tsIdx: { index: 'transactions_ts_idx', on: [table.ts] },
+  countryPlanIdx: { index: 'transactions_country_plan_idx', on: [table.country, table.plan] },
+  platformIdx: { index: 'transactions_platform_idx', on: [table.platform] },
+  statusIdx: { index: 'transactions_status_idx', on: [table.status] },
+}));
+
+// Revenue snapshots table
+export const revenueSnapshots = pgTable('revenue_snapshots', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  period: date('period').notNull().unique(),
+  mrr_cents: integer('mrr_cents').default(0).notNull(),
+  arr_cents: integer('arr_cents').default(0).notNull(),
+  arpu_cents: integer('arpu_cents').default(0).notNull(),
+  ltv_cents: integer('ltv_cents').default(0).notNull(),
+  cac_cents: integer('cac_cents').default(0).notNull(),
+  churn_rate: numeric('churn_rate', { precision: 5, scale: 4 }).default('0').notNull(),
+  conversion_rate: numeric('conversion_rate', { precision: 5, scale: 4 }).default('0').notNull(),
+  computed_at: timestamp('computed_at', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  periodIdx: { index: 'revenue_snapshots_period_idx', on: [table.period] },
+}));
+
+// Price experiments table
+export const priceExperiments = pgTable('price_experiments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').notNull().unique(),
+  plan: text('plan').notNull(),
+  country: varchar('country', { length: 3 }),
+  platform: transactionPlatformEnum('platform'),
+  variant_a_price_cents: integer('variant_a_price_cents').notNull(),
+  variant_b_price_cents: integer('variant_b_price_cents').notNull(),
+  started_at: timestamp('started_at', { withTimezone: true }),
+  stopped_at: timestamp('stopped_at', { withTimezone: true }),
+  status: experimentStatusEnum('status').default('draft').notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  slugIdx: { index: 'price_experiments_slug_idx', on: [table.slug] },
+  statusIdx: { index: 'price_experiments_status_idx', on: [table.status] },
+  countryPlanIdx: { index: 'price_experiments_country_plan_idx', on: [table.country, table.plan] },
+}));
+
+// Elasticity results table
+export const elasticityResults = pgTable('elasticity_results', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  country: varchar('country', { length: 3 }),
+  plan: text('plan').notNull(),
+  price_points: jsonb('price_points').$type<number[]>().default([]).notNull(),
+  demand: jsonb('demand').$type<number[]>().default([]).notNull(),
+  elasticity: numeric('elasticity', { precision: 8, scale: 4 }).notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  countryPlanIdx: { index: 'elasticity_results_country_plan_idx', on: [table.country, table.plan], unique: true },
+}));
+
+// Van Westendorp surveys table
+export const vanWestendorpSurveys = pgTable('vanwestendorp_surveys', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+  country: varchar('country', { length: 3 }).notNull(),
+  responses: jsonb('responses').$type<Array<{
+    too_cheap: number;
+    cheap: number;
+    expensive: number;
+    too_expensive: number;
+  }>>().default([]).notNull(),
+  median_optimal_price: integer('median_optimal_price'),
+  currency: varchar('currency', { length: 3 }).default('USD').notNull(),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: { index: 'vanwestendorp_surveys_user_id_idx', on: [table.user_id] },
+  countryIdx: { index: 'vanwestendorp_surveys_country_idx', on: [table.country] },
+  tsIdx: { index: 'vanwestendorp_surveys_ts_idx', on: [table.ts] },
+}));
+
+// LTV segments table
+export const ltvSegments = pgTable('ltv_segments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  segment: ltvSegmentEnum('segment').notNull().unique(),
+  avg_ltv_cents: integer('avg_ltv_cents').default(0).notNull(),
+  avg_cac_cents: integer('avg_cac_cents').default(0).notNull(),
+  margin_pct: numeric('margin_pct', { precision: 5, scale: 2 }).default('0').notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  segmentIdx: { index: 'ltv_segments_segment_idx', on: [table.segment] },
+}));
