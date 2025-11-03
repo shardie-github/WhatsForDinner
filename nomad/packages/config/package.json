@@ -1,0 +1,21 @@
+{
+  "name": "@nomad/config",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./theme": "./dist/theme-tokens.js",
+    "./features": "./dist/features.js",
+    "./house-ads": "./dist/house-ads.json"
+  },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

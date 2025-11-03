@@ -1,0 +1,30 @@
+{
+  "name": "@nomad/ui",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./web": "./dist/web/index.js",
+    "./native": "./dist/native/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "@nomad/adapters": "workspace:*",
+    "@nomad/config": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-native": "*"
+  }
+}

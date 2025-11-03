@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #10b981;
+  --secondary: #6366f1;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: #111827;
+  background: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #f9fafb;
+    background: #111827;
+  }
+}
