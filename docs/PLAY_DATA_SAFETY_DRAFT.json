@@ -1,0 +1,161 @@
+{
+  "appType": "MOBILE_APP",
+  "dataTypes": [
+    {
+      "type": "EMAIL",
+      "collected": true,
+      "shared": false,
+      "optional": false,
+      "purpose": [
+        "ACCOUNT_MANAGEMENT",
+        "APP_FUNCTIONALITY",
+        "COMMUNICATION"
+      ],
+      "retention": "WHILE_ACCOUNT_ACTIVE"
+    },
+    {
+      "type": "NAME",
+      "collected": true,
+      "shared": false,
+      "optional": false,
+      "purpose": [
+        "APP_FUNCTIONALITY"
+      ],
+      "retention": "WHILE_ACCOUNT_ACTIVE"
+    },
+    {
+      "type": "USER_ID",
+      "collected": true,
+      "shared": false,
+      "optional": false,
+      "purpose": [
+        "APP_FUNCTIONALITY",
+        "ANALYTICS"
+      ],
+      "retention": "2_YEARS"
+    },
+    {
+      "type": "DEVICE_OR_OTHER_IDS",
+      "collected": true,
+      "shared": true,
+      "optional": true,
+      "purpose": [
+        "APP_FUNCTIONALITY",
+        "ANALYTICS",
+        "ADVERTISING"
+      ],
+      "retention": "2_YEARS",
+      "consentRequired": true
+    },
+    {
+      "type": "APP_INTERACTIONS",
+      "collected": true,
+      "shared": false,
+      "optional": true,
+      "purpose": [
+        "APP_FUNCTIONALITY",
+        "ANALYTICS"
+      ],
+      "retention": "2_YEARS",
+      "consentRequired": true
+    },
+    {
+      "type": "CRASH_LOGS",
+      "collected": true,
+      "shared": false,
+      "optional": false,
+      "purpose": [
+        "APP_FUNCTIONALITY",
+        "ANALYTICS"
+      ],
+      "retention": "2_YEARS"
+    },
+    {
+      "type": "PERFORMANCE_DATA",
+      "collected": true,
+      "shared": false,
+      "optional": false,
+      "purpose": [
+        "APP_FUNCTIONALITY",
+        "ANALYTICS"
+      ],
+      "retention": "2_YEARS"
+    },
+    {
+      "type": "OTHER_USER_CONTENT",
+      "collected": true,
+      "shared": false,
+      "optional": false,
+      "purpose": [
+        "APP_FUNCTIONALITY"
+      ],
+      "retention": "WHILE_ACCOUNT_ACTIVE",
+      "description": "User-entered dietary preferences, allergies, and health information"
+    },
+    {
+      "type": "PURCHASE_HISTORY",
+      "collected": true,
+      "shared": true,
+      "optional": false,
+      "purpose": [
+        "APP_FUNCTIONALITY"
+      ],
+      "retention": "7_YEARS",
+      "thirdPartySharing": [
+        "APPLE",
+        "GOOGLE"
+      ]
+    },
+    {
+      "type": "COARSE_LOCATION",
+      "collected": false,
+      "shared": false,
+      "optional": true,
+      "purpose": [
+        "APP_FUNCTIONALITY"
+      ],
+      "retention": "WHILE_ACCOUNT_ACTIVE",
+      "description": "Optional location for regional recipe suggestions"
+    }
+  ],
+  "dataShared": [
+    {
+      "category": "ANALYTICS",
+      "thirdParties": [
+        "Segment",
+        "PostHog"
+      ],
+      "purpose": "ANALYTICS",
+      "consentRequired": true
+    },
+    {
+      "category": "ADVERTISING",
+      "thirdParties": [
+        "Google AdMob",
+        "Google Ads"
+      ],
+      "purpose": "ADVERTISING",
+      "consentRequired": true,
+      "adultOnly": true
+    },
+    {
+      "category": "PAYMENT_PROCESSING",
+      "thirdParties": [
+        "Stripe",
+        "Apple",
+        "Google"
+      ],
+      "purpose": "APP_FUNCTIONALITY",
+      "consentRequired": false
+    }
+  ],
+  "dataSecurity": {
+    "dataInTransit": "ENCRYPTED",
+    "dataAtRest": "ENCRYPTED",
+    "usersCanRequestDeletion": true,
+    "usersCanRequestExport": true
+  },
+  "contactEmail": "privacy@nomad.app",
+  "privacyPolicyUrl": "https://nomad.app/privacy",
+  "notes": "This is a draft Data Safety form. Review and submit via Play Console."
+}

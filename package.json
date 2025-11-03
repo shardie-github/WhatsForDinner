@@ -100,7 +100,8 @@
     "dev:api": "next dev -p 3000",
     "dev:fastify": "tsx apps/api/src/server.ts",
     "dev:all": "turbo run dev --parallel",
-    "test:api": "vitest run packages/server --reporter=verbose"
+    "test:api": "vitest run packages/server --reporter=verbose",
+    "compliance:check": "tsx scripts/compliance-check.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"
