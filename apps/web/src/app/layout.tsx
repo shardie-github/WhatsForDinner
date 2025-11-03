@@ -7,8 +7,16 @@ import { Analytics } from '@/components/Analytics';
 import { CapacitorInit } from '@/components/CapacitorInit';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { CoreWebVitals } from '@/components/CoreWebVitals';
+import { PerformanceDashboard } from '@/components/PerformanceDashboard';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { GDPRConsent } from '@/components/GDPRConsent';
+
+// Phase 2: Initialize intelligent prefetching
+if (typeof window !== 'undefined') {
+  import('@/lib/performance/prefetch').then(({ intelligentPrefetcher }) => {
+    intelligentPrefetcher.setupLinkPrefetching();
+  });
+}
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const poppins = Poppins({ 
@@ -140,6 +148,7 @@ export default function RootLayout({
           <Analytics />
           <CapacitorInit />
           <CoreWebVitals />
+          <PerformanceDashboard compact />
           <GDPRConsent />
         </ErrorBoundary>
       </body>
