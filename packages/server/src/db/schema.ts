@@ -541,3 +541,294 @@ export const ltvSegments = pgTable('ltv_segments', {
 }, (table) => ({
   segmentIdx: { index: 'ltv_segments_segment_idx', on: [table.segment] },
 }));
+
+// ============================================================================
+// PARTNER REVENUE NETWORK SCHEMA
+// ============================================================================
+
+// Enums
+export const partnerStatusEnum = pgEnum('partner_status', ['invited', 'active', 'suspended']);
+export const partnerTierEnum = pgEnum('partner_tier', ['affiliate', 'sponsor', 'full']);
+export const catalogFeedSourceEnum = pgEnum('catalog_feed_source', ['api', 's3', 'csv', 'xml']);
+export const catalogAvailabilityEnum = pgEnum('catalog_availability', ['in_stock', 'out_of_stock', 'preorder', 'discontinued']);
+export const campaignKindEnum = pgEnum('campaign_kind', ['sponsored_tile', 'banner', 'recipe_pin', 'search_boost']);
+export const campaignStatusEnum = pgEnum('campaign_status', ['draft', 'running', 'paused', 'completed']);
+export const creativeKindEnum = pgEnum('creative_kind', ['tile', 'banner', 'video', 'native']);
+export const creativeStatusEnum = pgEnum('creative_status', ['pending', 'approved', 'rejected']);
+export const partnerLinkKindEnum = pgEnum('partner_link_kind', ['affiliate', 'deeplink', 'cart']);
+export const attributionModelEnum = pgEnum('attribution_model', ['last_click', 'first_click', 'multi']);
+export const payoutStatusEnum = pgEnum('payout_status', ['pending', 'in_review', 'paid', 'failed']);
+export const fraudRelatedKindEnum = pgEnum('fraud_related_kind', ['click', 'conversion', 'campaign', 'partner']);
+
+// Partners table
+export const partners = pgTable('partners', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').notNull().unique(),
+  name: text('name').notNull(),
+  contact_email: text('contact_email').notNull(),
+  status: partnerStatusEnum('status').default('invited').notNull(),
+  tier: partnerTierEnum('tier').default('affiliate').notNull(),
+  stripe_connect_id: text('stripe_connect_id'),
+  attribution_window_days: integer('attribution_window_days').default(7).notNull(),
+  revenue_share_pct: numeric('revenue_share_pct', { precision: 5, scale: 4 }).default('0.10').notNull(),
+  kyc_status: text('kyc_status').default('pending'),
+  tax_form_status: text('tax_form_status'),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  slugIdx: { index: 'partners_slug_idx', on: [table.slug] },
+  statusIdx: { index: 'partners_status_idx', on: [table.status] },
+  tierIdx: { index: 'partners_tier_idx', on: [table.tier] },
+}));
+
+// Partner API keys table
+export const partnerApiKeys = pgTable('partner_api_keys', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  partner_id: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }).notNull(),
+  key_hash: text('key_hash').notNull(),
+  scopes: text('scopes').array().notNull().default([]),
+  last_used_at: timestamp('last_used_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  partnerIdIdx: { index: 'partner_api_keys_partner_id_idx', on: [table.partner_id] },
+  keyHashIdx: { index: 'partner_api_keys_key_hash_idx', on: [table.key_hash] },
+}));
+
+// Catalog feeds table
+export const catalogFeeds = pgTable('catalog_feeds', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  partner_id: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }).notNull(),
+  source: catalogFeedSourceEnum('source').notNull(),
+  url: text('url'),
+  schedule_cron: text('schedule_cron'),
+  last_sync_at: timestamp('last_sync_at', { withTimezone: true }),
+  status: text('status').default('pending'),
+  notes: text('notes'),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  partnerIdIdx: { index: 'catalog_feeds_partner_id_idx', on: [table.partner_id] },
+  statusIdx: { index: 'catalog_feeds_status_idx', on: [table.status] },
+}));
+
+// Catalog items table
+export const catalogItems = pgTable('catalog_items', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  partner_id: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }).notNull(),
+  sku: text('sku').notNull(),
+  title: text('title').notNull(),
+  brand: text('brand'),
+  url: text('url'),
+  image_url: text('image_url'),
+  price_cents: integer('price_cents'),
+  currency: varchar('currency', { length: 3 }).default('USD').notNull(),
+  availability: catalogAvailabilityEnum('availability').default('in_stock'),
+  tags: text('tags').array().default([]),
+  affiliateable: boolean('affiliateable').default(true).notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  partnerIdIdx: { index: 'catalog_items_partner_id_idx', on: [table.partner_id] },
+  skuIdx: { index: 'catalog_items_sku_idx', on: [table.sku] },
+  affiliateableIdx: { index: 'catalog_items_affiliateable_idx', on: [table.affiliateable] },
+  partnerSkuUnique: { unique: true, columns: [table.partner_id, table.sku] },
+}));
+
+// Campaigns table
+export const campaigns = pgTable('campaigns', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  partner_id: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }).notNull(),
+  name: text('name').notNull(),
+  kind: campaignKindEnum('kind').notNull(),
+  start_at: timestamp('start_at', { withTimezone: true }).notNull(),
+  end_at: timestamp('end_at', { withTimezone: true }),
+  budget_cents: integer('budget_cents').notNull(),
+  currency: varchar('currency', { length: 3 }).default('USD').notNull(),
+  cpm_cents: integer('cpm_cents'),
+  cpc_cents: integer('cpc_cents'),
+  cpa_cents: integer('cpa_cents'),
+  cap_daily: integer('cap_daily'),
+  status: campaignStatusEnum('status').default('draft').notNull(),
+  targeting: jsonb('targeting').default({}),
+  spent_cents: integer('spent_cents').default(0).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  partnerIdIdx: { index: 'campaigns_partner_id_idx', on: [table.partner_id] },
+  statusIdx: { index: 'campaigns_status_idx', on: [table.status] },
+  kindIdx: { index: 'campaigns_kind_idx', on: [table.kind] },
+}));
+
+// Creatives table
+export const creatives = pgTable('creatives', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  campaign_id: uuid('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }).notNull(),
+  kind: creativeKindEnum('kind').notNull(),
+  assets: jsonb('assets').default({}),
+  click_url: text('click_url'),
+  impression_url: text('impression_url'),
+  width: integer('width'),
+  height: integer('height'),
+  status: creativeStatusEnum('status').default('pending').notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  campaignIdIdx: { index: 'creatives_campaign_id_idx', on: [table.campaign_id] },
+  statusIdx: { index: 'creatives_status_idx', on: [table.status] },
+}));
+
+// Placements table
+export const placements = pgTable('placements', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  campaign_id: uuid('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }).notNull(),
+  slot: text('slot').notNull(),
+  rules: jsonb('rules').default({}),
+  priority: integer('priority').default(0).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  campaignIdIdx: { index: 'placements_campaign_id_idx', on: [table.campaign_id] },
+  slotIdx: { index: 'placements_slot_idx', on: [table.slot] },
+}));
+
+// Partner links table
+export const partnerLinks = pgTable('partner_links', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  partner_id: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }).notNull(),
+  sku: text('sku'),
+  kind: partnerLinkKindEnum('kind').notNull(),
+  signed_url: text('signed_url').notNull(),
+  expires_at: timestamp('expires_at', { withTimezone: true }),
+  meta: jsonb('meta').default({}),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  partnerIdIdx: { index: 'partner_links_partner_id_idx', on: [table.partner_id] },
+  signedUrlIdx: { index: 'partner_links_signed_url_idx', on: [table.signed_url] },
+  expiresAtIdx: { index: 'partner_links_expires_at_idx', on: [table.expires_at] },
+}));
+
+// Clicks table
+export const clicks = pgTable('clicks', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+  anon_id: text('anon_id'),
+  partner_id: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }).notNull(),
+  campaign_id: uuid('campaign_id').references(() => campaigns.id, { onDelete: 'set null' }),
+  sku: text('sku'),
+  source: text('source'),
+  country: varchar('country', { length: 3 }),
+  ua_hash: text('ua_hash'),
+  ip_hash: text('ip_hash'),
+  consent: boolean('consent').default(false).notNull(),
+  signature: text('signature'),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  partnerIdIdx: { index: 'clicks_partner_id_idx', on: [table.partner_id] },
+  campaignIdIdx: { index: 'clicks_campaign_id_idx', on: [table.campaign_id] },
+  tsIdx: { index: 'clicks_ts_idx', on: [table.ts] },
+  userIdIdx: { index: 'clicks_user_id_idx', on: [table.user_id] },
+  anonIdIdx: { index: 'clicks_anon_id_idx', on: [table.anon_id] },
+  partnerTsIdx: { index: 'clicks_partner_ts_idx', on: [table.partner_id, table.ts] },
+}));
+
+// Conversions table
+export const conversions = pgTable('conversions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  partner_id: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }).notNull(),
+  campaign_id: uuid('campaign_id').references(() => campaigns.id, { onDelete: 'set null' }),
+  order_id: text('order_id').notNull(),
+  sku: text('sku'),
+  amount_cents: integer('amount_cents').notNull(),
+  currency: varchar('currency', { length: 3 }).default('USD').notNull(),
+  attribution: attributionModelEnum('attribution').default('last_click').notNull(),
+  click_id: uuid('click_id').references(() => clicks.id, { onDelete: 'set null' }),
+  meta: jsonb('meta').default({}),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  partnerIdIdx: { index: 'conversions_partner_id_idx', on: [table.partner_id] },
+  campaignIdIdx: { index: 'conversions_campaign_id_idx', on: [table.campaign_id] },
+  orderIdIdx: { index: 'conversions_order_id_idx', on: [table.order_id] },
+  tsIdx: { index: 'conversions_ts_idx', on: [table.ts] },
+  clickIdIdx: { index: 'conversions_click_id_idx', on: [table.click_id] },
+  partnerOrderUnique: { unique: true, columns: [table.partner_id, table.order_id] },
+}));
+
+// Payouts table
+export const payouts = pgTable('payouts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  partner_id: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }).notNull(),
+  period_start: date('period_start').notNull(),
+  period_end: date('period_end').notNull(),
+  revenue_cents: integer('revenue_cents').default(0).notNull(),
+  share_pct: numeric('share_pct', { precision: 5, scale: 4 }).notNull(),
+  payout_cents: integer('payout_cents').notNull(),
+  currency: varchar('currency', { length: 3 }).default('USD').notNull(),
+  status: payoutStatusEnum('status').default('pending').notNull(),
+  stripe_transfer_id: text('stripe_transfer_id'),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  partnerIdIdx: { index: 'payouts_partner_id_idx', on: [table.partner_id] },
+  statusIdx: { index: 'payouts_status_idx', on: [table.status] },
+  periodIdx: { index: 'payouts_period_idx', on: [table.period_start, table.period_end] },
+}));
+
+// Fraud signals table
+export const fraudSignals = pgTable('fraud_signals', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  related_id: uuid('related_id').notNull(),
+  related_kind: fraudRelatedKindEnum('related_kind').notNull(),
+  signal: text('signal').notNull(),
+  score: numeric('score', { precision: 3, scale: 2 }).notNull(),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  relatedIdx: { index: 'fraud_signals_related_idx', on: [table.related_id, table.related_kind] },
+  scoreIdx: { index: 'fraud_signals_score_idx', on: [table.score] },
+  tsIdx: { index: 'fraud_signals_ts_idx', on: [table.ts] },
+}));
+
+// Relations for partner tables
+export const partnersRelations = relations(partners, ({ many }) => ({
+  apiKeys: many(partnerApiKeys),
+  catalogFeeds: many(catalogFeeds),
+  catalogItems: many(catalogItems),
+  campaigns: many(campaigns),
+  partnerLinks: many(partnerLinks),
+  clicks: many(clicks),
+  conversions: many(conversions),
+  payouts: many(payouts),
+}));
+
+export const campaignsRelations = relations(campaigns, ({ one, many }) => ({
+  partner: one(partners, { fields: [campaigns.partner_id], references: [partners.id] }),
+  creatives: many(creatives),
+  placements: many(placements),
+  clicks: many(clicks),
+  conversions: many(conversions),
+}));
+
+export const catalogFeedsRelations = relations(catalogFeeds, ({ one }) => ({
+  partner: one(partners, { fields: [catalogFeeds.partner_id], references: [partners.id] }),
+}));
+
+export const catalogItemsRelations = relations(catalogItems, ({ one }) => ({
+  partner: one(partners, { fields: [catalogItems.partner_id], references: [partners.id] }),
+}));
+
+export const creativesRelations = relations(creatives, ({ one }) => ({
+  campaign: one(campaigns, { fields: [creatives.campaign_id], references: [campaigns.id] }),
+}));
+
+export const clicksRelations = relations(clicks, ({ one }) => ({
+  user: one(users, { fields: [clicks.user_id], references: [users.id] }),
+  partner: one(partners, { fields: [clicks.partner_id], references: [partners.id] }),
+  campaign: one(campaigns, { fields: [clicks.campaign_id], references: [campaigns.id] }),
+}));
+
+export const conversionsRelations = relations(conversions, ({ one }) => ({
+  partner: one(partners, { fields: [conversions.partner_id], references: [partners.id] }),
+  campaign: one(campaigns, { fields: [conversions.campaign_id], references: [campaigns.id] }),
+  click: one(clicks, { fields: [conversions.click_id], references: [clicks.id] }),
+}));
