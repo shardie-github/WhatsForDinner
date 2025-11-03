@@ -36,7 +36,8 @@
       "@whats-for-dinner/ui": ["./packages/ui/src"],
       "@whats-for-dinner/utils": ["./packages/utils/src"],
       "@whats-for-dinner/theme": ["./packages/theme/src"],
-      "@whats-for-dinner/config": ["./packages/config/src"]
+      "@whats-for-dinner/config": ["./packages/config/src"],
+      "@whats-for-dinner/server": ["./packages/server/src"]
     }
   },
   "references": [
@@ -44,6 +45,7 @@
     { "path": "./packages/utils" },
     { "path": "./packages/theme" },
     { "path": "./packages/config" },
+    { "path": "./packages/server" },
     { "path": "./whats-for-dinner" },
     { "path": "./apps/web" },
     { "path": "./apps/mobile" }
