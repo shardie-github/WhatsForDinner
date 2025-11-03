@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "build": { "env": { "NEXT_TELEMETRY_DISABLED": "1" } },
+  "env": { "RELEASE_VERSION": "vercel" },
+  "routes": [ { "src": "/health", "dest": "/api/health" } ]
+}

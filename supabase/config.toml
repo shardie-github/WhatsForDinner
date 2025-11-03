@@ -1,0 +1,6 @@
+[functions]
+verify_jwt = true
+[functions.healthcheck]
+verify_jwt = false
+[functions.profile-sync]
+verify_jwt = false

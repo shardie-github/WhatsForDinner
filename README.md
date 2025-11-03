@@ -257,21 +257,50 @@ Shared configuration files for ESLint, Tailwind, and TypeScript.
 
 ### Environment Variables
 
-Create `.env.local` files in the respective app directories:
+Copy `.env.example` to `.env` in the root directory:
 
-#### Mobile (apps/mobile/.env.local)
-```env
-EXPO_PUBLIC_API_URL=https://api.example.com
-EXPO_PUBLIC_SUPABASE_URL=your-supabase-url
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```bash
+cp .env.example .env
 ```
 
-#### Web (apps/web/.env.local)
+Then configure your Supabase credentials:
+
 ```env
-NEXT_PUBLIC_API_URL=https://api.example.com
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+# Required Supabase variables
+EXPO_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+
+# Application settings
+APP_ENV=development
+APP_NAME=HardoniaApp
+EXPO_PROJECT_ID=your-expo-project-id
 ```
+
+**Important:** Never commit `.env` files to version control.
+
+### Supabase Setup
+
+1. **Create a Supabase project** at [supabase.com](https://supabase.com)
+
+2. **Deploy migrations:**
+   ```bash
+   supabase db push
+   ```
+
+3. **Deploy Edge Functions:**
+   ```bash
+   supabase functions deploy healthcheck
+   supabase functions deploy profile-sync
+   ```
+
+4. **Configure Auth Webhook:**
+   - Go to Supabase Dashboard > Database > Webhooks
+   - Create webhook for `auth.users` INSERT event
+   - URL: `https://<project-ref>.supabase.co/functions/v1/profile-sync`
 
 ### EAS Configuration
 
@@ -279,11 +308,40 @@ Update `apps/mobile/eas.json` with your app identifiers and credentials.
 
 ## 🚀 Deployment
 
-### Web App
-The web app is automatically deployed to GitHub Pages on push to main branch.
+### Web App (Vercel)
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deployments happen automatically on push to main branch
 
-### Mobile Apps
-Mobile apps are built using EAS Build and can be submitted to app stores.
+### Mobile Apps (EAS Build)
+1. **Install EAS CLI:**
+   ```bash
+   npm install -g @expo/eas-cli
+   ```
+
+2. **Login:**
+   ```bash
+   eas login
+   ```
+
+3. **Build for preview:**
+   ```bash
+   cd apps/mobile
+   eas build -p android --profile preview
+   eas build -p ios --profile preview
+   ```
+
+4. **Submit to stores:**
+   ```bash
+   eas submit -p android
+   eas submit -p ios
+   ```
+
+### Supabase Migrations
+Deploy database migrations before deploying application:
+```bash
+supabase db push
+```
 
 ## 🧪 Testing
 
@@ -302,11 +360,15 @@ pnpm test:watch
 
 | Script | Description |
 |--------|-------------|
-| `pnpm dev` | Start all apps in development mode |
-| `pnpm build` | Build all apps and packages |
-| `pnpm lint` | Lint all packages |
-| `pnpm test` | Run all tests |
-| `pnpm type-check` | Run TypeScript type checking |
+| `npm run dev` | Start Expo development server |
+| `npm run build` | Build Expo app for production |
+| `npm run typecheck` | Run TypeScript type checking |
+| `npm run lint` | Run ESLint |
+| `npm run test` | Run tests |
+| `npm run doctor` | Run preflight health checks |
+| `pnpm dev:mobile` | Start mobile app (Expo) |
+| `pnpm dev:web` | Start web app (Next.js) |
+| `pnpm build:all` | Build all apps and packages |
 | `pnpm clean` | Clean all build artifacts |
 
 ## 🤝 Contributing
