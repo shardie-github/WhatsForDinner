@@ -65,6 +65,18 @@ export async function startWorker() {
         case 'price_rollout':
           const { priceRolloutProcessor } = await import('../jobs/priceRollout.js');
           return await priceRolloutProcessor();
+        case 'dsar_export':
+          const { generateDSARExport } = await import('../jobs/dsarExport.js');
+          return await generateDSARExport(job.data.requestId);
+        case 'retention_run':
+          const { runRetentionPolicies } = await import('../jobs/retentionRunner.js');
+          return await runRetentionPolicies(job.data.dryRun || false);
+        case 'erasure_run':
+          const { runErasureJob } = await import('../jobs/erasureRunner.js');
+          return await runErasureJob();
+        case 'self_heal':
+          const { runSelfHealing } = await import('../jobs/selfHeal.js');
+          return await runSelfHealing(job.data || {});
         default:
           throw new Error(`Unknown job type: ${job.name}`);
       }
