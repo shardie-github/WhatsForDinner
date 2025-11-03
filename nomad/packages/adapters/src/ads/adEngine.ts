@@ -16,6 +16,8 @@ export type AdContext = {
   consent: boolean;
   networkStatus: 'online' | 'offline';
   userPlan: 'free' | 'premium' | 'family';
+  isMinor?: boolean; // COPPA compliance
+  ageGate?: 'unknown' | 'minor' | 'adult';
   frequencyCap?: {
     slot: AdSlot;
     count: number;
@@ -41,6 +43,12 @@ export class AdEngine {
     // Premium users: no ads
     if (context.userPlan === 'premium' || context.userPlan === 'family') {
       return { type: 'none' };
+    }
+
+    // COPPA: Minors cannot see personalized ads
+    if (context.isMinor === true || context.ageGate === 'minor') {
+      // Only contextual/house ads allowed
+      return this.selectHouseAd(context);
     }
 
     // No consent: house ad only

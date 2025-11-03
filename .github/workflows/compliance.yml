@@ -1,0 +1,60 @@
+name: Compliance Checks
+
+on:
+  pull_request:
+    paths:
+      - 'packages/analytics/consent/**'
+      - 'packages/adapters/purchases/**'
+      - 'packages/server/src/payments/**'
+      - 'apps/mobile/ios/PrivacyInfo.xcprivacy'
+      - 'docs/**'
+      - 'scripts/compliance-check.ts'
+  push:
+    branches:
+      - main
+      - 'cursor/**'
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run compliance checks
+        run: pnpm compliance:check
+
+      - name: Type check
+        run: pnpm type-check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check privacy manifest
+        run: |
+          if [ ! -f "apps/mobile/ios/PrivacyInfo.xcprivacy" ]; then
+            echo "? Privacy manifest not found"
+            exit 1
+          fi
+
+      - name: Validate Data Safety JSON
+        run: |
+          if [ -f "docs/PLAY_DATA_SAFETY_DRAFT.json" ]; then
+            node -e "JSON.parse(require('fs').readFileSync('docs/PLAY_DATA_SAFETY_DRAFT.json', 'utf-8'))"
+            echo "? Data Safety JSON is valid"
+          else
+            echo "??  Data Safety JSON not found (optional)"
+          fi

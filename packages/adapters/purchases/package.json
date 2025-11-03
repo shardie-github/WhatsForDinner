@@ -1,0 +1,19 @@
+{
+  "name": "@whats-for-dinner/adapters-purchases",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "dependencies": {
+    "@whats-for-dinner/config": "workspace:*",
+    "react-native": "*"
+  },
+  "devDependencies": {
+    "@types/react-native": "^0.73.0",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react-native-iap": "^12.0.0",
+    "expo-in-app-purchases": "^14.0.0"
+  }
+}
