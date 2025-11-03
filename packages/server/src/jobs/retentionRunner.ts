@@ -5,8 +5,8 @@
  */
 
 import { db } from '../db/index.js';
-import { retentionPolicies, clicks, conversions, events, auditLogs } from '../db/schema.js';
-import { eq, lt, sql } from 'drizzle-orm';
+import { retentionPolicies, clicks, conversions, events, auditLogs, processingActivities, legalHold, dsarArtifacts } from '../db/schema.js';
+import { eq, lt, sql, and } from 'drizzle-orm';
 import { logger } from '../observability/index.js';
 import { logAction } from '../audit/index.js';
 
@@ -24,6 +24,60 @@ const POLICY_TABLES: Record<string, { table: any; dateColumn: string }> = {
 };
 
 /**
+ * Check if data is under legal hold
+ */
+async function isUnderLegalHold(category: string, entityId?: string): Promise<boolean> {
+  const activeHolds = await db
+    .select()
+    .from(legalHold)
+    .where(eq(legalHold.active, true));
+
+  for (const hold of activeHolds) {
+    if (hold.scope.includes(category) || (entityId && hold.scope.includes(entityId))) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Generate retention rules from processing activities
+ */
+async function syncProcessingActivityRetention(): Promise<void> {
+  const activities = await db.select().from(processingActivities);
+
+  for (const activity of activities) {
+    if (!activity.retention_days) continue;
+
+    // Check if retention policy exists for this category
+    const categoryName = `processing_${activity.name.toLowerCase().replace(/\s+/g, '_')}`;
+    const [existing] = await db
+      .select()
+      .from(retentionPolicies)
+      .where(eq(retentionPolicies.category, categoryName))
+      .limit(1);
+
+    if (!existing) {
+      await db.insert(retentionPolicies).values({
+        category: categoryName,
+        days: activity.retention_days,
+        auto_purge: true,
+      });
+
+      logger.info({ category: categoryName, days: activity.retention_days }, 'Retention policy created from processing activity');
+    } else if (existing.days !== activity.retention_days) {
+      await db
+        .update(retentionPolicies)
+        .set({ days: activity.retention_days, updated_at: new Date() })
+        .where(eq(retentionPolicies.id, existing.id));
+
+      logger.info({ category: categoryName, days: activity.retention_days }, 'Retention policy updated from processing activity');
+    }
+  }
+}
+
+/**
  * Run retention policies
  */
 export async function runRetentionPolicies(
@@ -34,6 +88,9 @@ export async function runRetentionPolicies(
   errors: number;
   details: Array<{ category: string; deleted: number; error?: string }>;
 }> {
+  // Sync retention rules from processing activities
+  await syncProcessingActivityRetention();
+
   const policies = await db.select().from(retentionPolicies);
 
   let totalProcessed = 0;
@@ -44,6 +101,13 @@ export async function runRetentionPolicies(
   for (const policy of policies) {
     if (!policy.auto_purge) {
       logger.info({ category: policy.category }, 'Skipping policy (auto_purge disabled)');
+      continue;
+    }
+
+    // Check legal hold
+    const underHold = await isUnderLegalHold(policy.category);
+    if (underHold) {
+      logger.info({ category: policy.category }, 'Skipping policy (legal hold active)');
       continue;
     }
 

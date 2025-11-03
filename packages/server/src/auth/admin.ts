@@ -15,7 +15,7 @@ import { eq } from 'drizzle-orm';
 const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || process.env.JWT_SECRET || '';
 const JWT_EXPIRY = process.env.ADMIN_JWT_EXPIRY || '8h';
 
-export type AdminRole = 'superadmin' | 'finance' | 'reviewer' | 'support';
+export type AdminRole = 'superadmin' | 'finance' | 'reviewer' | 'support' | 'privacy_officer' | 'auditor';
 
 export interface AdminAuthContext {
   admin: {
@@ -137,7 +137,9 @@ export function hasRole(adminRole: AdminRole, requiredRole: AdminRole): boolean 
     support: 1,
     reviewer: 2,
     finance: 3,
-    superadmin: 4,
+    auditor: 3,
+    privacy_officer: 4,
+    superadmin: 5,
   };
 
   return roleHierarchy[adminRole] >= roleHierarchy[requiredRole];
@@ -158,6 +160,8 @@ export function canPerformAction(role: AdminRole, action: string): boolean {
     finance: ['payout:approve', 'payout:view', 'revenue:export', 'audit:read'],
     reviewer: ['campaign:approve', 'campaign:reject', 'creative:approve', 'creative:reject', 'moderation:assign', 'moderation:resolve'],
     support: ['incident:create', 'incident:update', 'partner:read', 'audit:read'],
+    privacy_officer: ['*', 'dsar:approve', 'dsar:fulfill', 'retention:override', 'evidence:export', 'vendor:approve', 'dpia:create', 'dpia:review', 'risk:modify'],
+    auditor: ['audit:read', 'evidence:read', 'controls:read', 'reports:read', 'risk:read', 'vendor:read', 'dpia:read'],
   };
 
   const rolePerms = permissions[role] || [];

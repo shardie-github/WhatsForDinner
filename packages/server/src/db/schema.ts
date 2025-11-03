@@ -838,7 +838,7 @@ export const conversionsRelations = relations(conversions, ({ one }) => ({
 // ============================================================================
 
 // Enums
-export const adminRoleEnum = pgEnum('admin_role', ['superadmin', 'finance', 'reviewer', 'support']);
+export const adminRoleEnum = pgEnum('admin_role', ['superadmin', 'finance', 'reviewer', 'support', 'privacy_officer', 'auditor']);
 export const adminStatusEnum = pgEnum('admin_status', ['active', 'suspended']);
 export const moderationEntityKindEnum = pgEnum('moderation_entity_kind', ['campaign', 'creative', 'partner', 'message']);
 export const moderationPriorityEnum = pgEnum('moderation_priority', ['low', 'normal', 'high']);
@@ -977,4 +977,240 @@ export const incidentsRelations = relations(incidents, ({ one }) => ({
 export const dataAccessLogsRelations = relations(dataAccessLogs, ({ one }) => ({
   user: one(users, { fields: [dataAccessLogs.user_id], references: [users.id] }),
   admin: one(adminUsers, { fields: [dataAccessLogs.admin_id], references: [adminUsers.id] }),
+}));
+
+// ============================================================================
+// REGTECH LAYER SCHEMA
+// ============================================================================
+
+// Enums
+export const dsarRequestTypeEnum = pgEnum('dsar_request_type', ['export', 'erase', 'restrict', 'rectify']);
+export const dsarRequestStatusEnum = pgEnum('dsar_request_status', ['received', 'verifying', 'in_progress', 'complete', 'rejected']);
+export const dsarChannelEnum = pgEnum('dsar_channel', ['portal', 'email', 'api']);
+export const dsarRegionEnum = pgEnum('dsar_region', ['gdpr', 'ccpa', 'cpra', 'other']);
+export const dsarArtifactKindEnum = pgEnum('dsar_artifact_kind', ['data_export', 'erasure_log', 'correction_log', 'restriction_token']);
+export const lawfulBasisEnum = pgEnum('lawful_basis', ['consent', 'contract', 'legitimate_interest', 'legal_obligation']);
+export const riskCategoryEnum = pgEnum('risk_category', ['security', 'privacy', 'operational', 'vendor']);
+export const riskSeverityEnum = pgEnum('risk_severity', ['low', 'med', 'high', 'critical']);
+export const riskLikelihoodEnum = pgEnum('risk_likelihood', ['unlikely', 'possible', 'likely']);
+export const riskStatusEnum = pgEnum('risk_status', ['open', 'mitigated', 'accepted', 'transferred']);
+export const controlFrameworkEnum = pgEnum('control_framework', ['soc2', 'iso27001', 'custom']);
+export const controlFrequencyEnum = pgEnum('control_frequency', ['continuous', 'daily', 'weekly', 'monthly', 'quarterly']);
+export const evidenceKindEnum = pgEnum('evidence_kind', ['log', 'screenshot', 'report', 'config']);
+export const controlStatusEnum = pgEnum('control_status', ['passing', 'failing', 'waived']);
+export const controlResultEnum = pgEnum('control_result', ['pass', 'fail', 'waive']);
+export const vendorCategoryEnum = pgEnum('vendor_category', ['hosting', 'analytics', 'ads', 'payments', 'crm', 'devtools']);
+export const vendorRiskLevelEnum = pgEnum('vendor_risk_level', ['low', 'med', 'high']);
+export const vendorStatusEnum = pgEnum('vendor_status', ['approved', 'pending', 'denied']);
+export const residualRiskEnum = pgEnum('residual_risk', ['low', 'med', 'high']);
+export const dpiaDecisionEnum = pgEnum('dpia_decision', ['proceed', 'revise', 'block']);
+export const regulatoryRegionEnum = pgEnum('regulatory_region', ['gdpr', 'ccpa', 'cpra', 'other']);
+
+// DSAR Requests table
+export const dsarRequests = pgTable('dsar_requests', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+  email: varchar('email', { length: 255 }).notNull(),
+  type: dsarRequestTypeEnum('type').notNull(),
+  status: dsarRequestStatusEnum('status').default('received').notNull(),
+  submitted_at: timestamp('submitted_at', { withTimezone: true }).defaultNow().notNull(),
+  verified_at: timestamp('verified_at', { withTimezone: true }),
+  completed_at: timestamp('completed_at', { withTimezone: true }),
+  reason: text('reason'),
+  channel: dsarChannelEnum('channel').default('portal').notNull(),
+  region: dsarRegionEnum('region').default('gdpr').notNull(),
+  window_deadline: timestamp('window_deadline', { withTimezone: true }).notNull(),
+  artifacts: jsonb('artifacts').$type<string[]>().default([]).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: { index: 'dsar_requests_user_id_idx', on: [table.user_id] },
+  emailIdx: { index: 'dsar_requests_email_idx', on: [table.email] },
+  statusIdx: { index: 'dsar_requests_status_idx', on: [table.status] },
+  regionIdx: { index: 'dsar_requests_region_idx', on: [table.region] },
+  windowDeadlineIdx: { index: 'dsar_requests_window_deadline_idx', on: [table.window_deadline] },
+}));
+
+// DSAR Artifacts table
+export const dsarArtifacts = pgTable('dsar_artifacts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  request_id: uuid('request_id').references(() => dsarRequests.id, { onDelete: 'cascade' }).notNull(),
+  kind: dsarArtifactKindEnum('kind').notNull(),
+  url: text('url').notNull(),
+  checksum: text('checksum').notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  requestIdIdx: { index: 'dsar_artifacts_request_id_idx', on: [table.request_id] },
+  kindIdx: { index: 'dsar_artifacts_kind_idx', on: [table.kind] },
+}));
+
+// Processing Activities table
+export const processingActivities = pgTable('processing_activities', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull().unique(),
+  purpose: text('purpose').notNull(),
+  lawful_basis: lawfulBasisEnum('lawful_basis').notNull(),
+  data_categories: text('data_categories').array().default([]).notNull(),
+  recipients: text('recipients').array().default([]).notNull(),
+  dpa_links: text('dpa_links').array().default([]).notNull(),
+  retention_days: integer('retention_days'),
+  systems: text('systems').array().default([]).notNull(),
+  last_reviewed_at: timestamp('last_reviewed_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  nameIdx: { index: 'processing_activities_name_idx', on: [table.name] },
+  lawfulBasisIdx: { index: 'processing_activities_lawful_basis_idx', on: [table.lawful_basis] },
+}));
+
+// Risk Register table
+export const riskRegister = pgTable('risk_register', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  category: riskCategoryEnum('category').notNull(),
+  severity: riskSeverityEnum('severity').notNull(),
+  likelihood: riskLikelihoodEnum('likelihood').notNull(),
+  owner: text('owner').notNull(),
+  status: riskStatusEnum('status').default('open').notNull(),
+  controls: text('controls').array().default([]).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  categoryIdx: { index: 'risk_register_category_idx', on: [table.category] },
+  severityIdx: { index: 'risk_register_severity_idx', on: [table.severity] },
+  statusIdx: { index: 'risk_register_status_idx', on: [table.status] },
+  ownerIdx: { index: 'risk_register_owner_idx', on: [table.owner] },
+}));
+
+// Controls table
+export const controls = pgTable('controls', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  key: text('key').unique().notNull(),
+  framework: controlFrameworkEnum('framework').notNull(),
+  name: text('name').notNull(),
+  description: text('description').notNull(),
+  owner: text('owner').notNull(),
+  frequency: controlFrequencyEnum('frequency').default('monthly').notNull(),
+  evidence_kind: evidenceKindEnum('evidence_kind').default('report').notNull(),
+  last_checked_at: timestamp('last_checked_at', { withTimezone: true }),
+  status: controlStatusEnum('status').default('failing').notNull(),
+  notes: text('notes'),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  keyIdx: { index: 'controls_key_idx', on: [table.key] },
+  frameworkIdx: { index: 'controls_framework_idx', on: [table.framework] },
+  statusIdx: { index: 'controls_status_idx', on: [table.status] },
+  ownerIdx: { index: 'controls_owner_idx', on: [table.owner] },
+}));
+
+// Control Evidence table
+export const controlEvidence = pgTable('control_evidence', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  control_id: uuid('control_id').references(() => controls.id, { onDelete: 'cascade' }).notNull(),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  result: controlResultEnum('result').notNull(),
+  artifact_url: text('artifact_url').notNull(),
+  artifact_checksum: text('artifact_checksum').notNull(),
+  collector: text('collector').notNull(),
+  meta: jsonb('meta').$type<Record<string, unknown>>().default({}).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  controlIdIdx: { index: 'control_evidence_control_id_idx', on: [table.control_id] },
+  resultIdx: { index: 'control_evidence_result_idx', on: [table.result] },
+  tsIdx: { index: 'control_evidence_ts_idx', on: [table.ts] },
+  collectorIdx: { index: 'control_evidence_collector_idx', on: [table.collector] },
+}));
+
+// Vendor Catalog table
+export const vendorCatalog = pgTable('vendor_catalog', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull().unique(),
+  category: vendorCategoryEnum('category').notNull(),
+  dpa_url: text('dpa_url'),
+  subprocessor: boolean('subprocessor').default(false).notNull(),
+  pii_access: boolean('pii_access').default(false).notNull(),
+  risk_level: vendorRiskLevelEnum('risk_level').default('med').notNull(),
+  status: vendorStatusEnum('status').default('pending').notNull(),
+  owner: text('owner').notNull(),
+  review_date: timestamp('review_date', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  nameIdx: { index: 'vendor_catalog_name_idx', on: [table.name] },
+  categoryIdx: { index: 'vendor_catalog_category_idx', on: [table.category] },
+  statusIdx: { index: 'vendor_catalog_status_idx', on: [table.status] },
+  riskLevelIdx: { index: 'vendor_catalog_risk_level_idx', on: [table.risk_level] },
+}));
+
+// DPIA Records table
+export const dpiaRecords = pgTable('dpia_records', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  processing_activity_id: uuid('processing_activity_id').references(() => processingActivities.id, { onDelete: 'set null' }),
+  summary: text('summary').notNull(),
+  risks: text('risks').array().default([]).notNull(),
+  mitigations: text('mitigations').array().default([]).notNull(),
+  residual_risk: residualRiskEnum('residual_risk').notNull(),
+  decision: dpiaDecisionEnum('decision').default('proceed').notNull(),
+  reviewer: text('reviewer').notNull(),
+  reviewed_at: timestamp('reviewed_at', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  processingActivityIdIdx: { index: 'dpia_records_processing_activity_id_idx', on: [table.processing_activity_id] },
+  residualRiskIdx: { index: 'dpia_records_residual_risk_idx', on: [table.residual_risk] },
+  decisionIdx: { index: 'dpia_records_decision_idx', on: [table.decision] },
+}));
+
+// Legal Hold table
+export const legalHold = pgTable('legal_hold', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  scope: text('scope').notNull(),
+  active: boolean('active').default(true).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  activeIdx: { index: 'legal_hold_active_idx', on: [table.active] },
+  scopeIdx: { index: 'legal_hold_scope_idx', on: [table.scope] },
+}));
+
+// Regulatory Reports table
+export const regulatoryReports = pgTable('regulatory_reports', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  period_start: timestamp('period_start', { withTimezone: true }).notNull(),
+  period_end: timestamp('period_end', { withTimezone: true }).notNull(),
+  region: regulatoryRegionEnum('region').notNull(),
+  metrics: jsonb('metrics').$type<Record<string, unknown>>().notNull(),
+  generated_at: timestamp('generated_at', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  regionIdx: { index: 'regulatory_reports_region_idx', on: [table.region] },
+  periodIdx: { index: 'regulatory_reports_period_idx', on: [table.period_start, table.period_end] },
+  generatedAtIdx: { index: 'regulatory_reports_generated_at_idx', on: [table.generated_at] },
+}));
+
+// Relations
+export const dsarRequestsRelations = relations(dsarRequests, ({ one, many }) => ({
+  user: one(users, { fields: [dsarRequests.user_id], references: [users.id] }),
+  artifacts: many(dsarArtifacts),
+}));
+
+export const dsarArtifactsRelations = relations(dsarArtifacts, ({ one }) => ({
+  request: one(dsarRequests, { fields: [dsarArtifacts.request_id], references: [dsarRequests.id] }),
+}));
+
+export const processingActivitiesRelations = relations(processingActivities, ({ many }) => ({
+  dpiaRecords: many(dpiaRecords),
+}));
+
+export const controlsRelations = relations(controls, ({ many }) => ({
+  evidence: many(controlEvidence),
+}));
+
+export const controlEvidenceRelations = relations(controlEvidence, ({ one }) => ({
+  control: one(controls, { fields: [controlEvidence.control_id], references: [controls.id] }),
+}));
+
+export const dpiaRecordsRelations = relations(dpiaRecords, ({ one }) => ({
+  processingActivity: one(processingActivities, { fields: [dpiaRecords.processing_activity_id], references: [processingActivities.id] }),
 }));
