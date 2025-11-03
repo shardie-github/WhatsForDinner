@@ -832,3 +832,149 @@ export const conversionsRelations = relations(conversions, ({ one }) => ({
   campaign: one(campaigns, { fields: [conversions.campaign_id], references: [campaigns.id] }),
   click: one(clicks, { fields: [conversions.click_id], references: [clicks.id] }),
 }));
+
+// ============================================================================
+// ADMIN OPS & TRUST CENTER SCHEMA
+// ============================================================================
+
+// Enums
+export const adminRoleEnum = pgEnum('admin_role', ['superadmin', 'finance', 'reviewer', 'support']);
+export const adminStatusEnum = pgEnum('admin_status', ['active', 'suspended']);
+export const moderationEntityKindEnum = pgEnum('moderation_entity_kind', ['campaign', 'creative', 'partner', 'message']);
+export const moderationPriorityEnum = pgEnum('moderation_priority', ['low', 'normal', 'high']);
+export const moderationStatusEnum = pgEnum('moderation_status', ['open', 'in_review', 'resolved', 'escalated']);
+export const incidentSeverityEnum = pgEnum('incident_severity', ['low', 'major', 'critical']);
+export const incidentStatusEnum = pgEnum('incident_status', ['open', 'mitigated', 'closed']);
+export const dataAccessActionEnum = pgEnum('data_access_action', ['read', 'export', 'delete', 'modify']);
+
+// Admin users table
+export const adminUsers = pgTable('admin_users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  role: adminRoleEnum('role').notNull(),
+  status: adminStatusEnum('status').default('active').notNull(),
+  last_login_at: timestamp('last_login_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  emailIdx: { index: 'admin_users_email_idx', on: [table.email] },
+  roleIdx: { index: 'admin_users_role_idx', on: [table.role] },
+  statusIdx: { index: 'admin_users_status_idx', on: [table.status] },
+}));
+
+// Audit logs table (immutable, append-only)
+export const auditLogs = pgTable('audit_logs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  actor_id: uuid('actor_id').references(() => adminUsers.id, { onDelete: 'set null' }),
+  entity_kind: text('entity_kind').notNull(),
+  entity_id: uuid('entity_id'),
+  action: text('action').notNull(),
+  before: jsonb('before').$type<Record<string, unknown>>(),
+  after: jsonb('after').$type<Record<string, unknown>>(),
+  reason: text('reason'),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  signature: text('signature').notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  actorIdx: { index: 'audit_logs_actor_id_idx', on: [table.actor_id] },
+  entityIdx: { index: 'audit_logs_entity_idx', on: [table.entity_kind, table.entity_id] },
+  tsIdx: { index: 'audit_logs_ts_idx', on: [table.ts] },
+  signatureIdx: { index: 'audit_logs_signature_idx', on: [table.signature] },
+}));
+
+// Moderation queue table
+export const moderationQueue = pgTable('moderation_queue', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  entity_kind: moderationEntityKindEnum('entity_kind').notNull(),
+  entity_id: uuid('entity_id').notNull(),
+  priority: moderationPriorityEnum('priority').default('normal').notNull(),
+  status: moderationStatusEnum('status').default('open').notNull(),
+  flag_reason: text('flag_reason'),
+  assigned_to: uuid('assigned_to').references(() => adminUsers.id, { onDelete: 'set null' }),
+  notes: text('notes'),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  entityIdx: { index: 'moderation_queue_entity_idx', on: [table.entity_kind, table.entity_id] },
+  statusIdx: { index: 'moderation_queue_status_idx', on: [table.status] },
+  priorityIdx: { index: 'moderation_queue_priority_idx', on: [table.priority] },
+  assignedIdx: { index: 'moderation_queue_assigned_idx', on: [table.assigned_to] },
+}));
+
+// Incidents table
+export const incidents = pgTable('incidents', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  severity: incidentSeverityEnum('severity').default('low').notNull(),
+  summary: text('summary').notNull(),
+  opened_by: uuid('opened_by').references(() => adminUsers.id, { onDelete: 'set null' }).notNull(),
+  status: incidentStatusEnum('status').default('open').notNull(),
+  timeline: jsonb('timeline').$type<Array<{
+    ts: string;
+    actor_id: string;
+    action: string;
+    details?: Record<string, unknown>;
+  }>>().default([]).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  closed_at: timestamp('closed_at', { withTimezone: true }),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  statusIdx: { index: 'incidents_status_idx', on: [table.status] },
+  severityIdx: { index: 'incidents_severity_idx', on: [table.severity] },
+  openedByIdx: { index: 'incidents_opened_by_idx', on: [table.opened_by] },
+}));
+
+// Data access logs table
+export const dataAccessLogs = pgTable('data_access_logs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+  admin_id: uuid('admin_id').references(() => adminUsers.id, { onDelete: 'set null' }),
+  action: dataAccessActionEnum('action').notNull(),
+  resource: text('resource').notNull(),
+  success: boolean('success').default(true).notNull(),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdx: { index: 'data_access_logs_user_id_idx', on: [table.user_id] },
+  adminIdx: { index: 'data_access_logs_admin_id_idx', on: [table.admin_id] },
+  tsIdx: { index: 'data_access_logs_ts_idx', on: [table.ts] },
+  resourceIdx: { index: 'data_access_logs_resource_idx', on: [table.resource] },
+}));
+
+// Retention policies table
+export const retentionPolicies = pgTable('retention_policies', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  category: text('category').notNull().unique(),
+  days: integer('days').notNull(),
+  auto_purge: boolean('auto_purge').default(true).notNull(),
+  last_run_at: timestamp('last_run_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  categoryIdx: { index: 'retention_policies_category_idx', on: [table.category] },
+}));
+
+// Relations for admin tables
+export const adminUsersRelations = relations(adminUsers, ({ many }) => ({
+  auditLogs: many(auditLogs),
+  moderationAssigned: many(moderationQueue),
+  incidentsOpened: many(incidents),
+  dataAccessLogs: many(dataAccessLogs),
+}));
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  actor: one(adminUsers, { fields: [auditLogs.actor_id], references: [adminUsers.id] }),
+}));
+
+export const moderationQueueRelations = relations(moderationQueue, ({ one }) => ({
+  assignedTo: one(adminUsers, { fields: [moderationQueue.assigned_to], references: [adminUsers.id] }),
+}));
+
+export const incidentsRelations = relations(incidents, ({ one }) => ({
+  openedBy: one(adminUsers, { fields: [incidents.opened_by], references: [adminUsers.id] }),
+}));
+
+export const dataAccessLogsRelations = relations(dataAccessLogs, ({ one }) => ({
+  user: one(users, { fields: [dataAccessLogs.user_id], references: [users.id] }),
+  admin: one(adminUsers, { fields: [dataAccessLogs.admin_id], references: [adminUsers.id] }),
+}));

@@ -101,7 +101,11 @@
     "dev:fastify": "tsx apps/api/src/server.ts",
     "dev:all": "turbo run dev --parallel",
     "test:api": "vitest run packages/server --reporter=verbose",
-    "compliance:check": "tsx scripts/compliance-check.ts"
+    "compliance:check": "tsx scripts/compliance-check.ts",
+    "seed:admin": "tsx scripts/seed-admin.ts",
+    "verify-audit": "tsx scripts/verify-audit.ts",
+    "retention:preview": "tsx -e \"import('./packages/server/src/jobs/retentionRunner.js').then(m => m.runRetentionPolicies(true))\"",
+    "retention:run": "tsx -e \"import('./packages/server/src/jobs/retentionRunner.js').then(m => m.runRetentionPolicies(false))\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"

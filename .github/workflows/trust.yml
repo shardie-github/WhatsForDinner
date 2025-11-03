@@ -1,0 +1,75 @@
+name: Trust Center Validation
+
+on:
+  pull_request:
+    paths:
+      - 'packages/server/src/auth/admin.ts'
+      - 'packages/server/src/audit/**'
+      - 'packages/server/src/routes/admin/**'
+      - 'packages/server/src/incidents/**'
+      - 'packages/server/src/jobs/retentionRunner.ts'
+  schedule:
+    # Daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm exec tsc --noEmit packages/server/src/auth/admin.ts
+      - run: pnpm exec tsc --noEmit packages/server/src/audit/index.ts
+      - run: pnpm exec tsc --noEmit packages/server/src/routes/admin/moderation.ts
+      - run: pnpm exec tsc --noEmit packages/server/src/incidents/service.ts
+      - run: pnpm exec tsc --noEmit packages/server/src/jobs/retentionRunner.ts
+
+  audit-integrity:
+    runs-on: ubuntu-latest
+    needs: typecheck
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Verify audit signatures
+        run: |
+          pnpm exec tsx scripts/verify-audit.ts
+        env:
+          AUDIT_SECRET: ${{ secrets.AUDIT_SECRET || 'test-secret' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  retention-dryrun:
+    runs-on: ubuntu-latest
+    needs: typecheck
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Run retention dry-run
+        run: |
+          pnpm exec tsx -e "
+            import { runRetentionPolicies } from './packages/server/src/jobs/retentionRunner.ts';
+            const result = await runRetentionPolicies(true);
+            console.log(JSON.stringify(result, null, 2));
+            if (result.errors > 0) {
+              process.exit(1);
+            }
+          "
+        env:
+          RETENTION_DRYRUN: 'true'
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
