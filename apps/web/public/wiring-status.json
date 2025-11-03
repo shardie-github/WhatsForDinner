@@ -1,0 +1,5 @@
+{
+  "status": "pending",
+  "message": "Run `pnpm wiring:run` to generate connectivity matrix",
+  "lastRun": null
+}
