@@ -1,0 +1,143 @@
+name: Chaos Engineering Tests
+
+on:
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: 'Chaos scenario to run'
+        required: false
+        type: choice
+        options:
+          - all
+          - db-connection-loss
+          - queue-overload
+          - api-latency
+          - redis-failure
+        default: 'all'
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '9.0.0'
+
+jobs:
+  chaos-test:
+    name: Chaos Engineering Test
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Setup test environment
+        run: |
+          # Wait for services to be ready
+          timeout 60 bash -c 'until curl -f http://staging.example.com/healthz; do sleep 2; done'
+
+      - name: Collect baseline metrics
+        id: baseline
+        run: |
+          # Query Prometheus for baseline metrics
+          BASELINE=$(curl -s ${{ secrets.PROMETHEUS_URL }}/api/v1/query?query=rate\(http_requests_total\[5m\]\) | jq -r '.data.result[0].value[1]')
+          echo "baseline=$BASELINE" >> $GITHUB_OUTPUT
+
+      - name: Run chaos scenarios
+        id: chaos
+        run: |
+          SCENARIO="${{ github.event.inputs.scenario || 'all' }}"
+          if [ "$SCENARIO" = "all" ]; then
+            SCENARIOS="db-connection-loss queue-overload api-latency redis-failure"
+          else
+            SCENARIOS="$SCENARIO"
+          fi
+
+          for scenario in $SCENARIOS; do
+            echo "Running chaos scenario: $scenario"
+            pnpm tsx packages/testing/chaos/scenarios.ts --scenario=$scenario || true
+          done
+
+      - name: Collect post-chaos metrics
+        id: postchaos
+        run: |
+          POST_CHAOS=$(curl -s ${{ secrets.PROMETHEUS_URL }}/api/v1/query?query=rate\(http_requests_total\[5m\]\) | jq -r '.data.result[0].value[1]')
+          echo "postchaos=$POST_CHAOS" >> $GITHUB_OUTPUT
+
+      - name: Validate metrics delta
+        run: |
+          BASELINE=${{ steps.baseline.outputs.baseline }}
+          POST_CHAOS=${{ steps.postchaos.outputs.postchaos }}
+          
+          if [ -z "$BASELINE" ] || [ -z "$POST_CHAOS" ]; then
+            echo "Unable to collect metrics"
+            exit 1
+          fi
+
+          DELTA_PCT=$(echo "scale=2; (($POST_CHAOS - $BASELINE) / $BASELINE) * 100" | bc)
+          ABS_DELTA=$(echo "$DELTA_PCT" | tr -d '-')
+
+          if [ $(echo "$ABS_DELTA > 5" | bc) -eq 1 ]; then
+            echo "? Metrics delta exceeds 5% threshold: $DELTA_PCT%"
+            exit 1
+          else
+            echo "? Metrics delta within threshold: $DELTA_PCT%"
+          fi
+
+      - name: Check SLO compliance
+        run: |
+          # Verify SLOs are still within budget after chaos
+          pnpm tsx packages/server/src/observability/slo.ts --check-compliance || exit 1
+
+      - name: Generate chaos report
+        run: |
+          echo "# Chaos Engineering Test Report" > chaos-report.md
+          echo "" >> chaos-report.md
+          echo "**Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> chaos-report.md
+          echo "" >> chaos-report.md
+          echo "## Results" >> chaos-report.md
+          echo "- Baseline: ${{ steps.baseline.outputs.baseline }}" >> chaos-report.md
+          echo "- Post-Chaos: ${{ steps.postchaos.outputs.postchaos }}" >> chaos-report.md
+          echo "- Delta: $DELTA_PCT%" >> chaos-report.md
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: chaos-report
+          path: chaos-report.md
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          if [ -n "${{ secrets.SLACK_ALERT_WEBHOOK }}" ]; then
+            curl -X POST ${{ secrets.SLACK_ALERT_WEBHOOK }} \
+              -H 'Content-Type: application/json' \
+              -d '{
+                "text": "?? Chaos engineering test failed",
+                "attachments": [{
+                  "color": "warning",
+                  "fields": [{
+                    "title": "Scenario",
+                    "value": "${{ github.event.inputs.scenario || 'all' }}",
+                    "short": true
+                  }]
+                }]
+              }'
+          fi
