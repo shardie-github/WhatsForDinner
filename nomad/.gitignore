@@ -1,0 +1,88 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+*.lcov
+.nyc_output
+test-results/
+playwright-report/
+.detox
+
+# Production
+build/
+dist/
+.next/
+out/
+*.tgz
+
+# Misc
+.DS_Store
+*.pem
+.env.local
+.env.*.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# Turbo
+.turbo
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Expo
+.expo/
+.expo-shared/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# EAS
+.eas/
+eas.json.local
+
+# iOS
+ios/Pods/
+ios/build/
+*.xcworkspace
+!default.xcworkspace
+*.xcuserdata
+
+# Android
+android/app/build/
+android/.gradle/
+android/local.properties
+*.apk
+*.aab
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db

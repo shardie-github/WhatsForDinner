@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "Nomad",
+    "slug": "nomad",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#10b981"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nomad.app",
+      "infoPlist": {
+        "NSHealthShareUsageDescription": "Nomad syncs your health data to help you plan better meals.",
+        "NSHealthUpdateUsageDescription": "Nomad writes health metrics to help you track your progress."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#10b981"
+      },
+      "package": "com.nomad.app",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "nomad",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-barcode-scanner",
+      "expo-task-manager",
+      "expo-background-fetch"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

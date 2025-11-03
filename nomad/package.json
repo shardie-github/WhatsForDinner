@@ -1,0 +1,38 @@
+{
+  "name": "nomad-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@nomad/web",
+    "dev:mobile": "turbo run dev --filter=@nomad/mobile",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
+    "test:coverage": "turbo run test:coverage",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "type-check": "turbo run type-check",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "clean": "turbo run clean",
+    "doctor": "tsx tools/scripts/doctor.ts",
+    "seed": "tsx tools/scripts/seed.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "prettier": "^3.2.5",
+    "turbo": "^1.13.4",
+    "typescript": "^5.3.3",
+    "tsx": "^4.20.6"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18.0.0 <21.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

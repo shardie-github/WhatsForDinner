@@ -1,0 +1,47 @@
+[
+  {
+    "id": "premium_cta",
+    "kind": "banner",
+    "title": "Go Premium",
+    "body": "AI plans, no ads, offline recipes, wearable sync.",
+    "cta": "Upgrade",
+    "target": "nomad://subscribe",
+    "image": null
+  },
+  {
+    "id": "instacart_partner",
+    "kind": "tile",
+    "title": "Instacart Offer",
+    "body": "Save on your first grocery order.",
+    "cta": "Activate",
+    "target": "https://instacart.example/offer",
+    "image": null
+  },
+  {
+    "id": "walmart_partner",
+    "kind": "tile",
+    "title": "Walmart Grocery",
+    "body": "Free pickup on orders over $35.",
+    "cta": "Shop Now",
+    "target": "walmart://grocery",
+    "image": null
+  },
+  {
+    "id": "seasonal_recipes",
+    "kind": "banner",
+    "title": "Seasonal Favorites",
+    "body": "Discover recipes perfect for this time of year.",
+    "cta": "Explore",
+    "target": "nomad://inspire?filter=seasonal",
+    "image": null
+  },
+  {
+    "id": "family_feature",
+    "kind": "tile",
+    "title": "Share with Family",
+    "body": "Coordinate meals and grocery lists together.",
+    "cta": "Invite",
+    "target": "nomad://family/invite",
+    "image": null
+  }
+]
