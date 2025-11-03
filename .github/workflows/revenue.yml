@@ -1,0 +1,141 @@
+name: Revenue Optimization Layer
+
+on:
+  push:
+    paths:
+      - 'packages/server/src/pricing/**'
+      - 'packages/server/src/analytics/revenue.ts'
+      - 'packages/server/src/jobs/**'
+      - 'packages/server/src/routes/pricing.ts'
+      - 'packages/server/db/migrations/**'
+  pull_request:
+    paths:
+      - 'packages/server/src/pricing/**'
+      - 'packages/server/src/analytics/revenue.ts'
+      - 'packages/server/src/jobs/**'
+      - 'packages/server/src/routes/pricing.ts'
+      - 'packages/server/db/migrations/**'
+  schedule:
+    # Nightly at 00:05 UTC
+    - cron: '5 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: cd packages/server && pnpm type-check
+
+  migrations-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: cd packages/server && drizzle-kit check
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: cd packages/server && pnpm test -- pricing.spec.ts
+
+  validate-forecasts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Validate forecast calculations
+        run: |
+          cd packages/server
+          npx tsx -e "
+            import { generateForecast } from './src/jobs/forecast.ts';
+            const testData = [
+              { mrr_cents: 100000, arr_cents: 1200000, arpu_cents: 1000, ltv_cents: 4200, cac_cents: 5000, churn_rate: 0.05, conversion_rate: 0.02 },
+              { mrr_cents: 105000, arr_cents: 1260000, arpu_cents: 1050, ltv_cents: 4400, cac_cents: 5000, churn_rate: 0.04, conversion_rate: 0.025 },
+            ];
+            const forecast = generateForecast(testData);
+            if (forecast.length === 0) {
+              console.error('Forecast validation failed');
+              process.exit(1);
+            }
+            console.log('Forecast validation passed');
+          "
+
+  nightly-aggregation:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Run revenue aggregator
+        run: |
+          cd packages/server
+          npx tsx -e "
+            import { dailyRevenueAggregation } from './src/jobs/revenueAggregator.ts';
+            await dailyRevenueAggregation();
+          "
+      - name: Run elasticity model (weekly)
+        if: github.run_number % 7 == 0
+        run: |
+          cd packages/server
+          npx tsx -e "
+            import { computeElasticityModels } from './src/jobs/elasticityModel.ts';
+            await computeElasticityModels();
+          "
+      - name: Run Van Westendorp model (weekly)
+        if: github.run_number % 7 == 0
+        run: |
+          cd packages/server
+          npx tsx -e "
+            import { updateVanWestendorpPricing } from './src/jobs/vanWestendorpModel.ts';
+            await updateVanWestendorpPricing();
+          "
+      - name: Run price optimizer (weekly)
+        if: github.run_number % 7 == 0
+        run: |
+          cd packages/server
+          npx tsx -e "
+            import { optimizePrices } from './src/jobs/priceOptimizer.ts';
+            await optimizePrices();
+          "
