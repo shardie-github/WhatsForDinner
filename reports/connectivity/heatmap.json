@@ -1,0 +1,281 @@
+{
+  "timestamp": "2025-11-03T15:48:39.734Z",
+  "subsystems": {
+    "supabaseAuth": {
+      "healthy": false,
+      "checks": {
+        "supabaseClientExists": false,
+        "authHelpersUsed": false,
+        "hooksDefined": false,
+        "apiUsesAuth": false
+      },
+      "score": 0
+    },
+    "stripeIntegration": {
+      "healthy": false,
+      "checks": {
+        "stripeConfigured": false,
+        "webhookHandlerExists": false,
+        "entitlementServiceExists": false,
+        "frontendUsesStripe": false
+      },
+      "score": 0
+    },
+    "partnerRevenue": {
+      "healthy": true,
+      "checks": {
+        "partnerWebhookHandler": true,
+        "adEngineExists": true,
+        "payoutJobExists": true,
+        "stripeConnectUsed": true
+      },
+      "score": 100
+    },
+    "dsarFlow": {
+      "healthy": true,
+      "checks": {
+        "dsarJobExists": true,
+        "artifactStorageExists": true,
+        "evidenceBucketReferenced": true
+      },
+      "score": 100
+    },
+    "backupFlow": {
+      "healthy": false,
+      "checks": {
+        "backupScriptExists": false,
+        "restoreScriptExists": false,
+        "drValidationExists": false
+      },
+      "score": 0
+    },
+    "queueSystem": {
+      "healthy": true,
+      "checks": {
+        "queueConfigured": true,
+        "jobsDefined": true,
+        "workerRegistered": true,
+        "jobsRegisteredInQueue": true
+      },
+      "score": 100
+    },
+    "analyticsFlow": {
+      "healthy": false,
+      "checks": {
+        "analyticsConfigured": false,
+        "posthogUsed": false,
+        "segmentUsed": false,
+        "consentGateExists": false,
+        "eventsTracked": false
+      },
+      "score": 0
+    },
+    "apiDatabase": {
+      "healthy": false,
+      "checks": {
+        "apiRoutesExist": false,
+        "databaseConnection": true,
+        "rlsPoliciesExist": false,
+        "apiUsesDatabase": true
+      },
+      "score": 50
+    }
+  },
+  "connections": [
+    {
+      "from": "supabaseAuth",
+      "to": "stripeIntegration",
+      "connected": false,
+      "health": 0
+    },
+    {
+      "from": "supabaseAuth",
+      "to": "partnerRevenue",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "supabaseAuth",
+      "to": "dsarFlow",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "supabaseAuth",
+      "to": "backupFlow",
+      "connected": false,
+      "health": 0
+    },
+    {
+      "from": "supabaseAuth",
+      "to": "queueSystem",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "supabaseAuth",
+      "to": "analyticsFlow",
+      "connected": false,
+      "health": 0
+    },
+    {
+      "from": "supabaseAuth",
+      "to": "apiDatabase",
+      "connected": false,
+      "health": 25
+    },
+    {
+      "from": "stripeIntegration",
+      "to": "partnerRevenue",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "stripeIntegration",
+      "to": "dsarFlow",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "stripeIntegration",
+      "to": "backupFlow",
+      "connected": false,
+      "health": 0
+    },
+    {
+      "from": "stripeIntegration",
+      "to": "queueSystem",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "stripeIntegration",
+      "to": "analyticsFlow",
+      "connected": false,
+      "health": 0
+    },
+    {
+      "from": "stripeIntegration",
+      "to": "apiDatabase",
+      "connected": false,
+      "health": 25
+    },
+    {
+      "from": "partnerRevenue",
+      "to": "dsarFlow",
+      "connected": true,
+      "health": 100
+    },
+    {
+      "from": "partnerRevenue",
+      "to": "backupFlow",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "partnerRevenue",
+      "to": "queueSystem",
+      "connected": true,
+      "health": 100
+    },
+    {
+      "from": "partnerRevenue",
+      "to": "analyticsFlow",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "partnerRevenue",
+      "to": "apiDatabase",
+      "connected": false,
+      "health": 75
+    },
+    {
+      "from": "dsarFlow",
+      "to": "backupFlow",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "dsarFlow",
+      "to": "queueSystem",
+      "connected": true,
+      "health": 100
+    },
+    {
+      "from": "dsarFlow",
+      "to": "analyticsFlow",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "dsarFlow",
+      "to": "apiDatabase",
+      "connected": false,
+      "health": 75
+    },
+    {
+      "from": "backupFlow",
+      "to": "queueSystem",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "backupFlow",
+      "to": "analyticsFlow",
+      "connected": false,
+      "health": 0
+    },
+    {
+      "from": "backupFlow",
+      "to": "apiDatabase",
+      "connected": false,
+      "health": 25
+    },
+    {
+      "from": "queueSystem",
+      "to": "analyticsFlow",
+      "connected": false,
+      "health": 50
+    },
+    {
+      "from": "queueSystem",
+      "to": "apiDatabase",
+      "connected": false,
+      "health": 75
+    },
+    {
+      "from": "analyticsFlow",
+      "to": "apiDatabase",
+      "connected": false,
+      "health": 25
+    }
+  ],
+  "health": {
+    "overall": 44,
+    "healthyCount": 3,
+    "totalCount": 8
+  },
+  "failures": [
+    {
+      "subsystem": "Supabase Auth",
+      "missing": [
+        "supabaseClientExists",
+        "authHelpersUsed",
+        "hooksDefined",
+        "apiUsesAuth"
+      ]
+    }
+  ],
+  "warnings": [
+    {
+      "subsystem": "Stripe Integration",
+      "missing": [
+        "stripeConfigured",
+        "webhookHandlerExists",
+        "entitlementServiceExists",
+        "frontendUsesStripe"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1644 @@
+{
+  "timestamp": "2025-11-03T15:48:09.749Z",
+  "apps": {
+    "api-docs": {
+      "name": "@whats-for-dinner/api-docs",
+      "version": "1.0.0",
+      "dependencies": [
+        "@radix-ui/react-accordion",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-avatar",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-icons",
+        "@radix-ui/react-label",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-progress",
+        "@radix-ui/react-radio-group",
+        "@radix-ui/react-scroll-area",
+        "@radix-ui/react-select",
+        "@radix-ui/react-separator",
+        "@radix-ui/react-slot",
+        "@radix-ui/react-switch",
+        "@radix-ui/react-tabs",
+        "@radix-ui/react-toast",
+        "@radix-ui/react-tooltip",
+        "@supabase/auth-helpers-nextjs",
+        "@supabase/auth-helpers-react",
+        "@supabase/supabase-js",
+        "@tanstack/react-query",
+        "class-variance-authority",
+        "clsx",
+        "lucide-react",
+        "next",
+        "react",
+        "react-dom",
+        "react-hook-form",
+        "react-syntax-highlighter",
+        "swagger-ui-react",
+        "swagger-jsdoc",
+        "tailwind-merge",
+        "zod"
+      ],
+      "devDependencies": [
+        "@types/node",
+        "@types/react",
+        "@types/react-dom",
+        "@types/react-syntax-highlighter",
+        "autoprefixer",
+        "eslint",
+        "eslint-config-next",
+        "postcss",
+        "tailwindcss",
+        "tailwindcss-animate",
+        "typescript"
+      ],
+      "scripts": [
+        "dev",
+        "build",
+        "start",
+        "lint",
+        "lint:fix",
+        "test",
+        "test:watch",
+        "type-check"
+      ],
+      "hasTypeScript": false,
+      "routes": [],
+      "components": []
+    },
+    "chef-marketplace": {
+      "name": "@whats-for-dinner/chef-marketplace",
+      "version": "1.0.0",
+      "dependencies": [
+        "@radix-ui/react-accordion",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-avatar",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-icons",
+        "@radix-ui/react-label",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-progress",
+        "@radix-ui/react-radio-group",
+        "@radix-ui/react-scroll-area",
+        "@radix-ui/react-select",
+        "@radix-ui/react-separator",
+        "@radix-ui/react-slot",
+        "@radix-ui/react-switch",
+        "@radix-ui/react-tabs",
+        "@radix-ui/react-toast",
+        "@radix-ui/react-tooltip",
+        "@supabase/auth-helpers-nextjs",
+        "@supabase/auth-helpers-react",
+        "@supabase/supabase-js",
+        "@tanstack/react-query",
+        "class-variance-authority",
+        "clsx",
+        "lucide-react",
+        "next",
+        "react",
+        "react-dom",
+        "react-hook-form",
+        "react-dropzone",
+        "recharts",
+        "tailwind-merge",
+        "zod"
+      ],
+      "devDependencies": [
+        "@types/node",
+        "@types/react",
+        "@types/react-dom",
+        "autoprefixer",
+        "eslint",
+        "eslint-config-next",
+        "postcss",
+        "tailwindcss",
+        "tailwindcss-animate",
+        "typescript"
+      ],
+      "scripts": [
+        "dev",
+        "build",
+        "start",
+        "lint",
+        "lint:fix",
+        "test",
+        "test:watch",
+        "type-check"
+      ],
+      "hasTypeScript": false,
+      "routes": [],
+      "components": []
+    },
+    "community-portal": {
+      "name": "@whats-for-dinner/community-portal",
+      "version": "1.0.0",
+      "dependencies": [
+        "@radix-ui/react-accordion",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-avatar",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-icons",
+        "@radix-ui/react-label",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-progress",
+        "@radix-ui/react-radio-group",
+        "@radix-ui/react-scroll-area",
+        "@radix-ui/react-select",
+        "@radix-ui/react-separator",
+        "@radix-ui/react-slot",
+        "@radix-ui/react-switch",
+        "@radix-ui/react-tabs",
+        "@radix-ui/react-toast",
+        "@radix-ui/react-tooltip",
+        "@supabase/auth-helpers-nextjs",
+        "@supabase/auth-helpers-react",
+        "@supabase/supabase-js",
+        "@tanstack/react-query",
+        "class-variance-authority",
+        "clsx",
+        "lucide-react",
+        "next",
+        "react",
+        "react-dom",
+        "react-hook-form",
+        "react-markdown",
+        "react-syntax-highlighter",
+        "tailwind-merge",
+        "zod"
+      ],
+      "devDependencies": [
+        "@types/node",
+        "@types/react",
+        "@types/react-dom",
+        "@types/react-syntax-highlighter",
+        "autoprefixer",
+        "eslint",
+        "eslint-config-next",
+        "postcss",
+        "tailwindcss",
+        "tailwindcss-animate",
+        "typescript"
+      ],
+      "scripts": [
+        "dev",
+        "build",
+        "start",
+        "lint",
+        "lint:fix",
+        "test",
+        "test:watch",
+        "type-check"
+      ],
+      "hasTypeScript": true,
+      "routes": [],
+      "components": [
+        "community-events.tsx",
+        "community-header.tsx",
+        "community-stats.tsx",
+        "featured-posts.tsx",
+        "leaderboard.tsx",
+        "recent-posts.tsx",
+        "ui/avatar.tsx",
+        "ui/badge.tsx",
+        "ui/button.tsx",
+        "ui/card.tsx",
+        "ui/input.tsx"
+      ]
+    },
+    "mobile": {
+      "name": "@whats-for-dinner/mobile",
+      "version": "0.1.0",
+      "dependencies": [
+        "@supabase/supabase-js",
+        "@tanstack/react-query",
+        "@whats-for-dinner/config",
+        "@whats-for-dinner/theme",
+        "@whats-for-dinner/ui",
+        "@whats-for-dinner/utils",
+        "clsx",
+        "expo",
+        "expo-asset",
+        "expo-constants",
+        "expo-dev-client",
+        "expo-file-system",
+        "expo-font",
+        "expo-linking",
+        "expo-modules-core",
+        "expo-network",
+        "expo-router",
+        "expo-secure-store",
+        "expo-splash-screen",
+        "expo-sqlite",
+        "expo-status-bar",
+        "expo-system-ui",
+        "expo-updates",
+        "expo-web-browser",
+        "lucide-react-native",
+        "nativewind",
+        "react",
+        "react-native",
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-safe-area-context",
+        "react-native-screens",
+        "react-native-svg",
+        "react-native-vector-icons",
+        "react-native-web",
+        "react-native-css-interop",
+        "@babel/runtime",
+        "solito",
+        "tailwind-merge",
+        "tailwindcss",
+        "zod"
+      ],
+      "devDependencies": [
+        "@babel/core",
+        "@testing-library/jest-native",
+        "@testing-library/react-native",
+        "@types/jest",
+        "@types/react",
+        "@types/react-native",
+        "detox",
+        "eslint",
+        "eslint-config-expo",
+        "jest",
+        "jest-expo",
+        "react-native-worklets",
+        "typescript"
+      ],
+      "scripts": [
+        "dev",
+        "build",
+        "start",
+        "android",
+        "ios",
+        "web",
+        "lint",
+        "type-check",
+        "test",
+        "clean"
+      ],
+      "hasTypeScript": true,
+      "routes": [],
+      "components": [
+        "InputPrompt.tsx",
+        "Navbar.tsx",
+        "RecipeCard.tsx"
+      ]
+    },
+    "referral": {
+      "name": "@whats-for-dinner/referral",
+      "version": "1.0.0",
+      "dependencies": [
+        "@radix-ui/react-accordion",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-avatar",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-icons",
+        "@radix-ui/react-label",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-progress",
+        "@radix-ui/react-radio-group",
+        "@radix-ui/react-scroll-area",
+        "@radix-ui/react-select",
+        "@radix-ui/react-separator",
+        "@radix-ui/react-slot",
+        "@radix-ui/react-switch",
+        "@radix-ui/react-tabs",
+        "@radix-ui/react-toast",
+        "@radix-ui/react-tooltip",
+        "@supabase/auth-helpers-nextjs",
+        "@supabase/auth-helpers-react",
+        "@supabase/supabase-js",
+        "@tanstack/react-query",
+        "class-variance-authority",
+        "clsx",
+        "lucide-react",
+        "next",
+        "react",
+        "react-dom",
+        "react-hook-form",
+        "react-share",
+        "qrcode.react",
+        "tailwind-merge",
+        "zod"
+      ],
+      "devDependencies": [
+        "@types/node",
+        "@types/react",
+        "@types/react-dom",
+        "autoprefixer",
+        "eslint",
+        "eslint-config-next",
+        "postcss",
+        "tailwindcss",
+        "tailwindcss-animate",
+        "typescript"
+      ],
+      "scripts": [
+        "dev",
+        "build",
+        "start",
+        "lint",
+        "lint:fix",
+        "test",
+        "test:watch",
+        "type-check"
+      ],
+      "hasTypeScript": false,
+      "routes": [],
+      "components": []
+    },
+    "web": {
+      "name": "@whats-for-dinner/web",
+      "version": "0.1.0",
+      "dependencies": [
+        "@capacitor-community/http",
+        "@capacitor/app",
+        "@capacitor/app-launcher",
+        "@capacitor/browser",
+        "@capacitor/haptics",
+        "@capacitor/keyboard",
+        "@capacitor/local-notifications",
+        "@capacitor/preferences",
+        "@capacitor/push-notifications",
+        "@capacitor/splash-screen",
+        "@capacitor/status-bar",
+        "@radix-ui/react-label",
+        "@radix-ui/react-separator",
+        "@radix-ui/react-slot",
+        "@radix-ui/react-switch",
+        "@radix-ui/react-tabs",
+        "@sentry/nextjs",
+        "@stripe/stripe-js",
+        "@supabase/auth-helpers-nextjs",
+        "@supabase/auth-helpers-react",
+        "@supabase/supabase-js",
+        "@tanstack/react-query",
+        "@whats-for-dinner/config",
+        "@whats-for-dinner/theme",
+        "@whats-for-dinner/ui",
+        "@whats-for-dinner/utils",
+        "class-variance-authority",
+        "clsx",
+        "lucide-react",
+        "next",
+        "next-pwa",
+        "openai",
+        "posthog-js",
+        "react",
+        "react-dom",
+        "recharts",
+        "resend",
+        "stripe",
+        "tailwind-merge",
+        "uuid",
+        "web-vitals",
+        "zod"
+      ],
+      "devDependencies": [
+        "@capacitor/android",
+        "@capacitor/cli",
+        "@capacitor/core",
+        "@capacitor/ios",
+        "@playwright/test",
+        "@testing-library/jest-dom",
+        "@testing-library/react",
+        "@testing-library/user-event",
+        "@types/jest",
+        "@types/node",
+        "@types/react",
+        "@types/react-dom",
+        "autoprefixer",
+        "eslint",
+        "eslint-config-next",
+        "eslint-config-prettier",
+        "eslint-plugin-jsx-a11y",
+        "eslint-plugin-prettier",
+        "husky",
+        "jest",
+        "jest-environment-jsdom",
+        "lint-staged",
+        "postcss",
+        "prettier",
+        "prettier-plugin-tailwindcss",
+        "tailwindcss",
+        "tailwindcss-animate",
+        "typescript"
+      ],
+      "scripts": [
+        "dev",
+        "build",
+        "start",
+        "lint",
+        "lint:fix",
+        "test",
+        "test:watch",
+        "test:ci",
+        "test:coverage",
+        "type-check",
+        "autonomous:start",
+        "autonomous:status",
+        "autonomous:shutdown",
+        "autonomous:audit",
+        "autonomous:learn",
+        "autonomous:optimize",
+        "format",
+        "format:check",
+        "prepare",
+        "cap:init",
+        "cap:add:ios",
+        "cap:add:android",
+        "cap:sync",
+        "cap:copy",
+        "cap:update",
+        "cap:open:ios",
+        "cap:open:android",
+        "cap:build:ios",
+        "cap:build:android"
+      ],
+      "hasTypeScript": true,
+      "routes": [
+        "api/admin/audit/route.ts",
+        "api/admin/costs/route.ts",
+        "api/admin/dashboard/route.ts",
+        "api/admin/governance/retention/route.ts",
+        "api/admin/incidents/route.ts",
+        "api/alerts/route.ts",
+        "api/analytics/dashboard/route.ts",
+        "api/auth/apple/callback/route.ts",
+        "api/auth/delete-account/route.ts",
+        "api/billing/checkout/route.ts",
+        "api/billing/portal/route.ts",
+        "api/business-readiness/route.ts",
+        "api/commerce/hub/route.ts",
+        "api/cost/calculate/route.ts",
+        "api/cro/insights/route.ts",
+        "api/developers/keys/[id]/route.ts",
+        "api/developers/keys/route.ts",
+        "api/developers/usage/route.ts",
+        "api/dinner/route.ts",
+        "api/elasticity/[country]/[plan]/route.ts",
+        "api/errors/route.ts",
+        "api/experiments/assign/route.ts",
+        "api/experiments/convert/route.ts",
+        "api/experiments/price/route.ts",
+        "api/features/check/route.ts",
+        "api/federation/route.ts",
+        "api/gdpr/delete/route.ts",
+        "api/gdpr/export/route.ts",
+        "api/health/route.ts",
+        "api/healthz/route.ts",
+        "api/meal-plan/generate/route.ts",
+        "api/mealplan/ai-generate/route.ts",
+        "api/mealplan/route.ts",
+        "api/metrics/route.ts",
+        "api/monetization/opportunities/route.ts",
+        "api/nomad/family/chat/route.ts",
+        "api/nomad/family/route.ts",
+        "api/nomad/mealplan/route.ts",
+        "api/nomad/nutrition/route.ts",
+        "api/nomad/recipes/route.ts",
+        "api/nomad/user/route.ts",
+        "api/nomad/wearables/google-fit/callback/route.ts",
+        "api/nutrition/route.ts",
+        "api/observability/alerts/route.ts",
+        "api/observability/dashboard/route.ts",
+        "api/observability/errors/route.ts",
+        "api/observability/health/route.ts",
+        "api/observability/metrics/route.ts",
+        "api/observability/report/route.ts",
+        "api/observability/traces/route.ts",
+        "api/onboarding/checklist/route.ts",
+        "api/pantry/seed-sample/route.ts",
+        "api/partner/webhook/route.ts",
+        "api/partners/revenue/route.ts",
+        "api/partners/stats/route.ts",
+        "api/performance/optimize/route.ts",
+        "api/performance/recommendations/route.ts",
+        "api/performance/route.ts",
+        "api/preferences/route.ts",
+        "api/pricing/current/route.ts",
+        "api/pricing/survey/route.ts",
+        "api/privacy/erase/route.ts",
+        "api/privacy/export/route.ts",
+        "api/push/register/route.ts",
+        "api/r/[token]/route.ts",
+        "api/revenue/summary/route.ts",
+        "api/selftest/route.ts",
+        "api/stripe/webhook/route.ts",
+        "api/subscriptions/create/route.ts",
+        "api/subscriptions/me/route.ts",
+        "api/swagger/route.ts",
+        "api/traces/[traceId]/spans/route.ts",
+        "api/traces/route.ts",
+        "api/user/me/route.ts",
+        "r/[token]/route.ts"
+      ],
+      "components": [
+        "Analytics.tsx",
+        "CacheRefresh.tsx",
+        "CapacitorInit.tsx",
+        "CoreWebVitals.tsx",
+        "EmptyStateGuide.tsx",
+        "ErrorBoundary.tsx",
+        "GDPRConsent.tsx",
+        "InputPrompt.tsx",
+        "LoadingState.tsx",
+        "Navbar.tsx",
+        "OnboardingChecklist.tsx",
+        "PWAInstaller.tsx",
+        "PantryManager.tsx",
+        "Paywall.tsx",
+        "RecipeCard.tsx",
+        "RecipeFeedback.tsx",
+        "ShareableMealCard.tsx",
+        "SkeletonLoader.tsx",
+        "StoreListing.tsx",
+        "SubscriptionManager.tsx",
+        "ThemeProvider.tsx",
+        "ThemeToggle.tsx",
+        "__tests__/InputPrompt.test.tsx",
+        "__tests__/PantryManager.test.tsx",
+        "__tests__/RecipeCard.test.tsx",
+        "nomad/AdMobIntegration.tsx",
+        "nomad/AdPlacement.tsx",
+        "nomad/FamilyFeedCard.tsx",
+        "nomad/GroceryListCard.tsx",
+        "nomad/HealthMetricsCard.tsx",
+        "nomad/MealPlanCard.tsx",
+        "nomad/RecipeSpotlightCard.tsx",
+        "nomad/StreaksBadgesCard.tsx",
+        "ui/animated-card.tsx",
+        "ui/badge.tsx",
+        "ui/button.tsx",
+        "ui/card.tsx",
+        "ui/input.tsx",
+        "ui/label.tsx",
+        "ui/loading-spinner.tsx",
+        "ui/progress-bar.tsx",
+        "ui/separator.tsx",
+        "ui/skeleton.tsx",
+        "ui/switch.tsx",
+        "ui/tabs.tsx",
+        "ui/textarea.tsx"
+      ]
+    }
+  },
+  "packages": {
+    "config": {
+      "name": "@whats-for-dinner/config",
+      "version": "0.1.0",
+      "exports": [],
+      "imports": [],
+      "dependencies": [],
+      "devDependencies": [
+        "@typescript-eslint/eslint-plugin",
+        "@typescript-eslint/parser",
+        "eslint",
+        "eslint-config-expo",
+        "eslint-config-next",
+        "eslint-config-prettier",
+        "eslint-plugin-jsx-a11y",
+        "eslint-plugin-prettier",
+        "eslint-plugin-react",
+        "eslint-plugin-react-hooks",
+        "nativewind",
+        "tailwindcss",
+        "tailwindcss-animate",
+        "typescript"
+      ],
+      "main": "index.js"
+    },
+    "server": {
+      "name": "@whats-for-dinner/server",
+      "version": "1.0.0",
+      "exports": [],
+      "imports": [],
+      "dependencies": [
+        "@opentelemetry/api",
+        "@opentelemetry/auto-instrumentations-node",
+        "@opentelemetry/exporter-prometheus",
+        "@opentelemetry/exporter-trace-otlp-http",
+        "@opentelemetry/sdk-metrics",
+        "@opentelemetry/sdk-node",
+        "@opentelemetry/resources",
+        "@opentelemetry/semantic-conventions",
+        "@sendgrid/mail",
+        "bullmq",
+        "drizzle-kit",
+        "drizzle-orm",
+        "express",
+        "fastify",
+        "ioredis",
+        "jsonwebtoken",
+        "openai",
+        "pino",
+        "pino-pretty",
+        "postgres",
+        "zod",
+        "zod-to-openapi",
+        "fast-xml-parser",
+        "csv-parse",
+        "stripe"
+      ],
+      "devDependencies": [
+        "@types/express",
+        "@types/jsonwebtoken",
+        "@types/node",
+        "supertest",
+        "tsx",
+        "typescript",
+        "vitest"
+      ],
+      "main": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "theme": {
+      "name": "@whats-for-dinner/theme",
+      "version": "0.1.0",
+      "exports": [],
+      "imports": [],
+      "dependencies": [
+        "nativewind",
+        "tailwindcss"
+      ],
+      "devDependencies": [
+        "@types/node",
+        "typescript"
+      ],
+      "main": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "ui": {
+      "name": "@whats-for-dinner/ui",
+      "version": "0.1.0",
+      "exports": [],
+      "imports": [],
+      "dependencies": [
+        "@whats-for-dinner/theme",
+        "@whats-for-dinner/utils",
+        "lucide-react-native",
+        "react",
+        "react-native",
+        "react-native-safe-area-context",
+        "react-native-svg"
+      ],
+      "devDependencies": [
+        "@chromatic-com/storybook",
+        "@storybook/addon-a11y",
+        "@storybook/addon-docs",
+        "@storybook/addon-onboarding",
+        "@storybook/addon-vitest",
+        "@storybook/react-vite",
+        "@types/node",
+        "@types/react",
+        "@types/react-native",
+        "storybook",
+        "typescript",
+        "vitest",
+        "playwright",
+        "@vitest/browser-playwright",
+        "@vitest/coverage-v8"
+      ],
+      "main": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "utils": {
+      "name": "@whats-for-dinner/utils",
+      "version": "0.1.0",
+      "exports": [],
+      "imports": [],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge",
+        "zod"
+      ],
+      "devDependencies": [
+        "@types/node",
+        "typescript"
+      ],
+      "main": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "jobs": {
+    "anomalyGuard": {
+      "file": "anomalyGuard.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../db/index.js",
+        "../db/schema.js",
+        "drizzle-orm",
+        "../observability/index.js",
+        "../experiments/service.js",
+        "../db/schema.js"
+      ],
+      "registered": true
+    },
+    "digestRunner": {
+      "file": "digestRunner.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../db/index.js",
+        "../db/schema.js",
+        "drizzle-orm",
+        "../observability/index.js",
+        "../../../adapters/crm/index.js",
+        "../../../adapters/crm/types.js"
+      ],
+      "registered": true
+    },
+    "digests": {
+      "file": "digests.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "bullmq",
+        "../observability/index.js",
+        "../db/index.js"
+      ],
+      "registered": true
+    },
+    "dsarExport": {
+      "file": "dsarExport.ts",
+      "hasProcessor": false,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../db/index.js",
+        "drizzle-orm",
+        "../observability/index.js",
+        "fs",
+        "fs/promises",
+        "path",
+        "stream/promises",
+        "archiver",
+        "crypto"
+      ],
+      "registered": false
+    },
+    "elasticityModel": {
+      "file": "elasticityModel.ts",
+      "hasProcessor": false,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../db/index.js",
+        "../db/schema.js",
+        "drizzle-orm",
+        "../observability/index.js"
+      ],
+      "registered": false
+    },
+    "erasureRunner": {
+      "file": "erasureRunner.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../db/index.js",
+        "drizzle-orm",
+        "../observability/index.js",
+        "crypto"
+      ],
+      "registered": false
+    },
+    "journeysRunner": {
+      "file": "journeysRunner.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": false,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../journeys/engine.js",
+        "../observability/index.js"
+      ],
+      "registered": true
+    },
+    "mealGen": {
+      "file": "mealGen.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "bullmq",
+        "../db/index.js",
+        "../observability/index.js",
+        "openai"
+      ],
+      "registered": true
+    },
+    "priceOptimizer": {
+      "file": "priceOptimizer.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../db/index.js",
+        "drizzle-orm",
+        "../observability/index.js"
+      ],
+      "registered": false
+    },
+    "priceRollout": {
+      "file": "priceRollout.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../db/index.js",
+        "../db/schema.js",
+        "drizzle-orm",
+        "../observability/index.js"
+      ],
+      "registered": true
+    },
+    "retentionRunner": {
+      "file": "retentionRunner.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../db/index.js",
+        "../db/schema.js",
+        "drizzle-orm",
+        "../observability/index.js",
+        "../audit/index.js"
+      ],
+      "registered": false
+    },
+    "revenueAggregator": {
+      "file": "revenueAggregator.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../analytics/revenue.js",
+        "../db/index.js",
+        "../db/schema.js",
+        "drizzle-orm",
+        "../observability/index.js"
+      ],
+      "registered": false
+    },
+    "selfHeal": {
+      "file": "selfHeal.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../observability/index.js",
+        "bullmq"
+      ],
+      "registered": false
+    },
+    "vanWestendorpModel": {
+      "file": "vanWestendorpModel.ts",
+      "hasProcessor": false,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": true,
+      "dependencies": [
+        "../db/index.js",
+        "../db/schema.js",
+        "drizzle-orm",
+        "../observability/index.js"
+      ],
+      "registered": false
+    }
+  },
+  "routes": {
+    "/admin/audit": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "admin/audit/route.ts"
+    },
+    "/admin/costs": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "admin/costs/route.ts"
+    },
+    "/admin/dashboard": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "admin/dashboard/route.ts"
+    },
+    "/admin/governance/retention": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "admin/governance/retention/route.ts"
+    },
+    "/admin/incidents": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "admin/incidents/route.ts"
+    },
+    "/alerts": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "alerts/route.ts"
+    },
+    "/analytics/dashboard": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "analytics/dashboard/route.ts"
+    },
+    "/auth/apple/callback": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "auth/apple/callback/route.ts"
+    },
+    "/auth/delete-account": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "auth/delete-account/route.ts"
+    },
+    "/billing/checkout": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "billing/checkout/route.ts"
+    },
+    "/billing/portal": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "billing/portal/route.ts"
+    },
+    "/business-readiness": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "business-readiness/route.ts"
+    },
+    "/commerce/hub": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "commerce/hub/route.ts"
+    },
+    "/cost/calculate": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "cost/calculate/route.ts"
+    },
+    "/cro/insights": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "cro/insights/route.ts"
+    },
+    "/developers/keys/[id]": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "developers/keys/[id]/route.ts"
+    },
+    "/developers/keys": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "developers/keys/route.ts"
+    },
+    "/developers/usage": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "developers/usage/route.ts"
+    },
+    "/dinner": {
+      "method": "POST",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "dinner/route.ts"
+    },
+    "/elasticity/[country]/[plan]": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "elasticity/[country]/[plan]/route.ts"
+    },
+    "/errors": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "errors/route.ts"
+    },
+    "/experiments/assign": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "experiments/assign/route.ts"
+    },
+    "/experiments/convert": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "experiments/convert/route.ts"
+    },
+    "/experiments/price": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "experiments/price/route.ts"
+    },
+    "/features/check": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "features/check/route.ts"
+    },
+    "/federation": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "federation/route.ts"
+    },
+    "/gdpr/delete": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "gdpr/delete/route.ts"
+    },
+    "/gdpr/export": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "gdpr/export/route.ts"
+    },
+    "/health": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "health/route.ts"
+    },
+    "/healthz": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "healthz/route.ts"
+    },
+    "/meal-plan/generate": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "meal-plan/generate/route.ts"
+    },
+    "/mealplan/ai-generate": {
+      "method": "POST",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "mealplan/ai-generate/route.ts"
+    },
+    "/mealplan": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "mealplan/route.ts"
+    },
+    "/metrics": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "metrics/route.ts"
+    },
+    "/monetization/opportunities": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "monetization/opportunities/route.ts"
+    },
+    "/nomad/family/chat": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "nomad/family/chat/route.ts"
+    },
+    "/nomad/family": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "nomad/family/route.ts"
+    },
+    "/nomad/mealplan": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "nomad/mealplan/route.ts"
+    },
+    "/nomad/nutrition": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "nomad/nutrition/route.ts"
+    },
+    "/nomad/recipes": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "nomad/recipes/route.ts"
+    },
+    "/nomad/user": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "nomad/user/route.ts"
+    },
+    "/nomad/wearables/google-fit/callback": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "nomad/wearables/google-fit/callback/route.ts"
+    },
+    "/nutrition": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "nutrition/route.ts"
+    },
+    "/observability/alerts": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "observability/alerts/route.ts"
+    },
+    "/observability/dashboard": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "observability/dashboard/route.ts"
+    },
+    "/observability/errors": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "observability/errors/route.ts"
+    },
+    "/observability/health": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "observability/health/route.ts"
+    },
+    "/observability/metrics": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "observability/metrics/route.ts"
+    },
+    "/observability/report": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "observability/report/route.ts"
+    },
+    "/observability/traces": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "observability/traces/route.ts"
+    },
+    "/onboarding/checklist": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "onboarding/checklist/route.ts"
+    },
+    "/pantry/seed-sample": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "pantry/seed-sample/route.ts"
+    },
+    "/partner/webhook": {
+      "method": "POST",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "partner/webhook/route.ts"
+    },
+    "/partners/revenue": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "partners/revenue/route.ts"
+    },
+    "/partners/stats": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "partners/stats/route.ts"
+    },
+    "/performance/optimize": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "performance/optimize/route.ts"
+    },
+    "/performance/recommendations": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "performance/recommendations/route.ts"
+    },
+    "/performance": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "performance/route.ts"
+    },
+    "/preferences": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "preferences/route.ts"
+    },
+    "/pricing/current": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "pricing/current/route.ts"
+    },
+    "/pricing/survey": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "pricing/survey/route.ts"
+    },
+    "/privacy/erase": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "privacy/erase/route.ts"
+    },
+    "/privacy/export": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "privacy/export/route.ts"
+    },
+    "/push/register": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "push/register/route.ts"
+    },
+    "/r/[token]": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "r/[token]/route.ts"
+    },
+    "/revenue/summary": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "revenue/summary/route.ts"
+    },
+    "/selftest": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "selftest/route.ts"
+    },
+    "/stripe/webhook": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "stripe/webhook/route.ts"
+    },
+    "/subscriptions/create": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "subscriptions/create/route.ts"
+    },
+    "/subscriptions/me": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "subscriptions/me/route.ts"
+    },
+    "/swagger": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "swagger/route.ts"
+    },
+    "/traces/[traceId]/spans": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "traces/[traceId]/spans/route.ts"
+    },
+    "/traces": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "traces/route.ts"
+    },
+    "/user/me": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "user/me/route.ts"
+    },
+    "/api/admin-moderation": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "admin/moderation.ts"
+    },
+    "/api/experiments": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "experiments.ts"
+    },
+    "/api/mealplan": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "mealplan.ts"
+    },
+    "/api/partner": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "partner.ts"
+    },
+    "/api/partnerConvert": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "partnerConvert.ts"
+    },
+    "/api/partnerWebhook": {
+      "method": "MIXED",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "partnerWebhook.ts"
+    },
+    "/api/paymentsVerify": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "paymentsVerify.ts"
+    },
+    "/api/paywall": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "paywall.ts"
+    },
+    "/api/pricing": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "pricing.ts"
+    },
+    "/api/privacy.dsar": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "privacy.dsar.ts"
+    },
+    "/api/referrals": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "referrals.ts"
+    },
+    "/api/reports.regulatory": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "reports.regulatory.ts"
+    },
+    "/api/vendors": {
+      "method": "MIXED",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "vendors.ts"
+    }
+  },
+  "database": {
+    "tables": [
+      "supabase_tables_part10_social.sql",
+      "supabase_tables_part11_featureflags.sql",
+      "supabase_tables_part12_ai.sql",
+      "supabase_tables_part13_gapclosure.sql",
+      "supabase_tables_part14_admin_trust_center.sql",
+      "supabase_tables_part1_core.sql",
+      "supabase_tables_part2_analytics.sql",
+      "supabase_tables_part3_multitenant.sql",
+      "supabase_tables_part4_growth.sql",
+      "supabase_tables_part5_federated.sql",
+      "supabase_tables_part6_jobqueue.sql",
+      "supabase_tables_part7_admin.sql",
+      "supabase_tables_part8_community.sql",
+      "supabase_tables_part9_chef.sql"
+    ],
+    "migrations": [
+      "0001_initial_schema.sql",
+      "0002_growth_systems.sql",
+      "0003_revenue_optimization.sql",
+      "0004_partner_revenue_network.sql",
+      "0005_regtech_layer.sql"
+    ],
+    "rls": [
+      "supabase_tables_part14_admin_trust_center.sql"
+    ]
+  },
+  "integrations": {
+    "supabase": {
+      "configured": true,
+      "hooks": []
+    },
+    "stripe": {
+      "configured": true,
+      "webhooks": []
+    },
+    "posthog": {
+      "configured": true
+    },
+    "redis": {
+      "configured": true
+    },
+    "bullmq": {
+      "configured": true,
+      "queues": []
+    }
+  },
+  "dependencies": {
+    "circular": [],
+    "missing": [],
+    "unused": []
+  },
+  "orphaned": [],
+  "coverage": {
+    "tested": 37,
+    "untested": 673,
+    "testFiles": [
+      "apps/web/src/__tests__/ai-safety.test.ts",
+      "apps/web/src/__tests__/security.test.ts",
+      "apps/web/src/app/__tests__/page.test.tsx",
+      "apps/web/src/app/api/dinner/__tests__/route.test.ts",
+      "apps/web/src/components/__tests__/InputPrompt.test.tsx",
+      "apps/web/src/components/__tests__/PantryManager.test.tsx",
+      "apps/web/src/components/__tests__/RecipeCard.test.tsx",
+      "apps/web/tests/e2e/security.spec.ts",
+      "apps/web/tests/integration/phases-integration.test.ts",
+      "apps/web/tests/smoke.spec.ts",
+      "packages/analytics/consent/consent.test.ts",
+      "packages/server/src/testing/api.mealplan.spec.ts",
+      "packages/server/src/testing/partner.spec.ts",
+      "packages/server/src/testing/payments.spec.ts",
+      "packages/server/src/testing/paywall.spec.ts",
+      "packages/server/src/testing/pricing.spec.ts",
+      "packages/server/src/testing/referrals.spec.ts",
+      "packages/server/src/tests/admin.spec.ts",
+      "packages/server/src/tests/controls.spec.ts",
+      "packages/server/src/tests/dsar.spec.ts",
+      "packages/server/src/tests/vendors.spec.ts",
+      "packages/testing/contracts/openapi.validate.spec.ts",
+      "packages/testing/e2e/jobs.spec.ts",
+      "packages/testing/e2e/wiring.web.spec.ts",
+      "whats-for-dinner/src/__tests__/ai-safety.test.ts",
+      "whats-for-dinner/src/__tests__/security.test.ts",
+      "whats-for-dinner/src/app/__tests__/page.test.tsx",
+      "whats-for-dinner/src/app/api/dinner/__tests__/route.test.ts",
+      "whats-for-dinner/src/components/__tests__/InputPrompt.test.tsx",
+      "whats-for-dinner/src/components/__tests__/PantryManager.test.tsx",
+      "whats-for-dinner/src/components/__tests__/RecipeCard.test.tsx",
+      "whats-for-dinner/tests/e2e/security.spec.ts",
+      "whats-for-dinner/tests/e2e/user-journey.spec.ts",
+      "whats-for-dinner/tests/integration/api-integration.test.ts",
+      "whats-for-dinner/tests/performance/performance.test.ts",
+      "whats-for-dinner/tests/security/security-audit.test.ts",
+      "whats-for-dinner/tests/supabase-validation.test.ts"
+    ]
+  }
+}
