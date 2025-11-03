@@ -93,7 +93,14 @@
     "mobile:setup": "bash scripts/setup-mobile.sh",
     "mobile:sync": "cd apps/web && npx cap sync",
     "mobile:open:ios": "cd apps/web && npx cap open ios",
-    "mobile:open:android": "cd apps/web && npx cap open android"
+    "mobile:open:android": "cd apps/web && npx cap open android",
+    "db:generate": "cd packages/server && drizzle-kit generate",
+    "db:migrate": "cd packages/server && drizzle-kit migrate",
+    "queue:worker": "tsx packages/server/src/queue/index.ts",
+    "dev:api": "next dev -p 3000",
+    "dev:fastify": "tsx apps/api/src/server.ts",
+    "dev:all": "turbo run dev --parallel",
+    "test:api": "vitest run packages/server --reporter=verbose"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"
