@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, Zap, ChefHat, Crown } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { AnimatedCard } from '@/components/ui/animated-card';
+import { Check, Zap, ChefHat, Crown, Sparkles, Star, ArrowRight } from 'lucide-react';
 import { analytics } from '@/lib/analytics';
 import { trackConversion } from '@/lib/experiments';
 import Navbar from '@/components/Navbar';
@@ -165,80 +167,135 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-background via-muted/10 to-background">
       <Navbar user={user} />
 
-      <main className="container mx-auto space-y-12 px-4 py-12">
+      <main className="container mx-auto space-y-12 px-4 py-12 sm:py-16">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold md:text-5xl">
-            Choose Your Plan
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Start free, upgrade anytime. All plans include our core AI recipe generation.
-          </p>
-        </div>
+        <AnimatedCard delay={0}>
+          <div className="text-center space-y-6 mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/10">
+              <Sparkles className="h-8 w-8 text-primary" />
+            </div>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">
+              Choose Your <span className="gradient-text">Plan</span>
+            </h1>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Start free, upgrade anytime. All plans include our core AI recipe generation.
+            </p>
+          </div>
+        </AnimatedCard>
 
         {/* Plans */}
-        <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
-          {PLANS.map((plan) => (
-            <Card
-              key={plan.id}
-              className={`relative ${
-                plan.popular ? 'border-primary shadow-lg scale-105' : ''
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                    Most Popular
-                  </span>
-                </div>
+        <div className="grid gap-6 sm:gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+          {PLANS.map((plan, index) => (
+            <AnimatedCard key={plan.id} delay={100 + index * 100}>
+              <Card
+                className={`relative h-full flex flex-col transition-all duration-300 border-2 ${
+                  plan.popular
+                    ? 'border-primary shadow-xl scale-[1.02] bg-gradient-to-b from-primary/5 to-background'
+                    : 'hover:shadow-lg hover:border-primary/50'
+                }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                    <Badge className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-semibold shadow-lg">
+                      <Star className="h-3 w-3 mr-1 fill-current" />
+                      Most Popular
+                    </Badge>
+                  </div>
               )}
 
-              <CardHeader>
-                <div className="flex items-center space-x-2 mb-2">
-                  {plan.icon}
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+              <CardHeader className="pb-4">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className={`p-3 rounded-xl ${
+                    plan.popular ? 'bg-primary/20' : 'bg-muted'
+                  }`}>
+                    <div className={plan.popular ? 'text-primary' : 'text-muted-foreground'}>
+                      {plan.icon}
+                    </div>
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl sm:text-3xl">{plan.name}</CardTitle>
+                    <CardDescription className="mt-1">{plan.description}</CardDescription>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <div className="text-3xl font-bold">{plan.price}</div>
+                <div className="space-y-1 pt-4 border-t">
+                  <div className="text-4xl sm:text-5xl font-bold">{plan.price}</div>
                   <div className="text-sm text-muted-foreground">per month</div>
                 </div>
-                <CardDescription className="pt-2">
-                  {plan.description}
-                </CardDescription>
               </CardHeader>
 
-              <CardContent className="space-y-6">
-                <ul className="space-y-3">
-                  {plan.features.map((feature, index) => (
-                    <li key={index} className="flex items-start space-x-2">
-                      <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
+              <CardContent className="space-y-6 flex-grow flex flex-col">
+                <ul className="space-y-3 flex-grow">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className={`mt-0.5 p-1 rounded ${
+                        plan.popular ? 'bg-primary/10' : 'bg-muted'
+                      }`}>
+                        <Check className={`h-4 w-4 ${
+                          plan.popular ? 'text-primary' : 'text-muted-foreground'
+                        }`} />
+                      </div>
+                      <span className="text-sm leading-relaxed">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 <Button
-                  className="w-full"
+                  className={`w-full group ${
+                    plan.popular
+                      ? 'bg-primary hover:bg-primary/90 shadow-lg'
+                      : ''
+                  }`}
                   variant={plan.popular ? 'default' : 'outline'}
+                  size="lg"
                   onClick={() => handleUpgrade(plan.id, plan.priceId)}
                   disabled={loading || plan.id === currentPlan}
                 >
-                  {plan.id === currentPlan ? plan.cta : plan.id === 'free' ? 'Get Started' : plan.cta}
+                  {plan.id === currentPlan ? (
+                    plan.cta
+                  ) : plan.id === 'free' ? (
+                    'Get Started'
+                  ) : (
+                    <>
+                      {plan.cta}
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </Card>
+          </AnimatedCard>
           ))}
         </div>
 
         {/* FAQ / Additional Info */}
-        <div className="max-w-3xl mx-auto space-y-4 text-center">
-          <p className="text-sm text-muted-foreground">
-            All plans include a 14-day free trial. Cancel anytime. No credit card required for Free plan.
-          </p>
-        </div>
+        <AnimatedCard delay={500}>
+          <Card className="border-2 bg-muted/50">
+            <CardContent className="pt-6">
+              <div className="max-w-3xl mx-auto space-y-4 text-center">
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  All plans include a 14-day free trial. Cancel anytime. No credit card required for Free plan.
+                </p>
+                <div className="flex items-center justify-center gap-6 flex-wrap text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    <span>14-day free trial</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    <span>Cancel anytime</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    <span>No credit card (Free)</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </AnimatedCard>
       </main>
     </div>
   );
