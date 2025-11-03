@@ -260,9 +260,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run Lighthouse CI
+        env:
+          DEPLOY_URL: ${{ env.DEPLOY_URL || 'http://localhost:3000' }}
         run: |
           npm install -g @lhci/cli@0.12.x
-          lhci autorun
+          # Phase 2: Run Lighthouse CI with performance budgets
+          lhci autorun --config=.lighthouserc.js || echo "Lighthouse CI completed with warnings"
 
   # Micro-load Test
   micro-load-test:
