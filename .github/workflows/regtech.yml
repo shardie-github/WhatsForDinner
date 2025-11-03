@@ -1,0 +1,256 @@
+name: RegTech Layer
+
+on:
+  push:
+    branches:
+      - main
+      - 'cursor/**'
+    paths:
+      - 'packages/server/src/routes/privacy.dsar.ts'
+      - 'packages/server/src/jobs/dsarExport.ts'
+      - 'packages/server/src/jobs/erasureRunner.ts'
+      - 'packages/server/src/controls/**'
+      - 'packages/server/src/routes/vendors.ts'
+      - 'packages/server/src/routes/reports.regulatory.ts'
+      - 'packages/server/src/tests/**'
+      - 'apps/web/src/app/privacy/**'
+      - 'apps/web/src/app/admin/**/governance/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'packages/server/src/routes/privacy.dsar.ts'
+      - 'packages/server/src/jobs/dsarExport.ts'
+      - 'packages/server/src/jobs/erasureRunner.ts'
+      - 'packages/server/src/controls/**'
+      - 'packages/server/src/routes/vendors.ts'
+      - 'packages/server/src/routes/reports.regulatory.ts'
+      - 'packages/server/src/tests/**'
+  schedule:
+    # Generate monthly regulatory report
+    - cron: '5 1 1 * *'
+  workflow_dispatch:
+
+jobs:
+  test-dsar:
+    name: Test DSAR Workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run DSAR tests
+        run: pnpm test packages/server/src/tests/dsar.spec.ts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DSAR_VERIFICATION_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ARTIFACTS_BUCKET_URL: /tmp/artifacts
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsar-test-results
+          path: test-results/
+
+  test-controls:
+    name: Test Controls Monitoring
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run controls tests
+        run: pnpm test packages/server/src/tests/controls.spec.ts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          EVIDENCE_IMMUTABLE_BUCKET_URL: /tmp/evidence
+
+      - name: Upload evidence artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: controls-evidence
+          path: /tmp/evidence/
+
+  test-vendors:
+    name: Test Vendor Management
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run vendor tests
+        run: pnpm test packages/server/src/tests/vendors.spec.ts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  controls-dry-run:
+    name: Run Controls Collectors (Dry Run)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Bootstrap controls
+        run: |
+          cd packages/server
+          npx tsx -e "import('./src/controls/ccm.js').then(m => m.bootstrapControls())"
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Run controls check (dry run)
+        run: |
+          cd packages/server
+          npx tsx -e "import('./src/controls/ccm.js').then(m => m.runControlsCheck('daily').then(console.log))"
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          EVIDENCE_IMMUTABLE_BUCKET_URL: /tmp/evidence
+
+      - name: Verify evidence checksums
+        run: |
+          cd /tmp/evidence
+          for file in *.json; do
+            checksum=$(sha256sum "$file" | cut -d' ' -f1)
+            echo "Verified: $file (checksum: $checksum)"
+          done
+
+  verify-evidence:
+    name: Verify Evidence Checksums
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download evidence artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: controls-evidence
+          path: /tmp/evidence
+
+      - name: Verify checksums
+        run: |
+          cd /tmp/evidence
+          for file in *.json; do
+            if [ -f "$file" ]; then
+              checksum=$(sha256sum "$file" | cut -d' ' -f1)
+              echo "File: $file"
+              echo "Checksum: $checksum"
+              echo "---"
+            fi
+          done
+
+  build-dsar-portal:
+    name: Build DSAR Portal
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build web app
+        run: pnpm build:web
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3000
+
+  generate-regulatory-report:
+    name: Generate Monthly Regulatory Report
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate report for previous month
+        run: |
+          cd packages/server
+          LAST_MONTH_START=$(date -d "last month" +%Y-%m-01)
+          LAST_MONTH_END=$(date -d "last month" +%Y-%m-%d)
+          npx tsx -e "
+            import('./src/routes/reports.regulatory.js').then(async m => {
+              const result = await m.generateRegulatoryReport(
+                new Date('$LAST_MONTH_START'),
+                new Date('$LAST_MONTH_END'),
+                'gdpr'
+              );
+              console.log(JSON.stringify(result, null, 2));
+            })
+          "
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ARTIFACTS_BUCKET_URL: /tmp/reports
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: regulatory-report-$(date -d "last month" +%Y-%m)
+          path: /tmp/reports/
+          retention-days: 365
+
+  regtech-summary:
+    name: RegTech Summary
+    runs-on: ubuntu-latest
+    needs: [test-dsar, test-controls, test-vendors, controls-dry-run, verify-evidence, build-dsar-portal]
+    if: always()
+    steps:
+      - name: Print summary
+        run: |
+          echo "## RegTech Layer Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "? DSAR Tests: ${{ needs.test-dsar.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "? Controls Tests: ${{ needs.test-controls.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "? Vendor Tests: ${{ needs.test-vendors.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "? Controls Dry Run: ${{ needs.controls-dry-run.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "? Evidence Verification: ${{ needs.verify-evidence.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "? DSAR Portal Build: ${{ needs.build-dsar-portal.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review controls dashboard for failing controls" >> $GITHUB_STEP_SUMMARY
+          echo "2. Verify evidence artifacts are stored securely" >> $GITHUB_STEP_SUMMARY
+          echo "3. Test DSAR portal at /privacy/requests" >> $GITHUB_STEP_SUMMARY
