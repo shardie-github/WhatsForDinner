@@ -78,6 +78,7 @@
     "posthog-js": "^1.200.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "recharts": "^2.8.0",
     "resend": "^6.2.2",
     "stripe": "^14.21.0",
     "tailwind-merge": "^3.3.1",
