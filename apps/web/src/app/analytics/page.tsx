@@ -5,6 +5,9 @@ import { supabase } from '@/lib/supabaseClient';
 import { analytics } from '@/lib/analytics';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { AnimatedCard } from '@/components/ui/animated-card';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import Navbar from '@/components/Navbar';
 import {
   LineChart,
   Line,
@@ -104,13 +107,11 @@ export default function AnalyticsDashboard() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="space-y-6">
-          <div className="h-8 bg-muted animate-pulse rounded w-64" />
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-32 bg-muted animate-pulse rounded-lg" />
-            ))}
+      <div className="min-h-screen bg-background">
+        <Navbar user={user} />
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <LoadingSpinner size="lg" />
           </div>
         </div>
       </div>
@@ -119,34 +120,51 @@ export default function AnalyticsDashboard() {
 
   if (error || !data) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <Card className="border-destructive/50 bg-destructive/5">
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-2 text-destructive">
-              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-destructive/20">
-                <span className="text-xs font-bold">!</span>
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+        <Navbar user={user} />
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          <Card className="border-destructive/50 bg-destructive/5">
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2 text-destructive">
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-destructive/20">
+                  <span className="text-xs font-bold">!</span>
+                </div>
+                <p className="font-medium">{error || 'No data available'}</p>
               </div>
-              <p className="font-medium">{error || 'No data available'}</p>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 sm:py-8 max-w-7xl space-y-6 sm:space-y-8">
-      {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-3xl sm:text-4xl font-bold text-foreground">Analytics Dashboard</h1>
-        <p className="text-muted-foreground">
-          Track your recipe generation activity and insights
-        </p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <Navbar user={user} />
+      <div className="container mx-auto px-4 py-6 sm:py-12 max-w-7xl space-y-6 sm:space-y-8">
+        {/* Modern Header */}
+        <AnimatedCard delay={0}>
+          <div className="space-y-3 mb-8">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10">
+                <BarChart3 className="h-8 w-8 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-3xl sm:text-5xl font-bold text-foreground">
+                  Analytics <span className="gradient-text">Dashboard</span>
+                </h1>
+                <p className="text-muted-foreground mt-1 text-sm sm:text-base">
+                  Track your recipe generation activity and insights
+                </p>
+              </div>
+            </div>
+          </div>
+        </AnimatedCard>
 
-      {/* Summary Cards */}
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="transition-all hover:shadow-lg">
+        {/* Summary Cards */}
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <AnimatedCard delay={100}>
+            <Card className="card-interactive border-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Recipes</CardTitle>
             <ChefHat className="h-4 w-4 text-muted-foreground" />
@@ -195,14 +213,16 @@ export default function AnalyticsDashboard() {
             <p className="text-xs text-muted-foreground">
               Avg {data.summary.avgCalories} calories
             </p>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+          </AnimatedCard>
+        </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
-        {/* Recipe Generation Over Time */}
-        <Card className="transition-all hover:shadow-lg">
+        {/* Charts Row 1 */}
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+          {/* Recipe Generation Over Time */}
+          <AnimatedCard delay={300}>
+            <Card className="card-interactive border-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
@@ -243,9 +263,11 @@ export default function AnalyticsDashboard() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
+        </AnimatedCard>
 
         {/* Popular Ingredients */}
-        <Card className="transition-all hover:shadow-lg">
+        <AnimatedCard delay={350}>
+          <Card className="card-interactive border-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="h-5 w-5" />
@@ -283,12 +305,14 @@ export default function AnalyticsDashboard() {
             )}
           </CardContent>
         </Card>
-      </div>
+        </AnimatedCard>
+        </div>
 
-      {/* Charts Row 2 */}
-      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
-        {/* Cuisine Preferences */}
-        <Card className="transition-all hover:shadow-lg">
+        {/* Charts Row 2 */}
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+          {/* Cuisine Preferences */}
+          <AnimatedCard delay={400}>
+            <Card className="card-interactive border-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
@@ -335,9 +359,11 @@ export default function AnalyticsDashboard() {
             )}
           </CardContent>
         </Card>
+        </AnimatedCard>
 
         {/* Event Activity */}
-        <Card className="transition-all hover:shadow-lg">
+        <AnimatedCard delay={450}>
+          <Card className="card-interactive border-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
@@ -369,10 +395,12 @@ export default function AnalyticsDashboard() {
             </div>
           </CardContent>
         </Card>
-      </div>
+        </AnimatedCard>
+        </div>
 
-      {/* Popular Ingredients List */}
-      <Card className="transition-all hover:shadow-lg">
+        {/* Popular Ingredients List */}
+        <AnimatedCard delay={500}>
+          <Card className="card-interactive border-2">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5" />
@@ -398,6 +426,8 @@ export default function AnalyticsDashboard() {
           </div>
         </CardContent>
       </Card>
+      </AnimatedCard>
+      </div>
     </div>
   );
 }
