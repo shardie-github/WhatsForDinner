@@ -41,6 +41,16 @@ export async function runSbGuard(options: { fix?: boolean; auditOnly?: boolean }
     ...globFiles('**/*supabase*.sql', []),
   ];
 
+  // Privacy tables that MUST have RLS
+  const privacyTables = [
+    'privacy_prefs',
+    'app_allowlist',
+    'signal_toggles',
+    'telemetry_events',
+    'privacy_transparency_log',
+    'mfa_enforced_sessions',
+  ];
+
   const findings: Array<{ file: string; issue: string; severity: 'high' | 'medium' | 'low' }> = [];
   const tables: string[] = [];
   const views: string[] = [];
@@ -80,6 +90,19 @@ export async function runSbGuard(options: { fix?: boolean; auditOnly?: boolean }
         issue: 'Table missing RLS',
         severity: 'high',
       });
+    }
+
+    // Check privacy tables specifically
+    for (const privacyTable of privacyTables) {
+      if (content.includes(`CREATE TABLE`) && content.includes(privacyTable)) {
+        if (!content.includes(`ALTER TABLE ${privacyTable} ENABLE ROW LEVEL SECURITY`)) {
+          findings.push({
+            file: sqlFile,
+            issue: `Privacy table ${privacyTable} missing RLS (CRITICAL)`,
+            severity: 'high',
+          });
+        }
+      }
     }
 
     // Check for SECURITY DEFINER functions
@@ -166,6 +189,19 @@ CREATE POLICY "${table}_user_delete"
   console.log(`   Tables: ${tables.length}`);
   console.log(`   Views: ${views.length}`);
   console.log(`   Issues: ${findings.length}`);
+
+  // Check privacy compliance
+  console.log('3️⃣ Running privacy compliance checks...');
+  try {
+    execSync('pnpm privacy:compliance', { stdio: 'inherit' });
+  } catch (error) {
+    console.error('❌ Privacy compliance checks failed');
+    findings.push({
+      file: 'privacy-compliance',
+      issue: 'Privacy compliance checks failed',
+      severity: 'high',
+    });
+  }
 
   if (findings.length > 0) {
     console.log('\n❌ Issues found - review audit report');

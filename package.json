@@ -138,7 +138,9 @@
     "ops:benchmark": "tsx ops/cli/index.ts benchmark",
     "ops:lintfix": "tsx ops/cli/index.ts lintfix",
     "ops:docs": "tsx ops/cli/index.ts docs",
-    "ops:changelog": "tsx ops/cli/index.ts changelog"
+    "ops:changelog": "tsx ops/cli/index.ts changelog",
+    "demo:privacy": "tsx scripts/demo-privacy.ts",
+    "privacy:compliance": "tsx scripts/privacy-compliance-check.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"

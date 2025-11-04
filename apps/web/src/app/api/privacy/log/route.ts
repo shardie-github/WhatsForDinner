@@ -6,10 +6,8 @@ import { requireAuth } from '@/lib/auth-middleware';
 import { requireMFA } from '@/lib/privacy/mfa-middleware';
 import crypto from 'crypto';
 
-const signalToggleSchema = z.object({
-  signal_key: z.string(),
-  enabled: z.boolean(),
-  sampling_rate: z.number().min(0).max(1),
+const deleteRequestSchema = z.object({
+  confirm: z.literal(true),
 });
 
 function hashValue(value: unknown): string {
@@ -47,50 +45,33 @@ export async function POST(request: NextRequest) {
     return authResult.response;
   }
 
-  const mfaResult = await requireMFA(request, 'signal_toggles');
+  const mfaResult = await requireMFA(request, 'data_delete');
   if (!mfaResult.success) {
     return mfaResult.response;
   }
 
   const supabase = createRouteHandlerClient({ cookies });
   const body = await request.json();
-  const validated = signalToggleSchema.parse(body);
+  const validated = deleteRequestSchema.parse(body);
 
-  const { data: existingSignal } = await supabase
-    .from('signal_toggles')
-    .select('*')
-    .eq('user_id', mfaResult.userId)
-    .eq('signal_key', validated.signal_key)
-    .single();
-
-  const { data: signal, error } = await supabase
-    .from('signal_toggles')
-    .upsert(
-      {
-        user_id: mfaResult.userId,
-        signal_key: validated.signal_key,
-        enabled: validated.enabled,
-        sampling_rate: validated.sampling_rate.toString(),
-      },
-      { onConflict: 'user_id,signal_key' }
-    )
-    .select()
-    .single();
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  const deletionId = crypto.randomBytes(16).toString('hex');
+  const hardDeleteAt = new Date();
+  hardDeleteAt.setDate(hardDeleteAt.getDate() + 7);
 
   await logPrivacyAction(
     supabase,
     mfaResult.userId,
-    'signal_toggled',
-    'signal_toggles',
-    signal.id,
-    existingSignal,
-    signal,
-    { signal_key: validated.signal_key }
+    'data_deleted',
+    'deletion',
+    deletionId,
+    null,
+    { deletion_id: deletionId, hard_delete_at: hardDeleteAt.toISOString() }
   );
 
-  return NextResponse.json({ success: true, data: signal });
+  return NextResponse.json({
+    success: true,
+    deletionId,
+    hardDeleteAt: hardDeleteAt.toISOString(),
+    message: 'Data deletion scheduled. Hard delete will occur after 7 days.',
+  });
 }

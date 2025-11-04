@@ -6,10 +6,11 @@ import { requireAuth } from '@/lib/auth-middleware';
 import { requireMFA } from '@/lib/privacy/mfa-middleware';
 import crypto from 'crypto';
 
-const signalToggleSchema = z.object({
-  signal_key: z.string(),
+const appAllowlistSchema = z.object({
+  app_id: z.string(),
+  app_name: z.string(),
   enabled: z.boolean(),
-  sampling_rate: z.number().min(0).max(1),
+  scope: z.enum(['metadata_only', 'metadata_plus_usage', 'none']),
 });
 
 function hashValue(value: unknown): string {
@@ -47,32 +48,33 @@ export async function POST(request: NextRequest) {
     return authResult.response;
   }
 
-  const mfaResult = await requireMFA(request, 'signal_toggles');
+  const mfaResult = await requireMFA(request, 'app_allowlist');
   if (!mfaResult.success) {
     return mfaResult.response;
   }
 
   const supabase = createRouteHandlerClient({ cookies });
   const body = await request.json();
-  const validated = signalToggleSchema.parse(body);
+  const validated = appAllowlistSchema.parse(body);
 
-  const { data: existingSignal } = await supabase
-    .from('signal_toggles')
+  const { data: existingApp } = await supabase
+    .from('app_allowlist')
     .select('*')
     .eq('user_id', mfaResult.userId)
-    .eq('signal_key', validated.signal_key)
+    .eq('app_id', validated.app_id)
     .single();
 
-  const { data: signal, error } = await supabase
-    .from('signal_toggles')
+  const { data: app, error } = await supabase
+    .from('app_allowlist')
     .upsert(
       {
         user_id: mfaResult.userId,
-        signal_key: validated.signal_key,
+        app_id: validated.app_id,
+        app_name: validated.app_name,
         enabled: validated.enabled,
-        sampling_rate: validated.sampling_rate.toString(),
+        scope: validated.scope,
       },
-      { onConflict: 'user_id,signal_key' }
+      { onConflict: 'user_id,app_id' }
     )
     .select()
     .single();
@@ -84,13 +86,12 @@ export async function POST(request: NextRequest) {
   await logPrivacyAction(
     supabase,
     mfaResult.userId,
-    'signal_toggled',
-    'signal_toggles',
-    signal.id,
-    existingSignal,
-    signal,
-    { signal_key: validated.signal_key }
+    validated.enabled ? 'app_added' : 'app_removed',
+    'app_allowlist',
+    app.id,
+    existingApp,
+    app
   );
 
-  return NextResponse.json({ success: true, data: signal });
+  return NextResponse.json({ success: true, data: app });
 }

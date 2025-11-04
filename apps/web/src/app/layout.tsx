@@ -10,6 +10,7 @@ import { CoreWebVitals } from '@/components/CoreWebVitals';
 import { PerformanceDashboard } from '@/components/PerformanceDashboard';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { GDPRConsent } from '@/components/GDPRConsent';
+import { PrivacyHUD } from '@/components/privacy/PrivacyHUD';
 import { LiveRegion, SkipToMainContent } from '@/lib/accessibility';
 import { WebsiteStructuredData, OrganizationStructuredData } from '@/components/StructuredData';
 
@@ -210,6 +211,7 @@ export default function RootLayout({
           <CoreWebVitals />
           <PerformanceDashboard compact />
           <GDPRConsent />
+          <PrivacyHUD />
           <WebsiteStructuredData />
           <OrganizationStructuredData />
         </ErrorBoundary>
