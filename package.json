@@ -140,7 +140,10 @@
     "ops:docs": "tsx ops/cli/index.ts docs",
     "ops:changelog": "tsx ops/cli/index.ts changelog",
     "demo:privacy": "tsx scripts/demo-privacy.ts",
-    "privacy:compliance": "tsx scripts/privacy-compliance-check.ts"
+    "privacy:compliance": "tsx scripts/privacy-compliance-check.ts",
+    "guardian:audit": "tsx ops/cli/index.ts guardian:audit",
+    "guardian:verify": "tsx ops/cli/index.ts guardian:verify",
+    "guardian:weekly-report": "tsx packages/server/src/jobs/weeklyGuardianReport.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"
