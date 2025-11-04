@@ -1214,3 +1214,141 @@ export const controlEvidenceRelations = relations(controlEvidence, ({ one }) => 
 export const dpiaRecordsRelations = relations(dpiaRecords, ({ one }) => ({
   processingActivity: one(processingActivities, { fields: [dpiaRecords.processing_activity_id], references: [processingActivities.id] }),
 }));
+
+// ============================================================================
+// PRIVACY-FIRST USAGE MONITORING SCHEMA
+// ============================================================================
+
+// Enums
+export const monitoringScopeEnum = pgEnum('monitoring_scope', ['metadata_only', 'metadata_plus_usage', 'none']);
+export const telemetryEventTypeEnum = pgEnum('telemetry_event_type', ['app_focus', 'app_switch', 'window_change', 'duration', 'interaction']);
+export const transparencyLogActionEnum = pgEnum('transparency_log_action', ['consent_granted', 'consent_revoked', 'app_added', 'app_removed', 'signal_toggled', 'data_exported', 'data_deleted', 'policy_changed', 'mfa_verified', 'session_elevated']);
+
+// Privacy preferences table (per-user)
+export const privacyPrefs = pgTable('privacy_prefs', {
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).primaryKey(),
+  monitoring_enabled: boolean('monitoring_enabled').default(false).notNull(),
+  data_retention_days: integer('data_retention_days').default(14).notNull(),
+  mfa_required: boolean('mfa_required').default(true).notNull(),
+  last_reviewed_at: timestamp('last_reviewed_at', { withTimezone: true }),
+  paused_until: timestamp('paused_until', { withTimezone: true }),
+  kill_switch_active: boolean('kill_switch_active').default(false).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: { index: 'privacy_prefs_user_id_idx', on: [table.user_id] },
+}));
+
+// App allowlist table (per-user)
+export const appAllowlist = pgTable('app_allowlist', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  app_id: text('app_id').notNull(),
+  app_name: text('app_name').notNull(),
+  enabled: boolean('enabled').default(false).notNull(),
+  scope: monitoringScopeEnum('scope').default('metadata_only').notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: { index: 'app_allowlist_user_id_idx', on: [table.user_id] },
+  appIdIdx: { index: 'app_allowlist_app_id_idx', on: [table.app_id] },
+  uniqueUserApp: { unique: true, columns: [table.user_id, table.app_id] },
+}));
+
+// Signal toggles table (per-user)
+export const signalToggles = pgTable('signal_toggles', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  signal_key: text('signal_key').notNull(),
+  enabled: boolean('enabled').default(false).notNull(),
+  sampling_rate: numeric('sampling_rate', { precision: 3, scale: 2 }).default('1.0').notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: { index: 'signal_toggles_user_id_idx', on: [table.user_id] },
+  signalKeyIdx: { index: 'signal_toggles_signal_key_idx', on: [table.signal_key] },
+  uniqueUserSignal: { unique: true, columns: [table.user_id, table.signal_key] },
+}));
+
+// Telemetry events table (per-user, encrypted at rest)
+export const telemetryEvents = pgTable('telemetry_events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  app_id: text('app_id').notNull(),
+  event_type: telemetryEventTypeEnum('event_type').notNull(),
+  duration_ms: integer('duration_ms'),
+  metadata_redacted_json: jsonb('metadata_redacted_json').$type<Record<string, unknown>>().default({}),
+  encrypted_payload: text('encrypted_payload'), // pgcrypto encrypted sensitive fields
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: { index: 'telemetry_events_user_id_idx', on: [table.user_id] },
+  tsIdx: { index: 'telemetry_events_ts_idx', on: [table.ts] },
+  appIdIdx: { index: 'telemetry_events_app_id_idx', on: [table.app_id] },
+  userTsIdx: { index: 'telemetry_events_user_ts_idx', on: [table.user_id, table.ts] },
+}));
+
+// Privacy transparency log table (per-user, immutable append-only)
+export const privacyTransparencyLog = pgTable('privacy_transparency_log', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  action: transparencyLogActionEnum('action').notNull(),
+  actor_id: uuid('actor_id').references(() => users.id, { onDelete: 'set null' }),
+  entity_type: text('entity_type'),
+  entity_id: uuid('entity_id'),
+  old_value_hash: text('old_value_hash'),
+  new_value_hash: text('new_value_hash'),
+  metadata: jsonb('metadata').$type<Record<string, unknown>>().default({}),
+  ts: timestamp('ts', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: { index: 'privacy_transparency_log_user_id_idx', on: [table.user_id] },
+  tsIdx: { index: 'privacy_transparency_log_ts_idx', on: [table.ts] },
+  actionIdx: { index: 'privacy_transparency_log_action_idx', on: [table.action] },
+}));
+
+// MFA enforced sessions table
+export const mfaEnforcedSessions = pgTable('mfa_enforced_sessions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  session_token: text('session_token').notNull().unique(),
+  expires_at: timestamp('expires_at', { withTimezone: true }).notNull(),
+  action_type: text('action_type').notNull(),
+  verified_at: timestamp('verified_at', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: { index: 'mfa_enforced_sessions_user_id_idx', on: [table.user_id] },
+  sessionTokenIdx: { index: 'mfa_enforced_sessions_session_token_idx', on: [table.session_token] },
+  expiresAtIdx: { index: 'mfa_enforced_sessions_expires_at_idx', on: [table.expires_at] },
+}));
+
+// Relations for privacy tables
+export const privacyPrefsRelations = relations(privacyPrefs, ({ one, many }) => ({
+  user: one(users, { fields: [privacyPrefs.user_id], references: [users.id] }),
+  appAllowlist: many(appAllowlist),
+  signalToggles: many(signalToggles),
+  telemetryEvents: many(telemetryEvents),
+  transparencyLog: many(privacyTransparencyLog),
+  mfaSessions: many(mfaEnforcedSessions),
+}));
+
+export const appAllowlistRelations = relations(appAllowlist, ({ one }) => ({
+  user: one(users, { fields: [appAllowlist.user_id], references: [users.id] }),
+}));
+
+export const signalTogglesRelations = relations(signalToggles, ({ one }) => ({
+  user: one(users, { fields: [signalToggles.user_id], references: [users.id] }),
+}));
+
+export const telemetryEventsRelations = relations(telemetryEvents, ({ one }) => ({
+  user: one(users, { fields: [telemetryEvents.user_id], references: [users.id] }),
+}));
+
+export const privacyTransparencyLogRelations = relations(privacyTransparencyLog, ({ one }) => ({
+  user: one(users, { fields: [privacyTransparencyLog.user_id], references: [users.id] }),
+  actor: one(users, { fields: [privacyTransparencyLog.actor_id], references: [users.id] }),
+}));
+
+export const mfaEnforcedSessionsRelations = relations(mfaEnforcedSessions, ({ one }) => ({
+  user: one(users, { fields: [mfaEnforcedSessions.user_id], references: [users.id] }),
+}));

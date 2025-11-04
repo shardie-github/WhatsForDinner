@@ -6,10 +6,10 @@ import { requireAuth } from '@/lib/auth-middleware';
 import { requireMFA } from '@/lib/privacy/mfa-middleware';
 import crypto from 'crypto';
 
-const signalToggleSchema = z.object({
-  signal_key: z.string(),
-  enabled: z.boolean(),
-  sampling_rate: z.number().min(0).max(1),
+const consentSchema = z.object({
+  monitoring_enabled: z.boolean(),
+  data_retention_days: z.number().int().min(1).max(365),
+  mfa_required: z.boolean(),
 });
 
 function hashValue(value: unknown): string {
@@ -47,32 +47,32 @@ export async function POST(request: NextRequest) {
     return authResult.response;
   }
 
-  const mfaResult = await requireMFA(request, 'signal_toggles');
+  const mfaResult = await requireMFA(request, 'consent_update');
   if (!mfaResult.success) {
     return mfaResult.response;
   }
 
   const supabase = createRouteHandlerClient({ cookies });
   const body = await request.json();
-  const validated = signalToggleSchema.parse(body);
+  const validated = consentSchema.parse(body);
 
-  const { data: existingSignal } = await supabase
-    .from('signal_toggles')
+  const { data: existingPrefs } = await supabase
+    .from('privacy_prefs')
     .select('*')
     .eq('user_id', mfaResult.userId)
-    .eq('signal_key', validated.signal_key)
     .single();
 
-  const { data: signal, error } = await supabase
-    .from('signal_toggles')
+  const { data: prefs, error } = await supabase
+    .from('privacy_prefs')
     .upsert(
       {
         user_id: mfaResult.userId,
-        signal_key: validated.signal_key,
-        enabled: validated.enabled,
-        sampling_rate: validated.sampling_rate.toString(),
+        monitoring_enabled: validated.monitoring_enabled,
+        data_retention_days: validated.data_retention_days,
+        mfa_required: validated.mfa_required,
+        last_reviewed_at: new Date().toISOString(),
       },
-      { onConflict: 'user_id,signal_key' }
+      { onConflict: 'user_id' }
     )
     .select()
     .single();
@@ -84,13 +84,12 @@ export async function POST(request: NextRequest) {
   await logPrivacyAction(
     supabase,
     mfaResult.userId,
-    'signal_toggled',
-    'signal_toggles',
-    signal.id,
-    existingSignal,
-    signal,
-    { signal_key: validated.signal_key }
+    validated.monitoring_enabled ? 'consent_granted' : 'consent_revoked',
+    'privacy_prefs',
+    mfaResult.userId,
+    existingPrefs,
+    prefs
   );
 
-  return NextResponse.json({ success: true, data: signal });
+  return NextResponse.json({ success: true, data: prefs });
 }
