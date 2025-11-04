@@ -1,0 +1,172 @@
+# GitHub Actions Workflow: Architectural Integrity Tests
+# Runs on every PR to enforce architectural guardrails and prevent drift
+# This workflow ensures the system maintains its intended architecture
+
+name: Architectural Integrity Tests
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  architectural-integrity:
+    name: Validate Architectural Integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for drift detection
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '9.0.0'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Step 1: Run Guardrails Validation
+      - name: Run Architectural Guardrails
+        id: guardrails
+        run: |
+          echo "🔍 Validating architectural guardrails..."
+          ./infra/selfcheck/validate-guardrails.sh || exit 1
+        continue-on-error: false
+
+      # Step 2: Lint Check (ensures code quality)
+      - name: Lint Check
+        id: lint
+        run: |
+          echo "🔍 Running linter..."
+          pnpm lint || exit 1
+        continue-on-error: false
+
+      # Step 3: Schema Validation
+      - name: Validate Database Schema
+        id: schema
+        run: |
+          echo "🔍 Validating database schema consistency..."
+          node infra/selfcheck/validate-migrations.js || exit 1
+        continue-on-error: false
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      # Step 4: API Contract Tests
+      - name: Validate API Contracts
+        id: contracts
+        run: |
+          echo "🔍 Validating API contracts..."
+          if [ -f "openapi.yaml" ]; then
+            node infra/selfcheck/validate-api-contracts.js || exit 1
+          else
+            echo "⚠️  OpenAPI spec not found - skipping contract validation"
+            echo "Consider generating OpenAPI spec to enable contract tests"
+          fi
+        continue-on-error: false
+
+      # Step 5: Check for Circular Dependencies
+      - name: Check Circular Dependencies
+        id: circular-deps
+        run: |
+          echo "🔍 Checking for circular dependencies..."
+          node infra/selfcheck/check-circular-deps.js || exit 1
+        continue-on-error: false
+
+      # Step 6: Environment Validation
+      - name: Validate Environment Schema
+        id: env-schema
+        run: |
+          echo "🔍 Validating environment variable schema..."
+          if [ -f "packages/config/src/env.ts" ]; then
+            node infra/selfcheck/validate-env-completeness.js || exit 1
+          else
+            echo "⚠️  Environment validation schema not found"
+            echo "Consider creating packages/config/src/env.ts with Zod schema"
+            exit 1
+          fi
+        continue-on-error: false
+
+      # Step 7: Check for Architectural Drift
+      - name: Detect Architectural Drift
+        id: drift
+        run: |
+          echo "🔍 Detecting architectural drift..."
+          node infra/selfcheck/detect-drift.js || exit 0  # Non-blocking, informational
+        continue-on-error: true
+
+      # Step 8: Generate Intent Report
+      - name: Generate Architectural Intent Report
+        id: report
+        if: always()
+        run: |
+          echo "📊 Generating architectural integrity report..."
+          node infra/selfcheck/generate-intent-report.js > intent-report.md || true
+        continue-on-error: true
+
+      # Step 9: Post Results as PR Comment
+      - name: Comment PR with Results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let comment = '## 🔍 Architectural Integrity Test Results\n\n';
+            
+            const steps = [
+              { id: 'guardrails', name: 'Guardrails Validation' },
+              { id: 'lint', name: 'Lint Check' },
+              { id: 'schema', name: 'Schema Validation' },
+              { id: 'contracts', name: 'API Contracts' },
+              { id: 'circular-deps', name: 'Circular Dependencies' },
+              { id: 'env-schema', name: 'Environment Schema' },
+            ];
+            
+            let allPassed = true;
+            for (const step of steps) {
+              const status = '${{ steps.' + step.id + '.outcome }}';
+              const emoji = status === 'success' ? '✅' : '❌';
+              comment += `${emoji} **${step.name}**: ${status}\n`;
+              if (status !== 'success') allPassed = false;
+            }
+            
+            if (fs.existsSync('intent-report.md')) {
+              comment += '\n### 📊 Detailed Report\n\n';
+              comment += '```\n' + fs.readFileSync('intent-report.md', 'utf8') + '\n```\n';
+            }
+            
+            if (allPassed) {
+              comment += '\n✅ **All architectural integrity checks passed!**';
+            } else {
+              comment += '\n❌ **Some architectural integrity checks failed. Please review.**';
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      # Step 10: Fail if critical checks failed
+      - name: Fail on Critical Issues
+        if: |
+          steps.guardrails.outcome == 'failure' ||
+          steps.env-schema.outcome == 'failure' ||
+          steps.schema.outcome == 'failure'
+        run: |
+          echo "❌ Critical architectural integrity checks failed!"
+          echo "This PR cannot be merged until these issues are resolved."
+          exit 1

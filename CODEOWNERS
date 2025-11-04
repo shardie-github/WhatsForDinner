@@ -1,38 +1,100 @@
 # CODEOWNERS
 # This file defines who owns which parts of the codebase
+# Generated based on dependency graph and architectural criticality
 
 # Global owners
 * @team-leads @senior-developers
 
-# Core application code
-/apps/web/ @frontend-team @team-leads
-/apps/mobile/ @mobile-team @team-leads
-/packages/ @platform-team @team-leads
+# === CRITICAL: Core Application Code ===
+# These modules are critical paths - require architecture review
+/apps/web/ @frontend-team @team-leads @architecture-council
+/apps/mobile/ @mobile-team @team-leads @architecture-council
 
-# Infrastructure
-/infra/ @devops-team @team-leads
-/scripts/ @platform-team @devops-team
+# === CRITICAL: Server Package (SPOF risks) ===
+# High priority - contains queue, jobs, auth - architecture review required
+/packages/server/ @backend-team @team-leads @architecture-council
+/packages/server/src/queue/ @backend-team @team-leads @architecture-council @sre-team
+/packages/server/src/db/ @backend-team @database-team @team-leads @architecture-council
 
-# Documentation
-*.md @docs-team @team-leads
-/docs/ @docs-team
+# === CRITICAL: Configuration (env validation) ===
+# Environment validation is critical - changes require careful review
+/packages/config/ @platform-team @team-leads @architecture-council
+packages/config/src/env.ts @platform-team @team-leads @architecture-council
 
-# Configuration files
-package.json @platform-team
-tsconfig.json @platform-team
-turbo.json @platform-team
+# === CRITICAL: Observability (SLO tracking) ===
+# System intelligence and monitoring - critical for operations
+/packages/server/src/observability/ @sre-team @team-leads
+/src/observability/ @sre-team @team-leads
+packages/server/src/observability/slo.ts @sre-team @team-leads @architecture-council
 
-# Security-related files
+# === CRITICAL: Shared Packages ===
+# Changes affect all apps - require coordination
+/packages/ui/ @frontend-team @platform-team @team-leads
+/packages/utils/ @platform-team @team-leads
+/packages/theme/ @design-team @platform-team @team-leads
+
+# === CRITICAL: Infrastructure & Guardrails ===
+# Architectural integrity checks - critical for system health
+/infra/ @devops-team @team-leads @architecture-council
+/infra/selfcheck/ @devops-team @team-leads @architecture-council @sre-team
+infra/selfcheck/guardrails.yaml @devops-team @team-leads @architecture-council
+
+# === CRITICAL: API Routes (contract changes) ===
+# API contract changes require coordination with frontend
+/apps/web/src/app/api/ @backend-team @frontend-team @team-leads
+/apps/web/src/app/api/stripe/ @backend-team @team-leads @finance-team
+/apps/web/src/app/api/health/ @sre-team @team-leads
+
+# === CRITICAL: Database & Migrations ===
+# Schema changes require database team review
+/supabase/ @database-team @backend-team @team-leads @architecture-council
+/supabase/migrations/ @database-team @team-leads @architecture-council
+master_supabase_schema.sql @database-team @team-leads @architecture-council
+
+# === CRITICAL: Security ===
+# Security-related changes require security team review
 SECURITY_CHECKLIST.md @security-team @team-leads
 SECURITY_AUDIT.md @security-team @team-leads
-scripts/security-*.js @security-team
+scripts/security-*.js @security-team @team-leads
+scripts/secrets-scan.mjs @security-team @team-leads
 
-# Database
-/supabase/ @backend-team @database-team
+# === CRITICAL: System Intelligence & Living Architecture ===
+# Changes to system intelligence map require architecture review
+/src/observability/system_intelligence_map.json @architecture-council @team-leads
+/docs/LIVING_ARCHITECTURE_GUIDE.md @architecture-council @team-leads @docs-team
+/docs/audit/ @architecture-council @team-leads
 
-# Tests
-/tests/ @qa-team @team-leads
-*.test.* @qa-team
-
-# CI/CD
+# === HIGH: CI/CD & Workflows ===
+# CI changes affect all developers
 .github/ @devops-team @team-leads
+.github/workflows/ @devops-team @team-leads
+.github/workflows/ci-intent-tests.yml @devops-team @team-leads @architecture-council
+
+# === HIGH: Tests ===
+# Test changes require QA review
+/tests/ @qa-team @team-leads
+*.test.* @qa-team @team-leads
+tests/self_reflection.test.js @qa-team @architecture-council @team-leads
+
+# === HIGH: Documentation ===
+# Documentation changes require docs team review
+/docs/ @docs-team @team-leads
+*.md @docs-team @team-leads
+/docs/ONBOARDING.md @docs-team @team-leads @architecture-council
+
+# === MEDIUM: Scripts ===
+# Build and utility scripts
+/scripts/ @platform-team @devops-team @team-leads
+
+# === MEDIUM: Configuration Files ===
+# Build and tooling configuration
+package.json @platform-team @team-leads
+tsconfig.json @platform-team
+turbo.json @platform-team @team-leads
+pnpm-workspace.yaml @platform-team @team-leads
+
+# === SLO Monitoring Configuration ===
+# SLO changes require SRE team review
+infra/selfcheck/slo-monitors.yml @sre-team @team-leads
+alerts.yml @sre-team @team-leads
+prometheus.yml @sre-team @team-leads
