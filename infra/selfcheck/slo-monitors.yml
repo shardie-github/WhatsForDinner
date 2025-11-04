@@ -1,0 +1,263 @@
+# SLO Monitoring Configuration
+# Auto-generated synthetic monitors for top 3 SLOs from audit
+# Based on docs/audit/OPS_SLO_RUNBOOK_SEEDS.md
+
+version: "1.0"
+generated: "2025-01-27"
+source: "docs/audit/OPS_SLO_RUNBOOK_SEEDS.md"
+
+# Top 3 SLOs from audit (highest priority)
+slos:
+  # SLO 1: API Availability (99.9% uptime)
+  api_availability:
+    name: "API Availability"
+    description: "99.9% of API requests should succeed"
+    target: 0.999  # 99.9%
+    window: "30d"
+    error_budget: 0.001  # 0.1% = 43.2 minutes/month
+    
+    # Metrics
+    metric: "http_requests_total"
+    success_metric: "http_requests_success_total"
+    failure_metric: "http_requests_failure_total"
+    
+    # Synthetic monitors
+    monitors:
+      - name: "API Health Check Monitor"
+        type: "http"
+        endpoint: "/api/health"
+        interval: "1m"
+        timeout: "5s"
+        expected_status: [200]
+        expected_body: '{"status":"healthy"}'
+        
+      - name: "API Readiness Monitor"
+        type: "http"
+        endpoint: "/api/health/ready"
+        interval: "1m"
+        timeout: "10s"
+        expected_status: [200]
+        expected_body_contains: '"status":"ready"'
+        
+      - name: "Critical API Endpoints"
+        type: "http"
+        endpoints:
+          - "/api/user/me"
+          - "/api/subscriptions/active"
+        interval: "5m"
+        timeout: "10s"
+        expected_status: [200, 401]  # 401 is OK for unauthenticated
+        auth_required: true
+    
+    # Alerting
+    alerts:
+      - name: "API Availability Below SLO"
+        condition: "availability < 0.999"
+        severity: "critical"
+        window: "1h"
+        action: "page_oncall"
+        
+      - name: "API Availability Approaching Budget"
+        condition: "error_budget_remaining < 0.1"
+        severity: "warning"
+        window: "24h"
+        action: "notify_slack"
+
+  # SLO 2: API Latency (p95 < 500ms, p99 < 1000ms)
+  api_latency:
+    name: "API Latency"
+    description: "95th percentile latency < 500ms, 99th percentile < 1000ms"
+    target:
+      p95: 500  # milliseconds
+      p99: 1000  # milliseconds
+    window: "7d"
+    error_budget: 0.05  # 5% of requests can exceed thresholds
+    
+    # Metrics
+    metric: "http_request_duration_seconds"
+    percentiles: [0.50, 0.90, 0.95, 0.99]
+    
+    # Synthetic monitors
+    monitors:
+      - name: "API Latency Monitor"
+        type: "http"
+        endpoint: "/api/health"
+        interval: "1m"
+        timeout: "5s"
+        measure_latency: true
+        max_latency_p95: 500
+        max_latency_p99: 1000
+        
+      - name: "Critical Path Latency"
+        type: "http"
+        endpoints:
+          - "/api/user/me"
+          - "/api/subscriptions/active"
+          - "/api/mealplan/current"
+        interval: "5m"
+        measure_latency: true
+        max_latency_p95: 500
+        auth_required: true
+    
+    # Alerting
+    alerts:
+      - name: "API Latency Exceeding SLO"
+        condition: "p95_latency > 500 OR p99_latency > 1000"
+        severity: "warning"
+        window: "15m"
+        action: "notify_slack"
+        
+      - name: "API Latency Critical"
+        condition: "p95_latency > 1000 OR p99_latency > 2000"
+        severity: "critical"
+        window: "5m"
+        action: "page_oncall"
+
+  # SLO 3: Queue Processing (99% of jobs processed within 5 minutes)
+  queue_processing:
+    name: "Queue Processing"
+    description: "99% of background jobs processed within 5 minutes"
+    target: 0.99  # 99%
+    window: "7d"
+    error_budget: 0.01  # 1% of jobs can exceed 5 minutes
+    max_job_duration: 300  # 5 minutes in seconds
+    
+    # Metrics
+    metric: "queue_job_duration_seconds"
+    success_metric: "queue_jobs_completed_total"
+    failure_metric: "queue_jobs_failed_total"
+    
+    # Job types to monitor
+    job_types:
+      - "mealgen"  # Meal generation
+      - "digest"   # Email digests
+      - "journeys" # User journeys
+      - "dsar_export"  # GDPR exports
+    
+    # Synthetic monitors
+    monitors:
+      - name: "Queue Health Monitor"
+        type: "http"
+        endpoint: "/api/health/queue"
+        interval: "1m"
+        timeout: "5s"
+        expected_status: [200]
+        expected_body_contains: '"status":"healthy"'
+        
+      - name: "Queue Backlog Monitor"
+        type: "metric"
+        metric: "queue_jobs_pending_total"
+        threshold: 1000
+        condition: "value > 1000"
+        severity: "warning"
+        
+      - name: "Queue Worker Status"
+        type: "http"
+        endpoint: "/api/health/queue"
+        interval: "1m"
+        check_fields:
+          - "worker.status == 'running'"
+          - "queue.pending < 1000"
+    
+    # Alerting
+    alerts:
+      - name: "Queue Processing Below SLO"
+        condition: "success_rate < 0.99"
+        severity: "critical"
+        window: "1h"
+        action: "page_oncall"
+        
+      - name: "Queue Backlog Growing"
+        condition: "pending_jobs > 1000"
+        severity: "warning"
+        window: "15m"
+        action: "notify_slack"
+        
+      - name: "Queue Worker Down"
+        condition: "worker_status != 'running'"
+        severity: "critical"
+        window: "1m"
+        action: "page_oncall"
+
+# Additional monitors from audit findings
+additional_monitors:
+  # Database Health
+  database_health:
+    name: "Database Health"
+    type: "http"
+    endpoint: "/api/health/db"
+    interval: "1m"
+    timeout: "10s"
+    expected_status: [200]
+    check_fields:
+      - "database.connection == 'ok'"
+      - "database.latency_ms < 200"
+    
+  # Redis Health (via queue endpoint)
+  redis_health:
+    name: "Redis Health"
+    type: "http"
+    endpoint: "/api/health/queue"
+    interval: "1m"
+    timeout: "5s"
+    expected_status: [200]
+    check_fields:
+      - "queue.redis == 'ok'"
+    
+  # Payment Processing (critical path)
+  payment_processing:
+    name: "Payment Processing Health"
+    type: "http"
+    endpoint: "/api/stripe/webhook"
+    method: "POST"
+    interval: "5m"
+    timeout: "10s"
+    # Note: This is a webhook endpoint, may need special handling
+    expected_status: [200, 400]  # 400 is OK for invalid webhooks
+    
+# Monitoring Stack Configuration
+monitoring_stack:
+  metrics_backend: "prometheus"
+  logs_backend: "loki"
+  traces_backend: "tempo"
+  dashboard_backend: "grafana"
+  
+  # Prometheus scrape config
+  scrape_configs:
+    - job_name: "api"
+      scrape_interval: "15s"
+      metrics_path: "/api/observability/metrics"
+      
+    - job_name: "queue"
+      scrape_interval: "30s"
+      metrics_path: "/api/observability/metrics"
+  
+  # Alertmanager config
+  alertmanager:
+    enabled: true
+    config_file: "alerts.yml"
+    receivers:
+      - name: "oncall"
+        type: "pagerduty"  # or "opsgenie", "slack"
+      - name: "slack"
+        type: "slack"
+        channel: "#alerts"
+
+# Implementation Notes
+implementation:
+  # Where to implement these monitors
+  scripts:
+    - "infra/selfcheck/slo-monitor-runner.js"  # Synthetic monitor runner
+    - "scripts/slo-tracking.js"  # SLO calculation and tracking
+  
+  # Integration points
+  integration:
+    prometheus: "packages/server/src/observability/metrics.ts"
+    health_endpoints: "apps/web/src/app/api/health/**"
+    slo_tracking: "packages/server/src/observability/slo.ts"
+  
+  # Deployment
+  deployment:
+    synthetic_monitors: "Run as cron job or GitHub Actions workflow"
+    metric_collection: "Prometheus scrapes from /api/observability/metrics"
+    alerting: "Alertmanager routes to PagerDuty/Slack"

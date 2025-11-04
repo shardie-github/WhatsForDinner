@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "created": "2025-01-27",
+  "drift_history": [],
+  "recurring_findings": [],
+  "guardrail_status": {
+    "implemented": [
+      "living-architecture-guide-exists"
+    ],
+    "planned": [
+      "no-redis-spof",
+      "no-queue-worker-spof",
+      "env-validation-schema",
+      "health-endpoints-exist",
+      "circuit-breaker-pattern",
+      "dead-letter-queue",
+      "type-safe-job-registry"
+    ],
+    "missing": [
+      "no-single-migration-dir",
+      "api-contract-spec",
+      "input-validation-middleware"
+    ]
+  }
+}

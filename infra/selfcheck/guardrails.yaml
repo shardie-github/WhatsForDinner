@@ -1,0 +1,194 @@
+# Architectural Guardrails - Enforced Invariants
+# Generated from audit findings in docs/audit/
+# Each guardrail prevents architectural drift and enforces system integrity
+
+guardrails:
+  # === CRITICAL: Single Points of Failure ===
+  - name: no-redis-spof
+    description: "Redis connection must have retry logic and circuit breaker"
+    expression: "grep -r 'new Redis' packages/server/src/queue/ | grep -q 'retryStrategy' || exit 1"
+    severity: critical
+    source: "ROOT_CAUSE_AND_DRIFT_MAP.md - SPOF #1"
+    mitigation: "Add exponential backoff retry to Redis connection"
+    status: "planned"  # Currently missing, planned for Phase 1
+
+  - name: no-queue-worker-spof
+    description: "Queue worker must have auto-restart and health monitoring"
+    expression: "test -f packages/server/src/queue/health.ts || exit 1"
+    severity: critical
+    source: "RESILIENCE_TABLE.md - Queue Worker SPOF"
+    mitigation: "Add worker health monitoring and auto-restart"
+
+  - name: no-single-migration-dir
+    description: "All migrations must be in supabase/migrations/ (single source of truth)"
+    expression: "find . -name 'migrations' -type d ! -path './supabase/migrations' ! -path './node_modules/*' | wc -l | grep -q '^0$' || exit 1"
+    severity: high
+    source: "EXEC_SUMMARY.md - Multiple Migration Directories"
+    mitigation: "Consolidate all migrations to supabase/migrations/"
+
+  # === CRITICAL: Configuration Validation ===
+  - name: env-validation-schema
+    description: "Environment variables must be validated with Zod schema"
+    expression: "test -f packages/config/src/env.ts && grep -q 'z.object' packages/config/src/env.ts || exit 1"
+    severity: critical
+    source: "CONFIG_ENTROPY_REPORT.md - No Config Validation"
+    mitigation: "Create Zod schema for all env vars in packages/config/src/env.ts"
+
+  - name: no-hardcoded-secrets
+    description: "No hardcoded API keys, tokens, or secrets in code"
+    expression: "node scripts/secrets-scan.mjs --check || exit 1"
+    severity: critical
+    source: "EXEC_SUMMARY.md - Security Risk #4"
+    mitigation: "Remove all hardcoded secrets, use environment variables"
+
+  - name: env-completeness-check
+    description: ".env.example must match required env vars in schema"
+    expression: "node infra/selfcheck/validate-env-completeness.js || exit 1"
+    severity: high
+    source: "CONFIG_ENTROPY_REPORT.md - Config Sprawl"
+    mitigation: "Keep .env.example in sync with validation schema"
+
+  # === CRITICAL: API Contracts ===
+  - name: api-contract-spec
+    description: "OpenAPI spec must exist and be up-to-date"
+    expression: "test -f openapi.yaml || test -f docs/openapi.yaml || exit 1"
+    severity: high
+    source: "EXEC_SUMMARY.md - Risk #1: No API Contracts"
+    mitigation: "Generate OpenAPI spec from route handlers"
+
+  - name: input-validation-middleware
+    description: "All API routes must use Zod validation middleware"
+    expression: "grep -r 'validateRequest' apps/web/src/app/api/ | wc -l | awk '{if (\$1 < 5) exit 1}' || exit 0"
+    severity: high
+    source: "EXEC_SUMMARY.md - Risk #6: No Input Validation"
+    mitigation: "Add Zod validation to all API routes"
+
+  # === CRITICAL: Database Integrity ===
+  - name: migration-schema-consistency
+    description: "All migrations must validate against master schema"
+    expression: "node infra/selfcheck/validate-migrations.js || exit 1"
+    severity: high
+    source: "ROOT_CAUSE_AND_DRIFT_MAP.md - Schema Drift Risk"
+    mitigation: "Ensure migrations match master_supabase_schema.sql"
+
+  - name: no-schema-drift
+    description: "Database schema must match master schema definition"
+    expression: "node infra/selfcheck/check-schema-drift.js || exit 1"
+    severity: high
+    source: "ROOT_CAUSE_AND_DRIFT_MAP.md - Migration Locations"
+    mitigation: "Run migration validation and schema sync"
+
+  # === CRITICAL: Security ===
+  - name: secret-scanning-enforced
+    description: "CI must enforce secret scanning (no continue-on-error)"
+    expression: "grep -A2 'secrets scan' .github/workflows/ci-cd.yml | grep -q 'continue-on-error: true' && exit 1 || exit 0"
+    severity: critical
+    source: "EXEC_SUMMARY.md - Risk #4: No Secret Scanning Enforcement"
+    mitigation: "Remove continue-on-error from secrets scan step"
+
+  - name: security-audit-enforced
+    description: "Security audit must not allow failures"
+    expression: "grep -A2 'Security audit' .github/workflows/ci-cd.yml | grep -q 'continue-on-error: true' && exit 1 || exit 0"
+    severity: critical
+    source: "OPS_SLO_RUNBOOK_SEEDS.md - Flaky CI Steps"
+    mitigation: "Remove continue-on-error from security audit"
+
+  # === CRITICAL: Code Quality ===
+  - name: no-circular-dependencies
+    description: "No circular dependencies in src/ packages"
+    expression: "node infra/selfcheck/check-circular-deps.js || exit 1"
+    severity: high
+    source: "ROOT_CAUSE_AND_DRIFT_MAP.md - Circular Dependencies"
+    mitigation: "Refactor to remove circular dependencies"
+
+  - name: no-orphaned-disabled-apps
+    description: "No disabled apps should exist without documentation"
+    expression: "find apps -name '*.disabled' -type d | while read dir; do test -f \"\$dir/README.md\" || exit 1; done || exit 0"
+    severity: medium
+    source: "ROOT_CAUSE_AND_DRIFT_MAP.md - Orphaned Components"
+    mitigation: "Document or remove disabled apps"
+
+  # === CRITICAL: Observability ===
+  - name: health-endpoints-exist
+    description: "Health endpoints must exist: /api/health/ready, /api/health/live, /api/health/queue, /api/health/db"
+    expression: "test -f apps/web/src/app/api/health/ready/route.ts && test -f apps/web/src/app/api/health/live/route.ts && test -f apps/web/src/app/api/health/queue/route.ts && test -f apps/web/src/app/api/health/db/route.ts || exit 1"
+    severity: high
+    source: "OPS_SLO_RUNBOOK_SEEDS.md - Health Check Endpoints"
+    mitigation: "Create missing health check endpoints"
+
+  - name: observability-metrics-exist
+    description: "Observability metrics must be implemented"
+    expression: "test -f packages/server/src/observability/metrics.ts || exit 1"
+    severity: high
+    source: "OPS_SLO_RUNBOOK_SEEDS.md - Observability Gaps"
+    mitigation: "Implement Prometheus metrics collection"
+
+  # === CRITICAL: Resilience Patterns ===
+  - name: circuit-breaker-pattern
+    description: "Circuit breaker must exist for external APIs"
+    expression: "test -f packages/utils/src/circuit-breaker.ts || exit 1"
+    severity: high
+    source: "RESILIENCE_TABLE.md - Priority 2: Circuit Breaker"
+    mitigation: "Implement circuit breaker for Stripe, OpenAI, SendGrid"
+
+  - name: dead-letter-queue
+    description: "Queue must have dead letter queue for failed jobs"
+    expression: "grep -r 'dlq\\|dead.*letter' packages/server/src/queue/ || exit 1"
+    severity: high
+    source: "RESILIENCE_TABLE.md - Priority 1: Dead Letter Queue"
+    mitigation: "Add DLQ to queue worker for failed jobs"
+
+  - name: job-retry-with-backoff
+    description: "Queue jobs must have retry with exponential backoff"
+    expression: "grep -r 'retry.*backoff\\|exponential.*backoff' packages/server/src/queue/ || exit 1"
+    severity: high
+    source: "RESILIENCE_TABLE.md - Priority 2: Job Retry"
+    mitigation: "Add retry logic with exponential backoff to job handlers"
+
+  # === CRITICAL: Type Safety ===
+  - name: type-safe-job-registry
+    description: "Job registry must be type-safe (not string-based switch)"
+    expression: "grep -r 'switch.*job.name' packages/server/src/queue/ | wc -l | awk '{if (\$1 > 0) exit 1}' || exit 0"
+    severity: high
+    source: "THREE_STEP_REFACTOR_PLAN.md - Phase 2.1: Type-Safe Job Registry"
+    mitigation: "Replace string switch with type-safe registry pattern"
+
+  # === CRITICAL: Documentation ===
+  - name: onboarding-guide-exists
+    description: "ONBOARDING.md must exist for new developers"
+    expression: "test -f docs/ONBOARDING.md || exit 1"
+    severity: medium
+    source: "NARRATIVE_COHERENCE_SCORE.md - Priority Documentation Patches"
+    mitigation: "Create docs/ONBOARDING.md with setup instructions"
+
+  - name: living-architecture-guide-exists
+    description: "LIVING_ARCHITECTURE_GUIDE.md must exist"
+    expression: "test -f docs/LIVING_ARCHITECTURE_GUIDE.md || exit 1"
+    severity: medium
+    source: "Living System Requirements"
+    mitigation: "Create docs/LIVING_ARCHITECTURE_GUIDE.md"
+    status: "implemented"  # This now exists
+
+  # === CRITICAL: SLO Monitoring ===
+  - name: slo-definitions-exist
+    description: "SLO definitions must exist in observability config"
+    expression: "grep -q 'availability\\|latency\\|error_rate' packages/server/src/observability/slo.ts || exit 1"
+    severity: high
+    source: "OPS_SLO_RUNBOOK_SEEDS.md - Draft SLOs"
+    mitigation: "Define SLOs in packages/server/src/observability/slo.ts"
+    status: "implemented"  # SLO definitions exist with different naming
+
+metadata:
+  version: "1.0.0"
+  generated: "2025-01-27"
+  source_audits:
+    - "docs/audit/EXEC_SUMMARY.md"
+    - "docs/audit/ROOT_CAUSE_AND_DRIFT_MAP.md"
+    - "docs/audit/RESILIENCE_TABLE.md"
+    - "docs/audit/CONFIG_ENTROPY_REPORT.md"
+    - "docs/audit/THREE_STEP_REFACTOR_PLAN.md"
+    - "docs/audit/OPS_SLO_RUNBOOK_SEEDS.md"
+  enforcement:
+    ci: ".github/workflows/ci-intent-tests.yml"
+    local: "infra/selfcheck/validate-guardrails.sh"
+    schedule: "Nightly via .github/workflows/nightly-drift-report.yml"

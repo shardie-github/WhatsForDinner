@@ -1,0 +1,515 @@
+{
+  "version": "1.0.0",
+  "generated": "2025-01-27",
+  "description": "System Intelligence Map - Links modules to business goals, resilience dependencies, and architectural intent",
+  "source_audits": [
+    "docs/audit/EXEC_SUMMARY.md",
+    "docs/audit/ROOT_CAUSE_AND_DRIFT_MAP.md",
+    "docs/audit/RESILIENCE_TABLE.md",
+    "docs/audit/NARRATIVE_COHERENCE_SCORE.md"
+  ],
+  
+  "business_goals": {
+    "meal_planning": {
+      "id": "goal_001",
+      "description": "Enable users to generate personalized meal plans",
+      "priority": "critical",
+      "dependencies": [
+        "module_ai_meal_generation",
+        "module_user_preferences",
+        "module_database"
+      ],
+      "resilience_requirements": [
+        "circuit_breaker_openai",
+        "fallback_cached_recipes",
+        "queue_processing_slo"
+      ]
+    },
+    "subscription_management": {
+      "id": "goal_002",
+      "description": "Process and manage user subscriptions",
+      "priority": "critical",
+      "dependencies": [
+        "module_stripe_integration",
+        "module_payment_webhooks",
+        "module_database"
+      ],
+      "resilience_requirements": [
+        "idempotency_keys",
+        "webhook_validation",
+        "circuit_breaker_stripe",
+        "dead_letter_queue"
+      ]
+    },
+    "user_authentication": {
+      "id": "goal_003",
+      "description": "Secure user authentication and session management",
+      "priority": "critical",
+      "dependencies": [
+        "module_supabase_auth",
+        "module_session_management",
+        "module_database"
+      ],
+      "resilience_requirements": [
+        "token_refresh_retry",
+        "session_persistence",
+        "auth_fallback"
+      ]
+    },
+    "background_jobs": {
+      "id": "goal_004",
+      "description": "Process background jobs (emails, digests, exports)",
+      "priority": "high",
+      "dependencies": [
+        "module_queue_worker",
+        "module_redis",
+        "module_job_handlers"
+      ],
+      "resilience_requirements": [
+        "worker_auto_restart",
+        "dead_letter_queue",
+        "job_retry_backoff",
+        "queue_health_monitoring"
+      ]
+    },
+    "data_analytics": {
+      "id": "goal_005",
+      "description": "Track user behavior and system metrics",
+      "priority": "medium",
+      "dependencies": [
+        "module_analytics",
+        "module_observability",
+        "module_database"
+      ],
+      "resilience_requirements": [
+        "non_blocking_analytics",
+        "analytics_queue",
+        "metric_aggregation"
+      ]
+    }
+  },
+  
+  "modules": {
+    "module_web_app": {
+      "id": "module_web_app",
+      "path": "apps/web",
+      "type": "application",
+      "description": "Next.js PWA web application",
+      "business_goals": ["goal_001", "goal_002", "goal_003"],
+      "dependencies": [
+        "module_server_package",
+        "module_ui_package",
+        "module_utils_package"
+      ],
+      "resilience_dependencies": [
+        "health_endpoints",
+        "error_boundaries",
+        "offline_support"
+      ],
+      "critical_paths": [
+        "user_flow_auth",
+        "user_flow_meal_planning",
+        "user_flow_payment"
+      ],
+      "spof_risks": [],
+      "guardrails": [
+        "no-hardcoded-secrets",
+        "input-validation-middleware",
+        "api-contract-spec"
+      ]
+    },
+    
+    "module_mobile_app": {
+      "id": "module_mobile_app",
+      "path": "apps/mobile",
+      "type": "application",
+      "description": "Expo React Native mobile application",
+      "business_goals": ["goal_001", "goal_003"],
+      "dependencies": [
+        "module_server_package",
+        "module_ui_package",
+        "module_utils_package"
+      ],
+      "resilience_dependencies": [
+        "offline_support",
+        "error_boundaries",
+        "network_retry"
+      ],
+      "critical_paths": [
+        "user_flow_auth",
+        "user_flow_meal_planning"
+      ],
+      "spof_risks": [],
+      "guardrails": [
+        "no-hardcoded-secrets"
+      ]
+    },
+    
+    "module_server_package": {
+      "id": "module_server_package",
+      "path": "packages/server",
+      "type": "package",
+      "description": "Backend services (jobs, queue, routes, auth)",
+      "business_goals": ["goal_001", "goal_002", "goal_003", "goal_004"],
+      "dependencies": [
+        "module_database",
+        "module_redis",
+        "module_queue_worker"
+      ],
+      "resilience_dependencies": [
+        "connection_retry",
+        "circuit_breaker",
+        "query_timeout",
+        "dead_letter_queue"
+      ],
+      "critical_paths": [
+        "queue_processing",
+        "api_route_handling",
+        "job_execution"
+      ],
+      "spof_risks": [
+        {
+          "component": "Redis Connection",
+          "risk": "high",
+          "mitigation": "exponential_backoff_retry",
+          "status": "planned"
+        },
+        {
+          "component": "Queue Worker",
+          "risk": "high",
+          "mitigation": "auto_restart_health_monitoring",
+          "status": "planned"
+        }
+      ],
+      "guardrails": [
+        "no-redis-spof",
+        "no-queue-worker-spof",
+        "type-safe-job-registry",
+        "dead-letter-queue"
+      ]
+    },
+    
+    "module_queue_worker": {
+      "id": "module_queue_worker",
+      "path": "packages/server/src/queue",
+      "type": "service",
+      "description": "Background job queue worker using BullMQ",
+      "business_goals": ["goal_004"],
+      "dependencies": [
+        "module_redis",
+        "module_job_handlers"
+      ],
+      "resilience_dependencies": [
+        "worker_auto_restart",
+        "dead_letter_queue",
+        "job_retry_backoff",
+        "health_monitoring"
+      ],
+      "critical_paths": [
+        "job_processing",
+        "job_failure_handling"
+      ],
+      "spof_risks": [
+        {
+          "component": "Single Worker Process",
+          "risk": "high",
+          "mitigation": "worker_redundancy",
+          "status": "planned"
+        }
+      ],
+      "guardrails": [
+        "no-queue-worker-spof",
+        "dead-letter-queue",
+        "job-retry-with-backoff"
+      ]
+    },
+    
+    "module_database": {
+      "id": "module_database",
+      "path": "packages/server/src/db",
+      "type": "service",
+      "description": "Supabase database client and queries",
+      "business_goals": ["goal_001", "goal_002", "goal_003"],
+      "dependencies": [
+        "supabase_infrastructure"
+      ],
+      "resilience_dependencies": [
+        "connection_pooling",
+        "query_timeout",
+        "read_replica_fallback"
+      ],
+      "critical_paths": [
+        "user_data_queries",
+        "subscription_queries",
+        "meal_plan_queries"
+      ],
+      "spof_risks": [
+        {
+          "component": "Single Connection Pool",
+          "risk": "medium",
+          "mitigation": "connection_pool_config",
+          "status": "planned"
+        }
+      ],
+      "guardrails": [
+        "migration-schema-consistency",
+        "no-schema-drift"
+      ]
+    },
+    
+    "module_ai_meal_generation": {
+      "id": "module_ai_meal_generation",
+      "path": "apps/web/src/app/api/mealplan/ai-generate",
+      "type": "service",
+      "description": "AI-powered meal generation using OpenAI",
+      "business_goals": ["goal_001"],
+      "dependencies": [
+        "module_openai_api"
+      ],
+      "resilience_dependencies": [
+        "circuit_breaker_openai",
+        "rate_limit_handling",
+        "fallback_cached_recipes",
+        "feature_flag_kill_switch"
+      ],
+      "critical_paths": [
+        "meal_generation_request",
+        "ai_api_call"
+      ],
+      "spof_risks": [
+        {
+          "component": "OpenAI API",
+          "risk": "medium",
+          "mitigation": "circuit_breaker_fallback",
+          "status": "planned"
+        }
+      ],
+      "guardrails": [
+        "circuit-breaker-pattern"
+      ]
+    },
+    
+    "module_stripe_integration": {
+      "id": "module_stripe_integration",
+      "path": "apps/web/src/app/api/stripe",
+      "type": "service",
+      "description": "Stripe payment processing and webhooks",
+      "business_goals": ["goal_002"],
+      "dependencies": [
+        "module_stripe_api"
+      ],
+      "resilience_dependencies": [
+        "idempotency_keys",
+        "webhook_validation",
+        "circuit_breaker_stripe",
+        "payment_retry"
+      ],
+      "critical_paths": [
+        "payment_processing",
+        "webhook_handling",
+        "subscription_management"
+      ],
+      "spof_risks": [
+        {
+          "component": "Stripe API",
+          "risk": "high",
+          "mitigation": "circuit_breaker_idempotency",
+          "status": "planned"
+        }
+      ],
+      "guardrails": [
+        "circuit-breaker-pattern",
+        "input-validation-middleware"
+      ]
+    },
+    
+    "module_config": {
+      "id": "module_config",
+      "path": "packages/config",
+      "type": "package",
+      "description": "Configuration management and environment validation",
+      "business_goals": [],
+      "dependencies": [],
+      "resilience_dependencies": [
+        "env_validation",
+        "startup_validation"
+      ],
+      "critical_paths": [
+        "app_startup",
+        "config_loading"
+      ],
+      "spof_risks": [
+        {
+          "component": "Environment Config",
+          "risk": "high",
+          "mitigation": "zod_validation_schema",
+          "status": "planned"
+        }
+      ],
+      "guardrails": [
+        "env-validation-schema",
+        "env-completeness-check"
+      ]
+    },
+    
+    "module_observability": {
+      "id": "module_observability",
+      "path": "packages/server/src/observability",
+      "type": "package",
+      "description": "Metrics, logs, traces, and SLO tracking",
+      "business_goals": ["goal_005"],
+      "dependencies": [],
+      "resilience_dependencies": [
+        "non_blocking_logging",
+        "metric_aggregation"
+      ],
+      "critical_paths": [
+        "metric_collection",
+        "log_aggregation"
+      ],
+      "spof_risks": [],
+      "guardrails": [
+        "observability-metrics-exist",
+        "slo-definitions-exist"
+      ]
+    }
+  },
+  
+  "resilience_patterns": {
+    "circuit_breaker_openai": {
+      "pattern": "circuit_breaker",
+      "implementation": "packages/utils/src/circuit-breaker.ts",
+      "status": "planned",
+      "protects": ["module_ai_meal_generation"],
+      "threshold": 5,
+      "timeout": 60000
+    },
+    "circuit_breaker_stripe": {
+      "pattern": "circuit_breaker",
+      "implementation": "packages/utils/src/circuit-breaker.ts",
+      "status": "planned",
+      "protects": ["module_stripe_integration"],
+      "threshold": 5,
+      "timeout": 60000
+    },
+    "dead_letter_queue": {
+      "pattern": "dead_letter_queue",
+      "implementation": "packages/server/src/queue/index.ts",
+      "status": "planned",
+      "protects": ["module_queue_worker"],
+      "max_retries": 3
+    },
+    "exponential_backoff_retry": {
+      "pattern": "exponential_backoff",
+      "implementation": "packages/server/src/queue/index.ts",
+      "status": "planned",
+      "protects": ["module_queue_worker", "module_server_package"],
+      "max_attempts": 3,
+      "base_delay": 1000
+    },
+    "connection_pooling": {
+      "pattern": "connection_pooling",
+      "implementation": "packages/server/src/db/index.ts",
+      "status": "planned",
+      "protects": ["module_database"],
+      "min_connections": 2,
+      "max_connections": 20
+    }
+  },
+  
+  "critical_paths": {
+    "user_flow_auth": {
+      "description": "User authentication flow",
+      "modules": ["module_web_app", "module_server_package", "module_database"],
+      "resilience_requirements": ["token_refresh_retry", "session_persistence"],
+      "slo": "api_availability"
+    },
+    "user_flow_meal_planning": {
+      "description": "Meal plan generation flow",
+      "modules": ["module_web_app", "module_ai_meal_generation", "module_database"],
+      "resilience_requirements": ["circuit_breaker_openai", "fallback_cached_recipes"],
+      "slo": "api_latency"
+    },
+    "user_flow_payment": {
+      "description": "Payment processing flow",
+      "modules": ["module_web_app", "module_stripe_integration", "module_database"],
+      "resilience_requirements": ["idempotency_keys", "circuit_breaker_stripe"],
+      "slo": "api_availability"
+    },
+    "queue_processing": {
+      "description": "Background job processing",
+      "modules": ["module_queue_worker", "module_redis"],
+      "resilience_requirements": ["dead_letter_queue", "job_retry_backoff"],
+      "slo": "queue_processing"
+    }
+  },
+  
+  "architectural_intent": {
+    "no_spof": {
+      "description": "No single points of failure in critical paths",
+      "status": "partially_implemented",
+      "remaining_work": [
+        "Add Redis retry logic",
+        "Add queue worker redundancy",
+        "Add connection pooling"
+      ]
+    },
+    "type_safety": {
+      "description": "Type-safe codebase with validation at boundaries",
+      "status": "partially_implemented",
+      "remaining_work": [
+        "Type-safe job registry",
+        "Zod validation for all API routes",
+        "Environment variable validation"
+      ]
+    },
+    "observability": {
+      "description": "Full observability with metrics, logs, traces, and SLOs",
+      "status": "partially_implemented",
+      "remaining_work": [
+        "Implement Prometheus metrics",
+        "Add structured logging",
+        "Implement distributed tracing",
+        "Set up SLO tracking"
+      ]
+    },
+    "resilience": {
+      "description": "System gracefully handles failures with circuit breakers and fallbacks",
+      "status": "planned",
+      "remaining_work": [
+        "Implement circuit breakers",
+        "Add dead letter queue",
+        "Add retry logic with backoff",
+        "Add fallback strategies"
+      ]
+    },
+    "documentation": {
+      "description": "Living documentation that stays in sync with code",
+      "status": "in_progress",
+      "remaining_work": [
+        "Create ONBOARDING.md",
+        "Generate OpenAPI spec",
+        "Create architecture diagrams",
+        "Document critical paths"
+      ]
+    }
+  },
+  
+  "evolution_tracking": {
+    "drift_detection": {
+      "enabled": true,
+      "schedule": "nightly",
+      "workflow": ".github/workflows/nightly-drift-report.yml"
+    },
+    "learning": {
+      "enabled": true,
+      "storage": "infra/selfcheck/drift-history.json",
+      "purpose": "Track recurring findings and suggest rule updates"
+    },
+    "governance": {
+      "pr_template": ".github/pull_request_template.md",
+      "codeowners": ".github/CODEOWNERS",
+      "architecture_council": "Required for architectural changes"
+    }
+  }
+}

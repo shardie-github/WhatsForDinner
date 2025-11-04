@@ -1,0 +1,154 @@
+# Nightly Architectural Drift Report
+# Runs daily to detect architectural drift and regenerate system intelligence
+name: Nightly Drift Report
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 2 AM UTC daily
+  workflow_dispatch:
+
+jobs:
+  drift-report:
+    name: Generate Architectural Drift Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for comparison
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '9.0.0'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Step 1: Run all guardrails
+      - name: Run Architectural Guardrails
+        id: guardrails
+        run: |
+          echo "🔍 Running guardrails validation..."
+          ./infra/selfcheck/validate-guardrails.sh > guardrails-report.txt 2>&1 || true
+        continue-on-error: true
+
+      # Step 2: Detect drift
+      - name: Detect Architectural Drift
+        id: drift
+        run: |
+          echo "🔍 Detecting architectural drift..."
+          node infra/selfcheck/detect-drift.js > drift-report.txt 2>&1 || true
+        continue-on-error: true
+
+      # Step 3: Regenerate System Intelligence Map (if needed)
+      - name: Validate System Intelligence Map
+        id: map
+        run: |
+          echo "🔍 Validating system intelligence map..."
+          node -e "const map = require('./src/observability/system_intelligence_map.json'); console.log('Map version:', map.version);"
+        continue-on-error: true
+
+      # Step 4: Generate comprehensive report
+      - name: Generate Drift Report
+        id: report
+        run: |
+          echo "# Nightly Architectural Drift Report" > drift-summary.md
+          echo "" >> drift-summary.md
+          echo "**Generated:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> drift-summary.md
+          echo "" >> drift-summary.md
+          
+          echo "## Guardrails Status" >> drift-summary.md
+          if [ -f guardrails-report.txt ]; then
+            echo '```' >> drift-summary.md
+            cat guardrails-report.txt >> drift-summary.md
+            echo '```' >> drift-summary.md
+          else
+            echo "No guardrails report generated." >> drift-summary.md
+          fi
+          
+          echo "" >> drift-summary.md
+          echo "## Drift Detection" >> drift-summary.md
+          if [ -f drift-report.txt ]; then
+            echo '```' >> drift-summary.md
+            cat drift-report.txt >> drift-summary.md
+            echo '```' >> drift-summary.md
+          else
+            echo "No drift detected or report not generated." >> drift-summary.md
+          fi
+          
+          echo "" >> drift-summary.md
+          echo "## System Intelligence Map Status" >> drift-summary.md
+          if [ -f src/observability/system_intelligence_map.json ]; then
+            echo "✅ System intelligence map exists" >> drift-summary.md
+            node -e "const map = require('./src/observability/system_intelligence_map.json'); console.log('Version:', map.version);" >> drift-summary.md 2>&1 || echo "⚠️  Could not parse map" >> drift-summary.md
+          else
+            echo "❌ System intelligence map not found" >> drift-summary.md
+          fi
+
+      # Step 5: Track drift history
+      - name: Update Drift History
+        id: history
+        run: |
+          echo "📊 Updating drift history..."
+          mkdir -p infra/selfcheck
+          
+          # Create or update drift history
+          if [ ! -f infra/selfcheck/drift-history.json ]; then
+            echo '{"drift_history": [], "recurring_findings": []}' > infra/selfcheck/drift-history.json
+          fi
+          
+          # Add current run to history
+          node -e "
+            const fs = require('fs');
+            const history = JSON.parse(fs.readFileSync('infra/selfcheck/drift-history.json', 'utf8'));
+            history.drift_history.push({
+              date: new Date().toISOString(),
+              guardrails_failed: $(grep -c 'FAILED' guardrails-report.txt 2>/dev/null || echo 0),
+              drift_detected: $(test -s drift-report.txt && echo 'true' || echo 'false')
+            });
+            fs.writeFileSync('infra/selfcheck/drift-history.json', JSON.stringify(history, null, 2));
+          " || true
+        continue-on-error: true
+
+      # Step 6: Post report (if configured)
+      - name: Post Report to Slack
+        if: always()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🔍 Nightly Architectural Drift Report",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Nightly Architectural Drift Report*\n\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Full Report>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true
+
+      # Step 7: Upload artifacts
+      - name: Upload Reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: drift-report-${{ github.run_number }}
+          path: |
+            drift-summary.md
+            guardrails-report.txt
+            drift-report.txt
+          retention-days: 30
