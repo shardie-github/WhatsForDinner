@@ -124,7 +124,8 @@
     "remediation:audit:product": "node scripts/audit_product_manager.mjs",
     "remediation:audit:gtm": "node scripts/audit_gtm_growth.mjs",
     "remediation:audit:finance": "node scripts/audit_financial_forecast.mjs",
-    "remediation:audit:governance": "node scripts/audit_governance_compliance.mjs"
+    "remediation:audit:governance": "node scripts/audit_governance_compliance.mjs",
+    "ops": "tsx ops/cli.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"
@@ -137,7 +138,16 @@
     "openai": "^6.7.0",
     "@octokit/rest": "^20.0.2",
     "glob": "^11.0.0",
-    "tsx": "^4.20.6"
+    "tsx": "^4.20.6",
+    "@opentelemetry/sdk-node": "^0.54.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.55.0",
+    "@opentelemetry/resources": "^1.28.0",
+    "@opentelemetry/semantic-conventions": "^1.28.0",
+    "@opentelemetry/exporter-otlp-http": "^0.54.1",
+    "@opentelemetry/sdk-metrics": "^1.28.0",
+    "@playwright/test": "^1.40.0",
+    "zod": "^3.22.4",
+    "stripe": "^14.21.0"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
