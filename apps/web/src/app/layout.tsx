@@ -10,6 +10,8 @@ import { CoreWebVitals } from '@/components/CoreWebVitals';
 import { PerformanceDashboard } from '@/components/PerformanceDashboard';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { GDPRConsent } from '@/components/GDPRConsent';
+import { LiveRegion, SkipToMainContent } from '@/lib/accessibility';
+import { WebsiteStructuredData, OrganizationStructuredData } from '@/components/StructuredData';
 
 // Phase 2: Initialize intelligent prefetching
 if (typeof window !== 'undefined') {
@@ -156,6 +158,8 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${poppins.variable} ${playfair.variable} font-sans antialiased`}>
+        <SkipToMainContent />
+        <LiveRegion />
         <ErrorBoundary>
           <ThemeProvider>
             <div className="min-h-screen bg-background text-foreground safe-area-inset">
@@ -172,7 +176,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </header>
-              <main className="flex-1 pb-safe-area-inset-bottom">
+              <main id="main-content" className="flex-1 pb-safe-area-inset-bottom">
                 {children}
               </main>
               <footer className="border-t bg-background safe-area-inset-bottom">
@@ -206,6 +210,8 @@ export default function RootLayout({
           <CoreWebVitals />
           <PerformanceDashboard compact />
           <GDPRConsent />
+          <WebsiteStructuredData />
+          <OrganizationStructuredData />
         </ErrorBoundary>
       </body>
     </html>
