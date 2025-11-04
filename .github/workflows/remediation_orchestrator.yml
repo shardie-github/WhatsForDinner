@@ -1,0 +1,81 @@
+name: Investor & Growth Remediation (Auto-PRs)
+
+on:
+  workflow_dispatch:
+  pull_request:
+  schedule:
+    - cron: "0 4 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node & Python
+        uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+
+      - name: Install CLI helpers
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq moreutils
+          sudo apt-get install -y gh
+          gh --version
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          pnpm install --ignore-scripts || npm ci --ignore-scripts || true
+
+      - name: Ensure helper scripts exist
+        run: |
+          mkdir -p infra/fixes docs/audit_investor_suite docs/audit_investor_suite/PR_PLANS
+          chmod +x infra/fixes/_apply_and_stage.sh infra/fixes/_open_prs.sh 2>/dev/null || true
+
+      - name: Run Diagnosis & Generate Fix Scripts/Plans
+        run: |
+          echo "Running full audit & generating PR plans/fix scripts..."
+          node scripts/orchestrate_remediation.mjs
+        env:
+          NODE_ENV: production
+
+      - name: Open PRs per unresolved issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash infra/fixes/_open_prs.sh .
+        continue-on-error: true
+
+      - name: Run Validation
+        run: |
+          node scripts/validate_remediation.mjs || true
+        continue-on-error: true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: remediation-artifacts
+          path: |
+            docs/audit_investor_suite/**
+            infra/fixes/**
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Comment PR summary (if PR)
+        if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: docs/audit_investor_suite/EXEC_SUMMARY_FIXED.md
+          comment_tag: remediation_orchestrator_summary
+          continue_on_error: true

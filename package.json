@@ -117,7 +117,14 @@
     "wiring:inventory": "tsx tools/wiring/env_inventory.ts",
     "wiring:contracts": "vitest run packages/testing/contracts",
     "wiring:test:jobs": "vitest run packages/testing/e2e/jobs.spec.ts",
-    "wiring:report": "node -e \"console.log(require('./reports/connectivity/connectivity.json'))\""
+    "wiring:report": "node -e \"console.log(require('./reports/connectivity/connectivity.json'))\"",
+    "remediation:orchestrate": "node scripts/orchestrate_remediation.mjs",
+    "remediation:validate": "node scripts/validate_remediation.mjs",
+    "remediation:audit:tech": "node scripts/audit_investor_technical.mjs",
+    "remediation:audit:product": "node scripts/audit_product_manager.mjs",
+    "remediation:audit:gtm": "node scripts/audit_gtm_growth.mjs",
+    "remediation:audit:finance": "node scripts/audit_financial_forecast.mjs",
+    "remediation:audit:governance": "node scripts/audit_governance_compliance.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"
