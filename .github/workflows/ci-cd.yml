@@ -48,8 +48,7 @@ jobs:
       - name: Security audit
         run: |
           cd apps/web
-          node scripts/generate-security-audit.js || true
-        continue-on-error: true
+          node scripts/generate-security-audit.js
 
       - name: Dependency vulnerability scan
         run: pnpm audit --audit-level=moderate || true
@@ -374,5 +373,5 @@ jobs:
         with:
           status: ${{ job.status }}
           channel: '#deployments'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL || secrets.SLACK_WEBHOOK }}
         if: always()
