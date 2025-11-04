@@ -1,0 +1,181 @@
+name: Final Assurance → Release (Gated)
+
+on:
+  workflow_dispatch:
+    inputs:
+      semver_bump:
+        description: 'Semver bump type (major/minor/patch)'
+        required: false
+        default: 'patch'
+  schedule:
+    - cron: "0 5 * * *"
+
+permissions:
+  contents: write
+  pull-requests: read
+
+env:
+  READINESS_THRESHOLD: "90"
+
+jobs:
+  verify-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Tooling
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq moreutils zip
+          pipx install cyclonedx-bom || true
+          pipx ensurepath || true
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Ensure governance docs
+        run: |
+          test -f SECURITY.md || echo "# Security Policy
+
+## Reporting a Vulnerability
+
+Please report security vulnerabilities via GitHub Security Advisories.
+Do not create public issues for security vulnerabilities.
+
+## Security Best Practices
+
+- No secrets in repository
+- Rotate credentials immediately upon suspicion of compromise
+- Responsible disclosure appreciated" > SECURITY.md
+          
+          mkdir -p .github
+          test -f .github/CODEOWNERS || cp CODEOWNERS .github/CODEOWNERS 2>/dev/null || echo "* @repo-maintainers" > .github/CODEOWNERS
+          
+          test -f SUPPORT.md || echo "# Support
+
+## Getting Help
+
+- Use GitHub Issues for bugs and feature requests
+- For emergencies, tag maintainers in Issues
+- Check documentation in /docs directory" > SUPPORT.md
+          
+          test -f .github/FUNDING.yml || echo "github: []
+custom: []" > .github/FUNDING.yml
+
+      - name: Compute readiness
+        run: |
+          python3 infra/release/compute_readiness.py || echo "Readiness below threshold"
+
+      - name: Generate closure summary
+        run: |
+          python3 infra/release/generate_closure_summary.py
+        continue-on-error: true
+
+      - name: Stop if readiness below threshold
+        id: gate
+        run: |
+          SCORE=$(jq -r '.score' docs/audit_investor_suite/READINESS.json 2>/dev/null || echo 0)
+          BLOCKERS=$(jq -r '.critical_blockers // 0' docs/audit_investor_suite/READINESS.json 2>/dev/null || echo 0)
+          GATE_PASSES=$(jq -r '.gate_passes // false' docs/audit_investor_suite/READINESS.json 2>/dev/null || echo false)
+          
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+          echo "blockers=$BLOCKERS" >> $GITHUB_OUTPUT
+          echo "gate_passes=$GATE_PASSES" >> $GITHUB_OUTPUT
+          
+          if [ "$GATE_PASSES" != "true" ]; then
+            echo "Readiness $SCORE < ${READINESS_THRESHOLD} or $BLOCKERS blocker(s); refusing release."
+            exit 0
+          fi
+          
+          echo "Gate passed: score=$SCORE, blockers=$BLOCKERS"
+
+      - name: Generate changelog and bundle
+        if: steps.gate.outputs.gate_passes == 'true'
+        run: |
+          bash infra/release/changelog.sh
+          bash infra/release/bundle_release.sh
+
+      - name: Compute next tag
+        id: semver
+        if: steps.gate.outputs.gate_passes == 'true'
+        run: |
+          TYPE="${{ github.event.inputs.semver_bump || 'patch' }}"
+          TAG=$(bash infra/release/semver_next.sh "$TYPE")
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Next tag: $TAG"
+
+      - name: Create tag
+        if: steps.gate.outputs.gate_passes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.semver.outputs.tag }}" -m "Release ${{ steps.semver.outputs.tag }} – Final Assurance"
+          git push origin "${{ steps.semver.outputs.tag }}"
+
+      - name: Publish GitHub Release
+        if: steps.gate.outputs.gate_passes == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.semver.outputs.tag }}
+          name: ${{ steps.semver.outputs.tag }} – Final Assurance
+          body_path: RELEASE_NOTES.md
+          files: |
+            dist/investor_pack.zip
+            dist/SBOM/*
+            dist/SHA256SUMS.txt
+          draft: false
+          prerelease: false
+
+      - name: Seed vNext roadmap
+        if: steps.gate.outputs.gate_passes == 'true'
+        run: |
+          cat > NEXT_MILESTONES.md << 'EOF'
+# vNext Milestones
+
+## Hardening & Stability
+- [ ] Performance budget enforcement
+- [ ] Additional test coverage
+- [ ] Security hardening passes
+
+## GTM Experiments
+- [ ] Channel mix optimization
+- [ ] Conversion funnel improvements
+- [ ] Customer segmentation refinement
+
+## Compliance Tasks
+- [ ] SOC 2 Type II preparation
+- [ ] Additional regulatory certifications
+- [ ] Privacy policy updates
+
+## Technical Debt
+- [ ] Architecture refactoring
+- [ ] Dependency updates
+- [ ] Documentation improvements
+EOF
+          git add NEXT_MILESTONES.md CHANGELOG.md RELEASE_NOTES.md dist/** || true
+          git commit -m "chore(release): add NEXT_MILESTONES & artifacts" || true
+          git push || true
+
+      - name: Upload closure report
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-closure
+          path: |
+            docs/audit_investor_suite/PROJECT_CLOSURE_SUMMARY.md
+            docs/audit_investor_suite/READINESS.json
+            CHANGELOG.md
+            RELEASE_NOTES.md
+            dist/**
+          if-no-files-found: warn
+          retention-days: 60
