@@ -3,7 +3,7 @@
 ## Executive Summary
 
 **Status**: ✅ Complete  
-**Dependencies Audited**: 399  
+**Dependencies Audited**: 555  
 **Compliance Rate**: 0.00%  
 **Vulnerabilities Found**: 0  
 **Critical Issues**: 0
@@ -14,7 +14,7 @@
 |----------|-------|------------|
 | ✅ Approved | 0 | 0.0% |
 | ⚠️ Restricted | 0 | 0.0% |
-| ❓ Unknown | 399 | 100.0% |
+| ❓ Unknown | 555 | 100.0% |
 
 ## Security Vulnerabilities
 
@@ -23,11 +23,11 @@
 ## Recommendations
 
 
-### 1. Clarify licenses for 399 packages
+### 1. Clarify licenses for 555 packages
 - **Priority**: MEDIUM
 - **Action**: Manually verify license compatibility
 
-### 2. Consolidate 79 duplicate package versions
+### 2. Consolidate 108 duplicate package versions
 - **Priority**: MEDIUM
 - **Action**: Use pnpm resolutions to standardize versions
 

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-27T02:35:52.034Z",
+  "timestamp": "2025-11-04T03:08:27.556Z",
   "packages": [
     {
       "name": "@supabase/supabase-js",
@@ -1118,6 +1118,18 @@
       "type": "dependency"
     },
     {
+      "name": "react-native-css-interop",
+      "version": "^0.2.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@babel/runtime",
+      "version": "^7.23.0",
+      "location": "apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
       "name": "solito",
       "version": "^4.0.0",
       "location": "apps/mobile/package.json",
@@ -1204,6 +1216,12 @@
     {
       "name": "jest-expo",
       "version": "~52.0.0",
+      "location": "apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "react-native-worklets",
+      "version": "^0.4.0",
       "location": "apps/mobile/package.json",
       "type": "devDependency"
     },
@@ -1478,26 +1496,68 @@
       "type": "devDependency"
     },
     {
-      "name": "@whats-for-dinner/ui",
-      "version": "workspace:*",
+      "name": "@capacitor-community/http",
+      "version": "^1.4.1",
       "location": "apps/web/package.json",
       "type": "dependency"
     },
     {
-      "name": "@whats-for-dinner/utils",
-      "version": "workspace:*",
+      "name": "@capacitor/app",
+      "version": "^7.1.0",
       "location": "apps/web/package.json",
       "type": "dependency"
     },
     {
-      "name": "@whats-for-dinner/theme",
-      "version": "workspace:*",
+      "name": "@capacitor/app-launcher",
+      "version": "^7.0.2",
       "location": "apps/web/package.json",
       "type": "dependency"
     },
     {
-      "name": "@whats-for-dinner/config",
-      "version": "workspace:*",
+      "name": "@capacitor/browser",
+      "version": "^7.0.2",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@capacitor/haptics",
+      "version": "^7.0.2",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@capacitor/keyboard",
+      "version": "^7.0.3",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@capacitor/local-notifications",
+      "version": "^7.0.3",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@capacitor/preferences",
+      "version": "^7.0.2",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@capacitor/push-notifications",
+      "version": "^7.0.3",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@capacitor/splash-screen",
+      "version": "^7.0.3",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@capacitor/status-bar",
+      "version": "^7.0.3",
       "location": "apps/web/package.json",
       "type": "dependency"
     },
@@ -1532,18 +1592,6 @@
       "type": "dependency"
     },
     {
-      "name": "@supabase/auth-helpers-nextjs",
-      "version": "^0.10.0",
-      "location": "apps/web/package.json",
-      "type": "dependency"
-    },
-    {
-      "name": "@supabase/auth-helpers-react",
-      "version": "^0.5.0",
-      "location": "apps/web/package.json",
-      "type": "dependency"
-    },
-    {
       "name": "@sentry/nextjs",
       "version": "^8.55.0",
       "location": "apps/web/package.json",
@@ -1556,6 +1604,18 @@
       "type": "dependency"
     },
     {
+      "name": "@supabase/auth-helpers-nextjs",
+      "version": "^0.10.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/auth-helpers-react",
+      "version": "^0.5.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
       "name": "@supabase/supabase-js",
       "version": "^2.76.1",
       "location": "apps/web/package.json",
@@ -1564,6 +1624,30 @@
     {
       "name": "@tanstack/react-query",
       "version": "^5.17.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/config",
+      "version": "workspace:*",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/theme",
+      "version": "workspace:*",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/ui",
+      "version": "workspace:*",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@whats-for-dinner/utils",
+      "version": "workspace:*",
       "location": "apps/web/package.json",
       "type": "dependency"
     },
@@ -1622,6 +1706,12 @@
       "type": "dependency"
     },
     {
+      "name": "recharts",
+      "version": "^2.8.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
       "name": "resend",
       "version": "^6.2.2",
       "location": "apps/web/package.json",
@@ -1646,10 +1736,46 @@
       "type": "dependency"
     },
     {
+      "name": "web-vitals",
+      "version": "^4.2.4",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
       "name": "zod",
       "version": "^3.22.4",
       "location": "apps/web/package.json",
       "type": "dependency"
+    },
+    {
+      "name": "@capacitor/android",
+      "version": "^7.4.4",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@capacitor/cli",
+      "version": "^7.4.4",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@capacitor/core",
+      "version": "^7.4.4",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@capacitor/ios",
+      "version": "^7.4.4",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@playwright/test",
+      "version": "^1.40.0",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
     },
     {
       "name": "@testing-library/jest-dom",
@@ -1718,14 +1844,14 @@
       "type": "devDependency"
     },
     {
-      "name": "eslint-plugin-prettier",
-      "version": "^5.1.3",
+      "name": "eslint-plugin-jsx-a11y",
+      "version": "^6.8.0",
       "location": "apps/web/package.json",
       "type": "devDependency"
     },
     {
-      "name": "eslint-plugin-jsx-a11y",
-      "version": "^6.8.0",
+      "name": "eslint-plugin-prettier",
+      "version": "^5.1.3",
       "location": "apps/web/package.json",
       "type": "devDependency"
     },
@@ -1790,9 +1916,621 @@
       "type": "devDependency"
     },
     {
+      "name": "@types/node",
+      "version": "^20.11.0",
+      "location": "nomad/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "prettier",
+      "version": "^3.2.5",
+      "location": "nomad/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "turbo",
+      "version": "^1.13.4",
+      "location": "nomad/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tsx",
+      "version": "^4.20.6",
+      "location": "nomad/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "expo",
+      "version": "~50.0.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-router",
+      "version": "~3.4.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-status-bar",
+      "version": "~1.11.1",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-secure-store",
+      "version": "~12.8.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-notifications",
+      "version": "~0.27.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-barcode-scanner",
+      "version": "~13.0.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-task-manager",
+      "version": "~11.0.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "expo-background-fetch",
+      "version": "~12.0.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "18.2.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native",
+      "version": "0.73.2",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-paper",
+      "version": "^5.11.3",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-safe-area-context",
+      "version": "4.8.2",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-screens",
+      "version": "~3.29.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native-gesture-handler",
+      "version": "~2.14.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-query",
+      "version": "^3.39.3",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zustand",
+      "version": "^4.4.7",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@react-native-async-storage/async-storage",
+      "version": "^1.21.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/config",
+      "version": "workspace:*",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/data",
+      "version": "workspace:*",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/adapters",
+      "version": "workspace:*",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/ui",
+      "version": "workspace:*",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/i18n",
+      "version": "workspace:*",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/analytics",
+      "version": "workspace:*",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "~18.2.45",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-native",
+      "version": "^0.73.0",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@babel/core",
+      "version": "^7.23.7",
+      "location": "nomad/apps/mobile/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "next",
+      "version": "14.1.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react",
+      "version": "^18.2.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-dom",
+      "version": "^18.2.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-query",
+      "version": "^3.39.3",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zustand",
+      "version": "^4.4.7",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.39.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^3.4.1",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "autoprefixer",
+      "version": "^10.4.17",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "postcss",
+      "version": "^8.4.33",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/config",
+      "version": "workspace:*",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/data",
+      "version": "workspace:*",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/adapters",
+      "version": "workspace:*",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/ui",
+      "version": "workspace:*",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/i18n",
+      "version": "workspace:*",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/analytics",
+      "version": "workspace:*",
+      "location": "nomad/apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20.11.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^18.2.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "^18.2.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^8.56.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "eslint-config-next",
+      "version": "14.1.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
       "name": "@playwright/test",
-      "version": "^1.40.0",
-      "location": "apps/web/package.json",
+      "version": "^1.41.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "vitest",
+      "version": "^1.2.0",
+      "location": "nomad/apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@nomad/config",
+      "version": "workspace:*",
+      "location": "nomad/packages/adapters/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/data",
+      "version": "workspace:*",
+      "location": "nomad/packages/adapters/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20.11.0",
+      "location": "nomad/packages/adapters/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/packages/adapters/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@nomad/adapters",
+      "version": "workspace:*",
+      "location": "nomad/packages/analytics/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20.11.0",
+      "location": "nomad/packages/analytics/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/packages/analytics/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "nomad/packages/data/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "axios",
+      "version": "^1.6.5",
+      "location": "nomad/packages/data/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-query",
+      "version": "^3.39.3",
+      "location": "nomad/packages/data/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20.11.0",
+      "location": "nomad/packages/data/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/packages/data/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "version": "^6.19.0",
+      "location": "nomad/packages/eslint-config/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "version": "^6.19.0",
+      "location": "nomad/packages/eslint-config/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "eslint",
+      "version": "^8.56.0",
+      "location": "nomad/packages/eslint-config/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "eslint-config-prettier",
+      "version": "^9.1.0",
+      "location": "nomad/packages/eslint-config/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "eslint-plugin-react",
+      "version": "^7.33.2",
+      "location": "nomad/packages/eslint-config/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "eslint-plugin-react-hooks",
+      "version": "^4.6.0",
+      "location": "nomad/packages/eslint-config/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "i18next",
+      "version": "^23.7.16",
+      "location": "nomad/packages/i18n/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "i18next-browser-languagedetector",
+      "version": "^7.2.0",
+      "location": "nomad/packages/i18n/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20.11.0",
+      "location": "nomad/packages/i18n/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/packages/i18n/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@testing-library/react",
+      "version": "^14.1.2",
+      "location": "nomad/packages/testing/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@testing-library/jest-dom",
+      "version": "^6.1.5",
+      "location": "nomad/packages/testing/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "vitest",
+      "version": "^1.2.0",
+      "location": "nomad/packages/testing/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20.11.0",
+      "location": "nomad/packages/testing/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/packages/testing/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@vitest/coverage-v8",
+      "version": "^1.2.0",
+      "location": "nomad/packages/testing/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "react",
+      "version": "^18.2.0",
+      "location": "nomad/packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/adapters",
+      "version": "workspace:*",
+      "location": "nomad/packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@nomad/config",
+      "version": "workspace:*",
+      "location": "nomad/packages/ui/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/react",
+      "version": "^18.2.0",
+      "location": "nomad/packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20.11.0",
+      "location": "nomad/packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.3.3",
+      "location": "nomad/packages/ui/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "react-native",
+      "version": "*",
+      "location": "nomad/packages/ui/package.json",
+      "type": "peerDependency"
+    },
+    {
+      "name": "@sendgrid/mail",
+      "version": "^8.1.3",
+      "location": "packages/adapters/crm/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "packages/adapters/crm/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "packages/adapters/crm/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@whats-for-dinner/config",
+      "version": "workspace:*",
+      "location": "packages/adapters/purchases/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "react-native",
+      "version": "*",
+      "location": "packages/adapters/purchases/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/react-native",
+      "version": "^0.73.0",
+      "location": "packages/adapters/purchases/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "packages/adapters/purchases/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "react-native-iap",
+      "version": "^12.0.0",
+      "location": "packages/adapters/purchases/package.json",
+      "type": "peerDependency"
+    },
+    {
+      "name": "expo-in-app-purchases",
+      "version": "^14.0.0",
+      "location": "packages/adapters/purchases/package.json",
+      "type": "peerDependency"
+    },
+    {
+      "name": "react-native",
+      "version": "*",
+      "location": "packages/analytics/consent/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/react-native",
+      "version": "^0.73.0",
+      "location": "packages/analytics/consent/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "packages/analytics/consent/package.json",
       "type": "devDependency"
     },
     {
@@ -1877,6 +2615,198 @@
       "name": "typescript",
       "version": "^5",
       "location": "packages/config/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@opentelemetry/api",
+      "version": "^1.8.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/auto-instrumentations-node",
+      "version": "^0.49.1",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/exporter-prometheus",
+      "version": "^0.56.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/exporter-trace-otlp-http",
+      "version": "^0.56.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/sdk-metrics",
+      "version": "^1.26.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/sdk-node",
+      "version": "^0.54.2",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/resources",
+      "version": "^1.26.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@opentelemetry/semantic-conventions",
+      "version": "^1.26.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@sendgrid/mail",
+      "version": "^8.1.3",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "bullmq",
+      "version": "^5.22.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "drizzle-kit",
+      "version": "^0.28.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "drizzle-orm",
+      "version": "^0.36.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "express",
+      "version": "^4.18.2",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "fastify",
+      "version": "^4.26.2",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "ioredis",
+      "version": "^5.4.1",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "jsonwebtoken",
+      "version": "^9.0.2",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "openai",
+      "version": "^6.7.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "pino",
+      "version": "^9.4.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "pino-pretty",
+      "version": "^11.2.2",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "postgres",
+      "version": "^3.4.5",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod-to-openapi",
+      "version": "^7.4.3",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "fast-xml-parser",
+      "version": "^4.3.2",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "csv-parse",
+      "version": "^5.5.6",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "stripe",
+      "version": "^14.21.0",
+      "location": "packages/server/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@types/express",
+      "version": "^4.17.21",
+      "location": "packages/server/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/jsonwebtoken",
+      "version": "^9.0.5",
+      "location": "packages/server/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/node",
+      "version": "^20",
+      "location": "packages/server/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "supertest",
+      "version": "^6.3.4",
+      "location": "packages/server/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "tsx",
+      "version": "^4.20.6",
+      "location": "packages/server/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "typescript",
+      "version": "^5",
+      "location": "packages/server/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "vitest",
+      "version": "^2.1.4",
+      "location": "packages/server/package.json",
       "type": "devDependency"
     },
     {
@@ -2044,6 +2974,12 @@
     {
       "name": "tailwind-merge",
       "version": "^3.3.1",
+      "location": "packages/utils/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
       "location": "packages/utils/package.json",
       "type": "dependency"
     },
@@ -2588,6 +3524,8 @@
       "react-native-svg",
       "react-native-vector-icons",
       "react-native-web",
+      "react-native-css-interop",
+      "@babel/runtime",
       "solito",
       "tailwind-merge",
       "tailwindcss",
@@ -2603,6 +3541,7 @@
       "eslint-config-expo",
       "jest",
       "jest-expo",
+      "react-native-worklets",
       "typescript",
       "@radix-ui/react-accordion",
       "@radix-ui/react-alert-dialog",
@@ -2648,21 +3587,32 @@
       "tailwindcss",
       "tailwindcss-animate",
       "typescript",
-      "@whats-for-dinner/ui",
-      "@whats-for-dinner/utils",
-      "@whats-for-dinner/theme",
-      "@whats-for-dinner/config",
+      "@capacitor-community/http",
+      "@capacitor/app",
+      "@capacitor/app-launcher",
+      "@capacitor/browser",
+      "@capacitor/haptics",
+      "@capacitor/keyboard",
+      "@capacitor/local-notifications",
+      "@capacitor/preferences",
+      "@capacitor/push-notifications",
+      "@capacitor/splash-screen",
+      "@capacitor/status-bar",
       "@radix-ui/react-label",
       "@radix-ui/react-separator",
       "@radix-ui/react-slot",
       "@radix-ui/react-switch",
       "@radix-ui/react-tabs",
-      "@supabase/auth-helpers-nextjs",
-      "@supabase/auth-helpers-react",
       "@sentry/nextjs",
       "@stripe/stripe-js",
+      "@supabase/auth-helpers-nextjs",
+      "@supabase/auth-helpers-react",
       "@supabase/supabase-js",
       "@tanstack/react-query",
+      "@whats-for-dinner/config",
+      "@whats-for-dinner/theme",
+      "@whats-for-dinner/ui",
+      "@whats-for-dinner/utils",
       "class-variance-authority",
       "clsx",
       "lucide-react",
@@ -2672,11 +3622,18 @@
       "posthog-js",
       "react",
       "react-dom",
+      "recharts",
       "resend",
       "stripe",
       "tailwind-merge",
       "uuid",
+      "web-vitals",
       "zod",
+      "@capacitor/android",
+      "@capacitor/cli",
+      "@capacitor/core",
+      "@capacitor/ios",
+      "@playwright/test",
       "@testing-library/jest-dom",
       "@testing-library/react",
       "@testing-library/user-event",
@@ -2688,8 +3645,8 @@
       "eslint",
       "eslint-config-next",
       "eslint-config-prettier",
-      "eslint-plugin-prettier",
       "eslint-plugin-jsx-a11y",
+      "eslint-plugin-prettier",
       "husky",
       "jest",
       "jest-environment-jsdom",
@@ -2700,7 +3657,109 @@
       "tailwindcss",
       "tailwindcss-animate",
       "typescript",
+      "@types/node",
+      "prettier",
+      "turbo",
+      "typescript",
+      "tsx",
+      "expo",
+      "expo-router",
+      "expo-status-bar",
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-barcode-scanner",
+      "expo-task-manager",
+      "expo-background-fetch",
+      "react",
+      "react-native",
+      "react-native-paper",
+      "react-native-safe-area-context",
+      "react-native-screens",
+      "react-native-gesture-handler",
+      "react-query",
+      "zustand",
+      "@react-native-async-storage/async-storage",
+      "@nomad/config",
+      "@nomad/data",
+      "@nomad/adapters",
+      "@nomad/ui",
+      "@nomad/i18n",
+      "@nomad/analytics",
+      "@types/react",
+      "@types/react-native",
+      "typescript",
+      "@babel/core",
+      "next",
+      "react",
+      "react-dom",
+      "react-query",
+      "zustand",
+      "@supabase/supabase-js",
+      "tailwindcss",
+      "autoprefixer",
+      "postcss",
+      "@nomad/config",
+      "@nomad/data",
+      "@nomad/adapters",
+      "@nomad/ui",
+      "@nomad/i18n",
+      "@nomad/analytics",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "typescript",
+      "eslint",
+      "eslint-config-next",
       "@playwright/test",
+      "vitest",
+      "@nomad/config",
+      "@nomad/data",
+      "@types/node",
+      "typescript",
+      "@nomad/adapters",
+      "@types/node",
+      "typescript",
+      "typescript",
+      "zod",
+      "axios",
+      "react-query",
+      "@types/node",
+      "typescript",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "eslint",
+      "eslint-config-prettier",
+      "eslint-plugin-react",
+      "eslint-plugin-react-hooks",
+      "i18next",
+      "i18next-browser-languagedetector",
+      "@types/node",
+      "typescript",
+      "@testing-library/react",
+      "@testing-library/jest-dom",
+      "vitest",
+      "@types/node",
+      "typescript",
+      "@vitest/coverage-v8",
+      "react",
+      "@nomad/adapters",
+      "@nomad/config",
+      "@types/react",
+      "@types/node",
+      "typescript",
+      "react-native",
+      "@sendgrid/mail",
+      "@types/node",
+      "typescript",
+      "@whats-for-dinner/config",
+      "react-native",
+      "@types/react-native",
+      "typescript",
+      "react-native-iap",
+      "expo-in-app-purchases",
+      "react-native",
+      "@types/react-native",
+      "typescript",
       "@typescript-eslint/eslint-plugin",
       "@typescript-eslint/parser",
       "eslint",
@@ -2715,6 +3774,38 @@
       "tailwindcss",
       "tailwindcss-animate",
       "typescript",
+      "@opentelemetry/api",
+      "@opentelemetry/auto-instrumentations-node",
+      "@opentelemetry/exporter-prometheus",
+      "@opentelemetry/exporter-trace-otlp-http",
+      "@opentelemetry/sdk-metrics",
+      "@opentelemetry/sdk-node",
+      "@opentelemetry/resources",
+      "@opentelemetry/semantic-conventions",
+      "@sendgrid/mail",
+      "bullmq",
+      "drizzle-kit",
+      "drizzle-orm",
+      "express",
+      "fastify",
+      "ioredis",
+      "jsonwebtoken",
+      "openai",
+      "pino",
+      "pino-pretty",
+      "postgres",
+      "zod",
+      "zod-to-openapi",
+      "fast-xml-parser",
+      "csv-parse",
+      "stripe",
+      "@types/express",
+      "@types/jsonwebtoken",
+      "@types/node",
+      "supertest",
+      "tsx",
+      "typescript",
+      "vitest",
       "nativewind",
       "tailwindcss",
       "@types/node",
@@ -2743,6 +3834,7 @@
       "@vitest/coverage-v8",
       "clsx",
       "tailwind-merge",
+      "zod",
       "@types/node",
       "typescript",
       "@radix-ui/react-label",
@@ -2803,10 +3895,10 @@
       "@supabase/supabase-js"
     ],
     "summary": {
-      "total": 399,
+      "total": 555,
       "approved": 0,
       "restricted": 0,
-      "unknown": 399,
+      "unknown": 555,
       "complianceRate": "0.00"
     }
   },
@@ -2814,13 +3906,13 @@
     {
       "type": "license",
       "priority": "medium",
-      "message": "Clarify licenses for 399 packages",
+      "message": "Clarify licenses for 555 packages",
       "action": "Manually verify license compatibility"
     },
     {
       "type": "dependency",
       "priority": "medium",
-      "message": "Consolidate 79 duplicate package versions",
+      "message": "Consolidate 108 duplicate package versions",
       "action": "Use pnpm resolutions to standardize versions"
     }
   ]

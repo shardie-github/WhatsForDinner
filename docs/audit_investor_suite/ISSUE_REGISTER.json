@@ -1,1 +1,43 @@
-{"issues": []}
+{
+  "timestamp": "2025-11-04T03:08:28.098Z",
+  "totalIssues": 2,
+  "bySeverity": {
+    "critical": 1,
+    "major": 1,
+    "minor": 0
+  },
+  "issues": [
+    {
+      "id": "ISSUE-001",
+      "originalId": "TECH-002",
+      "title": "Supply chain vulnerabilities detected",
+      "severity": "Critical",
+      "domain": "Tech",
+      "impact": 9,
+      "likelihood": 8,
+      "score": 72,
+      "description": "Dependency vulnerabilities need remediation",
+      "evidence": "\n> whats-for-dinner-monorepo@1.0.0 supply-chain:audit\n> node scripts/supply-chain-audit.js\n\n🔍 Phase 9: Supply-Chain & Licenses Audit\n==========================================\n\n📦 Auditing dependencies...\n   Found 555 dependencies\n🔒 Checking for vulnerabilities...\n   ⚠️  npm audit not available, skipping vulnerability check\n📄 Analyzing licenses...\n   ⚠️  Could not determine license for @supabase/supabase-js\n   ⚠️  Could not determine license for openai\n   ⚠️  Could not determine license for a",
+      "status": "open",
+      "suggestedOwner": "Engineering Team",
+      "slug": "tech-002",
+      "createdAt": "2025-11-04T03:08:28.098Z"
+    },
+    {
+      "id": "ISSUE-002",
+      "originalId": "TECH-003",
+      "title": "Potential secrets exposure",
+      "severity": "Major",
+      "domain": "Tech",
+      "impact": 10,
+      "likelihood": 5,
+      "score": 50,
+      "description": "Secrets scanner detected potential issues",
+      "evidence": null,
+      "status": "open",
+      "suggestedOwner": "Engineering Team",
+      "slug": "tech-003",
+      "createdAt": "2025-11-04T03:08:28.098Z"
+    }
+  ]
+}
