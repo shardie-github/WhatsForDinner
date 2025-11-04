@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { monitoringSystem } from '@/lib/monitoring';
 import { observabilitySystem } from '@/lib/observability';
 import { logger } from '@/lib/logger';
+import { processGuardianEvent } from '@/lib/guardian-middleware';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 // Rate limiting store (in production, use Redis or similar)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -218,6 +221,57 @@ export async function middleware(request: NextRequest) {
       path: pathname,
       status: 'pending',
     });
+
+    // Guardian: Process telemetry event (non-blocking)
+    try {
+      const supabase = createRouteHandlerClient({ cookies });
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user && pathname.startsWith('/api/')) {
+        // Determine data class based on path
+        let dataClass: 'telemetry' | 'location' | 'audio' | 'biometrics' | 'content' | 'credentials' | 'personal_info' | 'metadata' = 'metadata';
+        let scope: 'user' | 'app' | 'api' | 'external' = 'api';
+        
+        if (pathname.includes('/api/auth') || pathname.includes('/api/users')) {
+          dataClass = 'credentials';
+        } else if (pathname.includes('/api/ai')) {
+          dataClass = 'content';
+        } else if (pathname.includes('/api/telemetry') || pathname.includes('/api/analytics')) {
+          dataClass = 'telemetry';
+        } else {
+          dataClass = 'metadata';
+        }
+
+        // Determine scope
+        if (pathname.includes('/api/external') || pathname.includes('/api/partner')) {
+          scope = 'external';
+        } else {
+          scope = 'api';
+        }
+
+        // Process Guardian event (non-blocking, don't await)
+        processGuardianEvent(request, user.id, {
+          type: 'api_call',
+          scope,
+          dataClass,
+          action: `${method.toLowerCase()}_${pathname}`,
+          target: pathname,
+          metadata: {
+            method,
+            pathname,
+            ip,
+            userAgent,
+            traceId,
+          },
+        }).catch(err => {
+          // Log but don't block request
+          console.error('Guardian event processing failed:', err);
+        });
+      }
+    } catch (error) {
+      // Guardian errors should not block requests
+      console.error('Guardian integration error:', error);
+    }
 
     // Add trace ID to response headers
     response.headers.set('X-Trace-Id', traceId);

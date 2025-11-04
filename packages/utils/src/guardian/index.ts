@@ -10,3 +10,5 @@ export * from './middleware';
 export * from './trust-fabric';
 export * from './privacy-insurance';
 export * from './explainer';
+export * from './integration-patterns';
+export * from './optimization';
