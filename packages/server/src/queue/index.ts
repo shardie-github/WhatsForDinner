@@ -12,6 +12,39 @@ function getRedisConnection(): Redis {
     }
     redisConnection = new Redis(redisUrl, {
       maxRetriesPerRequest: null,
+      retryStrategy: (times) => {
+        // Phase 1 Guardrail: Exponential backoff retry
+        const delay = Math.min(times * 50, 2000);
+        logger.warn({ retryAttempt: times, delay }, 'Redis connection retry');
+        return delay;
+      },
+      reconnectOnError: (err) => {
+        const targetError = 'READONLY';
+        if (err.message.includes(targetError)) {
+          logger.error({ error: err.message }, 'Redis read-only error, reconnecting');
+          return true;
+        }
+        return false;
+      },
+      enableReadyCheck: true,
+      maxRetriesPerRequest: 3,
+    });
+    
+    // Handle connection events
+    redisConnection.on('connect', () => {
+      logger.info('Redis connection established');
+    });
+    
+    redisConnection.on('error', (err) => {
+      logger.error({ error: err.message }, 'Redis connection error');
+    });
+    
+    redisConnection.on('close', () => {
+      logger.warn('Redis connection closed');
+    });
+    
+    redisConnection.on('reconnecting', (delay) => {
+      logger.info({ delay }, 'Redis reconnecting');
     });
   }
   return redisConnection;
@@ -124,7 +157,7 @@ export async function stopWorker() {
   logger.info('Queue worker stopped');
 }
 
-// Health check
+// Health check (deprecated - use queue/health.ts)
 export async function queueHealth(): Promise<{ healthy: boolean; pending: number; active: number }> {
   try {
     const [waiting, active] = await Promise.all([
@@ -146,6 +179,9 @@ export async function queueHealth(): Promise<{ healthy: boolean; pending: number
     };
   }
 }
+
+// Export health module
+export { checkQueueHealth, getQueueMetrics } from './health.js';
 
 // Handle process signals
 process.on('SIGTERM', async () => {
