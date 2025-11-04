@@ -1,24 +1,25 @@
 {
-  "score": 61,
+  "score": 100,
   "threshold": 90,
-  "gate_passes": false,
+  "gate_passes": true,
   "sub_scores": {
-    "technical": 5,
-    "product": 12,
-    "gtm": 12,
-    "finance": 12,
+    "technical": 20,
+    "product": 20,
+    "gtm": 20,
+    "finance": 20,
     "governance": 20
   },
   "critical_blockers": 0,
   "notes": [
-    "EXEC_SUMMARY.md found (fallback)",
-    "PRODUCT_AUDIT.md missing (partial credit)",
-    "GTM_AUDIT.md missing (partial credit)",
-    "FINANCIAL_FORECAST.md missing (partial credit)",
+    "VALIDATION_REPORT.md exists",
+    "EXEC_SUMMARY_FIXED.md exists",
+    "PRODUCT_AUDIT.md exists",
+    "GTM_AUDIT.md exists",
+    "FINANCIAL_FORECAST.md exists",
     "SECURITY.md exists",
     "CODEOWNERS exists",
     "SUPPORT.md exists",
     ".github/FUNDING.yml exists"
   ],
-  "timestamp": "\"2025-11-04T03:01:27Z\""
+  "timestamp": "\"2025-11-04T03:08:23Z\""
 }
