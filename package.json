@@ -124,7 +124,21 @@
     "remediation:audit:product": "node scripts/audit_product_manager.mjs",
     "remediation:audit:gtm": "node scripts/audit_gtm_growth.mjs",
     "remediation:audit:finance": "node scripts/audit_financial_forecast.mjs",
-    "remediation:audit:governance": "node scripts/audit_governance_compliance.mjs"
+    "remediation:audit:governance": "node scripts/audit_governance_compliance.mjs",
+    "ops": "tsx ops/cli/index.ts",
+    "ops:doctor": "tsx ops/cli/index.ts doctor",
+    "ops:init": "tsx ops/cli/index.ts init",
+    "ops:check": "tsx ops/cli/index.ts check",
+    "ops:release": "tsx ops/cli/index.ts release",
+    "ops:snapshot": "tsx ops/cli/index.ts snapshot",
+    "ops:restore": "tsx ops/cli/index.ts restore",
+    "ops:rotate-secrets": "tsx ops/cli/index.ts rotate-secrets",
+    "ops:sb-guard": "tsx ops/cli/index.ts sb-guard",
+    "ops:test:e2e": "tsx ops/cli/index.ts test:e2e",
+    "ops:benchmark": "tsx ops/cli/index.ts benchmark",
+    "ops:lintfix": "tsx ops/cli/index.ts lintfix",
+    "ops:docs": "tsx ops/cli/index.ts docs",
+    "ops:changelog": "tsx ops/cli/index.ts changelog"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"
@@ -137,7 +151,8 @@
     "openai": "^6.7.0",
     "@octokit/rest": "^20.0.2",
     "glob": "^11.0.0",
-    "tsx": "^4.20.6"
+    "tsx": "^4.20.6",
+    "commander": "^12.0.0"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
