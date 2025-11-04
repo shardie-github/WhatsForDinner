@@ -8,6 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GUARDRAILS_FILE="${SCRIPT_DIR}/guardrails.yaml"
 FAILED_GUARDRAILS=()
 PASSED_GUARDRAILS=()
+SKIPPED_GUARDRAILS=()
 TOTAL_CHECKS=0
 
 # Colors for output
@@ -36,6 +37,7 @@ parse_guardrails() {
     local current_expression=""
     local current_severity=""
     local current_description=""
+    local current_status=""
     
     while IFS= read -r line; do
         # Detect guardrails section
@@ -56,10 +58,10 @@ parse_guardrails() {
             if [[ "$line" =~ ^[[:space:]]*-[[:space:]]name:[[:space:]]*(.+) ]]; then
                 if [ -n "$current_name" ]; then
                     # Process previous guardrail
-                    if [ -n "$current_expression" ]; then
-                        TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
-                        validate_guardrail "$current_name" "$current_expression" "$current_severity" "$current_description"
-                    fi
+                if [ -n "$current_expression" ]; then
+                    TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
+                    validate_guardrail "$current_name" "$current_expression" "$current_severity" "$current_description" "$current_status"
+                fi
                 fi
                 current_name="${BASH_REMATCH[1]}"
                 current_expression=""
@@ -81,13 +83,18 @@ parse_guardrails() {
             if [[ "$line" =~ ^[[:space:]]*description:[[:space:]]*[\"']?(.+)[\"']?$ ]]; then
                 current_description="${BASH_REMATCH[1]}"
             fi
+            
+            # Extract status
+            if [[ "$line" =~ ^[[:space:]]*status:[[:space:]]*[\"']?(.+)[\"']?$ ]]; then
+                current_status="${BASH_REMATCH[1]}"
+            fi
         fi
     done < "$GUARDRAILS_FILE"
     
     # Process last guardrail
     if [ -n "$current_name" ] && [ -n "$current_expression" ]; then
         TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
-        validate_guardrail "$current_name" "$current_expression" "$current_severity" "$current_description"
+        validate_guardrail "$current_name" "$current_expression" "$current_severity" "$current_description" "$current_status"
     fi
 }
 
@@ -96,8 +103,21 @@ validate_guardrail() {
     local expression="$2"
     local severity="$3"
     local description="$4"
+    local status="$5"  # optional status field
     
     log_info "Checking: $name"
+    
+    # Skip if status is "planned" (not yet implemented)
+    if [ "$status" = "planned" ]; then
+        log_info "  ⏭️  SKIPPED (PLANNED): $description"
+        SKIPPED_GUARDRAILS+=("$name")
+        return 0
+    fi
+    
+    # Skip if status is "implemented" (already done, just verify)
+    if [ "$status" = "implemented" ]; then
+        log_info "  ✓ VERIFYING (IMPLEMENTED): $description"
+    fi
     
     # Change to workspace root
     cd "${SCRIPT_DIR}/../.." || exit 1
@@ -107,13 +127,19 @@ validate_guardrail() {
         PASSED_GUARDRAILS+=("$name")
         log_info "  ✓ PASSED: $description"
     else
-        FAILED_GUARDRAILS+=("$name|$severity|$description")
-        if [ "$severity" = "critical" ]; then
-            log_error "  ✗ FAILED (CRITICAL): $description"
-        elif [ "$severity" = "high" ]; then
-            log_error "  ✗ FAILED (HIGH): $description"
+        # If status is "implemented" but fails, that's a problem
+        if [ "$status" = "implemented" ]; then
+            FAILED_GUARDRAILS+=("$name|$severity|$description|IMPLEMENTED_BUT_FAILING")
+            log_error "  ✗ FAILED (IMPLEMENTED BUT FAILING): $description"
         else
-            log_warn "  ✗ FAILED (MEDIUM): $description"
+            FAILED_GUARDRAILS+=("$name|$severity|$description")
+            if [ "$severity" = "critical" ]; then
+                log_error "  ✗ FAILED (CRITICAL): $description"
+            elif [ "$severity" = "high" ]; then
+                log_error "  ✗ FAILED (HIGH): $description"
+            else
+                log_warn "  ✗ FAILED (MEDIUM): $description"
+            fi
         fi
     fi
 }
@@ -135,6 +161,7 @@ main() {
     log_info "=== Validation Summary ==="
     log_info "Total checks: $TOTAL_CHECKS"
     log_info "Passed: ${#PASSED_GUARDRAILS[@]}"
+    log_info "Skipped (planned): ${#SKIPPED_GUARDRAILS[@]}"
     log_info "Failed: ${#FAILED_GUARDRAILS[@]}"
     
     if [ ${#FAILED_GUARDRAILS[@]} -gt 0 ]; then

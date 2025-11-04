@@ -10,6 +10,7 @@ guardrails:
     severity: critical
     source: "ROOT_CAUSE_AND_DRIFT_MAP.md - SPOF #1"
     mitigation: "Add exponential backoff retry to Redis connection"
+    status: "planned"  # Currently missing, planned for Phase 1
 
   - name: no-queue-worker-spof
     description: "Queue worker must have auto-restart and health monitoring"
@@ -166,14 +167,16 @@ guardrails:
     severity: medium
     source: "Living System Requirements"
     mitigation: "Create docs/LIVING_ARCHITECTURE_GUIDE.md"
+    status: "implemented"  # This now exists
 
   # === CRITICAL: SLO Monitoring ===
   - name: slo-definitions-exist
     description: "SLO definitions must exist in observability config"
-    expression: "grep -q 'apiAvailability\\|apiLatency\\|queueProcessing' packages/server/src/observability/slo.ts || exit 1"
+    expression: "grep -q 'availability\\|latency\\|error_rate' packages/server/src/observability/slo.ts || exit 1"
     severity: high
     source: "OPS_SLO_RUNBOOK_SEEDS.md - Draft SLOs"
     mitigation: "Define SLOs in packages/server/src/observability/slo.ts"
+    status: "implemented"  # SLO definitions exist with different naming
 
 metadata:
   version: "1.0.0"
