@@ -11,6 +11,96 @@ A production-ready universal app built with Expo SDK 52, Next.js 15, NativeWind,
 - **PWA Support**: Offline-capable web app
 - **CI/CD**: GitHub Actions with automated builds and deployments
 - **Cross-Platform**: Shared UI components and business logic
+- **Self-Operating Production Framework**: Fully automated ops with minimal human input
+
+## 🎯 Self-Operating Production Framework
+
+This repository includes a comprehensive self-operating production framework that is secure, observable, monetizable, testable, and deploy-ready.
+
+### Master Orchestrator CLI
+
+Run `npm run ops` to access the master orchestrator:
+
+```bash
+# Initialize ops framework
+npm run ops init
+
+# Run all health checks
+npm run ops doctor
+
+# Run validation checks
+npm run ops check
+
+# Release with semantic versioning
+npm run ops release [patch|minor|major] [--dry-run]
+
+# Database snapshots
+npm run ops snapshot [description]
+npm run ops restore <snapshot-id>
+
+# Secrets management
+npm run ops rotate-secrets
+
+# RLS audit and enforcement
+npm run ops sb-guard
+
+# E2E tests
+npm run ops test:e2e
+
+# Performance benchmarks
+npm run ops benchmark
+
+# Auto-fix linting
+npm run ops lintfix
+
+# Generate documentation
+npm run ops docs
+
+# Generate changelog
+npm run ops changelog
+```
+
+### 🗓 Ops Schedule
+
+**Daily:**
+- `ops doctor` → check reports → fix → release if green
+
+**Weekly:**
+- `ops release` + growth report + rotate secrets
+
+**Monthly:**
+- DR rehearsal + deps update + red-team sweep
+
+### Key Components
+
+1. **Reality Suite** - E2E tests + synthetic monitors hitting prod endpoints hourly
+2. **Secrets Regimen** - Automated 20-day rotation with Supabase + Vercel sync
+3. **RLS Enforcer** - Scans all Supabase tables/views, generates audit reports
+4. **Migration Safety** - Shadow migrations + snapshot/restore with encryption
+5. **Observability Suite** - OpenTelemetry tracing + p95 latency/error/cost metrics
+6. **Performance Budgets** - Lighthouse CI + bundle analyzer (LCP < 2.5s, CLS < 0.1, TBT < 300ms, JS < 170KB)
+7. **Release Train** - Semantic versioning + CHANGELOG + Vercel immutable deploys
+8. **DR Playbook** - Quarterly CI rehearsal with automated RTO/RPO measurement
+9. **Growth Engine** - UTM tracking + cohort/LTV analysis + weekly reports
+10. **Compliance Guard** - DSAR endpoints + cookie consent + log redaction
+11. **AI Agent Guardrails** - Schema validation + timeouts + retries + circuit breaker
+12. **Offers & Paywalls** - Feature-flagged pricing + A/B framework
+13. **Internationalization** - Message extraction + CSV/JSON language packs + CI validation
+14. **Documentation** - Auto-generated Mermaid diagrams + endpoint examples
+15. **Red-Team Tests** - Auth/rate-limit/RLS breach simulation
+16. **Billing Stub** - Stripe webhooks + feature flag + CI validation
+17. **Store Pack** - Play/App Store manifests + icons + privacy labels
+18. **Quiet Mode** - Global config toggle for incident response
+19. **Cost Caps** - Quota/throttling + cost simulation + alerts
+20. **Partner Hooks** - Integration contracts + Postman collection
+
+### Exit Criteria
+
+✅ `npm run ops doctor` = 0 both locally and in CI  
+✅ `ops release` performs full deploy and rollback  
+✅ All budgets/tests pass  
+✅ Dashboard + growth + compliance reports generated  
+✅ System survives offline, high load, and incident modes without manual intervention
 
 ## 📁 Project Structure
 

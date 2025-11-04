@@ -1,47 +1,146 @@
-# Disaster Recovery (DR) Playbook
-
-**Version:** 1.0  
-**Last Updated:** ${new Date().toISOString().split('T')[0]}  
-**Owner:** DevOps Team
+# Disaster Recovery Playbook
 
 ## Overview
 
-This playbook outlines the disaster recovery procedures for What's for Dinner? production infrastructure.
+This playbook defines automated procedures for disaster recovery rehearsals and actual recovery scenarios.
 
-## RTO/RPO Targets
+## Objectives
 
-- **RTO (Recovery Time Objective):** < 4 hours
-- **RPO (Recovery Point Objective):** < 1 hour
+- **RTO (Recovery Time Objective)**: < 4 hours
+- **RPO (Recovery Point Objective)**: < 1 hour (last snapshot)
 
-## Recovery Procedures
+## Pre-Flight Checks
 
-### Scenario 1: Database Corruption
+Before running DR rehearsal:
 
-**Steps:**
+```bash
+# Check snapshot availability
+npm run ops snapshot --dry-run
 
-1. Enable quiet mode
-2. Assess impact
-3. Restore from snapshot
-4. Post-restore validation
-
-### Scenario 2: Complete Infrastructure Failure
-
-**Steps:**
-
-1. Initial assessment
-2. Spin temporary environment
-3. Data migration
-4. DNS/Configuration update
-5. Smoke tests
+# Verify backup encryption keys
+# Verify Supabase project access
+# Verify Vercel deployment access
+```
 
 ## Quarterly DR Rehearsal
 
-Schedule: Every 3 months
+Automated CI job runs quarterly:
 
-Procedure:
-1. Create test environment
-2. Run DR scenario
-3. Measure RTO/RPO
-4. Generate report
+```yaml
+# .github/workflows/ops-matrix-ci.yml
+name: DR Rehearsal
+on:
+  schedule:
+    - cron: '0 0 1 */3 *' # Quarterly
+```
 
-See full details in ops/runbooks/DR.md
+### Steps
+
+1. **Spin Temporary Environment**
+   ```bash
+   # Create temporary Supabase project
+   supabase projects create --name dr-rehearsal-$(date +%s)
+   ```
+
+2. **Restore Latest Snapshot**
+   ```bash
+   npm run ops restore snapshot-<latest-id>
+   ```
+
+3. **Run Smoke Tests**
+   ```bash
+   npm run ops test:e2e
+   npm run ops check
+   ```
+
+4. **Verify Data Integrity**
+   ```bash
+   # Run data integrity checks
+   npm run ops sb-guard
+   ```
+
+5. **Measure RTO/RPO**
+   - Record start time
+   - Record completion time
+   - Calculate RTO
+   - Verify snapshot timestamp (RPO)
+
+6. **Generate Report**
+   - Output to `/ops/reports/dr-rehearsal-<timestamp>.md`
+   - Include RTO/RPO metrics
+   - Document any issues
+
+7. **Cleanup**
+   ```bash
+   # Destroy temporary environment
+   supabase projects delete <temp-project-id>
+   ```
+
+## Actual DR Scenario
+
+### Detection
+
+- Monitor alerts trigger DR protocol
+- Verify incident severity
+- Activate on-call engineer
+
+### Recovery Steps
+
+1. **Assess Damage**
+   ```bash
+   npm run ops doctor
+   npm run ops check
+   ```
+
+2. **Restore Database**
+   ```bash
+   # List available snapshots
+   npm run ops snapshot
+   
+   # Restore most recent
+   npm run ops restore --snapshot=ops/snapshots/latest.sql
+   ```
+
+3. **Redeploy Application**
+   ```bash
+   # Trigger Vercel deployment
+   npm run ops release
+   ```
+
+4. **Verify Recovery**
+   ```bash
+   npm run ops test:e2e
+   npm run ops check
+   ```
+
+5. **Post-Recovery**
+   - Document incident
+   - Review RTO/RPO
+   - Update playbook if needed
+
+## Snapshot Strategy
+
+- **Frequency**: Daily automated snapshots
+- **Retention**: 30 days
+- **Encryption**: All snapshots encrypted
+- **Storage**: Multiple regions
+
+## Communication
+
+- **Slack**: #incidents channel
+- **Status Page**: Update status page
+- **Customers**: Email notification if > 1 hour downtime
+
+## Testing Schedule
+
+- **Quarterly**: Full DR rehearsal
+- **Monthly**: Snapshot restore test
+- **Weekly**: Smoke test on restored snapshot
+
+## Success Criteria
+
+✅ RTO < 4 hours
+✅ RPO < 1 hour
+✅ All smoke tests pass
+✅ Data integrity verified
+✅ Zero data loss
