@@ -35,6 +35,7 @@ Complete index of all recipe and cooking articles on What's for Dinner. Find rec
 
 ### Meal Prep
 - [Meal Prep Recipes That Use What You Have](/blog/meal-prep-recipes-pantry) - 10 make-ahead meals
+- [How to Reduce Food Waste: Use What You Bought](/blog/how-to-reduce-food-waste) - Tips and strategies
 
 ### Family-Friendly
 - [Kid-Friendly Recipes from Pantry](/blog/kid-friendly-recipes-pantry) - 10 meals kids will actually eat
@@ -46,6 +47,7 @@ Complete index of all recipe and cooking articles on What's for Dinner. Find rec
 
 ### Budget-Friendly
 - [Budget-Friendly Recipes from Pantry](/blog/budget-friendly-recipes-pantry) - 12 meals under $5
+- [How to Reduce Food Waste: Use What You Bought](/blog/how-to-reduce-food-waste) - Save money by reducing waste
 
 ### Kid-Friendly
 - [Kid-Friendly Recipes from Pantry](/blog/kid-friendly-recipes-pantry) - 10 meals kids will actually eat
@@ -63,11 +65,14 @@ Complete index of all recipe and cooking articles on What's for Dinner. Find rec
 
 ## Latest Articles
 
-1. [Kid-Friendly Recipes from Pantry](/blog/kid-friendly-recipes-pantry)
-2. [30-Minute Recipes with 5 Ingredients](/blog/30-minute-recipes-5-ingredients)
-3. [Budget-Friendly Recipes from Pantry](/blog/budget-friendly-recipes-pantry)
-4. [Meal Prep Recipes That Use What You Have](/blog/meal-prep-recipes-pantry)
-5. [Keto Recipes with Pantry Staples](/blog/keto-recipes-pantry-staples)
+1. [Why What's for Dinner? is Different](/blog/why-were-different)
+2. [How to Reduce Food Waste: Use What You Bought](/blog/how-to-reduce-food-waste)
+3. [What to Make with Leftover Ingredients](/blog/what-to-make-with-leftover-ingredients)
+4. [Kid-Friendly Recipes from Pantry](/blog/kid-friendly-recipes-pantry)
+5. [30-Minute Recipes with 5 Ingredients](/blog/30-minute-recipes-5-ingredients)
+6. [Budget-Friendly Recipes from Pantry](/blog/budget-friendly-recipes-pantry)
+7. [Meal Prep Recipes That Use What You Have](/blog/meal-prep-recipes-pantry)
+8. [Keto Recipes with Pantry Staples](/blog/keto-recipes-pantry-staples)
 
 ## Popular Searches
 
@@ -79,6 +84,9 @@ Complete index of all recipe and cooking articles on What's for Dinner. Find rec
 - Keto pantry recipes
 - Meal prep ideas
 - Kid-friendly recipes
+- Reduce food waste
+- Leftover recipes
+- Why we're different
 
 ## Need More Recipe Ideas?
 
