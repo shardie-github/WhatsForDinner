@@ -15,7 +15,7 @@ Before running DR rehearsal:
 
 ```bash
 # Check snapshot availability
-pnpm ops snapshot list
+npm run ops snapshot --dry-run
 
 # Verify backup encryption keys
 # Verify Supabase project access
@@ -27,7 +27,7 @@ pnpm ops snapshot list
 Automated CI job runs quarterly:
 
 ```yaml
-# .github/workflows/dr-rehearsal.yml
+# .github/workflows/ops-matrix-ci.yml
 name: DR Rehearsal
 on:
   schedule:
@@ -44,19 +44,19 @@ on:
 
 2. **Restore Latest Snapshot**
    ```bash
-   pnpm ops restore snapshot-<latest-id>
+   npm run ops restore snapshot-<latest-id>
    ```
 
 3. **Run Smoke Tests**
    ```bash
-   pnpm ops test:e2e
-   pnpm ops check
+   npm run ops test:e2e
+   npm run ops check
    ```
 
 4. **Verify Data Integrity**
    ```bash
    # Run data integrity checks
-   pnpm ops sb-guard
+   npm run ops sb-guard
    ```
 
 5. **Measure RTO/RPO**
@@ -88,29 +88,29 @@ on:
 
 1. **Assess Damage**
    ```bash
-   pnpm ops doctor
-   pnpm ops check
+   npm run ops doctor
+   npm run ops check
    ```
 
 2. **Restore Database**
    ```bash
    # List available snapshots
-   pnpm ops snapshot list
+   npm run ops snapshot
    
    # Restore most recent
-   pnpm ops restore snapshot-<id>
+   npm run ops restore --snapshot=ops/snapshots/latest.sql
    ```
 
 3. **Redeploy Application**
    ```bash
    # Trigger Vercel deployment
-   vercel --prod
+   npm run ops release
    ```
 
 4. **Verify Recovery**
    ```bash
-   pnpm ops test:e2e
-   pnpm ops check
+   npm run ops test:e2e
+   npm run ops check
    ```
 
 5. **Post-Recovery**

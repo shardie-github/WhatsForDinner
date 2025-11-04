@@ -388,6 +388,52 @@ pnpm test --filter=@whats-for-dinner/ui
 pnpm test:watch
 ```
 
+## 🎛️ Ops Framework
+
+This repository includes a comprehensive self-operating production framework with minimal human input.
+
+### Quick Start
+
+```bash
+# Initialize ops framework
+npm run ops init
+
+# Run comprehensive health checks
+npm run ops doctor
+
+# Run all safety checks
+npm run ops check
+```
+
+### Ops CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run ops doctor` | Comprehensive system health checks |
+| `npm run ops init` | Initialize ops framework |
+| `npm run ops check` | Run all safety checks (security/performance/compliance) |
+| `npm run ops release` | Semantic release with changelog |
+| `npm run ops snapshot` | Create database snapshot |
+| `npm run ops restore` | Restore from snapshot |
+| `npm run ops rotate-secrets` | Rotate secrets and keys |
+| `npm run ops sb-guard` | RLS audit and security scan |
+| `npm run ops test:e2e` | Run E2E tests |
+| `npm run ops benchmark` | Performance benchmarks |
+| `npm run ops lintfix` | Auto-fix linting issues |
+| `npm run ops docs` | Generate documentation |
+| `npm run ops changelog` | Generate changelog |
+
+### 🗓️ Ops Schedule
+
+**Daily:**
+- `npm run ops doctor` → check reports → fix → release if green
+
+**Weekly:**
+- `npm run ops release` + growth report + rotate secrets
+
+**Monthly:**
+- DR rehearsal + deps update + red-team sweep
+
 ## 📝 Scripts
 
 | Script | Description |
