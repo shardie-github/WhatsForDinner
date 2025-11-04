@@ -10,24 +10,24 @@ import { useTenant } from '@/hooks/useTenant';
 import RecipeCard from '@/components/RecipeCard';
 import InputPrompt from '@/components/InputPrompt';
 import Navbar from '@/components/Navbar';
-import { RecipeCardSkeleton, InputPromptSkeleton } from '@/components/SkeletonLoader';
+import {
+  RecipeCardSkeleton,
+  InputPromptSkeleton,
+} from '@/components/SkeletonLoader';
 import { queryClient } from '@/lib/queryClient';
 import { analytics } from '@/lib/analytics';
 import { logger } from '@/lib/logger';
-import { getVariant, trackConversion } from '@/lib/experiments';
-import { Card, CardContent } from '@/components/ui/card';
+import { trackConversion } from '@/lib/experiments';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sparkles, TrendingUp, Users, ArrowRight } from 'lucide-react';
+import { ChefHat, Clock, Users, Zap, ArrowRight, Check, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
-/**
- * Landing Variant B: Outcome-Focused, Proof Points
- * Headline: "From pantry to plate in 30 seconds"
- * Focus: Outcome → Proof → Action
- */
-function LandingVariantB() {
+function LandingB() {
   const [user, setUser] = useState<any>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [variantLoaded, setVariantLoaded] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const generateRecipesMutation = useGenerateRecipes();
   const saveRecipeMutation = useSaveRecipe();
@@ -37,7 +37,9 @@ function LandingVariantB() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
 
       if (user) {
@@ -45,23 +47,23 @@ function LandingVariantB() {
         logger.setUserId(user.id);
       }
 
-      // Assign and track variant
-      const variant = getVariant('landing-hero-variant', user?.id);
-      setVariantLoaded(true);
-
       await analytics.trackEvent('page_viewed', {
-        page: 'landing',
+        page: 'landing-B',
         variant: 'B',
-        experiment_id: 'landing-hero-variant',
         user_authenticated: !!user,
       });
 
-      await trackConversion(
-        'landing-hero-variant',
-        'page_view',
-        user?.id,
-        { variant: 'B' }
-      );
+      if (user) {
+        const { data: onboarding } = await supabase
+          .from('onboarding_state')
+          .select('checklist_completed')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (!onboarding?.checklist_completed) {
+          setShowOnboarding(true);
+        }
+      }
     };
 
     getUser();
@@ -75,6 +77,7 @@ function LandingVariantB() {
       await analytics.trackEvent('recipe_generation_started', {
         ingredients_count: ingredients.length,
         has_preferences: !!preferences,
+        user_authenticated: !!user,
         variant: 'B',
       });
 
@@ -88,14 +91,6 @@ function LandingVariantB() {
         recipes_count: result.recipes.length,
         variant: 'B',
       });
-
-      // Track conversion
-      await trackConversion(
-        'landing-hero-variant',
-        'recipe_generated',
-        user?.id,
-        { variant: 'B', recipes_count: result.recipes.length }
-      );
     } catch (error) {
       await analytics.trackEvent('recipe_generation_failed', {
         error: error.message,
@@ -114,108 +109,127 @@ function LandingVariantB() {
         recipe_title: recipe.title,
         variant: 'B',
       });
-
-      await trackConversion(
-        'landing-hero-variant',
-        'recipe_saved',
-        user.id,
-        { variant: 'B' }
-      );
     } catch (error) {
       console.error('Error saving recipe:', error);
     }
   };
 
-  if (!variantLoaded) {
-    return null;
-  }
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background">
       <Navbar user={user} />
 
-      <main className="container mx-auto space-y-8 px-4 py-8">
-        {/* Hero Section - Variant B: Outcome-Focused */}
-        <div className="space-y-6 text-center">
+      <main className="container mx-auto space-y-8 px-4 sm:px-6 py-8 sm:py-12">
+        {/* Hero Section - Outcome-Focused Variant */}
+        <div className="space-y-6 text-center max-w-4xl mx-auto">
           <div className="space-y-4">
-            <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-4xl font-bold text-foreground text-transparent md:text-6xl">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 mb-6 animate-pulse">
+              <Sparkles className="h-10 w-10 text-primary" />
+            </div>
+            <h1 className="bg-gradient-to-r from-primary via-primary/90 to-primary/70 bg-clip-text text-4xl sm:text-5xl md:text-6xl font-bold text-transparent leading-tight">
               From pantry to plate in 30 seconds
             </h1>
-            <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
+            <p className="mx-auto max-w-2xl text-lg sm:text-xl text-muted-foreground md:text-2xl px-2 leading-relaxed">
               Stop wondering what's for dinner. Get AI-powered recipes that fit your kitchen, your diet, and your schedule.
             </p>
           </div>
 
-          {/* Social Proof / Stats */}
-          <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
-            <Card className="border-primary/20">
+          {/* Benefits Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mt-8">
+            <Card className="border-2 bg-gradient-to-br from-primary/5 to-background">
               <CardContent className="pt-6">
-                <div className="flex flex-col items-center space-y-2">
-                  <Sparkles className="h-8 w-8 text-primary" />
-                  <span className="text-2xl font-bold">10K+</span>
-                  <span className="text-sm text-muted-foreground">Recipes generated</span>
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Zap className="h-6 w-6 text-primary" />
+                  </div>
                 </div>
+                <h3 className="font-semibold mb-2">Instant Ideas</h3>
+                <p className="text-sm text-muted-foreground">
+                  Get recipe suggestions in seconds
+                </p>
               </CardContent>
             </Card>
-            <Card className="border-primary/20">
+            <Card className="border-2 bg-gradient-to-br from-primary/5 to-background">
               <CardContent className="pt-6">
-                <div className="flex flex-col items-center space-y-2">
-                  <TrendingUp className="h-8 w-8 text-primary" />
-                  <span className="text-2xl font-bold">15 min</span>
-                  <span className="text-sm text-muted-foreground">Saved per meal</span>
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    <ChefHat className="h-6 w-6 text-primary" />
+                  </div>
                 </div>
+                <h3 className="font-semibold mb-2">Personalized</h3>
+                <p className="text-sm text-muted-foreground">
+                  Recipes tailored to your preferences
+                </p>
               </CardContent>
             </Card>
-            <Card className="border-primary/20">
+            <Card className="border-2 bg-gradient-to-br from-primary/5 to-background">
               <CardContent className="pt-6">
-                <div className="flex flex-col items-center space-y-2">
-                  <Users className="h-8 w-8 text-primary" />
-                  <span className="text-2xl font-bold">70%</span>
-                  <span className="text-sm text-muted-foreground">Return within 7 days</span>
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-primary" />
+                  </div>
                 </div>
+                <h3 className="font-semibold mb-2">Time-Saving</h3>
+                <p className="text-sm text-muted-foreground">
+                  Save 15+ minutes per meal decision
+                </p>
               </CardContent>
             </Card>
           </div>
 
-          {/* CTA */}
-          <div className="mx-auto flex max-w-2xl justify-center">
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
             <Button
               size="lg"
+              className="group text-lg px-8 py-6 bg-primary hover:bg-primary/90 shadow-lg"
               onClick={() => {
                 document.getElementById('recipe-input')?.scrollIntoView({ behavior: 'smooth' });
-                trackConversion('landing-hero-variant', 'cta_clicked', user?.id, { variant: 'B' });
+                analytics.trackEvent('cta_clicked', { location: 'hero', variant: 'B', action: 'scroll_to_input' });
               }}
-              className="space-x-2"
             >
-              <span>Get Started Free</span>
-              <ArrowRight className="h-4 w-4" />
+              Try It Now
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="text-lg px-8 py-6"
+              asChild
+            >
+              <Link href="/pricing">
+                See Plans
+              </Link>
             </Button>
           </div>
 
           {/* Usage Stats */}
           {tenant && usage && (
-            <Card className="mx-auto max-w-2xl">
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <Card className="mx-auto w-full max-w-2xl mt-8 border-2 shadow-lg">
+              <CardHeader className="pb-3 px-6">
+                <CardTitle className="text-center text-lg">Your Plan</CardTitle>
+              </CardHeader>
+              <CardContent className="px-6">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="space-y-2 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                      <Sparkles className="h-6 w-6 text-primary" />
+                      <ChefHat className="h-6 w-6 text-primary" />
                     </div>
                     <p className="text-sm text-muted-foreground">Plan</p>
-                    <span className="text-lg font-semibold">{tenant.plan.toUpperCase()}</span>
+                    <Badge variant="outline" className="font-semibold">
+                      {tenant.plan.toUpperCase()}
+                    </Badge>
                   </div>
                   <div className="space-y-2 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
-                      <TrendingUp className="h-6 w-6 text-blue-600" />
+                      <Clock className="h-6 w-6 text-blue-600" />
                     </div>
                     <p className="text-sm text-muted-foreground">Meals Today</p>
-                    <p className="text-lg font-semibold">
+                    <p className="text-lg font-semibold text-foreground">
                       {usage.total_meals_today} / {usage.plan_quota}
                     </p>
                   </div>
                   <div className="space-y-2 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
-                      <ArrowRight className="h-6 w-6 text-green-600" />
+                      <Zap className="h-6 w-6 text-green-600" />
                     </div>
                     <p className="text-sm text-muted-foreground">Remaining</p>
                     <p className="text-lg font-semibold text-green-600">
@@ -224,14 +238,16 @@ function LandingVariantB() {
                   </div>
                   {tenant.plan === 'free' && (
                     <div className="space-y-2 text-center">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-orange-100">
+                        <Users className="h-6 w-6 text-orange-600" />
+                      </div>
+                      <p className="text-sm text-muted-foreground">Upgrade</p>
                       <Button
-                        onClick={() => {
-                          window.location.href = '/billing';
-                          trackConversion('landing-hero-variant', 'upgrade_cta_clicked', user?.id, { variant: 'B' });
-                        }}
+                        size="sm"
                         className="w-full"
+                        asChild
                       >
-                        Upgrade
+                        <Link href="/pricing">Upgrade</Link>
                       </Button>
                     </div>
                   )}
@@ -241,10 +257,24 @@ function LandingVariantB() {
           )}
         </div>
 
-        {/* Input Section */}
-        <div id="recipe-input">
+        {/* Recipe Input Section */}
+        <div id="recipe-input" className="scroll-mt-20">
           {pantryLoading ? (
             <InputPromptSkeleton />
+          ) : pantryItemNames.length === 0 && recipes.length === 0 ? (
+            <Card className="max-w-2xl mx-auto border-2">
+              <CardHeader>
+                <CardTitle className="text-center">Add Your Ingredients</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-center text-muted-foreground">
+                  Start by adding ingredients you have in your pantry
+                </p>
+                <Button className="w-full" asChild>
+                  <Link href="/pantry">Manage Pantry</Link>
+                </Button>
+              </CardContent>
+            </Card>
           ) : (
             <InputPrompt
               onGenerate={generateRecipes}
@@ -254,32 +284,18 @@ function LandingVariantB() {
           )}
         </div>
 
-        {/* Loading State */}
-        {generateRecipesMutation.isPending && (
-          <div className="space-y-6">
-            <h2 className="text-center text-2xl font-semibold">
-              Creating personalized recipes...
-            </h2>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <RecipeCardSkeleton />
-              <RecipeCardSkeleton />
-              <RecipeCardSkeleton />
-            </div>
-          </div>
-        )}
-
         {/* Results Section */}
         {recipes.length > 0 && !generateRecipesMutation.isPending && (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="mb-2 text-2xl font-semibold">
-                Your Personalized Recipes
+              <h2 className="mb-2 text-2xl sm:text-3xl font-semibold text-foreground">
+                Suggested Recipes
               </h2>
-              <p className="text-muted-foreground">
-                {recipes.length} recipe{recipes.length !== 1 ? 's' : ''} ready to cook
+              <p className="text-base text-muted-foreground">
+                Found {recipes.length} recipe{recipes.length !== 1 ? 's' : ''} for you
               </p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {recipes.map((recipe, index) => (
                 <RecipeCard
                   key={index}
@@ -294,28 +310,71 @@ function LandingVariantB() {
           </div>
         )}
 
-        {/* Error State */}
-        {generateRecipesMutation.error && (
-          <Card className="border-destructive/50 bg-destructive/5">
-            <CardContent className="pt-6">
-              <div className="flex items-center space-x-2 text-destructive">
-                <span className="text-xs font-bold">!</span>
-                <p className="font-medium">
-                  Error generating recipes: {generateRecipesMutation.error.message}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Loading State */}
+        {generateRecipesMutation.isPending && (
+          <div className="space-y-6">
+            <h2 className="text-center text-2xl font-semibold text-foreground">
+              Generating Recipes...
+            </h2>
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              <RecipeCardSkeleton />
+              <RecipeCardSkeleton />
+              <RecipeCardSkeleton />
+            </div>
+          </div>
         )}
       </main>
+
+      {/* Features Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl sm:text-4xl font-bold">How It Works</h2>
+              <p className="text-lg text-muted-foreground">
+                Three simple steps to dinner success
+              </p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto text-2xl font-bold text-primary">
+                  1
+                </div>
+                <h3 className="text-xl font-semibold">Add Ingredients</h3>
+                <p className="text-muted-foreground">
+                  Tell us what's in your pantry—we'll remember for next time.
+                </p>
+              </div>
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto text-2xl font-bold text-primary">
+                  2
+                </div>
+                <h3 className="text-xl font-semibold">Get Recipes</h3>
+                <p className="text-muted-foreground">
+                  AI generates personalized recipes in 30 seconds.
+                </p>
+              </div>
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto text-2xl font-bold text-primary">
+                  3
+                </div>
+                <h3 className="text-xl font-semibold">Start Cooking</h3>
+                <p className="text-muted-foreground">
+                  Save your favorites and cook with confidence.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
 
-export default function LandingPageB() {
+export default function LandingBPage() {
   return (
     <QueryClientProvider client={queryClient}>
-      <LandingVariantB />
+      <LandingB />
     </QueryClientProvider>
   );
 }

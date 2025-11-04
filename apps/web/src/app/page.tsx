@@ -18,11 +18,16 @@ import { queryClient } from '@/lib/queryClient';
 import { analytics } from '@/lib/analytics';
 import { logger } from '@/lib/logger';
 import { getVariant, shouldShowExperiment, trackConversion } from '@/lib/experiments';
+import { funnelTracker } from '@/lib/funnelTracking';
+import SocialShare from '@/components/SocialShare';
+import EmailCapture from '@/components/EmailCapture';
 import OnboardingChecklist from '@/components/OnboardingChecklist';
 import EmptyStateGuide from '@/components/EmptyStateGuide';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChefHat, Clock, Users, Zap } from 'lucide-react';
+import { ChefHat, Clock, Users, Zap, Sparkles, TrendingUp, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 function HomeContent() {
   const [user, setUser] = useState<any>(null);
@@ -71,6 +76,13 @@ function HomeContent() {
         variant: variant || 'default',
         user_authenticated: !!user,
       });
+
+      // Track funnel stage
+      if (user) {
+        await funnelTracker.trackStage('retention', { page: 'home' });
+      } else {
+        await funnelTracker.trackStage('awareness', { source: 'homepage' });
+      }
 
       // Show onboarding checklist if new user
       if (user) {
@@ -376,6 +388,97 @@ function HomeContent() {
             </CardContent>
           </Card>
         )}
+
+        {/* Social Share Section */}
+        {recipes.length > 0 && !generateRecipesMutation.isPending && (
+          <Card className="max-w-2xl mx-auto border-2">
+            <CardContent className="pt-6">
+              <div className="text-center space-y-4">
+                <h3 className="font-semibold">Love this recipe? Share it!</h3>
+                <SocialShare
+                  title={`${recipes.length} recipe${recipes.length !== 1 ? 's' : ''} from What's for Dinner?`}
+                  description="Check out these AI-generated recipes based on my pantry!"
+                  url={typeof window !== 'undefined' ? window.location.href : ''}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Email Capture (for non-authenticated users) */}
+        {!user && (
+          <div className="max-w-2xl mx-auto mt-12">
+            <EmailCapture
+              title="Get Recipe Ideas Delivered"
+              description="Join thousands getting AI-powered meal suggestions. Start free, no credit card required."
+              cta="Get Started Free"
+              source="homepage"
+            />
+          </div>
+        )}
+
+        {/* Features Section */}
+        <section className="py-16 bg-muted/30 mt-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto space-y-12">
+              <div className="text-center space-y-4">
+                <h2 className="text-3xl sm:text-4xl font-bold">Why Choose What's for Dinner?</h2>
+                <p className="text-lg text-muted-foreground">
+                  The pantry-first meal planner that saves you time and reduces waste
+                </p>
+              </div>
+              <div className="grid gap-6 md:grid-cols-3">
+                <Card className="border-2">
+                  <CardHeader>
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <Zap className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle>30-Second Recipes</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Get dinner ideas from ingredients you already have in under 30 seconds.
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="border-2">
+                  <CardHeader>
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <ChefHat className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle>AI That Learns</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Our AI personalizes recipes to your preferences and dietary needs.
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="border-2">
+                  <CardHeader>
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <Clock className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle>Save Time</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Reduce meal planning decision fatigue and save 15+ minutes per meal.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="text-center">
+                <Link href="/pricing">
+                  <Button size="lg" className="gap-2">
+                    See Plans
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
