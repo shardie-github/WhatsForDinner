@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { logger } from '@/lib/logger';
 import Stripe from 'stripe';
+import { withCSRFProtection } from '@/lib/csrf-middleware';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-12-18.acacia',
@@ -12,7 +13,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function POST(request: NextRequest) {
+async function handler(request: NextRequest) {
   try {
     const userId = request.headers.get('x-user-id');
     if (!userId) {
@@ -88,3 +89,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export const POST = (req: NextRequest) => withCSRFProtection(handler, req);

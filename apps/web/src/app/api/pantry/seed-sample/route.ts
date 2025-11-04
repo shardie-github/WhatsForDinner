@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 import { headers } from 'next/headers';
 import { z } from 'zod';
+import { withCSRFProtection } from '@/lib/csrf-middleware';
+import { NextRequest } from 'next/server';
 
 const SAMPLE_INGREDIENTS = [
   'chicken breast',
@@ -20,7 +22,7 @@ const SAMPLE_INGREDIENTS = [
  * POST /api/pantry/seed-sample
  * Seeds sample ingredients into user's pantry
  */
-export async function POST(req: Request) {
+async function handler(req: NextRequest) {
   try {
     const headersList = await headers();
     
@@ -103,3 +105,5 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export const POST = (req: NextRequest) => withCSRFProtection(handler, req);

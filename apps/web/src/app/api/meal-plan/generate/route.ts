@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateWeeklyMealPlan } from '@/lib/services/meal-plan-generator';
-import { useGenerateRecipes } from '@/hooks/useRecipes';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { withCSRFProtection } from '@/lib/csrf-middleware';
 
-export async function POST(request: NextRequest) {
+async function handler(request: NextRequest) {
   try {
     const supabase = createRouteHandlerClient({ cookies });
     const {
@@ -60,3 +60,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export const POST = (req: NextRequest) => withCSRFProtection(handler, req);

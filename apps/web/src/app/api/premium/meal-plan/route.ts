@@ -3,6 +3,7 @@ import { generateWeeklyMealPlan, MealPlanPreferences } from '@/lib/services/meal
 import { getTenantContext } from '@/lib/auth-middleware';
 import { generateRecipesWithFallback } from '@/lib/openaiService';
 import { z } from 'zod';
+import { withCSRFProtection } from '@/lib/csrf-middleware';
 
 const GenerateMealPlanSchema = z.object({
   pantryItems: z.array(z.string()),
@@ -16,7 +17,7 @@ const GenerateMealPlanSchema = z.object({
   }).optional(),
 });
 
-export async function POST(req: NextRequest) {
+async function handler(req: NextRequest) {
   try {
     const tenantResult = await getTenantContext(req);
     if (!tenantResult.success) {
@@ -56,3 +57,5 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export const POST = (req: NextRequest) => withCSRFProtection(handler, req);

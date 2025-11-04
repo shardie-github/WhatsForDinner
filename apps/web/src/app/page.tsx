@@ -25,7 +25,7 @@ import OnboardingChecklist from '@/components/OnboardingChecklist';
 import EmptyStateGuide from '@/components/EmptyStateGuide';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChefHat, Clock, Users, Zap, Sparkles, TrendingUp, ArrowRight } from 'lucide-react';
+import { fetchWithCSRF } from '@/lib/fetchWithCSRF';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -303,7 +303,7 @@ function HomeContent() {
             }}
             onTrySample={async () => {
               try {
-                const response = await fetch('/api/pantry/seed-sample', {
+                const response = await fetchWithCSRF('/api/pantry/seed-sample', {
                   method: 'POST',
                 });
                 if (response.ok) {

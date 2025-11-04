@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getIngredientNutrition, getRecipeNutrition, isNutritionVerified } from '@/lib/services/nutrition-service';
 import { getTenantContext } from '@/lib/auth-middleware';
 import { z } from 'zod';
+import { withCSRFProtection } from '@/lib/csrf-middleware';
 
 const IngredientNutritionSchema = z.object({
   ingredient: z.string(),
@@ -17,7 +18,7 @@ const RecipeNutritionSchema = z.object({
   })),
 });
 
-export async function POST(req: NextRequest) {
+async function handler(req: NextRequest) {
   try {
     const tenantResult = await getTenantContext(req);
     if (!tenantResult.success) {
@@ -74,3 +75,5 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export const POST = (req: NextRequest) => withCSRFProtection(handler, req);

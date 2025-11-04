@@ -10,6 +10,8 @@ import { CoreWebVitals } from '@/components/CoreWebVitals';
 import { PerformanceDashboard } from '@/components/PerformanceDashboard';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { GDPRConsent } from '@/components/GDPRConsent';
+import { LiveRegion, SkipToMainContent } from '@/lib/accessibility';
+import { WebsiteStructuredData, OrganizationStructuredData } from '@/components/StructuredData';
 
 // Phase 2: Initialize intelligent prefetching
 if (typeof window !== 'undefined') {
@@ -30,9 +32,61 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "What's for Dinner?",
+  title: {
+    default: "What's for Dinner? - AI Meal Planning from Your Pantry",
+    template: "%s | What's for Dinner?",
+  },
   description:
-    'AI-powered meal suggestions based on your pantry and preferences',
+    'Get AI-powered meal suggestions in 30 seconds based on ingredients you already have. Stop wasting food, save time, and reduce decision fatigue. Free meal planning app.',
+  keywords: [
+    'meal planning',
+    'recipe generator',
+    'pantry cooking',
+    'meal prep',
+    'food waste reduction',
+    'quick dinner ideas',
+    'AI recipes',
+    'pantry staples recipes',
+    'meal planning app',
+    'recipe suggestions',
+  ],
+  authors: [{ name: "What's for Dinner?" }],
+  creator: "What's for Dinner?",
+  publisher: "What's for Dinner?",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://whatsfordinner.com',
+    siteName: "What's for Dinner?",
+    title: "What's for Dinner? - AI Meal Planning from Your Pantry",
+    description: 'Get AI-powered meal suggestions in 30 seconds based on ingredients you already have.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: "What's for Dinner? - AI Meal Planning",
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "What's for Dinner? - AI Meal Planning",
+    description: 'Get AI-powered meal suggestions in 30 seconds based on ingredients you already have.',
+    images: ['/og-image.png'],
+    creator: '@whatsfordinner',
+  },
   manifest: '/manifest.json',
   themeColor: '#10B981',
   viewport: {
@@ -63,6 +117,10 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'default',
   },
+  alternates: {
+    canonical: 'https://whatsfordinner.com',
+  },
+  category: 'Food & Cooking',
 };
 
 export default function RootLayout({
@@ -100,6 +158,8 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${poppins.variable} ${playfair.variable} font-sans antialiased`}>
+        <SkipToMainContent />
+        <LiveRegion />
         <ErrorBoundary>
           <ThemeProvider>
             <div className="min-h-screen bg-background text-foreground safe-area-inset">
@@ -116,7 +176,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </header>
-              <main className="flex-1 pb-safe-area-inset-bottom">
+              <main id="main-content" className="flex-1 pb-safe-area-inset-bottom">
                 {children}
               </main>
               <footer className="border-t bg-background safe-area-inset-bottom">
@@ -150,6 +210,8 @@ export default function RootLayout({
           <CoreWebVitals />
           <PerformanceDashboard compact />
           <GDPRConsent />
+          <WebsiteStructuredData />
+          <OrganizationStructuredData />
         </ErrorBoundary>
       </body>
     </html>

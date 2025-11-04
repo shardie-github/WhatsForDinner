@@ -7,6 +7,7 @@ import { aiOptimization } from '@/lib/aiOptimization';
 import { StripeService } from '@/lib/stripe';
 import { withRateLimit } from '@/lib/rate-limiting';
 import { getTenantContext } from '@/lib/auth-middleware';
+import { withCSRFProtection } from '@/lib/csrf-middleware';
 
 async function handler(req: NextRequest) {
   try {
@@ -93,11 +94,11 @@ async function handler(req: NextRequest) {
   }
 }
 
-// Apply rate limiting (20 requests per minute for recipe generation)
+// Apply rate limiting and CSRF protection
 export const POST = withRateLimit(
   {
     requests: 20,
     window: 60,
   },
-  handler
+  (req: NextRequest) => withCSRFProtection(handler, req)
 );
