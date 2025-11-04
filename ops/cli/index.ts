@@ -154,4 +154,24 @@ program
     await runChangelog(options);
   });
 
+// Guardian audit command
+program
+  .command('guardian:audit')
+  .description('Audit Guardian system integrity and compliance')
+  .option('--verbose', 'Show detailed output')
+  .action(async (options) => {
+    const { runGuardianAudit } = await import('./commands/guardian-audit.js');
+    await runGuardianAudit(options);
+  });
+
+// Guardian verify command
+program
+  .command('guardian:verify')
+  .description('Verify Guardian ledger hash chain integrity')
+  .option('--user-id <userId>', 'Verify specific user ledger')
+  .action(async (options) => {
+    const { runGuardianVerify } = await import('./commands/guardian-verify.js');
+    await runGuardianVerify(options);
+  });
+
 program.parse(process.argv);

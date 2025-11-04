@@ -1,0 +1,74 @@
+# Guardian Default Policy Configuration
+# Defines data scopes, risk weights, and response actions
+
+allowed_scopes:
+  - user
+  - app
+  - api
+  - external
+
+data_classes:
+  telemetry:
+    risk_weight: 0.3
+    default_action: allow
+    requires_consent: true
+  
+  location:
+    risk_weight: 0.8
+    default_action: mask
+    requires_consent: true
+  
+  audio:
+    risk_weight: 0.9
+    default_action: block
+    requires_consent: true
+  
+  biometrics:
+    risk_weight: 0.95
+    default_action: block
+    requires_consent: true
+  
+  content:
+    risk_weight: 0.6
+    default_action: redact
+    requires_consent: false
+  
+  credentials:
+    risk_weight: 1.0
+    default_action: block
+    requires_consent: true
+  
+  personal_info:
+    risk_weight: 0.7
+    default_action: mask
+    requires_consent: true
+  
+  metadata:
+    risk_weight: 0.2
+    default_action: allow
+    requires_consent: false
+
+risk_weights:
+  impact: 0.6
+  likelihood: 0.4
+
+response_actions:
+  allow:
+    threshold: 30
+    description: "Low risk - allow operation"
+  
+  mask:
+    threshold: 50
+    description: "Medium risk - mask sensitive data"
+  
+  redact:
+    threshold: 70
+    description: "High risk - redact sensitive content"
+  
+  block:
+    threshold: 85
+    description: "Very high risk - block operation"
+  
+  alert:
+    threshold: 95
+    description: "Critical risk - block and alert user"
