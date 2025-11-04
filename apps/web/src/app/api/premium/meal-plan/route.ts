@@ -1,0 +1,58 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { generateWeeklyMealPlan, MealPlanPreferences } from '@/lib/services/meal-plan-generator';
+import { getTenantContext } from '@/lib/auth-middleware';
+import { generateRecipesWithFallback } from '@/lib/openaiService';
+import { z } from 'zod';
+
+const GenerateMealPlanSchema = z.object({
+  pantryItems: z.array(z.string()),
+  preferences: z.object({
+    dietaryRestrictions: z.array(z.string()).optional(),
+    cuisinePreferences: z.array(z.string()).optional(),
+    mealPrepDay: z.enum(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']).optional(),
+    familySize: z.number().optional(),
+    maxPrepTime: z.number().optional(),
+    budget: z.number().optional(),
+  }).optional(),
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const tenantResult = await getTenantContext(req);
+    if (!tenantResult.success) {
+      return tenantResult.response;
+    }
+
+    const body = await req.json();
+    const { pantryItems, preferences = {} } = GenerateMealPlanSchema.parse(body);
+
+    const mealPlan = await generateWeeklyMealPlan(
+      pantryItems,
+      preferences as MealPlanPreferences,
+      async (ingredients: string[], prefs: string) => {
+        return await generateRecipesWithFallback({
+          ingredients,
+          preferences: prefs,
+          maxRetries: 3,
+          retryDelay: 1000,
+        });
+      }
+    );
+
+    return NextResponse.json({ mealPlan });
+  } catch (error) {
+    console.error('Error generating meal plan:', error);
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid request', details: error.errors },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Failed to generate meal plan' },
+      { status: 500 }
+    );
+  }
+}
