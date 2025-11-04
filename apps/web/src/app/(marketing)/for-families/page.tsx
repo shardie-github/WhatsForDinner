@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Navbar } from '@/components/Navbar';
+import Navbar from '@/components/Navbar';
 import { EmailCapture } from '@/components/EmailCapture';
 import { SocialShare } from '@/components/SocialShare';
 import { analytics } from '@/lib/analytics';
@@ -35,7 +35,7 @@ export default function ForFamiliesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <Navbar user={null} />
       
       <main>
         {/* Hero Section */}

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { Recipe, GenerateRecipesRequest } from '@/lib/validation';
 import { useTenant } from './useTenant';
 import { supabase } from '@/lib/supabaseClient';
+import { fetchWithCSRF } from '@/lib/fetchWithCSRF';
 
 interface GenerateRecipesResponse {
   recipes: Recipe[];
@@ -26,7 +27,7 @@ export function useGenerateRecipes() {
         throw new Error('Daily quota exceeded. Please upgrade your plan.');
       }
 
-      const response = await fetch('/api/dinner', {
+      const response = await fetchWithCSRF('/api/dinner', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

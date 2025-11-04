@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
+import { RecipeStructuredData } from './StructuredData';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -31,7 +32,9 @@ export default function RecipeCard({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <Card className="group animate-fade-in transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+    <>
+      <RecipeStructuredData recipe={recipe} />
+      <Card className="group animate-fade-in transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
       <CardHeader className="pb-3 px-4 sm:px-6">
         <CardTitle className="text-lg sm:text-xl font-semibold text-card-foreground transition-colors group-hover:text-primary">
           {recipe.title}
@@ -141,5 +144,6 @@ export default function RecipeCard({
         )}
       </CardContent>
     </Card>
+    </>
   );
 }
