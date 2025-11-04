@@ -154,4 +154,26 @@ program
     await runChangelog(options);
   });
 
+// Guardian command - privacy guardian audit
+program
+  .command('guardian')
+  .description('Run Guardian privacy system audit')
+  .option('--verify', 'Verify hash chain integrity')
+  .option('--audit', 'Run full audit (default)')
+  .action(async (options) => {
+    const { guardianAudit } = await import('./commands/guardian.js');
+    const result = await guardianAudit.runAudit();
+    if (result.passed) {
+      console.log('✅ Guardian audit passed');
+      process.exit(0);
+    } else {
+      console.error('❌ Guardian audit failed');
+      console.error('Errors:', result.errors);
+      if (result.warnings.length > 0) {
+        console.warn('Warnings:', result.warnings);
+      }
+      process.exit(1);
+    }
+  });
+
 program.parse(process.argv);

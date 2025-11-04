@@ -1,0 +1,88 @@
+# Guardian Default Privacy Policies
+# Defines allowed scopes, data classes, risk weights, and response actions
+
+policies:
+  - id: "default-telemetry"
+    name: "Default Telemetry Monitoring"
+    allowed_scopes: ["app", "user"]
+    data_classes: ["telemetry", "metadata"]
+    risk_weights:
+      impact: 2
+      likelihood: 0.3
+    response_actions: ["allow", "mask"]
+    conditions:
+      retention_days: 14
+      anonymize: true
+
+  - id: "location-tracking"
+    name: "Location Data Access"
+    allowed_scopes: ["app"]
+    data_classes: ["location"]
+    risk_weights:
+      impact: 7
+      likelihood: 0.6
+    response_actions: ["allow", "alert", "mask"]
+    conditions:
+      requires_consent: true
+      max_precision_km: 5
+
+  - id: "audio-capture"
+    name: "Audio/Microphone Access"
+    allowed_scopes: ["app"]
+    data_classes: ["audio"]
+    risk_weights:
+      impact: 9
+      likelihood: 0.8
+    response_actions: ["block", "alert"]
+    conditions:
+      requires_consent: true
+      requires_mfa: true
+
+  - id: "biometric-data"
+    name: "Biometric Data Access"
+    allowed_scopes: ["app"]
+    data_classes: ["biometrics"]
+    risk_weights:
+      impact: 10
+      likelihood: 0.9
+    response_actions: ["block", "alert"]
+    conditions:
+      requires_consent: true
+      requires_mfa: true
+      encryption_required: true
+
+  - id: "api-external"
+    name: "External API Calls"
+    allowed_scopes: ["api", "external"]
+    data_classes: ["telemetry", "content", "metadata"]
+    risk_weights:
+      impact: 6
+      likelihood: 0.7
+    response_actions: ["allow", "mask", "redact", "alert"]
+    conditions:
+      requires_encryption: true
+      pii_redaction: true
+
+  - id: "content-processing"
+    name: "Content Processing"
+    allowed_scopes: ["app", "api"]
+    data_classes: ["content"]
+    risk_weights:
+      impact: 5
+      likelihood: 0.5
+    response_actions: ["allow", "mask", "redact"]
+    conditions:
+      local_processing_preferred: true
+      pii_detection: true
+
+  - id: "credentials-access"
+    name: "Credentials Access"
+    allowed_scopes: ["app"]
+    data_classes: ["credentials"]
+    risk_weights:
+      impact: 10
+      likelihood: 0.95
+    response_actions: ["block", "alert"]
+    conditions:
+      requires_mfa: true
+      never_log: true

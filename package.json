@@ -139,6 +139,9 @@
     "ops:lintfix": "tsx ops/cli/index.ts lintfix",
     "ops:docs": "tsx ops/cli/index.ts docs",
     "ops:changelog": "tsx ops/cli/index.ts changelog",
+    "ops:guardian": "tsx ops/cli/index.ts guardian",
+    "ops:guardian:audit": "tsx ops/cli/index.ts guardian --audit",
+    "ops:guardian:verify": "tsx ops/cli/index.ts guardian --verify",
     "demo:privacy": "tsx scripts/demo-privacy.ts",
     "privacy:compliance": "tsx scripts/privacy-compliance-check.ts"
   },
