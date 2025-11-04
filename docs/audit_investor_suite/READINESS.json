@@ -1,0 +1,24 @@
+{
+  "score": 61,
+  "threshold": 90,
+  "gate_passes": false,
+  "sub_scores": {
+    "technical": 5,
+    "product": 12,
+    "gtm": 12,
+    "finance": 12,
+    "governance": 20
+  },
+  "critical_blockers": 0,
+  "notes": [
+    "EXEC_SUMMARY.md found (fallback)",
+    "PRODUCT_AUDIT.md missing (partial credit)",
+    "GTM_AUDIT.md missing (partial credit)",
+    "FINANCIAL_FORECAST.md missing (partial credit)",
+    "SECURITY.md exists",
+    "CODEOWNERS exists",
+    "SUPPORT.md exists",
+    ".github/FUNDING.yml exists"
+  ],
+  "timestamp": "\"2025-11-04T03:01:27Z\""
+}
