@@ -1,0 +1,221 @@
+{
+  "version": "1.0",
+  "description": "Zapier/Make automation blueprints for Canadian venture operations",
+  "flows": [
+    {
+      "name": "Lead Capture → CRM → Email Follow-up",
+      "platform": "zapier",
+      "trigger": {
+        "app": "Google Forms",
+        "event": "New Form Submission",
+        "fields": {
+          "name": "{{form.Name}}",
+          "email": "{{form.Email}}",
+          "phone": "{{form.Phone}}",
+          "source": "{{form.UTM_Source}}",
+          "message": "{{form.Message}}"
+        }
+      },
+      "actions": [
+        {
+          "step": 1,
+          "app": "Notion",
+          "action": "Create Database Item",
+          "database_id": "{{notion_crm_database_id}}",
+          "fields": {
+            "Name": "{{trigger.Name}}",
+            "Email": "{{trigger.Email}}",
+            "Phone": "{{trigger.Phone}}",
+            "Source": "{{trigger.source}}",
+            "Status": "New Lead",
+            "Created": "{{trigger.timestamp}}"
+          }
+        },
+        {
+          "step": 2,
+          "app": "Gmail",
+          "action": "Send Email",
+          "to": "{{trigger.Email}}",
+          "subject": "Thanks for reaching out!",
+          "body": "Hi {{trigger.Name}},\n\nThanks for your interest in What's for Dinner?\n\nWe'll get back to you within 24 hours.\n\nBest,\nThe Team"
+        },
+        {
+          "step": 3,
+          "app": "Slack",
+          "action": "Post Message",
+          "channel": "#leads",
+          "message": "🎯 New lead: {{trigger.Name}} ({{trigger.Email}})\nSource: {{trigger.source}}"
+        }
+      ],
+      "notes": "Replace {{notion_crm_database_id}} with your actual Notion database ID"
+    },
+    {
+      "name": "Stripe Sale → Supabase → Google Sheet → Slack",
+      "platform": "zapier",
+      "trigger": {
+        "app": "Stripe",
+        "event": "New Payment",
+        "fields": {
+          "customer_email": "{{stripe.Customer Email}}",
+          "amount": "{{stripe.Amount}}",
+          "currency": "{{stripe.Currency}}",
+          "payment_id": "{{stripe.Payment ID}}"
+        }
+      },
+      "actions": [
+        {
+          "step": 1,
+          "app": "Supabase",
+          "action": "Insert Row",
+          "table": "sales",
+          "data": {
+            "customer_email": "{{trigger.customer_email}}",
+            "amount_cad": "{{trigger.amount}}",
+            "currency": "CAD",
+            "stripe_payment_id": "{{trigger.payment_id}}",
+            "timestamp": "{{trigger.created_at}}"
+          }
+        },
+        {
+          "step": 2,
+          "app": "Google Sheets",
+          "action": "Add Row",
+          "spreadsheet_id": "{{finance_dashboard_sheet_id}}",
+          "worksheet": "Sales",
+          "values": [
+            "{{trigger.created_at}}",
+            "{{trigger.customer_email}}",
+            "{{trigger.amount}}",
+            "CAD"
+          ]
+        },
+        {
+          "step": 3,
+          "app": "Slack",
+          "action": "Post Message",
+          "channel": "#revenue",
+          "message": "💰 New sale: ${{trigger.amount}} CAD from {{trigger.customer_email}}"
+        }
+      ],
+      "notes": "Convert USD to CAD if needed. Update sheet_id with your Google Sheet ID"
+    },
+    {
+      "name": "Social Post → Marketing Dashboard Log",
+      "platform": "make",
+      "trigger": {
+        "app": "Twitter/X",
+        "event": "New Tweet Published",
+        "fields": {
+          "tweet_id": "{{tweet.id}}",
+          "text": "{{tweet.text}}",
+          "timestamp": "{{tweet.created_at}}"
+        }
+      },
+      "actions": [
+        {
+          "step": 1,
+          "app": "Airtable",
+          "action": "Create Record",
+          "base_id": "{{marketing_base_id}}",
+          "table": "Social Posts",
+          "fields": {
+            "Platform": "Twitter/X",
+            "Post ID": "{{trigger.tweet_id}}",
+            "Content": "{{trigger.text}}",
+            "Published": "{{trigger.timestamp}}",
+            "Status": "Published"
+          }
+        },
+        {
+          "step": 2,
+          "app": "Google Sheets",
+          "action": "Add Row",
+          "spreadsheet_id": "{{marketing_dashboard_sheet_id}}",
+          "worksheet": "Social Activity",
+          "values": [
+            "{{trigger.timestamp}}",
+            "Twitter/X",
+            "{{trigger.tweet_id}}",
+            "Published"
+          ]
+        }
+      ],
+      "notes": "Replace base_id and sheet_id with your actual IDs"
+    },
+    {
+      "name": "Support Ticket → Auto-Route by Priority",
+      "platform": "zapier",
+      "trigger": {
+        "app": "Typeform",
+        "event": "New Form Submission",
+        "form_type": "support",
+        "fields": {
+          "email": "{{form.Email}}",
+          "subject": "{{form.Subject}}",
+          "priority": "{{form.Priority}}",
+          "message": "{{form.Message}}"
+        }
+      },
+      "actions": [
+        {
+          "step": 1,
+          "app": "Supabase",
+          "action": "Insert Row",
+          "table": "support_tickets",
+          "data": {
+            "email": "{{trigger.email}}",
+            "subject": "{{trigger.subject}}",
+            "priority": "{{trigger.priority}}",
+            "message": "{{trigger.message}}",
+            "status": "Open",
+            "created_at": "{{trigger.timestamp}}"
+          }
+        },
+        {
+          "step": 2,
+          "app": "Gmail",
+          "action": "Send Email",
+          "to": "{{trigger.email}}",
+          "subject": "Ticket #{{ticket.id}} - {{trigger.subject}}",
+          "body": "Hi,\n\nWe've received your support request (Ticket #{{ticket.id}}).\n\nPriority: {{trigger.priority}}\n\nWe'll respond within:\n- High: 2 hours\n- Medium: 24 hours\n- Low: 48 hours\n\nBest,\nSupport Team"
+        },
+        {
+          "step": 3,
+          "app": "Slack",
+          "action": "Post Message",
+          "channel": "{{trigger.priority == 'High' ? '#urgent-support' : '#support'}}",
+          "message": "🎫 {{trigger.priority}} Ticket: {{trigger.subject}}\nFrom: {{trigger.email}}\nTicket ID: #{{ticket.id}}"
+        }
+      ],
+      "notes": "Create support_tickets table in Supabase first"
+    }
+  ],
+  "setup_instructions": {
+    "zapier": [
+      "1. Import this JSON into Zapier (use 'Import Zap' feature)",
+      "2. Replace placeholder values ({{notion_crm_database_id}}, etc.)",
+      "3. Connect your accounts (Google, Notion, Stripe, Supabase, Slack)",
+      "4. Test each zap with sample data",
+      "5. Turn on automation"
+    ],
+    "make": [
+      "1. Create new scenario in Make.com",
+      "2. Use JSON structure above as template",
+      "3. Connect apps and map fields",
+      "4. Test with sample data",
+      "5. Activate scenario"
+    ]
+  },
+  "privacy_notes": [
+    "All automation touches user data. Ensure PIPEDA compliance:",
+    "- User consent captured at form submission",
+    "- Data stored securely (Supabase encryption)",
+    "- User can request deletion via /api/privacy/delete",
+    "- Audit logs maintained for all data access"
+  ],
+  "fallback_manual": {
+    "if_zapier_down": "Export form submissions to CSV, import manually to Notion/Sheets",
+    "if_stripe_webhook_fails": "Use Stripe dashboard → Export CSV → Import to Supabase",
+    "if_social_auto_fails": "Post manually, log to Airtable/Sheets afterward"
+  }
+}

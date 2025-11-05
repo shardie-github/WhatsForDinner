@@ -1,0 +1,64 @@
+name: Vercel Auto-Update (Preview Deploys)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  preview-deploy:
+    runs-on: ubuntu-latest
+    
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Application
+        run: pnpm run build:web
+
+      - name: Vercel Pull
+        run: |
+          cd apps/web
+          pnpm run vercel:pull
+
+      - name: Vercel Build
+        run: |
+          cd apps/web
+          pnpm run vercel:build
+
+      - name: Deploy Preview
+        run: |
+          cd apps/web
+          pnpm run vercel:deploy:preview
+
+      - name: Comment PR with Preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = await exec.exec('cd apps/web && vercel ls --token ${{ secrets.VERCEL_TOKEN }} | head -n 1');
+            const previewUrl = output.stdout.trim();
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 Preview deployment ready: ${previewUrl}`
+            });

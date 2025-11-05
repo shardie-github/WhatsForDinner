@@ -1,0 +1,80 @@
+name: Supabase Weekly Backup & Maintenance
+
+on:
+  schedule:
+    # Every Sunday at 2 AM UTC (Saturday 9 PM EST / 10 PM EDT)
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+
+      - name: Supabase Login
+        run: |
+          echo "$SUPABASE_ACCESS_TOKEN" | supabase login --token -
+
+      - name: Create Database Snapshot
+        run: |
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          supabase db dump --project-ref $SUPABASE_PROJECT_REF \
+            --file backups/db_snapshot_${TIMESTAMP}.sql \
+            --password $SUPABASE_DB_PASSWORD || true
+          
+          # Also create via ops CLI
+          pnpm run ops:snapshot "Weekly automated backup - ${TIMESTAMP}"
+
+      - name: Verify Snapshot
+        run: |
+          BACKUP_COUNT=$(ls -1 backups/*.sql 2>/dev/null | wc -l)
+          if [ $BACKUP_COUNT -eq 0 ]; then
+            echo "⚠️ No backups found"
+            exit 1
+          fi
+          echo "✅ Backup created successfully"
+
+      - name: Upload Backup to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_number }}
+          path: backups/*.sql
+          retention-days: 30
+
+      - name: Run Database Maintenance
+        run: |
+          # Vacuum analyze (via Supabase dashboard or SQL)
+          echo "Running maintenance tasks..."
+          pnpm run ops:doctor --check-db || true
+
+      - name: Generate Backup Report
+        run: |
+          echo "## Weekly Backup Report" >> $GITHUB_STEP_SUMMARY
+          echo "- **Timestamp:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "- **Project:** ${{ secrets.SUPABASE_PROJECT_REF }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ✅ Completed" >> $GITHUB_STEP_SUMMARY

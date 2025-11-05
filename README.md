@@ -457,6 +457,85 @@ npm run ops check
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 🤖 Automated Operations Suite
+
+This repository includes a comprehensive **Automated Venture Operations Suite** designed for Canadian solo or small-team ventures. All workflows, templates, and automation assets are self-contained and deployable from the repo.
+
+### Quick Start
+
+**Daily Routine (15 minutes):**
+- Review automated reports → Check system health → Approve releases (if needed)
+- See [`ops/daily-routine.md`](./ops/daily-routine.md) for complete checklist
+
+**What Runs Automatically:**
+- **Every Hour:** Analytics collection, health checks, support ticket routing
+- **Daily:** Database backups, analytics reports, finance snapshots, marketing automation
+- **Weekly:** Growth reports, security audits, performance benchmarks
+- **Monthly:** DR rehearsals, dependencies updates, finance reconciliation
+
+### Automation Components
+
+**GitHub Actions:**
+- Auto-deploy to Vercel on push to main
+- Supabase migration + backup weekly
+- Daily analytics scripts → commit reports to `/ops/dashboards/reports/`
+
+**No-Code Automation (Zapier/Make):**
+- Lead capture → CRM → Email follow-up
+- Stripe sale → Supabase → Google Sheet → Slack DM
+- Social post → Auto-log to marketing dashboard
+- Support ticket → Auto-route by priority
+
+**Dashboards:**
+- Marketing dashboard (leads, conversions, traffic sources)
+- Finance dashboard (revenue CAD, expenses, GST/HST tracking)
+- KPI tracker (MAU, CAC, LTV, conversion rates)
+
+### Documentation
+
+**Operations:**
+- [`ops/daily-routine.md`](./ops/daily-routine.md) - 15-minute daily checklist
+- [`ops/automation-blueprints/`](./ops/automation-blueprints/) - GitHub Actions, Zapier/Make flows
+
+**Marketing:**
+- [`ops/marketing/automated-leadflow-guide.md`](./ops/marketing/automated-leadflow-guide.md) - Lead capture → CRM → Email
+- [`ops/marketing/crm-integration-guide.md`](./ops/marketing/crm-integration-guide.md) - Notion/Airtable setup
+
+**Support:**
+- [`ops/support/helpdesk-playbook.md`](./ops/support/helpdesk-playbook.md) - Customer support workflows
+- [`ops/support/chatbot-faq-builder.md`](./ops/support/chatbot-faq-builder.md) - Automated FAQ chatbot
+
+**Growth:**
+- [`ops/growth/influencer-outreach-automation.md`](./ops/growth/influencer-outreach-automation.md) - Automated influencer partnerships
+- [`ops/growth/content-seeding-checklist.md`](./ops/growth/content-seeding-checklist.md) - Content creation workflow
+- [`ops/growth/community-engagement-plan.md`](./ops/growth/community-engagement-plan.md) - Reddit, Instagram, Twitter strategy
+
+**Legal:**
+- [`ops/legal/vendor-contract-template.md`](./ops/legal/vendor-contract-template.md) - Simplified contract template
+- [`ops/legal/nda-template.md`](./ops/legal/nda-template.md) - Mutual NDA template
+
+**Funding:**
+- [`ops/funding/seed-prep-playbook.md`](./ops/funding/seed-prep-playbook.md) - Fundraising preparation guide
+- [`ops/funding/investor-outreach-email-bank.md`](./ops/funding/investor-outreach-email-bank.md) - Pre-written email templates
+- [`ops/funding/grant-and-incubator-list-canada.md`](./ops/funding/grant-and-incubator-list-canada.md) - Canadian funding programs (IRAP, SR&ED, Futurpreneur, BDC Seed)
+
+**See [`ops/README.md`](./ops/README.md) for complete documentation.**
+
+### Cost Breakdown (CAD)
+
+| Service | Free Tier | Paid Tier |
+|---------|-----------|-----------|
+| GitHub Actions | 2,000 min/month | Included |
+| Zapier | 100 tasks/month | $29.99/month |
+| Supabase | Free (50K MAU) | $25/month |
+| Vercel | Free (hobby) | $20/month |
+| Google Sheets | Free | Free |
+| Notion | Free (personal) | $12/month |
+
+**Recommended:** Start with free tiers, upgrade as needed.
+
+---
+
 ## 🆘 Support
 
 For support and questions:

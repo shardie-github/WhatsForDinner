@@ -1,0 +1,14 @@
+Date,Platform,Post Type,Post ID,Content Preview,Engagements,Impressions,Click-Through Rate,Link Clicks,Source
+2025-01-15,Twitter/X,Recipe Share,12345,"Check out this quick dinner idea!",45,1200,3.75%,15,Organic
+2025-01-15,Instagram,Recipe Share,67890,"Quick 30-min meal prep tips",120,3500,3.43%,120,Paid
+2025-01-16,Facebook,App Launch,11111,"New app feature: Meal planner!",89,2100,4.24%,89,Organic
+2025-01-17,LinkedIn,Article,22222,"How AI can help meal planning",34,890,3.82%,34,Organic
+2025-01-18,Twitter/X,Poll,33333,"What's your go-to weeknight meal?",67,980,6.84%,67,Organic
+2025-01-19,Instagram,Stories,44444,"Behind the scenes: Recipe testing",230,5200,4.42%,230,Organic
+2025-01-20,Facebook,Video,55555,"5-minute meal prep hack",156,4100,3.80%,156,Organic
+
+Notes:
+- Track all social posts for consistency
+- Calculate engagement rate: (Engagements / Impressions) * 100
+- Monitor which platforms drive most traffic to app
+- Update weekly with actual data from analytics tools
