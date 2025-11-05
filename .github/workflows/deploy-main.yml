@@ -63,6 +63,15 @@ jobs:
       - name: Deploy to Vercel (Production)
         run: pnpm run vercel:deploy:prod
 
+      - name: Agent Smoke Check
+        run: |
+          test -f apps/web/src/lib/agent/feature-extract.ts
+          test -f apps/web/src/lib/agent/recommender.ts
+          test -f apps/web/src/components/agent/SuggestionsDrawer.tsx
+          test -f supabase/migrations/043_agent_pattern_detection.sql
+          test -f supabase/functions/ingest-events/index.ts
+          echo "Agent files present ✓"
+
       - name: Post-Deploy Smoke (optional)
         run: |
           echo "Deployed: $NEXT_PUBLIC_SITE_URL"
