@@ -12,7 +12,8 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { GDPRConsent } from '@/components/GDPRConsent';
 import { PrivacyHUD } from '@/components/privacy/PrivacyHUD';
 import { LiveRegion, SkipToMainContent } from '@/lib/accessibility';
-import { WebsiteStructuredData, OrganizationStructuredData } from '@/components/StructuredData';
+import { Toaster } from "@/components/ui/toaster";
+import { ToastProvider } from "@/components/ui/toast";
 
 // Phase 2: Initialize intelligent prefetching
 if (typeof window !== 'undefined') {
@@ -214,6 +215,9 @@ export default function RootLayout({
           <PrivacyHUD />
           <WebsiteStructuredData />
           <OrganizationStructuredData />
+          <ToastProvider>
+            <Toaster />
+          </ToastProvider>
         </ErrorBoundary>
       </body>
     </html>

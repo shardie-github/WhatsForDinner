@@ -4,48 +4,64 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --bg: 0 0% 100%;
+    --fg: 224 71% 4%;
+    --muted: 220 14% 96%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 221 83% 53%;
+    --primary-fg: 210 40% 98%;
     --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
+    --secondary-fg: 222 47% 11%;
+    --accent: 269 83% 60%;
+    --accent-fg: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-fg: 210 40% 98%;
+    --border: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --radius: 14px;
+    
+    /* Legacy compatibility */
+    --background: var(--bg);
+    --foreground: var(--fg);
+    --card-foreground: var(--fg);
+    --popover: var(--card);
+    --popover-foreground: var(--fg);
+    --primary-foreground: var(--primary-fg);
+    --secondary-foreground: var(--secondary-fg);
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --accent-foreground: var(--accent-fg);
+    --destructive-foreground: var(--destructive-fg);
+    --input: var(--border);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --bg: 224 71% 4%;
+    --fg: 210 40% 98%;
+    --muted: 220 14% 14%;
+    --card: 224 71% 4%;
+    --primary: 217 90% 56%;
+    --primary-fg: 210 40% 98%;
+    --secondary: 217 16% 18%;
+    --secondary-fg: 210 40% 96%;
+    --accent: 269 83% 62%;
+    --accent-fg: 210 40% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-fg: 210 40% 98%;
+    --border: 217 16% 24%;
+    --ring: 217 90% 56%;
+    
+    /* Legacy compatibility */
+    --background: var(--bg);
+    --foreground: var(--fg);
+    --card-foreground: var(--fg);
+    --popover: var(--card);
+    --popover-foreground: var(--fg);
+    --primary-foreground: var(--primary-fg);
+    --secondary-foreground: var(--secondary-fg);
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+    --accent-foreground: var(--accent-fg);
+    --destructive-foreground: var(--destructive-fg);
+    --input: var(--border);
   }
 
   /* High contrast mode for accessibility */
@@ -96,10 +112,59 @@
 
 @layer base {
   * {
-    @apply border-border;
+    box-sizing: border-box;
   }
+  
+  html, body {
+    height: 100%;
+  }
+  
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  a:focus, button:focus, [tabindex]:focus {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Skip link */
+  .skip-link {
+    position: absolute;
+    left: -999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  
+  .skip-link:focus {
+    left: 8px;
+    top: 8px;
+    width: auto;
+    height: auto;
+    padding: 0.5rem 0.75rem;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    border: 2px solid hsl(var(--ring));
+    z-index: 9999;
+    border-radius: calc(var(--radius) - 2px);
   }
 }
 

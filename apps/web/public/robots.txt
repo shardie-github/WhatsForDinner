@@ -1,27 +1,3 @@
 User-agent: *
 Allow: /
-
-# Disallow admin and API routes
-Disallow: /admin/
-Disallow: /api/
-Disallow: /_next/
-Disallow: /api-docs/
-
-# Allow important pages
-Allow: /
-Allow: /blog/
-Allow: /pricing
-Allow: /for-families
-Allow: /for-churches
-Allow: /for-wellness
-Allow: /for-corporate
-Allow: /for-fitness
-Allow: /for-seniors
-Allow: /for-schools
-Allow: /for-healthcare
-
-# Sitemap location
-Sitemap: https://whatsfordinner.com/sitemap.xml
-
-# Crawl delay (optional, helps with rate limiting)
-Crawl-delay: 1
+Sitemap: https://your-domain.com/sitemap.xml

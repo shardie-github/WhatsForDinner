@@ -59,6 +59,8 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-tabs": "^1.1.1",
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-toast": "^1.2.2",
     "@sentry/nextjs": "^8.55.0",
     "@stripe/stripe-js": "^2.4.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
@@ -115,6 +117,8 @@
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
+    "@tailwindcss/typography": "^0.5.15",
+    "framer-motion": "^11.11.17",
     "typescript": "^5"
   }
 }
