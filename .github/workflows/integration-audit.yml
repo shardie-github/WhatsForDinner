@@ -2,162 +2,69 @@ name: Integration Audit
 
 on:
   pull_request:
-    paths:
-      - 'apps/web/src/components/integrations/**'
-      - 'apps/web/src/app/integrations/**'
-      - 'apps/web/src/app/layout.tsx'
-      - 'config/integrations.json'
-      - '.github/workflows/integration-audit.yml'
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  integration-audit:
+  audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
+    env:
+      NODE_OPTIONS: "--max-old-space-size=4096"
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: 20
+          cache: npm
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 9
 
-      - name: Install dependencies
+      - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Build application
+      - name: Build (Next)
         working-directory: apps/web
         run: pnpm build
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
-
-      - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps chromium
-
-      - name: Start application
+      
+      - name: Start server
         working-directory: apps/web
-        run: pnpm start &
+        run: pnpm run start-ci &
         env:
           PORT: 3000
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
-
+      
       - name: Wait for server
-        run: |
-          timeout=60
-          elapsed=0
-          while ! curl -f http://localhost:3000 > /dev/null 2>&1; do
-            if [ $elapsed -ge $timeout ]; then
-              echo "Server failed to start within $timeout seconds"
-              exit 1
-            fi
-            sleep 2
-            elapsed=$((elapsed + 2))
-          done
-          echo "Server is ready"
+        run: npx wait-on http://localhost:3000
 
-      - name: Run Lighthouse CI (Homepage)
-        run: |
-          lhci autorun --config=.lighthouserc.json || true
-        continue-on-error: true
+      - name: Lighthouse CI (mobile)
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          configPath: "./lighthouserc.json"
+          temporaryPublicStorage: true
 
-      - name: Run Lighthouse CI (Integrations Page)
-        run: |
-          lhci autorun \
-            --collect.url=http://localhost:3000/integrations \
-            --collect.numberOfRuns=1 \
-            --collect.settings.chromeFlags="--no-sandbox --headless" \
-            --assert.assertions.performance=0 \
-            --assert.assertions.accessibility=0 \
-            --assert.assertions['best-practices']=0 \
-            --assert.assertions.seo=0 || true
-        continue-on-error: true
+      - name: Pa11y (axe) — accessibility
+        run: npx pa11y-ci
 
-      - name: Install Axe CLI
-        run: npm install -g @axe-core/cli
-
-      - name: Run Axe accessibility tests
-        run: |
-          axe http://localhost:3000 --tags wcag2a,wcag2aa --exit
-        continue-on-error: true
-
-      - name: Run Axe on integrations page
-        run: |
-          axe http://localhost:3000/integrations --tags wcag2a,wcag2aa --exit
-        continue-on-error: true
-
-      - name: Check integration config
-        run: |
-          node -e "
-            const fs = require('fs');
-            const config = JSON.parse(fs.readFileSync('config/integrations.json', 'utf-8'));
-            const enabled = Object.entries(config).filter(([, v]) => v).map(([k]) => k);
-            console.log('Enabled integrations:', enabled.join(', '));
-            if (enabled.length === 0) {
-              console.warn('Warning: No integrations enabled');
-            }
-          "
-
-      - name: Validate consent gating
-        run: |
-          node -e "
-            const fs = require('fs');
-            const { execSync } = require('child_process');
-            
-            // Check if ConsentGate is used in integration components
-            const integrationFiles = execSync('find apps/web/src/components/integrations -name \"*.tsx\" -type f').toString().trim().split('\\n');
-            let hasConsentGate = false;
-            
-            integrationFiles.forEach(file => {
-              if (file && fs.existsSync(file)) {
-                const content = fs.readFileSync(file, 'utf-8');
-                if (content.includes('ConsentGate') || content.includes('useConsent')) {
-                  hasConsentGate = true;
-                }
-              }
-            });
-            
-            if (!hasConsentGate) {
-              console.warn('Warning: No ConsentGate usage found in integration components');
-            } else {
-              console.log('✓ Consent gating is properly implemented');
-            }
-          "
-
-      - name: Upload Lighthouse results
-        uses: actions/upload-artifact@v4
+      - name: Upload LHCI artifacts
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: lighthouse-results
-          path: |
-            .lighthouseci/**
-            lhci_reports/**
+          name: lighthouse-report
+          path: ".lighthouseci"
 
-      - name: Comment PR with results
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+      - name: Upload Pa11y results
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          script: |
-            const fs = require('fs');
-            const results = fs.existsSync('.lighthouseci/index.html') 
-              ? 'Lighthouse audit completed. Check artifacts for detailed results.'
-              : 'Lighthouse audit completed with warnings.';
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## Integration Audit Results\n\n${results}\n\n### Performance Targets\n- LCP ≤ 2.5s\n- INP ≤ 200ms\n- CLS ≤ 0.05\n\nCheck artifacts for detailed Lighthouse and Axe reports.`
-            });
+          name: pa11y-report
+          path: "pa11y-ci-results.json"

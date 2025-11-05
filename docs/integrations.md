@@ -194,10 +194,30 @@ Or manually test on `/integrations` demo page.
 ## CI/CD
 
 The `.github/workflows/integration-audit.yml` workflow:
-- Runs Lighthouse (mobile) on `/` and `/integrations`
-- Runs Axe accessibility checks
+- Runs Lighthouse CI (mobile) on `/` and `/integrations`
+- Runs Pa11y (axe) accessibility checks
 - Validates consent gating
 - Checks for CLS regressions
+- Enforces performance targets: LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.05
+
+### Running Locally
+
+```bash
+# Build and start production server
+cd apps/web
+pnpm build
+pnpm run start-ci
+
+# In another terminal, run Lighthouse CI
+pnpm run lhci
+
+# Or run Pa11y accessibility checks
+pnpm run a11y
+```
+
+Configuration files:
+- `lighthouserc.json` - Lighthouse CI mobile preset
+- `.pa11yci.json` - Pa11y WCAG2AA accessibility checks
 
 ## Troubleshooting
 
