@@ -1,11 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { hapticTap } from "./Haptics";
+import { hapticTap } from "@/components/gamification/Haptics";
+import LiveCookingFeed from "@/components/social/LiveCookingFeed";
 
-export default function RealTimeLiveVisitors() {
+export default function EnhancedLiveVisitors() {
   const [count, setCount] = useState(0);
   const [users, setUsers] = useState<any[]>([]);
+  const [cookingCount, setCookingCount] = useState(0);
+  const [showCooking, setShowCooking] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -51,19 +54,67 @@ export default function RealTimeLiveVisitors() {
       };
     }
 
+    // Load cooking count
+    async function loadCookingCount() {
+      const { count } = await supabase
+        .from("cooking_activities")
+        .select("*", { count: "exact", head: true })
+        .eq("is_live", true);
+      
+      if (count !== null) {
+        setCookingCount(count);
+      }
+    }
+
+    loadCookingCount();
+    
+    // Subscribe to cooking activities
+    const cookingChannel = supabase
+      .channel('cooking-count')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'cooking_activities',
+        filter: 'is_live=eq.true'
+      }, () => {
+        loadCookingCount();
+      })
+      .subscribe();
+
     const cleanup = setupPresence();
     return () => {
       mounted = false;
       cleanup.then(fn => fn && fn());
+      supabase.removeChannel(cookingChannel);
     };
   }, []);
 
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" aria-hidden="true"></span>
-      <span className="text-muted-foreground">
-        {count} {count === 1 ? 'person' : 'people'} active
-      </span>
+    <div className="space-y-2">
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 text-sm">
+          <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" aria-hidden="true"></span>
+          <span className="text-muted-foreground">
+            {count} {count === 1 ? 'person' : 'people'} active
+          </span>
+        </div>
+        
+        {cookingCount > 0 && (
+          <button
+            onClick={() => setShowCooking(!showCooking)}
+            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-xs hover:bg-red-500/20 transition-colors"
+          >
+            <span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+            {cookingCount} {cookingCount === 1 ? 'family' : 'families'} cooking
+          </button>
+        )}
+      </div>
+
+      {showCooking && cookingCount > 0 && (
+        <div className="mt-3">
+          <LiveCookingFeed />
+        </div>
+      )}
     </div>
   );
 }
