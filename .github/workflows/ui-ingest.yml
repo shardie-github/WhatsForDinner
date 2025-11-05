@@ -1,0 +1,22 @@
+name: UI Ingest
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Run External UI Ingest (noop if no external dump)
+        run: |
+          if [ -d "./external-dump" ]; then \
+            npx ts-node apps/web/scripts/ingest-external-ui.ts --src ./external-dump --dest ./apps/web/src/components/external; \
+          else echo "No external-dump directory; skipping"; fi
+      - name: Build
+        run: npm run build
