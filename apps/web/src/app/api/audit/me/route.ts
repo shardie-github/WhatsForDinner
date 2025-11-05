@@ -1,34 +1,21 @@
 // [STAKE+TRUST:BEGIN:audit_api]
-import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/auth-middleware";
 
-export const runtime = "edge";
+export const runtime = "nodejs"; // Changed from edge to support auth middleware
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
-    // TODO: Get real user ID from session/auth
-    // For now, this is a placeholder that would need to be integrated with your auth system
-    // Example integration:
-    // const session = await getSession(request);
-    // if (!session?.user) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
-    // const userId = session.user.id;
-
-    // Placeholder: In production, replace with actual auth check
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // Check authentication
+    const authResult = await requireAuth(request);
+    if (!authResult.success) {
+      return authResult.response;
     }
 
-    // Extract user ID from token or session
-    // This is a placeholder - replace with your actual auth implementation
-    const userId = "placeholder-user-id"; // Replace with actual user ID from auth
+    const { context } = authResult;
+    const userId = context.user.id;
+    const supabase = context.supabase;
 
     // RLS will enforce that users can only see their own audit logs
     const { data, error } = await supabase

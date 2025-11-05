@@ -18,12 +18,33 @@ export default function ExportDataPage() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      // TODO: Implement actual export endpoint
-      // For now, show a placeholder message
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await fetch("/api/export", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ format }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Export failed");
+      }
+
+      // Download the file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = response.headers.get("Content-Disposition")?.split("filename=")[1] || `export_${Date.now()}.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
       setExported(true);
     } catch (error) {
       console.error("Export failed:", error);
+      alert("Export failed. Please try again.");
     } finally {
       setExporting(false);
     }

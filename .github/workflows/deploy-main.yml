@@ -85,6 +85,7 @@ jobs:
           test -f apps/web/src/app/account/audit-log/page.tsx
           test -f apps/web/src/app/api/audit/me/route.ts
           test -f apps/web/src/app/api/feedback/route.ts
+          test -f apps/web/src/app/api/export/route.ts
           test -f apps/web/supabase/migrations/2025-11-05_trust_audit.sql
           test -f config/flags.trust.json
           echo "Trust artifacts present ✓"

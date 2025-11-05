@@ -17,6 +17,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { ConsentProvider } from '@/app/providers/consent-provider';
 import { WebsiteStructuredData, OrganizationStructuredData } from '@/components/StructuredData';
 import dynamic from 'next/dynamic';
+import { TrustFooterLinks } from '@/components/TrustFooterLinks';
 
 // Lazy load integrations
 const IntegrationsLoader = dynamic(
@@ -227,18 +228,7 @@ export default function RootLayout({
                     </p>
                     <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm">
                       {/* [STAKE+TRUST:BEGIN:footer_trust_links] */}
-                      {/* Trust Center link - gated by feature flag */}
-                      {process.env.NEXT_PUBLIC_TRUST_CENTER_ENABLED === "true" && (
-                        <a href="/trust" className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded px-1">
-                          Trust
-                        </a>
-                      )}
-                      {/* Help Center link - gated by feature flag */}
-                      {process.env.NEXT_PUBLIC_HELP_CENTER_ENABLED === "true" && (
-                        <a href="/help" className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded px-1">
-                          Help
-                        </a>
-                      )}
+                      <TrustFooterLinks />
                       {/* [STAKE+TRUST:END:footer_trust_links] */}
                       <a href="/support" className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded px-1">
                         Support

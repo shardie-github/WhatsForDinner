@@ -1,18 +1,14 @@
 // [STAKE+TRUST:BEGIN:feedback_api]
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth-middleware";
 
-export const runtime = "edge";
+export const runtime = "nodejs"; // Changed from edge to support auth middleware
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
     const body = await req.json();
-    const { userId = "anon", rating, comment, category = "general" } = body;
+    const { rating, comment, category = "general" } = body;
 
     // Validate input
     if (rating !== undefined && (rating < 1 || rating > 5)) {
@@ -29,10 +25,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Try to get authenticated user (optional - allow anonymous feedback)
+    const authResult = await getAuthenticatedUser(req);
+    const userId = authResult?.user.id || null;
+    const supabase = authResult?.supabase || createClient();
+
     // Store feedback in audit_log table
     // Note: In production, you might want a separate feedback table
     const { error } = await supabase.from("audit_log").insert({
-      user_id: userId === "anon" ? null : userId,
+      user_id: userId,
       action: "feedback",
       meta: {
         rating,
