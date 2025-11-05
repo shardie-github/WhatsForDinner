@@ -98,6 +98,13 @@ jobs:
           axe http://localhost:3000/integrations --tags wcag2a,wcag2aa --exit
         continue-on-error: true
 
+      - name: Gamification smoke (build routes)
+        run: |
+          test -f apps/web/src/app/play/page.tsx
+          test -f apps/web/src/app/journal/page.tsx
+          test -f apps/web/src/app/community/page.tsx
+          echo "Gamification routes present ✓"
+
       - name: Check integration config
         run: |
           node -e "
