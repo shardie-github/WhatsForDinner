@@ -72,6 +72,24 @@ jobs:
           test -f supabase/functions/ingest-events/index.ts
           echo "Agent files present ✓"
 
+      # [STAKE+TRUST:BEGIN:checks]
+      - name: Trust Smoke
+        run: |
+          test -f docs/trust/TRUST.md
+          test -f docs/trust/PRIVACY_POLICY_DRAFT.md
+          test -f docs/trust/SECURITY.md
+          test -f docs/trust/STATUS.md
+          test -f apps/web/src/app/trust/page.tsx
+          test -f apps/web/src/app/privacy/page.tsx
+          test -f apps/web/src/app/help/page.tsx
+          test -f apps/web/src/app/account/audit-log/page.tsx
+          test -f apps/web/src/app/api/audit/me/route.ts
+          test -f apps/web/src/app/api/feedback/route.ts
+          test -f apps/web/supabase/migrations/2025-11-05_trust_audit.sql
+          test -f config/flags.trust.json
+          echo "Trust artifacts present ✓"
+      # [STAKE+TRUST:END:checks]
+
       - name: Post-Deploy Smoke (optional)
         run: |
           echo "Deployed: $NEXT_PUBLIC_SITE_URL"

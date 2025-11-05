@@ -145,8 +145,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // [STAKE+TRUST:BEGIN:i18n_attributes]
+  // TODO: Replace with actual i18n locale detection
+  const locale = "en"; // Future: Get from i18n system or user preference
+  const direction = "ltr"; // Future: Support RTL languages (ar, he, fa, ur)
+  // [STAKE+TRUST:END:i18n_attributes]
+  
   return (
-    <html lang="en">
+    <html lang={locale} dir={direction}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -173,6 +179,22 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* [STAKE+TRUST:BEGIN:reduced_motion] */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @media (prefers-reduced-motion: reduce) {
+              *,
+              *::before,
+              *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+              }
+            }
+          `
+        }} />
+        {/* [STAKE+TRUST:END:reduced_motion] */}
       </head>
       <body className={`${inter.variable} ${poppins.variable} ${playfair.variable} font-sans antialiased`}>
         <SkipToMainContent />
@@ -204,6 +226,20 @@ export default function RootLayout({
                       © 2025 Hardonia Labs. All rights reserved.
                     </p>
                     <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm">
+                      {/* [STAKE+TRUST:BEGIN:footer_trust_links] */}
+                      {/* Trust Center link - gated by feature flag */}
+                      {process.env.NEXT_PUBLIC_TRUST_CENTER_ENABLED === "true" && (
+                        <a href="/trust" className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded px-1">
+                          Trust
+                        </a>
+                      )}
+                      {/* Help Center link - gated by feature flag */}
+                      {process.env.NEXT_PUBLIC_HELP_CENTER_ENABLED === "true" && (
+                        <a href="/help" className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded px-1">
+                          Help
+                        </a>
+                      )}
+                      {/* [STAKE+TRUST:END:footer_trust_links] */}
                       <a href="/support" className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded px-1">
                         Support
                       </a>
