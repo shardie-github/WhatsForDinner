@@ -1,0 +1,8 @@
+{
+  "agent_enabled": true,
+  "event_ingest": true,
+  "live_detections": true,
+  "support_diagnostics": true,
+  "workflow_recommender": true,
+  "automation_saver": true
+}

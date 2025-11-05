@@ -24,6 +24,12 @@ const IntegrationsLoader = dynamic(
   { ssr: false }
 );
 
+// Lazy load agent suggestions drawer (privacy-gated, client-only)
+const SuggestionsDrawer = dynamic(
+  () => import('@/components/agent/SuggestionsDrawer').then((mod) => ({ default: mod.default })),
+  { ssr: false }
+);
+
 // Phase 2: Initialize intelligent prefetching
 if (typeof window !== 'undefined') {
   import('@/lib/performance/prefetch').then(({ intelligentPrefetcher }) => {
@@ -226,6 +232,8 @@ export default function RootLayout({
             <WebsiteStructuredData />
             <OrganizationStructuredData />
             <IntegrationsLoader />
+            {/* Agent Suggestions: show drawer site-wide when enabled and consent granted */}
+            <SuggestionsDrawer />
             <ToastProvider>
               <Toaster />
             </ToastProvider>
