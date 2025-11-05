@@ -1,0 +1,13 @@
+{
+  "gamification": true,
+  "streaks": true,
+  "badges": true,
+  "quests": true,
+  "journal": true,
+  "community": true,
+  "reactions": true,
+  "comments": true,
+  "liveCounter": true,
+  "referrals": true,
+  "share": true
+}
