@@ -1,0 +1,202 @@
+{
+  "flags": {
+    "privacy_center": {
+      "description": "Privacy center page and features",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "status_page": {
+      "description": "Public status page and incident communications",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "audit_log": {
+      "description": "User-facing audit log viewer",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "admin_controls": {
+      "description": "Enhanced admin controls and settings",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "export_portability": {
+      "description": "Data export and portability features",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "help_center": {
+      "description": "Help center and support documentation",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "a11y_checks": {
+      "description": "Accessibility checks and features",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": true,
+        "production": true
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 100,
+        "targetUsers": [],
+        "startDate": "2025-01-01T00:00:00.000Z",
+        "endDate": null
+      }
+    },
+    "slo_sla_docs": {
+      "description": "SLO/SLA documentation and disclosures",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "incident_comms": {
+      "description": "Incident communication features",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "api_portal": {
+      "description": "API portal and developer documentation",
+      "environments": {
+        "development": false,
+        "staging": false,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "rate_limit_disclosure": {
+      "description": "Rate limit disclosures and fair-use documentation",
+      "environments": {
+        "development": false,
+        "staging": false,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    },
+    "data_retention_disclosure": {
+      "description": "Data retention policy disclosures",
+      "environments": {
+        "development": true,
+        "staging": true,
+        "canary": false,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
+    }
+  },
+  "config": {
+    "provider": "custom",
+    "refreshInterval": 30000,
+    "fallbackValue": false,
+    "logging": true
+  }
+}
