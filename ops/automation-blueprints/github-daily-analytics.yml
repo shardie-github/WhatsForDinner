@@ -1,0 +1,134 @@
+name: Daily Analytics Report & Dashboard Update
+
+on:
+  schedule:
+    # Every day at 2 AM UTC (9 PM EST / 10 PM EDT previous day)
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  analytics-report:
+    runs-on: ubuntu-latest
+    
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Analytics Script
+        run: |
+          # Generate daily analytics report
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Create daily summary CSV
+          const date = new Date().toISOString().split('T')[0];
+          const reportPath = path.join('ops', 'dashboards', 'reports', \`daily-summary-\${date}.csv\`);
+          
+          // Ensure directory exists
+          const dir = path.dirname(reportPath);
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+          }
+          
+          // Generate CSV header and sample data
+          const csv = \`Date,Metric,Value,Notes
+\${date},Active Users,0,Update with actual data
+\${date},New Signups,0,Update with actual data
+\${date},Revenue CAD,0,Update with actual data
+\${date},Support Tickets,0,Update with actual data
+\${date},Conversion Rate,0,Update with actual data
+\`;
+          
+          fs.writeFileSync(reportPath, csv);
+          console.log(\`Report generated: \${reportPath}\`);
+          "
+
+      - name: Generate Marketing Dashboard Update
+        run: |
+          # Update marketing dashboard CSV with today's data
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          
+          const date = new Date().toISOString().split('T')[0];
+          const dashboardPath = path.join('ops', 'dashboards', 'marketing-dashboard-template.csv');
+          
+          // Read existing dashboard
+          let csv = '';
+          if (fs.existsSync(dashboardPath)) {
+            csv = fs.readFileSync(dashboardPath, 'utf8');
+          } else {
+            csv = 'Date,Platform,Post Type,Post ID,Content Preview,Engagements,Impressions,Click-Through Rate,Link Clicks,Source\n';
+          }
+          
+          // Append new row (placeholder - update with actual data)
+          const newRow = \`\${date},Twitter/X,Automated,auto-\${date},Daily update,0,0,0,0,Automated\n\`;
+          csv += newRow;
+          
+          fs.writeFileSync(dashboardPath, csv);
+          console.log('Marketing dashboard updated');
+          "
+
+      - name: Generate Finance Dashboard Snapshot
+        run: |
+          # Create daily finance snapshot
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          
+          const date = new Date().toISOString().split('T')[0];
+          const financePath = path.join('ops', 'dashboards', 'finance-dashboard-template.csv');
+          
+          // Read existing finance dashboard
+          let csv = '';
+          if (fs.existsSync(financePath)) {
+            csv = fs.readFileSync(financePath, 'utf8');
+          } else {
+            csv = 'Date,Category,Description,Amount CAD,GST/HST Rate,GST/HST Amount,Net Amount,Payment Method,Invoice/Receipt,Status\n';
+          }
+          
+          // Append snapshot row (placeholder - update with actual Stripe data)
+          const newRow = \`\${date},Snapshot,Daily Revenue Snapshot,0,13%,0,0,Automated,SNAPSHOT-\${date},Paid\n\`;
+          csv += newRow;
+          
+          fs.writeFileSync(financePath, csv);
+          console.log('Finance dashboard updated');
+          "
+
+      - name: Commit Reports
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add ops/dashboards/reports/*.csv ops/dashboards/*.csv
+          git diff --staged --quiet || git commit -m "ops(auto): daily analytics report $(date +%Y-%m-%d)"
+          git push || echo "No changes to commit"
+
+      - name: Generate Summary
+        run: |
+          echo "## Daily Analytics Report" >> $GITHUB_STEP_SUMMARY
+          echo "- **Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ✅ Completed" >> $GITHUB_STEP_SUMMARY
+          echo "- **Reports Generated:**" >> $GITHUB_STEP_SUMMARY
+          echo "  - Daily summary CSV" >> $GITHUB_STEP_SUMMARY
+          echo "  - Marketing dashboard update" >> $GITHUB_STEP_SUMMARY
+          echo "  - Finance dashboard snapshot" >> $GITHUB_STEP_SUMMARY

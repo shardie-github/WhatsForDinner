@@ -1,0 +1,26 @@
+Metric,Target,Current Value,Status,Last Updated,Notes
+Monthly Active Users (MAU),1000,450,⚠️ Below Target,2025-01-15,Growing steadily
+Weekly Active Users (WAU),300,125,⚠️ Below Target,2025-01-15,Focus on retention
+Daily Active Users (DAU),100,35,⚠️ Below Target,2025-01-15,Need engagement campaigns
+User Acquisition Cost (CAC),$5.00 CAD,$8.50 CAD,🔴 Above Target,2025-01-15,Optimize ad spend
+Customer Lifetime Value (LTV),$150 CAD,$85 CAD,⚠️ Below Target,2025-01-15,Focus on retention
+LTV/CAC Ratio,30:1,10:1,⚠️ Below Target,2025-01-15,Improve monetization
+Monthly Recurring Revenue (MRR),$3000 CAD,$1349.55 CAD,⚠️ Below Target,2025-01-15,45 paid subscribers
+Churn Rate,<5%,8.2%,🔴 Above Target,2025-01-15,Focus on reducing churn
+Conversion Rate (Free → Paid),>5%,3.2%,⚠️ Below Target,2025-01-15,Test pricing/paywall
+Net Promoter Score (NPS),>50,35,⚠️ Below Target,2025-01-15,Improve product satisfaction
+Support Ticket Resolution Time,<24 hours,18 hours,✅ On Target,2025-01-15,Good response time
+System Uptime,>99.9%,99.95%,✅ On Target,2025-01-15,Excellent reliability
+Average Session Duration,>5 minutes,4.2 minutes,⚠️ Below Target,2025-01-15,Increase engagement
+Bounce Rate,<40%,52%,🔴 Above Target,2025-01-15,Improve onboarding
+New Signups (Weekly),50,28,⚠️ Below Target,2025-01-15,Need more marketing
+Organic Traffic Growth,>10% monthly,6%,⚠️ Below Target,2025-01-15,SEO improvements needed
+
+Legend:
+✅ On Target / ⚠️ Below Target / 🔴 Critical Issue
+
+Notes:
+- Update weekly (every Monday)
+- Review trends monthly
+- Set quarterly goals based on growth trajectory
+- All financials in CAD
