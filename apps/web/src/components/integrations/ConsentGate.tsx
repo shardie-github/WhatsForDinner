@@ -1,0 +1,12 @@
+"use client";
+import { PropsWithChildren } from "react";
+import { useConsent } from "@/app/providers/consent-provider";
+
+export default function ConsentGate({ 
+  requireKey, 
+  children 
+}: PropsWithChildren<{ requireKey: "analytics" | "marketing" | "functional" }>) {
+  const { consent } = useConsent();
+  if (!consent[requireKey]) return null;
+  return <>{children}</>;
+}

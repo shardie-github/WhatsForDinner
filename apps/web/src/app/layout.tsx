@@ -14,6 +14,15 @@ import { PrivacyHUD } from '@/components/privacy/PrivacyHUD';
 import { LiveRegion, SkipToMainContent } from '@/lib/accessibility';
 import { Toaster } from "@/components/ui/toaster";
 import { ToastProvider } from "@/components/ui/toast";
+import { ConsentProvider } from '@/app/providers/consent-provider';
+import { WebsiteStructuredData, OrganizationStructuredData } from '@/components/StructuredData';
+import dynamic from 'next/dynamic';
+
+// Lazy load integrations
+const IntegrationsLoader = dynamic(
+  () => import('@/components/integrations').then((mod) => ({ default: mod.IntegrationsLoader })),
+  { ssr: false }
+);
 
 // Phase 2: Initialize intelligent prefetching
 if (typeof window !== 'undefined') {
@@ -163,8 +172,9 @@ export default function RootLayout({
         <SkipToMainContent />
         <LiveRegion />
         <ErrorBoundary>
-          <ThemeProvider>
-            <div className="min-h-screen bg-background text-foreground safe-area-inset">
+          <ConsentProvider>
+            <ThemeProvider>
+              <div className="min-h-screen bg-background text-foreground safe-area-inset">
               <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 safe-area-inset-top">
                 <div className="container flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6">
                   <div className="flex items-center space-x-2">
@@ -205,19 +215,21 @@ export default function RootLayout({
                 </div>
               </footer>
             </div>
-          </ThemeProvider>
-          <PWAInstaller />
-          <Analytics />
-          <CapacitorInit />
-          <CoreWebVitals />
-          <PerformanceDashboard compact />
-          <GDPRConsent />
-          <PrivacyHUD />
-          <WebsiteStructuredData />
-          <OrganizationStructuredData />
-          <ToastProvider>
-            <Toaster />
-          </ToastProvider>
+            </ThemeProvider>
+            <PWAInstaller />
+            <Analytics />
+            <CapacitorInit />
+            <CoreWebVitals />
+            <PerformanceDashboard compact />
+            <GDPRConsent />
+            <PrivacyHUD />
+            <WebsiteStructuredData />
+            <OrganizationStructuredData />
+            <IntegrationsLoader />
+            <ToastProvider>
+              <Toaster />
+            </ToastProvider>
+          </ConsentProvider>
         </ErrorBoundary>
       </body>
     </html>
