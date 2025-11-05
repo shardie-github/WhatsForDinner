@@ -68,6 +68,7 @@
     "security:deps": "turbo run security:deps",
     "security:secrets": "turbo run security:secrets",
     "security:headers": "turbo run security:headers",
+    "security:self-check": "npx tsx scripts/security-self-check.ts",
     "optimize:images": "node scripts/optimize-assets.js",
     "optimize:assets": "node scripts/optimize-assets.js",
     "analyze:assets": "node scripts/assets-discipline.js",
