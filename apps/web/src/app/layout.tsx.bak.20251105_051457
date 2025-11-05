@@ -196,10 +196,6 @@ export default function RootLayout({
           `
         }} />
         {/* [STAKE+TRUST:END:reduced_motion] */}
-        {/* [META:BEGIN:pwa] */}
-        <link rel="manifest" href="/manifest.json" />
-        <script dangerouslySetInnerHTML={{__html:`if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}`}} />
-        {/* [META:END:pwa] */}
       </head>
       <body className={`${inter.variable} ${poppins.variable} ${playfair.variable} font-sans antialiased`}>
         <SkipToMainContent />
@@ -264,12 +260,6 @@ export default function RootLayout({
             <IntegrationsLoader />
             {/* Agent Suggestions: show drawer site-wide when enabled and consent granted */}
             <SuggestionsDrawer />
-            {/* [META:BEGIN:mounts] */}
-            {/* Example mounts — wire auth user ID + app meta in your layout or provider */}
-            {/* <meta name="x-app-id" content={process.env.NEXT_PUBLIC_APP_ID || 'generic'} /> */}
-            {/* <ConsentPanel /> */}
-            {/* <RecoDrawer userId="{AUTH_USER_ID}" /> */}
-            {/* [META:END:mounts] */}
             <ToastProvider>
               <Toaster />
             </ToastProvider>
