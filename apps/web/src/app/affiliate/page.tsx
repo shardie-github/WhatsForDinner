@@ -1,25 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { DollarSign, TrendingUp, Users, Calculator, Check, ArrowRight, Percent, Calendar, CreditCard, PieChart } from 'lucide-react';
+import type { User } from '@supabase/supabase-js';
+import { 
+  DollarSign, 
+  TrendingUp, 
+  Calculator, 
+  Check, 
+  ArrowRight, 
+  Percent, 
+  Calendar, 
+  CreditCard 
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Affiliate Program - Earn 20% Commission | What\'s for Dinner',
-  description: 'Join our affiliate program and earn up to 20% recurring commission on every subscription you refer. High conversion rates, competitive commissions, and monthly payouts.',
-  keywords: 'affiliate program, affiliate marketing, earn commission, meal planning affiliate, recurring commission',
-  openGraph: {
-    title: 'Affiliate Program - Earn 20% Commission | What\'s for Dinner',
-    description: 'Earn up to 20% recurring commission on every subscription. Join our affiliate program today.',
-    type: 'website',
-  },
-};
 
 interface AffiliateStats {
   total_conversions: number;
@@ -29,8 +27,27 @@ interface AffiliateStats {
   commission_rate: number;
 }
 
+interface AffiliateData {
+  id: string;
+  affiliate_code: string;
+  status: string;
+  commission_rate: number;
+}
+
+interface AffiliateConversion {
+  commission_amount: number;
+  status: string;
+}
+
+const DEFAULT_COMMISSION_RATE = 20;
+const MINIMUM_PAYOUT = 50;
+
+const generateAffiliateCode = (): string => {
+  return Math.random().toString(36).substring(2, 10).toUpperCase();
+};
+
 export default function AffiliateProgramPage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [affiliateCode, setAffiliateCode] = useState<string>('');
   const [affiliateLink, setAffiliateLink] = useState<string>('');
   const [stats, setStats] = useState<AffiliateStats | null>(null);
@@ -39,62 +56,75 @@ export default function AffiliateProgramPage() {
   const [calculatorAmount, setCalculatorAmount] = useState<number>(100);
   const supabase = createClientComponentClient();
 
-  useEffect(() => {
-    loadUserData();
-  }, []);
-
-  const loadUserData = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user);
-
-    if (user) {
-      // Check if user is an affiliate
-      const { data: affiliate } = await supabase
+  const loadAffiliateStats = useCallback(async (affiliateId: string) => {
+    const [conversionsResponse, affiliateResponse] = await Promise.all([
+      supabase
+        .from('affiliate_conversions')
+        .select('*')
+        .eq('affiliate_id', affiliateId),
+      supabase
         .from('affiliates')
         .select('*')
-        .eq('user_id', user.id)
-        .single();
+        .eq('id', affiliateId)
+        .single(),
+    ]);
 
-      if (affiliate) {
-        setIsAffiliate(true);
-        setAffiliateCode(affiliate.affiliate_code);
-        setApplicationStatus(affiliate.status);
-        loadAffiliateStats(affiliate.id);
-        
-        const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-        setAffiliateLink(`${baseUrl}/signup?aff=${affiliate.affiliate_code}`);
-      }
+    const conversions = conversionsResponse.data || [];
+    const affiliate = affiliateResponse.data;
+
+    if (!affiliate) {
+      return;
     }
-  };
 
-  const loadAffiliateStats = async (affiliateId: string) => {
-    const { data: conversions } = await supabase
-      .from('affiliate_conversions')
-      .select('*')
-      .eq('affiliate_id', affiliateId);
+    const completed = conversions.filter((c: AffiliateConversion) => c.status === 'paid').length;
+    const totalEarnings = conversions.reduce(
+      (sum: number, c: AffiliateConversion) => sum + (c.commission_amount || 0),
+      0
+    );
+    const paidEarnings = conversions
+      .filter((c: AffiliateConversion) => c.status === 'paid')
+      .reduce((sum: number, c: AffiliateConversion) => sum + (c.commission_amount || 0), 0);
 
+    setStats({
+      total_conversions: completed,
+      total_earnings: totalEarnings,
+      paid_earnings: paidEarnings,
+      pending_earnings: totalEarnings - paidEarnings,
+      commission_rate: affiliate.commission_rate || DEFAULT_COMMISSION_RATE,
+    });
+  }, [supabase]);
+
+  const loadUserData = useCallback(async () => {
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    setUser(authUser);
+
+    if (!authUser) {
+      return;
+    }
+
+    // Check if user is an affiliate
     const { data: affiliate } = await supabase
       .from('affiliates')
       .select('*')
-      .eq('id', affiliateId)
+      .eq('user_id', authUser.id)
       .single();
 
-    if (conversions && affiliate) {
-      const completed = conversions.filter(c => c.status === 'paid').length;
-      const totalEarnings = conversions.reduce((sum, c) => sum + (c.commission_amount || 0), 0);
-      const paidEarnings = conversions.filter(c => c.status === 'paid').reduce((sum, c) => sum + (c.commission_amount || 0), 0);
-
-      setStats({
-        total_conversions: completed,
-        total_earnings: totalEarnings,
-        paid_earnings: paidEarnings,
-        pending_earnings: totalEarnings - paidEarnings,
-        commission_rate: affiliate.commission_rate || 20,
-      });
+    if (affiliate) {
+      setIsAffiliate(true);
+      setAffiliateCode(affiliate.affiliate_code);
+      setApplicationStatus(affiliate.status);
+      await loadAffiliateStats(affiliate.id);
+      
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+      setAffiliateLink(`${baseUrl}/signup?aff=${affiliate.affiliate_code}`);
     }
-  };
+  }, [supabase, loadAffiliateStats]);
 
-  const handleApply = async () => {
+  useEffect(() => {
+    void loadUserData();
+  }, [loadUserData]);
+
+  const handleApply = useCallback(async () => {
     if (!user) {
       window.location.href = '/signup?redirect=/affiliate';
       return;
@@ -105,28 +135,35 @@ export default function AffiliateProgramPage() {
       .from('affiliates')
       .insert({
         user_id: user.id,
-        affiliate_code: generateCode(),
-        contact_email: user.email,
+        affiliate_code: generateAffiliateCode(),
+        contact_email: user.email || '',
         status: 'pending',
-        commission_rate: 20.00, // Default 20%
+        commission_rate: DEFAULT_COMMISSION_RATE,
       })
       .select()
       .single();
+
+    if (error) {
+      console.error('Failed to create affiliate application:', error);
+      return;
+    }
 
     if (data) {
       setIsAffiliate(true);
       setApplicationStatus('pending');
       alert('Application submitted! We\'ll review and approve your affiliate account within 24-48 hours.');
     }
-  };
+  }, [user, supabase]);
 
-  const generateCode = () => {
-    return Math.random().toString(36).substring(2, 10).toUpperCase();
-  };
-
-  const calculateCommission = (revenue: number, rate: number = 20) => {
+  const calculateCommission = useCallback((revenue: number, rate: number = DEFAULT_COMMISSION_RATE): number => {
     return (revenue * rate) / 100;
-  };
+  }, []);
+
+  const commissionCalculations = useMemo(() => {
+    const monthly = calculateCommission(calculatorAmount);
+    const annual = monthly * 12;
+    return { monthly, annual };
+  }, [calculatorAmount, calculateCommission]);
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
@@ -194,7 +231,7 @@ export default function AffiliateProgramPage() {
                 <CardHeader className="pb-2">
                   <CardDescription>Monthly Commission</CardDescription>
                   <CardTitle className="text-2xl">
-                    ${calculateCommission(calculatorAmount).toFixed(2)}
+                    ${commissionCalculations.monthly.toFixed(2)}
                   </CardTitle>
                 </CardHeader>
               </Card>
@@ -202,7 +239,7 @@ export default function AffiliateProgramPage() {
                 <CardHeader className="pb-2">
                   <CardDescription>Annual Commission</CardDescription>
                   <CardTitle className="text-2xl">
-                    ${(calculateCommission(calculatorAmount) * 12).toFixed(2)}
+                    ${commissionCalculations.annual.toFixed(2)}
                   </CardTitle>
                 </CardHeader>
               </Card>
@@ -215,12 +252,12 @@ export default function AffiliateProgramPage() {
                 </CardHeader>
               </Card>
             </div>
-            <div className="bg-muted p-4 rounded-lg">
-              <p className="text-sm">
-                <strong>Example:</strong> If you refer 10 customers paying $10/month each ($100 MRR), 
-                you earn $20/month ($240/year) in recurring commissions.
-              </p>
-            </div>
+              <div className="bg-muted p-4 rounded-lg">
+                <p className="text-sm">
+                  <strong>Example:</strong> If you refer 10 customers paying $10/month each ($100 MRR), 
+                  you earn ${commissionCalculations.monthly.toFixed(2)}/month (${commissionCalculations.annual.toFixed(2)}/year) in recurring commissions.
+                </p>
+              </div>
           </div>
         </CardContent>
       </Card>

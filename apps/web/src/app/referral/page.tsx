@@ -1,25 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Gift, Users, TrendingUp, Copy, Check, Share2, DollarSign, Calendar, Award } from 'lucide-react';
+import type { User } from '@supabase/supabase-js';
+import { Gift, Users, TrendingUp, Copy, Check, Share2, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Referral Program - Earn Rewards | What\'s for Dinner',
-  description: 'Invite friends to What\'s for Dinner and both of you get rewards! Share your referral link and earn subscription credits, discounts, and more.',
-  keywords: 'referral program, invite friends, earn rewards, meal planning referral, food app referral',
-  openGraph: {
-    title: 'Referral Program - Earn Rewards | What\'s for Dinner',
-    description: 'Invite friends and get rewarded. Both you and your friend receive benefits when they sign up.',
-    type: 'website',
-  },
-};
 
 interface ReferralStats {
   total_referrals: number;
@@ -28,98 +17,126 @@ interface ReferralStats {
   pending_rewards: number;
 }
 
+interface Referral {
+  referral_code: string;
+  status: string;
+}
+
+interface ReferralReward {
+  amount: number;
+  status: string;
+}
+
+const generateReferralCode = (): string => {
+  return Math.random().toString(36).substring(2, 10).toUpperCase();
+};
+
 export default function ReferralProgramPage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [referralCode, setReferralCode] = useState<string>('');
   const [referralLink, setReferralLink] = useState<string>('');
   const [stats, setStats] = useState<ReferralStats | null>(null);
   const [copied, setCopied] = useState(false);
   const supabase = createClientComponentClient();
 
-  useEffect(() => {
-    loadUserData();
-  }, []);
-
-  const loadUserData = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user);
-
-    if (user) {
-      // Get or create referral code
-      const { data: referral } = await supabase
+  const loadStats = useCallback(async (userId: string) => {
+    const [referralsResponse, rewardsResponse] = await Promise.all([
+      supabase
         .from('referrals')
+        .select('*')
+        .eq('referrer_id', userId),
+      supabase
+        .from('referral_rewards')
+        .select('*')
+        .eq('user_id', userId),
+    ]);
+
+    const referrals = referralsResponse.data || [];
+    const rewards = rewardsResponse.data || [];
+
+    const completed = referrals.filter((r) => r.status === 'completed').length;
+    const totalRewards = rewards.reduce(
+      (sum: number, r: ReferralReward) => sum + (r.amount || 0),
+      0
+    );
+    const pendingRewards = rewards
+      .filter((r) => r.status === 'pending')
+      .reduce((sum: number, r: ReferralReward) => sum + (r.amount || 0), 0);
+
+    setStats({
+      total_referrals: referrals.length,
+      completed_referrals: completed,
+      total_rewards: totalRewards,
+      pending_rewards: pendingRewards,
+    });
+  }, [supabase]);
+
+  const loadUserData = useCallback(async () => {
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    setUser(authUser);
+
+    if (!authUser) {
+      return;
+    }
+
+    // Get or create referral code
+    const { data: referral } = await supabase
+      .from('referrals')
+      .select('referral_code')
+      .eq('referrer_id', authUser.id)
+      .limit(1)
+      .single();
+
+    let code = '';
+
+    if (referral) {
+      code = referral.referral_code;
+      setReferralCode(code);
+    } else {
+      // Generate new referral code
+      const newCode = generateReferralCode();
+      const { data: newReferral } = await supabase
+        .from('referrals')
+        .insert({
+          referrer_id: authUser.id,
+          referral_code: newCode,
+          referrer_reward_type: 'subscription_days',
+          referrer_reward_amount: 30,
+          referred_reward_type: 'subscription_days',
+          referred_reward_amount: 30,
+        })
         .select('referral_code')
-        .eq('referrer_id', user.id)
-        .limit(1)
         .single();
 
-      if (referral) {
-        setReferralCode(referral.referral_code);
-      } else {
-        // Generate new referral code
-        const { data: newReferral } = await supabase
-          .from('referrals')
-          .insert({
-            referrer_id: user.id,
-            referral_code: generateCode(),
-            referrer_reward_type: 'subscription_days',
-            referrer_reward_amount: 30, // 30 days free
-            referred_reward_type: 'subscription_days',
-            referred_reward_amount: 30, // 30 days free
-          })
-          .select('referral_code')
-          .single();
-
-        if (newReferral) {
-          setReferralCode(newReferral.referral_code);
-        }
+      if (newReferral) {
+        code = newReferral.referral_code;
+        setReferralCode(code);
       }
-
-      // Load stats
-      loadStats(user.id);
     }
 
     // Set referral link
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    setReferralLink(`${baseUrl}/signup?ref=${referralCode || 'YOUR_CODE'}`);
-  };
+    setReferralLink(`${baseUrl}/signup?ref=${code || 'YOUR_CODE'}`);
 
-  const loadStats = async (userId: string) => {
-    const { data: referrals } = await supabase
-      .from('referrals')
-      .select('*')
-      .eq('referrer_id', userId);
+    // Load stats
+    await loadStats(authUser.id);
+  }, [supabase, loadStats]);
 
-    const { data: rewards } = await supabase
-      .from('referral_rewards')
-      .select('*')
-      .eq('user_id', userId);
+  useEffect(() => {
+    void loadUserData();
+  }, [loadUserData]);
 
-    if (referrals) {
-      const completed = referrals.filter(r => r.status === 'completed').length;
-      const totalRewards = rewards?.reduce((sum, r) => sum + (r.amount || 0), 0) || 0;
-      const pendingRewards = rewards?.filter(r => r.status === 'pending').reduce((sum, r) => sum + (r.amount || 0), 0) || 0;
-
-      setStats({
-        total_referrals: referrals.length,
-        completed_referrals: completed,
-        total_rewards: totalRewards,
-        pending_rewards: pendingRewards,
-      });
+  const copyToClipboard = useCallback(async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
     }
-  };
+  }, []);
 
-  const generateCode = () => {
-    return Math.random().toString(36).substring(2, 10).toUpperCase();
-  };
-
-  const copyToClipboard = async (text: string) => {
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const shareReferral = async () => {
+  const shareReferral = useCallback(async () => {
     if (navigator.share) {
       try {
         await navigator.share({
@@ -127,13 +144,16 @@ export default function ReferralProgramPage() {
           text: 'I love using What\'s for Dinner for meal planning. Join me and we both get 30 days free!',
           url: referralLink,
         });
-      } catch (err) {
-        console.log('Error sharing:', err);
+      } catch (error) {
+        // User cancelled or error occurred
+        if (error instanceof Error && error.name !== 'AbortError') {
+          console.error('Error sharing:', error);
+        }
       }
     } else {
-      copyToClipboard(referralLink);
+      await copyToClipboard(referralLink);
     }
-  };
+  }, [referralLink, copyToClipboard]);
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
