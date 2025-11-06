@@ -99,29 +99,10 @@ class OpsCLI {
   }
 
   private printUsage() {
-    console.log(`
-Usage: ops <command> [options]
-
-Commands:
-  doctor           Run all health checks
-  init             Initialize ops framework
-  check            Run validation checks
-  release          Release with semantic versioning
-  snapshot         Create database snapshot
-  restore          Restore database snapshot
-  rotate-secrets   Rotate all secrets
-  sb-guard         RLS audit and enforcement
-  test:e2e         Run E2E tests
-  benchmark        Performance benchmarks
-  lintfix          Auto-fix linting issues
-  docs             Generate documentation
-  changelog         Generate changelog
-`);
-  }
+      }
 
   async doctor(): Promise<void> {
-    console.log('🔍 Running ops doctor...\n');
-    const checks: CheckResult[] = [];
+        const checks: CheckResult[] = [];
 
     // Check 1: Dependencies
     checks.push(await this.runCheck('Dependencies', () => {
@@ -177,18 +158,13 @@ Commands:
     const passed = checks.filter(c => c.passed).length;
     const failed = checks.filter(c => !c.passed).length;
 
-    console.log('\n📊 Summary:');
-    console.log(`✅ Passed: ${passed}`);
-    console.log(`❌ Failed: ${failed}`);
-    console.log(`⏱️  Total time: ${((Date.now() - this.startTime) / 1000).toFixed(2)}s\n`);
+                 - this.startTime) / 1000).toFixed(2)}s\n`);
 
     checks.forEach(check => {
       const icon = check.passed ? '✅' : '❌';
       const duration = check.duration ? ` (${check.duration}ms)` : '';
-      console.log(`${icon} ${check.name}${duration}`);
-      if (!check.passed && check.message) {
-        console.log(`   ${check.message}`);
-      }
+            if (!check.passed && check.message) {
+              }
     });
 
     const report = {
@@ -225,21 +201,18 @@ Commands:
   }
 
   async init(): Promise<void> {
-    console.log('🚀 Initializing ops framework...\n');
-
+    
     // Create .env.example if it doesn't exist
     if (!existsSync('.env.example')) {
       const envExample = this.getEnvExample();
       writeFileSync('.env.example', envExample);
-      console.log('✅ Created .env.example');
-    }
+          }
 
     // Create .envrc if it doesn't exist
     if (!existsSync('.envrc')) {
       const envrc = 'use flake || true\n';
       writeFileSync('.envrc', envrc);
-      console.log('✅ Created .envrc');
-    }
+          }
 
     // Initialize secrets directory
     const secretsReadme = `# Secrets Management
@@ -249,10 +222,8 @@ This directory contains secret rotation scripts and templates.
 DO NOT commit actual secrets to git.
 `;
     writeFileSync(join(SECRETS_DIR, 'README.md'), secretsReadme);
-    console.log('✅ Initialized secrets directory');
-
-    console.log('\n✅ Ops framework initialized!');
-  }
+    
+      }
 
   private getEnvExample(): string {
     return `# Supabase
@@ -289,16 +260,13 @@ ENABLE_QUIET_MODE=false
   }
 
   async check(args: string[]): Promise<void> {
-    console.log('🔍 Running checks...\n');
-    await this.doctor();
+        await this.doctor();
   }
 
   async release(args: string[]): Promise<void> {
-    console.log('🚀 Starting release process...\n');
-
+    
     // Run doctor first
-    console.log('Running pre-release checks...');
-    await this.doctor();
+        await this.doctor();
 
     // Generate changelog
     await this.changelog([]);
@@ -317,15 +285,12 @@ ENABLE_QUIET_MODE=false
   }
 
   async snapshot(args: string[]): Promise<void> {
-    console.log('📸 Creating database snapshot...\n');
-    const { createSnapshot } = await import('./migration-safety');
+        const { createSnapshot } = await import('./migration-safety');
     const metadata = await createSnapshot(args[0]);
-    console.log(`✅ Snapshot created: ${metadata.id}`);
-  }
+      }
 
   async restore(args: string[]): Promise<void> {
-    console.log('📥 Restoring database snapshot...\n');
-    if (!args[0]) {
+        if (!args[0]) {
       console.error('Usage: ops restore <snapshot-id>');
       process.exit(1);
     }
@@ -334,61 +299,50 @@ ENABLE_QUIET_MODE=false
   }
 
   async rotateSecrets(): Promise<void> {
-    console.log('🔐 Rotating secrets...\n');
-    const { rotateSecrets } = await import('./secrets/rotate');
+        const { rotateSecrets } = await import('./secrets/rotate');
     const rotations = await rotateSecrets();
-    console.log(`✅ Rotated ${rotations.length} secrets`);
-  }
+      }
 
   async sbGuard(): Promise<void> {
-    console.log('🛡️  Running RLS guard...\n');
-    const { sbGuard } = await import('./rls-guard');
+        const { sbGuard } = await import('./rls-guard');
     await sbGuard();
   }
 
   async testE2E(args: string[]): Promise<void> {
-    console.log('🧪 Running E2E tests...\n');
-    try {
+        try {
       execSync('cd apps/web && npx playwright test tests/reality/e2e.spec.ts', { stdio: 'inherit' });
-      console.log('✅ E2E tests passed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ E2E tests failed');
       process.exit(1);
     }
   }
 
   async benchmark(args: string[]): Promise<void> {
-    console.log('⚡ Running benchmarks...\n');
-    try {
+        try {
       execSync('pnpm perf:compare', { stdio: 'inherit' });
-      console.log('✅ Benchmarks completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Benchmarks failed');
       process.exit(1);
     }
   }
 
   async lintfix(): Promise<void> {
-    console.log('🔧 Fixing linting issues...\n');
-    try {
+        try {
       execSync('pnpm lint:fix', { stdio: 'inherit' });
       execSync('pnpm format', { stdio: 'inherit' });
-      console.log('✅ Linting issues fixed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Failed to fix linting issues');
       process.exit(1);
     }
   }
 
   async docs(): Promise<void> {
-    console.log('📚 Generating documentation...\n');
-    const { generateDocs } = await import('./docs-generator');
+        const { generateDocs } = await import('./docs-generator');
     await generateDocs();
   }
 
   async changelog(args: string[]): Promise<void> {
-    console.log('📝 Generating changelog...\n');
-    const { generateChangelog } = await import('./release-train');
+        const { generateChangelog } = await import('./release-train');
     await generateChangelog();
   }
 }

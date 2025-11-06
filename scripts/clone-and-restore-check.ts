@@ -14,6 +14,7 @@ import { createClient } from '@supabase/supabase-js';
 import { execSync } from 'child_process';
 import { writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 interface DRConfig {
   shadow_db_name: string;
@@ -66,8 +67,7 @@ class DRValidator {
    * Create shadow database for DR testing
    */
   async createShadowDatabase(): Promise<void> {
-    console.log('🏗️ Creating shadow database...');
-    
+        
     try {
       // In a real implementation, this would create a temporary database
       // For now, we'll simulate with a test schema
@@ -113,8 +113,7 @@ class DRValidator {
         throw new Error(`Failed to create shadow database: ${error.message}`);
       }
 
-      console.log('✅ Shadow database created successfully');
-      
+            
     } catch (error) {
       console.error('❌ Failed to create shadow database:', error);
       throw error;
@@ -125,8 +124,7 @@ class DRValidator {
    * Simulate restore from backup (in real implementation, this would restore from actual backup)
    */
   async simulateRestore(): Promise<{ success: boolean; time_seconds: number }> {
-    console.log('🔄 Simulating restore from backup...');
-    
+        
     const startTime = Date.now();
     
     try {
@@ -157,7 +155,7 @@ class DRValidator {
       }
 
       const timeSeconds = (Date.now() - startTime) / 1000;
-      console.log(`✅ Restore simulation completed in ${timeSeconds.toFixed(2)} seconds`);
+      } seconds`);
       
       return { success: true, time_seconds: timeSeconds };
       
@@ -172,14 +170,12 @@ class DRValidator {
    * Run checksum validation on critical tables
    */
   async runChecksumValidation(): Promise<ChecksumResult[]> {
-    console.log('🔍 Running checksum validation...');
-    
+        
     const results: ChecksumResult[] = [];
     
     for (const tableName of this.config.checksum_tables) {
       try {
-        console.log(`  Checking table: ${tableName}`);
-        
+                
         const checksumSQL = `
           SELECT 
             COUNT(*) as row_count,
@@ -213,7 +209,7 @@ class DRValidator {
           status: 'success'
         });
 
-        console.log(`    ✅ ${tableName}: ${result.row_count} rows, checksum: ${result.checksum.substring(0, 8)}...`);
+        }...`);
         
       } catch (error) {
         results.push({
@@ -223,8 +219,7 @@ class DRValidator {
           status: 'failed',
           error: error.message
         });
-        console.log(`    ❌ ${tableName}: ${error.message}`);
-      }
+              }
     }
     
     return results;
@@ -234,8 +229,7 @@ class DRValidator {
    * Clean up shadow database
    */
   async cleanupShadowDatabase(): Promise<void> {
-    console.log('🧹 Cleaning up shadow database...');
-    
+        
     try {
       const cleanupSQL = `DROP SCHEMA IF EXISTS ${this.config.shadow_db_name} CASCADE;`;
       
@@ -243,8 +237,7 @@ class DRValidator {
       if (error) {
         console.warn(`Warning: Failed to cleanup shadow database: ${error.message}`);
       } else {
-        console.log('✅ Shadow database cleaned up successfully');
-      }
+              }
       
     } catch (error) {
       console.warn(`Warning: Cleanup failed: ${error.message}`);
@@ -301,8 +294,7 @@ class DRValidator {
     execSync('mkdir -p REPORTS', { stdio: 'inherit' });
     
     writeFileSync(filepath, JSON.stringify(report, null, 2));
-    console.log(`📄 DR report saved to: ${filepath}`);
-    
+        
     return filepath;
   }
 
@@ -310,8 +302,7 @@ class DRValidator {
    * Main DR validation process
    */
   async execute(): Promise<DRReport> {
-    console.log('🚀 Starting Disaster Recovery validation...');
-    
+        
     try {
       // Step 1: Create shadow database
       await this.createShadowDatabase();
@@ -335,8 +326,7 @@ class DRValidator {
       // Step 6: Cleanup
       await this.cleanupShadowDatabase();
       
-      console.log('✅ DR validation completed successfully!');
-      console.log(`Overall Status: ${report.overall_status.toUpperCase()}`);
+            }`);
       
       return report;
       
@@ -353,8 +343,8 @@ class DRValidator {
 
 // CLI interface
 async function main() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     console.error('❌ Missing required environment variables:');
@@ -369,11 +359,9 @@ async function main() {
     const report = await validator.execute();
     
     if (report.overall_status === 'fail') {
-      console.log('\n❌ DR validation failed - see report for details');
-      process.exit(1);
+            process.exit(1);
     } else {
-      console.log('\n✅ DR validation passed');
-      process.exit(0);
+            process.exit(0);
     }
     
   } catch (error) {

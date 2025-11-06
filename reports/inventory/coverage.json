@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-03T15:48:09.749Z",
+  "timestamp": "2025-11-06T02:33:03.590Z",
   "apps": {
     "api-docs": {
       "name": "@whats-for-dinner/api-docs",
@@ -377,6 +377,8 @@
         "@radix-ui/react-slot",
         "@radix-ui/react-switch",
         "@radix-ui/react-tabs",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-toast",
         "@sentry/nextjs",
         "@stripe/stripe-js",
         "@supabase/auth-helpers-nextjs",
@@ -389,6 +391,7 @@
         "@whats-for-dinner/utils",
         "class-variance-authority",
         "clsx",
+        "idb-keyval",
         "lucide-react",
         "next",
         "next-pwa",
@@ -398,11 +401,13 @@
         "react-dom",
         "recharts",
         "resend",
+        "sonner",
         "stripe",
         "tailwind-merge",
         "uuid",
         "web-vitals",
-        "zod"
+        "zod",
+        "canvas-confetti"
       ],
       "devDependencies": [
         "@capacitor/android",
@@ -432,6 +437,8 @@
         "prettier-plugin-tailwindcss",
         "tailwindcss",
         "tailwindcss-animate",
+        "@tailwindcss/typography",
+        "framer-motion",
         "typescript"
       ],
       "scripts": [
@@ -472,8 +479,10 @@
         "api/admin/dashboard/route.ts",
         "api/admin/governance/retention/route.ts",
         "api/admin/incidents/route.ts",
+        "api/agent/suggest/route.ts",
         "api/alerts/route.ts",
         "api/analytics/dashboard/route.ts",
+        "api/audit/me/route.ts",
         "api/auth/apple/callback/route.ts",
         "api/auth/delete-account/route.ts",
         "api/billing/checkout/route.ts",
@@ -482,6 +491,7 @@
         "api/commerce/hub/route.ts",
         "api/cost/calculate/route.ts",
         "api/cro/insights/route.ts",
+        "api/csrf-token/route.ts",
         "api/developers/keys/[id]/route.ts",
         "api/developers/keys/route.ts",
         "api/developers/usage/route.ts",
@@ -491,12 +501,20 @@
         "api/experiments/assign/route.ts",
         "api/experiments/convert/route.ts",
         "api/experiments/price/route.ts",
+        "api/export/route.ts",
         "api/features/check/route.ts",
         "api/federation/route.ts",
+        "api/feedback/route.ts",
         "api/gdpr/delete/route.ts",
         "api/gdpr/export/route.ts",
+        "api/guardian/route.ts",
+        "api/health/db/route.ts",
+        "api/health/live/route.ts",
+        "api/health/queue/route.ts",
+        "api/health/ready/route.ts",
         "api/health/route.ts",
         "api/healthz/route.ts",
+        "api/ingest/route.ts",
         "api/meal-plan/generate/route.ts",
         "api/mealplan/ai-generate/route.ts",
         "api/mealplan/route.ts",
@@ -526,18 +544,31 @@
         "api/performance/recommendations/route.ts",
         "api/performance/route.ts",
         "api/preferences/route.ts",
+        "api/premium/cost/route.ts",
+        "api/premium/meal-plan/route.ts",
+        "api/premium/nutrition/route.ts",
+        "api/premium/pantry-intelligence/route.ts",
         "api/pricing/current/route.ts",
         "api/pricing/survey/route.ts",
+        "api/privacy/apps/route.ts",
+        "api/privacy/consent/route.ts",
+        "api/privacy/delete/route.ts",
         "api/privacy/erase/route.ts",
         "api/privacy/export/route.ts",
+        "api/privacy/log/route.ts",
+        "api/privacy/mfa/verify/route.ts",
+        "api/privacy/prefs/route.ts",
+        "api/privacy/signals/route.ts",
         "api/push/register/route.ts",
         "api/r/[token]/route.ts",
+        "api/reco/whatsfordinner/route.ts",
         "api/revenue/summary/route.ts",
         "api/selftest/route.ts",
         "api/stripe/webhook/route.ts",
         "api/subscriptions/create/route.ts",
         "api/subscriptions/me/route.ts",
         "api/swagger/route.ts",
+        "api/telemetry/ingest/route.ts",
         "api/traces/[traceId]/spans/route.ts",
         "api/traces/route.ts",
         "api/user/me/route.ts",
@@ -545,30 +576,69 @@
       ],
       "components": [
         "Analytics.tsx",
+        "Breadcrumb.tsx",
         "CacheRefresh.tsx",
         "CapacitorInit.tsx",
         "CoreWebVitals.tsx",
+        "EmailCapture.tsx",
         "EmptyStateGuide.tsx",
         "ErrorBoundary.tsx",
         "GDPRConsent.tsx",
+        "GroceryIntegration.tsx",
         "InputPrompt.tsx",
         "LoadingState.tsx",
         "Navbar.tsx",
         "OnboardingChecklist.tsx",
+        "OnboardingFlow.tsx",
         "PWAInstaller.tsx",
+        "PantryExpirationWidget.tsx",
         "PantryManager.tsx",
         "Paywall.tsx",
+        "PerformanceDashboard.tsx",
+        "PerformanceHUD.tsx",
         "RecipeCard.tsx",
         "RecipeFeedback.tsx",
+        "ReferralProgram.tsx",
         "ShareableMealCard.tsx",
         "SkeletonLoader.tsx",
+        "SocialShare.tsx",
         "StoreListing.tsx",
+        "StructuredData.tsx",
         "SubscriptionManager.tsx",
         "ThemeProvider.tsx",
         "ThemeToggle.tsx",
+        "TrustFooterLinks.tsx",
         "__tests__/InputPrompt.test.tsx",
         "__tests__/PantryManager.test.tsx",
         "__tests__/RecipeCard.test.tsx",
+        "agent/SuggestionsDrawer.tsx",
+        "gamification/Badge.tsx",
+        "gamification/BadgeCollection.tsx",
+        "gamification/CommunityChallenges.tsx",
+        "gamification/Confetti.tsx",
+        "gamification/GamificationProvider.tsx",
+        "gamification/Haptics.ts",
+        "gamification/Leaderboard.tsx",
+        "gamification/NotificationsCenter.tsx",
+        "gamification/ProgressChart.tsx",
+        "gamification/ProgressRing.tsx",
+        "gamification/PushNotificationSetup.tsx",
+        "gamification/QuestCard.tsx",
+        "gamification/ReferralSection.tsx",
+        "gamification/StreakFlame.tsx",
+        "gamification/WeeklyChallenges.tsx",
+        "integrations/Cloudinary.tsx",
+        "integrations/ConsentGate.tsx",
+        "integrations/HCaptcha.tsx",
+        "integrations/Lenis.tsx",
+        "integrations/LiveVisitors.tsx",
+        "integrations/Lottie.tsx",
+        "integrations/MicrosoftClarity.tsx",
+        "integrations/VercelAnalytics.tsx",
+        "integrations/index.tsx",
+        "motion/FadeIn.tsx",
+        "motion/InViewReveal.tsx",
+        "motion/StaggerList.tsx",
         "nomad/AdMobIntegration.tsx",
         "nomad/AdPlacement.tsx",
         "nomad/FamilyFeedCard.tsx",
@@ -577,19 +647,38 @@
         "nomad/MealPlanCard.tsx",
         "nomad/RecipeSpotlightCard.tsx",
         "nomad/StreaksBadgesCard.tsx",
+        "privacy/ConsentOnboardingWizard.tsx",
+        "privacy/ConsentPanel.tsx",
+        "privacy/PrivacyHUD.tsx",
+        "reco/RecoDrawer.tsx",
+        "sections/FeaturesSection.tsx",
+        "sections/HeroSection.tsx",
+        "sections/TestimonialsSection.tsx",
+        "social/AvatarStack.tsx",
+        "social/CommentSection.tsx",
+        "social/FamilyCookOff.tsx",
+        "social/FriendsList.tsx",
+        "social/LiveCookingFeed.tsx",
+        "social/ReactionBar.tsx",
+        "social/ShareButton.tsx",
+        "social/StartCookingActivity.tsx",
         "ui/animated-card.tsx",
         "ui/badge.tsx",
         "ui/button.tsx",
         "ui/card.tsx",
+        "ui/dialog.tsx",
         "ui/input.tsx",
         "ui/label.tsx",
         "ui/loading-spinner.tsx",
         "ui/progress-bar.tsx",
         "ui/separator.tsx",
+        "ui/sheet.tsx",
         "ui/skeleton.tsx",
         "ui/switch.tsx",
         "ui/tabs.tsx",
-        "ui/textarea.tsx"
+        "ui/textarea.tsx",
+        "ui/toast.tsx",
+        "ui/toaster.tsx"
       ]
     }
   },
@@ -720,10 +809,12 @@
       "dependencies": [
         "clsx",
         "tailwind-merge",
-        "zod"
+        "zod",
+        "js-yaml"
       ],
       "devDependencies": [
         "@types/node",
+        "@types/js-yaml",
         "typescript"
       ],
       "main": "./src/index.ts",
@@ -793,7 +884,7 @@
         "archiver",
         "crypto"
       ],
-      "registered": false
+      "registered": true
     },
     "elasticityModel": {
       "file": "elasticityModel.ts",
@@ -821,7 +912,7 @@
         "../observability/index.js",
         "crypto"
       ],
-      "registered": false
+      "registered": true
     },
     "journeysRunner": {
       "file": "journeysRunner.ts",
@@ -889,7 +980,7 @@
         "../observability/index.js",
         "../audit/index.js"
       ],
-      "registered": false
+      "registered": true
     },
     "revenueAggregator": {
       "file": "revenueAggregator.ts",
@@ -916,7 +1007,7 @@
         "../observability/index.js",
         "bullmq"
       ],
-      "registered": false
+      "registered": true
     },
     "vanWestendorpModel": {
       "file": "vanWestendorpModel.ts",
@@ -929,6 +1020,19 @@
         "../db/schema.js",
         "drizzle-orm",
         "../observability/index.js"
+      ],
+      "registered": false
+    },
+    "weeklyGuardianReport": {
+      "file": "weeklyGuardianReport.ts",
+      "hasProcessor": true,
+      "hasErrorHandling": true,
+      "hasLogging": true,
+      "hasMetrics": false,
+      "dependencies": [
+        "@whats-for-dinner/utils/guardian",
+        "fs",
+        "path"
       ],
       "registered": false
     }
@@ -969,6 +1073,13 @@
       "hasErrorHandling": true,
       "file": "admin/incidents/route.ts"
     },
+    "/agent/suggest": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "agent/suggest/route.ts"
+    },
     "/alerts": {
       "method": "GET",
       "hasAuth": false,
@@ -982,6 +1093,13 @@
       "hasValidation": false,
       "hasErrorHandling": true,
       "file": "analytics/dashboard/route.ts"
+    },
+    "/audit/me": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "audit/me/route.ts"
     },
     "/auth/apple/callback": {
       "method": "GET",
@@ -1038,6 +1156,13 @@
       "hasValidation": false,
       "hasErrorHandling": true,
       "file": "cro/insights/route.ts"
+    },
+    "/csrf-token": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "csrf-token/route.ts"
     },
     "/developers/keys/[id]": {
       "method": "GET",
@@ -1102,6 +1227,13 @@
       "hasErrorHandling": false,
       "file": "experiments/price/route.ts"
     },
+    "/export": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "export/route.ts"
+    },
     "/features/check": {
       "method": "GET",
       "hasAuth": true,
@@ -1115,6 +1247,13 @@
       "hasValidation": true,
       "hasErrorHandling": true,
       "file": "federation/route.ts"
+    },
+    "/feedback": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "feedback/route.ts"
     },
     "/gdpr/delete": {
       "method": "GET",
@@ -1130,6 +1269,41 @@
       "hasErrorHandling": true,
       "file": "gdpr/export/route.ts"
     },
+    "/guardian": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": true,
+      "file": "guardian/route.ts"
+    },
+    "/health/db": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "health/db/route.ts"
+    },
+    "/health/live": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "health/live/route.ts"
+    },
+    "/health/queue": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "health/queue/route.ts"
+    },
+    "/health/ready": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "health/ready/route.ts"
+    },
     "/health": {
       "method": "GET",
       "hasAuth": true,
@@ -1144,8 +1318,15 @@
       "hasErrorHandling": true,
       "file": "healthz/route.ts"
     },
-    "/meal-plan/generate": {
+    "/ingest": {
       "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "ingest/route.ts"
+    },
+    "/meal-plan/generate": {
+      "method": "POST",
       "hasAuth": true,
       "hasValidation": false,
       "hasErrorHandling": true,
@@ -1292,7 +1473,7 @@
       "file": "onboarding/checklist/route.ts"
     },
     "/pantry/seed-sample": {
-      "method": "GET",
+      "method": "POST",
       "hasAuth": true,
       "hasValidation": true,
       "hasErrorHandling": true,
@@ -1347,6 +1528,34 @@
       "hasErrorHandling": true,
       "file": "preferences/route.ts"
     },
+    "/premium/cost": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "premium/cost/route.ts"
+    },
+    "/premium/meal-plan": {
+      "method": "POST",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "premium/meal-plan/route.ts"
+    },
+    "/premium/nutrition": {
+      "method": "POST",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "premium/nutrition/route.ts"
+    },
+    "/premium/pantry-intelligence": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": true,
+      "file": "premium/pantry-intelligence/route.ts"
+    },
     "/pricing/current": {
       "method": "GET",
       "hasAuth": false,
@@ -1361,6 +1570,27 @@
       "hasErrorHandling": false,
       "file": "pricing/survey/route.ts"
     },
+    "/privacy/apps": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": false,
+      "file": "privacy/apps/route.ts"
+    },
+    "/privacy/consent": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": false,
+      "file": "privacy/consent/route.ts"
+    },
+    "/privacy/delete": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": false,
+      "file": "privacy/delete/route.ts"
+    },
     "/privacy/erase": {
       "method": "GET",
       "hasAuth": true,
@@ -1371,9 +1601,37 @@
     "/privacy/export": {
       "method": "GET",
       "hasAuth": true,
-      "hasValidation": false,
-      "hasErrorHandling": true,
+      "hasValidation": true,
+      "hasErrorHandling": false,
       "file": "privacy/export/route.ts"
+    },
+    "/privacy/log": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": false,
+      "file": "privacy/log/route.ts"
+    },
+    "/privacy/mfa/verify": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "privacy/mfa/verify/route.ts"
+    },
+    "/privacy/prefs": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "privacy/prefs/route.ts"
+    },
+    "/privacy/signals": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": true,
+      "hasErrorHandling": false,
+      "file": "privacy/signals/route.ts"
     },
     "/push/register": {
       "method": "GET",
@@ -1388,6 +1646,13 @@
       "hasValidation": true,
       "hasErrorHandling": true,
       "file": "r/[token]/route.ts"
+    },
+    "/reco/whatsfordinner": {
+      "method": "GET",
+      "hasAuth": false,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "reco/whatsfordinner/route.ts"
     },
     "/revenue/summary": {
       "method": "GET",
@@ -1411,7 +1676,7 @@
       "file": "stripe/webhook/route.ts"
     },
     "/subscriptions/create": {
-      "method": "GET",
+      "method": "POST",
       "hasAuth": true,
       "hasValidation": false,
       "hasErrorHandling": true,
@@ -1430,6 +1695,13 @@
       "hasValidation": true,
       "hasErrorHandling": true,
       "file": "swagger/route.ts"
+    },
+    "/telemetry/ingest": {
+      "method": "GET",
+      "hasAuth": true,
+      "hasValidation": false,
+      "hasErrorHandling": false,
+      "file": "telemetry/ingest/route.ts"
     },
     "/traces/[traceId]/spans": {
       "method": "GET",
@@ -1599,8 +1871,8 @@
   },
   "orphaned": [],
   "coverage": {
-    "tested": 37,
-    "untested": 673,
+    "tested": 43,
+    "untested": 874,
     "testFiles": [
       "apps/web/src/__tests__/ai-safety.test.ts",
       "apps/web/src/__tests__/security.test.ts",
@@ -1611,6 +1883,7 @@
       "apps/web/src/components/__tests__/RecipeCard.test.tsx",
       "apps/web/tests/e2e/security.spec.ts",
       "apps/web/tests/integration/phases-integration.test.ts",
+      "apps/web/tests/privacy-acceptance.spec.ts",
       "apps/web/tests/smoke.spec.ts",
       "packages/analytics/consent/consent.test.ts",
       "packages/server/src/testing/api.mealplan.spec.ts",
@@ -1626,6 +1899,11 @@
       "packages/testing/contracts/openapi.validate.spec.ts",
       "packages/testing/e2e/jobs.spec.ts",
       "packages/testing/e2e/wiring.web.spec.ts",
+      "tests/reality/e2e.spec.ts",
+      "tests/reality/red-team.spec.ts",
+      "tests/reality/synthetic-monitors.spec.ts",
+      "tests/red-team/security.spec.ts",
+      "tests/self_reflection.test.js",
       "whats-for-dinner/src/__tests__/ai-safety.test.ts",
       "whats-for-dinner/src/__tests__/security.test.ts",
       "whats-for-dinner/src/app/__tests__/page.test.tsx",

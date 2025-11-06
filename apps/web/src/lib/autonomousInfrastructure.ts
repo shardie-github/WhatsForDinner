@@ -66,8 +66,7 @@ export class AutonomousInfrastructure {
    * Start autonomous monitoring and healing
    */
   async start(): Promise<void> {
-    console.log('?? Starting Autonomous Infrastructure System...');
-
+    
     // Start health checks every 5 minutes
     this.healthCheckInterval = setInterval(async () => {
       await this.performHealthCheck();
@@ -76,8 +75,7 @@ export class AutonomousInfrastructure {
     // Perform initial health check
     await this.performHealthCheck();
 
-    console.log('? Autonomous Infrastructure System started');
-  }
+      }
 
   /**
    * Stop autonomous system
@@ -87,8 +85,7 @@ export class AutonomousInfrastructure {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = null;
     }
-    console.log('?? Autonomous Infrastructure System stopped');
-  }
+      }
 
   /**
    * Perform comprehensive health check
@@ -340,8 +337,7 @@ export class AutonomousInfrastructure {
       // For Vercel, this might involve adjusting function instances
       // For AWS/GCP, this would adjust autoscaling groups
 
-      console.log(`?? Scaling ${direction} by ${count} instances`);
-
+      
       // Simulate scaling action
       await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -384,8 +380,7 @@ export class AutonomousInfrastructure {
     const actionId = `cache_clear_${Date.now()}`;
 
     try {
-      console.log('?? Clearing cache...');
-
+      
       // In production, this would clear CDN cache, Redis cache, etc.
       // For now, we'll simulate
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -428,8 +423,7 @@ export class AutonomousInfrastructure {
     const actionId = `db_optimize_${Date.now()}`;
 
     try {
-      console.log('??? Optimizing database...');
-
+      
       // In production, this might:
       // - Run VACUUM ANALYZE (PostgreSQL)
       // - Clear query cache
@@ -476,8 +470,7 @@ export class AutonomousInfrastructure {
     const actionId = `rollback_${Date.now()}`;
 
     try {
-      console.log('? Rolling back deployment...');
-
+      
       // In production, this would:
       // - Revert to previous deployment version
       // - Update routing/load balancer

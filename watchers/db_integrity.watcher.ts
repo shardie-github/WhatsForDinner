@@ -48,8 +48,7 @@ class DatabaseIntegrityWatcher {
    * Run comprehensive database integrity checks
    */
   async runIntegrityChecks(): Promise<IntegrityReport> {
-    console.log('🔍 Running database integrity checks...');
-
+    
     const checks: IntegrityCheck[] = [];
     const recommendations: string[] = [];
 
@@ -519,8 +518,7 @@ class DatabaseIntegrityWatcher {
       if (error) {
         console.error('Error storing integrity report:', error);
       } else {
-        console.log('✅ Integrity report stored successfully');
-      }
+              }
     } catch (error) {
       console.error('Failed to store integrity report:', error);
     }
@@ -545,8 +543,7 @@ class DatabaseIntegrityWatcher {
         labels: issue.labels
       });
 
-      console.log(`✅ Integrity issue created: ${data.html_url}`);
-    } catch (error) {
+          } catch (error) {
       console.error('Failed to create integrity issue:', error);
     }
   }
@@ -596,20 +593,16 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
    * Run nightly integrity check
    */
   async runNightlyCheck() {
-    console.log('🌙 Running nightly database integrity check...');
-    
+        
     try {
       const report = await this.runIntegrityChecks();
       
-      console.log(`✅ Nightly check completed: ${report.passed}/${report.total_checks} checks passed`);
-      
+            
       if (report.failed > 0) {
-        console.log(`❌ ${report.failed} integrity violations found`);
-      }
+              }
       
       if (report.warnings > 0) {
-        console.log(`⚠️  ${report.warnings} warnings found`);
-      }
+              }
     } catch (error) {
       console.error('Nightly integrity check failed:', error);
     }

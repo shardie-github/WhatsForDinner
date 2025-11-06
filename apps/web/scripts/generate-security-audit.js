@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-console.log('🔒 Generating security audit report...');
 
 const auditReport = {
   timestamp: new Date().toISOString(),
@@ -15,8 +14,7 @@ const auditReport = {
 
 // Check for known vulnerabilities
 try {
-  console.log('  - Checking for known vulnerabilities...');
-  const auditOutput = execSync('npm audit --json', { encoding: 'utf8' });
+    const auditOutput = execSync('npm audit --json', { encoding: 'utf8' });
   const auditData = JSON.parse(auditOutput);
   auditReport.checks.vulnerabilities = {
     status: auditData.metadata.vulnerabilities.total === 0 ? 'PASS' : 'FAIL',
@@ -34,8 +32,7 @@ try {
 
 // Check for secrets in code
 try {
-  console.log('  - Scanning for secrets in code...');
-  const trufflehogOutput = execSync(
+    const trufflehogOutput = execSync(
     'trufflehog filesystem . --no-verification --format json',
     { encoding: 'utf8' }
   );
@@ -58,8 +55,7 @@ try {
 
 // Check for hardcoded secrets patterns
 try {
-  console.log('  - Checking for hardcoded secrets patterns...');
-  const patterns = [
+    const patterns = [
     { pattern: /sk-[a-zA-Z0-9]{48}/g, name: 'OpenAI API Key' },
     { pattern: /sk_[a-zA-Z0-9]{24}/g, name: 'Stripe Secret Key' },
     { pattern: /pk_[a-zA-Z0-9]{24}/g, name: 'Stripe Publishable Key' },
@@ -114,8 +110,7 @@ try {
 
 // Check for security headers
 try {
-  console.log('  - Checking security headers configuration...');
-  const nextConfigPath = path.join(__dirname, '..', 'next.config.ts');
+    const nextConfigPath = path.join(__dirname, '..', 'next.config.ts');
   const nextConfigExists = fs.existsSync(nextConfigPath);
 
   auditReport.checks.securityHeaders = {
@@ -134,8 +129,7 @@ try {
 
 // Check for environment file security
 try {
-  console.log('  - Checking environment file security...');
-  const envExampleExists = fs.existsSync(
+    const envExampleExists = fs.existsSync(
     path.join(__dirname, '..', '.env.example')
   );
   const envExists = fs.existsSync(path.join(__dirname, '..', '.env'));
@@ -232,7 +226,3 @@ ${securityScore < 80 ? '⚠️ **Action Required:** Security score is below 80%.
 fs.writeFileSync('SECURITY_AUDIT.md', markdownReport);
 fs.writeFileSync('security-audit.json', JSON.stringify(auditReport, null, 2));
 
-console.log('✅ Security audit report generated successfully!');
-console.log(`📊 Overall Security Score: ${securityScore}/100`);
-console.log(`📄 Report saved to: SECURITY_AUDIT.md`);
-console.log(`📄 JSON report saved to: security-audit.json`);

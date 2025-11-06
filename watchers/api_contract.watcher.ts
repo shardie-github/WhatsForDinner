@@ -83,8 +83,7 @@ class APIContractWatcher {
    * Run API contract validation
    */
   async validateAPIContracts(): Promise<ContractReport> {
-    console.log('📋 Validating API contracts...');
-
+    
     try {
       // Load current OpenAPI spec
       const currentSpec = await this.loadOpenAPISpec();
@@ -154,8 +153,7 @@ class APIContractWatcher {
 
       // If no spec files found, generate from code analysis
       if (contracts.length === 0) {
-        console.log('No OpenAPI spec found, analyzing code for API contracts...');
-        const codeContracts = await this.generateContractsFromCode();
+                const codeContracts = await this.generateContractsFromCode();
         contracts.push(...codeContracts);
       }
 
@@ -467,8 +465,7 @@ class APIContractWatcher {
     // - Check API documentation endpoints
     
     // For now, return empty array as this requires actual API access
-    console.log('⚠️  Endpoint discovery not implemented - requires deployed API access');
-    return [];
+        return [];
   }
 
   /**
@@ -657,12 +654,7 @@ class APIContractWatcher {
    */
   private async storeReport(report: ContractReport) {
     // In a real implementation, this would store in a database
-    console.log('📊 Contract report generated:', {
-      total_endpoints: report.total_endpoints,
-      breaking_changes: report.breaking_changes,
-      modified_endpoints: report.modified_endpoints
-    });
-  }
+      }
 
   /**
    * Create GitHub issue for contract violations
@@ -683,8 +675,7 @@ class APIContractWatcher {
         labels: issue.labels
       });
 
-      console.log(`✅ Contract issue created: ${data.html_url}`);
-    } catch (error) {
+          } catch (error) {
       console.error('Failed to create contract issue:', error);
     }
   }
@@ -732,20 +723,16 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
    * Run nightly contract check
    */
   async runNightlyCheck() {
-    console.log('🌙 Running nightly API contract check...');
-    
+        
     try {
       const report = await this.validateAPIContracts();
       
-      console.log(`✅ Nightly check completed: ${report.total_endpoints} endpoints checked`);
-      
+            
       if (report.breaking_changes > 0) {
-        console.log(`❌ ${report.breaking_changes} breaking changes found`);
-      }
+              }
       
       if (report.modified_endpoints > 0) {
-        console.log(`⚠️  ${report.modified_endpoints} endpoints modified`);
-      }
+              }
     } catch (error) {
       console.error('Nightly contract check failed:', error);
     }

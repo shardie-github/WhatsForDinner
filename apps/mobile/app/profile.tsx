@@ -7,13 +7,11 @@ import { User, Settings, LogOut } from 'lucide-react-native';
 export default function ProfileScreen() {
   const handleSignOut = () => {
     // Sign out logic
-    console.log('Sign out');
-  };
+      };
 
   const handleSettings = () => {
     // Navigate to settings
-    console.log('Settings');
-  };
+      };
 
   return (
     <SafeAreaView className="flex-1 bg-background">

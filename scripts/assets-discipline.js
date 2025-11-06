@@ -39,9 +39,7 @@ class AssetsDisciplineManager {
   }
 
   async runAssetsDiscipline() {
-    console.log('📸 Phase 13: Assets Discipline');
-    console.log('==============================\n');
-
+        
     try {
       await this.analyzeAssets();
       await this.optimizeImages();
@@ -50,8 +48,7 @@ class AssetsDisciplineManager {
       await this.createAssetOptimizationScripts();
       await this.generateAssetsReport();
       
-      console.log('✅ Assets discipline setup completed successfully');
-      this.printSummary();
+            this.printSummary();
     } catch (error) {
       console.error('❌ Assets discipline setup failed:', error.message);
       process.exit(1);
@@ -59,8 +56,7 @@ class AssetsDisciplineManager {
   }
 
   async analyzeAssets() {
-    console.log('🔍 Analyzing assets...');
-    
+        
     const analysis = {
       images: this.analyzeImageAssets(),
       fonts: this.analyzeFontAssets(),
@@ -70,7 +66,7 @@ class AssetsDisciplineManager {
     };
     
     this.results.analysis = analysis;
-    console.log(`   Found ${Object.keys(analysis).length} asset categories`);
+    .length} asset categories`);
   }
 
   analyzeImageAssets() {
@@ -236,8 +232,7 @@ class AssetsDisciplineManager {
   }
 
   async optimizeImages() {
-    console.log('🖼️  Optimizing images...');
-    
+        
     const optimizations = [];
     const images = this.results.analysis.images;
     
@@ -280,8 +275,7 @@ class AssetsDisciplineManager {
     }
     
     this.results.optimizations = optimizations;
-    console.log(`   Found ${optimizations.length} optimization opportunities`);
-  }
+      }
 
   calculateWebPSavings(images) {
     // WebP typically provides 25-35% size reduction
@@ -302,8 +296,7 @@ class AssetsDisciplineManager {
   }
 
   async setupResponsiveImages() {
-    console.log('📱 Setting up responsive images...');
-    
+        
     // Create responsive image component
     const responsiveImageComponent = `import React from 'react';
 import Image from 'next/image';
@@ -454,12 +447,10 @@ export default ImageOptimizer;
     const utilsPath = path.join(this.workspaceRoot, 'packages', 'utils', 'src', 'image-optimizer.ts');
     fs.writeFileSync(utilsPath, imageUtils);
     
-    console.log('   Responsive image components created');
-  }
+      }
 
   async configureModernFormats() {
-    console.log('🎨 Configuring modern formats...');
-    
+        
     const formatConfig = {
       images: {
         supported: this.assetTypes.images.formats,
@@ -493,12 +484,10 @@ export default ImageOptimizer;
     const configPath = path.join(this.workspaceRoot, 'config', 'asset-formats.json');
     fs.writeFileSync(configPath, JSON.stringify(formatConfig, null, 2));
     
-    console.log('   Modern format configuration created');
-  }
+      }
 
   async createAssetOptimizationScripts() {
-    console.log('📜 Creating asset optimization scripts...');
-    
+        
     const optimizationScript = `#!/usr/bin/env node
 
 /**
@@ -519,8 +508,7 @@ class AssetOptimizer {
   async optimizeImages(options = {}) {
     const { format = 'webp', quality = 85, resize = false } = options;
     
-    console.log(\`🖼️  Optimizing images to \${format} format...\`);
-    
+        
     const imageDirs = this.findImageDirectories();
     let optimizedCount = 0;
     
@@ -535,8 +523,7 @@ class AssetOptimizer {
       }
     }
     
-    console.log(\`✅ Optimized \${optimizedCount} images\`);
-  }
+      }
 
   async optimizeImage(image, format, quality, resize) {
     const { path: imagePath, name } = image;
@@ -555,7 +542,7 @@ class AssetOptimizer {
       command += \` "\${outputPath}"\`;
       
       execSync(command, { stdio: 'pipe' });
-      console.log(\`   ✓ \${path.basename(imagePath)} -> \${path.basename(outputPath)}\`);
+      } -> \${path.basename(outputPath)}\`);
     } catch (error) {
       console.error(\`   ✗ Failed to optimize \${path.basename(imagePath)}: \${error.message}\`);
     }
@@ -663,8 +650,7 @@ module.exports = AssetOptimizer;
     
     fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
     
-    console.log('   Asset optimization scripts created');
-  }
+      }
 
   async generateAssetsReport() {
     const reportPath = path.join(this.workspaceRoot, 'REPORTS', 'assets-discipline.md');
@@ -767,8 +753,7 @@ Phase 13 is complete and ready for Phase 14 implementation.
 `;
 
     fs.writeFileSync(reportPath, report);
-    console.log(`   📄 Report saved to ${reportPath}`);
-  }
+      }
 
   formatBytes(bytes) {
     if (bytes === 0) return '0 Bytes';
@@ -779,13 +764,7 @@ Phase 13 is complete and ready for Phase 14 implementation.
   }
 
   printSummary() {
-    console.log('\n📸 Assets Discipline Summary');
-    console.log('============================');
-    console.log(`🖼️  Images: ${this.results.analysis.images.count} files`);
-    console.log(`🔤 Fonts: ${this.results.analysis.fonts.count} files`);
-    console.log(`🎥 Videos: ${this.results.analysis.videos.count} files`);
-    console.log(`⚡ Optimizations: ${this.results.optimizations.length} opportunities`);
-  }
+                          }
 }
 
 // Run the assets discipline setup

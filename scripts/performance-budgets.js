@@ -42,9 +42,7 @@ class PerformanceBudgetManager {
   }
 
   async runPerformanceAudit() {
-    console.log('⚡ Phase 11: Performance Budgets');
-    console.log('=================================\n');
-
+        
     try {
       await this.analyzeBundleSize();
       await this.measureCoreWebVitals();
@@ -52,8 +50,7 @@ class PerformanceBudgetManager {
       await this.generateRecommendations();
       await this.saveResults();
       
-      console.log('✅ Performance budget audit completed successfully');
-      this.printSummary();
+            this.printSummary();
     } catch (error) {
       console.error('❌ Performance budget audit failed:', error.message);
       process.exit(1);
@@ -61,8 +58,7 @@ class PerformanceBudgetManager {
   }
 
   async analyzeBundleSize() {
-    console.log('📦 Analyzing bundle size...');
-    
+        
     try {
       // Build the application first
       execSync('npm run build', { stdio: 'pipe' });
@@ -74,10 +70,9 @@ class PerformanceBudgetManager {
       // Check against budgets
       this.checkBundleBudgets(bundleAnalysis);
       
-      console.log(`   Analyzed ${Object.keys(bundleAnalysis).length} bundles`);
+      .length} bundles`);
     } catch (error) {
-      console.log('   ⚠️  Bundle analysis not available, skipping...');
-    }
+          }
   }
 
   async getBundleAnalysis() {
@@ -145,8 +140,7 @@ class PerformanceBudgetManager {
   }
 
   async measureCoreWebVitals() {
-    console.log('📊 Measuring Core Web Vitals...');
-    
+        
     try {
       // Use Lighthouse for Core Web Vitals measurement
       const lighthouseResults = await this.runLighthouse();
@@ -155,10 +149,8 @@ class PerformanceBudgetManager {
       // Check against budgets
       this.checkCoreWebVitalsBudgets(lighthouseResults);
       
-      console.log('   Core Web Vitals measured successfully');
-    } catch (error) {
-      console.log('   ⚠️  Lighthouse not available, using mock data...');
-      this.results.coreWebVitals = this.getMockCoreWebVitals();
+          } catch (error) {
+            this.results.coreWebVitals = this.getMockCoreWebVitals();
     }
   }
 
@@ -224,8 +216,7 @@ class PerformanceBudgetManager {
   }
 
   async checkResourceLimits() {
-    console.log('🔍 Checking resource limits...');
-    
+        
     // This would typically analyze network requests
     // For now, we'll use mock data
     const resourceAnalysis = {
@@ -262,8 +253,7 @@ class PerformanceBudgetManager {
   }
 
   async generateRecommendations() {
-    console.log('💡 Generating performance recommendations...');
-    
+        
     const recommendations = [];
     
     // Bundle size recommendations
@@ -392,9 +382,7 @@ class PerformanceBudgetManager {
     const report = this.generateMarkdownReport();
     fs.writeFileSync(reportPath, report);
     
-    console.log(`   📄 Report saved to ${reportPath}`);
-    console.log(`   📊 Data saved to ${jsonPath}`);
-  }
+          }
 
   generateMarkdownReport() {
     const { bundleAnalysis, coreWebVitals, violations, recommendations } = this.results;
@@ -506,18 +494,12 @@ Phase 11 is complete and ready for Phase 12 implementation.
   printSummary() {
     const { bundleAnalysis, coreWebVitals, violations, recommendations } = this.results;
     
-    console.log('\n⚡ Performance Budget Summary');
-    console.log('=============================');
-    console.log(`📦 Bundle Analysis: ${Object.keys(bundleAnalysis).length} file types`);
-    console.log(`📊 Core Web Vitals: 5 metrics tracked`);
-    console.log(`❌ Violations: ${violations.length}`);
-    console.log(`💡 Recommendations: ${recommendations.length}`);
-    
+            .length} file types`);
+                
     if (violations.length > 0) {
-      console.log('\n🚨 Critical Issues:');
-      violations
+            violations
         .filter(v => v.severity === 'error')
-        .forEach(violation => console.log(`   • ${violation.message}`));
+        .forEach(violation => );
     }
   }
 }

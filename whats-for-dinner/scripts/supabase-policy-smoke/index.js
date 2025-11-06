@@ -35,17 +35,14 @@ class RLSSmokeTester {
   }
 
   async runTest(testName, testFn) {
-    console.log(`🧪 Running test: ${testName}`);
-    
+        
     try {
       const result = await testFn();
       this.testResults.push({ name: testName, status: 'pass', details: result });
-      console.log(`✅ ${testName}: PASS`);
-      return result;
+            return result;
     } catch (error) {
       this.testResults.push({ name: testName, status: 'fail', details: error.message });
-      console.log(`❌ ${testName}: FAIL - ${error.message}`);
-      throw error;
+            throw error;
     }
   }
 
@@ -76,8 +73,7 @@ class RLSSmokeTester {
 
   async testServiceRoleAccess() {
     if (!supabaseAdmin) {
-      console.log('⚠️  Skipping service role tests - no service role key provided');
-      return;
+            return;
     }
 
     return await this.runTest('Service Role Access', async () => {
@@ -223,41 +219,28 @@ class RLSSmokeTester {
   }
 
   async runAllTests() {
-    console.log('🔒 Starting RLS Policy Smoke Tests...\n');
-
+    
     try {
       await this.testAnonymousAccess();
-      console.log('');
-
-      await this.testServiceRoleAccess();
-      console.log('');
-
-      await this.testUserDataIsolation();
-      console.log('');
-
-      await this.testRLSPoliciesExist();
-      console.log('');
-
-      await this.testDatabaseFunctions();
-      console.log('');
-
-      // Summary
-      console.log('📋 RLS Smoke Test Summary:');
-      console.log('==========================');
       
+      await this.testServiceRoleAccess();
+      
+      await this.testUserDataIsolation();
+      
+      await this.testRLSPoliciesExist();
+      
+      await this.testDatabaseFunctions();
+      
+      // Summary
+                  
       const passed = this.testResults.filter(r => r.status === 'pass').length;
       const failed = this.testResults.filter(r => r.status === 'fail').length;
       
-      console.log(`✅ Passed: ${passed}`);
-      console.log(`❌ Failed: ${failed}`);
-      console.log(`📊 Total: ${this.testResults.length}`);
-
+                  
       if (failed > 0) {
-        console.log('\n❌ Some tests failed. Check the details above.');
-        process.exit(1);
+                process.exit(1);
       } else {
-        console.log('\n✅ All RLS smoke tests passed!');
-        process.exit(0);
+                process.exit(0);
       }
 
     } catch (error) {

@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-11-06T02:47:26.303Z",
+  "fixes": {
+    "linting": {
+      "success": true
+    },
+    "formatting": {
+      "success": true
+    },
+    "consoleLogs": {
+      "success": true,
+      "removed": 0
+    },
+    "typeScript": {
+      "success": true
+    },
+    "security": {
+      "success": true,
+      "fixes": [
+        {
+          "type": "hardcoded_secrets",
+          "count": 2,
+          "files": [
+            "./whats-for-dinner/scripts/secrets-rotation.js",
+            "./whats-for-dinner/scripts/security/key-rotation.js"
+          ],
+          "action": "Review and migrate to environment variables"
+        },
+        {
+          "type": "dangerous_patterns",
+          "count": 10,
+          "files": [
+            "./scripts/edge-caching.js",
+            "./scripts/a11y-test.js",
+            "./scripts/slo-checker.ts",
+            "./packages/utils/src/cache-middleware.js",
+            "./packages/server/src/security/helmet.ts",
+            "./packages/server/src/security/llm-guardrails.ts",
+            "./apps/web/next.config.ts",
+            "./apps/web/src/middleware.ts",
+            "./apps/web/src/__tests__/ai-safety.test.ts",
+            "./apps/web/src/__tests__/security.test.ts"
+          ],
+          "action": "Review eval/Function usage - consider alternatives"
+        }
+      ]
+    },
+    "imports": {
+      "success": true
+    }
+  }
+}

@@ -5,9 +5,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const SUPABASE_URL = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_SERVICE_ROLE_KEY = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
 interface CohortData {
@@ -34,16 +35,14 @@ async function normalizeUTM(): Promise<void> {
   // Normalize UTM parameters in user events
   // This would update existing records to have normalized utm_source, utm_medium, utm_campaign
   
-  console.log('Normalizing UTM parameters...');
-  
+    
   // Example: Update events table
   const { error } = await supabase.rpc('normalize_utm_parameters');
   
   if (error) {
     console.warn('UTM normalization function not found, skipping');
   } else {
-    console.log('✅ UTM parameters normalized');
-  }
+      }
 }
 
 async function calculateCohorts(): Promise<CohortData[]> {
@@ -93,8 +92,7 @@ async function calculateCohorts(): Promise<CohortData[]> {
 }
 
 async function generateGrowthReport(): Promise<void> {
-  console.log('Generating growth report...');
-
+  
   await normalizeUTM();
   const cohorts = await calculateCohorts();
 
@@ -145,8 +143,7 @@ async function generateGrowthReport(): Promise<void> {
 
   writeFileSync(join(REPORTS_DIR, 'growth.md'), markdown);
 
-  console.log('✅ Growth report generated');
-}
+  }
 
 // Webhook adapters for ad platforms
 async function setupWebhookAdapters(): Promise<void> {
@@ -154,10 +151,8 @@ async function setupWebhookAdapters(): Promise<void> {
   // Meta webhook adapter
   // Google Ads webhook adapter
   
-  console.log('Setting up webhook adapters...');
-  // Implementation would create webhook endpoints
-  console.log('✅ Webhook adapters configured');
-}
+    // Implementation would create webhook endpoints
+  }
 
 if (require.main === module) {
   const command = process.argv[2];
@@ -173,8 +168,7 @@ if (require.main === module) {
       process.exit(1);
     });
   } else {
-    console.log('Usage: growth-engine.ts [report|webhooks]');
-    process.exit(1);
+        process.exit(1);
   }
 }
 

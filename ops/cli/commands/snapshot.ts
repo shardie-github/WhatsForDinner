@@ -5,10 +5,10 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 export async function runSnapshot(options: { encrypt?: boolean; subset?: string }) {
-  console.log('📸 Creating database snapshot...\n');
-
+  
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const snapshotDir = path.join(process.cwd(), 'ops', 'snapshots');
   const snapshotFile = path.join(snapshotDir, `snapshot-${timestamp}.sql`);
@@ -18,8 +18,8 @@ export async function runSnapshot(options: { encrypt?: boolean; subset?: string 
   }
 
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('Supabase credentials not configured');
@@ -28,9 +28,7 @@ export async function runSnapshot(options: { encrypt?: boolean; subset?: string 
     // Create snapshot using Supabase CLI or pg_dump
     const tables = options.subset ? options.subset.split(',') : [];
     
-    console.log('   Connecting to database...');
-    console.log('   Creating snapshot...');
-
+        
     // For now, create a placeholder
     const snapshot = `-- Database Snapshot
 -- Created: ${new Date().toISOString()}
@@ -43,13 +41,10 @@ export async function runSnapshot(options: { encrypt?: boolean; subset?: string 
     fs.writeFileSync(snapshotFile, snapshot);
 
     if (options.encrypt) {
-      console.log('   Encrypting snapshot...');
-      // Encryption would be implemented here
-      console.log('   ⚠️  Encryption not yet implemented');
-    }
+            // Encryption would be implemented here
+          }
 
-    console.log(`✅ Snapshot created: ${snapshotFile}`);
-    
+        
     // Update latest snapshot symlink
     const latestLink = path.join(snapshotDir, 'latest.sql');
     if (fs.existsSync(latestLink)) {

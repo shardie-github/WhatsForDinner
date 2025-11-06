@@ -19,8 +19,7 @@ const colors = {
 };
 
 function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
+  }
 
 // Configuration
 const config = {

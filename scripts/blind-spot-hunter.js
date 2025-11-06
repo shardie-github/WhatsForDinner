@@ -22,9 +22,7 @@ class BlindSpotHunter {
   }
 
   async runBlindSpotAnalysis() {
-    console.log('🔍 Phase 20: Blind-Spot Hunter');
-    console.log('=============================\n');
-
+        
     try {
       await this.analyzeAllPhases();
       await this.identifyGaps();
@@ -32,8 +30,7 @@ class BlindSpotHunter {
       await this.calculateOverallScore();
       await this.generateBlindSpotReport();
       
-      console.log('✅ Blind-spot analysis completed successfully');
-      this.printSummary();
+            this.printSummary();
     } catch (error) {
       console.error('❌ Blind-spot analysis failed:', error.message);
       process.exit(1);
@@ -41,8 +38,7 @@ class BlindSpotHunter {
   }
 
   async analyzeAllPhases() {
-    console.log('📊 Analyzing all phases...');
-    
+        
     const phases = [
       { id: 'dx', name: 'Developer Experience', weight: 0.1 },
       { id: 'observability', name: 'Observability', weight: 0.1 },
@@ -282,8 +278,7 @@ class BlindSpotHunter {
   }
 
   async identifyGaps() {
-    console.log('🔍 Identifying gaps...');
-    
+        
     const gaps = [];
     
     // Check for missing phases
@@ -334,8 +329,7 @@ class BlindSpotHunter {
   }
 
   async generateRecommendations() {
-    console.log('💡 Generating recommendations...');
-    
+        
     const recommendations = [];
     
     // Generate recommendations based on gaps
@@ -380,8 +374,7 @@ class BlindSpotHunter {
   }
 
   async calculateOverallScore() {
-    console.log('📊 Calculating overall score...');
-    
+        
     let totalScore = 0;
     let totalWeight = 0;
     
@@ -480,18 +473,13 @@ Phase 20 is complete. All phases have been analyzed and recommendations generate
   }
 
   printSummary() {
-    console.log('\n🔍 Blind-Spot Hunter Summary');
-    console.log('============================');
-    console.log(`📊 Overall Score: ${this.analysisResults.overallScore.toFixed(1)}/100`);
-    console.log(`📈 Phases Analyzed: ${Object.keys(this.analysisResults.phases).length}`);
-    console.log(`🔍 Gaps Identified: ${this.analysisResults.gaps.length}`);
-    console.log(`💡 Recommendations: ${this.analysisResults.recommendations.length}`);
-    
+            }/100`);
+    .length}`);
+            
     if (this.analysisResults.gaps.length > 0) {
-      console.log('\n🚨 Critical Gaps:');
-      this.analysisResults.gaps
+            this.analysisResults.gaps
         .filter(gap => gap.severity === 'high')
-        .forEach(gap => console.log(`   • ${gap.description}`));
+        .forEach(gap => );
     }
   }
 }

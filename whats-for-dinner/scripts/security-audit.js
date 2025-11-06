@@ -28,8 +28,7 @@ class SecurityAuditor {
   }
 
   async runFullAudit() {
-    console.log('🔒 Starting Comprehensive Security Audit...\n');
-
+    
     try {
       await this.checkDependencies();
       await this.analyzeCodeSecurity();
@@ -47,8 +46,7 @@ class SecurityAuditor {
   }
 
   async checkDependencies() {
-    console.log('📦 Checking dependency vulnerabilities...');
-    
+        
     try {
       // Run npm audit
       const auditOutput = execSync('npm audit --json', { encoding: 'utf8' });
@@ -58,8 +56,7 @@ class SecurityAuditor {
         const vulns = Object.values(auditData.vulnerabilities);
         this.auditResults.vulnerabilities.push(...vulns);
         
-        console.log(`   Found ${vulns.length} vulnerabilities`);
-        
+                
         // Check for high/critical vulnerabilities
         const criticalVulns = vulns.filter(v => 
           v.severity === 'critical' || v.severity === 'high'
@@ -75,13 +72,11 @@ class SecurityAuditor {
         }
       }
     } catch (error) {
-      console.log('   ⚠️  Could not run npm audit:', error.message);
-    }
+          }
   }
 
   async analyzeCodeSecurity() {
-    console.log('🔍 Analyzing code security patterns...');
-    
+        
     const securityChecks = [
       {
         name: 'SQL Injection Prevention',
@@ -135,12 +130,10 @@ class SecurityAuditor {
       }
     }
 
-    console.log(`   Analyzed ${files.length} files`);
-  }
+      }
 
   async validateConfiguration() {
-    console.log('⚙️  Validating security configuration...');
-    
+        
     const configChecks = [
       {
         name: 'CORS Configuration',
@@ -165,8 +158,7 @@ class SecurityAuditor {
     for (const check of configChecks) {
       const filePath = path.join(__dirname, '..', check.file);
       if (fs.existsSync(filePath)) {
-        console.log(`   ✅ ${check.name} configuration found`);
-      } else {
+              } else {
         this.auditResults.recommendations.push({
           type: 'warning',
           category: 'configuration',
@@ -178,8 +170,7 @@ class SecurityAuditor {
   }
 
   async auditRBAC() {
-    console.log('👥 Auditing Role-Based Access Control...');
-    
+        
     // Check for RLS policies in Supabase
     const supabaseDir = path.join(__dirname, '../supabase');
     if (fs.existsSync(supabaseDir)) {
@@ -201,8 +192,7 @@ class SecurityAuditor {
       }
       
       if (hasRLS) {
-        console.log('   ✅ Row Level Security policies found');
-      } else {
+              } else {
         this.auditResults.recommendations.push({
           type: 'critical',
           category: 'rbac',
@@ -212,8 +202,7 @@ class SecurityAuditor {
       }
       
       if (hasRBAC) {
-        console.log('   ✅ Role-based access control found');
-      } else {
+              } else {
         this.auditResults.recommendations.push({
           type: 'high',
           category: 'rbac',
@@ -225,8 +214,7 @@ class SecurityAuditor {
   }
 
   async checkSecretsManagement() {
-    console.log('🔐 Auditing secrets management...');
-    
+        
     const envFile = path.join(__dirname, '../.env.local');
     const envExampleFile = path.join(__dirname, '../.env.local.example');
     
@@ -277,8 +265,7 @@ class SecurityAuditor {
   }
 
   async generateComplianceDocs() {
-    console.log('📋 Generating compliance documentation...');
-    
+        
     const complianceData = {
       gdpr: {
         dataProcessing: {
@@ -363,12 +350,10 @@ All system activities are logged and monitored for compliance.
     
     fs.writeFileSync(path.join(complianceDir, 'SOC2.md'), soc2Doc);
     
-    console.log('   ✅ Compliance documentation generated');
-  }
+      }
 
   async calculateSecurityScore() {
-    console.log('📊 Calculating security score...');
-    
+        
     let score = 100;
     
     // Deduct points for vulnerabilities
@@ -408,40 +393,29 @@ All system activities are logged and monitored for compliance.
   }
 
   generateReport() {
-    console.log('\n📊 Security Audit Report');
-    console.log('========================');
-    console.log(`Overall Security Score: ${this.auditResults.score}/100`);
-    console.log(`Vulnerabilities Found: ${this.auditResults.vulnerabilities.length}`);
-    console.log(`Recommendations: ${this.auditResults.recommendations.length}`);
-    
+                        
     if (this.auditResults.vulnerabilities.length > 0) {
-      console.log('\n🚨 Vulnerabilities:');
-      this.auditResults.vulnerabilities.forEach(vuln => {
-        console.log(`   ${vuln.severity.toUpperCase()}: ${vuln.type} - ${vuln.description}`);
-        if (vuln.file) console.log(`     File: ${vuln.file}`);
-      });
+            this.auditResults.vulnerabilities.forEach(vuln => {
+        }: ${vuln.type} - ${vuln.description}`);
+        if (vuln.file)       });
     }
     
     if (this.auditResults.recommendations.length > 0) {
-      console.log('\n💡 Recommendations:');
-      this.auditResults.recommendations.forEach(rec => {
-        console.log(`   ${rec.type.toUpperCase()}: ${rec.message}`);
-        console.log(`     Action: ${rec.action}`);
-      });
+            this.auditResults.recommendations.forEach(rec => {
+        }: ${rec.message}`);
+              });
     }
     
     // Save detailed report
     const reportPath = path.join(__dirname, '../security-audit-report.json');
     fs.writeFileSync(reportPath, JSON.stringify(this.auditResults, null, 2));
-    console.log(`\n📄 Detailed report saved to: ${reportPath}`);
-    
+        
     // Exit with error code if score is too low
     if (this.auditResults.score < 70) {
-      console.log('\n❌ Security score below acceptable threshold (70)');
+      ');
       process.exit(1);
     } else {
-      console.log('\n✅ Security audit passed');
-    }
+          }
   }
 
   getAllFiles(dir, extensions) {

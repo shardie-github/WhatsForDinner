@@ -36,8 +36,7 @@ export type { MetricLabels } from './metrics';
 
 // Initialize observability
 export function initializeObservability() {
-  console.log('🔍 Initializing observability...');
-  
+    
   // Log startup
   logger.info('Observability initialized', {
     component: 'observability',
@@ -54,8 +53,7 @@ export function initializeObservability() {
 
 // Shutdown observability
 export async function shutdownObservability() {
-  console.log('🔍 Shutting down observability...');
-  
+    
   logger.info('Observability shutting down', {
     component: 'observability',
     operation: 'shutdown',

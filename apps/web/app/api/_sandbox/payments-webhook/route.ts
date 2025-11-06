@@ -69,8 +69,7 @@ export async function POST(request: NextRequest) {
     // Simulate entitlement update for premium purchases
     if (eventType === 'checkout.session.completed' || eventType === 'payment_intent.succeeded') {
       const customerId = payload.data?.object?.customer;
-      console.log(`[Sandbox] Payment webhook received: ${eventType} for customer ${customerId}`);
-      
+            
       // In real flow, this would update user.plan = 'premium' and disable ads
     }
     

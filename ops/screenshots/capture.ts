@@ -7,6 +7,7 @@
 import { chromium, devices } from 'playwright';
 import * as fs from 'fs';
 import * as path from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 interface ScreenshotConfig {
   name: string;
@@ -45,7 +46,7 @@ const SCREENSHOTS = {
   },
 };
 
-const BASE_URL = process.env.SCREENSHOT_BASE_URL || 'http://localhost:3000';
+const BASE_URL = (await secretsManager.getSecret('SCREENSHOT_BASE_URL')) || process.env.SCREENSHOT_BASE_URL || 'http://localhost:3000';
 const OUTPUT_DIR = path.join(__dirname, '../../ops/store');
 
 async function captureScreenshot(
@@ -53,7 +54,7 @@ async function captureScreenshot(
   url: string,
   config: ScreenshotConfig
 ) {
-  console.log(`Capturing ${config.name} (${config.width}x${config.height})...`);
+  ...`);
   
   const context = await browser.newContext({
     viewport: { width: config.width, height: config.height },
@@ -81,8 +82,7 @@ async function captureScreenshot(
       fullPage: false,
     });
     
-    console.log(`? Saved: ${outputFile}`);
-  } catch (error) {
+      } catch (error) {
     console.error(`? Failed to capture ${config.name}:`, error);
   } finally {
     await context.close();
@@ -90,9 +90,7 @@ async function captureScreenshot(
 }
 
 async function captureScreenshots() {
-  console.log('Starting screenshot capture...');
-  console.log(`Base URL: ${BASE_URL}`);
-  
+      
   const browser = await chromium.launch({ headless: true });
   
   try {
@@ -138,8 +136,7 @@ async function captureScreenshots() {
       });
     }
     
-    console.log('\n? All screenshots captured successfully!');
-  } catch (error) {
+      } catch (error) {
     console.error('Error capturing screenshots:', error);
     process.exit(1);
   } finally {

@@ -320,8 +320,7 @@ export async function showAdMobInterstitial(adUnitId: string): Promise<boolean> 
 
   // Interstitial ads typically require a mobile SDK
   // For web, this would be a placeholder or use AdSense
-  console.log('Interstitial ad requested:', adUnitId);
-  return false;
+    return false;
 }
 
 // ============================================

@@ -34,9 +34,7 @@ class ExperimentationManager {
   }
 
   async runExperimentationSetup() {
-    console.log('🧪 Phase 14: Experimentation Layer');
-    console.log('==================================\n');
-
+        
     try {
       await this.createExperimentService();
       await this.setupABTesting();
@@ -44,8 +42,7 @@ class ExperimentationManager {
       await this.createExperimentDashboard();
       await this.generateExperimentationReport();
       
-      console.log('✅ Experimentation layer setup completed successfully');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Experimentation layer setup failed:', error.message);
       process.exit(1);
     }

@@ -37,8 +37,7 @@ export async function signInWithApple(): Promise<AppleSignInResult | null> {
     // });
 
     // Placeholder - implement when plugin is added
-    console.log('[Apple Sign In] Not implemented - requires plugin');
-    return null;
+        return null;
   } catch (error) {
     console.error('[Apple Sign In] Error:', error);
     return null;

@@ -124,8 +124,7 @@ class AIAgentGuardrails {
 }
 
 async function dryRunAgent(fixtures: Record<string, any>): Promise<void> {
-  console.log('Running agent dry-run with fixtures...');
-  
+    
   const guardrails = new AIAgentGuardrails();
   const schema = z.object({
     message: z.string(),
@@ -145,8 +144,7 @@ async function dryRunAgent(fixtures: Record<string, any>): Promise<void> {
     }
   );
 
-  console.log('✅ Dry-run passed:', result);
-}
+  }
 
 if (require.main === module) {
   const command = process.argv[2];
@@ -163,8 +161,7 @@ if (require.main === module) {
       process.exit(1);
     });
   } else {
-    console.log('Usage: ai-guardrails.ts [dryrun]');
-    process.exit(1);
+        process.exit(1);
   }
 }
 

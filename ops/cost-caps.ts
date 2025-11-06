@@ -4,6 +4,7 @@
 
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
@@ -61,12 +62,11 @@ async function checkCostCaps(): Promise<void> {
   }
 
   if (alerts.length > 0) {
-    console.log('Cost alerts:');
-    alerts.forEach(alert => console.log(alert));
+        alerts.forEach(alert => );
     
     // Send webhook notification
-    if (process.env.SLACK_WEBHOOK_URL) {
-      await fetch(process.env.SLACK_WEBHOOK_URL, {
+    if ((await secretsManager.getSecret('SLACK_WEBHOOK_URL')) || process.env.SLACK_WEBHOOK_URL) {
+      await fetch((await secretsManager.getSecret('SLACK_WEBHOOK_URL')) || process.env.SLACK_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -75,8 +75,7 @@ async function checkCostCaps(): Promise<void> {
       });
     }
   } else {
-    console.log('✅ All costs within limits');
-  }
+      }
 
   if (!existsSync(REPORTS_DIR)) {
     mkdirSync(REPORTS_DIR, { recursive: true });
@@ -132,13 +131,9 @@ if (require.main === module) {
   } else if (command === 'simulate') {
     const scenario = args[0] || 'default';
     const simulation = simulateCosts(scenario);
-    console.log(`Scenario: ${simulation.scenario}`);
-    console.log(`Estimated cost: $${simulation.estimatedCost}/month`);
-    console.log('Recommendations:');
-    simulation.recommendations.forEach(r => console.log(`  - ${r}`));
+                simulation.recommendations.forEach(r => );
   } else {
-    console.log('Usage: cost-caps.ts [check|simulate] [scenario]');
-    process.exit(1);
+        process.exit(1);
   }
 }
 

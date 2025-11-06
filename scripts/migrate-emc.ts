@@ -10,6 +10,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 interface MigrationStep {
   id: string;
@@ -69,8 +70,7 @@ class EMCMigrator {
     `;
 
     await this.supabase.rpc('exec_sql', { sql: initSQL });
-    console.log('✅ EMC migration tracking initialized');
-  }
+      }
 
   /**
    * Add a new migration step
@@ -91,8 +91,7 @@ class EMCMigrator {
     }
 
     this.migrationSteps.push(migrationStep);
-    console.log(`📝 Added ${step.type} step: ${step.id}`);
-  }
+      }
 
   /**
    * Load migration steps from database
@@ -108,8 +107,7 @@ class EMCMigrator {
     }
 
     this.migrationSteps = data || [];
-    console.log(`📋 Loaded ${this.migrationSteps.length} migration steps`);
-  }
+      }
 
   /**
    * Execute expand steps (add columns, views, etc.)
@@ -121,8 +119,7 @@ class EMCMigrator {
 
     for (const step of expandSteps) {
       try {
-        console.log(`🔧 Executing expand step: ${step.id}`);
-        await this.updateStepStatus(step.id, 'in_progress');
+                await this.updateStepStatus(step.id, 'in_progress');
 
         // Execute the SQL
         const { error } = await this.supabase.rpc('exec_sql', { sql: step.sql });
@@ -132,8 +129,7 @@ class EMCMigrator {
         }
 
         await this.updateStepStatus(step.id, 'completed');
-        console.log(`✅ Completed expand step: ${step.id}`);
-
+        
       } catch (error) {
         console.error(`❌ Failed expand step ${step.id}:`, error);
         await this.updateStepStatus(step.id, 'failed', error.message);
@@ -152,8 +148,7 @@ class EMCMigrator {
 
     for (const step of migrateSteps) {
       try {
-        console.log(`🔄 Executing migrate step: ${step.id}`);
-        await this.updateStepStatus(step.id, 'in_progress');
+                await this.updateStepStatus(step.id, 'in_progress');
 
         // Parse the migration SQL to extract table and conditions
         const migrationInfo = this.parseMigrationSQL(step.sql);
@@ -169,8 +164,7 @@ class EMCMigrator {
         }
 
         await this.updateStepStatus(step.id, 'completed');
-        console.log(`✅ Completed migrate step: ${step.id}`);
-
+        
       } catch (error) {
         console.error(`❌ Failed migrate step ${step.id}:`, error);
         await this.updateStepStatus(step.id, 'failed', error.message);
@@ -189,8 +183,7 @@ class EMCMigrator {
 
     for (const step of contractSteps) {
       try {
-        console.log(`🗑️ Executing contract step: ${step.id}`);
-        await this.updateStepStatus(step.id, 'in_progress');
+                await this.updateStepStatus(step.id, 'in_progress');
 
         // Execute the SQL
         const { error } = await this.supabase.rpc('exec_sql', { sql: step.sql });
@@ -200,8 +193,7 @@ class EMCMigrator {
         }
 
         await this.updateStepStatus(step.id, 'completed');
-        console.log(`✅ Completed contract step: ${step.id}`);
-
+        
       } catch (error) {
         console.error(`❌ Failed contract step ${step.id}:`, error);
         await this.updateStepStatus(step.id, 'failed', error.message);
@@ -257,8 +249,7 @@ class EMCMigrator {
         offset += this.config.chunk_size;
         retryCount = 0; // Reset retry count on success
 
-        console.log(`📊 Processed ${totalProcessed} records for step ${stepId}`);
-
+        
         // Small delay between chunks to avoid overwhelming the database
         await this.delay(100);
 
@@ -268,13 +259,11 @@ class EMCMigrator {
           throw new Error(`Max retries exceeded for step ${stepId}: ${error.message}`);
         }
 
-        console.log(`⚠️ Retry ${retryCount}/${this.config.max_retries} for step ${stepId}`);
-        await this.delay(this.config.retry_delay_ms * retryCount);
+                await this.delay(this.config.retry_delay_ms * retryCount);
       }
     }
 
-    console.log(`✅ Completed chunked migration for step ${stepId}: ${totalProcessed} records processed`);
-  }
+      }
 
   /**
    * Parse migration SQL to extract table and conditions
@@ -360,8 +349,7 @@ ${this.migrationSteps.reduce((acc, step) => {
    */
   async execute(): Promise<void> {
     try {
-      console.log('🚀 Starting EMC migration process...');
-      
+            
       await this.initialize();
       await this.loadSteps();
 
@@ -371,10 +359,8 @@ ${this.migrationSteps.reduce((acc, step) => {
       await this.executeContractSteps();
 
       const summary = await this.generateSummary();
-      console.log(summary);
-
-      console.log('✅ EMC migration process completed successfully!');
-
+      
+      
     } catch (error) {
       console.error('❌ EMC migration process failed:', error);
       throw error;
@@ -386,26 +372,21 @@ ${this.migrationSteps.reduce((acc, step) => {
    */
   async check(): Promise<void> {
     try {
-      console.log('🔍 Checking EMC migration steps...');
-      
+            
       await this.initialize();
       await this.loadSteps();
 
       const summary = await this.generateSummary();
-      console.log(summary);
-
+      
       // Check for any failed steps
       const failedSteps = this.migrationSteps.filter(s => s.status === 'failed');
       if (failedSteps.length > 0) {
-        console.log('\n❌ Failed steps:');
-        failedSteps.forEach(step => {
-          console.log(`- ${step.id}: ${step.error}`);
-        });
+                failedSteps.forEach(step => {
+                  });
         process.exit(1);
       }
 
-      console.log('✅ EMC migration check passed!');
-
+      
     } catch (error) {
       console.error('❌ EMC migration check failed:', error);
       process.exit(1);
@@ -418,8 +399,8 @@ async function main() {
   const args = process.argv.slice(2);
   const isCheckMode = args.includes('--check');
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     console.error('❌ Missing required environment variables:');

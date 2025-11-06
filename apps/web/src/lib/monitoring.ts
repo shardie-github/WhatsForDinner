@@ -430,23 +430,19 @@ class MonitoringSystem {
 
   private async sendEmailAlert(alert: Alert): Promise<void> {
     // Implementation would send email via Resend or similar service
-    console.log(`Email alert: ${alert.message}`);
-  }
+      }
 
   private async sendSlackAlert(alert: Alert): Promise<void> {
     // Implementation would send Slack message
-    console.log(`Slack alert: ${alert.message}`);
-  }
+      }
 
   private async sendPagerDutyAlert(alert: Alert): Promise<void> {
     // Implementation would send PagerDuty incident
-    console.log(`PagerDuty alert: ${alert.message}`);
-  }
+      }
 
   private async sendSMSAlert(alert: Alert): Promise<void> {
     // Implementation would send SMS
-    console.log(`SMS alert: ${alert.message}`);
-  }
+      }
 
   async getMetrics(
     name: string,

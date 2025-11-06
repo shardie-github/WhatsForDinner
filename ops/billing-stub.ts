@@ -14,13 +14,13 @@ interface WebhookEvent {
 }
 
 async function validateStripeWebhook(signature: string, payload: string): Promise<boolean> {
-  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+  const stripe = require('stripe')((await secretsManager.getSecret('STRIPE_SECRET_KEY')) || process.env.STRIPE_SECRET_KEY);
   
   try {
     const event = stripe.webhooks.constructEvent(
       payload,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET
+      (await secretsManager.getSecret('STRIPE_WEBHOOK_SECRET')) || process.env.STRIPE_WEBHOOK_SECRET
     );
     return true;
   } catch (error) {
@@ -29,8 +29,7 @@ async function validateStripeWebhook(signature: string, payload: string): Promis
 }
 
 async function handleWebhook(event: WebhookEvent): Promise<void> {
-  console.log(`Handling webhook: ${event.type}`);
-
+  
   // Log webhook for audit
   if (!existsSync(REPORTS_DIR)) {
     mkdirSync(REPORTS_DIR, { recursive: true });
@@ -41,6 +40,7 @@ async function handleWebhook(event: WebhookEvent): Promise<void> {
   
   if (existsSync(webhookLog)) {
     webhooks = JSON.parse(require('fs').readFileSync(webhookLog, 'utf-8'));
+import { secretsManager } from './secrets-manager-unified.mjs';
   }
 
   webhooks.push(event);
@@ -49,22 +49,18 @@ async function handleWebhook(event: WebhookEvent): Promise<void> {
   // Handle event types
   switch (event.type) {
     case 'checkout.session.completed':
-      console.log('Checkout completed');
-      break;
+            break;
     case 'customer.subscription.created':
-      console.log('Subscription created');
-      break;
+            break;
     case 'customer.subscription.updated':
-      console.log('Subscription updated');
-      break;
+            break;
     case 'customer.subscription.deleted':
-      console.log('Subscription cancelled');
-      break;
+            break;
   }
 }
 
 function isBillingEnabled(): boolean {
-  return process.env.ENABLE_BILLING === 'true';
+  return (await secretsManager.getSecret('ENABLE_BILLING')) || process.env.ENABLE_BILLING === 'true';
 }
 
 if (require.main === module) {
@@ -78,13 +74,11 @@ if (require.main === module) {
       timestamp: new Date().toISOString()
     };
     handleWebhook(testEvent).then(() => {
-      console.log('✅ Webhook test passed');
-    });
+          });
   } else if (command === 'check') {
-    console.log(`Billing enabled: ${isBillingEnabled()}`);
+    }`);
   } else {
-    console.log('Usage: billing-stub.ts [test|check]');
-    process.exit(1);
+        process.exit(1);
   }
 }
 

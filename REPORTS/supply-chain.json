@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-04T03:08:27.556Z",
+  "timestamp": "2025-11-06T02:32:51.310Z",
   "packages": [
     {
       "name": "@supabase/supabase-js",
@@ -1592,6 +1592,18 @@
       "type": "dependency"
     },
     {
+      "name": "@radix-ui/react-dialog",
+      "version": "^1.1.2",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "@radix-ui/react-toast",
+      "version": "^1.2.2",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
       "name": "@sentry/nextjs",
       "version": "^8.55.0",
       "location": "apps/web/package.json",
@@ -1664,6 +1676,12 @@
       "type": "dependency"
     },
     {
+      "name": "idb-keyval",
+      "version": "^10.0.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
       "name": "lucide-react",
       "version": "^0.548.0",
       "location": "apps/web/package.json",
@@ -1718,6 +1736,12 @@
       "type": "dependency"
     },
     {
+      "name": "sonner",
+      "version": "^1.4.0",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
       "name": "stripe",
       "version": "^14.21.0",
       "location": "apps/web/package.json",
@@ -1744,6 +1768,12 @@
     {
       "name": "zod",
       "version": "^3.22.4",
+      "location": "apps/web/package.json",
+      "type": "dependency"
+    },
+    {
+      "name": "canvas-confetti",
+      "version": "^1.9.3",
       "location": "apps/web/package.json",
       "type": "dependency"
     },
@@ -1906,6 +1936,18 @@
     {
       "name": "tailwindcss-animate",
       "version": "^1.0.7",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@tailwindcss/typography",
+      "version": "^0.5.15",
+      "location": "apps/web/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "framer-motion",
+      "version": "^11.11.17",
       "location": "apps/web/package.json",
       "type": "devDependency"
     },
@@ -2984,8 +3026,20 @@
       "type": "dependency"
     },
     {
+      "name": "js-yaml",
+      "version": "^4.1.0",
+      "location": "packages/utils/package.json",
+      "type": "dependency"
+    },
+    {
       "name": "@types/node",
       "version": "^20",
+      "location": "packages/utils/package.json",
+      "type": "devDependency"
+    },
+    {
+      "name": "@types/js-yaml",
+      "version": "^4.0.9",
       "location": "packages/utils/package.json",
       "type": "devDependency"
     },
@@ -3603,6 +3657,8 @@
       "@radix-ui/react-slot",
       "@radix-ui/react-switch",
       "@radix-ui/react-tabs",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-toast",
       "@sentry/nextjs",
       "@stripe/stripe-js",
       "@supabase/auth-helpers-nextjs",
@@ -3615,6 +3671,7 @@
       "@whats-for-dinner/utils",
       "class-variance-authority",
       "clsx",
+      "idb-keyval",
       "lucide-react",
       "next",
       "next-pwa",
@@ -3624,11 +3681,13 @@
       "react-dom",
       "recharts",
       "resend",
+      "sonner",
       "stripe",
       "tailwind-merge",
       "uuid",
       "web-vitals",
       "zod",
+      "canvas-confetti",
       "@capacitor/android",
       "@capacitor/cli",
       "@capacitor/core",
@@ -3656,6 +3715,8 @@
       "prettier-plugin-tailwindcss",
       "tailwindcss",
       "tailwindcss-animate",
+      "@tailwindcss/typography",
+      "framer-motion",
       "typescript",
       "@types/node",
       "prettier",
@@ -3835,7 +3896,9 @@
       "clsx",
       "tailwind-merge",
       "zod",
+      "js-yaml",
       "@types/node",
+      "@types/js-yaml",
       "typescript",
       "@radix-ui/react-label",
       "@radix-ui/react-separator",
@@ -3895,10 +3958,10 @@
       "@supabase/supabase-js"
     ],
     "summary": {
-      "total": 555,
+      "total": 564,
       "approved": 0,
       "restricted": 0,
-      "unknown": 555,
+      "unknown": 564,
       "complianceRate": "0.00"
     }
   },
@@ -3906,7 +3969,7 @@
     {
       "type": "license",
       "priority": "medium",
-      "message": "Clarify licenses for 555 packages",
+      "message": "Clarify licenses for 564 packages",
       "action": "Manually verify license compatibility"
     },
     {

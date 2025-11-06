@@ -30,11 +30,10 @@ async function createSnapshot(description?: string): Promise<SnapshotMetadata> {
   const snapshotId = `snapshot-${Date.now()}`;
   const timestamp = new Date().toISOString();
   
-  console.log('Creating database snapshot...');
-  
+    
   // Use Supabase CLI to create snapshot
   try {
-    const projectRef = process.env.SUPABASE_PROJECT_REF;
+    const projectRef = (await secretsManager.getSecret('SUPABASE_PROJECT_REF')) || process.env.SUPABASE_PROJECT_REF;
     if (!projectRef) {
       throw new Error('SUPABASE_PROJECT_REF not set');
     }
@@ -61,8 +60,7 @@ async function createSnapshot(description?: string): Promise<SnapshotMetadata> {
       JSON.stringify(metadata, null, 2)
     );
 
-    console.log(`✅ Snapshot created: ${snapshotId}`);
-    return metadata;
+        return metadata;
   } catch (error) {
     console.error('Failed to create snapshot:', error);
     throw error;
@@ -81,11 +79,10 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
 
   const metadata: SnapshotMetadata = JSON.parse(readFileSync(metadataPath, 'utf-8'));
   
-  console.log(`Restoring snapshot: ${metadata.description} (${metadata.timestamp})`);
+  `);
   
   // Check for locks
-  console.log('Checking for active connections...');
-  try {
+    try {
     execSync('supabase db execute "SELECT COUNT(*) FROM pg_stat_activity WHERE datname = current_database();"', {
       stdio: 'pipe'
     });
@@ -95,7 +92,7 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
 
   // Restore snapshot
   try {
-    const projectRef = process.env.SUPABASE_PROJECT_REF;
+    const projectRef = (await secretsManager.getSecret('SUPABASE_PROJECT_REF')) || process.env.SUPABASE_PROJECT_REF;
     if (!projectRef) {
       throw new Error('SUPABASE_PROJECT_REF not set');
     }
@@ -104,8 +101,7 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
       stdio: 'inherit'
     });
 
-    console.log(`✅ Snapshot restored: ${snapshotId}`);
-  } catch (error) {
+      } catch (error) {
     console.error('Failed to restore snapshot:', error);
     throw error;
   }
@@ -115,6 +111,7 @@ async function listSnapshots(): Promise<SnapshotMetadata[]> {
   ensureSnapshotsDir();
   
   const files = require('fs').readdirSync(SNAPSHOTS_DIR);
+import { secretsManager } from './secrets-manager-unified.mjs';
   const snapshots: SnapshotMetadata[] = [];
 
   for (const file of files) {
@@ -130,8 +127,7 @@ async function listSnapshots(): Promise<SnapshotMetadata[]> {
 }
 
 async function dryRunMigration(migrationPath: string): Promise<{ passed: boolean; errors: string[] }> {
-  console.log('Running dry-run migration...');
-  
+    
   // Parse migration SQL
   const migrationSQL = readFileSync(migrationPath, 'utf-8');
   
@@ -160,8 +156,7 @@ async function dryRunMigration(migrationPath: string): Promise<{ passed: boolean
   }
 
   // In a real implementation, would run against a shadow database
-  console.log('✅ Dry-run migration passed');
-  return { passed: true, errors: [] };
+    return { passed: true, errors: [] };
 }
 
 async function encryptSnapshot(snapshotId: string, encryptionKey: string): Promise<void> {
@@ -177,8 +172,7 @@ async function encryptSnapshot(snapshotId: string, encryptionKey: string): Promi
   const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
 
   writeFileSync(encryptedPath, encrypted);
-  console.log(`✅ Snapshot encrypted: ${snapshotId}`);
-}
+  }
 
 if (require.main === module) {
   const command = process.argv[2];
@@ -187,8 +181,7 @@ if (require.main === module) {
   switch (command) {
     case 'snapshot':
       createSnapshot(args[0]).then(metadata => {
-        console.log(`Snapshot ID: ${metadata.id}`);
-      });
+              });
       break;
     case 'restore':
       if (!args[0]) {
@@ -202,10 +195,8 @@ if (require.main === module) {
       break;
     case 'list':
       listSnapshots().then(snapshots => {
-        console.log('\nSnapshots:');
-        for (const snapshot of snapshots) {
-          console.log(`  ${snapshot.id} - ${snapshot.timestamp} - ${snapshot.description}`);
-        }
+                for (const snapshot of snapshots) {
+                  }
       });
       break;
     case 'dry-run':
@@ -222,8 +213,7 @@ if (require.main === module) {
       });
       break;
     default:
-      console.log('Usage: migration-safety.ts [snapshot|restore|list|dry-run]');
-      process.exit(1);
+            process.exit(1);
   }
 }
 

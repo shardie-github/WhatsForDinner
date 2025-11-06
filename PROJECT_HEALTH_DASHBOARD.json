@@ -1,0 +1,183 @@
+{
+  "timestamp": "2025-11-06T02:47:47.374Z",
+  "overall": {
+    "score": 85,
+    "status": "healthy",
+    "categories": {}
+  },
+  "categories": {
+    "codeQuality": {
+      "totalFiles": 0,
+      "issues": [],
+      "metrics": {
+        "typescriptFiles": 966,
+        "todos": 18,
+        "consoleLogs": 2,
+        "testFiles": 43,
+        "estimatedCoverage": 9
+      },
+      "score": 60,
+      "status": "warning"
+    },
+    "security": {
+      "vulnerabilities": 0,
+      "issues": [
+        "Potential hardcoded secrets found",
+        "Dangerous code patterns detected"
+      ],
+      "metrics": {
+        "potentialSecrets": 2988,
+        "dangerousPatterns": 131,
+        "rlsPolicies": 19
+      },
+      "score": 65,
+      "status": "warning"
+    },
+    "performance": {
+      "metrics": {
+        "bundleAnalysis": {
+          "timestamp": "2025-11-06T02:33:12.381Z",
+          "bundleAnalysis": {},
+          "coreWebVitals": {
+            "LCP": 1800,
+            "FID": 75,
+            "CLS": 0.05,
+            "FCP": 1200,
+            "TTFB": 500
+          },
+          "recommendations": [],
+          "violations": []
+        },
+        "largeFiles": 2,
+        "lazyLoadingUsage": 61
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    },
+    "testing": {
+      "metrics": {
+        "testFiles": 43,
+        "testConfigs": 5,
+        "coverage": 9
+      },
+      "issues": [
+        "Low test coverage - critical for production"
+      ],
+      "score": 20,
+      "status": "critical"
+    },
+    "documentation": {
+      "metrics": {
+        "documentationFiles": 416,
+        "keyDocs": 5
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    },
+    "dependencies": {
+      "metrics": {
+        "dependencies": 1,
+        "devDependencies": 23,
+        "total": 24,
+        "outdated": 0
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    },
+    "configuration": {
+      "metrics": {
+        "configFiles": 5,
+        "workflows": 32
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    },
+    "deployment": {
+      "metrics": {
+        "vercel": false,
+        "eas": true,
+        "docker": true,
+        "workflows": 32
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    },
+    "monitoring": {
+      "metrics": {
+        "prometheus": true,
+        "grafana": true,
+        "sentry": true,
+        "openTelemetry": true
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    },
+    "compliance": {
+      "metrics": {
+        "license": true,
+        "securityPolicy": true,
+        "privacyPolicy": true,
+        "gdprCompliant": true
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    }
+  },
+  "recommendations": [
+    {
+      "category": "testing",
+      "priority": "high",
+      "issues": [
+        "Low test coverage - critical for production"
+      ],
+      "score": 20
+    },
+    {
+      "category": "codeQuality",
+      "priority": "medium",
+      "issues": [],
+      "score": 60
+    },
+    {
+      "category": "security",
+      "priority": "medium",
+      "issues": [
+        "Potential hardcoded secrets found",
+        "Dangerous code patterns detected"
+      ],
+      "score": 65
+    }
+  ],
+  "priorities": [
+    {
+      "category": "testing",
+      "priority": "high",
+      "issues": [
+        "Low test coverage - critical for production"
+      ],
+      "score": 20
+    },
+    {
+      "category": "codeQuality",
+      "priority": "medium",
+      "issues": [],
+      "score": 60
+    },
+    {
+      "category": "security",
+      "priority": "medium",
+      "issues": [
+        "Potential hardcoded secrets found",
+        "Dangerous code patterns detected"
+      ],
+      "score": 65
+    }
+  ]
+}

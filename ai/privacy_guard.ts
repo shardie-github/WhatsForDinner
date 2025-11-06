@@ -378,8 +378,7 @@ class PrivacyGuard {
    * Run privacy audit
    */
   async runPrivacyAudit(): Promise<void> {
-    console.log('🔒 Running privacy compliance audit...');
-
+    
     try {
       // This would typically scan the entire codebase
       // For now, we'll simulate the audit
@@ -389,13 +388,9 @@ class PrivacyGuard {
         recommendations: [] as string[]
       };
 
-      console.log('✅ Privacy audit completed');
-      console.log(`Files scanned: ${auditResults.filesScanned}`);
-      console.log(`Violations found: ${auditResults.violationsFound}`);
-      
+                        
       if (auditResults.recommendations.length > 0) {
-        console.log('Recommendations:');
-        auditResults.recommendations.forEach(rec => console.log(`- ${rec}`));
+                auditResults.recommendations.forEach(rec => );
       }
     } catch (error) {
       console.error('Privacy audit failed:', error);
@@ -408,8 +403,7 @@ class PrivacyGuard {
    */
   updateConfig(newConfig: Partial<PrivacyConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    console.log('Privacy configuration updated');
-  }
+      }
 
   /**
    * Get current privacy configuration

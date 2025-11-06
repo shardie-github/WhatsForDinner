@@ -49,8 +49,7 @@ const addPantryItemAPI = async (item: Omit<PantryItem, 'id' | 'addedAt'>): Promi
 const removePantryItemAPI = async (id: string): Promise<void> => {
   // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 500));
-  console.log('Pantry item removed:', id);
-};
+  };
 
 export function usePantryItems() {
   return useQuery({

@@ -27,8 +27,7 @@ const colors = {
 };
 
 function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
+  }
 
 function logVerbose(message) {
   if (config.verbose) {
@@ -1043,14 +1042,12 @@ Analyze audit logs for security issues.
 \`\`\`javascript
 const response = await fetch('/api/admin/audit-logs?limit=50');
 const data = await response.json();
-console.log(data.data);
 \`\`\`
 
 ### Filter by User and Action
 \`\`\`javascript
 const response = await fetch('/api/admin/audit-logs?userId=user-uuid&action=login');
 const data = await response.json();
-console.log(data.data);
 \`\`\`
 
 ### Analyze Security Issues
@@ -1065,7 +1062,6 @@ const response = await fetch('/api/admin/audit-logs', {
 });
 
 const data = await response.json();
-console.log(data.data.analysis);
 \`\`\`
 
 ### Get System Logs
@@ -1083,7 +1079,6 @@ const response = await fetch('/api/admin/audit-logs', {
 });
 
 const data = await response.json();
-console.log(data.data);
 \`\`\`
 
 ## Security Features

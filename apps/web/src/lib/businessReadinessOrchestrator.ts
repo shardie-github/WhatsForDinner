@@ -48,8 +48,7 @@ export class BusinessReadinessOrchestrator {
    * Initialize all systems
    */
   async initialize(): Promise<void> {
-    console.log('?? Initializing Business Readiness Orchestrator...');
-
+    
     try {
       // Start autonomous infrastructure
       await autonomousInfrastructure.start();
@@ -57,8 +56,7 @@ export class BusinessReadinessOrchestrator {
       // Start self-learning system
       await selfLearningSystem.start();
 
-      console.log('? Business Readiness Orchestrator initialized');
-    } catch (error) {
+          } catch (error) {
       console.error('Error initializing orchestrator:', error);
       throw error;
     }
@@ -70,8 +68,7 @@ export class BusinessReadinessOrchestrator {
   async generateBusinessReadinessReport(
     tenantId: string
   ): Promise<BusinessReadinessReport> {
-    console.log('?? Generating Business Readiness Report...');
-
+    
     try {
       // 1. Code Quality Assessment
       const codeQuality = await this.assessCodeQuality();

@@ -34,8 +34,7 @@ class SecurityValidator {
   }
 
   async runAllSecurityChecks(): Promise<ComplianceReport> {
-    console.log('🔒 Running comprehensive security validation...');
-
+    
     this.checks = [];
 
     // Run all security checks

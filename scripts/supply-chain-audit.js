@@ -27,9 +27,7 @@ class SupplyChainAuditor {
   }
 
   async runAudit() {
-    console.log('🔍 Phase 9: Supply-Chain & Licenses Audit');
-    console.log('==========================================\n');
-
+        
     try {
       await this.auditDependencies();
       await this.checkVulnerabilities();
@@ -38,8 +36,7 @@ class SupplyChainAuditor {
       await this.generateRecommendations();
       await this.saveResults();
       
-      console.log('✅ Supply chain audit completed successfully');
-      this.printSummary();
+            this.printSummary();
     } catch (error) {
       console.error('❌ Supply chain audit failed:', error.message);
       process.exit(1);
@@ -47,8 +44,7 @@ class SupplyChainAuditor {
   }
 
   async auditDependencies() {
-    console.log('📦 Auditing dependencies...');
-    
+        
     const packageFiles = this.findPackageFiles();
     
     for (const packageFile of packageFiles) {
@@ -69,12 +65,10 @@ class SupplyChainAuditor {
       }
     }
     
-    console.log(`   Found ${this.auditResults.packages.length} dependencies`);
-  }
+      }
 
   async checkVulnerabilities() {
-    console.log('🔒 Checking for vulnerabilities...');
-    
+        
     try {
       // Run npm audit
       const auditOutput = execSync('npm audit --json', { 
@@ -98,15 +92,12 @@ class SupplyChainAuditor {
         }
       }
       
-      console.log(`   Found ${this.auditResults.vulnerabilities.length} vulnerabilities`);
-    } catch (error) {
-      console.log('   ⚠️  npm audit not available, skipping vulnerability check');
-    }
+          } catch (error) {
+          }
   }
 
   async analyzeLicenses() {
-    console.log('📄 Analyzing licenses...');
-    
+        
     const licenseMap = new Map();
     
     for (const pkg of this.auditResults.packages) {
@@ -123,14 +114,12 @@ class SupplyChainAuditor {
           this.auditResults.compliance.unknown.push(pkg.name);
         }
       } catch (error) {
-        console.log(`   ⚠️  Could not determine license for ${pkg.name}`);
-        this.auditResults.compliance.unknown.push(pkg.name);
+                this.auditResults.compliance.unknown.push(pkg.name);
       }
     }
     
     this.auditResults.licenses = licenseMap;
-    console.log(`   Analyzed ${licenseMap.size} package licenses`);
-  }
+      }
 
   async getPackageLicense(packageName, version) {
     try {
@@ -175,8 +164,7 @@ class SupplyChainAuditor {
   }
 
   async generateComplianceReport() {
-    console.log('📊 Generating compliance report...');
-    
+        
     const totalPackages = this.auditResults.packages.length;
     const approvedCount = this.auditResults.compliance.approved.length;
     const restrictedCount = this.auditResults.compliance.restricted.length;
@@ -192,8 +180,7 @@ class SupplyChainAuditor {
   }
 
   async generateRecommendations() {
-    console.log('💡 Generating recommendations...');
-    
+        
     const recommendations = [];
     
     // Vulnerability recommendations
@@ -308,9 +295,7 @@ class SupplyChainAuditor {
     const report = this.generateMarkdownReport();
     fs.writeFileSync(reportPath, report);
     
-    console.log(`   📄 Report saved to ${reportPath}`);
-    console.log(`   📊 Data saved to ${jsonPath}`);
-  }
+          }
 
   generateMarkdownReport() {
     const { compliance, vulnerabilities, recommendations } = this.auditResults;
@@ -377,20 +362,12 @@ Phase 9 is complete and ready for Phase 10 implementation.
   printSummary() {
     const { compliance, vulnerabilities, recommendations } = this.auditResults;
     
-    console.log('\n📊 Supply Chain Audit Summary');
-    console.log('============================');
-    console.log(`📦 Dependencies: ${compliance.summary.total}`);
-    console.log(`✅ Approved Licenses: ${compliance.approved.length} (${compliance.summary.complianceRate}%)`);
-    console.log(`⚠️  Restricted Licenses: ${compliance.restricted.length}`);
-    console.log(`❓ Unknown Licenses: ${compliance.unknown.length}`);
-    console.log(`🔒 Vulnerabilities: ${vulnerabilities.length}`);
-    console.log(`💡 Recommendations: ${recommendations.length}`);
-    
+                `);
+                    
     if (recommendations.length > 0) {
-      console.log('\n🚨 High Priority Issues:');
-      recommendations
+            recommendations
         .filter(r => r.priority === 'high')
-        .forEach(rec => console.log(`   • ${rec.message}`));
+        .forEach(rec => );
     }
   }
 }

@@ -145,8 +145,7 @@ class PromptInjectionTestSuite {
       low: { passed: 0, failed: 0 },
     };
 
-    console.log('🧪 Running Prompt Injection Test Suite...');
-    console.log('='.repeat(50));
+        );
 
     for (const testCase of this.testCases) {
       try {
@@ -177,15 +176,10 @@ class PromptInjectionTestSuite {
 
         // Log test result
         const status = passed ? '✅ PASS' : '❌ FAIL';
-        console.log(`${status} ${testCase.name}`);
-        console.log(
-          `  Expected: ${testCase.expectedRisk}, Got: ${safetyResult.riskLevel}`
-        );
-        if (safetyResult.violations.length > 0) {
-          console.log(`  Violations: ${safetyResult.violations.join(', ')}`);
+                        if (safetyResult.violations.length > 0) {
+          }`);
         }
-        console.log('');
-      } catch (error) {
+              } catch (error) {
         console.error(`❌ ERROR in test "${testCase.name}":`, error);
         failedTests++;
         summary[testCase.expectedRisk].failed++;
@@ -202,23 +196,8 @@ class PromptInjectionTestSuite {
       }
     }
 
-    console.log('='.repeat(50));
-    console.log(
-      `📊 Test Results: ${passedTests}/${this.testCases.length} passed`
     );
-    console.log(
-      `   Critical: ${summary.critical.passed}/${summary.critical.passed + summary.critical.failed} passed`
-    );
-    console.log(
-      `   High: ${summary.high.passed}/${summary.high.passed + summary.high.failed} passed`
-    );
-    console.log(
-      `   Medium: ${summary.medium.passed}/${summary.medium.passed + summary.medium.failed} passed`
-    );
-    console.log(
-      `   Low: ${summary.low.passed}/${summary.low.passed + summary.low.failed} passed`
-    );
-
+                    
     return {
       totalTests: this.testCases.length,
       passedTests,
@@ -234,8 +213,7 @@ class PromptInjectionTestSuite {
     );
     const results: TestResult[] = [];
 
-    console.log('🚨 Running Critical Security Tests...');
-
+    
     for (const testCase of criticalTests) {
       try {
         const safetyResult = await aiSafetyGuardrails.validateInput(
@@ -254,8 +232,7 @@ class PromptInjectionTestSuite {
         });
 
         const status = passed ? '✅ PASS' : '❌ FAIL';
-        console.log(`${status} ${testCase.name}`);
-      } catch (error) {
+              } catch (error) {
         console.error(`❌ ERROR in critical test "${testCase.name}":`, error);
         results.push({
           testName: testCase.name,
@@ -356,8 +333,7 @@ export const promptInjectionTestSuite = new PromptInjectionTestSuite();
 
 // Automated red team testing function
 export async function runAutomatedRedTeamTests(): Promise<void> {
-  console.log('🤖 Starting Automated Red Team Testing...');
-
+  
   try {
     const results = await promptInjectionTestSuite.runAllTests();
 
@@ -397,16 +373,13 @@ export async function runAutomatedRedTeamTests(): Promise<void> {
     );
     fs.writeFileSync(markdownPath, report);
 
-    console.log(`📄 Test report saved to: ${reportPath}`);
-    console.log(`📄 Markdown report saved to: ${markdownPath}`);
-
+        
     // Exit with error code if tests failed
     if (results.failedTests > 0) {
       console.error(`❌ ${results.failedTests} tests failed!`);
       process.exit(1);
     } else {
-      console.log('✅ All red team tests passed!');
-    }
+          }
   } catch (error) {
     console.error('❌ Error running red team tests:', error);
     process.exit(1);

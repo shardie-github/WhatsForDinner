@@ -5,6 +5,7 @@
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 const CHANGELOG_PATH = join(process.cwd(), 'CHANGELOG.md');
 
@@ -15,8 +16,7 @@ interface ReleaseConfig {
 }
 
 async function generateChangelog(): Promise<void> {
-  console.log('Generating changelog...');
-  
+    
   // Use git log to generate changelog
   try {
     const commits = execSync('git log --pretty=format:"%h|%s|%an|%ad" --date=short', {
@@ -64,8 +64,7 @@ async function generateChangelog(): Promise<void> {
     }
 
     writeFileSync(CHANGELOG_PATH, changelog);
-    console.log('✅ Changelog generated');
-  } catch (error) {
+      } catch (error) {
     console.error('Failed to generate changelog:', error);
     throw error;
   }
@@ -94,11 +93,9 @@ function incrementVersion(current: string, type: 'patch' | 'minor' | 'major'): s
 }
 
 async function release(config: ReleaseConfig): Promise<void> {
-  console.log('🚀 Starting release process...\n');
-
+  
   // Step 1: Run pre-release checks
-  console.log('Running pre-release checks...');
-  execSync('pnpm ops doctor', { stdio: 'inherit' });
+    execSync('pnpm ops doctor', { stdio: 'inherit' });
 
   // Step 2: Generate changelog
   await generateChangelog();
@@ -106,11 +103,9 @@ async function release(config: ReleaseConfig): Promise<void> {
   // Step 3: Calculate new version
   const currentVersion = getCurrentVersion();
   const newVersion = incrementVersion(currentVersion, config.type);
-  console.log(`Bumping version: ${currentVersion} → ${newVersion}`);
-
+  
   if (config.dryRun) {
-    console.log('Dry run - would create release:', newVersion);
-    return;
+        return;
   }
 
   // Step 4: Update version in package.json
@@ -124,10 +119,9 @@ async function release(config: ReleaseConfig): Promise<void> {
   execSync(`git tag -a v${newVersion} -m "Release v${newVersion}"`, { stdio: 'inherit' });
 
   // Step 6: Deploy to Vercel
-  console.log('Deploying to Vercel...');
-  const vercelToken = process.env.VERCEL_TOKEN;
-  const vercelProjectId = process.env.VERCEL_PROJECT_ID;
-  const vercelOrgId = process.env.VERCEL_ORG_ID;
+    const vercelToken = (await secretsManager.getSecret('VERCEL_TOKEN')) || process.env.VERCEL_TOKEN;
+  const vercelProjectId = (await secretsManager.getSecret('VERCEL_PROJECT_ID')) || process.env.VERCEL_PROJECT_ID;
+  const vercelOrgId = (await secretsManager.getSecret('VERCEL_ORG_ID')) || process.env.VERCEL_ORG_ID;
 
   if (vercelToken && vercelProjectId) {
     try {
@@ -148,11 +142,9 @@ async function release(config: ReleaseConfig): Promise<void> {
   }
 
   // Step 7: Push to GitHub
-  console.log('Pushing to GitHub...');
-  execSync('git push origin main --tags', { stdio: 'inherit' });
+    execSync('git push origin main --tags', { stdio: 'inherit' });
 
-  console.log(`\n✅ Release v${newVersion} completed!`);
-}
+  }
 
 if (require.main === module) {
   const type = process.argv[2] as 'patch' | 'minor' | 'major' | undefined;

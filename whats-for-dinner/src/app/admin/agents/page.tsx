@@ -63,8 +63,7 @@ export default function AgentsPage() {
   const toggleAgentStatus = async (agentId: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     // In a real implementation, you would update the agent status in the database
-    console.log(`Toggling agent ${agentId} to ${newStatus}`);
-    loadData(); // Reload data
+        loadData(); // Reload data
   };
 
   if (loading) {
@@ -154,7 +153,7 @@ export default function AgentsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => console.log('Delete agent', agent.id)}
+                          onClick={() => }
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

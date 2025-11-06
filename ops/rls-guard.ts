@@ -7,9 +7,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const SUPABASE_URL = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_SERVICE_ROLE_KEY = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
 interface TableInfo {
@@ -150,8 +151,8 @@ async function runNegativeTests(): Promise<{ passed: boolean; message: string }[
   const results: { passed: boolean; message: string }[] = [];
   
   // Test: Cross-tenant reads should fail
-  const supabase1 = createClient(SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-  const supabase2 = createClient(SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const supabase1 = createClient(SUPABASE_URL, (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_ANON_KEY')) || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const supabase2 = createClient(SUPABASE_URL, (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_ANON_KEY')) || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
   
   // This would require actual test users
   // For now, return placeholder
@@ -164,8 +165,7 @@ async function runNegativeTests(): Promise<{ passed: boolean; message: string }[
 }
 
 async function sbGuard(): Promise<void> {
-  console.log('🛡️  Running RLS Guard...\n');
-
+  
   const report = await scanRLS();
   const negativeTests = await runNegativeTests();
 
@@ -218,10 +218,7 @@ async function sbGuard(): Promise<void> {
   writeFileSync(join(REPORTS_DIR, 'rls-audit.md'), markdown);
   writeFileSync(join(REPORTS_DIR, 'rls-audit.json'), JSON.stringify(report, null, 2));
 
-  console.log(`✅ RLS audit complete`);
-  console.log(`📄 Report saved to ops/reports/rls-audit.md`);
-  console.log(`Violations: ${report.violations.length}`);
-
+      
   if (report.violations.length > 0) {
     process.exit(1);
   }

@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Store evidence
-    console.log(`[Sandbox] Partner webhook received: ${JSON.stringify(payload)}`);
+    }`);
     
     return NextResponse.json({
       received: true,

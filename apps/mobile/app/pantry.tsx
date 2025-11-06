@@ -19,8 +19,7 @@ export default function PantryScreen() {
 
   const handleAddItem = () => {
     // Navigate to add item screen or show modal
-    console.log('Add item');
-  };
+      };
 
   const handleRemoveItem = (id: string) => {
     removePantryItem.mutate(id);

@@ -7,6 +7,7 @@
 import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 interface Commit {
   type: string;
@@ -90,7 +91,7 @@ function generateReleaseNotes(fromTag?: string): string {
   }
 
   const groups = groupCommits(commits);
-  const version = process.env.VERSION || '1.0.0';
+  const version = (await secretsManager.getSecret('VERSION')) || process.env.VERSION || '1.0.0';
   const date = new Date().toISOString().split('T')[0];
 
   let notes = `# Release Notes\n\n`;
@@ -176,12 +177,11 @@ function generateReleaseNotes(fromTag?: string): string {
 }
 
 async function main() {
-  const fromTag = process.argv[2] || process.env.LAST_TAG;
+  const fromTag = process.argv[2] || (await secretsManager.getSecret('LAST_TAG')) || process.env.LAST_TAG;
   const notes = generateReleaseNotes(fromTag);
   
   fs.writeFileSync(RELEASE_NOTES_FILE, notes);
-  console.log(`Release notes generated: ${RELEASE_NOTES_FILE}`);
-  console.log(`\nPreview:\n${notes.substring(0, 500)}...`);
+    }...`);
 }
 
 if (require.main === module) {

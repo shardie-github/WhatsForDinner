@@ -21,8 +21,7 @@ class ReleaseManager {
    * Initialize release process
    */
   async initialize() {
-    console.log('🚀 Initializing Release Manager...');
-    
+        
     // Check if we're in a git repository
     try {
       execSync('git status', { stdio: 'pipe' });
@@ -33,8 +32,7 @@ class ReleaseManager {
     // Load current version
     this.loadCurrentVersion();
     
-    console.log(`📦 Current version: ${this.version}`);
-  }
+      }
 
   /**
    * Load current version from package.json
@@ -49,8 +47,7 @@ class ReleaseManager {
    * Generate next version based on conventional commits
    */
   async generateNextVersion() {
-    console.log('🔍 Analyzing commits for version bump...');
-    
+        
     try {
       // Get commits since last tag
       const lastTag = execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim();
@@ -71,8 +68,7 @@ class ReleaseManager {
         }
       }
       
-      console.log(`📈 Version bump type: ${versionBump}`);
-      
+            
       // Generate new version
       const [major, minor, patch] = this.version.split('.').map(Number);
       let newVersion;
@@ -112,8 +108,7 @@ class ReleaseManager {
    * Generate changelog from conventional commits
    */
   async generateChangelog() {
-    console.log('📝 Generating changelog...');
-    
+        
     try {
       // Get commits since last tag
       const lastTag = execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim();
@@ -204,8 +199,7 @@ class ReleaseManager {
    * Update package.json version
    */
   async updateVersion(newVersion) {
-    console.log(`📦 Updating version to ${newVersion}...`);
-    
+        
     const packagePath = path.join(process.cwd(), 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
     
@@ -214,22 +208,19 @@ class ReleaseManager {
     
     fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2) + '\n');
     
-    console.log(`✅ Version updated to ${newVersion}`);
-  }
+      }
 
   /**
    * Create git tag
    */
   async createTag() {
-    console.log(`🏷️  Creating git tag v${this.version}...`);
-    
+        
     try {
       execSync(`git add package.json CHANGELOG.md`, { stdio: 'inherit' });
       execSync(`git commit -m "chore: release v${this.version}"`, { stdio: 'inherit' });
       execSync(`git tag -a v${this.version} -m "Release v${this.version}"`, { stdio: 'inherit' });
       
-      console.log(`✅ Tag v${this.version} created`);
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Failed to create tag:', error.message);
       throw error;
     }
@@ -239,8 +230,7 @@ class ReleaseManager {
    * Deploy to specified channel
    */
   async deploy(channel) {
-    console.log(`🚀 Deploying to ${channel} channel...`);
-    
+        
     const deploymentScripts = {
       canary: 'npm run deploy:canary',
       staging: 'npm run deploy:staging',
@@ -250,8 +240,7 @@ class ReleaseManager {
     if (deploymentScripts[channel]) {
       try {
         execSync(deploymentScripts[channel], { stdio: 'inherit' });
-        console.log(`✅ Deployed to ${channel}`);
-      } catch (error) {
+              } catch (error) {
         console.error(`❌ Failed to deploy to ${channel}:`, error.message);
         throw error;
       }
@@ -264,8 +253,7 @@ class ReleaseManager {
    * Run health checks
    */
   async healthCheck() {
-    console.log('🔍 Running health checks...');
-    
+        
     try {
       // Run tests
       execSync('npm run test:ci', { stdio: 'inherit' });
@@ -276,8 +264,7 @@ class ReleaseManager {
       // Run type checking
       execSync('npm run type-check', { stdio: 'inherit' });
       
-      console.log('✅ All health checks passed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Health checks failed:', error.message);
       throw error;
     }
@@ -287,12 +274,10 @@ class ReleaseManager {
    * Send notifications
    */
   async sendNotification(type, message) {
-    console.log(`📢 Sending ${type} notification...`);
-    
+        
     // This would integrate with your notification system
     // For now, just log the message
-    console.log(`Notification: ${message}`);
-  }
+      }
 
   /**
    * Main release process
@@ -333,8 +318,7 @@ class ReleaseManager {
       // Send notifications
       await this.sendNotification('success', `Release ${newVersion} completed successfully`);
       
-      console.log(`🎉 Release ${newVersion} completed successfully!`);
-      
+            
     } catch (error) {
       console.error('❌ Release failed:', error.message);
       await this.sendNotification('error', `Release failed: ${error.message}`);

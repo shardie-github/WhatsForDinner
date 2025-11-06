@@ -259,10 +259,7 @@ Generate the content:`;
       // - Twitter API v2
       // - LinkedIn API
 
-      console.log(
-        `Post ${postId} scheduled for ${scheduledFor} on ${platform}`
-      );
-    } catch (error) {
+          } catch (error) {
       console.error('Failed to schedule post:', error);
       throw error;
     }

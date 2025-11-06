@@ -28,8 +28,7 @@ export async function POST(request: NextRequest) {
 
     // Store push token in database (create a push_tokens table if it doesn't exist)
     // For now, we'll log it - in production, store in Supabase
-    console.log('Push token registered:', { token, platform, userId });
-
+    
     // In production, you would:
     // 1. Create push_tokens table in Supabase
     // 2. Upsert token (update if exists, insert if new)

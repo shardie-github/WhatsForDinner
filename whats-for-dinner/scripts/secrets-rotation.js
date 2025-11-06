@@ -32,8 +32,7 @@ class SecretsRotationManager {
   }
 
   async rotateAllSecrets() {
-    console.log('🔄 Starting automated secrets rotation...\n');
-
+    
     try {
       await this.rotateAPIKeys();
       await this.rotateDatabaseCredentials();
@@ -44,8 +43,7 @@ class SecretsRotationManager {
       await this.notifyRotationComplete();
       await this.cleanupOldSecrets();
 
-      console.log('\n✅ Secrets rotation completed successfully!');
-      this.generateRotationReport();
+            this.generateRotationReport();
       
       return this.rotationLog;
     } catch (error) {
@@ -56,8 +54,7 @@ class SecretsRotationManager {
   }
 
   async rotateAPIKeys() {
-    console.log('🔑 Rotating API keys...');
-    
+        
     const apiKeys = [
       'OPENAI_API_KEY',
       'STRIPE_SECRET_KEY',
@@ -77,8 +74,7 @@ class SecretsRotationManager {
           status: 'success'
         });
 
-        console.log(`✅ Rotated ${keyName}`);
-      } catch (error) {
+              } catch (error) {
         console.error(`❌ Failed to rotate ${keyName}:`, error.message);
         this.rotationLog.push({
           type: 'API_KEY_ROTATION',
@@ -92,8 +88,7 @@ class SecretsRotationManager {
   }
 
   async rotateDatabaseCredentials() {
-    console.log('🗄️  Rotating database credentials...');
-    
+        
     try {
       // Generate new database password
       const newPassword = this.generateSecurePassword(32);
@@ -110,8 +105,7 @@ class SecretsRotationManager {
         status: 'success'
       });
 
-      console.log('✅ Database credentials rotated');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Failed to rotate database credentials:', error.message);
       this.rotationLog.push({
         type: 'DB_CREDENTIALS_ROTATION',
@@ -123,8 +117,7 @@ class SecretsRotationManager {
   }
 
   async rotateJWTSecrets() {
-    console.log('🔐 Rotating JWT secrets...');
-    
+        
     try {
       const newJWTSecret = this.generateSecureKey('JWT_SECRET');
       await this.updateSecret('JWT_SECRET', newJWTSecret);
@@ -138,8 +131,7 @@ class SecretsRotationManager {
         status: 'success'
       });
 
-      console.log('✅ JWT secrets rotated');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Failed to rotate JWT secrets:', error.message);
       this.rotationLog.push({
         type: 'JWT_SECRET_ROTATION',
@@ -151,8 +143,7 @@ class SecretsRotationManager {
   }
 
   async rotateEncryptionKeys() {
-    console.log('🔒 Rotating encryption keys...');
-    
+        
     try {
       const newEncryptionKey = this.generateSecureKey('ENCRYPTION_KEY');
       await this.updateSecret('ENCRYPTION_KEY', newEncryptionKey);
@@ -166,8 +157,7 @@ class SecretsRotationManager {
         status: 'success'
       });
 
-      console.log('✅ Encryption keys rotated');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Failed to rotate encryption keys:', error.message);
       this.rotationLog.push({
         type: 'ENCRYPTION_KEY_ROTATION',
@@ -179,8 +169,7 @@ class SecretsRotationManager {
   }
 
   async rotateThirdPartyTokens() {
-    console.log('🔗 Rotating third-party tokens...');
-    
+        
     const thirdPartyServices = [
       'SENTRY_DSN',
       'ANALYTICS_TOKEN',
@@ -201,8 +190,7 @@ class SecretsRotationManager {
             status: 'success'
           });
 
-          console.log(`✅ Rotated ${tokenName}`);
-        }
+                  }
       } catch (error) {
         console.error(`❌ Failed to rotate ${tokenName}:`, error.message);
         this.rotationLog.push({
@@ -217,8 +205,7 @@ class SecretsRotationManager {
   }
 
   async updateEnvironmentVariables() {
-    console.log('🌍 Updating environment variables...');
-    
+        
     try {
       // Update .env files
       await this.updateEnvFile('.env.local');
@@ -236,8 +223,7 @@ class SecretsRotationManager {
         status: 'success'
       });
 
-      console.log('✅ Environment variables updated');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Failed to update environment variables:', error.message);
       this.rotationLog.push({
         type: 'ENV_VAR_UPDATE',
@@ -249,8 +235,7 @@ class SecretsRotationManager {
   }
 
   async notifyRotationComplete() {
-    console.log('📢 Sending rotation notifications...');
-    
+        
     try {
       const notificationData = {
         timestamp: new Date().toISOString(),
@@ -267,15 +252,13 @@ class SecretsRotationManager {
       // Send webhook notification
       await this.sendWebhookNotification(notificationData);
       
-      console.log('✅ Notifications sent');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Failed to send notifications:', error.message);
     }
   }
 
   async cleanupOldSecrets() {
-    console.log('🧹 Cleaning up old secrets...');
-    
+        
     try {
       // Remove old secret backups older than retention period
       await this.removeOldBackups();
@@ -283,15 +266,13 @@ class SecretsRotationManager {
       // Clean up temporary files
       await this.cleanupTempFiles();
       
-      console.log('✅ Cleanup completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Cleanup failed:', error.message);
     }
   }
 
   async rollbackRotation() {
-    console.log('🔄 Rolling back rotation...');
-    
+        
     try {
       // Restore from latest backup
       await this.restoreFromBackup();
@@ -299,8 +280,7 @@ class SecretsRotationManager {
       // Revert environment variables
       await this.revertEnvironmentVariables();
       
-      console.log('✅ Rollback completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Rollback failed:', error.message);
     }
   }
@@ -335,8 +315,7 @@ class SecretsRotationManager {
 
   async updateSecret(keyName, newValue) {
     // Store in secure vault (implement based on your vault solution)
-    console.log(`Updating secret: ${keyName}`);
-    
+        
     // For now, just log the update
     this.rotationLog.push({
       type: 'SECRET_UPDATE',
@@ -348,69 +327,56 @@ class SecretsRotationManager {
 
   async updateSupabaseCredentials(newPassword) {
     // Update Supabase project database password
-    console.log('Updating Supabase database credentials...');
-  }
+      }
 
   async updateSupabaseJWTSecret(newSecret) {
     // Update Supabase JWT secret
-    console.log('Updating Supabase JWT secret...');
-  }
+      }
 
   async reencryptData(newKey) {
     // Re-encrypt existing data with new encryption key
-    console.log('Re-encrypting data with new key...');
-  }
+      }
 
   async updateEnvFile(filePath) {
     if (fs.existsSync(filePath)) {
-      console.log(`Updating ${filePath}...`);
-      // Update environment file with new values
+            // Update environment file with new values
     }
   }
 
   async updateVercelSecrets() {
-    console.log('Updating Vercel secrets...');
-    // Update Vercel environment variables
+        // Update Vercel environment variables
   }
 
   async updateSupabaseEdgeFunctionSecrets() {
-    console.log('Updating Supabase Edge Function secrets...');
-    // Update Edge Function secrets
+        // Update Edge Function secrets
   }
 
   async sendEmailNotification(data) {
-    console.log('Sending email notification...');
-    // Send email notification
+        // Send email notification
   }
 
   async sendSlackNotification(data) {
-    console.log('Sending Slack notification...');
-    // Send Slack notification
+        // Send Slack notification
   }
 
   async sendWebhookNotification(data) {
-    console.log('Sending webhook notification...');
-    // Send webhook notification
+        // Send webhook notification
   }
 
   async removeOldBackups() {
-    console.log('Removing old backups...');
-    // Remove backups older than retention period
+        // Remove backups older than retention period
   }
 
   async cleanupTempFiles() {
-    console.log('Cleaning up temporary files...');
-    // Clean up temporary files
+        // Clean up temporary files
   }
 
   async restoreFromBackup() {
-    console.log('Restoring from backup...');
-    // Restore from latest backup
+        // Restore from latest backup
   }
 
   async revertEnvironmentVariables() {
-    console.log('Reverting environment variables...');
-    // Revert environment variables to previous state
+        // Revert environment variables to previous state
   }
 
   generateRotationSummary() {
@@ -441,10 +407,7 @@ class SecretsRotationManager {
     const markdownReport = this.generateMarkdownReport(report);
     fs.writeFileSync('SECRETS_ROTATION_REPORT.md', markdownReport);
     
-    console.log('\n📊 Secrets rotation report generated:');
-    console.log('  - SECRETS_ROTATION_REPORT.json');
-    console.log('  - SECRETS_ROTATION_REPORT.md');
-  }
+              }
 
   generateRecommendations() {
     const recommendations = [];
@@ -496,8 +459,7 @@ if (require.main === module) {
   const rotationManager = new SecretsRotationManager();
   rotationManager.rotateAllSecrets()
     .then(results => {
-      console.log('\n✅ Secrets rotation completed successfully!');
-      process.exit(0);
+            process.exit(0);
     })
     .catch(error => {
       console.error('❌ Secrets rotation failed:', error);

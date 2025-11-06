@@ -97,8 +97,7 @@ export function OrderIntegration({ recipeId, ingredients, userLocation }: OrderI
       );
 
       setOrderStatus('created');
-      console.log('Delivery order created:', order);
-    } catch (error) {
+          } catch (error) {
       console.error('Error creating delivery order:', error);
       setOrderStatus('error');
     }
@@ -133,8 +132,7 @@ export function OrderIntegration({ recipeId, ingredients, userLocation }: OrderI
       );
 
       setOrderStatus('created');
-      console.log('Grocery order created:', order);
-    } catch (error) {
+          } catch (error) {
       console.error('Error creating grocery order:', error);
       setOrderStatus('error');
     }
@@ -153,8 +151,7 @@ export function OrderIntegration({ recipeId, ingredients, userLocation }: OrderI
 
       if (result.success) {
         setOrderStatus('created');
-        console.log('Chef package purchased:', result);
-      }
+              }
     } catch (error) {
       console.error('Error purchasing chef package:', error);
       setOrderStatus('error');

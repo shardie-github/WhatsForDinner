@@ -39,8 +39,7 @@ export function initializeObservability() {
   // Collect metrics periodically
   setInterval(() => {
     // In production, collect from actual metrics
-    console.log('Metrics:', metrics);
-  }, 60000);
+      }, 60000);
 
   return {
     sdk,

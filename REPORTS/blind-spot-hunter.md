@@ -3,7 +3,7 @@
 ## Executive Summary
 
 **Status**: ✅ Complete  
-**Overall Score**: 66.7/100  
+**Overall Score**: 68.1/100  
 **Phases Analyzed**: 20  
 **Gaps Identified**: 12  
 **Recommendations**: 13
@@ -15,11 +15,11 @@
 | Developer Experience | 41.7 | 33.3% | 50.0 | 2 | 1 |
 | Observability | 0.0 | 0.0% | 0.0 | 3 | 0 |
 | SLOs & Release Gates | 0.0 | 0.0% | 0.0 | 3 | 0 |
-| Accessibility | 25.0 | 0.0% | 50.0 | 2 | 1 |
+| Accessibility | 45.0 | 0.0% | 90.0 | 1 | 3 |
 | Internationalization | 100.0 | 100.0% | 100.0 | 1 | 2 |
 | API Contracts | 41.7 | 33.3% | 50.0 | 2 | 1 |
 | Database Performance | 0.0 | 0.0% | 0.0 | 3 | 0 |
-| Security Controls | 100.0 | 100.0% | 100.0 | 1 | 2 |
+| Security Controls | 100.0 | 100.0% | 100.0 | 1 | 3 |
 | Supply Chain | 100.0 | 100.0% | 100.0 | 1 | 2 |
 | Release Engineering | 100.0 | 100.0% | 100.0 | 1 | 2 |
 | Performance Budgets | 125.0 | 150.0% | 100.0 | 1 | 2 |
@@ -41,7 +41,7 @@
 | low_score | dx | medium | Phase dx has low score (41.7) |
 | low_score | observability | medium | Phase observability has low score (0.0) |
 | low_score | slos | medium | Phase slos has low score (0.0) |
-| low_score | accessibility | medium | Phase accessibility has low score (25.0) |
+| low_score | accessibility | medium | Phase accessibility has low score (45.0) |
 | low_score | api-contracts | medium | Phase api-contracts has low score (41.7) |
 | low_score | db-performance | medium | Phase db-performance has low score (0.0) |
 | incomplete | dx | medium | Phase dx is incomplete (33.3%) |
@@ -146,7 +146,7 @@ None
 - **Developer Experience**: 41.7/100
 - **Observability**: 0.0/100
 - **SLOs & Release Gates**: 0.0/100
-- **Accessibility**: 25.0/100
+- **Accessibility**: 45.0/100
 - **API Contracts**: 41.7/100
 - **Database Performance**: 0.0/100
 

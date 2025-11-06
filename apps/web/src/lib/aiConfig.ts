@@ -431,7 +431,6 @@ export async function initializeDefaultConfig() {
     });
 
     if (defaultConfig) {
-      console.log('Default AI config initialized');
-    }
+          }
   }
 }

@@ -13,12 +13,12 @@ import { glob } from 'glob';
 class EmbeddingsGenerator {
   constructor() {
     this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
+      apiKey: (await secretsManager.getSecret('OPENAI_API_KEY')) || process.env.OPENAI_API_KEY
     });
     
     this.supabase = createClient(
-      process.env.SUPABASE_URL || `https://${process.env.SUPABASE_PROJECT_REF || 'ghqyxhbyyirveptgwoqm'}.supabase.co`,
-      process.env.SUPABASE_ANON_KEY || ''
+      (await secretsManager.getSecret('SUPABASE_URL')) || process.env.SUPABASE_URL || `https://${(await secretsManager.getSecret('SUPABASE_PROJECT_REF')) || process.env.SUPABASE_PROJECT_REF || 'ghqyxhbyyirveptgwoqm'}.supabase.co`,
+      (await secretsManager.getSecret('SUPABASE_ANON_KEY')) || process.env.SUPABASE_ANON_KEY || ''
     );
   }
 
@@ -461,6 +461,7 @@ class EmbeddingsGenerator {
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   const generator = new EmbeddingsGenerator();
+import { secretsManager } from './secrets-manager-unified.mjs';
   
   const args = process.argv.slice(2);
   const options = {

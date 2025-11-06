@@ -50,8 +50,7 @@ const generateRecipesAPI = async (request: GenerateRecipesRequest): Promise<Gene
 const saveRecipeAPI = async (recipe: Recipe): Promise<void> => {
   // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 500));
-  console.log('Recipe saved:', recipe.title);
-};
+  };
 
 export function useGenerateRecipes() {
   return useMutation({

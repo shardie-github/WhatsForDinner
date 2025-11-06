@@ -22,8 +22,7 @@ const IMAGE_CACHE_MAX_AGE = 86400; // 24 hours
 
 // Install event - cache critical resources
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing service worker...');
-  
+    
   event.waitUntil(
     caches.open(STATIC_CACHE).then((cache) => {
       // Cache critical static assets
@@ -42,8 +41,7 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating service worker...');
-  
+    
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -56,8 +54,7 @@ self.addEventListener('activate', (event) => {
             cacheName.startsWith('api-') ||
             cacheName.startsWith('images-')
           ) {
-            console.log('[SW] Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
+                        return caches.delete(cacheName);
           }
         })
       );
@@ -285,8 +282,7 @@ async function manageCacheSize() {
   
   // If cache exceeds limit, clear oldest entries
   if (totalSize > MAX_CACHE_SIZE) {
-    console.log('[SW] Cache size exceeded, cleaning up...');
-    // Implementation: Delete oldest cache entries
+        // Implementation: Delete oldest cache entries
     // This is a simplified version - in production, track access times
   }
 }

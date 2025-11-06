@@ -67,23 +67,18 @@ if (require.main === module) {
   switch (command) {
     case 'enable':
       setQuietMode(true, args[0]);
-      console.log('✅ Quiet mode enabled');
-      break;
+            break;
     case 'disable':
       setQuietMode(false);
-      console.log('✅ Quiet mode disabled');
-      break;
+            break;
     case 'status':
       const config = getQuietModeConfig();
-      console.log(`Quiet mode: ${config.enabled ? 'enabled' : 'disabled'}`);
-      if (config.enabled) {
-        console.log(`Message: ${config.message}`);
-        console.log(`Degraded features: ${config.degradedFeatures.join(', ')}`);
+            if (config.enabled) {
+                }`);
       }
       break;
     default:
-      console.log('Usage: quiet-mode.ts [enable|disable|status] [message]');
-      process.exit(1);
+            process.exit(1);
   }
 }
 

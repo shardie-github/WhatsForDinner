@@ -22,8 +22,7 @@ export async function runGuardianVerify(options: { userId?: string }): Promise<v
     const integrity = guardian.verifyLedgerIntegrity();
 
     if (integrity.valid) {
-      console.log(`✅ Ledger integrity verified for user ${options.userId}`);
-    } else {
+          } else {
       console.error(`❌ Ledger integrity failed for user ${options.userId}:`);
       for (const error of integrity.errors) {
         console.error(`  - ${error}`);
@@ -41,8 +40,7 @@ export async function runGuardianVerify(options: { userId?: string }): Promise<v
       const integrity = guardian.verifyLedgerIntegrity();
 
       if (integrity.valid) {
-        console.log(`✅ ${userId}: Valid`);
-      } else {
+              } else {
         console.error(`❌ ${userId}: Failed`);
         for (const error of integrity.errors) {
           console.error(`  - ${error}`);

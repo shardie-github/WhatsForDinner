@@ -132,10 +132,7 @@ class SecretsManager {
       }
 
       // Log secret storage (without the actual value)
-      console.log(
-        `Secret ${key} stored successfully for environment ${environment}`
-      );
-    } catch (error) {
+          } catch (error) {
       console.error(`Error storing secret ${key}:`, error);
       throw error;
     }
@@ -202,10 +199,7 @@ class SecretsManager {
       }
 
       // Log rotation
-      console.log(
-        `Secret ${key} rotated successfully for environment ${environment}`
-      );
-
+      
       // Store rotation event
       await this.logRotationEvent(key, environment, hash);
     } catch (error) {
@@ -323,10 +317,7 @@ class SecretsManager {
       for (const secret of data) {
         const policy = this.rotationPolicies.find(p => p.key === secret.key);
         if (policy && policy.autoRotate) {
-          console.log(
-            `Auto-rotating secret ${secret.key} for environment ${secret.environment}`
-          );
-          await this.rotateSecret(secret.key, secret.environment);
+                    await this.rotateSecret(secret.key, secret.environment);
         } else {
           console.warn(
             `Secret ${secret.key} is due for rotation but auto-rotation is disabled`

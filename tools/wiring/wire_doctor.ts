@@ -204,8 +204,7 @@ CREATE POLICY "Household members can view household meal plans"
 `;
           const migrationFile = join(migrationDir, `${Date.now()}_rls_meal_plans.sql`);
           writeFileSync(migrationFile, migrationContent);
-          console.log(`Created RLS migration: ${migrationFile}`);
-        },
+                  },
       });
     }
   }
@@ -214,8 +213,7 @@ CREATE POLICY "Household members can view household meal plans"
 }
 
 async function main() {
-  console.log('?? Nomad Monorepo Wire Doctor');
-  console.log('='.repeat(60));
+    );
   
   const allFixes: Fix[] = [];
   
@@ -226,8 +224,7 @@ async function main() {
   allFixes.push(...(await checkEnvFallbacks()));
   allFixes.push(...(await checkRLSPolicies()));
   
-  console.log(`Found ${allFixes.length} issues:\n`);
-  
+    
   for (const fix of allFixes) {
     const icon = {
       critical: '??',
@@ -235,30 +232,22 @@ async function main() {
       info: '??',
     }[fix.severity];
     
-    console.log(`${icon} ${fix.description}`);
-    console.log(`   File: ${fix.file || 'N/A'}`);
-    console.log(`   ID: ${fix.id}\n`);
-  }
+              }
   
   if (allFixes.length === 0) {
-    console.log('? No issues found!');
-    return;
+        return;
   }
   
   // Apply fixes
-  console.log('\nApplying fixes...\n');
-  for (const fix of allFixes) {
+    for (const fix of allFixes) {
     try {
       await fix.fix();
-      console.log(`? Fixed: ${fix.id}`);
-    } catch (error) {
+          } catch (error) {
       console.error(`? Failed to fix ${fix.id}:`, error);
     }
   }
   
-  console.log('\n? Wire doctor complete!');
-  console.log('Review changes and commit if satisfied.');
-}
+    }
 
 if (import.meta.url === `file://${process.argv[1]}` || require.main === module) {
   main().catch((error) => {

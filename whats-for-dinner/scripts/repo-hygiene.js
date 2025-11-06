@@ -21,8 +21,7 @@ class RepoHygieneManager {
    * Run comprehensive repo hygiene check
    */
   async runHygieneCheck() {
-    console.log('🧹 Starting repository hygiene check...\n');
-
+    
     try {
       // Run all hygiene checks
       await this.checkCodeSmells();
@@ -52,8 +51,7 @@ class RepoHygieneManager {
    * Check for code smells
    */
   async checkCodeSmells() {
-    console.log('🔍 Checking for code smells...');
-
+    
     const codeSmells = [
       {
         pattern: /console\.log\(/g,
@@ -118,8 +116,7 @@ class RepoHygieneManager {
    * Check linting issues
    */
   async checkLintingIssues() {
-    console.log('🔍 Checking linting issues...');
-
+    
     try {
       // Run ESLint
       const lintOutput = execSync('npm run lint 2>&1', { encoding: 'utf8' });
@@ -153,8 +150,7 @@ class RepoHygieneManager {
    * Check TypeScript errors
    */
   async checkTypeErrors() {
-    console.log('🔍 Checking TypeScript errors...');
-
+    
     try {
       const typeCheckOutput = execSync('npm run type-check 2>&1', { encoding: 'utf8' });
       
@@ -187,8 +183,7 @@ class RepoHygieneManager {
    * Check test coverage
    */
   async checkTestCoverage() {
-    console.log('🔍 Checking test coverage...');
-
+    
     try {
       const coverageOutput = execSync('npm run test:coverage 2>&1', { encoding: 'utf8' });
       
@@ -215,8 +210,7 @@ class RepoHygieneManager {
    * Check dependencies
    */
   async checkDependencies() {
-    console.log('🔍 Checking dependencies...');
-
+    
     try {
       // Check for outdated packages
       const outdatedOutput = execSync('npm outdated --json 2>&1', { encoding: 'utf8' });
@@ -256,8 +250,7 @@ class RepoHygieneManager {
    * Check security issues
    */
   async checkSecurityIssues() {
-    console.log('🔍 Checking security issues...');
-
+    
     const securityPatterns = [
       {
         pattern: /password\s*=\s*['"][^'"]+['"]/gi,
@@ -310,8 +303,7 @@ class RepoHygieneManager {
    * Check performance issues
    */
   async checkPerformanceIssues() {
-    console.log('🔍 Checking performance issues...');
-
+    
     const performancePatterns = [
       {
         pattern: /for\s*\(\s*let\s+i\s*=\s*0\s*;\s*i\s*<\s*array\.length\s*;\s*i\+\+\s*\)/g,
@@ -357,8 +349,7 @@ class RepoHygieneManager {
    * Check documentation
    */
   async checkDocumentation() {
-    console.log('🔍 Checking documentation...');
-
+    
     // Check for missing README
     if (!fs.existsSync('README.md')) {
       this.issues.push({
@@ -415,8 +406,7 @@ class RepoHygieneManager {
    * Check file structure
    */
   async checkFileStructure() {
-    console.log('🔍 Checking file structure...');
-
+    
     // Check for proper directory structure
     const requiredDirs = ['src', 'public', 'docs'];
     for (const dir of requiredDirs) {
@@ -461,8 +451,7 @@ class RepoHygieneManager {
    * Check Git hooks
    */
   async checkGitHooks() {
-    console.log('🔍 Checking Git hooks...');
-
+    
     const hooksDir = '.git/hooks';
     const requiredHooks = ['pre-commit', 'pre-push'];
 
@@ -503,8 +492,7 @@ class RepoHygieneManager {
    * Generate hygiene report
    */
   generateReport() {
-    console.log('\n📊 Repository Hygiene Report');
-    console.log('='.repeat(50));
+        );
 
     const issuesByType = this.issues.reduce((acc, issue) => {
       acc[issue.type] = (acc[issue.type] || 0) + 1;
@@ -516,21 +504,15 @@ class RepoHygieneManager {
       return acc;
     }, {});
 
-    console.log(`\nTotal Issues Found: ${this.issues.length}`);
-    console.log('\nBy Type:');
-    for (const [type, count] of Object.entries(issuesByType)) {
-      console.log(`  ${type}: ${count}`);
-    }
+            for (const [type, count] of Object.entries(issuesByType)) {
+          }
 
-    console.log('\nBy Severity:');
-    for (const [severity, count] of Object.entries(issuesBySeverity)) {
+        for (const [severity, count] of Object.entries(issuesBySeverity)) {
       const icon = severity === 'critical' ? '🔴' : severity === 'high' ? '🟠' : severity === 'medium' ? '🟡' : '🟢';
-      console.log(`  ${icon} ${severity}: ${count}`);
-    }
+          }
 
     if (this.issues.length > 0) {
-      console.log('\nTop Issues:');
-      const topIssues = this.issues
+            const topIssues = this.issues
         .sort((a, b) => {
           const severityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
           return severityOrder[b.severity] - severityOrder[a.severity];
@@ -539,8 +521,7 @@ class RepoHygieneManager {
 
       for (const issue of topIssues) {
         const icon = issue.severity === 'critical' ? '🔴' : issue.severity === 'high' ? '🟠' : issue.severity === 'medium' ? '🟡' : '🟢';
-        console.log(`  ${icon} ${issue.file}: ${issue.message}`);
-      }
+              }
     }
 
     // Save detailed report
@@ -553,15 +534,13 @@ class RepoHygieneManager {
     };
 
     fs.writeFileSync('hygiene-report.json', JSON.stringify(report, null, 2));
-    console.log('\n📄 Detailed report saved to hygiene-report.json');
-  }
+      }
 
   /**
    * Auto-fix issues where possible
    */
   async autoFixIssues() {
-    console.log('\n🔧 Attempting to auto-fix issues...');
-
+    
     let fixedCount = 0;
 
     for (const issue of this.issues) {
@@ -576,10 +555,8 @@ class RepoHygieneManager {
     }
 
     if (fixedCount > 0) {
-      console.log(`✅ Auto-fixed ${fixedCount} issues`);
-    } else {
-      console.log('ℹ️  No issues could be auto-fixed');
-    }
+          } else {
+          }
   }
 
   /**
@@ -615,8 +592,7 @@ class RepoHygieneManager {
    * Generate onboarding documentation
    */
   async generateOnboardingDocs() {
-    console.log('\n📚 Generating onboarding documentation...');
-
+    
     const onboardingContent = `# Developer Onboarding Guide
 
 ## Prerequisites
@@ -670,8 +646,7 @@ src/
 `;
 
     fs.writeFileSync('ONBOARDING.md', onboardingContent);
-    console.log('✅ Onboarding documentation generated');
-  }
+      }
 }
 
 // Run if called directly
@@ -680,8 +655,7 @@ if (require.main === module) {
   manager.runHygieneCheck()
     .then(() => manager.generateOnboardingDocs())
     .then(() => {
-      console.log('\n🎉 Repository hygiene check completed!');
-      process.exit(0);
+            process.exit(0);
     })
     .catch((error) => {
       console.error('❌ Error:', error);

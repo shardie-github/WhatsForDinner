@@ -22,9 +22,7 @@ class PrivacyGDPRManager {
   }
 
   async runPrivacyGDPR() {
-    console.log('🔒 Phase 19: Privacy & Data Lifecycle');
-    console.log('====================================\n');
-
+        
     try {
       await this.createPrivacyService();
       await this.setupConsentManagement();
@@ -32,8 +30,7 @@ class PrivacyGDPRManager {
       await this.createGDPRCompliance();
       await this.generatePrivacyReport();
       
-      console.log('✅ Privacy & GDPR setup completed successfully');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Privacy & GDPR setup failed:', error.message);
       process.exit(1);
     }

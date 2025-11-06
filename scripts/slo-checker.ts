@@ -71,8 +71,7 @@ class SLOChecker {
    * Collect API metrics from logs
    */
   async collectAPIMetrics(): Promise<Partial<SLOMetrics>> {
-    console.log('📊 Collecting API metrics...');
-    
+        
     try {
       // In a real implementation, this would query actual log data
       // For now, we'll simulate with some test data
@@ -113,8 +112,7 @@ class SLOChecker {
    * Collect database metrics
    */
   async collectDBMetrics(): Promise<Partial<SLOMetrics>> {
-    console.log('🗄️ Collecting database metrics...');
-    
+        
     try {
       // Query database for error rates and performance
       const dbMetricsSQL = `
@@ -217,11 +215,11 @@ class SLOChecker {
     
     // Ensure REPORTS directory exists
     const { execSync } = await import('child_process');
+import { secretsManager } from './secrets-manager-unified.mjs';
     execSync('mkdir -p REPORTS', { stdio: 'inherit' });
     
     writeFileSync(filepath, JSON.stringify(report, null, 2));
-    console.log(`📄 SLO report saved to: ${filepath}`);
-    
+        
     return filepath;
   }
 
@@ -229,8 +227,7 @@ class SLOChecker {
    * Main SLO checking process
    */
   async execute(): Promise<SLOReport> {
-    console.log(`🚀 Starting SLO check for ${this.environment} environment...`);
-    
+        
     try {
       // Collect metrics
       const apiMetrics = await this.collectAPIMetrics();
@@ -257,22 +254,15 @@ class SLOChecker {
       await this.saveSLOReport(report);
       
       // Log results
-      console.log(`\n📊 SLO Check Results:`);
-      console.log(`  Environment: ${this.environment}`);
-      console.log(`  Status: ${report.overall_status.toUpperCase()}`);
-      console.log(`  API Success Rate: ${metrics.api_success_rate}%`);
-      console.log(`  API p95 Latency: ${metrics.api_latency_p95}ms`);
-      console.log(`  DB Error Rate: ${metrics.db_error_rate}%`);
-      console.log(`  Error Budget Remaining: ${evaluation.error_budget_remaining.toFixed(2)}%`);
+                  }`);
+                        }%`);
       
       if (evaluation.violations.length > 0) {
-        console.log(`\n❌ Violations:`);
-        evaluation.violations.forEach(violation => console.log(`  - ${violation}`));
+                evaluation.violations.forEach(violation => );
       }
       
       if (evaluation.recommendations.length > 0) {
-        console.log(`\n💡 Recommendations:`);
-        evaluation.recommendations.forEach(rec => console.log(`  - ${rec}`));
+                evaluation.recommendations.forEach(rec => );
       }
       
       return report;
@@ -290,8 +280,8 @@ async function main() {
   const environment = args.find(arg => arg.startsWith('--env='))?.split('=')[1] || 'production';
   const isCheckMode = args.includes('--check');
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     console.error('❌ Missing required environment variables:');
@@ -307,14 +297,11 @@ async function main() {
     
     if (isCheckMode) {
       if (report.overall_status === 'fail') {
-        console.log('\n❌ SLO check failed - see report for details');
-        process.exit(1);
+                process.exit(1);
       } else if (report.overall_status === 'warning') {
-        console.log('\n⚠️ SLO check passed with warnings');
-        process.exit(0);
+                process.exit(0);
       } else {
-        console.log('\n✅ SLO check passed');
-        process.exit(0);
+                process.exit(0);
       }
     }
     

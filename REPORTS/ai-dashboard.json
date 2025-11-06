@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-29T20:45:46.304Z",
+  "timestamp": "2025-11-06T02:33:13.162Z",
   "system_status": "active",
   "components": {
     "ai_agents": {
@@ -70,7 +70,7 @@
     }
   },
   "metrics": {
-    "codebase_size": 78658,
+    "codebase_size": 1064,
     "test_coverage": {
       "lines": 85,
       "functions": 90,
@@ -78,7 +78,7 @@
       "statements": 85
     },
     "build_status": "failed",
-    "last_audit": "2025-10-29T20:46:01.265Z",
+    "last_audit": "2025-11-06T02:33:13.644Z",
     "performance": {
       "build_time": "2m 30s",
       "test_time": "45s",
@@ -91,7 +91,7 @@
       "type": "error",
       "component": "build",
       "message": "Build is currently failing",
-      "timestamp": "2025-10-29T20:46:01.265Z"
+      "timestamp": "2025-11-06T02:33:13.644Z"
     }
   ],
   "recommendations": [

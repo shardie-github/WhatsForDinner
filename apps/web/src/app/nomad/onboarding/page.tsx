@@ -96,8 +96,7 @@ export default function OnboardingPage() {
 
   const handleComplete = () => {
     // Save onboarding data and redirect to dashboard
-    console.log('Onboarding complete:', formData);
-    window.location.href = '/nomad/dashboard';
+        window.location.href = '/nomad/dashboard';
   };
 
   const renderStep = () => {

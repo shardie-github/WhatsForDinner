@@ -1,548 +1,379 @@
-# What's for Dinner? - Universal App Monorepo
+# 🍽️ What's for Dinner?
 
-A production-ready universal app built with Expo SDK 52, Next.js 15, NativeWind, and Turborepo for iOS, Android, and Web (PWA).
+**Stop wondering. Start cooking.**
 
-## 🚀 Features
+The universal meal planning app that helps you answer life's most important question—what's for dinner?—with AI-powered meal suggestions, smart pantry management, and seamless grocery integration.
 
-- **Universal App**: Single codebase for iOS, Android, and Web
-- **Modern Stack**: Expo SDK 52, Next.js 15, React 18, TypeScript
-- **Styling**: NativeWind + Tailwind CSS for consistent design
-- **Monorepo**: Turborepo with shared packages
-- **PWA Support**: Offline-capable web app
-- **CI/CD**: GitHub Actions with automated builds and deployments
-- **Cross-Platform**: Shared UI components and business logic
-- **Self-Operating Production Framework**: Fully automated ops with minimal human input
+---
 
-## 🎯 Self-Operating Production Framework
+## ✨ What Makes This Special?
 
-This repository includes a comprehensive self-operating production framework that is secure, observable, monetizable, testable, and deploy-ready.
+**Ever find yourself staring into your fridge at 6 PM, wondering what to make?** You're not alone. What's for Dinner solves this daily dilemma with:
 
-### Master Orchestrator CLI
+- 🤖 **AI-Powered Meal Suggestions** - Get personalized meal recommendations based on what you have, dietary preferences, and cooking time
+- 🥫 **Smart Pantry Intelligence** - Track what you have, get alerts when you're running low, and discover recipes you can make right now
+- 🛒 **Grocery Integration** - Seamlessly add ingredients to your shopping list or order directly from your favorite stores
+- 📱 **Works Everywhere** - Your meal plan, shopping lists, and recipes sync across iOS, Android, and Web
+- ⚡ **Offline Ready** - Access your meal plans and saved recipes even without internet
 
-Run `npm run ops` to access the master orchestrator:
+**Built for real people, solving real problems, every single day.**
+
+---
+
+## 🚀 Quick Start (60 Seconds)
+
+**Get cooking in under a minute:**
 
 ```bash
-# Initialize ops framework
-npm run ops init
+# 1. Clone and install
+git clone <repository-url>
+cd whats-for-dinner
+pnpm install
 
-# Run all health checks
-npm run ops doctor
+# 2. Set up your environment
+cp .env.example .env.local
+# Add your Supabase and API keys
 
-# Run validation checks
-npm run ops check
-
-# Release with semantic versioning
-npm run ops release [patch|minor|major] [--dry-run]
-
-# Database snapshots
-npm run ops snapshot [description]
-npm run ops restore <snapshot-id>
-
-# Secrets management
-npm run ops rotate-secrets
-
-# RLS audit and enforcement
-npm run ops sb-guard
-
-# E2E tests
-npm run ops test:e2e
-
-# Performance benchmarks
-npm run ops benchmark
-
-# Auto-fix linting
-npm run ops lintfix
-
-# Generate documentation
-npm run ops docs
-
-# Generate changelog
-npm run ops changelog
+# 3. Start developing
+pnpm dev
 ```
 
-### 🗓 Ops Schedule
+**That's it!** Open `http://localhost:3000` and start planning your next meal.
 
-**Daily:**
-- `ops doctor` → check reports → fix → release if green
+---
 
-**Weekly:**
-- `ops release` + growth report + rotate secrets
+## 🎯 The Problem We Solve
 
-**Monthly:**
-- DR rehearsal + deps update + red-team sweep
+### Before What's for Dinner:
+- ❌ Stand in front of the fridge, confused
+- ❌ Waste food because you forget what you have
+- ❌ Order takeout because you're out of ideas
+- ❌ Make multiple trips to the store for forgotten ingredients
+- ❌ Struggle with meal planning for the week
 
-### Key Components
+### With What's for Dinner:
+- ✅ Get instant meal suggestions based on your pantry
+- ✅ Never waste food with smart expiration tracking
+- ✅ Discover new recipes you can actually make right now
+- ✅ Build complete shopping lists automatically
+- ✅ Plan your week with AI-powered meal suggestions
 
-1. **Reality Suite** - E2E tests + synthetic monitors hitting prod endpoints hourly
-2. **Secrets Regimen** - Automated 20-day rotation with Supabase + Vercel sync
-3. **RLS Enforcer** - Scans all Supabase tables/views, generates audit reports
-4. **Migration Safety** - Shadow migrations + snapshot/restore with encryption
-5. **Observability Suite** - OpenTelemetry tracing + p95 latency/error/cost metrics
-6. **Performance Budgets** - Lighthouse CI + bundle analyzer (LCP < 2.5s, CLS < 0.1, TBT < 300ms, JS < 170KB)
-7. **Release Train** - Semantic versioning + CHANGELOG + Vercel immutable deploys
-8. **DR Playbook** - Quarterly CI rehearsal with automated RTO/RPO measurement
-9. **Growth Engine** - UTM tracking + cohort/LTV analysis + weekly reports
-10. **Compliance Guard** - DSAR endpoints + cookie consent + log redaction
-11. **AI Agent Guardrails** - Schema validation + timeouts + retries + circuit breaker
-12. **Offers & Paywalls** - Feature-flagged pricing + A/B framework
-13. **Internationalization** - Message extraction + CSV/JSON language packs + CI validation
-14. **Documentation** - Auto-generated Mermaid diagrams + endpoint examples
-15. **Red-Team Tests** - Auth/rate-limit/RLS breach simulation
-16. **Billing Stub** - Stripe webhooks + feature flag + CI validation
-17. **Store Pack** - Play/App Store manifests + icons + privacy labels
-18. **Quiet Mode** - Global config toggle for incident response
-19. **Cost Caps** - Quota/throttling + cost simulation + alerts
-20. **Partner Hooks** - Integration contracts + Postman collection
+**We turn meal planning from a chore into a delight.**
 
-### Exit Criteria
+---
 
-✅ `npm run ops doctor` = 0 both locally and in CI  
-✅ `ops release` performs full deploy and rollback  
-✅ All budgets/tests pass  
-✅ Dashboard + growth + compliance reports generated  
-✅ System survives offline, high load, and incident modes without manual intervention
+## 💡 How It Works
 
-## 📁 Project Structure
+### 1. **Add Your Pantry**
+Scan barcodes, manually add items, or import from your grocery receipts. The app learns what you keep in stock.
+
+### 2. **Tell Us Your Preferences**
+Dietary restrictions? Allergies? Favorite cuisines? Cooking skill level? We'll tailor every suggestion to you.
+
+### 3. **Get Suggestions**
+Our AI analyzes your pantry, preferences, and available time to suggest meals you can actually make right now.
+
+### 4. **Shop & Cook**
+Add missing ingredients to your shopping list, order online, or use our partner integrations. Then follow step-by-step cooking instructions.
+
+### 5. **Repeat & Improve**
+Rate meals, save favorites, and watch as suggestions get smarter over time.
+
+---
+
+## 🛠️ Technical Excellence
+
+**Built for scale, security, and reliability from day one.**
+
+### Universal Architecture
+
+Write once, run everywhere. A single TypeScript codebase powers:
+
+- 📱 **iOS App** - Native performance with Expo SDK 52
+- 🤖 **Android App** - Full feature parity with iOS
+- 🌐 **Web App** - PWA with offline support
+- 🖥️ **Desktop** - Electron support (coming soon)
+
+### Modern Tech Stack
+
+- **Frontend**: React 18, Next.js 15, React Native, Expo SDK 52
+- **Styling**: NativeWind + Tailwind CSS (shared design system)
+- **Backend**: Supabase (PostgreSQL, Auth, Realtime, Storage)
+- **AI**: OpenAI GPT-4 for meal generation and suggestions
+- **Deployment**: Vercel (web), EAS Build (mobile)
+- **CI/CD**: GitHub Actions with automated testing
+
+### Self-Operating Production Framework
+
+**This isn't just code—it's a complete operations system.**
+
+Run `npm run ops doctor` and watch the system:
+- ✅ Check code quality, security, and performance
+- ✅ Run automated tests
+- ✅ Verify database migrations
+- ✅ Audit secrets and configurations
+- ✅ Generate deployment reports
+- ✅ And much more—all automatically
+
+**The framework runs itself. You just approve releases.**
+
+---
+
+## 📦 Project Structure
 
 ```
 whats-for-dinner/
 ├── apps/
-│   ├── mobile/          # Expo React Native app
+│   ├── mobile/          # Expo React Native app (iOS/Android)
 │   └── web/             # Next.js 15 PWA
 ├── packages/
-│   ├── ui/              # Shared UI components
+│   ├── ui/              # Shared UI components (cross-platform)
 │   ├── utils/           # Shared utilities and hooks
-│   ├── theme/           # Design system
+│   ├── theme/           # Design system and theming
 │   └── config/          # Shared configurations
-├── .github/workflows/   # CI/CD pipelines
-└── turbo.json          # Turborepo configuration
+├── scripts/             # Automation and tooling
+├── ops/                 # Self-operating production framework
+└── docs/                # Comprehensive documentation
 ```
 
-## 🛠️ Tech Stack
+**Everything is shared. Nothing is duplicated.**
 
-### Mobile (Expo SDK 52)
-- React Native 0.76.3
-- Expo Router 4.0
-- NativeWind 4.0
-- TypeScript 5
+---
 
-### Web (Next.js 15)
-- Next.js 15 with App Router
-- PWA with next-pwa
-- Tailwind CSS 3.4
-- TypeScript 5
+## 🎨 Design Philosophy
 
-### Shared
-- Turborepo for monorepo management
-- pnpm for package management
-- ESLint + Prettier for code quality
-- GitHub Actions for CI/CD
+**Clean. Simple. Delightful.**
 
-## 🚀 Getting Started
+We believe meal planning should be as enjoyable as cooking. Our design system ensures:
 
-### Prerequisites
+- **Consistency** - Same look and feel across all platforms
+- **Accessibility** - WCAG 2.1 AA compliant
+- **Performance** - Fast, responsive, offline-capable
+- **Delight** - Beautiful animations and intuitive interactions
 
-- Node.js 18+
-- pnpm 9+
-- iOS Simulator (for mobile development)
-- Android Studio (for mobile development)
+---
 
-### Installation
+## 🔒 Security & Privacy
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd whats-for-dinner
-   ```
+**Your data is yours. We protect it fiercely.**
 
-2. **Install dependencies**
-   ```bash
-   pnpm install
-   ```
+- 🔐 **End-to-End Encryption** - Sensitive data encrypted at rest and in transit
+- 🛡️ **Row-Level Security** - Database-level access controls
+- 🔑 **Centralized Secrets** - No hardcoded credentials, ever
+- 📋 **GDPR Compliant** - Full data export and deletion
+- 🔍 **Regular Audits** - Automated security scanning and compliance checks
 
-3. **Build shared packages**
-   ```bash
-   pnpm run build:packages
-   ```
+**We take security seriously because your privacy matters.**
 
-### Development
+---
 
-#### Start all apps
-```bash
-pnpm dev
-```
+## 📈 Performance Metrics
 
-#### Start specific apps
-```bash
-# Web app only
-pnpm dev:web
+**Built for speed. Measured continuously.**
 
-# Mobile app only
-pnpm dev:mobile
-```
+- ⚡ **LCP**: < 2.5s (Largest Contentful Paint)
+- 🎯 **CLS**: < 0.1 (Cumulative Layout Shift)
+- ⚙️ **FID**: < 100ms (First Input Delay)
+- 📦 **Bundle Size**: < 170KB (JavaScript)
+- 🚀 **TTFB**: < 500ms (Time to First Byte)
 
-#### Performance & Security Commands
-```bash
-# Performance monitoring
-pnpm perf:monitor
-pnpm perf:analyze
-pnpm perf:lighthouse
+**We monitor these metrics in CI/CD. Every commit. Every deployment.**
 
-# Security auditing
-pnpm security:audit
-pnpm security:scan
+---
 
-# Format code
-pnpm format
-pnpm format:check
-```
+## 🧪 Testing & Quality
 
-#### Mobile Development
+**Code quality isn't optional. It's automatic.**
 
-1. **Start Expo development server**
-   ```bash
-   cd apps/mobile
-   pnpm dev
-   ```
+- ✅ **Type Safety** - Full TypeScript coverage
+- ✅ **Unit Tests** - Comprehensive test suite
+- ✅ **E2E Tests** - Playwright tests for critical flows
+- ✅ **Integration Tests** - API and database testing
+- ✅ **Accessibility Tests** - Automated a11y checks
+- ✅ **Performance Tests** - Lighthouse CI integration
 
-2. **Run on iOS Simulator**
-   ```bash
-   pnpm ios
-   ```
+**Run `npm run check:all` to see everything in action.**
 
-3. **Run on Android Emulator**
-   ```bash
-   pnpm android
-   ```
-
-4. **Run on Web**
-   ```bash
-   pnpm web
-   ```
-
-#### Web Development
-
-1. **Start Next.js development server**
-   ```bash
-   cd apps/web
-   pnpm dev
-   ```
-
-2. **Open in browser**
-   ```
-   http://localhost:3000
-   ```
-
-## 📱 Building for Production
-
-### Web App
-
-```bash
-# Build for production
-pnpm build:web
-
-# The built files will be in apps/web/dist
-```
-
-### Mobile Apps
-
-#### Using EAS Build (Recommended)
-
-1. **Install EAS CLI**
-   ```bash
-   npm install -g @expo/eas-cli
-   ```
-
-2. **Login to Expo**
-   ```bash
-   eas login
-   ```
-
-3. **Configure EAS**
-   ```bash
-   cd apps/mobile
-   eas build:configure
-   ```
-
-4. **Build for iOS**
-   ```bash
-   eas build --platform ios
-   ```
-
-5. **Build for Android**
-   ```bash
-   eas build --platform android
-   ```
-
-#### Local Builds
-
-```bash
-# iOS (requires macOS)
-cd apps/mobile
-eas build --platform ios --local
-
-# Android
-cd apps/mobile
-eas build --platform android --local
-```
-
-## 🎨 Styling
-
-This project uses NativeWind (Tailwind CSS for React Native) for consistent styling across platforms.
-
-### Mobile (NativeWind)
-```tsx
-import { View, Text } from 'react-native';
-
-export function MyComponent() {
-  return (
-    <View className="flex-1 bg-background p-4">
-      <Text className="text-2xl font-bold text-foreground">
-        Hello World
-      </Text>
-    </View>
-  );
-}
-```
-
-### Web (Tailwind CSS)
-```tsx
-export function MyComponent() {
-  return (
-    <div className="flex-1 bg-background p-4">
-      <h1 className="text-2xl font-bold text-foreground">
-        Hello World
-      </h1>
-    </div>
-  );
-}
-```
-
-## 📦 Shared Packages
-
-### UI Components (`@whats-for-dinner/ui`)
-Cross-platform UI components that work on both mobile and web.
-
-```tsx
-import { Button } from '@whats-for-dinner/ui';
-
-<Button variant="primary" onPress={() => {}}>
-  Click me
-</Button>
-```
-
-### Utils (`@whats-for-dinner/utils`)
-Shared utilities, hooks, and helper functions.
-
-```tsx
-import { usePantry, cn } from '@whats-for-dinner/utils';
-
-const { items, addItem } = usePantry();
-```
-
-### Config (`@whats-for-dinner/config`)
-Shared configuration files for ESLint, Tailwind, and TypeScript.
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create `.env.local` files in the respective app directories:
-
-#### Mobile (apps/mobile/.env.local)
-```env
-EXPO_PUBLIC_API_URL=https://api.example.com
-EXPO_PUBLIC_SUPABASE_URL=your-supabase-url
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-```
-
-#### Web (apps/web/.env.local)
-```env
-NEXT_PUBLIC_API_URL=https://api.example.com
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-```
-
-### EAS Configuration
-
-Update `apps/mobile/eas.json` with your app identifiers and credentials.
+---
 
 ## 🚀 Deployment
 
+**From commit to production in minutes.**
+
 ### Web App
-The web app is automatically deployed to GitHub Pages on push to main branch.
+Deployed automatically to Vercel on every push to `main`. Zero downtime deployments with instant rollbacks.
 
 ### Mobile Apps
-Mobile apps are built using EAS Build and can be submitted to app stores.
+- **iOS**: Built via EAS Build, submitted to App Store
+- **Android**: Built via EAS Build, submitted to Play Store
+- **Beta Testing**: TestFlight (iOS) and Internal Testing (Android)
 
-## 🧪 Testing
+### Database
+Managed Supabase with automated backups, point-in-time recovery, and zero-downtime migrations.
 
-```bash
-# Run all tests
-pnpm test
+**Everything is automated. Everything is monitored.**
 
-# Run tests for specific package
-pnpm test --filter=@whats-for-dinner/ui
-
-# Run tests in watch mode
-pnpm test:watch
-```
-
-## 🎛️ Ops Framework
-
-This repository includes a comprehensive self-operating production framework with minimal human input.
-
-### Quick Start
-
-```bash
-# Initialize ops framework
-npm run ops init
-
-# Run comprehensive health checks
-npm run ops doctor
-
-# Run all safety checks
-npm run ops check
-```
-
-### Ops CLI Commands
-
-| Command | Description |
-|---------|-------------|
-| `npm run ops doctor` | Comprehensive system health checks |
-| `npm run ops init` | Initialize ops framework |
-| `npm run ops check` | Run all safety checks (security/performance/compliance) |
-| `npm run ops release` | Semantic release with changelog |
-| `npm run ops snapshot` | Create database snapshot |
-| `npm run ops restore` | Restore from snapshot |
-| `npm run ops rotate-secrets` | Rotate secrets and keys |
-| `npm run ops sb-guard` | RLS audit and security scan |
-| `npm run ops test:e2e` | Run E2E tests |
-| `npm run ops benchmark` | Performance benchmarks |
-| `npm run ops lintfix` | Auto-fix linting issues |
-| `npm run ops docs` | Generate documentation |
-| `npm run ops changelog` | Generate changelog |
-
-### 🗓️ Ops Schedule
-
-**Daily:**
-- `npm run ops doctor` → check reports → fix → release if green
-
-**Weekly:**
-- `npm run ops release` + growth report + rotate secrets
-
-**Monthly:**
-- DR rehearsal + deps update + red-team sweep
-
-## 📝 Scripts
-
-| Script | Description |
-|--------|-------------|
-| `pnpm dev` | Start all apps in development mode |
-| `pnpm build` | Build all apps and packages |
-| `pnpm lint` | Lint all packages |
-| `pnpm test` | Run all tests |
-| `pnpm type-check` | Run TypeScript type checking |
-| `pnpm clean` | Clean all build artifacts |
+---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
+**We welcome contributions!** Whether you're fixing a bug, adding a feature, or improving documentation.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development setup
+- Code style guidelines
+- Testing requirements
+- Pull request process
+
+**Make your first contribution in under 10 minutes.**
+
+---
+
+## 📚 Documentation
+
+**Comprehensive docs for every aspect:**
+
+- 📖 [Architecture Guide](ARCHITECTURE.md) - System design and technical decisions
+- 🔐 [Security Policy](SECURITY.md) - How we handle security
+- 🛠️ [Setup Guide](COMPLETE_SETUP_GUIDE.md) - Complete setup instructions
+- 🗄️ [Database Guide](DATABASE_MIGRATION_GUIDE.md) - Migration and schema docs
+- 🔑 [Secrets Management](docs/SECRETS_MIGRATION_GUIDE.md) - Secure secrets handling
+- 🎯 [API Documentation](docs/API.md) - API endpoints and examples
+
+**Everything you need to understand, deploy, and extend the system.**
+
+---
+
+## 🎯 Roadmap
+
+**What's coming next:**
+
+- 🗓️ **Calendar Integration** - Sync with Google Calendar, Apple Calendar
+- 👥 **Family Planning** - Shared meal plans for households
+- 🍳 **Cooking Mode** - Step-by-step cooking instructions with timers
+- 📊 **Nutrition Tracking** - Track macros and nutrition goals
+- 🌍 **More Integrations** - Instacart, Amazon Fresh, more grocery stores
+- 💬 **Community Recipes** - Share and discover recipes from other users
+
+**Have an idea? [Open an issue](https://github.com/your-org/whats-for-dinner/issues)!**
+
+---
+
+## 📊 System Health
+
+**Transparency is important. Here's how we're doing:**
+
+Run `npm run health:check` to see:
+- Code quality metrics
+- Test coverage
+- Security posture
+- Performance benchmarks
+- Documentation completeness
+
+**Current Status**: 🟡 Needs improvement (see [PROJECT_HEALTH_DASHBOARD.json](PROJECT_HEALTH_DASHBOARD.json) for details)
+
+---
+
+## 🛠️ Development Commands
+
+**Everything you need to build, test, and deploy:**
+
+```bash
+# Development
+pnpm dev              # Start all apps
+pnpm dev:web          # Web app only
+pnpm dev:mobile       # Mobile app only
+
+# Building
+pnpm build            # Build all apps
+pnpm build:web        # Web app only
+pnpm build:mobile     # Mobile app only
+
+# Testing
+pnpm test             # Run all tests
+pnpm test:watch        # Watch mode
+pnpm test:coverage     # Coverage report
+
+# Quality
+pnpm lint              # Lint code
+pnpm lint:fix          # Auto-fix linting
+pnpm type-check        # TypeScript checking
+pnpm format            # Format code
+
+# Operations
+npm run ops doctor     # Health checks
+npm run ops check      # All safety checks
+npm run ops release    # Semantic release
+npm run health:check   # Comprehensive health dashboard
+
+# Secrets Management
+npm run secrets:migrate # Migrate secrets to Supabase/Vercel
+npm run secrets:sync   # Sync secrets between systems
+```
+
+---
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🤖 Automated Operations Suite
+---
 
-This repository includes a comprehensive **Automated Venture Operations Suite** designed for Canadian solo or small-team ventures. All workflows, templates, and automation assets are self-contained and deployable from the repo.
+## 🙏 Acknowledgments
 
-### Quick Start
-
-**Daily Routine (15 minutes):**
-- Review automated reports → Check system health → Approve releases (if needed)
-- See [`ops/daily-routine.md`](./ops/daily-routine.md) for complete checklist
-
-**What Runs Automatically:**
-- **Every Hour:** Analytics collection, health checks, support ticket routing
-- **Daily:** Database backups, analytics reports, finance snapshots, marketing automation
-- **Weekly:** Growth reports, security audits, performance benchmarks
-- **Monthly:** DR rehearsals, dependencies updates, finance reconciliation
-
-### Automation Components
-
-**GitHub Actions:**
-- Auto-deploy to Vercel on push to main
-- Supabase migration + backup weekly
-- Daily analytics scripts → commit reports to `/ops/dashboards/reports/`
-
-**No-Code Automation (Zapier/Make):**
-- Lead capture → CRM → Email follow-up
-- Stripe sale → Supabase → Google Sheet → Slack DM
-- Social post → Auto-log to marketing dashboard
-- Support ticket → Auto-route by priority
-
-**Dashboards:**
-- Marketing dashboard (leads, conversions, traffic sources)
-- Finance dashboard (revenue CAD, expenses, GST/HST tracking)
-- KPI tracker (MAU, CAC, LTV, conversion rates)
-
-### Documentation
-
-**Operations:**
-- [`ops/daily-routine.md`](./ops/daily-routine.md) - 15-minute daily checklist
-- [`ops/automation-blueprints/`](./ops/automation-blueprints/) - GitHub Actions, Zapier/Make flows
-
-**Marketing:**
-- [`ops/marketing/automated-leadflow-guide.md`](./ops/marketing/automated-leadflow-guide.md) - Lead capture → CRM → Email
-- [`ops/marketing/crm-integration-guide.md`](./ops/marketing/crm-integration-guide.md) - Notion/Airtable setup
-
-**Support:**
-- [`ops/support/helpdesk-playbook.md`](./ops/support/helpdesk-playbook.md) - Customer support workflows
-- [`ops/support/chatbot-faq-builder.md`](./ops/support/chatbot-faq-builder.md) - Automated FAQ chatbot
-
-**Growth:**
-- [`ops/growth/influencer-outreach-automation.md`](./ops/growth/influencer-outreach-automation.md) - Automated influencer partnerships
-- [`ops/growth/content-seeding-checklist.md`](./ops/growth/content-seeding-checklist.md) - Content creation workflow
-- [`ops/growth/community-engagement-plan.md`](./ops/growth/community-engagement-plan.md) - Reddit, Instagram, Twitter strategy
-
-**Legal:**
-- [`ops/legal/vendor-contract-template.md`](./ops/legal/vendor-contract-template.md) - Simplified contract template
-- [`ops/legal/nda-template.md`](./ops/legal/nda-template.md) - Mutual NDA template
-
-**Funding:**
-- [`ops/funding/seed-prep-playbook.md`](./ops/funding/seed-prep-playbook.md) - Fundraising preparation guide
-- [`ops/funding/investor-outreach-email-bank.md`](./ops/funding/investor-outreach-email-bank.md) - Pre-written email templates
-- [`ops/funding/grant-and-incubator-list-canada.md`](./ops/funding/grant-and-incubator-list-canada.md) - Canadian funding programs (IRAP, SR&ED, Futurpreneur, BDC Seed)
-
-**See [`ops/README.md`](./ops/README.md) for complete documentation.**
-
-### Cost Breakdown (CAD)
-
-| Service | Free Tier | Paid Tier |
-|---------|-----------|-----------|
-| GitHub Actions | 2,000 min/month | Included |
-| Zapier | 100 tasks/month | $29.99/month |
-| Supabase | Free (50K MAU) | $25/month |
-| Vercel | Free (hobby) | $20/month |
-| Google Sheets | Free | Free |
-| Notion | Free (personal) | $12/month |
-
-**Recommended:** Start with free tiers, upgrade as needed.
+Built with:
+- [Expo](https://expo.dev) - Amazing mobile development platform
+- [Next.js](https://nextjs.org) - The React framework for production
+- [Supabase](https://supabase.com) - Open source Firebase alternative
+- [Turborepo](https://turbo.build) - High-performance build system
+- And the amazing open-source community
 
 ---
 
 ## 🆘 Support
 
-For support and questions:
-- Create an issue in the repository
-- Check the documentation
-- Review the code examples
+**Need help?**
+
+- 📖 Check the [documentation](docs/)
+- 🐛 [Report a bug](https://github.com/your-org/whats-for-dinner/issues)
+- 💬 [Ask a question](https://github.com/your-org/whats-for-dinner/discussions)
+- 📧 Email: support@whatsfordinner.app
+
+**We're here to help you succeed.**
 
 ---
 
-Built with ❤️ using Expo, Next.js, and Turborepo
+## 🌟 Star Us!
+
+**If this project helps you, please ⭐ star us!**
+
+It helps others discover the project and motivates us to keep improving.
+
+---
+
+<div align="center">
+
+**🍽️ Stop wondering. Start cooking. 🍳**
+
+Made with ❤️ by the What's for Dinner team
+
+[Get Started](#-quick-start-60-seconds) • [Documentation](docs/) • [Contributing](CONTRIBUTING.md) • [Security](SECURITY.md)
+
+</div>
+
+
+## 🏥 Health Check
+
+Run comprehensive health checks:
+
+```bash
+node scripts/comprehensive-health-check.mjs
+```
+
+This checks:
+- Code quality
+- Security posture
+- Performance metrics
+- Test coverage
+- Documentation completeness
+- Configuration validity

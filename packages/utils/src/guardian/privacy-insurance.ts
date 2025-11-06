@@ -36,8 +36,7 @@ export class PrivacyInsurance {
     this.middleware.setEnabled(!this.state.privateModeActive);
     
     // Log the toggle
-    console.log(`Private Mode ${this.state.privateModeActive ? 'activated' : 'deactivated'}`);
-  }
+      }
 
   isPrivateModeActive(): boolean {
     return this.state.privateModeActive;
@@ -57,13 +56,11 @@ export class PrivacyInsurance {
     if (this.state.sensitiveContextActive && !wasActive) {
       // Automatically mute monitoring
       this.middleware.setEnabled(false);
-      console.log('Sensitive context detected - monitoring automatically muted');
-    } else if (!this.state.sensitiveContextActive && wasActive) {
+          } else if (!this.state.sensitiveContextActive && wasActive) {
       // Re-enable monitoring if private mode is not active
       if (!this.state.privateModeActive) {
         this.middleware.setEnabled(true);
-        console.log('Sensitive context ended - monitoring resumed');
-      }
+              }
     }
   }
 
@@ -110,8 +107,7 @@ export class PrivacyInsurance {
     // 3. Disable all data collection
     // 4. Notify user
 
-    console.log('Emergency Data Lockdown activated');
-  }
+      }
 
   async deactivateLockdown(): Promise<void> {
     this.state.lockdownActive = false;
@@ -122,8 +118,7 @@ export class PrivacyInsurance {
       this.middleware.setEnabled(true);
     }
 
-    console.log('Emergency Data Lockdown deactivated');
-  }
+      }
 
   isLockdownActive(): boolean {
     return this.state.lockdownActive;

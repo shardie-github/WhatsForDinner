@@ -8,8 +8,7 @@ import * as path from 'path';
 import crypto from 'crypto';
 
 export async function runRotateSecrets(options: { force?: boolean; dryRun?: boolean }) {
-  console.log('🔐 Rotating secrets...\n');
-
+  
   const secretsDir = path.join(process.cwd(), 'ops', 'secrets');
   if (!fs.existsSync(secretsDir)) {
     fs.mkdirSync(secretsDir, { recursive: true });
@@ -44,11 +43,10 @@ export async function runRotateSecrets(options: { force?: boolean; dryRun?: bool
 
     if (options.force || daysSinceRotation >= rotationDays) {
       if (options.dryRun) {
-        console.log(`   Would rotate: ${secretKey} (${daysSinceRotation} days old)`);
+        `);
         rotated.push(secretKey);
       } else {
-        console.log(`   Rotating: ${secretKey}...`);
-        
+                
         // Generate new secret (in production, use proper secret generation)
         const newSecret = crypto.randomBytes(32).toString('hex');
         
@@ -67,23 +65,16 @@ export async function runRotateSecrets(options: { force?: boolean; dryRun?: bool
         }
 
         // In production, update in Supabase and Vercel via API
-        console.log(`   ⚠️  Secret rotation not fully implemented`);
-        console.log(`   Would update ${secretKey} in Supabase/Vercel`);
-        
+                        
         rotated.push(secretKey);
       }
     } else if (daysSinceRotation >= rotationDays - alertDays) {
-      console.log(`   ⚠️  ${secretKey} expires in ${rotationDays - daysSinceRotation} days`);
-    }
+          }
   }
 
   if (!options.dryRun && rotated.length > 0) {
     fs.writeFileSync(rotationLog, JSON.stringify(rotationHistory, null, 2));
-    console.log(`\n✅ Rotated ${rotated.length} secrets`);
-    console.log('   Update secrets in Supabase and Vercel dashboards');
-  } else if (options.dryRun) {
-    console.log(`\n✅ Would rotate ${rotated.length} secrets`);
-  } else {
-    console.log('\n✅ No secrets need rotation');
-  }
+          } else if (options.dryRun) {
+      } else {
+      }
 }

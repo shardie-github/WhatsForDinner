@@ -35,5 +35,4 @@ export function generateStorePack() {
     JSON.stringify(appStoreManifest, null, 2)
   );
 
-  console.log(`✅ Store pack generated in ${storeDir}`);
-}
+  }

@@ -7,8 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export async function runChangelog(options: { version?: string; unreleased?: boolean }) {
-  console.log('📝 Generating changelog...\n');
-
+  
   const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
 
   try {
@@ -67,8 +66,7 @@ ${other.length > 0 ? `### Other\n${other.join('\n')}\n` : ''}
       fs.writeFileSync(changelogPath, changelog);
     }
 
-    console.log(`✅ Changelog generated: ${changelogPath}`);
-  } catch (error) {
+      } catch (error) {
     console.error('❌ Changelog generation failed:', error);
     process.exit(1);
   }
