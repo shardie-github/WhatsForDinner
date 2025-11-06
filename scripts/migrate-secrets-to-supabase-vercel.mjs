@@ -12,8 +12,10 @@
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { createClient } from '@supabase/supabase-js';
 import { execSync } from 'child_process';
+
+// Dynamic import for Supabase to handle missing dependencies in dry-run
+let createClient = null;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -119,7 +121,19 @@ function extractEnvVars() {
 /**
  * Initialize Supabase client
  */
-function getSupabaseClient() {
+async function getSupabaseClient() {
+  // Try to load Supabase client dynamically
+  if (!createClient) {
+    try {
+      const supabaseModule = await import('@supabase/supabase-js');
+      createClient = supabaseModule.createClient;
+    } catch (e) {
+      throw new Error(
+        '@supabase/supabase-js not installed. Run: pnpm install @supabase/supabase-js'
+      );
+    }
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -388,7 +402,7 @@ async function main() {
 
     // Step 2: Migrate to Supabase
     log('Step 2: Migrating to Supabase...', 'cyan');
-    const supabase = getSupabaseClient();
+    const supabase = await getSupabaseClient();
     await ensureSecretsTable(supabase);
     const supabaseResults = await migrateToSupabase(supabase, envVars.secrets, environment);
 

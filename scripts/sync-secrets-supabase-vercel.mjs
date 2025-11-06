@@ -6,10 +6,12 @@
  * and vice versa. It can run as a scheduled job to keep both systems in sync.
  */
 
-import { createClient } from '@supabase/supabase-js';
 import { execSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+
+// Dynamic import for Supabase
+let createClient = null;
 
 const colors = {
   reset: '\x1b[0m',
@@ -26,7 +28,19 @@ function log(message, color = 'reset') {
 /**
  * Get Supabase client
  */
-function getSupabaseClient() {
+async function getSupabaseClient() {
+  // Try to load Supabase client dynamically
+  if (!createClient) {
+    try {
+      const supabaseModule = await import('@supabase/supabase-js');
+      createClient = supabaseModule.createClient;
+    } catch (e) {
+      throw new Error(
+        '@supabase/supabase-js not installed. Run: pnpm install @supabase/supabase-js'
+      );
+    }
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -108,7 +122,7 @@ async function setVercelEnvVar(projectId, token, key, value, environment = 'prod
 async function syncSupabaseToVercel(environment = 'production') {
   log(`\n🔄 Syncing Supabase → Vercel (${environment})...`, 'cyan');
 
-  const supabase = getSupabaseClient();
+  const supabase = await getSupabaseClient();
   const vercelToken = process.env.VERCEL_TOKEN;
   const vercelProjectId = process.env.VERCEL_PROJECT_ID;
 
@@ -169,7 +183,7 @@ async function syncSupabaseToVercel(environment = 'production') {
 async function syncVercelToSupabase(environment = 'production') {
   log(`\n🔄 Syncing Vercel → Supabase (${environment})...`, 'cyan');
 
-  const supabase = getSupabaseClient();
+  const supabase = await getSupabaseClient();
   const vercelToken = process.env.VERCEL_TOKEN;
   const vercelProjectId = process.env.VERCEL_PROJECT_ID;
 

@@ -6,8 +6,10 @@
  * Provides a unified interface for accessing secrets across all scripts
  */
 
-import { createClient } from '@supabase/supabase-js';
 import { execSync } from 'child_process';
+
+// Dynamic import for Supabase
+let createClient = null;
 
 class UnifiedSecretsManager {
   constructor() {
@@ -19,7 +21,18 @@ class UnifiedSecretsManager {
     this.initSupabase();
   }
 
-  initSupabase() {
+  async initSupabase() {
+    // Try to load Supabase client dynamically
+    if (!createClient) {
+      try {
+        const supabaseModule = await import('@supabase/supabase-js');
+        createClient = supabaseModule.createClient;
+      } catch (e) {
+        // Supabase not installed, will use process.env fallback
+        return;
+      }
+    }
+
     const supabaseUrl = 
       process.env.NEXT_PUBLIC_SUPABASE_URL || 
       process.env.SUPABASE_URL ||
@@ -31,7 +44,7 @@ class UnifiedSecretsManager {
 
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    if (supabaseUrl && supabaseKey) {
+    if (supabaseUrl && supabaseKey && createClient) {
       this.supabase = createClient(supabaseUrl, supabaseKey);
     }
   }
@@ -55,6 +68,11 @@ class UnifiedSecretsManager {
       useCache = true,
       fallbackToEnv = true,
     } = options;
+
+    // Initialize Supabase if needed
+    if (!this.supabase && createClient) {
+      await this.initSupabase();
+    }
 
     // Check cache first
     if (useCache && this.cache.has(key)) {
