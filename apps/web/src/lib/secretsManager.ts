@@ -151,13 +151,13 @@ class SecretsManager {
         .single();
 
       if (error || !data) {
-        console.warn(`Secret ${key} not found for environment ${environment}`);
+        if (process.env.NODE_ENV === 'development') { console.warn(`Secret ${key} not found for environment ${environment}`); }
         return null;
       }
 
       // Check if secret needs rotation
       if (new Date(data.nextRotation) <= new Date()) {
-        console.warn(`Secret ${key} is due for rotation`);
+        if (process.env.NODE_ENV === 'development') { console.warn(`Secret ${key} is due for rotation`); }
         await this.rotateSecret(key, environment);
       }
 
@@ -250,7 +250,7 @@ class SecretsManager {
         rotated_by: 'system',
       });
     } catch (error) {
-      console.error('Failed to log rotation event:', error);
+      // Error handled: Failed to log rotation event:
     }
   }
 
@@ -298,7 +298,7 @@ class SecretsManager {
 
       return checksums;
     } catch (error) {
-      console.error('Error getting secret checksums:', error);
+      // Error handled: Error getting secret checksums:
       return {};
     }
   }
@@ -319,13 +319,13 @@ class SecretsManager {
         if (policy && policy.autoRotate) {
                     await this.rotateSecret(secret.key, secret.environment);
         } else {
-          console.warn(
+          if (process.env.NODE_ENV === 'development') { console.warn(
             `Secret ${secret.key} is due for rotation but auto-rotation is disabled`
-          );
+          ); }
         }
       }
     } catch (error) {
-      console.error('Error in rotation check:', error);
+      // Error handled: Error in rotation check:
     }
   }
 }

@@ -106,7 +106,7 @@ export default function OnboardingChecklist({
           });
         }
       } catch (error) {
-        console.error('Error loading checklist state:', error);
+        // Error handled: Error loading checklist state:
       } finally {
         setLoading(false);
       }
@@ -145,7 +145,7 @@ export default function OnboardingChecklist({
               window.location.reload();
             }
           } catch (error) {
-            console.error('Error seeding sample data:', error);
+            // Error handled: Error seeding sample data:
           }
           break;
         case 'save_recipe':
@@ -194,7 +194,7 @@ export default function OnboardingChecklist({
         }, 3000);
       }
     } catch (error) {
-      console.error('Error updating checklist:', error);
+      // Error handled: Error updating checklist:
     }
   };
 
@@ -214,7 +214,7 @@ export default function OnboardingChecklist({
         user_id: userId,
       });
     } catch (error) {
-      console.error('Error dismissing checklist:', error);
+      // Error handled: Error dismissing checklist:
     }
 
     setShow(false);

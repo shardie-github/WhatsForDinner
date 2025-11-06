@@ -21,7 +21,7 @@ export async function requestPushPermission(): Promise<boolean> {
     const result = await PushNotifications.requestPermissions();
     return result.receive === 'granted';
   } catch (error) {
-    console.error('Failed to request push permissions:', error);
+    // Error handled: Failed to request push permissions:
     return false;
   }
 }
@@ -57,7 +57,7 @@ export async function initPushNotifications(
 
     // Handle registration errors
     PushNotifications.addListener('registrationError', (error) => {
-      console.error('Push registration error:', error);
+      // Error handled: Push registration error:
     });
 
     // Handle notification received
@@ -70,7 +70,7 @@ export async function initPushNotifications(
             onAction(action);
     });
   } catch (error) {
-    console.error('Failed to initialize push notifications:', error);
+    // Error handled: Failed to initialize push notifications:
   }
 }
 
@@ -92,7 +92,7 @@ async function sendTokenToBackend(token: PushToken) {
       throw new Error('Failed to register token');
     }
   } catch (error) {
-    console.error('Failed to send token to backend:', error);
+    // Error handled: Failed to send token to backend:
   }
 }
 
@@ -111,6 +111,6 @@ export async function unregisterPushNotifications(): Promise<void> {
     await PushNotifications.unregister();
     pushToken = null;
   } catch (error) {
-    console.error('Failed to unregister push notifications:', error);
+    // Error handled: Failed to unregister push notifications:
   }
 }

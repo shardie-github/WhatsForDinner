@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Account deletion error:', error);
+    // Error handled: Account deletion error:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

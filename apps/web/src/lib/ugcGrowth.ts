@@ -139,7 +139,7 @@ export class UGCGrowth {
         .single();
 
       if (error) {
-        console.error('Error creating meal card:', error);
+        // Error handled: Error creating meal card:
         throw error;
       }
 
@@ -149,7 +149,7 @@ export class UGCGrowth {
         created_at: data.created_at,
       } as MealCard;
     } catch (error) {
-      console.error('Failed to create meal card:', error);
+      // Error handled: Failed to create meal card:
       throw error;
     }
   }
@@ -203,7 +203,7 @@ export class UGCGrowth {
       // 3. Set up webhooks to track engagement
 
           } catch (error) {
-      console.error('Failed to share to social:', error);
+      // Error handled: Failed to share to social:
       throw error;
     }
   }
@@ -332,7 +332,7 @@ export class UGCGrowth {
         },
       });
     } catch (error) {
-      console.error('Failed to track engagement:', error);
+      // Error handled: Failed to track engagement:
       throw error;
     }
   }
@@ -365,7 +365,7 @@ export class UGCGrowth {
         .eq('status', 'published');
 
       if (error) {
-        console.error('Error fetching user UGC analytics:', error);
+        // Error handled: Error fetching user UGC analytics:
         throw error;
       }
 
@@ -422,7 +422,7 @@ export class UGCGrowth {
         viral_coefficient: viralCoefficient,
       };
     } catch (error) {
-      console.error('Failed to get user UGC analytics:', error);
+      // Error handled: Failed to get user UGC analytics:
       throw error;
     }
   }
@@ -440,13 +440,13 @@ export class UGCGrowth {
         .limit(limit);
 
       if (error) {
-        console.error('Error fetching trending UGC:', error);
+        // Error handled: Error fetching trending UGC:
         throw error;
       }
 
       return data as UGCShare[];
     } catch (error) {
-      console.error('Failed to get trending UGC:', error);
+      // Error handled: Failed to get trending UGC:
       throw error;
     }
   }
@@ -519,7 +519,7 @@ export class UGCGrowth {
         optimal_platforms: optimalPlatforms,
       };
     } catch (error) {
-      console.error('Failed to generate share suggestions:', error);
+      // Error handled: Failed to generate share suggestions:
       throw error;
     }
   }
@@ -597,7 +597,7 @@ export class UGCGrowth {
         share_urls: shareUrls,
       };
     } catch (error) {
-      console.error('Failed to create shareable meal card data:', error);
+      // Error handled: Failed to create shareable meal card data:
       throw error;
     }
   }

@@ -46,7 +46,7 @@ class MonetizationManager {
       try {
         await revenueCat.initialize(userId);
       } catch (error) {
-        console.warn('[Monetization] RevenueCat failed, using native billing:', error);
+        if (process.env.NODE_ENV === 'development') { console.warn('[Monetization] RevenueCat failed, using native billing:', error); }
       }
     }
 
@@ -66,7 +66,7 @@ class MonetizationManager {
         return await revenueCat.getProducts();
       }
     } catch (error) {
-      console.warn('[Monetization] RevenueCat getProducts failed:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('[Monetization] RevenueCat getProducts failed:', error); }
     }
 
     // Fallback to native billing
@@ -94,7 +94,7 @@ class MonetizationManager {
         return { success: true, productId, transactionId: result.transactionIdentifier };
       }
     } catch (error) {
-      console.warn('[Monetization] RevenueCat purchase failed:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('[Monetization] RevenueCat purchase failed:', error); }
     }
 
     // Fallback to native billing
@@ -130,7 +130,7 @@ class MonetizationManager {
         }));
       }
     } catch (error) {
-      console.warn('[Monetization] RevenueCat restore failed:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('[Monetization] RevenueCat restore failed:', error); }
     }
 
     // Fallback to native billing
@@ -158,7 +158,7 @@ class MonetizationManager {
         return await revenueCat.hasEntitlement('premium');
       }
     } catch (error) {
-      console.warn('[Monetization] RevenueCat check failed:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('[Monetization] RevenueCat check failed:', error); }
     }
 
     return false;

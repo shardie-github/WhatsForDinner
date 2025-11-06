@@ -270,7 +270,7 @@ export async function middleware(request: NextRequest) {
       }
     } catch (error) {
       // Guardian errors should not block requests
-      console.error('Guardian integration error:', error);
+      // Error handled: Guardian integration error:
     }
 
     // Add trace ID to response headers

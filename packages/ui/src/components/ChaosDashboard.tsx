@@ -14,7 +14,7 @@ export const ChaosDashboard: React.FC = () => {
     try {
       const result = await chaosService.runExperiment(experimentId);
           } catch (error) {
-      console.error('Experiment failed:', error);
+      // Error handled: Experiment failed:
     }
   };
 

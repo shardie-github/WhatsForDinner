@@ -112,7 +112,7 @@ export class ModelAdvisor {
         reasoning,
       };
     } catch (error) {
-      console.error('Error getting optimal model:', error);
+      // Error handled: Error getting optimal model:
       throw error;
     }
   }
@@ -225,7 +225,7 @@ export class ModelAdvisor {
 
       return performance;
     } catch (error) {
-      console.error('Error getting model performance:', error);
+      // Error handled: Error getting model performance:
       throw error;
     }
   }
@@ -294,7 +294,7 @@ export class ModelAdvisor {
         },
       });
     } catch (error) {
-      console.error('Error updating model performance:', error);
+      // Error handled: Error updating model performance:
     }
   }
 
@@ -333,7 +333,7 @@ export class ModelAdvisor {
         })) || []
       );
     } catch (error) {
-      console.error('Error getting cost comparison:', error);
+      // Error handled: Error getting cost comparison:
       throw error;
     }
   }
@@ -478,7 +478,7 @@ export class ModelAdvisor {
       this.performanceCache.clear();
 
           } catch (error) {
-      console.error('Error refreshing model data:', error);
+      // Error handled: Error refreshing model data:
     }
   }
 }

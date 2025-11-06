@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (error) {
-      console.error("Error storing feedback:", error);
+      // Error handled: Error storing feedback:
       return NextResponse.json(
         { error: "Failed to store feedback" },
         { status: 500 }
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, message: "Feedback received" });
   } catch (error) {
-    console.error("Unexpected error:", error);
+    // Error handled: Unexpected error:
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

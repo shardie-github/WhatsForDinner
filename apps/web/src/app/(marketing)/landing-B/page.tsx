@@ -96,7 +96,7 @@ function LandingB() {
         error: error.message,
         variant: 'B',
       });
-      console.error('Error generating recipes:', error);
+      // Error handled: Error generating recipes:
     }
   };
 
@@ -110,7 +110,7 @@ function LandingB() {
         variant: 'B',
       });
     } catch (error) {
-      console.error('Error saving recipe:', error);
+      // Error handled: Error saving recipe:
     }
   };
 

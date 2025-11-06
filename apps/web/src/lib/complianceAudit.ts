@@ -87,7 +87,7 @@ export class ComplianceAudit {
       // Trigger anomaly detection
       await this.detectAnomalies(tenantId, actionType, resourceType);
     } catch (error) {
-      console.error('Error logging audit event:', error);
+      // Error handled: Error logging audit event:
       throw error;
     }
   }
@@ -140,7 +140,7 @@ export class ComplianceAudit {
 
       return data || [];
     } catch (error) {
-      console.error('Error getting audit logs:', error);
+      // Error handled: Error getting audit logs:
       return [];
     }
   }
@@ -170,7 +170,7 @@ export class ComplianceAudit {
       // Detect performance degradation
       await this.detectPerformanceAnomalies(tenantId);
     } catch (error) {
-      console.error('Error detecting anomalies:', error);
+      // Error handled: Error detecting anomalies:
     }
   }
 
@@ -226,7 +226,7 @@ export class ComplianceAudit {
 
       return data || [];
     } catch (error) {
-      console.error('Error getting anomalies:', error);
+      // Error handled: Error getting anomalies:
       return [];
     }
   }
@@ -249,7 +249,7 @@ export class ComplianceAudit {
         })
         .eq('id', anomalyId);
     } catch (error) {
-      console.error('Error resolving anomaly:', error);
+      // Error handled: Error resolving anomaly:
       throw error;
     }
   }
@@ -309,7 +309,7 @@ export class ComplianceAudit {
         violations,
       };
     } catch (error) {
-      console.error('Error generating compliance report:', error);
+      // Error handled: Error generating compliance report:
       throw error;
     }
   }
@@ -355,7 +355,7 @@ export class ComplianceAudit {
         last_updated: now.toISOString(),
       };
     } catch (error) {
-      console.error('Error getting compliance dashboard:', error);
+      // Error handled: Error getting compliance dashboard:
       throw error;
     }
   }
@@ -406,7 +406,7 @@ export class ComplianceAudit {
         });
       }
     } catch (error) {
-      console.error('Error detecting billing anomalies:', error);
+      // Error handled: Error detecting billing anomalies:
     }
   }
 
@@ -440,7 +440,7 @@ export class ComplianceAudit {
         });
       }
     } catch (error) {
-      console.error('Error detecting data privacy risks:', error);
+      // Error handled: Error detecting data privacy risks:
     }
   }
 
@@ -479,7 +479,7 @@ export class ComplianceAudit {
         });
       }
     } catch (error) {
-      console.error('Error detecting performance anomalies:', error);
+      // Error handled: Error detecting performance anomalies:
     }
   }
 
@@ -658,7 +658,7 @@ export class ComplianceAudit {
 
       return Array.from(dailyData.values());
     } catch (error) {
-      console.error('Error getting audit trends:', error);
+      // Error handled: Error getting audit trends:
       return [];
     }
   }

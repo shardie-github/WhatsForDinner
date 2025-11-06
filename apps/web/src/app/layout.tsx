@@ -147,7 +147,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   // [STAKE+TRUST:BEGIN:i18n_attributes]
-  // TODO: Replace with actual i18n locale detection
+  // i18n locale detection - using browser locale as fallback
+      const locale = typeof window !== 'undefined' 
+        ? (navigator.language || navigator.languages?.[0] || 'en').split('-')[0]
+        : 'en';
   const locale = "en"; // Future: Get from i18n system or user preference
   const direction = "ltr"; // Future: Support RTL languages (ar, he, fa, ur)
   // [STAKE+TRUST:END:i18n_attributes]

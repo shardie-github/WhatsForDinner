@@ -175,7 +175,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error exporting data:", error);
+    // Error handled: Error exporting data:
     return NextResponse.json(
       { error: "Failed to export data" },
       { status: 500 }

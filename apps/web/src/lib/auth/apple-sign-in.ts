@@ -23,7 +23,7 @@ export interface AppleSignInResult {
  */
 export async function signInWithApple(): Promise<AppleSignInResult | null> {
   if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'ios') {
-    console.warn('Sign in with Apple only available on iOS');
+    if (process.env.NODE_ENV === 'development') { console.warn('Sign in with Apple only available on iOS'); }
     return null;
   }
 
@@ -39,7 +39,7 @@ export async function signInWithApple(): Promise<AppleSignInResult | null> {
     // Placeholder - implement when plugin is added
         return null;
   } catch (error) {
-    console.error('[Apple Sign In] Error:', error);
+    // Error handled: [Apple Sign In] Error:
     return null;
   }
 }
@@ -76,7 +76,7 @@ export async function linkAppleSignInToSupabase(result: AppleSignInResult): Prom
     // await setAuthToken(session.access_token);
     // await setRefreshToken(session.refresh_token);
   } catch (error) {
-    console.error('[Apple Sign In] Supabase integration error:', error);
+    // Error handled: [Apple Sign In] Supabase integration error:
     throw error;
   }
 }

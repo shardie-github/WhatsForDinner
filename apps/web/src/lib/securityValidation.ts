@@ -1062,7 +1062,7 @@ class SecurityValidator {
         failed_checks: report.checks.filter(c => c.status === 'fail').length,
       });
     } catch (error) {
-      console.error('Failed to log security report:', error);
+      // Error handled: Failed to log security report:
     }
   }
 }

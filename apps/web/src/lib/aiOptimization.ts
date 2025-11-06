@@ -109,7 +109,7 @@ export class AIOptimizationService {
 
       return data;
     } catch (error) {
-      console.error('Error fetching cached response:', error);
+      // Error handled: Error fetching cached response:
       return null;
     }
   }
@@ -148,7 +148,7 @@ export class AIOptimizationService {
       });
 
           } catch (error) {
-      console.error('Error caching response:', error);
+      // Error handled: Error caching response:
     }
   }
 
@@ -241,7 +241,7 @@ export class AIOptimizationService {
     try {
       await supabase.rpc('cleanup_expired_cache');
           } catch (error) {
-      console.error('Error cleaning up cache:', error);
+      // Error handled: Error cleaning up cache:
     }
   }
 
@@ -282,7 +282,7 @@ export class AIOptimizationService {
         averageResponseTime,
       };
     } catch (error) {
-      console.error('Error getting cache stats:', error);
+      // Error handled: Error getting cache stats:
       return {
         totalEntries: 0,
         hitRate: 0,

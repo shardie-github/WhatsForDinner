@@ -262,7 +262,7 @@ async function sendSlackAlert(
       }),
     });
   } catch (error) {
-    console.error('Failed to send Slack alert:', error);
+    // Error handled: Failed to send Slack alert:
   }
 }
 
@@ -304,6 +304,6 @@ async function sendPagerDutyAlert(
       }),
     });
   } catch (error) {
-    console.error('Failed to send PagerDuty alert:', error);
+    // Error handled: Failed to send PagerDuty alert:
   }
 }

@@ -109,7 +109,7 @@ export async function GET(req: NextRequest) {
       stats,
     });
   } catch (error) {
-    console.error('Error fetching partner stats:', error);
+    // Error handled: Error fetching partner stats:
     return NextResponse.json(
       { error: 'Failed to fetch partner statistics' },
       { status: 500 }

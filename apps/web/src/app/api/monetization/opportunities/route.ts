@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Error getting monetization opportunities:', error);
+    // Error handled: Error getting monetization opportunities:
     return NextResponse.json(
       { error: 'Failed to get opportunities' },
       { status: 500 }

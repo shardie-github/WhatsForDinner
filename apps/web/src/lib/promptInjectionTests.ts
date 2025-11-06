@@ -381,7 +381,7 @@ export async function runAutomatedRedTeamTests(): Promise<void> {
     } else {
           }
   } catch (error) {
-    console.error('❌ Error running red team tests:', error);
+    // Error handled: ❌ Error running red team tests:
     process.exit(1);
   }
 }

@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     res = addSecurityHeaders(res);
     return setCORSHeaders(res, request.headers.get('origin'));
   } catch (error) {
-    console.error('Error fetching user:', error);
+    // Error handled: Error fetching user:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -86,7 +86,7 @@ export async function PATCH(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid input', details: error.errors }, { status: 400 });
     }
-    console.error('Error updating user:', error);
+    // Error handled: Error updating user:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

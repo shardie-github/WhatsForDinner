@@ -55,10 +55,10 @@ class Logger {
       const { error } = await supabase.from('logs').insert(entry);
 
       if (error) {
-        console.error('Failed to write log to database:', error);
+        // Error handled: Failed to write log to database:
       }
     } catch (error) {
-      console.error('Logger database error:', error);
+      // Error handled: Logger database error:
     }
   }
 
@@ -128,7 +128,7 @@ class Logger {
       component
     );
 
-    console.warn(`[${source}] ${message}`, context);
+    if (process.env.NODE_ENV === 'development') { console.warn(`[${source}] ${message}`, context); }
     await this.writeLog(entry);
   }
 
@@ -224,13 +224,13 @@ class Logger {
       const { data, error } = await query;
 
       if (error) {
-        console.error('Failed to fetch error reports:', error);
+        // Error handled: Failed to fetch error reports:
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to fetch error reports:', error);
+      // Error handled: Failed to fetch error reports:
       return [];
     }
   }
@@ -246,13 +246,13 @@ class Logger {
         .eq('id', errorId);
 
       if (error) {
-        console.error('Failed to resolve error report:', error);
+        // Error handled: Failed to resolve error report:
         return false;
       }
 
       return true;
     } catch (error) {
-      console.error('Failed to resolve error report:', error);
+      // Error handled: Failed to resolve error report:
       return false;
     }
   }

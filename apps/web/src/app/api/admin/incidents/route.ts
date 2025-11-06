@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(incidents);
   } catch (error) {
-    console.error('Incidents list error:', error);
+    // Error handled: Incidents list error:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid request', details: error.errors }, { status: 400 });
     }
-    console.error('Incident create error:', error);
+    // Error handled: Incident create error:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

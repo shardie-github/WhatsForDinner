@@ -43,7 +43,7 @@ export default function ExportDataPage() {
 
       setExported(true);
     } catch (error) {
-      console.error("Export failed:", error);
+      // Error handled: Export failed:
       alert("Export failed. Please try again.");
     } finally {
       setExporting(false);

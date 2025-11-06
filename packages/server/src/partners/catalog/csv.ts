@@ -44,7 +44,7 @@ export function parseCSVFeed(
       try {
         return parseCSVRow(row);
       } catch (error) {
-        console.warn('Failed to parse CSV row', error, row);
+        if (process.env.NODE_ENV === 'development') { console.warn('Failed to parse CSV row', error, row); }
         return null;
       }
     })

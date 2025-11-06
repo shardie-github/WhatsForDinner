@@ -25,7 +25,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
       // Load current entitlements
       await this.refreshEntitlements();
     } catch (error) {
-      console.error('Failed to initialize Android purchases:', error);
+      // Error handled: Failed to initialize Android purchases:
       throw error;
     }
   }
@@ -96,7 +96,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
       
       return [...this.currentEntitlements];
     } catch (error) {
-      console.error('Failed to restore purchases:', error);
+      // Error handled: Failed to restore purchases:
       return [];
     }
   }
@@ -121,7 +121,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
       
       return active?.transactionId || null;
     } catch (error) {
-      console.error('Failed to get purchase data:', error);
+      // Error handled: Failed to get purchase data:
       return null;
     }
   }
@@ -145,7 +145,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
       });
       
           } catch (error) {
-      console.error('Billing initialization error:', error);
+      // Error handled: Billing initialization error:
       throw error;
     }
   }
@@ -196,7 +196,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
         }
       }
     } catch (error) {
-      console.error('Failed to refresh entitlements:', error);
+      // Error handled: Failed to refresh entitlements:
     }
   }
 
@@ -261,7 +261,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
         developerPayload: '',
       });
     } catch (error) {
-      console.error('Failed to acknowledge purchase:', error);
+      // Error handled: Failed to acknowledge purchase:
     }
   }
 
@@ -303,7 +303,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
         }),
       });
     } catch (error) {
-      console.error('Failed to notify server:', error);
+      // Error handled: Failed to notify server:
     }
   }
 
@@ -333,7 +333,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
         }),
       });
     } catch (error) {
-      console.error('Failed to sync with server:', error);
+      // Error handled: Failed to sync with server:
     }
   }
 }

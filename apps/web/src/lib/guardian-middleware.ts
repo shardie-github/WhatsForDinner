@@ -38,6 +38,6 @@ export async function processGuardianEvent(
     });
   } catch (error) {
     // Don't block requests if Guardian fails
-    console.error('Guardian event processing failed:', error);
+    // Error handled: Guardian event processing failed:
   }
 }

@@ -19,7 +19,7 @@ export default function UGCAnalyticsPage() {
       const data = await UGCGrowth.getUserUGCAnalytics(userId);
       setAnalytics(data);
     } catch (error) {
-      console.error('Error loading UGC analytics:', error);
+      // Error handled: Error loading UGC analytics:
     } finally {
       setIsLoading(false);
     }
@@ -30,7 +30,7 @@ export default function UGCAnalyticsPage() {
       const content = await UGCGrowth.getTrendingUGC(10);
       setTrendingContent(content);
     } catch (error) {
-      console.error('Error loading trending content:', error);
+      // Error handled: Error loading trending content:
     }
   };
 

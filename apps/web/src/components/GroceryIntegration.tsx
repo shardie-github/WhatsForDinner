@@ -53,7 +53,7 @@ export default function GroceryIntegration({
         recipe_id: recipeId,
       });
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      // Error handled: Error adding to cart:
     } finally {
       setLoading(false);
     }

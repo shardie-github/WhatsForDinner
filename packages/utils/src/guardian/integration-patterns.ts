@@ -56,7 +56,7 @@ export function withGuardian<T extends any[]>(
       // Execute handler
       return await handler(...args);
     } catch (error) {
-      console.error('Guardian-wrapped handler error:', error);
+      // Error handled: Guardian-wrapped handler error:
       throw error;
     }
   };

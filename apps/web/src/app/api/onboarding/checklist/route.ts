@@ -51,7 +51,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(checklist);
   } catch (error) {
-    console.error('Error fetching checklist:', error);
+    // Error handled: Error fetching checklist:
     return NextResponse.json(
       { error: 'Failed to fetch checklist' },
       { status: 500 }

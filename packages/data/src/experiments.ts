@@ -116,7 +116,7 @@ async function trackExposure(
       }),
     });
   } catch (error) {
-    console.warn('Failed to track experiment exposure:', error);
+    if (process.env.NODE_ENV === 'development') { console.warn('Failed to track experiment exposure:', error); }
   }
 }
 

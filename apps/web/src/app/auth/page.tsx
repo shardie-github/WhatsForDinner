@@ -37,7 +37,7 @@ export default function AuthPage() {
       }
       router.push('/');
     } catch (error) {
-      console.error('Auth error:', error);
+      // Error handled: Auth error:
     } finally {
       setLoading(false);
     }

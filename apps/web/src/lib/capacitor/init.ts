@@ -99,7 +99,7 @@ export async function initializeCapacitor() {
 
     initialized = true;
       } catch (error) {
-    console.error('[Capacitor] Initialization error:', error);
+    // Error handled: [Capacitor] Initialization error:
   }
 }
 

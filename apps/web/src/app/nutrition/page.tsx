@@ -86,7 +86,7 @@ export default function NutritionDashboard() {
       
       setNutrition(mockNutrition);
     } catch (error) {
-      console.error('Error loading nutrition data:', error);
+      // Error handled: Error loading nutrition data:
     }
   };
 

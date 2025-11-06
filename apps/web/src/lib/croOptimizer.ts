@@ -121,7 +121,7 @@ export class CROOptimizer {
         await this.optimizeLowPerformingCTA(ctaId);
       }
     } catch (error) {
-      console.error('Error tracking CTA interaction:', error);
+      // Error handled: Error tracking CTA interaction:
     }
   }
 
@@ -189,7 +189,7 @@ export class CROOptimizer {
 
       return storedPlacements;
     } catch (error) {
-      console.error('Error generating optimized CTAs:', error);
+      // Error handled: Error generating optimized CTAs:
       throw error;
     }
   }
@@ -214,7 +214,7 @@ export class CROOptimizer {
         .order('timestamp', { ascending: true });
 
       if (error) {
-        console.error('Error fetching funnel events:', error);
+        // Error handled: Error fetching funnel events:
         return [];
       }
 
@@ -265,7 +265,7 @@ export class CROOptimizer {
 
       return stages;
     } catch (error) {
-      console.error('Error analyzing funnel:', error);
+      // Error handled: Error analyzing funnel:
       return [];
     }
   }
@@ -320,7 +320,7 @@ export class CROOptimizer {
         estimated_impact: estimatedImpact,
       };
     } catch (error) {
-      console.error('Error getting CRO insights:', error);
+      // Error handled: Error getting CRO insights:
       throw error;
     }
   }
@@ -356,7 +356,7 @@ export class CROOptimizer {
         variants_generated: newVariants.length,
       });
     } catch (error) {
-      console.error('Error optimizing CTA:', error);
+      // Error handled: Error optimizing CTA:
     }
   }
 

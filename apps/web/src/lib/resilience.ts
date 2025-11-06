@@ -257,7 +257,7 @@ export function withGracefulDegradation<T, R>(
 ): Promise<T | R> {
   return operation().catch(error => {
     if (isTransient(error)) {
-      console.warn('Operation failed, using fallback:', error.message);
+      if (process.env.NODE_ENV === 'development') { console.warn('Operation failed, using fallback:', error.message); }
       return fallback();
     }
     throw error;

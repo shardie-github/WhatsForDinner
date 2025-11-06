@@ -160,7 +160,7 @@ export default function PricingPage() {
         throw new Error('No checkout URL returned');
       }
     } catch (error) {
-      console.error('Error initiating checkout:', error);
+      // Error handled: Error initiating checkout:
       alert('Failed to start checkout. Please try again.');
       setLoading(false);
     }

@@ -65,7 +65,7 @@ function parseAtomFeed(parsed: XMLNode): ParsedCatalogItem[] {
       try {
         return parseAtomEntry(entry);
       } catch (error) {
-        console.warn('Failed to parse Atom entry', error);
+        if (process.env.NODE_ENV === 'development') { console.warn('Failed to parse Atom entry', error); }
         return null;
       }
     })
@@ -151,7 +151,7 @@ function parseRSSFeed(parsed: XMLNode): ParsedCatalogItem[] {
           tags: item.category ? [String(item.category)] : undefined,
         };
       } catch (error) {
-        console.warn('Failed to parse RSS item', error);
+        if (process.env.NODE_ENV === 'development') { console.warn('Failed to parse RSS item', error); }
         return null;
       }
     })
@@ -192,7 +192,7 @@ function parseProductsFormat(parsed: XMLNode): ParsedCatalogItem[] {
           tags: product.tags ? (Array.isArray(product.tags) ? product.tags.map(String) : [String(product.tags)]) : undefined,
         };
       } catch (error) {
-        console.warn('Failed to parse product', error);
+        if (process.env.NODE_ENV === 'development') { console.warn('Failed to parse product', error); }
         return null;
       }
     })

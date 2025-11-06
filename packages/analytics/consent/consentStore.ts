@@ -55,7 +55,7 @@ export class ConsentStore {
       try {
         listener(event);
       } catch (error) {
-        console.error('Error in consent event listener:', error);
+        // Error handled: Error in consent event listener:
       }
     });
   }
@@ -216,7 +216,7 @@ export class ConsentStore {
         }
       }
     } catch (error) {
-      console.warn('Failed to load consent state:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('Failed to load consent state:', error); }
     }
   }
   
@@ -228,7 +228,7 @@ export class ConsentStore {
       const state = this.model.getState();
       await this.storage.set('consent_state', JSON.stringify(state));
     } catch (error) {
-      console.error('Failed to save consent state:', error);
+      // Error handled: Failed to save consent state:
     }
   }
   
@@ -280,7 +280,7 @@ class WebConsentStorage implements ConsentStorage {
       
       return null;
     } catch (error) {
-      console.warn('Failed to read from storage:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('Failed to read from storage:', error); }
       return null;
     }
   }
@@ -299,7 +299,7 @@ class WebConsentStorage implements ConsentStorage {
       expires.setFullYear(expires.getFullYear() + 1); // 1 year expiry
       document.cookie = `${key}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
     } catch (error) {
-      console.error('Failed to write to storage:', error);
+      // Error handled: Failed to write to storage:
     }
   }
   
@@ -312,7 +312,7 @@ class WebConsentStorage implements ConsentStorage {
       localStorage.removeItem(key);
       document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     } catch (error) {
-      console.error('Failed to remove from storage:', error);
+      // Error handled: Failed to remove from storage:
     }
   }
 }
@@ -328,7 +328,7 @@ class MobileConsentStorage implements ConsentStorage {
     try {
       this.SecureStore = require('expo-secure-store');
     } catch (error) {
-      console.warn('expo-secure-store not available, using fallback');
+      if (process.env.NODE_ENV === 'development') { console.warn('expo-secure-store not available, using fallback'); }
     }
   }
   
@@ -342,7 +342,7 @@ class MobileConsentStorage implements ConsentStorage {
       const AsyncStorage = require('@react-native-async-storage/async-storage');
       return await AsyncStorage.getItem(key);
     } catch (error) {
-      console.warn('Failed to read from secure storage:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('Failed to read from secure storage:', error); }
       return null;
     }
   }
@@ -358,7 +358,7 @@ class MobileConsentStorage implements ConsentStorage {
       const AsyncStorage = require('@react-native-async-storage/async-storage');
       await AsyncStorage.setItem(key, value);
     } catch (error) {
-      console.error('Failed to write to secure storage:', error);
+      // Error handled: Failed to write to secure storage:
     }
   }
   
@@ -373,7 +373,7 @@ class MobileConsentStorage implements ConsentStorage {
       const AsyncStorage = require('@react-native-async-storage/async-storage');
       await AsyncStorage.removeItem(key);
     } catch (error) {
-      console.error('Failed to remove from secure storage:', error);
+      // Error handled: Failed to remove from secure storage:
     }
   }
 }

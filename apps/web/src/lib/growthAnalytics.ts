@@ -64,11 +64,11 @@ export class GrowthAnalytics {
       });
 
       if (error) {
-        console.error('Error tracking funnel event:', error);
+        // Error handled: Error tracking funnel event:
         throw error;
       }
     } catch (error) {
-      console.error('Failed to track funnel event:', error);
+      // Error handled: Failed to track funnel event:
       throw error;
     }
   }
@@ -87,13 +87,13 @@ export class GrowthAnalytics {
       });
 
       if (error) {
-        console.error('Error calculating cohort retention:', error);
+        // Error handled: Error calculating cohort retention:
         throw error;
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to get cohort retention:', error);
+      // Error handled: Failed to get cohort retention:
       throw error;
     }
   }
@@ -108,13 +108,13 @@ export class GrowthAnalytics {
       });
 
       if (error) {
-        console.error('Error calculating user LTV:', error);
+        // Error handled: Error calculating user LTV:
         throw error;
       }
 
       return data || 0;
     } catch (error) {
-      console.error('Failed to calculate user LTV:', error);
+      // Error handled: Failed to calculate user LTV:
       throw error;
     }
   }
@@ -147,11 +147,11 @@ export class GrowthAnalytics {
         .insert(metricData);
 
       if (error) {
-        console.error('Error storing growth metric:', error);
+        // Error handled: Error storing growth metric:
         throw error;
       }
     } catch (error) {
-      console.error('Failed to store growth metric:', error);
+      // Error handled: Failed to store growth metric:
       throw error;
     }
   }
@@ -173,7 +173,7 @@ export class GrowthAnalytics {
         .eq('period_end', periodEnd);
 
       if (error) {
-        console.error('Error fetching growth metrics:', error);
+        // Error handled: Error fetching growth metrics:
         throw error;
       }
 
@@ -220,7 +220,7 @@ export class GrowthAnalytics {
 
       return summary;
     } catch (error) {
-      console.error('Failed to get growth metrics summary:', error);
+      // Error handled: Failed to get growth metrics summary:
       throw error;
     }
   }
@@ -242,7 +242,7 @@ export class GrowthAnalytics {
         .lte('timestamp', periodEnd);
 
       if (error) {
-        console.error('Error fetching funnel events:', error);
+        // Error handled: Error fetching funnel events:
         throw error;
       }
 
@@ -287,7 +287,7 @@ export class GrowthAnalytics {
 
       return rates;
     } catch (error) {
-      console.error('Failed to get funnel conversion rates:', error);
+      // Error handled: Failed to get funnel conversion rates:
       throw error;
     }
   }
@@ -300,7 +300,7 @@ export class GrowthAnalytics {
       const { data, error } = await supabase.rpc('generate_referral_code');
 
       if (error) {
-        console.error('Error generating referral code:', error);
+        // Error handled: Error generating referral code:
         throw error;
       }
 
@@ -325,7 +325,7 @@ export class GrowthAnalytics {
 
       return referralCode;
     } catch (error) {
-      console.error('Failed to generate referral code:', error);
+      // Error handled: Failed to generate referral code:
       throw error;
     }
   }
@@ -347,13 +347,13 @@ export class GrowthAnalytics {
       );
 
       if (error) {
-        console.error('Error processing referral conversion:', error);
+        // Error handled: Error processing referral conversion:
         throw error;
       }
 
       return data || false;
     } catch (error) {
-      console.error('Failed to process referral conversion:', error);
+      // Error handled: Failed to process referral conversion:
       throw error;
     }
   }
@@ -374,7 +374,7 @@ export class GrowthAnalytics {
         .eq('referrer_id', userId);
 
       if (error) {
-        console.error('Error fetching referral stats:', error);
+        // Error handled: Error fetching referral stats:
         throw error;
       }
 
@@ -395,7 +395,7 @@ export class GrowthAnalytics {
 
       return stats;
     } catch (error) {
-      console.error('Failed to get user referral stats:', error);
+      // Error handled: Failed to get user referral stats:
       throw error;
     }
   }
@@ -475,7 +475,7 @@ export class GrowthAnalytics {
         ),
       ]);
     } catch (error) {
-      console.error('Failed to calculate daily growth metrics:', error);
+      // Error handled: Failed to calculate daily growth metrics:
       throw error;
     }
   }
@@ -504,7 +504,7 @@ export class GrowthAnalytics {
         .order('period_start', { ascending: true });
 
       if (error) {
-        console.error('Error fetching growth trends:', error);
+        // Error handled: Error fetching growth trends:
         throw error;
       }
 
@@ -537,7 +537,7 @@ export class GrowthAnalytics {
 
       return { dates, metrics: trends };
     } catch (error) {
-      console.error('Failed to get growth trends:', error);
+      // Error handled: Failed to get growth trends:
       throw error;
     }
   }

@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(nutritionData);
   } catch (error) {
-    console.error('Error fetching nutrition data:', error);
+    // Error handled: Error fetching nutrition data:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

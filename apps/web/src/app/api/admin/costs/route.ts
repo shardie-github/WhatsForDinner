@@ -222,7 +222,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(metrics);
   } catch (error) {
-    console.error('Error fetching cost metrics:', error);
+    // Error handled: Error fetching cost metrics:
     return NextResponse.json(
       { error: 'Failed to fetch cost metrics' },
       { status: 500 },

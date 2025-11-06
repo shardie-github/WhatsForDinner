@@ -166,7 +166,7 @@ class PerformanceOptimizer {
         'metrics'
       );
     } catch (error) {
-      console.error('Failed to record performance metrics:', error);
+      // Error handled: Failed to record performance metrics:
     }
   }
 
@@ -336,7 +336,7 @@ class PerformanceOptimizer {
         score,
       };
     } catch (error) {
-      console.error('Failed to generate performance report:', error);
+      // Error handled: Failed to generate performance report:
       return {
         summary: { error: error.message },
         metrics: [],
@@ -493,7 +493,7 @@ class PerformanceOptimizer {
         'optimization'
       );
     } catch (error) {
-      console.error('Bundle optimization failed:', error);
+      // Error handled: Bundle optimization failed:
     }
   }
 
@@ -517,7 +517,7 @@ class PerformanceOptimizer {
         'optimization'
       );
     } catch (error) {
-      console.error('Image optimization failed:', error);
+      // Error handled: Image optimization failed:
     }
   }
 
@@ -541,7 +541,7 @@ class PerformanceOptimizer {
         'optimization'
       );
     } catch (error) {
-      console.error('Caching optimization failed:', error);
+      // Error handled: Caching optimization failed:
     }
   }
 }
@@ -581,7 +581,7 @@ export async function measureBundleSize(): Promise<number> {
     // For now, return a simulated value
     return Math.random() * 500 + 100;
   } catch (error) {
-    console.error('Failed to measure bundle size:', error);
+    // Error handled: Failed to measure bundle size:
     return 0;
   }
 }

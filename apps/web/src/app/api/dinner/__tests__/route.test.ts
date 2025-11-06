@@ -1,141 +1,228 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { NextRequest } from 'next/server';
 import { POST } from '../route';
-import { openai } from '@/lib/openaiClient';
+import * as openaiService from '@/lib/openaiService';
+import * as aiOptimization from '@/lib/aiOptimization';
+import * as authMiddleware from '@/lib/auth-middleware';
+import * as stripeService from '@/lib/stripe';
 
-// Mock the OpenAI client
-jest.mock('@/lib/openaiClient', () => ({
-  openai: {
-    chat: {
-      completions: {
-        create: jest.fn(),
-      },
-    },
-  },
+// Mock dependencies
+vi.mock('@/lib/openaiService');
+vi.mock('@/lib/aiOptimization');
+vi.mock('@/lib/auth-middleware');
+vi.mock('@/lib/stripe');
+vi.mock('@/lib/rate-limiting', () => ({
+  withRateLimit: (config: any, handler: any) => handler,
+}));
+vi.mock('@/lib/csrf-middleware', () => ({
+  withCSRFProtection: (handler: any, req: any) => handler(req),
 }));
 
-const mockOpenai = openai as jest.Mocked<typeof openai>;
-
-describe('/api/dinner', () => {
+describe('/api/dinner POST', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should generate recipes successfully', async () => {
+    const mockUser = { id: 'user-123', email: 'test@example.com' };
+    const mockTenant = { id: 'tenant-123', plan: 'free' };
     const mockRecipes = [
       {
-        title: 'Pasta with Tomatoes',
-        cookTime: '30 minutes',
-        calories: 450,
-        ingredients: ['pasta', 'tomatoes', 'garlic'],
-        steps: ['Boil pasta', 'Sauté garlic', 'Add tomatoes'],
+        title: 'Pasta Carbonara',
+        ingredients: ['pasta', 'eggs', 'bacon'],
+        steps: ['Cook pasta', 'Fry bacon'],
       },
     ];
 
-    mockOpenai.chat.completions.create.mockResolvedValue({
-      choices: [
-        {
-          message: {
-            content: JSON.stringify(mockRecipes),
-          },
+    vi.mocked(authMiddleware.getTenantContext).mockResolvedValue({
+      success: true,
+      context: {
+        supabase: {
+          from: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: mockTenant, error: null }),
+              }),
+            }),
+          }),
         },
-      ],
-    } as any);
+      } as any,
+      tenantId: 'tenant-123',
+    });
 
-    const request = new Request('http://localhost:3000/api/dinner', {
+    vi.mocked(openaiService.generateRecipesWithFallback).mockResolvedValue({
+      recipes: mockRecipes,
+      metadata: {},
+    });
+
+    vi.mocked(aiOptimization.aiOptimization.getOptimizedResponse).mockResolvedValue({
+      response: { recipes: mockRecipes, metadata: {} },
+      model: 'gpt-4o-mini',
+      tokens: 100,
+      cost: 0.01,
+      cached: false,
+    });
+
+    const req = new NextRequest('http://localhost/api/dinner', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
-        ingredients: ['pasta', 'tomatoes'],
-        preferences: 'vegetarian',
+        ingredients: ['pasta', 'eggs', 'bacon'],
+        preferences: 'italian',
       }),
     });
 
-    const response = await POST(request);
+    const response = await POST(req);
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.recipes).toEqual(mockRecipes);
-    expect(mockOpenai.chat.completions.create).toHaveBeenCalledWith({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'user',
-          content: expect.stringContaining('pasta, tomatoes'),
-        },
-      ],
-      temperature: 0.7,
-    });
+    expect(data.recipes).toBeDefined();
+    expect(data.recipes.length).toBeGreaterThan(0);
+    expect(data.metadata).toBeDefined();
   });
 
-  it('should handle OpenAI API errors', async () => {
-    mockOpenai.chat.completions.create.mockRejectedValue(
+  it('should handle authentication failure', async () => {
+    vi.mocked(authMiddleware.getTenantContext).mockResolvedValue({
+      success: false,
+      response: new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+      }),
+    });
+
+    const req = new NextRequest('http://localhost/api/dinner', {
+      method: 'POST',
+      body: JSON.stringify({
+        ingredients: ['pasta'],
+        preferences: '',
+      }),
+    });
+
+    const response = await POST(req);
+    expect(response.status).toBe(401);
+  });
+
+  it('should handle invalid request body', async () => {
+    vi.mocked(authMiddleware.getTenantContext).mockResolvedValue({
+      success: true,
+      context: { supabase: {} } as any,
+      tenantId: 'tenant-123',
+    });
+
+    const req = new NextRequest('http://localhost/api/dinner', {
+      method: 'POST',
+      body: JSON.stringify({
+        invalid: 'data',
+      }),
+    });
+
+    const response = await POST(req);
+    expect(response.status).toBe(400);
+  });
+
+  it('should handle tenant not found', async () => {
+    vi.mocked(authMiddleware.getTenantContext).mockResolvedValue({
+      success: true,
+      context: {
+        supabase: {
+          from: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: null, error: null }),
+              }),
+            }),
+          }),
+        },
+      } as any,
+      tenantId: 'tenant-123',
+    });
+
+    const req = new NextRequest('http://localhost/api/dinner', {
+      method: 'POST',
+      body: JSON.stringify({
+        ingredients: ['pasta'],
+        preferences: '',
+      }),
+    });
+
+    const response = await POST(req);
+    expect(response.status).toBe(404);
+  });
+
+  it('should handle API errors gracefully', async () => {
+    vi.mocked(authMiddleware.getTenantContext).mockResolvedValue({
+      success: true,
+      context: {
+        supabase: {
+          from: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: { plan: 'free' }, error: null }),
+              }),
+            }),
+          }),
+        },
+      } as any,
+      tenantId: 'tenant-123',
+    });
+
+    vi.mocked(aiOptimization.aiOptimization.getOptimizedResponse).mockRejectedValue(
       new Error('API Error')
     );
 
-    const request = new Request('http://localhost:3000/api/dinner', {
+    const req = new NextRequest('http://localhost/api/dinner', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         ingredients: ['pasta'],
         preferences: '',
       }),
     });
 
-    const response = await POST(request);
-    const data = await response.json();
-
+    const response = await POST(req);
     expect(response.status).toBe(500);
-    expect(data.error).toBe('Failed to generate recipes');
+    const data = await response.json();
+    expect(data.error).toBeDefined();
   });
 
-  it('should handle invalid JSON response from OpenAI', async () => {
-    mockOpenai.chat.completions.create.mockResolvedValue({
-      choices: [
-        {
-          message: {
-            content: 'invalid json',
-          },
+  it('should calculate cost correctly', async () => {
+    const mockTenant = { id: 'tenant-123', plan: 'free' };
+    const mockRecipes = [{ title: 'Test Recipe', ingredients: ['test'] }];
+
+    vi.mocked(authMiddleware.getTenantContext).mockResolvedValue({
+      success: true,
+      context: {
+        supabase: {
+          from: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({ data: mockTenant, error: null }),
+              }),
+            }),
+          }),
         },
-      ],
-    } as any);
+      } as any,
+      tenantId: 'tenant-123',
+    });
 
-    const request = new Request('http://localhost:3000/api/dinner', {
+    vi.mocked(aiOptimization.aiOptimization.getOptimizedResponse).mockResolvedValue({
+      response: { recipes: mockRecipes, metadata: {} },
+      model: 'gpt-4o',
+      tokens: 1000,
+      cost: 0.1,
+      cached: false,
+    });
+
+    const req = new NextRequest('http://localhost/api/dinner', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         ingredients: ['pasta'],
         preferences: '',
       }),
     });
 
-    const response = await POST(request);
+    const response = await POST(req);
     const data = await response.json();
 
-    expect(response.status).toBe(500);
-    expect(data.error).toBe('Failed to generate recipes');
-  });
-
-  it('should handle missing ingredients', async () => {
-    const request = new Request('http://localhost:3000/api/dinner', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ingredients: [],
-        preferences: '',
-      }),
-    });
-
-    const response = await POST(request);
-    const data = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(data.recipes).toEqual([]);
+    expect(data.metadata.costUsd).toBeDefined();
+    expect(data.metadata.tokensUsed).toBe(1000);
+    expect(data.metadata.model).toBe('gpt-4o');
   });
 });

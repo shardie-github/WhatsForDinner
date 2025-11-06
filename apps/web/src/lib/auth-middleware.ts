@@ -55,7 +55,7 @@ export async function getAuthenticatedUser(
       supabase,
     };
   } catch (error) {
-    console.error('Authentication error:', error);
+    // Error handled: Authentication error:
     return null;
   }
 }

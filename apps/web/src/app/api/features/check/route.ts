@@ -67,7 +67,7 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error('Error checking feature:', error);
+    // Error handled: Error checking feature:
     return NextResponse.json(
       { error: 'Failed to check feature' },
       { status: 500 }

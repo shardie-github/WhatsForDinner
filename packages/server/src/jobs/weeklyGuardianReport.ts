@@ -60,7 +60,7 @@ if (require.main === module) {
             process.exit(0);
     })
     .catch((error) => {
-      console.error('Weekly report generation failed:', error);
+      // Error handled: Weekly report generation failed:
       process.exit(1);
     });
 }

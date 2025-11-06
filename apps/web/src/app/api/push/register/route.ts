@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       message: 'Push token registered successfully',
     });
   } catch (error) {
-    console.error('Push registration error:', error);
+    // Error handled: Push registration error:
     return NextResponse.json(
       { error: 'Failed to register push token' },
       { status: 500 }

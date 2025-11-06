@@ -94,7 +94,7 @@ export class GuardianMiddleware {
       // Mask or redact data if needed
       if (event.guardianAction === 'mask' || event.guardianAction === 'redact') {
         // Data masking would happen here
-        console.warn('Guardian masked/redacted data:', event.explanation);
+        if (process.env.NODE_ENV === 'development') { console.warn('Guardian masked/redacted data:', event.explanation); }
       }
 
       return apiCall();

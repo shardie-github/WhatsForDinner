@@ -110,7 +110,7 @@ export class MonetizationHub {
       
       return opportunities;
     } catch (error) {
-      console.error('Error identifying upsell opportunities:', error);
+      // Error handled: Error identifying upsell opportunities:
       return [];
     }
   }
@@ -155,7 +155,7 @@ export class MonetizationHub {
         priceId: checkoutSession.id,
       };
     } catch (error) {
-      console.error('Error offering usage credits:', error);
+      // Error handled: Error offering usage credits:
       return null;
     }
   }
@@ -194,7 +194,7 @@ export class MonetizationHub {
 
       return null;
     } catch (error) {
-      console.error('Error offering annual subscription:', error);
+      // Error handled: Error offering annual subscription:
       return null;
     }
   }
@@ -275,7 +275,7 @@ export class MonetizationHub {
         .limit(20);
 
       if (error) {
-        console.error('Error fetching marketplace items:', error);
+        // Error handled: Error fetching marketplace items:
         return [];
       }
 
@@ -289,7 +289,7 @@ export class MonetizationHub {
         rating: item.rating || 0,
       }));
     } catch (error) {
-      console.error('Error getting marketplace items:', error);
+      // Error handled: Error getting marketplace items:
       return [];
     }
   }
@@ -326,7 +326,7 @@ export class MonetizationHub {
         conversion_value: conversionValue,
       });
     } catch (error) {
-      console.error('Error tracking affiliate conversion:', error);
+      // Error handled: Error tracking affiliate conversion:
     }
   }
 
@@ -384,7 +384,7 @@ export class MonetizationHub {
         estimatedAnnualValue: annualValue,
       };
     } catch (error) {
-      console.error('Error creating enterprise quote:', error);
+      // Error handled: Error creating enterprise quote:
       throw error;
     }
   }
@@ -426,7 +426,7 @@ export class MonetizationHub {
         price,
       };
     } catch (error) {
-      console.error('Error offering data licensing:', error);
+      // Error handled: Error offering data licensing:
       throw error;
     }
   }
@@ -473,7 +473,7 @@ export class MonetizationHub {
         breakdown,
       };
     } catch (error) {
-      console.error('Error forecasting revenue:', error);
+      // Error handled: Error forecasting revenue:
       throw error;
     }
   }

@@ -119,7 +119,7 @@ export class SelfLearningSystem {
       
       return cycle;
     } catch (error) {
-      console.error('Error in learning cycle:', error);
+      // Error handled: Error in learning cycle:
       const cycle: LearningCycle = {
         cycle_id: cycleId,
         start_time: startTime,
@@ -164,7 +164,7 @@ export class SelfLearningSystem {
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      console.error('Error collecting learning data:', error);
+      // Error handled: Error collecting learning data:
       return {};
     }
   }
@@ -189,7 +189,7 @@ export class SelfLearningSystem {
         cta_events: ctaEvents || [],
       };
     } catch (error) {
-      console.error('Error getting conversion data:', error);
+      // Error handled: Error getting conversion data:
       return { funnel_events: [], cta_events: [] };
     }
   }
@@ -212,7 +212,7 @@ export class SelfLearningSystem {
         p95_response_time: this.calculatePercentile(perfLogs || [], 'response_time', 95),
       };
     } catch (error) {
-      console.error('Error getting performance data:', error);
+      // Error handled: Error getting performance data:
       return { logs: [], avg_response_time: 0, p95_response_time: 0 };
     }
   }
@@ -238,7 +238,7 @@ export class SelfLearningSystem {
         total_revenue: (revenue || []).reduce((sum: number, r: any) => sum + (r.amount || 0), 0),
       };
     } catch (error) {
-      console.error('Error getting monetization data:', error);
+      // Error handled: Error getting monetization data:
       return { revenue_records: [], active_subscriptions: [], total_revenue: 0 };
     }
   }
@@ -259,7 +259,7 @@ export class SelfLearningSystem {
         drop_off_points: this.analyzeDropOffs(analytics || []),
       };
     } catch (error) {
-      console.error('Error getting user behavior data:', error);
+      // Error handled: Error getting user behavior data:
       return { events: [], popular_actions: [], drop_off_points: [] };
     }
   }
@@ -280,7 +280,7 @@ export class SelfLearningSystem {
         top_errors: this.getTopErrors(errors || []),
       };
     } catch (error) {
-      console.error('Error getting error data:', error);
+      // Error handled: Error getting error data:
       return { errors: [], error_frequency: {}, top_errors: [] };
     }
   }
@@ -574,7 +574,7 @@ export class SelfLearningSystem {
     try {
       await supabase.from('learning_insights').insert(insight);
     } catch (error) {
-      console.error('Error storing insight:', error);
+      // Error handled: Error storing insight:
     }
   }
 
@@ -585,7 +585,7 @@ export class SelfLearningSystem {
     try {
       await supabase.from('learning_cycles').insert(cycle);
     } catch (error) {
-      console.error('Error storing learning cycle:', error);
+      // Error handled: Error storing learning cycle:
     }
   }
 

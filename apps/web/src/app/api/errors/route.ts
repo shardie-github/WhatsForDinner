@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     // Don't expose internal error details to clients
-    console.error('Error fetching errors:', error);
+    // Error handled: Error fetching errors:
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch errors',

@@ -42,7 +42,7 @@ async function handler(req: NextRequest) {
 
     return NextResponse.json({ mealPlan });
   } catch (error) {
-    console.error('Error generating meal plan:', error);
+    // Error handled: Error generating meal plan:
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(

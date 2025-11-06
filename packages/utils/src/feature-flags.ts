@@ -60,7 +60,7 @@ class FeatureFlagsService {
       const config = await response.json();
       this.loadFlags(config.flags);
     } catch (error) {
-      console.warn('Failed to refresh feature flags:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('Failed to refresh feature flags:', error); }
     }
   }
 

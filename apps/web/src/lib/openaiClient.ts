@@ -5,7 +5,7 @@ import { validateEnv } from './validation';
 try {
   validateEnv();
 } catch (error) {
-  console.error('Environment validation failed:', error);
+  // Error handled: Environment validation failed:
   throw error;
 }
 

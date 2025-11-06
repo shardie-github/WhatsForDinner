@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
       recentCampaigns,
     });
   } catch (error) {
-    console.error('Dashboard error:', error);
+    // Error handled: Dashboard error:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

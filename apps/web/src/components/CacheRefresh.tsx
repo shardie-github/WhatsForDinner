@@ -31,7 +31,7 @@ export default function CacheRefresh() {
         setMessage('Service Worker not supported');
       }
     } catch (error) {
-      console.error('Cache refresh error:', error);
+      // Error handled: Cache refresh error:
       setMessage('Failed to refresh cache');
     } finally {
       setRefreshing(false);

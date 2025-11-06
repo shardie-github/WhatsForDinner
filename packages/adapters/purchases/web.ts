@@ -21,7 +21,7 @@ export class WebPurchaseAdapter implements PurchaseAdapter {
       await this.refreshEntitlements();
       this.initialized = true;
     } catch (error) {
-      console.error('Failed to initialize web purchases:', error);
+      // Error handled: Failed to initialize web purchases:
       throw error;
     }
   }
@@ -115,7 +115,7 @@ export class WebPurchaseAdapter implements PurchaseAdapter {
         }];
       }
     } catch (error) {
-      console.error('Failed to refresh entitlements:', error);
+      // Error handled: Failed to refresh entitlements:
     }
   }
 

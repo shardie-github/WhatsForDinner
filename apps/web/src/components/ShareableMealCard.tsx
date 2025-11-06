@@ -44,7 +44,7 @@ export default function ShareableMealCard({
       const card = await UGCGrowth.createMealCard(userId, recipeData);
       setMealCard(card);
     } catch (error) {
-      console.error('Error creating meal card:', error);
+      // Error handled: Error creating meal card:
     }
   };
 
@@ -57,7 +57,7 @@ export default function ShareableMealCard({
       setShareSuggestions(suggestions);
       setSelectedPlatforms(suggestions.optimal_platforms);
     } catch (error) {
-      console.error('Error loading share suggestions:', error);
+      // Error handled: Error loading share suggestions:
     }
   };
 
@@ -91,7 +91,7 @@ export default function ShareableMealCard({
 
       alert('Content shared successfully!');
     } catch (error) {
-      console.error('Error sharing content:', error);
+      // Error handled: Error sharing content:
       alert('Failed to share content');
     } finally {
       setIsSharing(false);

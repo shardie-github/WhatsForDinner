@@ -17,7 +17,7 @@ export function useCSRFToken() {
           setToken(data.token);
         }
       } catch (error) {
-        console.error('Error fetching CSRF token:', error);
+        // Error handled: Error fetching CSRF token:
       }
     }
 

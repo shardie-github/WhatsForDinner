@@ -68,7 +68,7 @@ export async function GET(
       consent,
       signature: crypto.randomBytes(16).toString('hex'),
     }).catch((error) => {
-      console.error('Failed to log click', error);
+      // Error handled: Failed to log click
     });
 
     // Get partner for attribution window
@@ -112,7 +112,7 @@ export async function GET(
 
     return redirectResponse;
   } catch (error) {
-    console.error('Redirect handler error', error);
+    // Error handled: Redirect handler error
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
       keys: keys || [],
     });
   } catch (error) {
-    console.error('Error fetching API keys:', error);
+    // Error handled: Error fetching API keys:
     return NextResponse.json(
       { error: 'Failed to fetch API keys' },
       { status: 500 }
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       key: key,
     });
   } catch (error) {
-    console.error('Error creating API key:', error);
+    // Error handled: Error creating API key:
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(

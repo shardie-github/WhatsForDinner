@@ -69,7 +69,7 @@ export function ConsentGate({ onConsentComplete, store }: ConsentGateProps) {
         await consentStore.requestConsent();
       }
     } catch (error) {
-      console.warn('CMP initialization failed:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('CMP initialization failed:', error); }
       await consentStore.requestConsent();
     }
   };

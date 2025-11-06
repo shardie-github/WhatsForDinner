@@ -1,0 +1,159 @@
+{
+  "timestamp": "2025-11-06T03:16:58.688Z",
+  "automated": {
+    "passed": 3,
+    "failed": 0,
+    "warnings": 1,
+    "details": []
+  },
+  "manual": {
+    "AUTHENTICATION": {
+      "name": "Authentication & Authorization",
+      "tests": [
+        {
+          "id": "auth-001",
+          "name": "Test SQL injection in login",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "auth-002",
+          "name": "Test password brute force protection",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "auth-003",
+          "name": "Test session hijacking protection",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "auth-004",
+          "name": "Test CSRF token validation",
+          "severity": "medium",
+          "status": "pending"
+        },
+        {
+          "id": "auth-005",
+          "name": "Test JWT token expiration",
+          "severity": "medium",
+          "status": "pending"
+        }
+      ]
+    },
+    "API_SECURITY": {
+      "name": "API Security",
+      "tests": [
+        {
+          "id": "api-001",
+          "name": "Test rate limiting enforcement",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "api-002",
+          "name": "Test input validation",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "api-003",
+          "name": "Test unauthorized access attempts",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "api-004",
+          "name": "Test XSS in API responses",
+          "severity": "medium",
+          "status": "pending"
+        },
+        {
+          "id": "api-005",
+          "name": "Test API endpoint enumeration",
+          "severity": "low",
+          "status": "pending"
+        }
+      ]
+    },
+    "DATA_PROTECTION": {
+      "name": "Data Protection",
+      "tests": [
+        {
+          "id": "data-001",
+          "name": "Test encryption at rest",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "data-002",
+          "name": "Test encryption in transit (TLS)",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "data-003",
+          "name": "Test PII data exposure",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "data-004",
+          "name": "Test RLS policy enforcement",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "data-005",
+          "name": "Test GDPR compliance",
+          "severity": "high",
+          "status": "pending"
+        }
+      ]
+    },
+    "INFRASTRUCTURE": {
+      "name": "Infrastructure Security",
+      "tests": [
+        {
+          "id": "infra-001",
+          "name": "Test security headers (CSP, HSTS, etc.)",
+          "severity": "medium",
+          "status": "pending"
+        },
+        {
+          "id": "infra-002",
+          "name": "Test DDoS protection",
+          "severity": "medium",
+          "status": "pending"
+        },
+        {
+          "id": "infra-003",
+          "name": "Test secrets management",
+          "severity": "high",
+          "status": "pending"
+        },
+        {
+          "id": "infra-004",
+          "name": "Test dependency vulnerabilities",
+          "severity": "high",
+          "status": "pending"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "totalTests": 0,
+    "passed": 3,
+    "failed": 0,
+    "warnings": 1,
+    "criticalIssues": 0
+  },
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "action": "Review and address security warnings",
+      "count": 1
+    }
+  ]
+}

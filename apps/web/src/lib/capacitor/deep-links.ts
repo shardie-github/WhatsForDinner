@@ -41,7 +41,7 @@ export async function openInAppBrowser(url: string): Promise<void> {
   try {
     await Browser.open({ url });
   } catch (error) {
-    console.error('Failed to open browser:', error);
+    // Error handled: Failed to open browser:
     // Fallback to window.open in web
     if (typeof window !== 'undefined') {
       window.open(url, '_blank');

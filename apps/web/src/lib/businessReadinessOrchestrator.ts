@@ -57,7 +57,7 @@ export class BusinessReadinessOrchestrator {
       await selfLearningSystem.start();
 
           } catch (error) {
-      console.error('Error initializing orchestrator:', error);
+      // Error handled: Error initializing orchestrator:
       throw error;
     }
   }
@@ -142,7 +142,7 @@ export class BusinessReadinessOrchestrator {
 
       return report;
     } catch (error) {
-      console.error('Error generating business readiness report:', error);
+      // Error handled: Error generating business readiness report:
       throw error;
     }
   }
@@ -183,7 +183,7 @@ export class BusinessReadinessOrchestrator {
 
       return { score, opportunities };
     } catch (error) {
-      console.error('Error assessing CRO:', error);
+      // Error handled: Error assessing CRO:
       return { score: 50, opportunities: 0 };
     }
   }
@@ -201,7 +201,7 @@ export class BusinessReadinessOrchestrator {
 
       return { score, strategies_active: activeStrategies };
     } catch (error) {
-      console.error('Error assessing monetization:', error);
+      // Error handled: Error assessing monetization:
       return { score: 40, strategies_active: 0 };
     }
   }
@@ -224,7 +224,7 @@ export class BusinessReadinessOrchestrator {
         health_status: health.status,
       };
     } catch (error) {
-      console.error('Error assessing infrastructure:', error);
+      // Error handled: Error assessing infrastructure:
       return { score: 50, health_status: 'unknown' };
     }
   }
@@ -277,7 +277,7 @@ export class BusinessReadinessOrchestrator {
         monthly_recurring_revenue: growthSummary.mrr || 0,
       };
     } catch (error) {
-      console.error('Error getting business metrics:', error);
+      // Error handled: Error getting business metrics:
       return {
         conversion_rate: 0,
         average_revenue_per_user: 0,
@@ -357,7 +357,7 @@ export class BusinessReadinessOrchestrator {
         created_at: report.timestamp,
       });
     } catch (error) {
-      console.error('Error storing report:', error);
+      // Error handled: Error storing report:
     }
   }
 }

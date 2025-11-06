@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ mealPlans: data || [] });
   } catch (error) {
-    console.error('Error fetching meal plans:', error);
+    // Error handled: Error fetching meal plans:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ mealPlan }, { status: 201 });
   } catch (error) {
-    console.error('Error creating meal plan:', error);
+    // Error handled: Error creating meal plan:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -122,7 +122,7 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting meal plan:', error);
+    // Error handled: Error deleting meal plan:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

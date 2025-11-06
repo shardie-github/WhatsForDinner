@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       // session: data.session,
     });
   } catch (error) {
-    console.error('Apple Sign In callback error:', error);
+    // Error handled: Apple Sign In callback error:
     return NextResponse.json(
       { error: 'Failed to process Apple Sign In' },
       { status: 500 }

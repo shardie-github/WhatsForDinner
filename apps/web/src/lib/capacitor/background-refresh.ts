@@ -70,7 +70,7 @@ class BackgroundRefreshManager {
         await this.notifyNewSuggestions();
       }
     } catch (error) {
-      console.error('[Background Refresh] Error:', error);
+      // Error handled: [Background Refresh] Error:
     }
   }
 
@@ -113,7 +113,7 @@ class BackgroundRefreshManager {
         });
       }
     } catch (error) {
-      console.error('[Background Refresh] Notification error:', error);
+      // Error handled: [Background Refresh] Notification error:
     }
   }
 

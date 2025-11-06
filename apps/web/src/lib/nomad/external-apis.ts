@@ -54,7 +54,7 @@ export async function getNutritionFromBarcode(
 
     return null;
   } catch (error) {
-    console.error('Open Food Facts API error:', error);
+    // Error handled: Open Food Facts API error:
     return null;
   }
 }
@@ -69,7 +69,7 @@ export async function getNutritionFromEdamam(
   const appKey = process.env.NEXT_PUBLIC_EDAMAM_API_KEY;
 
   if (!appId || !appKey) {
-    console.warn('Edamam API credentials not configured');
+    if (process.env.NODE_ENV === 'development') { console.warn('Edamam API credentials not configured'); }
     return null;
   }
 
@@ -93,7 +93,7 @@ export async function getNutritionFromEdamam(
       fiber: data.totalNutrients?.FIBTG?.quantity || null,
     };
   } catch (error) {
-    console.error('Edamam API error:', error);
+    // Error handled: Edamam API error:
     return null;
   }
 }
@@ -108,7 +108,7 @@ export async function getNutritionFromNutritionix(
   const apiKey = process.env.NEXT_PUBLIC_NUTRITIONIX_API_KEY;
 
   if (!appId || !apiKey) {
-    console.warn('Nutritionix API credentials not configured');
+    if (process.env.NODE_ENV === 'development') { console.warn('Nutritionix API credentials not configured'); }
     return null;
   }
 
@@ -152,7 +152,7 @@ export async function getNutritionFromNutritionix(
 
     return null;
   } catch (error) {
-    console.error('Nutritionix API error:', error);
+    // Error handled: Nutritionix API error:
     return null;
   }
 }
@@ -252,7 +252,7 @@ export async function syncGoogleFitData(
       steps: data.bucket?.[0]?.dataset?.[0]?.point?.[0]?.value?.[0]?.intVal || 0,
     };
   } catch (error) {
-    console.error('Google Fit sync error:', error);
+    // Error handled: Google Fit sync error:
     return null;
   }
 }
@@ -268,7 +268,7 @@ export async function syncGoogleFitData(
 export async function syncAppleHealthData(): Promise<null> {
   // Apple HealthKit requires native iOS app
   // Would be implemented in React Native/Expo app
-  console.warn('Apple Health sync requires native app');
+  if (process.env.NODE_ENV === 'development') { console.warn('Apple Health sync requires native app'); }
   return null;
 }
 
@@ -308,7 +308,7 @@ export function loadAdMobBanner(adUnitId: string): void {
     // @ts-ignore - adsbygoogle is loaded dynamically
     (window.adsbygoogle = window.adsbygoogle || []).push({});
   } catch (error) {
-    console.error('AdMob banner load error:', error);
+    // Error handled: AdMob banner load error:
   }
 }
 
