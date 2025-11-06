@@ -48,8 +48,7 @@ let exitCode = 0;
 
 function log(message: string, type: "info" | "success" | "warning" | "error" = "info") {
   const icons = { info: "ℹ️", success: "✅", warning: "⚠️", error: "❌" };
-  console.log(`${icons[type]} ${message}`);
-}
+  }
 
 function recordCheck(
   lens: string,
@@ -843,24 +842,13 @@ function generateReport(): SecurityReport {
 }
 
 function printReport(report: SecurityReport) {
-  console.log("\n" + "=".repeat(80));
-  console.log("📊 Security Self-Check Report");
-  console.log("=".repeat(80));
-  console.log(`Timestamp: ${report.timestamp}`);
-  console.log(`\nSummary:`);
-  console.log(`  ✅ Passed: ${report.passed}`);
-  console.log(`  ❌ Failed: ${report.failed}`);
-  console.log(`  ⚠️  Warnings: ${report.warnings}`);
-  console.log(`  🚨 Critical: ${report.criticalFailures.length}`);
-  
+  );
+    );
+              
   if (report.criticalFailures.length > 0) {
-    console.log("\n🚨 Critical Failures:");
-    report.criticalFailures.forEach((r) => {
-      console.log(`  ❌ [${r.lens}] ${r.category}: ${r.check}`);
-      console.log(`     ${r.message}`);
-      if (r.remediation) {
-        console.log(`     💡 Fix: ${r.remediation}`);
-      }
+        report.criticalFailures.forEach((r) => {
+                  if (r.remediation) {
+              }
     });
   }
   
@@ -871,45 +859,34 @@ function printReport(report: SecurityReport) {
     byLens[r.lens].push(r);
   });
   
-  console.log("\n📋 Detailed Results by Stakeholder Lens:");
-  Object.entries(byLens).forEach(([lens, lensResults]) => {
-    console.log(`\n${lens}:`);
-    const byCategory: Record<string, CheckResult[]> = {};
+    Object.entries(byLens).forEach(([lens, lensResults]) => {
+        const byCategory: Record<string, CheckResult[]> = {};
     lensResults.forEach((r) => {
       if (!byCategory[r.category]) byCategory[r.category] = [];
       byCategory[r.category].push(r);
     });
     
     Object.entries(byCategory).forEach(([category, categoryResults]) => {
-      console.log(`  ${category}:`);
-      categoryResults.forEach((r) => {
+            categoryResults.forEach((r) => {
         const icon = r.passed ? "✅" : r.severity === "critical" ? "❌" : "⚠️";
-        console.log(`    ${icon} ${r.check}: ${r.message}`);
-      });
+              });
     });
   });
   
-  console.log("\n" + "=".repeat(80));
+  );
   
   if (report.criticalFailures.length > 0) {
-    console.log("❌ Security self-check FAILED with critical issues!");
-    console.log("   Please address critical failures before proceeding.");
-    return false;
+            return false;
   } else if (report.failed > 0) {
-    console.log("⚠️  Security self-check completed with warnings.");
-    console.log("   Review warnings and address as needed.");
-    return true;
+            return true;
   } else {
-    console.log("✅ Security self-check PASSED!");
-    return true;
+        return true;
   }
 }
 
 async function main() {
-  console.log("🔍 Hardonia Security Self-Check");
-  console.log("=".repeat(80));
-  console.log("Running comprehensive 360° security validation...\n");
-  
+    );
+    
   // Run all checks
   checkPrivacyCompliance();
   checkAccessibility();
@@ -927,8 +904,7 @@ async function main() {
   // Save report to file
   const reportPath = "security-self-check-report.json";
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-  console.log(`\n📄 Full report saved to: ${reportPath}`);
-  
+    
   process.exit(success ? 0 : 1);
 }
 

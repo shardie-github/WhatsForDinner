@@ -40,14 +40,10 @@ async function seedAdmin() {
     .limit(1);
 
   if (existing) {
-    console.log(`Admin user already exists: ${values.email}`);
-    console.log(`Role: ${existing.role}, Status: ${existing.status}`);
-    
+            
     // Generate token
     const token = await mintAdminToken(existing.id);
-    console.log('\nAdmin Token:');
-    console.log(token);
-    return;
+            return;
   }
 
   // Create new admin
@@ -60,21 +56,10 @@ async function seedAdmin() {
     })
     .returning();
 
-  console.log(`? Admin user created:`);
-  console.log(`   Email: ${admin.email}`);
-  console.log(`   Role: ${admin.role}`);
-  console.log(`   ID: ${admin.id}`);
-
+        
   // Generate token
   const token = await mintAdminToken(admin.id);
-  console.log('\n?? Admin Token:');
-  console.log(token);
-  console.log('\n??  Save this token securely. It will not be shown again.');
-  console.log('\n?? Next steps:');
-  console.log('   1. Set up 2FA for this admin account');
-  console.log('   2. Configure VPN allowlist if required');
-  console.log('   3. Test admin console access at /admin/dashboard');
-}
+              }
 
 seedAdmin().catch((error) => {
   console.error('Error seeding admin:', error);

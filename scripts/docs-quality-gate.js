@@ -36,9 +36,7 @@ class DocsQualityManager {
   }
 
   async runDocsQualityGate() {
-    console.log('📚 Phase 15: Docs Quality Gate');
-    console.log('==============================\n');
-
+        
     try {
       await this.analyzeMarkdownFiles();
       await this.checkADRs();
@@ -46,8 +44,7 @@ class DocsQualityManager {
       await this.createADRTemplate();
       await this.generateDocsReport();
       
-      console.log('✅ Docs quality gate setup completed successfully');
-      this.printSummary();
+            this.printSummary();
     } catch (error) {
       console.error('❌ Docs quality gate setup failed:', error.message);
       process.exit(1);
@@ -55,8 +52,7 @@ class DocsQualityManager {
   }
 
   async analyzeMarkdownFiles() {
-    console.log('📄 Analyzing markdown files...');
-    
+        
     const markdownFiles = this.findMarkdownFiles();
     
     for (const filePath of markdownFiles) {
@@ -64,8 +60,7 @@ class DocsQualityManager {
       this.results.markdownFiles.push(analysis);
     }
     
-    console.log(`   Analyzed ${markdownFiles.length} markdown files`);
-  }
+      }
 
   findMarkdownFiles() {
     const markdownFiles = [];
@@ -197,7 +192,7 @@ class DocsQualityManager {
   }
 
   async checkADRs() {
-    console.log('📋 Checking ADRs (Architecture Decision Records)...');
+    ...');
     
     const adrFiles = this.findADRFiles();
     
@@ -206,8 +201,7 @@ class DocsQualityManager {
       this.results.adrFiles.push(analysis);
     }
     
-    console.log(`   Found ${adrFiles.length} ADR files`);
-  }
+      }
 
   findADRFiles() {
     const adrFiles = [];
@@ -259,8 +253,7 @@ class DocsQualityManager {
   }
 
   async setupMarkdownLinting() {
-    console.log('🔧 Setting up markdown linting...');
-    
+        
     const markdownLintConfig = {
       "default": true,
       "MD013": {
@@ -303,8 +296,7 @@ class MarkdownLinter {
   }
 
   async lintMarkdown() {
-    console.log('🔍 Linting markdown files...');
-    
+        
     try {
       // Check if markdownlint is installed
       execSync('markdownlint --version', { stdio: 'pipe' });
@@ -313,22 +305,19 @@ class MarkdownLinter {
       const command = \`markdownlint "**/*.md" --config \${this.configPath}\`;
       execSync(command, { stdio: 'inherit' });
       
-      console.log('✅ Markdown linting completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Markdown linting failed:', error.message);
       process.exit(1);
     }
   }
 
   async fixMarkdown() {
-    console.log('🔧 Fixing markdown files...');
-    
+        
     try {
       const command = \`markdownlint "**/*.md" --config \${this.configPath} --fix\`;
       execSync(command, { stdio: 'inherit' });
       
-      console.log('✅ Markdown fixing completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Markdown fixing failed:', error.message);
       process.exit(1);
     }
@@ -356,8 +345,7 @@ module.exports = MarkdownLinter;
   }
 
   async createADRTemplate() {
-    console.log('📋 Creating ADR template...');
-    
+        
     const adrTemplate = `# ADR-0000: [Title]
 
 ## Status
@@ -519,13 +507,7 @@ Phase 15 is complete and ready for Phase 16 implementation.
   }
 
   printSummary() {
-    console.log('\n📚 Docs Quality Gate Summary');
-    console.log('============================');
-    console.log(`📄 Markdown Files: ${this.results.markdownFiles.length}`);
-    console.log(`📋 ADR Files: ${this.results.adrFiles.length}`);
-    console.log(`✅ Quality Rules: Configured`);
-    console.log(`🔧 Linting: Enabled`);
-  }
+                          }
 }
 
 // Run the docs quality gate setup

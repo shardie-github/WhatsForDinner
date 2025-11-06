@@ -15,8 +15,7 @@ class ReleasePreparer {
   }
 
   async prepareRelease() {
-    console.log('📋 Preparing release...');
-    
+        
     try {
       const currentVersion = this.getCurrentVersion();
       const newVersion = this.bumpVersion(currentVersion);
@@ -26,8 +25,7 @@ class ReleasePreparer {
       await this.createReleaseBranch();
       await this.commitChanges(newVersion);
       
-      console.log(`✅ Release ${newVersion} prepared successfully`);
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Release preparation failed:', error.message);
       process.exit(1);
     }
@@ -53,16 +51,14 @@ class ReleasePreparer {
   }
 
   async updateVersion(newVersion) {
-    console.log(`📝 Updating version to ${newVersion}...`);
-    
+        
     const packageJson = JSON.parse(fs.readFileSync(this.packageJsonPath, 'utf8'));
     packageJson.version = newVersion;
     fs.writeFileSync(this.packageJsonPath, JSON.stringify(packageJson, null, 2));
   }
 
   async generateChangelog() {
-    console.log('📄 Generating changelog...');
-    
+        
     // Get git commits since last tag
     const lastTag = execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim();
     const commits = execSync(`git log ${lastTag}..HEAD --oneline`, { encoding: 'utf8' });
@@ -94,13 +90,11 @@ ${commits.split('\n').map(commit => `- ${commit}`).join('\n')}
     const version = this.getCurrentVersion();
     const branchName = `release/${version}`;
     
-    console.log(`🌿 Creating release branch ${branchName}...`);
-    execSync(`git checkout -b ${branchName}`);
+        execSync(`git checkout -b ${branchName}`);
   }
 
   async commitChanges(version) {
-    console.log('💾 Committing changes...');
-    
+        
     execSync('git add package.json CHANGELOG.md');
     execSync(`git commit -m "chore: prepare release ${version}"`);
   }

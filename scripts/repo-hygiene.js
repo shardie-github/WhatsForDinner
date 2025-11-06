@@ -15,9 +15,7 @@ class RepoHygieneManager {
   }
 
   async runRepoHygiene() {
-    console.log('🧹 Phase 16: Repo Hygiene');
-    console.log('=========================\n');
-
+        
     try {
       await this.createCODEOWNERS();
       await this.setupBranchProtections();
@@ -26,16 +24,14 @@ class RepoHygieneManager {
       await this.configureGitHooks();
       await this.generateRepoHygieneReport();
       
-      console.log('✅ Repo hygiene setup completed successfully');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Repo hygiene setup failed:', error.message);
       process.exit(1);
     }
   }
 
   async createCODEOWNERS() {
-    console.log('👥 Creating CODEOWNERS...');
-    
+        
     const codeowners = `# CODEOWNERS
 # This file defines who owns which parts of the codebase
 
@@ -81,8 +77,7 @@ scripts/security-*.js @security-team
   }
 
   async setupBranchProtections() {
-    console.log('🛡️  Setting up branch protections...');
-    
+        
     const branchProtectionConfig = {
       main: {
         required_status_checks: {
@@ -119,8 +114,7 @@ scripts/security-*.js @security-team
   }
 
   async createIssueTemplates() {
-    console.log('📝 Creating issue templates...');
-    
+        
     const templatesDir = path.join(this.workspaceRoot, '.github', 'ISSUE_TEMPLATE');
     if (!fs.existsSync(templatesDir)) {
       fs.mkdirSync(templatesDir, { recursive: true });
@@ -188,8 +182,7 @@ Add any other context or screenshots about the feature request here.
   }
 
   async setupPRTemplates() {
-    console.log('🔄 Setting up PR templates...');
-    
+        
     const prTemplate = `## Description
 Brief description of the changes in this PR.
 
@@ -229,8 +222,7 @@ Any additional information that reviewers should know.
   }
 
   async configureGitHooks() {
-    console.log('🪝 Configuring git hooks...');
-    
+        
     const hooksDir = path.join(this.workspaceRoot, '.git', 'hooks');
     if (!fs.existsSync(hooksDir)) {
       fs.mkdirSync(hooksDir, { recursive: true });

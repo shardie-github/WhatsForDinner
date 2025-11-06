@@ -72,8 +72,7 @@ class ChaosMini {
    * Test 1: Simulate Supabase downtime with graceful fallback
    */
   async testSupabaseDowntime(): Promise<ChaosTest> {
-    console.log('🔌 Testing Supabase downtime simulation...');
-    
+        
     const startTime = Date.now();
     const testName = 'supabase_downtime';
     const metrics = {
@@ -154,8 +153,7 @@ class ChaosMini {
    * Test 2: Simulate rate limiting with retry/backoff
    */
   async testRateLimiting(): Promise<ChaosTest> {
-    console.log('🚦 Testing rate limiting with retry/backoff...');
-    
+        
     const startTime = Date.now();
     const testName = 'rate_limiting';
     const metrics = {
@@ -237,8 +235,7 @@ class ChaosMini {
    * Test 3: Simulate slow database queries with timeout handling
    */
   async testSlowQueries(): Promise<ChaosTest> {
-    console.log('🐌 Testing slow database queries with timeout handling...');
-    
+        
     const startTime = Date.now();
     const testName = 'slow_queries';
     const metrics = {
@@ -368,8 +365,7 @@ import { secretsManager } from './secrets-manager-unified.mjs';
     execSync('mkdir -p REPORTS', { stdio: 'inherit' });
     
     writeFileSync(filepath, JSON.stringify(report, null, 2));
-    console.log(`📄 Chaos report saved to: ${filepath}`);
-    
+        
     return filepath;
   }
 
@@ -384,8 +380,7 @@ import { secretsManager } from './secrets-manager-unified.mjs';
    * Main chaos testing process
    */
   async execute(): Promise<ChaosReport> {
-    console.log(`🚀 Starting chaos mini drills for ${this.environment} environment...`);
-    
+        
     try {
       const tests: ChaosTest[] = [];
       
@@ -401,24 +396,16 @@ import { secretsManager } from './secrets-manager-unified.mjs';
       await this.saveChaosReport(report);
       
       // Log results
-      console.log(`\n🎭 Chaos Test Results:`);
-      console.log(`  Environment: ${this.environment}`);
-      console.log(`  Overall Status: ${report.overall_status.toUpperCase()}`);
-      console.log(`  Tests Passed: ${tests.filter(t => t.success).length}/${tests.length}`);
+                  }`);
+      .length}/${tests.length}`);
       
       tests.forEach(test => {
-        console.log(`\n  ${test.success ? '✅' : '❌'} ${test.name}:`);
-        console.log(`    Duration: ${test.duration_ms}ms`);
-        console.log(`    Requests: ${test.metrics.requests_attempted} attempted, ${test.metrics.requests_succeeded} succeeded`);
-        console.log(`    Fallback Triggered: ${test.metrics.fallback_triggered ? 'Yes' : 'No'}`);
-        if (test.error) {
-          console.log(`    Error: ${test.error}`);
-        }
+                                        if (test.error) {
+                  }
       });
       
       if (report.recommendations.length > 0) {
-        console.log(`\n💡 Recommendations:`);
-        report.recommendations.forEach(rec => console.log(`  - ${rec}`));
+                report.recommendations.forEach(rec => );
       }
       
       return report;
@@ -453,14 +440,11 @@ async function main() {
     
     if (isCheckMode) {
       if (report.overall_status === 'fail') {
-        console.log('\n❌ Chaos testing failed - see report for details');
-        process.exit(1);
+                process.exit(1);
       } else if (report.overall_status === 'partial') {
-        console.log('\n⚠️ Chaos testing passed with some issues');
-        process.exit(0);
+                process.exit(0);
       } else {
-        console.log('\n✅ Chaos testing passed');
-        process.exit(0);
+                process.exit(0);
       }
     }
     

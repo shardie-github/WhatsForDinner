@@ -23,9 +23,7 @@ class ReleaseEngineer {
   }
 
   async runReleaseEngineering() {
-    console.log('🚀 Phase 10: Release Engineering');
-    console.log('================================\n');
-
+        
     try {
       await this.setupFeatureFlags();
       await this.configureEnvironments();
@@ -33,8 +31,7 @@ class ReleaseEngineer {
       await this.createReleaseScripts();
       await this.generateReleaseReport();
       
-      console.log('✅ Release engineering setup completed successfully');
-      this.printSummary();
+            this.printSummary();
     } catch (error) {
       console.error('❌ Release engineering setup failed:', error.message);
       process.exit(1);
@@ -42,8 +39,7 @@ class ReleaseEngineer {
   }
 
   async setupFeatureFlags() {
-    console.log('🎛️  Setting up feature flags...');
-    
+        
     const featureFlagsConfig = {
       flags: {
         'new-ui': {
@@ -126,7 +122,7 @@ class ReleaseEngineer {
     // Create feature flags service
     await this.createFeatureFlagsService();
     
-    console.log(`   Created ${Object.keys(featureFlagsConfig.flags).length} feature flags`);
+    .length} feature flags`);
   }
 
   async createFeatureFlagsService() {
@@ -269,8 +265,7 @@ export default FeatureFlagsService;
   }
 
   async configureEnvironments() {
-    console.log('🌍 Configuring deployment environments...');
-    
+        
     const environmentConfig = {
       environments: this.environments,
       deployment: {
@@ -300,12 +295,11 @@ export default FeatureFlagsService;
     const configPath = path.join(this.workspaceRoot, 'config', 'environments.json');
     fs.writeFileSync(configPath, JSON.stringify(environmentConfig, null, 2));
     
-    console.log(`   Configured ${Object.keys(this.environments).length} environments`);
+    .length} environments`);
   }
 
   async setupDeploymentPipeline() {
-    console.log('🔄 Setting up deployment pipeline...');
-    
+        
     const pipelineConfig = {
       name: 'Release Pipeline',
       stages: [
@@ -450,12 +444,10 @@ jobs:
 
     fs.writeFileSync(pipelinePath, workflowYaml);
     
-    console.log('   Created GitHub Actions workflow');
-  }
+      }
 
   async createReleaseScripts() {
-    console.log('📜 Creating release scripts...');
-    
+        
     const scripts = {
       'deploy:staging': 'node scripts/deploy.js staging',
       'deploy:canary': 'node scripts/deploy.js canary',
@@ -481,7 +473,7 @@ jobs:
     await this.createDeploymentScript();
     await this.createReleaseScripts();
     
-    console.log(`   Created ${Object.keys(scripts).length} release scripts`);
+    .length} release scripts`);
   }
 
   async createDeploymentScript() {
@@ -503,8 +495,7 @@ class DeploymentManager {
   }
 
   async deploy() {
-    console.log(\`🚀 Deploying to \${this.environment}...\`);
-    
+        
     try {
       await this.preDeploymentChecks();
       await this.buildApplication();
@@ -512,8 +503,7 @@ class DeploymentManager {
       await this.postDeploymentVerification();
       await this.updateFeatureFlags();
       
-      console.log(\`✅ Deployment to \${this.environment} completed successfully\`);
-    } catch (error) {
+          } catch (error) {
       console.error(\`❌ Deployment to \${this.environment} failed:\`, error.message);
       await this.rollback();
       process.exit(1);
@@ -521,8 +511,7 @@ class DeploymentManager {
   }
 
   async preDeploymentChecks() {
-    console.log('🔍 Running pre-deployment checks...');
-    
+        
     // Check if all tests pass
     execSync('npm run test:ci', { stdio: 'inherit' });
     
@@ -538,15 +527,13 @@ class DeploymentManager {
   }
 
   async buildApplication() {
-    console.log('🏗️  Building application...');
-    
+        
     const buildCommand = this.config.buildCommand || 'npm run build';
     execSync(buildCommand, { stdio: 'inherit' });
   }
 
   async deployToEnvironment() {
-    console.log(\`📦 Deploying to \${this.environment}...\`);
-    
+        
     const deployCommand = this.config.deployCommand || \`npm run deploy:\${this.environment}\`;
     execSync(deployCommand, { 
       stdio: 'inherit',
@@ -559,8 +546,7 @@ class DeploymentManager {
   }
 
   async postDeploymentVerification() {
-    console.log('✅ Verifying deployment...');
-    
+        
     // Health check
     const healthCheckUrl = this.config.healthCheckUrl;
     if (healthCheckUrl) {
@@ -577,20 +563,17 @@ class DeploymentManager {
   }
 
   async updateFeatureFlags() {
-    console.log('🎛️  Updating feature flags...');
-    
+        
     const flagsCommand = \`npm run feature-flags:sync --environment=\${this.environment}\`;
     execSync(flagsCommand, { stdio: 'inherit' });
   }
 
   async rollback() {
-    console.log('🔄 Rolling back deployment...');
-    
+        
     const rollbackCommand = this.config.rollbackCommand || \`npm run rollback:\${this.environment}\`;
     try {
       execSync(rollbackCommand, { stdio: 'inherit' });
-      console.log('✅ Rollback completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Rollback failed:', error.message);
     }
   }
@@ -638,8 +621,7 @@ class ReleasePreparer {
   }
 
   async prepareRelease() {
-    console.log('📋 Preparing release...');
-    
+        
     try {
       const currentVersion = this.getCurrentVersion();
       const newVersion = this.bumpVersion(currentVersion);
@@ -649,8 +631,7 @@ class ReleasePreparer {
       await this.createReleaseBranch();
       await this.commitChanges(newVersion);
       
-      console.log(\`✅ Release \${newVersion} prepared successfully\`);
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Release preparation failed:', error.message);
       process.exit(1);
     }
@@ -676,16 +657,14 @@ class ReleasePreparer {
   }
 
   async updateVersion(newVersion) {
-    console.log(\`📝 Updating version to \${newVersion}...\`);
-    
+        
     const packageJson = JSON.parse(fs.readFileSync(this.packageJsonPath, 'utf8'));
     packageJson.version = newVersion;
     fs.writeFileSync(this.packageJsonPath, JSON.stringify(packageJson, null, 2));
   }
 
   async generateChangelog() {
-    console.log('📄 Generating changelog...');
-    
+        
     // Get git commits since last tag
     const lastTag = execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim();
     const commits = execSync(\`git log \${lastTag}..HEAD --oneline\`, { encoding: 'utf8' });
@@ -717,13 +696,11 @@ class ReleasePreparer {
     const version = this.getCurrentVersion();
     const branchName = \`release/\${version}\`;
     
-    console.log(\`🌿 Creating release branch \${branchName}...\`);
-    execSync(\`git checkout -b \${branchName}\`);
+        execSync(\`git checkout -b \${branchName}\`);
   }
 
   async commitChanges(version) {
-    console.log('💾 Committing changes...');
-    
+        
     execSync('git add package.json CHANGELOG.md');
     execSync(\`git commit -m "chore: prepare release \${version}"\`);
   }
@@ -833,18 +810,11 @@ Phase 10 is complete and ready for Phase 11 implementation.
 `;
 
     fs.writeFileSync(reportPath, report);
-    console.log(`   📄 Report saved to ${reportPath}`);
-  }
+      }
 
   printSummary() {
-    console.log('\n🚀 Release Engineering Summary');
-    console.log('==============================');
-    console.log(`🌍 Environments: ${Object.keys(this.environments).length}`);
-    console.log(`🎛️  Feature Flags: 4 configured`);
-    console.log(`🔄 Deployment Strategy: Blue-Green`);
-    console.log(`📜 Scripts: 7 created`);
-    console.log(`⚙️  Pipeline: GitHub Actions`);
-  }
+            .length}`);
+                  }
 }
 
 // Run the release engineering setup

@@ -20,8 +20,7 @@ const colors = {
 };
 
 function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
+  }
 
 // Mock data - in production, this would come from your monitoring system
 const mockWeeklyData = {

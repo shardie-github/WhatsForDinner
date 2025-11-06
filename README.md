@@ -546,3 +546,19 @@ For support and questions:
 ---
 
 Built with ❤️ using Expo, Next.js, and Turborepo
+
+## 🏥 Health Check
+
+Run comprehensive health checks:
+
+```bash
+node scripts/comprehensive-health-check.mjs
+```
+
+This checks:
+- Code quality
+- Security posture
+- Performance metrics
+- Test coverage
+- Documentation completeness
+- Configuration validity

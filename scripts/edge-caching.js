@@ -43,9 +43,7 @@ class EdgeCachingManager {
   }
 
   async runEdgeCachingSetup() {
-    console.log('🌐 Phase 12: Edge/Caching Strategy');
-    console.log('==================================\n');
-
+        
     try {
       await this.analyzeCurrentCaching();
       await this.configureHttpCaching();
@@ -54,8 +52,7 @@ class EdgeCachingManager {
       await this.optimizeStaticAssets();
       await this.generateCachingReport();
       
-      console.log('✅ Edge caching strategy setup completed successfully');
-      this.printSummary();
+            this.printSummary();
     } catch (error) {
       console.error('❌ Edge caching strategy setup failed:', error.message);
       process.exit(1);
@@ -63,8 +60,7 @@ class EdgeCachingManager {
   }
 
   async analyzeCurrentCaching() {
-    console.log('🔍 Analyzing current caching configuration...');
-    
+        
     const analysis = {
       cacheHeaders: this.analyzeCacheHeaders(),
       staticAssets: this.analyzeStaticAssets(),
@@ -73,8 +69,7 @@ class EdgeCachingManager {
     };
     
     this.results.cacheAnalysis = analysis;
-    console.log('   Cache analysis completed');
-  }
+      }
 
   analyzeCacheHeaders() {
     // Look for existing cache headers in the codebase
@@ -229,8 +224,7 @@ class EdgeCachingManager {
   }
 
   async configureHttpCaching() {
-    console.log('⚙️  Configuring HTTP caching...');
-    
+        
     // Create Next.js cache configuration
     await this.createNextjsCacheConfig();
     
@@ -240,8 +234,7 @@ class EdgeCachingManager {
     // Create cache headers configuration
     await this.createCacheHeadersConfig();
     
-    console.log('   HTTP caching configured');
-  }
+      }
 
   async createNextjsCacheConfig() {
     const nextConfig = `// Next.js Cache Configuration
@@ -472,8 +465,7 @@ module.exports = CacheMiddleware;
   }
 
   async setupCdnConfiguration() {
-    console.log('☁️  Setting up CDN configuration...');
-    
+        
     const cdnConfig = {
       provider: this.cachingStrategy.cdn.provider,
       regions: this.cachingStrategy.cdn.regions,
@@ -511,12 +503,10 @@ module.exports = CacheMiddleware;
     fs.writeFileSync(cdnPath, JSON.stringify(cdnConfig, null, 2));
     
     this.results.cdnConfiguration = cdnConfig;
-    console.log('   CDN configuration created');
-  }
+      }
 
   async optimizeStaticAssets() {
-    console.log('📦 Optimizing static assets...');
-    
+        
     const optimizations = [];
     
     // Check for image optimization opportunities
@@ -569,8 +559,7 @@ module.exports = CacheMiddleware;
     }
     
     this.results.optimizations = optimizations;
-    console.log(`   Found ${optimizations.length} optimization opportunities`);
-  }
+      }
 
   findImageDirectories() {
     const imageDirs = [];
@@ -745,8 +734,7 @@ Phase 12 is complete and ready for Phase 13 implementation.
 `;
 
     fs.writeFileSync(reportPath, report);
-    console.log(`   📄 Report saved to ${reportPath}`);
-  }
+      }
 
   formatBytes(bytes) {
     if (bytes === 0) return '0 Bytes';
@@ -757,14 +745,8 @@ Phase 12 is complete and ready for Phase 13 implementation.
   }
 
   printSummary() {
-    console.log('\n🌐 Edge Caching Summary');
-    console.log('=======================');
-    console.log(`📊 Cache Headers: ${this.results.cacheAnalysis.cacheHeaders.length} configured`);
-    console.log(`📦 Static Assets: ${Object.keys(this.results.cacheAnalysis.staticAssets).length} directories`);
-    console.log(`🔌 API Endpoints: ${this.results.cacheAnalysis.apiEndpoints.length} patterns`);
-    console.log(`☁️  CDN Provider: ${this.cachingStrategy.cdn.provider}`);
-    console.log(`⚡ Optimizations: ${this.results.optimizations.length} opportunities`);
-  }
+                .length} directories`);
+              }
 }
 
 // Run the edge caching setup

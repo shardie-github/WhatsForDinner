@@ -50,8 +50,7 @@ class FutureCheck {
    * Run comprehensive future readiness check
    */
   async runCheck(): Promise<CompatibilityReport> {
-    console.log('🔮 Running future runtime readiness check...');
-
+    
     const report: CompatibilityReport = {
       edgeRuntime: await this.checkEdgeRuntime(),
       wasm: await this.checkWasmCompatibility(),
@@ -464,60 +463,41 @@ class FutureCheck {
    * Generate compatibility report
    */
   private generateReport(report: CompatibilityReport) {
-    console.log('\n🔮 Future Runtime Readiness Report');
-    console.log('=====================================');
+            
+    }% (${report.overall.status})`);
     
-    console.log(`\n📊 Overall Score: ${report.overall.score.toFixed(1)}% (${report.overall.status})`);
-    
-    console.log('\n🌐 Edge Runtime Compatibility:');
-    console.log(`  Status: ${report.edgeRuntime.compatible ? '✅ Compatible' : '❌ Issues Found'}`);
-    if (report.edgeRuntime.issues.length > 0) {
-      console.log('  Issues:');
-      report.edgeRuntime.issues.forEach(issue => console.log(`    - ${issue}`));
+            if (report.edgeRuntime.issues.length > 0) {
+            report.edgeRuntime.issues.forEach(issue => );
     }
     if (report.edgeRuntime.recommendations.length > 0) {
-      console.log('  Recommendations:');
-      report.edgeRuntime.recommendations.forEach(rec => console.log(`    - ${rec}`));
+            report.edgeRuntime.recommendations.forEach(rec => );
     }
 
-    console.log('\n🦀 WASM Compatibility:');
-    console.log(`  Status: ${report.wasm.compatible ? '✅ Compatible' : '❌ Issues Found'}`);
-    if (report.wasm.issues.length > 0) {
-      console.log('  Issues:');
-      report.wasm.issues.forEach(issue => console.log(`    - ${issue}`));
+            if (report.wasm.issues.length > 0) {
+            report.wasm.issues.forEach(issue => );
     }
     if (report.wasm.recommendations.length > 0) {
-      console.log('  Recommendations:');
-      report.wasm.recommendations.forEach(rec => console.log(`    - ${rec}`));
+            report.wasm.recommendations.forEach(rec => );
     }
 
-    console.log('\n⚡ Workers Compatibility:');
-    console.log(`  Status: ${report.workers.compatible ? '✅ Compatible' : '❌ Issues Found'}`);
-    if (report.workers.issues.length > 0) {
-      console.log('  Issues:');
-      report.workers.issues.forEach(issue => console.log(`    - ${issue}`));
+            if (report.workers.issues.length > 0) {
+            report.workers.issues.forEach(issue => );
     }
     if (report.workers.recommendations.length > 0) {
-      console.log('  Recommendations:');
-      report.workers.recommendations.forEach(rec => console.log(`    - ${rec}`));
+            report.workers.recommendations.forEach(rec => );
     }
 
-    console.log('\n🛍️ Hydrogen/Oxygen Compatibility:');
-    console.log(`  Status: ${report.hydrogenOxygen.compatible ? '✅ Compatible' : '❌ Issues Found'}`);
-    if (report.hydrogenOxygen.issues.length > 0) {
-      console.log('  Issues:');
-      report.hydrogenOxygen.issues.forEach(issue => console.log(`    - ${issue}`));
+            if (report.hydrogenOxygen.issues.length > 0) {
+            report.hydrogenOxygen.issues.forEach(issue => );
     }
     if (report.hydrogenOxygen.recommendations.length > 0) {
-      console.log('  Recommendations:');
-      report.hydrogenOxygen.recommendations.forEach(rec => console.log(`    - ${rec}`));
+            report.hydrogenOxygen.recommendations.forEach(rec => );
     }
 
     // Save report to file
     const reportPath = path.join(this.projectRoot, 'REPORTS', 'future-runtime-readiness.json');
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-    console.log(`\n📄 Report saved to: ${reportPath}`);
-  }
+      }
 }
 
 // CLI execution

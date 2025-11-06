@@ -85,34 +85,21 @@ async function checkSystemHealth() {
 }
 
 function printHealthReport(healthData) {
-  console.log('\n🏥 Health Check Report');
-  console.log('======================\n');
-  
+      
   const status = healthData.status === 'healthy' ? '✅' : '❌';
-  console.log(`${status} Overall Status: ${healthData.status.toUpperCase()}`);
-  console.log(`   Environment: ${healthData.checks.environment}`);
-  console.log(`   Version: ${healthData.checks.version}`);
-  console.log(`   Build SHA: ${healthData.checks.buildSha}`);
-  console.log(`   Uptime: ${Math.round(healthData.uptime)}s`);
-  console.log('');
-  
+  }`);
+        }s`);
+    
   // Database check
   const dbStatus = healthData.checks.database.status === 'healthy' ? '✅' : '❌';
-  console.log(`${dbStatus} Database: ${healthData.checks.database.status}`);
-  console.log(`   Message: ${healthData.checks.database.message}`);
-  console.log(`   Duration: ${healthData.checks.database.duration}ms`);
-  
+        
   if (healthData.checks.database.error) {
-    console.log(`   Error: ${healthData.checks.database.error}`);
-  }
+      }
   
   if (healthData.checks.database.rowCount !== undefined) {
-    console.log(`   Rows returned: ${healthData.checks.database.rowCount}`);
-  }
+      }
   
-  console.log('');
-  console.log(`🕐 Check completed at: ${healthData.checks.timestamp}`);
-}
+    }
 
 function generateJsonOutput(healthData) {
   return JSON.stringify(healthData, null, 2);
@@ -127,18 +114,16 @@ async function main() {
     const healthData = await checkSystemHealth();
     
     if (jsonOutput) {
-      console.log(generateJsonOutput(healthData));
+      );
     } else {
       printHealthReport(healthData);
     }
     
     if (checkOnly) {
       if (healthData.status !== 'healthy') {
-        console.log('\n❌ Health check failed!');
-        process.exit(1);
+                process.exit(1);
       } else {
-        console.log('\n✅ Health check passed!');
-      }
+              }
     }
   } catch (error) {
     console.error('❌ Error running health check:', error);

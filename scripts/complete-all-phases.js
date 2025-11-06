@@ -35,9 +35,8 @@ class PhaseCompleter {
   }
 
   async runAllPhases() {
-    console.log('🚀 Completing All Phases (9-20)');
-    console.log('================================\n');
-
+    ');
+    
     const startTime = Date.now();
 
     try {
@@ -48,8 +47,7 @@ class PhaseCompleter {
       this.results.totalTime = Date.now() - startTime;
       await this.generateFinalReport();
       
-      console.log('\n✅ All phases completed successfully!');
-      this.printSummary();
+            this.printSummary();
     } catch (error) {
       console.error('\n❌ Phase completion failed:', error.message);
       process.exit(1);
@@ -57,8 +55,7 @@ class PhaseCompleter {
   }
 
   async runPhase(phase) {
-    console.log(`\n🔄 Running Phase ${phase.id}: ${phase.name}`);
-    console.log('='.repeat(50));
+        );
 
     const startTime = Date.now();
 
@@ -83,7 +80,7 @@ class PhaseCompleter {
         status: 'success'
       });
 
-      console.log(`✅ Phase ${phase.id} completed in ${(duration / 1000).toFixed(1)}s`);
+      .toFixed(1)}s`);
     } catch (error) {
       const duration = Date.now() - startTime;
       
@@ -98,8 +95,7 @@ class PhaseCompleter {
       console.error(`❌ Phase ${phase.id} failed: ${error.message}`);
       
       // Continue with next phase instead of stopping
-      console.log(`⏭️  Continuing with next phase...`);
-    }
+          }
   }
 
   async generateFinalReport() {
@@ -241,8 +237,7 @@ The enterprise development initiative has been successfully completed with all 2
 `;
 
     fs.writeFileSync(reportPath, report);
-    console.log(`\n📄 Final report saved to ${reportPath}`);
-  }
+      }
 
   getPhaseStatus(phaseNumber) {
     const completed = this.results.completed.find(p => p.phase === phaseNumber);
@@ -254,18 +249,12 @@ The enterprise development initiative has been successfully completed with all 2
   }
 
   printSummary() {
-    console.log('\n🎉 Phases Completion Summary');
-    console.log('============================');
-    console.log(`⏱️  Total Time: ${(this.results.totalTime / 1000).toFixed(1)}s`);
-    console.log(`✅ Completed: ${this.results.completed.length}/12`);
-    console.log(`❌ Failed: ${this.results.failed.length}/12`);
-    console.log(`📊 Success Rate: ${((this.results.completed.length / 12) * 100).toFixed(1)}%`);
+            .toFixed(1)}s`);
+             * 100).toFixed(1)}%`);
     
     if (this.results.failed.length > 0) {
-      console.log('\n🚨 Failed Phases:');
-      this.results.failed.forEach(phase => {
-        console.log(`   • Phase ${phase.phase}: ${phase.name}`);
-      });
+            this.results.failed.forEach(phase => {
+              });
     }
   }
 }

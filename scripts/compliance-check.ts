@@ -170,8 +170,7 @@ async function checkSubscriptionConfig(): Promise<void> {
 }
 
 async function main() {
-  console.log('Running compliance checks...\n');
-
+  
   await checkPrivacyManifest();
   await checkDataSafetyJSON();
   await checkLegalPages();
@@ -182,24 +181,20 @@ async function main() {
   const passed = checks.filter(c => c.passed).length;
   const total = checks.length;
 
-  console.log('Results:');
-  console.log('='.repeat(60));
+    );
   
   for (const check of checks) {
     const icon = check.passed ? '?' : '?';
     const status = check.passed ? 'PASS' : 'FAIL';
-    console.log(`${icon} [${status}] ${check.name}: ${check.message}`);
-  }
+      }
 
-  console.log('='.repeat(60));
-  console.log(`\nTotal: ${passed}/${total} checks passed`);
-
+  );
+  
   if (passed < total) {
     console.error('\n? Some compliance checks failed');
     process.exit(1);
   } else {
-    console.log('\n? All compliance checks passed');
-    process.exit(0);
+        process.exit(0);
   }
 }
 

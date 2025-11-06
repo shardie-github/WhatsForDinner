@@ -17,8 +17,7 @@ class BackupManager {
   }
 
   async runBackup(type = 'all') {
-    console.log(`🔄 Starting ${type} backup...`);
-    
+        
     try {
       await this.ensureBackupDirectory();
       
@@ -42,16 +41,14 @@ class BackupManager {
       }
       
       await this.cleanupOldBackups();
-      console.log('✅ Backup completed successfully');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Backup failed:', error.message);
       process.exit(1);
     }
   }
 
   async backupDatabase() {
-    console.log('🗄️  Backing up database...');
-    
+        
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupFile = path.join(this.backupDir, `database-${timestamp}.sql`);
     
@@ -63,10 +60,8 @@ class BackupManager {
       // Compress if enabled
       if (this.config.database.compression) {
         execSync(`gzip ${backupFile}`);
-        console.log(`   Database backup: ${backupFile}.gz`);
-      } else {
-        console.log(`   Database backup: ${backupFile}`);
-      }
+              } else {
+              }
     } catch (error) {
       console.error('   Database backup failed:', error.message);
       throw error;
@@ -74,8 +69,7 @@ class BackupManager {
   }
 
   async backupFiles() {
-    console.log('📁 Backing up files...');
-    
+        
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupFile = path.join(this.backupDir, `files-${timestamp}.tar.gz`);
     
@@ -84,16 +78,14 @@ class BackupManager {
       const command = `tar -czf ${backupFile} -C ${this.workspaceRoot} uploads/ public/ config/`;
       execSync(command, { stdio: 'inherit' });
       
-      console.log(`   Files backup: ${backupFile}`);
-    } catch (error) {
+          } catch (error) {
       console.error('   Files backup failed:', error.message);
       throw error;
     }
   }
 
   async backupCode() {
-    console.log('💻 Backing up code...');
-    
+        
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupFile = path.join(this.backupDir, `code-${timestamp}.tar.gz`);
     
@@ -102,16 +94,14 @@ class BackupManager {
       const command = `tar -czf ${backupFile} -C ${this.workspaceRoot} --exclude=node_modules --exclude=.git --exclude=dist --exclude=build src/ packages/ apps/ scripts/`;
       execSync(command, { stdio: 'inherit' });
       
-      console.log(`   Code backup: ${backupFile}`);
-    } catch (error) {
+          } catch (error) {
       console.error('   Code backup failed:', error.message);
       throw error;
     }
   }
 
   async cleanupOldBackups() {
-    console.log('🧹 Cleaning up old backups...');
-    
+        
     const retentionDays = Math.max(
       this.config.database.retention,
       this.config.files.retention,
@@ -134,8 +124,7 @@ class BackupManager {
       }
     }
     
-    console.log(`   Deleted ${deletedCount} old backups`);
-  }
+      }
 
   async ensureBackupDirectory() {
     if (!fs.existsSync(this.backupDir)) {

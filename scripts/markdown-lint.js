@@ -11,8 +11,7 @@ class MarkdownLinter {
   }
 
   async lintMarkdown() {
-    console.log('🔍 Linting markdown files...');
-    
+        
     try {
       // Check if markdownlint is installed
       execSync('markdownlint --version', { stdio: 'pipe' });
@@ -21,22 +20,19 @@ class MarkdownLinter {
       const command = `markdownlint "**/*.md" --config ${this.configPath}`;
       execSync(command, { stdio: 'inherit' });
       
-      console.log('✅ Markdown linting completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Markdown linting failed:', error.message);
       process.exit(1);
     }
   }
 
   async fixMarkdown() {
-    console.log('🔧 Fixing markdown files...');
-    
+        
     try {
       const command = `markdownlint "**/*.md" --config ${this.configPath} --fix`;
       execSync(command, { stdio: 'inherit' });
       
-      console.log('✅ Markdown fixing completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Markdown fixing failed:', error.message);
       process.exit(1);
     }

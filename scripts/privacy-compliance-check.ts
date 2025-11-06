@@ -252,17 +252,13 @@ export function runPrivacyComplianceChecks(): {
 if (require.main === module) {
   const { passed, results } = runPrivacyComplianceChecks();
 
-  console.log('\n🛡️  Privacy Compliance Checks\n');
-  for (const result of results) {
+    for (const result of results) {
     const icon = result.passed ? '✅' : '❌';
-    console.log(`${icon} ${result.name}: ${result.message}`);
-  }
+      }
 
   if (!passed) {
-    console.log('\n❌ Privacy compliance checks failed. Please fix the issues above.');
-    process.exit(1);
+        process.exit(1);
   }
 
-  console.log('\n✅ All privacy compliance checks passed!');
-  process.exit(0);
+    process.exit(0);
 }

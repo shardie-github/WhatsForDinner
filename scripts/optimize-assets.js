@@ -18,8 +18,7 @@ class AssetOptimizer {
   async optimizeImages(options = {}) {
     const { format = 'webp', quality = 85, resize = false } = options;
     
-    console.log(`🖼️  Optimizing images to ${format} format...`);
-    
+        
     const imageDirs = this.findImageDirectories();
     let optimizedCount = 0;
     
@@ -34,8 +33,7 @@ class AssetOptimizer {
       }
     }
     
-    console.log(`✅ Optimized ${optimizedCount} images`);
-  }
+      }
 
   async optimizeImage(image, format, quality, resize) {
     const { path: imagePath, name } = image;
@@ -54,7 +52,7 @@ class AssetOptimizer {
       command += ` "${outputPath}"`;
       
       execSync(command, { stdio: 'pipe' });
-      console.log(`   ✓ ${path.basename(imagePath)} -> ${path.basename(outputPath)}`);
+      } -> ${path.basename(outputPath)}`);
     } catch (error) {
       console.error(`   ✗ Failed to optimize ${path.basename(imagePath)}: ${error.message}`);
     }

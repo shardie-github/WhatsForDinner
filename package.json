@@ -165,7 +165,15 @@
     "secrets:sync:vercel-to-sb": "node scripts/sync-secrets-supabase-vercel.mjs vercel-to-supabase",
     "secrets:get": "node scripts/secrets-manager-unified.mjs get",
     "secrets:set": "node scripts/secrets-manager-unified.mjs set",
-    "secrets:validate": "node scripts/secrets-manager-unified.mjs validate"
+    "secrets:validate": "node scripts/secrets-manager-unified.mjs validate",
+    "health:check": "node scripts/comprehensive-health-check.mjs",
+    "health:quick": "node scripts/quick-health.mjs",
+    "health:status": "node scripts/status-report.mjs",
+    "fix:all": "node scripts/auto-fix-all-issues.mjs",
+    "improve:all": "node scripts/comprehensive-improvements.mjs",
+    "test:scaffold": "node scripts/create-test-scaffolding.mjs",
+    "coverage:analyze": "node scripts/improve-test-coverage.mjs",
+    "secrets:remediate": "node scripts/address-secrets-findings.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"

@@ -145,8 +145,7 @@ async function sendAlert(alert: AlertConfig, message: string, details?: Record<s
 async function sendSlackAlert(message: any): Promise<void> {
   const webhookUrl = DEFAULT_CONFIG.services.slack?.webhook_url;
   if (!webhookUrl || webhookUrl.includes('PLACEHOLDER')) {
-    console.log('[DEMO] Would send Slack alert:', message);
-    return;
+        return;
   }
 
   try {
@@ -198,8 +197,7 @@ async function sendSlackAlert(message: any): Promise<void> {
 async function sendPagerDutyAlert(message: any): Promise<void> {
   const integrationKey = DEFAULT_CONFIG.services.pagerduty?.integration_key;
   if (!integrationKey || integrationKey === 'placeholder-key') {
-    console.log('[DEMO] Would send PagerDuty alert:', message);
-    return;
+        return;
   }
 
   try {
@@ -230,38 +228,25 @@ async function sendPagerDutyAlert(message: any): Promise<void> {
 
 async function sendEmailAlert(message: any): Promise<void> {
   // In production, use an email service like Resend, SendGrid, etc.
-  console.log('[DEMO] Would send email alert to:', DEFAULT_CONFIG.services.email?.recipients);
-  console.log('[DEMO] Subject:', message.title);
-  console.log('[DEMO] Body:', message.message);
-}
+      }
 
 // Test alert function
 export async function testAlerts(): Promise<void> {
-  console.log('?? Testing Alert Configuration...\n');
+  
+    DEFAULT_CONFIG.alerts.forEach((alert, index) => {
+    `);
+        }`);
+      });
 
-  console.log('?? Configured Alerts:');
-  DEFAULT_CONFIG.alerts.forEach((alert, index) => {
-    console.log(`  ${index + 1}. ${alert.name} (${alert.severity})`);
-    console.log(`     Condition: ${alert.condition}`);
-    console.log(`     Channels: ${alert.channels.join(', ')}`);
-    console.log(`     Enabled: ${alert.enabled ? '?' : '?'}\n`);
-  });
-
-  console.log('?? Service Configuration:');
-  console.log(`  Slack: ${DEFAULT_CONFIG.services.slack?.enabled ? '? Enabled' : '? Disabled'}`);
-  console.log(`  PagerDuty: ${DEFAULT_CONFIG.services.pagerduty?.enabled ? '? Enabled' : '? Disabled'}`);
-  console.log(`  Email: ${DEFAULT_CONFIG.services.email?.enabled ? '? Enabled' : '? Disabled'}\n`);
-
+        
   // Send test alert
-  console.log('?? Sending test alert...\n');
-  await sendAlert(
+    await sendAlert(
     DEFAULT_CONFIG.alerts[0],
     'This is a test alert to verify the monitoring system is configured correctly.',
     { test: true }
   );
 
-  console.log('\n? Alert configuration test complete!');
-}
+  }
 
 // Get configuration
 export function getAlertConfig(): MonitoringConfig {

@@ -43,10 +43,7 @@ const IOS_ICONS: IconConfig[] = [
 ];
 
 async function generateIcons() {
-  console.log('Generating app icons from SVG...');
-  console.log(`Source: ${ICON_SOURCE}`);
-  console.log(`Output: ${OUTPUT_DIR}`);
-
+      
   // Check if source exists
   if (!fs.existsSync(ICON_SOURCE)) {
     console.error(`Source SVG not found: ${ICON_SOURCE}`);
@@ -64,15 +61,8 @@ async function generateIcons() {
   // 2. Convert to PNG at each required size
   // 3. Save to appropriate directories
   
-  console.log('\nIcon generation placeholder - implement with sharp/jimp');
-  console.log('Android icons:', ANDROID_ICONS.length);
-  console.log('iOS icons:', IOS_ICONS.length);
-  
-  console.log('\nTo generate icons manually:');
-  console.log('1. Use Capacitor CLI: npx @capacitor/assets generate');
-  console.log('2. Or use online tools like https://www.appicon.co');
-  console.log('3. Or implement this script with sharp: npm install sharp');
-}
+        
+        }
 
 if (require.main === module) {
   generateIcons().catch(console.error);
