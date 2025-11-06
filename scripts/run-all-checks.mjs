@@ -6,6 +6,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
+import { secretsManager } from './secrets-manager-unified.mjs';
 const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, '..');
 
@@ -25,9 +26,9 @@ const CHECKS = [
     command: 'pnpm rls:test',
     critical: true,
     env: {
-      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY
+      NEXT_PUBLIC_SUPABASE_URL: (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_ANON_KEY')) || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      SUPABASE_SERVICE_ROLE_KEY: (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY
     }
   },
   {
@@ -35,8 +36,8 @@ const CHECKS = [
     command: 'pnpm db:perf',
     critical: true,
     env: {
-      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY
+      NEXT_PUBLIC_SUPABASE_URL: (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL,
+      SUPABASE_SERVICE_ROLE_KEY: (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY
     }
   },
   {
@@ -44,8 +45,8 @@ const CHECKS = [
     command: 'pnpm health:check',
     critical: true,
     env: {
-      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY
+      NEXT_PUBLIC_SUPABASE_URL: (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL,
+      SUPABASE_SERVICE_ROLE_KEY: (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY
     }
   },
   {
@@ -53,7 +54,7 @@ const CHECKS = [
     command: 'pnpm smoke:test',
     critical: false,
     env: {
-      BASE_URL: process.env.BASE_URL || 'http://localhost:3000'
+      BASE_URL: (await secretsManager.getSecret('BASE_URL')) || process.env.BASE_URL || 'http://localhost:3000'
     }
   },
   {
@@ -61,8 +62,8 @@ const CHECKS = [
     command: 'pnpm cost:guard',
     critical: false,
     env: {
-      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY
+      NEXT_PUBLIC_SUPABASE_URL: (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL,
+      SUPABASE_SERVICE_ROLE_KEY: (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY
     }
   }
 ];

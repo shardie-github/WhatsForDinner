@@ -11,7 +11,7 @@ import { glob } from 'glob';
 class AIDocumentationGenerator {
   constructor() {
     this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
+      apiKey: (await secretsManager.getSecret('OPENAI_API_KEY')) || process.env.OPENAI_API_KEY
     });
   }
 
@@ -722,6 +722,7 @@ ${content}`;
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   const generator = new AIDocumentationGenerator();
+import { secretsManager } from './secrets-manager-unified.mjs';
   generator.generateDocumentation().catch(console.error);
 }
 

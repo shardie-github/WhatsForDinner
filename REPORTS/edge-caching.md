@@ -4,7 +4,7 @@
 
 **Status**: ✅ Complete  
 **Cache Headers**: 0 configured  
-**Static Assets**: 0 directories analyzed  
+**Static Assets**: 1 directories analyzed  
 **API Endpoints**: 1 patterns found  
 **Optimizations**: 2 opportunities identified
 
@@ -43,12 +43,17 @@ No cache headers found
 
 ### Static Assets Analysis
 
+#### public
+- **Total Files**: 2
+- **Total Size**: 9.37 KB
+- **By Type**: html: 2 files (9.37 KB)
+
 
 ## Optimization Opportunities
 
 
 ### 1. CSS OPTIMIZATION
-- **Count**: 7
+- **Count**: 8
 - **Recommendations**:
   - Minify CSS files
   - Remove unused CSS
@@ -56,7 +61,7 @@ No cache headers found
   - Use CSS modules
 
 ### 2. JS OPTIMIZATION
-- **Count**: 75
+- **Count**: 98
 - **Recommendations**:
   - Minify JavaScript files
   - Enable tree shaking

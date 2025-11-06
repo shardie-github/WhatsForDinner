@@ -4,6 +4,7 @@
 
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
@@ -65,8 +66,8 @@ async function checkCostCaps(): Promise<void> {
     alerts.forEach(alert => console.log(alert));
     
     // Send webhook notification
-    if (process.env.SLACK_WEBHOOK_URL) {
-      await fetch(process.env.SLACK_WEBHOOK_URL, {
+    if ((await secretsManager.getSecret('SLACK_WEBHOOK_URL')) || process.env.SLACK_WEBHOOK_URL) {
+      await fetch((await secretsManager.getSecret('SLACK_WEBHOOK_URL')) || process.env.SLACK_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

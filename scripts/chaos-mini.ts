@@ -364,6 +364,7 @@ class ChaosMini {
     
     // Ensure REPORTS directory exists
     const { execSync } = await import('child_process');
+import { secretsManager } from './secrets-manager-unified.mjs';
     execSync('mkdir -p REPORTS', { stdio: 'inherit' });
     
     writeFileSync(filepath, JSON.stringify(report, null, 2));
@@ -435,8 +436,8 @@ async function main() {
   const environment = args.find(arg => arg.startsWith('--env='))?.split('=')[1] || 'preview';
   const isCheckMode = args.includes('--check');
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     console.error('❌ Missing required environment variables:');

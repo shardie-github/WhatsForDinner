@@ -11,6 +11,7 @@ import { OTLPMetricExporter } from '@opentelemetry/exporter-otlp-http';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
@@ -35,15 +36,15 @@ function initializeObservability() {
       [SemanticResourceAttributes.SERVICE_NAME]: 'whats-for-dinner',
       [SemanticResourceAttributes.SERVICE_VERSION]: process.env.npm_package_version || '1.0.0',
     }),
-    traceExporter: process.env.OTEL_EXPORTER_OTLP_ENDPOINT
+    traceExporter: (await secretsManager.getSecret('OTEL_EXPORTER_OTLP_ENDPOINT')) || process.env.OTEL_EXPORTER_OTLP_ENDPOINT
       ? new OTLPTraceExporter({
-          url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+          url: (await secretsManager.getSecret('OTEL_EXPORTER_OTLP_ENDPOINT')) || process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
         })
       : undefined,
-    metricReader: process.env.OTEL_EXPORTER_OTLP_ENDPOINT
+    metricReader: (await secretsManager.getSecret('OTEL_EXPORTER_OTLP_ENDPOINT')) || process.env.OTEL_EXPORTER_OTLP_ENDPOINT
       ? new PeriodicExportingMetricReader({
           exporter: new OTLPMetricExporter({
-            url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+            url: (await secretsManager.getSecret('OTEL_EXPORTER_OTLP_ENDPOINT')) || process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
           }),
           exportIntervalMillis: 60000, // 1 minute
         })

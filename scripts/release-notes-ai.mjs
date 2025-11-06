@@ -11,7 +11,7 @@ import path from 'path';
 class AIReleaseNotesGenerator {
   constructor() {
     this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
+      apiKey: (await secretsManager.getSecret('OPENAI_API_KEY')) || process.env.OPENAI_API_KEY
     });
   }
 
@@ -417,6 +417,7 @@ Format as markdown.`;
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   const generator = new AIReleaseNotesGenerator();
+import { secretsManager } from './secrets-manager-unified.mjs';
   
   const args = process.argv.slice(2);
   const version = args[0] || 'v1.0.0';

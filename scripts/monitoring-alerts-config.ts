@@ -1,3 +1,5 @@
+import { secretsManager } from './secrets-manager-unified.mjs';
+
 #!/usr/bin/env tsx
 /**
  * Monitoring Alerts Configuration
@@ -39,13 +41,13 @@ interface MonitoringConfig {
 const DEFAULT_CONFIG: MonitoringConfig = {
   services: {
     slack: {
-      webhook_url: process.env.SLACK_WEBHOOK_URL || 'https://hooks.slack.com/services/PLACEHOLDER',
+      webhook_url: (await secretsManager.getSecret('SLACK_WEBHOOK_URL')) || process.env.SLACK_WEBHOOK_URL || 'https://hooks.slack.com/services/PLACEHOLDER',
       channel: '#alerts',
-      enabled: !!process.env.SLACK_WEBHOOK_URL,
+      enabled: !!(await secretsManager.getSecret('SLACK_WEBHOOK_URL')) || process.env.SLACK_WEBHOOK_URL,
     },
     pagerduty: {
-      integration_key: process.env.PAGERDUTY_INTEGRATION_KEY || 'placeholder-key',
-      enabled: !!process.env.PAGERDUTY_INTEGRATION_KEY,
+      integration_key: (await secretsManager.getSecret('PAGERDUTY_INTEGRATION_KEY')) || process.env.PAGERDUTY_INTEGRATION_KEY || 'placeholder-key',
+      enabled: !!(await secretsManager.getSecret('PAGERDUTY_INTEGRATION_KEY')) || process.env.PAGERDUTY_INTEGRATION_KEY,
     },
     email: {
       recipients: ['devops@whats-for-dinner.com'],

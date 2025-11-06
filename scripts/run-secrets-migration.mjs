@@ -41,9 +41,9 @@ async function runMigration() {
   }
 
   // Get Supabase credentials
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const dbUrl = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
+  const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL || (await secretsManager.getSecret('SUPABASE_URL')) || process.env.SUPABASE_URL;
+  const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const dbUrl = (await secretsManager.getSecret('SUPABASE_DB_URL')) || process.env.SUPABASE_DB_URL || (await secretsManager.getSecret('DATABASE_URL')) || process.env.DATABASE_URL;
 
   if (!supabaseUrl || !supabaseKey) {
     log('❌ Missing Supabase credentials', 'red');
@@ -134,6 +134,7 @@ async function runMigration() {
     try {
       // Try to use pg library if available
       const pg = await import('pg').catch(() => null);
+import { secretsManager } from './secrets-manager-unified.mjs';
       
       if (pg) {
         const { Client } = pg.default || pg;

@@ -5,6 +5,7 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 export async function runSnapshot(options: { encrypt?: boolean; subset?: string }) {
   console.log('📸 Creating database snapshot...\n');
@@ -18,8 +19,8 @@ export async function runSnapshot(options: { encrypt?: boolean; subset?: string 
   }
 
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('Supabase credentials not configured');

@@ -18,6 +18,7 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { globSync } from "glob";
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 interface CheckResult {
   lens: string;
@@ -613,7 +614,7 @@ function checkAISystems() {
   );
   
   // Check for OpenAI API key configuration
-  const hasOpenAIKey = !!process.env.OPENAI_API_KEY;
+  const hasOpenAIKey = !!(await secretsManager.getSecret('OPENAI_API_KEY')) || process.env.OPENAI_API_KEY;
   recordCheck(
     "AI Systems Auditor",
     "AI Configuration",

@@ -5,6 +5,7 @@
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 const CHANGELOG_PATH = join(process.cwd(), 'CHANGELOG.md');
 
@@ -125,9 +126,9 @@ async function release(config: ReleaseConfig): Promise<void> {
 
   // Step 6: Deploy to Vercel
   console.log('Deploying to Vercel...');
-  const vercelToken = process.env.VERCEL_TOKEN;
-  const vercelProjectId = process.env.VERCEL_PROJECT_ID;
-  const vercelOrgId = process.env.VERCEL_ORG_ID;
+  const vercelToken = (await secretsManager.getSecret('VERCEL_TOKEN')) || process.env.VERCEL_TOKEN;
+  const vercelProjectId = (await secretsManager.getSecret('VERCEL_PROJECT_ID')) || process.env.VERCEL_PROJECT_ID;
+  const vercelOrgId = (await secretsManager.getSecret('VERCEL_ORG_ID')) || process.env.VERCEL_ORG_ID;
 
   if (vercelToken && vercelProjectId) {
     try {

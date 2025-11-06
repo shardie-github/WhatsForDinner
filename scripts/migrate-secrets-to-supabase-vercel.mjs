@@ -126,6 +126,7 @@ async function getSupabaseClient() {
   if (!createClient) {
     try {
       const supabaseModule = await import('@supabase/supabase-js');
+import { secretsManager } from './secrets-manager-unified.mjs';
       createClient = supabaseModule.createClient;
     } catch (e) {
       throw new Error(
@@ -134,8 +135,8 @@ async function getSupabaseClient() {
     }
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL || (await secretsManager.getSecret('SUPABASE_URL')) || process.env.SUPABASE_URL;
+  const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     throw new Error(
@@ -265,7 +266,7 @@ async function migrateToSupabase(supabase, secrets, environment = 'production') 
 async function syncToVercel(secrets, publicVars, environment = 'production') {
   log(`\n🚀 Syncing secrets to Vercel (${environment})...`, 'cyan');
 
-  const vercelToken = process.env.VERCEL_TOKEN;
+  const vercelToken = (await secretsManager.getSecret('VERCEL_TOKEN')) || process.env.VERCEL_TOKEN;
   if (!vercelToken) {
     log('⚠️  VERCEL_TOKEN not set, skipping Vercel sync', 'yellow');
     return { success: [], errors: [] };
@@ -298,7 +299,7 @@ async function syncToVercel(secrets, publicVars, environment = 'production') {
         log(`⚠️  CLI method failed for ${envVar.key}, trying API...`, 'yellow');
         
         // Alternative: Use Vercel API directly
-        const vercelProjectId = process.env.VERCEL_PROJECT_ID;
+        const vercelProjectId = (await secretsManager.getSecret('VERCEL_PROJECT_ID')) || process.env.VERCEL_PROJECT_ID;
         if (vercelProjectId) {
           const apiUrl = `https://api.vercel.com/v10/projects/${vercelProjectId}/env`;
           const response = await fetch(apiUrl, {

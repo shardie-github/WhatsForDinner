@@ -8,6 +8,7 @@ import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 const SECRETS_DIR = join(process.cwd(), 'ops', 'secrets');
 
@@ -87,9 +88,9 @@ async function rotateSecrets(): Promise<SecretRotation[]> {
 
   // Update Vercel secrets (via API)
   console.log('Updating Vercel secrets...');
-  const vercelToken = process.env.VERCEL_TOKEN;
-  const vercelProjectId = process.env.VERCEL_PROJECT_ID;
-  const vercelOrgId = process.env.VERCEL_ORG_ID;
+  const vercelToken = (await secretsManager.getSecret('VERCEL_TOKEN')) || process.env.VERCEL_TOKEN;
+  const vercelProjectId = (await secretsManager.getSecret('VERCEL_PROJECT_ID')) || process.env.VERCEL_PROJECT_ID;
+  const vercelOrgId = (await secretsManager.getSecret('VERCEL_ORG_ID')) || process.env.VERCEL_ORG_ID;
 
   if (vercelToken && vercelProjectId && vercelOrgId) {
     for (const rotation of rotations) {

@@ -34,7 +34,7 @@ async function createSnapshot(description?: string): Promise<SnapshotMetadata> {
   
   // Use Supabase CLI to create snapshot
   try {
-    const projectRef = process.env.SUPABASE_PROJECT_REF;
+    const projectRef = (await secretsManager.getSecret('SUPABASE_PROJECT_REF')) || process.env.SUPABASE_PROJECT_REF;
     if (!projectRef) {
       throw new Error('SUPABASE_PROJECT_REF not set');
     }
@@ -95,7 +95,7 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
 
   // Restore snapshot
   try {
-    const projectRef = process.env.SUPABASE_PROJECT_REF;
+    const projectRef = (await secretsManager.getSecret('SUPABASE_PROJECT_REF')) || process.env.SUPABASE_PROJECT_REF;
     if (!projectRef) {
       throw new Error('SUPABASE_PROJECT_REF not set');
     }
@@ -115,6 +115,7 @@ async function listSnapshots(): Promise<SnapshotMetadata[]> {
   ensureSnapshotsDir();
   
   const files = require('fs').readdirSync(SNAPSHOTS_DIR);
+import { secretsManager } from './secrets-manager-unified.mjs';
   const snapshots: SnapshotMetadata[] = [];
 
   for (const file of files) {

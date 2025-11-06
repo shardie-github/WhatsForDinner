@@ -3,7 +3,7 @@
 ## Executive Summary
 
 **Status**: ✅ Complete  
-**Dependencies Audited**: 555  
+**Dependencies Audited**: 564  
 **Compliance Rate**: 0.00%  
 **Vulnerabilities Found**: 0  
 **Critical Issues**: 0
@@ -14,7 +14,7 @@
 |----------|-------|------------|
 | ✅ Approved | 0 | 0.0% |
 | ⚠️ Restricted | 0 | 0.0% |
-| ❓ Unknown | 555 | 100.0% |
+| ❓ Unknown | 564 | 100.0% |
 
 ## Security Vulnerabilities
 
@@ -23,7 +23,7 @@
 ## Recommendations
 
 
-### 1. Clarify licenses for 555 packages
+### 1. Clarify licenses for 564 packages
 - **Priority**: MEDIUM
 - **Action**: Manually verify license compatibility
 

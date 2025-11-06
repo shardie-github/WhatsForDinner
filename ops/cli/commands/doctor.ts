@@ -5,6 +5,7 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 interface CheckResult {
   name: string;
@@ -136,7 +137,7 @@ export async function runDoctor(options: { fix?: boolean; verbose?: boolean }) {
 
   // Check 9: Supabase connection
   try {
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    if ((await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL && (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY) {
       checks.push({ name: 'Supabase Config', status: 'pass', message: 'Supabase credentials configured ✓' });
       passCount++;
     } else {

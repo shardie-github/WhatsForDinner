@@ -14,13 +14,13 @@ interface WebhookEvent {
 }
 
 async function validateStripeWebhook(signature: string, payload: string): Promise<boolean> {
-  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+  const stripe = require('stripe')((await secretsManager.getSecret('STRIPE_SECRET_KEY')) || process.env.STRIPE_SECRET_KEY);
   
   try {
     const event = stripe.webhooks.constructEvent(
       payload,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET
+      (await secretsManager.getSecret('STRIPE_WEBHOOK_SECRET')) || process.env.STRIPE_WEBHOOK_SECRET
     );
     return true;
   } catch (error) {
@@ -41,6 +41,7 @@ async function handleWebhook(event: WebhookEvent): Promise<void> {
   
   if (existsSync(webhookLog)) {
     webhooks = JSON.parse(require('fs').readFileSync(webhookLog, 'utf-8'));
+import { secretsManager } from './secrets-manager-unified.mjs';
   }
 
   webhooks.push(event);
@@ -64,7 +65,7 @@ async function handleWebhook(event: WebhookEvent): Promise<void> {
 }
 
 function isBillingEnabled(): boolean {
-  return process.env.ENABLE_BILLING === 'true';
+  return (await secretsManager.getSecret('ENABLE_BILLING')) || process.env.ENABLE_BILLING === 'true';
 }
 
 if (require.main === module) {

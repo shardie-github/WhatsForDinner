@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { secretsManager } = require('./secrets-manager-unified.mjs');
 
 const colors = {
   green: '\x1b[32m',
@@ -25,11 +26,11 @@ function log(message, color = 'reset') {
 // Configuration
 const config = {
   database: {
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    name: process.env.DB_NAME || 'whats_for_dinner',
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || 'password'
+    host: (await secretsManager.getSecret('DB_HOST')) || process.env.DB_HOST || 'localhost',
+    port: (await secretsManager.getSecret('DB_PORT')) || process.env.DB_PORT || 5432,
+    name: (await secretsManager.getSecret('DB_NAME')) || process.env.DB_NAME || 'whats_for_dinner',
+    user: (await secretsManager.getSecret('DB_USER')) || process.env.DB_USER || 'postgres',
+    password: (await secretsManager.getSecret('DB_PASSWORD')) || process.env.DB_PASSWORD || 'password'
   },
   migrations: {
     outputDir: 'migrations',

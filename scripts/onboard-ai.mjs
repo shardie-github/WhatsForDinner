@@ -11,7 +11,7 @@ import { execSync } from 'child_process';
 class AIOnboardingGenerator {
   constructor() {
     this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
+      apiKey: (await secretsManager.getSecret('OPENAI_API_KEY')) || process.env.OPENAI_API_KEY
     });
   }
 
@@ -558,6 +558,7 @@ pnpm run type-check
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   const generator = new AIOnboardingGenerator();
+import { secretsManager } from './secrets-manager-unified.mjs';
   
   const args = process.argv.slice(2);
   const command = args[0];

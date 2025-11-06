@@ -1,6 +1,6 @@
 # Nomad Grand Continuity & Completion Audit Report
 
-**Generated:** 2025-11-03T15:49:08.733Z
+**Generated:** 2025-11-06T02:33:12.680Z
 **Audit Scope:** Complete system review across all layers, workflows, artifacts, and dependencies
 
 ---
@@ -11,10 +11,10 @@
 
 **System Status:**
 - ? **Healthy Subsystems:** 3/8
-- ?? **Components:** 6 apps, 5 packages, 14 jobs
-- ??? **API Routes:** 87 total (58 with auth, 28 with validation)
+- ?? **Components:** 6 apps, 5 packages, 15 jobs
+- ??? **API Routes:** 111 total (77 with auth, 42 with validation)
 - ?? **Test Coverage:** 5%
-- ?? **Job Registration:** 6/14 jobs registered in queue
+- ?? **Job Registration:** 10/15 jobs registered in queue
 
 ---
 
@@ -27,14 +27,14 @@
   - `community-portal` (34 deps)
   - `mobile` (41 deps)
   - `referral` (34 deps)
-  - `web` (42 deps)
+  - `web` (47 deps)
 
 - **Packages:** 5
     - `config` (0 deps)
   - `server` (25 deps)
   - `theme` (2 deps)
   - `ui` (7 deps)
-  - `utils` (3 deps)
+  - `utils` (4 deps)
 
 ### TypeScript Configuration
 3/6 apps have TypeScript configuration
@@ -49,9 +49,9 @@
 - **RLS Policies:** Found in 1 files
 
 ### API Routes
-- **Total Routes:** 87
-- **Routes with Authentication:** 58 (67%)
-- **Routes with Validation:** 28 (32%)
+- **Total Routes:** 111
+- **Routes with Authentication:** 77 (69%)
+- **Routes with Validation:** 42 (38%)
 
 ### Key Routes:
 - `/admin/audit` [GET] ?? 
@@ -59,8 +59,10 @@
 - `/admin/dashboard` [GET] ?? ?
 - `/admin/governance/retention` [GET] ?? ?
 - `/admin/incidents` [GET] ?? ?
+- `/agent/suggest` [GET] ?? 
 - `/alerts` [GET] ?? 
 - `/analytics/dashboard` [GET] ?? 
+- `/audit/me` [GET] ?? 
 - `/auth/apple/callback` [GET] ?? 
 - `/auth/delete-account` [GET] ?? 
 - `/billing/checkout` [GET] ?? 
@@ -69,21 +71,19 @@
 - `/commerce/hub` [GET] ?? ?
 - `/cost/calculate` [GET] ?? 
 - `/cro/insights` [GET] ?? 
+- `/csrf-token` [GET] ?? 
 - `/developers/keys/[id]` [GET] ?? ?
 - `/developers/keys` [GET] ?? ?
-- `/developers/usage` [GET] ?? 
-- `/dinner` [POST] ?? ?
-- `/elasticity/[country]/[plan]` [GET] ?? 
 
-... and 67 more routes
+... and 91 more routes
 
 ---
 
 ## 3. Jobs & Automation
 
 ### Job Inventory
-Total Jobs: **14**
-Registered in Queue: **6**
+Total Jobs: **15**
+Registered in Queue: **10**
 
 
 #### `anomalyGuard`
@@ -170,16 +170,19 @@ Registered in Queue: **6**
 - **Logging:** ?
 - **Metrics:** ?
 
+#### `weeklyGuardianReport`
+- **Registered:** ?
+- **Error Handling:** ?
+- **Logging:** ?
+- **Metrics:** ??
+
 
 ### Missing Queue Registrations
-- ? `dsarExport` - Not registered in queue
 - ? `elasticityModel` - Not registered in queue
-- ? `erasureRunner` - Not registered in queue
 - ? `priceOptimizer` - Not registered in queue
-- ? `retentionRunner` - Not registered in queue
 - ? `revenueAggregator` - Not registered in queue
-- ? `selfHeal` - Not registered in queue
 - ? `vanWestendorpModel` - Not registered in queue
+- ? `weeklyGuardianReport` - Not registered in queue
 
 ---
 
@@ -235,9 +238,9 @@ Registered in Queue: **6**
 ## 6. Test Coverage
 
 ### Coverage Metrics
-- **Test Files:** 37
-- **Tested Files:** 37
-- **Untested Files:** 673
+- **Test Files:** 43
+- **Tested Files:** 43
+- **Untested Files:** 874
 - **Coverage:** **5%** ?
 
 
@@ -278,18 +281,15 @@ Current coverage is below the recommended 80% threshold. Priority areas for test
 ### Recommendations
 
 1. **Job Registration:** Register all jobs in the queue system
-   -   - Add `dsarExport` to queue registration
-  - Add `elasticityModel` to queue registration
-  - Add `erasureRunner` to queue registration
+   -   - Add `elasticityModel` to queue registration
   - Add `priceOptimizer` to queue registration
-  - Add `retentionRunner` to queue registration
   - Add `revenueAggregator` to queue registration
-  - Add `selfHeal` to queue registration
   - Add `vanWestendorpModel` to queue registration
+  - Add `weeklyGuardianReport` to queue registration
 
 2. **API Security:** Improve authentication coverage
-   - Current: 58/87 routes have auth
-   - Target: 79/87 routes (90%)
+   - Current: 77/111 routes have auth
+   - Target: 100/111 routes (90%)
 
 3. **Test Coverage:** Increase test coverage to 80%+
    - Current: 5%
@@ -310,7 +310,7 @@ Current coverage is below the recommended 80% threshold. Priority areas for test
 
 ### After Audit
 - Connectivity Health: **44%** ??
-- Job Registration: **43%** ??
+- Job Registration: **67%** ??
 - Test Coverage: **5%** ??
 
 ---
@@ -380,7 +380,7 @@ See `reports/inventory/coverage.json` for complete component inventory.
 See `reports/connectivity/heatmap.json` for detailed connectivity matrix.
 
 ### C. Test Files
-37 test files identified:
+43 test files identified:
 - `apps/web/src/__tests__/ai-safety.test.ts`
 - `apps/web/src/__tests__/security.test.ts`
 - `apps/web/src/app/__tests__/page.test.tsx`
@@ -390,6 +390,7 @@ See `reports/connectivity/heatmap.json` for detailed connectivity matrix.
 - `apps/web/src/components/__tests__/RecipeCard.test.tsx`
 - `apps/web/tests/e2e/security.spec.ts`
 - `apps/web/tests/integration/phases-integration.test.ts`
+- `apps/web/tests/privacy-acceptance.spec.ts`
 - `apps/web/tests/smoke.spec.ts`
 - `packages/analytics/consent/consent.test.ts`
 - `packages/server/src/testing/api.mealplan.spec.ts`
@@ -400,12 +401,11 @@ See `reports/connectivity/heatmap.json` for detailed connectivity matrix.
 - `packages/server/src/testing/referrals.spec.ts`
 - `packages/server/src/tests/admin.spec.ts`
 - `packages/server/src/tests/controls.spec.ts`
-- `packages/server/src/tests/dsar.spec.ts`
 
-... and 17 more
+... and 23 more
 
 ---
 
-**Report Generated:** 2025-11-03T15:49:08.734Z
+**Report Generated:** 2025-11-06T02:33:12.681Z
 **Audit Version:** 1.0
 **Next Audit:** Schedule in 90 days

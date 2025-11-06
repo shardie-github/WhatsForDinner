@@ -26,7 +26,7 @@ function log(message, color = 'reset') {
 
 // Configuration
 const config = {
-  baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+  baseUrl: (await secretsManager.getSecret('BASE_URL')) || process.env.BASE_URL || 'http://localhost:3000',
   threshold: {
     violations: 0, // Fail if any violations
     warnings: 10,  // Warn if more than 10 warnings
@@ -180,6 +180,7 @@ class AccessibilityTester {
     try {
       const pa11yScript = `
         const pa11y = require('pa11y');
+const { secretsManager } = require('./secrets-manager-unified.mjs');
         
         (async () => {
           const results = await pa11y('${url}', {

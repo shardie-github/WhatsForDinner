@@ -7,6 +7,7 @@
 import { chromium, devices } from 'playwright';
 import * as fs from 'fs';
 import * as path from 'path';
+import { secretsManager } from './secrets-manager-unified.mjs';
 
 interface ScreenshotConfig {
   name: string;
@@ -45,7 +46,7 @@ const SCREENSHOTS = {
   },
 };
 
-const BASE_URL = process.env.SCREENSHOT_BASE_URL || 'http://localhost:3000';
+const BASE_URL = (await secretsManager.getSecret('SCREENSHOT_BASE_URL')) || process.env.SCREENSHOT_BASE_URL || 'http://localhost:3000';
 const OUTPUT_DIR = path.join(__dirname, '../../ops/store');
 
 async function captureScreenshot(
