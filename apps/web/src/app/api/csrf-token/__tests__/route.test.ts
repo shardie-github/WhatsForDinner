@@ -1,46 +1,49 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NextRequest } from 'next/server';
-import { POST, GET } from '../route';
+import { GET } from '../route';
+import * as csrfLib from '@/lib/csrf';
 
-describe('API Route: apps/web/src/app/api/csrf-token/route.ts', () => {
+vi.mock('@/lib/csrf');
+
+describe('/api/csrf-token GET', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('should handle GET request', async () => {
-    const req = new NextRequest('http://localhostapps/web/src/app/api/csrf-token');
-    try {
-      const response = await GET(req);
-      expect(response).toBeDefined();
-    } catch (error) {
-      // API might require authentication or other setup
-      expect(error).toBeDefined();
-    }
+  it('should generate and return CSRF token', async () => {
+    const mockToken = 'test-csrf-token-123';
+    vi.mocked(csrfLib.generateCSRFToken).mockResolvedValue(mockToken);
+
+    const req = new NextRequest('http://localhost/api/csrf-token');
+    const response = await GET();
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.token).toBe(mockToken);
+    expect(csrfLib.generateCSRFToken).toHaveBeenCalled();
   });
 
-  it('should handle POST request', async () => {
-    const req = new NextRequest('http://localhostapps/web/src/app/api/csrf-token', {
-      method: 'POST',
-      body: JSON.stringify({}),
-    });
-    try {
-      const response = await POST(req);
-      expect(response).toBeDefined();
-    } catch (error) {
-      expect(error).toBeDefined();
-    }
+  it('should handle token generation errors', async () => {
+    vi.mocked(csrfLib.generateCSRFToken).mockRejectedValue(
+      new Error('Token generation failed')
+    );
+
+    const response = await GET();
+    const data = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(data.error).toBe('Failed to generate CSRF token');
   });
 
-  it('should validate request body', async () => {
-    const req = new NextRequest('http://localhostapps/web/src/app/api/csrf-token', {
-      method: 'POST',
-      body: 'invalid json',
-    });
-    try {
-      const response = await POST(req);
-      expect(response.status).toBeGreaterThanOrEqual(400);
-    } catch (error) {
-      expect(error).toBeDefined();
-    }
+  it('should return valid token format', async () => {
+    const mockToken = 'csrf-token-abc123';
+    vi.mocked(csrfLib.generateCSRFToken).mockResolvedValue(mockToken);
+
+    const response = await GET();
+    const data = await response.json();
+
+    expect(data.token).toBeTruthy();
+    expect(typeof data.token).toBe('string');
+    expect(data.token.length).toBeGreaterThan(0);
   });
 });

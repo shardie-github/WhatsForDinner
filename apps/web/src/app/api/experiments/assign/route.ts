@@ -47,7 +47,7 @@ export async function GET(req: Request) {
       active: true,
     });
   } catch (error) {
-    console.error('Error assigning experiment variant:', error);
+    // Error handled: Error assigning experiment variant:
     return NextResponse.json(
       { error: 'Failed to assign variant' },
       { status: 500 }

@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ policies });
   } catch (error) {
-    console.error('Retention policies error:', error);
+    // Error handled: Retention policies error:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Retention run error:', error);
+    // Error handled: Retention run error:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

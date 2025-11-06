@@ -138,7 +138,7 @@ export class ConsentModel {
       const purposes = this.parseTCFString(tcfString);
       this.state.purposes = { ...this.state.purposes, ...purposes };
     } catch (error) {
-      console.warn('Failed to parse TCF string:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('Failed to parse TCF string:', error); }
     }
   }
   

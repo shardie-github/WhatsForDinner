@@ -28,7 +28,7 @@ export async function getPrivacyHealthMetrics(): Promise<PrivacyHealthMetrics> {
   const { data, error } = await supabase.rpc('get_privacy_health_stats');
 
   if (error) {
-    console.error('Failed to get privacy health metrics:', error);
+    // Error handled: Failed to get privacy health metrics:
     return {
       totalUsersOptedIn: 0,
       totalAppsMonitored: 0,

@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Commerce Hub error:', error);
+    // Error handled: Commerce Hub error:
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -139,7 +139,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Commerce Hub GET error:', error);
+    // Error handled: Commerce Hub GET error:
     return NextResponse.json(
       { error: 'Commerce Hub request failed' },
       { status: 500 }

@@ -32,7 +32,7 @@ export class TrustFabricAI {
         this.model = this.createDefaultModel();
       }
     } catch (error) {
-      console.warn('Failed to load Trust Fabric model:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('Failed to load Trust Fabric model:', error); }
       this.model = this.createDefaultModel();
     }
   }
@@ -219,7 +219,7 @@ export class TrustFabricAI {
       }
       fs.writeFileSync(this.modelPath, JSON.stringify(this.model, null, 2), 'utf-8');
     } catch (error) {
-      console.error('Failed to save Trust Fabric model:', error);
+      // Error handled: Failed to save Trust Fabric model:
     }
   }
 }

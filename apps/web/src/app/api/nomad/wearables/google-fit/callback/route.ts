@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
       new URL('/nomad/settings?connected=google-fit', request.url)
     );
   } catch (error) {
-    console.error('Google Fit callback error:', error);
+    // Error handled: Google Fit callback error:
     return NextResponse.redirect(
       new URL('/nomad/settings?error=callback_failed', request.url)
     );

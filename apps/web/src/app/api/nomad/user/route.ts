@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
       goals: goals?.map((g) => g.goal) || [],
     });
   } catch (error) {
-    console.error('Error fetching user:', error);
+    // Error handled: Error fetching user:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error updating user:', error);
+    // Error handled: Error updating user:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

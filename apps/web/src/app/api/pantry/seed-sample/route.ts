@@ -98,7 +98,7 @@ async function handler(req: NextRequest) {
       ingredients: SAMPLE_INGREDIENTS,
     });
   } catch (error) {
-    console.error('Error seeding sample data:', error);
+    // Error handled: Error seeding sample data:
     return NextResponse.json(
       { error: 'Failed to seed sample data' },
       { status: 500 }

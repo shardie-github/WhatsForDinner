@@ -41,7 +41,7 @@ export class Guardian {
         responseActions: parsed.response_actions || {},
       } as PolicyConfig;
     } catch (error) {
-      console.warn('Failed to load policies, using defaults:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('Failed to load policies, using defaults:', error); }
       return this.getDefaultPolicies();
     }
   }
@@ -321,7 +321,7 @@ export class Guardian {
       const lastEntry = JSON.parse(lastLine);
       return lastEntry.sha256 || lastEntry.fingerprint;
     } catch (error) {
-      console.warn('Failed to read last ledger hash:', error);
+      if (process.env.NODE_ENV === 'development') { console.warn('Failed to read last ledger hash:', error); }
       return undefined;
     }
   }

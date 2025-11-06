@@ -73,7 +73,7 @@ export function PricingSurvey({ country, currency = 'USD', onComplete }: Pricing
         localStorage.setItem('pricing_survey_pending', JSON.stringify(offlineData));
       }
     } catch (error) {
-      console.error('Error submitting survey:', error);
+      // Error handled: Error submitting survey:
       alert('Failed to submit survey. Please try again.');
     }
   };

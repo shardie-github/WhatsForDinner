@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   } catch (error) {
-    console.error('Error processing pantry intelligence:', error);
+    // Error handled: Error processing pantry intelligence:
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(

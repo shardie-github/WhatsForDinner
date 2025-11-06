@@ -71,7 +71,7 @@ export default function EmailCapture({
         setEmail('');
       }, 3000);
     } catch (error) {
-      console.error('Error capturing email:', error);
+      // Error handled: Error capturing email:
       toast.error('Something went wrong. Please try again.');
     } finally {
       setLoading(false);

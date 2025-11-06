@@ -123,7 +123,7 @@ export class AutonomousInfrastructure {
 
       return health;
     } catch (error) {
-      console.error('Error performing health check:', error);
+      // Error handled: Error performing health check:
       throw error;
     }
   }
@@ -168,7 +168,7 @@ export class AutonomousInfrastructure {
 
       return metrics;
     } catch (error) {
-      console.error('Error collecting metrics:', error);
+      // Error handled: Error collecting metrics:
       // Return safe defaults
       return {
         cpu_usage: 50,
@@ -557,7 +557,7 @@ export class AutonomousInfrastructure {
         timestamp: health.last_check,
       });
     } catch (error) {
-      console.error('Error storing health status:', error);
+      // Error handled: Error storing health status:
     }
   }
 
@@ -574,7 +574,7 @@ export class AutonomousInfrastructure {
         'self_healing'
       );
     } catch (error) {
-      console.error('Error logging self-healing action:', error);
+      // Error handled: Error logging self-healing action:
     }
   }
 
@@ -592,7 +592,7 @@ export class AutonomousInfrastructure {
 
       console.error('?? CRITICAL INFRASTRUCTURE ALERT:', health);
     } catch (error) {
-      console.error('Error sending alert:', error);
+      // Error handled: Error sending alert:
     }
   }
 

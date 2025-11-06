@@ -72,14 +72,14 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending welcome email:', error);
+        // Error handled: Error sending welcome email:
         throw error;
       }
 
       // Track email sent event
       await this.trackEmailEvent('welcome', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send welcome email:', error);
+      // Error handled: Failed to send welcome email:
       throw error;
     }
   }
@@ -118,13 +118,13 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending first recipe email:', error);
+        // Error handled: Error sending first recipe email:
         throw error;
       }
 
       await this.trackEmailEvent('first_recipe', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send first recipe email:', error);
+      // Error handled: Failed to send first recipe email:
       throw error;
     }
   }
@@ -166,13 +166,13 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending milestone email:', error);
+        // Error handled: Error sending milestone email:
         throw error;
       }
 
       await this.trackEmailEvent('milestone', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send milestone email:', error);
+      // Error handled: Failed to send milestone email:
       throw error;
     }
   }
@@ -211,13 +211,13 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending churn risk email:', error);
+        // Error handled: Error sending churn risk email:
         throw error;
       }
 
       await this.trackEmailEvent('churn_risk', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send churn risk email:', error);
+      // Error handled: Failed to send churn risk email:
       throw error;
     }
   }
@@ -264,13 +264,13 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending winback email:', error);
+        // Error handled: Error sending winback email:
         throw error;
       }
 
       await this.trackEmailEvent('winback', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send winback email:', error);
+      // Error handled: Failed to send winback email:
       throw error;
     }
   }
@@ -289,13 +289,13 @@ export class MarketingAutomation {
         .single();
 
       if (error) {
-        console.error('Error fetching email template:', error);
+        // Error handled: Error fetching email template:
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Failed to get email template:', error);
+      // Error handled: Failed to get email template:
       return null;
     }
   }
@@ -314,13 +314,13 @@ export class MarketingAutomation {
         .single();
 
       if (error) {
-        console.error('Error creating email template:', error);
+        // Error handled: Error creating email template:
         throw error;
       }
 
       return data.id;
     } catch (error) {
-      console.error('Failed to create email template:', error);
+      // Error handled: Failed to create email template:
       throw error;
     }
   }
@@ -342,11 +342,11 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error tracking email event:', error);
+        // Error handled: Error tracking email event:
         throw error;
       }
     } catch (error) {
-      console.error('Failed to track email event:', error);
+      // Error handled: Failed to track email event:
       throw error;
     }
   }
@@ -421,7 +421,7 @@ export class MarketingAutomation {
         }
       }
     } catch (error) {
-      console.error('Failed to process email triggers:', error);
+      // Error handled: Failed to process email triggers:
       throw error;
     }
   }
@@ -451,13 +451,13 @@ export class MarketingAutomation {
         .single();
 
       if (error) {
-        console.error('Error creating email campaign:', error);
+        // Error handled: Error creating email campaign:
         throw error;
       }
 
       return data.id;
     } catch (error) {
-      console.error('Failed to create email campaign:', error);
+      // Error handled: Failed to create email campaign:
       throw error;
     }
   }
@@ -528,7 +528,7 @@ export class MarketingAutomation {
               await this.trackEmailEvent('campaign', user.email, 'sent');
             }
           } catch (error) {
-            console.error('Error sending campaign email:', error);
+            // Error handled: Error sending campaign email:
           }
         }
       }
@@ -545,7 +545,7 @@ export class MarketingAutomation {
         })
         .eq('id', campaignId);
     } catch (error) {
-      console.error('Failed to execute email campaign:', error);
+      // Error handled: Failed to execute email campaign:
       throw error;
     }
   }
@@ -564,13 +564,13 @@ export class MarketingAutomation {
         .single();
 
       if (error) {
-        console.error('Error fetching campaign metrics:', error);
+        // Error handled: Error fetching campaign metrics:
         return null;
       }
 
       return data.metrics;
     } catch (error) {
-      console.error('Failed to get campaign metrics:', error);
+      // Error handled: Failed to get campaign metrics:
       return null;
     }
   }

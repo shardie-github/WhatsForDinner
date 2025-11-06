@@ -150,7 +150,7 @@ export class GuardianInspector {
           events.push(event);
         }
       } catch (error) {
-        console.warn('Failed to parse ledger entry:', error);
+        if (process.env.NODE_ENV === 'development') { console.warn('Failed to parse ledger entry:', error); }
       }
     }
 

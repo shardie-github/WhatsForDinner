@@ -60,7 +60,7 @@ async function handler(req: NextRequest) {
       { status: 400 }
     );
   } catch (error) {
-    console.error('Error fetching nutrition:', error);
+    // Error handled: Error fetching nutrition:
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(

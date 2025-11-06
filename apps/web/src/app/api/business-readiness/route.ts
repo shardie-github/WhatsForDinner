@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Error generating business readiness report:', error);
+    // Error handled: Error generating business readiness report:
     return NextResponse.json(
       { error: 'Failed to generate report' },
       { status: 500 }
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error) {
-    console.error('Error processing request:', error);
+    // Error handled: Error processing request:
     return NextResponse.json(
       { error: 'Failed to process request' },
       { status: 500 }

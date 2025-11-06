@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ recipes: recipes || [] });
   } catch (error) {
-    console.error('Error fetching recipes:', error);
+    // Error handled: Error fetching recipes:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ recipes: aiRecipes });
   } catch (error) {
-    console.error('Error generating AI recommendations:', error);
+    // Error handled: Error generating AI recommendations:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

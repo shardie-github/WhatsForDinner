@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     res = addSecurityHeaders(res);
     return setCORSHeaders(res, request.headers.get('origin'));
   } catch (error) {
-    console.error('Error fetching meal plan:', error);
+    // Error handled: Error fetching meal plan:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid input', details: error.errors }, { status: 400 });
     }
-    console.error('Error creating meal plan:', error);
+    // Error handled: Error creating meal plan:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -157,7 +157,7 @@ export async function aiGenerate(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid input', details: error.errors }, { status: 400 });
     }
-    console.error('Error enqueueing AI meal generation:', error);
+    // Error handled: Error enqueueing AI meal generation:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

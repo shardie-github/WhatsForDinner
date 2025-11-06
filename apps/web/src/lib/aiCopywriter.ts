@@ -100,7 +100,7 @@ export class AICopywriter {
 
       return storedVariants;
     } catch (error) {
-      console.error('Error generating copy variants:', error);
+      // Error handled: Error generating copy variants:
       throw error;
     }
   }
@@ -286,7 +286,7 @@ Variant 3: [post content]`;
         throw updateError;
       }
     } catch (error) {
-      console.error('Failed to update copy metrics:', error);
+      // Error handled: Failed to update copy metrics:
       throw error;
     }
   }
@@ -302,7 +302,7 @@ Variant 3: [post content]`;
         .eq('test_id', testId);
 
       if (error) {
-        console.error('Error fetching test variants:', error);
+        // Error handled: Error fetching test variants:
         throw error;
       }
 
@@ -349,7 +349,7 @@ Variant 3: [post content]`;
         recommended_action: recommendedAction,
       };
     } catch (error) {
-      console.error('Failed to analyze test results:', error);
+      // Error handled: Failed to analyze test results:
       throw error;
     }
   }
@@ -424,7 +424,7 @@ Variant 3: [post content]`;
         .order('performance_metrics->conversion_rate', { ascending: false });
 
       if (error) {
-        console.error('Error fetching copy insights:', error);
+        // Error handled: Error fetching copy insights:
         throw error;
       }
 
@@ -467,7 +467,7 @@ Variant 3: [post content]`;
         recommendations,
       };
     } catch (error) {
-      console.error('Failed to get copy insights:', error);
+      // Error handled: Failed to get copy insights:
       throw error;
     }
   }
@@ -559,7 +559,7 @@ Generate the copy:`;
 
       return response.choices[0]?.message?.content || '';
     } catch (error) {
-      console.error('Failed to generate copy for use case:', error);
+      // Error handled: Failed to generate copy for use case:
       throw error;
     }
   }

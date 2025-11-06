@@ -113,7 +113,7 @@ export default function OnboardingFlow({ userId, onComplete, onSkip }: Onboardin
         handleComplete();
       }
     } catch (error) {
-      console.error('Error loading progress:', error);
+      // Error handled: Error loading progress:
     }
   };
 

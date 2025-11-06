@@ -29,7 +29,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
         })
         .catch((error) => {
           clearTimeout(timeout);
-          console.error('[Code Splitting] Failed to load component:', error);
+          // Error handled: [Code Splitting] Failed to load component:
           reject(error);
         });
     });

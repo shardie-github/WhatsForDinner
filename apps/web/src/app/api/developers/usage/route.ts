@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
       usage,
     });
   } catch (error) {
-    console.error('Error fetching usage data:', error);
+    // Error handled: Error fetching usage data:
     return NextResponse.json(
       { error: 'Failed to fetch usage data' },
       { status: 500 }

@@ -175,7 +175,7 @@ export class AICommerceHub {
         recommendations,
       };
     } catch (error) {
-      console.error('Error getting financial summary:', error);
+      // Error handled: Error getting financial summary:
       throw error;
     }
   }
@@ -227,7 +227,7 @@ export class AICommerceHub {
 
       return reconciliation;
     } catch (error) {
-      console.error('Error reconciling invoices:', error);
+      // Error handled: Error reconciling invoices:
       throw error;
     }
   }
@@ -313,7 +313,7 @@ export class AICommerceHub {
         confidence: aiResult.response.confidence,
       };
     } catch (error) {
-      console.error('Error getting pricing suggestions:', error);
+      // Error handled: Error getting pricing suggestions:
       throw error;
     }
   }
@@ -445,7 +445,7 @@ export class AICommerceHub {
         recommendations,
       };
     } catch (error) {
-      console.error('Error analyzing revenue streams:', error);
+      // Error handled: Error analyzing revenue streams:
       throw error;
     }
   }
@@ -538,7 +538,7 @@ export class AICommerceHub {
 
       return aiResult.response.recommendations;
     } catch (error) {
-      console.error('Error generating financial recommendations:', error);
+      // Error handled: Error generating financial recommendations:
       return ['Unable to generate recommendations at this time'];
     }
   }

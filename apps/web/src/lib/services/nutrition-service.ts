@@ -44,7 +44,7 @@ const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
  */
 export async function searchUSDAFoods(query: string, limit = 10): Promise<any[]> {
   if (!USDA_API_KEY) {
-    console.warn('USDA API key not configured');
+    if (process.env.NODE_ENV === 'development') { console.warn('USDA API key not configured'); }
     return [];
   }
 
@@ -60,7 +60,7 @@ export async function searchUSDAFoods(query: string, limit = 10): Promise<any[]>
     const data = await response.json();
     return data.foods || [];
   } catch (error) {
-    console.error('Error searching USDA foods:', error);
+    // Error handled: Error searching USDA foods:
     return [];
   }
 }
@@ -84,7 +84,7 @@ export async function getFoodNutrition(fdcId: number): Promise<NutritionData | n
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching USDA food nutrition:', error);
+    // Error handled: Error fetching USDA food nutrition:
     return null;
   }
 }

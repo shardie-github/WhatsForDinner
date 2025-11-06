@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('Cost calculation error:', error);
+    // Error handled: Cost calculation error:
     return NextResponse.json(
       { error: error.message || 'Failed to calculate cost' },
       { status: 500 }

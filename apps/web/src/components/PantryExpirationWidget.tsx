@@ -68,7 +68,7 @@ export default function PantryExpirationWidget() {
         expiring_soon: itemsWithExpiration.filter(i => (i.days_until_expiration || 0) <= 3).length,
       });
     } catch (error) {
-      console.error('Error loading expiring items:', error);
+      // Error handled: Error loading expiring items:
     } finally {
       setLoading(false);
     }

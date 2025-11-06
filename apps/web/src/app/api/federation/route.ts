@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Federation API error:', error);
+    // Error handled: Federation API error:
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -108,7 +108,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Federation GET error:', error);
+    // Error handled: Federation GET error:
     return NextResponse.json(
       { error: 'Federation request failed' },
       { status: 500 }

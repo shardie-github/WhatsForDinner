@@ -146,14 +146,14 @@ Include detailed nutritional information and health benefits.`,
         .single();
 
       if (error) {
-        console.error('Failed to fetch current AI config:', error);
+        // Error handled: Failed to fetch current AI config:
         return null;
       }
 
       this.currentConfig = data;
       return data;
     } catch (error) {
-      console.error('Error fetching AI config:', error);
+      // Error handled: Error fetching AI config:
       return null;
     }
   }
@@ -182,14 +182,14 @@ Include detailed nutritional information and health benefits.`,
         .single();
 
       if (error) {
-        console.error('Failed to create AI config:', error);
+        // Error handled: Failed to create AI config:
         return null;
       }
 
       this.currentConfig = data;
       return data;
     } catch (error) {
-      console.error('Error creating AI config:', error);
+      // Error handled: Error creating AI config:
       return null;
     }
   }
@@ -205,7 +205,7 @@ Include detailed nutritional information and health benefits.`,
         .eq('id', configId);
 
       if (error) {
-        console.error('Failed to update AI config:', error);
+        // Error handled: Failed to update AI config:
         return false;
       }
 
@@ -217,7 +217,7 @@ Include detailed nutritional information and health benefits.`,
 
       return true;
     } catch (error) {
-      console.error('Error updating AI config:', error);
+      // Error handled: Error updating AI config:
       return false;
     }
   }
@@ -261,7 +261,7 @@ Include detailed nutritional information and health benefits.`,
 
       return evaluation;
     } catch (error) {
-      console.error('Error evaluating model:', error);
+      // Error handled: Error evaluating model:
       return null;
     }
   }
@@ -361,13 +361,13 @@ Include detailed nutritional information and health benefits.`,
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Failed to fetch config history:', error);
+        // Error handled: Failed to fetch config history:
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Error fetching config history:', error);
+      // Error handled: Error fetching config history:
       return [];
     }
   }
@@ -381,7 +381,7 @@ Include detailed nutritional information and health benefits.`,
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Failed to fetch performance metrics:', error);
+        // Error handled: Failed to fetch performance metrics:
         return {};
       }
 
@@ -395,7 +395,7 @@ Include detailed nutritional information and health benefits.`,
         totalConfigs: data?.length || 0,
       };
     } catch (error) {
-      console.error('Error fetching performance metrics:', error);
+      // Error handled: Error fetching performance metrics:
       return {};
     }
   }

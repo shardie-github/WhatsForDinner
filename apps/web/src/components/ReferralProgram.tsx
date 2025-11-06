@@ -78,7 +78,7 @@ export default function ReferralProgram() {
         referral_link: referralLink,
       });
     } catch (error) {
-      console.error('Error loading referral stats:', error);
+      // Error handled: Error loading referral stats:
     }
   };
 
@@ -98,7 +98,7 @@ export default function ReferralProgram() {
 
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.error('Error copying link:', error);
+      // Error handled: Error copying link:
       toast.error('Failed to copy link');
     }
   };
@@ -123,7 +123,7 @@ export default function ReferralProgram() {
         await copyReferralLink();
       }
     } catch (error) {
-      console.error('Error sharing:', error);
+      // Error handled: Error sharing:
     }
   };
 

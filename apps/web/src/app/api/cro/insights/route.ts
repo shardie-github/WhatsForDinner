@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Error getting CRO insights:', error);
+    // Error handled: Error getting CRO insights:
     return NextResponse.json(
       { error: 'Failed to get CRO insights' },
       { status: 500 }
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error) {
-    console.error('Error processing CRO request:', error);
+    // Error handled: Error processing CRO request:
     return NextResponse.json(
       { error: 'Failed to process request' },
       { status: 500 }

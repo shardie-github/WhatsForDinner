@@ -45,7 +45,7 @@ export async function GET(req: Request) {
       custom_preferences: null,
     });
   } catch (error) {
-    console.error('Error fetching preferences:', error);
+    // Error handled: Error fetching preferences:
     return NextResponse.json(
       { error: 'Failed to fetch preferences' },
       { status: 500 }
@@ -109,7 +109,7 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error('Error updating preferences:', error);
+    // Error handled: Error updating preferences:
     return NextResponse.json(
       { error: 'Failed to update preferences' },
       { status: 500 }

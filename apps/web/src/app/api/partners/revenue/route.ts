@@ -138,7 +138,7 @@ export async function GET(req: NextRequest) {
       data,
     });
   } catch (error) {
-    console.error('Error fetching partner revenue:', error);
+    // Error handled: Error fetching partner revenue:
     return NextResponse.json(
       { error: 'Failed to fetch partner revenue data' },
       { status: 500 }

@@ -79,10 +79,10 @@ class AnalyticsService {
       const { error } = await supabase.from('analytics_events').insert(event);
 
       if (error) {
-        console.error('Analytics tracking error:', error);
+        // Error handled: Analytics tracking error:
       }
     } catch (error) {
-      console.error('Failed to track analytics event:', error);
+      // Error handled: Failed to track analytics event:
     }
   }
 
@@ -95,13 +95,13 @@ class AnalyticsService {
         .single();
 
       if (error) {
-        console.error('Recipe metrics tracking error:', error);
+        // Error handled: Recipe metrics tracking error:
         return null;
       }
 
       return data.id;
     } catch (error) {
-      console.error('Failed to track recipe metrics:', error);
+      // Error handled: Failed to track recipe metrics:
       return null;
     }
   }
@@ -123,10 +123,10 @@ class AnalyticsService {
       const { error } = await supabase.from('system_metrics').insert(metric);
 
       if (error) {
-        console.error('System metrics tracking error:', error);
+        // Error handled: System metrics tracking error:
       }
     } catch (error) {
-      console.error('Failed to track system metric:', error);
+      // Error handled: Failed to track system metric:
     }
   }
 
@@ -148,13 +148,13 @@ class AnalyticsService {
         .gte('generated_at', startDate.toISOString());
 
       if (error) {
-        console.error('Failed to fetch recipe analytics:', error);
+        // Error handled: Failed to fetch recipe analytics:
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Failed to fetch recipe analytics:', error);
+      // Error handled: Failed to fetch recipe analytics:
       return null;
     }
   }
@@ -166,13 +166,13 @@ class AnalyticsService {
       });
 
       if (error) {
-        console.error('Failed to fetch popular ingredients:', error);
+        // Error handled: Failed to fetch popular ingredients:
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to fetch popular ingredients:', error);
+      // Error handled: Failed to fetch popular ingredients:
       return [];
     }
   }
@@ -182,13 +182,13 @@ class AnalyticsService {
       const { data, error } = await supabase.rpc('get_cuisine_preferences');
 
       if (error) {
-        console.error('Failed to fetch cuisine preferences:', error);
+        // Error handled: Failed to fetch cuisine preferences:
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to fetch cuisine preferences:', error);
+      // Error handled: Failed to fetch cuisine preferences:
       return [];
     }
   }
@@ -203,13 +203,13 @@ class AnalyticsService {
         .limit(100);
 
       if (error) {
-        console.error('Failed to fetch API performance metrics:', error);
+        // Error handled: Failed to fetch API performance metrics:
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to fetch API performance metrics:', error);
+      // Error handled: Failed to fetch API performance metrics:
       return [];
     }
   }

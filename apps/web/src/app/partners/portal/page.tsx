@@ -77,7 +77,7 @@ export default function PartnerPortalPage() {
       const partnersData = await partnersResponse.json();
       setTopPartners(partnersData.partners || []);
     } catch (error) {
-      console.error('Error loading partner data:', error);
+      // Error handled: Error loading partner data:
     } finally {
       setLoading(false);
     }

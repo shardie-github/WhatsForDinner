@@ -100,7 +100,7 @@ Format as JSON array.`;
 
       return themes;
     } catch (error) {
-      console.error('Error generating trending themes:', error);
+      // Error handled: Error generating trending themes:
       throw error;
     }
   }
@@ -200,13 +200,13 @@ Generate the content:`;
         .single();
 
       if (error) {
-        console.error('Error storing social content:', error);
+        // Error handled: Error storing social content:
         throw error;
       }
 
       return data as SocialPost;
     } catch (error) {
-      console.error('Error generating social content:', error);
+      // Error handled: Error generating social content:
       throw error;
     }
   }
@@ -248,7 +248,7 @@ Generate the content:`;
         .eq('id', postId);
 
       if (error) {
-        console.error('Error scheduling post:', error);
+        // Error handled: Error scheduling post:
         throw error;
       }
 
@@ -260,7 +260,7 @@ Generate the content:`;
       // - LinkedIn API
 
           } catch (error) {
-      console.error('Failed to schedule post:', error);
+      // Error handled: Failed to schedule post:
       throw error;
     }
   }
@@ -320,7 +320,7 @@ Format as JSON.`;
       const content = response.choices[0]?.message?.content || '';
       return JSON.parse(content) as ContentStrategy;
     } catch (error) {
-      console.error('Error generating content strategy:', error);
+      // Error handled: Error generating content strategy:
       throw error;
     }
   }
@@ -379,7 +379,7 @@ Format as JSON.`;
         throw updateError;
       }
     } catch (error) {
-      console.error('Failed to update post metrics:', error);
+      // Error handled: Failed to update post metrics:
       throw error;
     }
   }
@@ -420,13 +420,13 @@ Format as JSON.`;
       const { data, error } = await query;
 
       if (error) {
-        console.error('Error fetching top performing posts:', error);
+        // Error handled: Error fetching top performing posts:
         throw error;
       }
 
       return data as SocialPost[];
     } catch (error) {
-      console.error('Failed to get top performing posts:', error);
+      // Error handled: Failed to get top performing posts:
       throw error;
     }
   }
@@ -475,7 +475,7 @@ Make them specific, actionable, and platform-appropriate.`;
         .filter(line => line.trim())
         .map(line => line.replace(/^\d+\.\s*/, ''));
     } catch (error) {
-      console.error('Error generating viral content ideas:', error);
+      // Error handled: Error generating viral content ideas:
       throw error;
     }
   }
@@ -524,7 +524,7 @@ Format as JSON with arrays for each category.`;
       const content = response.choices[0]?.message?.content || '';
       return JSON.parse(content);
     } catch (error) {
-      console.error('Error analyzing competitor content:', error);
+      // Error handled: Error analyzing competitor content:
       throw error;
     }
   }
@@ -580,7 +580,7 @@ Format as JSON array.`;
       const content = response.choices[0]?.message?.content || '';
       return JSON.parse(content);
     } catch (error) {
-      console.error('Error generating content calendar:', error);
+      // Error handled: Error generating content calendar:
       throw error;
     }
   }

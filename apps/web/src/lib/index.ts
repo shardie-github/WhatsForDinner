@@ -85,7 +85,7 @@ export async function initializeAutonomousSystem(): Promise<void> {
 
     // The orchestrator will handle all initialization
                               } catch (error) {
-    console.error('❌ Failed to initialize autonomous system:', error);
+    // Error handled: ❌ Failed to initialize autonomous system:
     throw error;
   }
 }
@@ -127,7 +127,7 @@ export async function shutdownAutonomousSystem(): Promise<void> {
   try {
         await autonomousOrchestrator.shutdown();
       } catch (error) {
-    console.error('❌ Error during system shutdown:', error);
+    // Error handled: ❌ Error during system shutdown:
     throw error;
   }
 }

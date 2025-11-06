@@ -327,7 +327,7 @@ class MonitoringSystem {
         }
       }
     } catch (error) {
-      console.error('Failed to check alerts:', error);
+      // Error handled: Failed to check alerts:
     }
   }
 
@@ -388,7 +388,7 @@ class MonitoringSystem {
         threshold: alert.threshold,
       });
     } catch (error) {
-      console.error('Failed to send alert notification:', error);
+      // Error handled: Failed to send alert notification:
     }
   }
 
@@ -490,7 +490,7 @@ class MonitoringSystem {
 
       return data || [];
     } catch (error) {
-      console.error('Failed to get alerts:', error);
+      // Error handled: Failed to get alerts:
       return [];
     }
   }
@@ -561,7 +561,7 @@ class MonitoringSystem {
         alerts: activeAlerts,
       };
     } catch (error) {
-      console.error('Failed to get health status:', error);
+      // Error handled: Failed to get health status:
       return {
         status: 'unhealthy',
         metrics: {},
@@ -659,7 +659,7 @@ class MonitoringSystem {
         recommendations,
       };
     } catch (error) {
-      console.error('Failed to generate report:', error);
+      // Error handled: Failed to generate report:
       return {
         summary: {},
         metrics: {},

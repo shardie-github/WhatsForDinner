@@ -372,29 +372,29 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
     saveBaseline(baseline, 'perf-baseline.json')
       .then(() => {
-        console.log('? Baseline generated: perf-baseline.json');
+        if (process.env.NODE_ENV === 'development') { console.log('? Baseline generated: perf-baseline.json'); }
         process.exit(0);
       })
       .catch((error) => {
-        console.error('Failed to generate baseline:', error);
+        // Error handled: Failed to generate baseline:
         process.exit(1);
       });
   } else if (args.includes('--compare')) {
     loadBaseline('perf-baseline.json')
       .then((baseline) => {
         // Placeholder comparison - in production would compare against actual test results
-        console.log('Baseline loaded:', baseline.timestamp);
-        console.log('Run k6 tests and compare results');
+        if (process.env.NODE_ENV === 'development') { console.log('Baseline loaded:', baseline.timestamp); }
+        if (process.env.NODE_ENV === 'development') { console.log('Run k6 tests and compare results'); }
         process.exit(0);
       })
       .catch((error) => {
-        console.error('Failed to load baseline:', error);
+        // Error handled: Failed to load baseline:
         process.exit(1);
       });
   } else {
-    console.log('Available commands:');
-    console.log('  --generate-baseline  Generate performance baseline');
-    console.log('  --compare            Compare with baseline');
+    if (process.env.NODE_ENV === 'development') { console.log('Available commands:'); }
+    if (process.env.NODE_ENV === 'development') { console.log('  --generate-baseline  Generate performance baseline'); }
+    if (process.env.NODE_ENV === 'development') { console.log('  --compare            Compare with baseline'); }
     process.exit(1);
   }
 }

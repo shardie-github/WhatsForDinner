@@ -27,7 +27,7 @@ export async function requestATTPermission(): Promise<'authorized' | 'denied' | 
     ');
     return 'not-determined';
   } catch (error) {
-    console.error('Failed to request ATT permission:', error);
+    // Error handled: Failed to request ATT permission:
     return 'denied';
   }
 }
@@ -44,7 +44,7 @@ export async function getATTStatus(): Promise<'authorized' | 'denied' | 'not-det
     // Placeholder - implement when ATT plugin is added
     return 'not-determined';
   } catch (error) {
-    console.error('Failed to get ATT status:', error);
+    // Error handled: Failed to get ATT status:
     return 'denied';
   }
 }

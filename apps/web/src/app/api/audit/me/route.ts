@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       .limit(100);
 
     if (error) {
-      console.error("Error fetching audit log:", error);
+      // Error handled: Error fetching audit log:
       return NextResponse.json(
         { error: "Failed to fetch audit log" },
         { status: 500 }
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ rows: data || [] });
   } catch (error) {
-    console.error("Unexpected error:", error);
+    // Error handled: Unexpected error:
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

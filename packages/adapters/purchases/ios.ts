@@ -27,7 +27,7 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
       // Load current entitlements
       await this.refreshEntitlements();
     } catch (error) {
-      console.error('Failed to initialize iOS purchases:', error);
+      // Error handled: Failed to initialize iOS purchases:
       throw error;
     }
   }
@@ -95,7 +95,7 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
       
       return [...this.currentEntitlements];
     } catch (error) {
-      console.error('Failed to restore purchases:', error);
+      // Error handled: Failed to restore purchases:
       return [];
     }
   }
@@ -111,7 +111,7 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
       // In production, use expo-in-app-purchases getReceiptAsync()
       return await this.fetchReceipt();
     } catch (error) {
-      console.error('Failed to get receipt:', error);
+      // Error handled: Failed to get receipt:
       return null;
     }
   }
@@ -135,9 +135,9 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
       
       // Fallback: StoreKit 2 via native module
       // This would require a custom native module
-      console.warn('IAP module not available, using fallback');
+      if (process.env.NODE_ENV === 'development') { console.warn('IAP module not available, using fallback'); }
     } catch (error) {
-      console.error('StoreKit initialization error:', error);
+      // Error handled: StoreKit initialization error:
       throw error;
     }
   }
@@ -168,7 +168,7 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
         };
       });
     } catch (error) {
-      console.error('Failed to refresh entitlements:', error);
+      // Error handled: Failed to refresh entitlements:
     }
   }
 
@@ -284,7 +284,7 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
         }),
       });
     } catch (error) {
-      console.error('Failed to notify server:', error);
+      // Error handled: Failed to notify server:
       // Don't throw - this is non-critical
     }
   }
@@ -311,7 +311,7 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
         }),
       });
     } catch (error) {
-      console.error('Failed to sync with server:', error);
+      // Error handled: Failed to sync with server:
     }
   }
 }

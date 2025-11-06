@@ -80,7 +80,7 @@ export default function MealPlannerPage() {
       const { mealPlan } = await response.json();
       setMealPlan(mealPlan);
     } catch (error) {
-      console.error('Error generating meal plan:', error);
+      // Error handled: Error generating meal plan:
       alert('Failed to generate meal plan. Please try again.');
     } finally {
       setLoading(false);

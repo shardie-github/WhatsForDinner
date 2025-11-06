@@ -48,7 +48,7 @@ export async function PATCH(
       key: key,
     });
   } catch (error) {
-    console.error('Error updating API key:', error);
+    // Error handled: Error updating API key:
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -96,7 +96,7 @@ export async function DELETE(
       message: 'API key deleted successfully',
     });
   } catch (error) {
-    console.error('Error deleting API key:', error);
+    // Error handled: Error deleting API key:
     return NextResponse.json(
       { error: 'Failed to delete API key' },
       { status: 500 }

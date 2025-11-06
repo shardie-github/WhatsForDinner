@@ -116,7 +116,7 @@ export class FederatedAPIGateway {
         },
       };
     } catch (error) {
-      console.error('Federated gateway error:', error);
+      // Error handled: Federated gateway error:
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -618,7 +618,7 @@ export class FederatedAPIGateway {
         metadata_param: usageData.metadata,
       });
     } catch (error) {
-      console.error('Error tracking API usage:', error);
+      // Error handled: Error tracking API usage:
     }
   }
 

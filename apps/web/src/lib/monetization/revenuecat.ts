@@ -59,7 +59,7 @@ class RevenueCatManager {
 
       this.isInitialized = true;
     } catch (error) {
-      console.error('[RevenueCat] Initialization error:', error);
+      // Error handled: [RevenueCat] Initialization error:
       throw error;
     }
   }

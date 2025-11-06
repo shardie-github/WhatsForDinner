@@ -179,6 +179,9 @@
     "market-fit:score": "node scripts/market-fit-scorer.mjs",
     "gtm:audit": "node scripts/gtm-readiness-audit.mjs",
     "audit:all": "node scripts/market-fit-scorer.mjs && node scripts/gtm-readiness-audit.mjs",
+    "test:enhance": "node scripts/enhance-test-files.mjs",
+    "bugs:fix": "node scripts/fix-bugs.mjs",
+    "security:pentest": "node scripts/penetration-testing.mjs",
     "secrets:remediate": "node scripts/address-secrets-findings.mjs"
   },
   "dependencies": {

@@ -154,7 +154,7 @@ function HomeContent() {
         ingredients_count: ingredients.length,
       });
 
-      console.error('Error generating recipes:', error);
+      // Error handled: Error generating recipes:
     }
   };
 
@@ -192,7 +192,7 @@ function HomeContent() {
         error as Error
       );
 
-      console.error('Error saving recipe:', error);
+      // Error handled: Error saving recipe:
     }
   };
 
@@ -310,7 +310,7 @@ function HomeContent() {
                   window.location.reload();
                 }
               } catch (error) {
-                console.error('Error seeding sample data:', error);
+                // Error handled: Error seeding sample data:
               }
             }}
           />

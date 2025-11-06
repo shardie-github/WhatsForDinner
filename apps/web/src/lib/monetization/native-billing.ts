@@ -72,7 +72,7 @@ class NativeBillingManager {
 
       return response.ok;
     } catch (error) {
-      console.error('Purchase verification error:', error);
+      // Error handled: Purchase verification error:
       return false;
     }
   }

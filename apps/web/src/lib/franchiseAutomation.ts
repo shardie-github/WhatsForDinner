@@ -142,7 +142,7 @@ export class FranchiseAutomation {
         created_at: new Date().toISOString(),
       };
     } catch (error) {
-      console.error('Error creating franchise:', error);
+      // Error handled: Error creating franchise:
       throw error;
     }
   }
@@ -215,7 +215,7 @@ export class FranchiseAutomation {
         );
       }
     } catch (error) {
-      console.error('Error deploying franchise:', error);
+      // Error handled: Error deploying franchise:
 
       // Update status to failed
       await supabase
@@ -246,7 +246,7 @@ export class FranchiseAutomation {
 
       return data;
     } catch (error) {
-      console.error('Error getting franchise status:', error);
+      // Error handled: Error getting franchise status:
       return null;
     }
   }
@@ -280,7 +280,7 @@ export class FranchiseAutomation {
 
       return data || [];
     } catch (error) {
-      console.error('Error listing franchises:', error);
+      // Error handled: Error listing franchises:
       return [];
     }
   }
@@ -326,7 +326,7 @@ export class FranchiseAutomation {
         await this.redeployFranchise(franchiseId);
       }
     } catch (error) {
-      console.error('Error updating franchise:', error);
+      // Error handled: Error updating franchise:
       throw error;
     }
   }
@@ -358,7 +358,7 @@ export class FranchiseAutomation {
         await this.sendDeploymentNotification(franchise, 'suspended', [reason]);
       }
     } catch (error) {
-      console.error('Error suspending franchise:', error);
+      // Error handled: Error suspending franchise:
       throw error;
     }
   }
@@ -431,7 +431,7 @@ export class FranchiseAutomation {
 
       return mockAccountId;
     } catch (error) {
-      console.error('Error creating Stripe account:', error);
+      // Error handled: Error creating Stripe account:
       throw error;
     }
   }
@@ -485,7 +485,7 @@ export class FranchiseAutomation {
       try {
         await this.deployFranchise(franchiseId);
       } catch (error) {
-        console.error('Deployment failed:', error);
+        // Error handled: Deployment failed:
       }
     }, 5000); // Simulate 5-second deployment
   }

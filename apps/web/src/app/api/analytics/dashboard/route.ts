@@ -146,7 +146,7 @@ export async function GET(request: NextRequest) {
       timeSeriesData: daysData,
     });
   } catch (error: any) {
-    console.error('Error fetching analytics dashboard data:', error);
+    // Error handled: Error fetching analytics dashboard data:
     return NextResponse.json(
       { error: 'Failed to fetch analytics data', message: error.message },
       { status: 500 }

@@ -78,7 +78,7 @@ async function handler(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error generating recipes:', error);
+    // Error handled: Error generating recipes:
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(

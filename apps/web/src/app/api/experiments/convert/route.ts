@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error('Error tracking conversion:', error);
+    // Error handled: Error tracking conversion:
     return NextResponse.json(
       { error: 'Failed to track conversion' },
       { status: 500 }

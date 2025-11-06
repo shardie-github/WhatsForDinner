@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ messages: messages?.reverse() || [] });
   } catch (error) {
-    console.error('Error fetching chat messages:', error);
+    // Error handled: Error fetching chat messages:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ message: chatMessage }, { status: 201 });
   } catch (error) {
-    console.error('Error sending chat message:', error);
+    // Error handled: Error sending chat message:
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

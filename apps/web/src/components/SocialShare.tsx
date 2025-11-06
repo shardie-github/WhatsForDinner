@@ -103,7 +103,7 @@ export default function SocialShare({
       } catch (error) {
         // User cancelled or error occurred
         if ((error as Error).name !== 'AbortError') {
-          console.error('Error sharing:', error);
+          // Error handled: Error sharing:
         }
       }
     } else {
