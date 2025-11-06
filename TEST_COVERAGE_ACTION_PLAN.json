@@ -1,0 +1,233 @@
+{
+  "timestamp": "2025-11-06T02:35:46.031Z",
+  "currentCoverage": 4,
+  "targetCoverage": 80,
+  "gap": 76,
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "action": "Add tests for critical paths",
+      "description": "Focus on API routes, authentication, and payment flows",
+      "targetFiles": []
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Add unit tests for utility functions",
+      "description": "Test helper functions, validators, and utilities",
+      "targetFiles": [
+        {
+          "file": "apps/community-portal/src/lib/utils.ts",
+          "fullPath": "/workspace/apps/community-portal/src/lib/utils.ts"
+        }
+      ]
+    },
+    {
+      "priority": "LOW",
+      "action": "Set up automated coverage reporting",
+      "description": "Configure coverage reporting in CI/CD",
+      "script": "Add coverage:report and coverage:check to package.json"
+    }
+  ],
+  "uncoveredFiles": [
+    {
+      "file": "agents/continuous-improvement/src/index.ts",
+      "fullPath": "/workspace/agents/continuous-improvement/src/index.ts"
+    },
+    {
+      "file": "ai/ai_autoscale.ts",
+      "fullPath": "/workspace/ai/ai_autoscale.ts"
+    },
+    {
+      "file": "ai/privacy_guard.ts",
+      "fullPath": "/workspace/ai/privacy_guard.ts"
+    },
+    {
+      "file": "ai/self_diagnose.ts",
+      "fullPath": "/workspace/ai/self_diagnose.ts"
+    },
+    {
+      "file": "apps/admin.disabled/analytics/page.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/analytics/page.tsx"
+    },
+    {
+      "file": "apps/admin.disabled/billing/page.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/billing/page.tsx"
+    },
+    {
+      "file": "apps/admin.disabled/copywriter/page.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/copywriter/page.tsx"
+    },
+    {
+      "file": "apps/admin.disabled/funnel/page.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/funnel/page.tsx"
+    },
+    {
+      "file": "apps/admin.disabled/layout.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/layout.tsx"
+    },
+    {
+      "file": "apps/admin.disabled/page.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/page.tsx"
+    },
+    {
+      "file": "apps/admin.disabled/settings/page.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/settings/page.tsx"
+    },
+    {
+      "file": "apps/admin.disabled/social/page.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/social/page.tsx"
+    },
+    {
+      "file": "apps/admin.disabled/system/metrics.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/system/metrics.tsx"
+    },
+    {
+      "file": "apps/admin.disabled/users/page.tsx",
+      "fullPath": "/workspace/apps/admin.disabled/users/page.tsx"
+    },
+    {
+      "file": "apps/api-docs/pages/index.js",
+      "fullPath": "/workspace/apps/api-docs/pages/index.js"
+    },
+    {
+      "file": "apps/billing.disabled/page.tsx",
+      "fullPath": "/workspace/apps/billing.disabled/page.tsx"
+    },
+    {
+      "file": "apps/chef-marketplace/pages/index.js",
+      "fullPath": "/workspace/apps/chef-marketplace/pages/index.js"
+    },
+    {
+      "file": "apps/community-portal/next-env.d.ts",
+      "fullPath": "/workspace/apps/community-portal/next-env.d.ts"
+    },
+    {
+      "file": "apps/community-portal/next.config.js",
+      "fullPath": "/workspace/apps/community-portal/next.config.js"
+    },
+    {
+      "file": "apps/community-portal/src/app/layout.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/app/layout.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/app/page.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/app/page.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/app/providers.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/app/providers.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/community-events.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/community-events.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/community-header.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/community-header.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/community-stats.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/community-stats.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/featured-posts.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/featured-posts.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/leaderboard.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/leaderboard.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/recent-posts.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/recent-posts.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/ui/avatar.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/ui/avatar.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/ui/badge.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/ui/badge.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/ui/button.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/ui/button.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/ui/card.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/ui/card.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/components/ui/input.tsx",
+      "fullPath": "/workspace/apps/community-portal/src/components/ui/input.tsx"
+    },
+    {
+      "file": "apps/community-portal/src/lib/utils.ts",
+      "fullPath": "/workspace/apps/community-portal/src/lib/utils.ts"
+    },
+    {
+      "file": "apps/community-portal/tailwind.config.js",
+      "fullPath": "/workspace/apps/community-portal/tailwind.config.js"
+    },
+    {
+      "file": "apps/developers.disabled/page.tsx",
+      "fullPath": "/workspace/apps/developers.disabled/page.tsx"
+    },
+    {
+      "file": "apps/favorites.disabled/page.tsx",
+      "fullPath": "/workspace/apps/favorites.disabled/page.tsx"
+    },
+    {
+      "file": "apps/landing.disabled/page.tsx",
+      "fullPath": "/workspace/apps/landing.disabled/page.tsx"
+    },
+    {
+      "file": "apps/mobile/app/_layout.tsx",
+      "fullPath": "/workspace/apps/mobile/app/_layout.tsx"
+    },
+    {
+      "file": "apps/mobile/app/favorites.tsx",
+      "fullPath": "/workspace/apps/mobile/app/favorites.tsx"
+    },
+    {
+      "file": "apps/mobile/app/index.tsx",
+      "fullPath": "/workspace/apps/mobile/app/index.tsx"
+    },
+    {
+      "file": "apps/mobile/app/pantry.tsx",
+      "fullPath": "/workspace/apps/mobile/app/pantry.tsx"
+    },
+    {
+      "file": "apps/mobile/app/profile.tsx",
+      "fullPath": "/workspace/apps/mobile/app/profile.tsx"
+    },
+    {
+      "file": "apps/mobile/app.config.js",
+      "fullPath": "/workspace/apps/mobile/app.config.js"
+    },
+    {
+      "file": "apps/mobile/babel.config.js",
+      "fullPath": "/workspace/apps/mobile/babel.config.js"
+    },
+    {
+      "file": "apps/mobile/metro.config.js",
+      "fullPath": "/workspace/apps/mobile/metro.config.js"
+    },
+    {
+      "file": "apps/mobile/src/components/InputPrompt.tsx",
+      "fullPath": "/workspace/apps/mobile/src/components/InputPrompt.tsx"
+    },
+    {
+      "file": "apps/mobile/src/components/Navbar.tsx",
+      "fullPath": "/workspace/apps/mobile/src/components/Navbar.tsx"
+    },
+    {
+      "file": "apps/mobile/src/components/RecipeCard.tsx",
+      "fullPath": "/workspace/apps/mobile/src/components/RecipeCard.tsx"
+    },
+    {
+      "file": "apps/mobile/src/features/consent/ConsentGate.tsx",
+      "fullPath": "/workspace/apps/mobile/src/features/consent/ConsentGate.tsx"
+    }
+  ]
+}
