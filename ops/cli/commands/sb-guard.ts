@@ -8,8 +8,7 @@ import * as path from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
 
 export async function runSbGuard(options: { fix?: boolean; auditOnly?: boolean }) {
-  console.log('🛡️  Scanning Supabase for RLS and security issues...\n');
-
+  
   const reportsDir = path.join(process.cwd(), 'ops', 'reports');
   if (!fs.existsSync(reportsDir)) {
     fs.mkdirSync(reportsDir, { recursive: true });
@@ -28,16 +27,14 @@ export async function runSbGuard(options: { fix?: boolean; auditOnly?: boolean }
 
   // Run RLS smoke test
   try {
-    console.log('1️⃣ Running RLS smoke test...');
-    execSync('pnpm rls:test', { stdio: 'inherit' });
+        execSync('pnpm rls:test', { stdio: 'inherit' });
   } catch (error) {
     console.error('❌ RLS smoke test failed');
     process.exit(1);
   }
 
   // Scan SQL files for RLS policies
-  console.log('2️⃣ Scanning SQL files for RLS policies...');
-  const sqlFiles = [
+    const sqlFiles = [
     ...globFiles('**/*.sql', ['supabase', 'apps/web/supabase']),
     ...globFiles('**/*supabase*.sql', []),
   ];
@@ -186,14 +183,9 @@ CREATE POLICY "${table}_user_delete"
 
   fs.writeFileSync(auditReport, report);
 
-  console.log(`\n📊 Audit Report: ${auditReport}`);
-  console.log(`   Tables: ${tables.length}`);
-  console.log(`   Views: ${views.length}`);
-  console.log(`   Issues: ${findings.length}`);
-
+        
   // Check privacy compliance
-  console.log('3️⃣ Running privacy compliance checks...');
-  try {
+    try {
     execSync('pnpm privacy:compliance', { stdio: 'inherit' });
   } catch (error) {
     console.error('❌ Privacy compliance checks failed');
@@ -205,15 +197,11 @@ CREATE POLICY "${table}_user_delete"
   }
 
   if (findings.length > 0) {
-    console.log('\n❌ Issues found - review audit report');
-    if (options.fix) {
-      console.log('\n⚠️  Auto-fix not yet implemented');
-      console.log('   Review audit report and apply recommended policies manually');
-    }
+        if (options.fix) {
+                }
     process.exit(1);
   } else {
-    console.log('\n✅ No RLS issues found!');
-    process.exit(0);
+        process.exit(0);
   }
 }
 

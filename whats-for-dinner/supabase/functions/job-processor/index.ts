@@ -53,8 +53,7 @@ serve(async req => {
     }
 
     const job: JobData = jobs[0];
-    console.log(`Processing job ${job.job_id} of type ${job.job_type}`);
-
+    
     // Log job start
     await supabaseClient.rpc('log_job_activity', {
       job_id_param: job.job_id,
@@ -100,8 +99,7 @@ serve(async req => {
         success: success,
       });
 
-      console.log(`Job ${job.job_id} completed successfully`);
-    } catch (error) {
+          } catch (error) {
       errorMessage = error instanceof Error ? error.message : 'Unknown error';
       console.error(`Job ${job.job_id} failed:`, errorMessage);
 

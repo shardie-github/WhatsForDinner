@@ -39,8 +39,7 @@ class MonetizationManager {
     if (this.initialized) return;
 
     if (MONETIZATION_MODE === 'none') {
-      console.log('[Monetization] Disabled');
-      return;
+            return;
     }
 
     if (catalogConfig.revenuecat?.enabled && Capacitor.isNativePlatform()) {

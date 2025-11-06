@@ -28,8 +28,7 @@ class AccessibilityAuditor {
   }
 
   async runFullAudit() {
-    console.log('♿ Starting Comprehensive Accessibility Audit...\n');
-
+    
     try {
       await this.checkColorContrast();
       await this.analyzeARIA();
@@ -51,8 +50,7 @@ class AccessibilityAuditor {
   }
 
   async checkColorContrast() {
-    console.log('🎨 Checking color contrast...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts', '.css']);
     
@@ -82,12 +80,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...contrastIssues);
-    console.log(`   Found ${contrastIssues.length} potential contrast issues`);
-  }
+      }
 
   async analyzeARIA() {
-    console.log('🔍 Analyzing ARIA attributes...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts']);
     
@@ -131,12 +127,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...ariaIssues);
-    console.log(`   Found ${ariaIssues.length} ARIA issues`);
-  }
+      }
 
   async checkKeyboardNavigation() {
-    console.log('⌨️  Checking keyboard navigation...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts']);
     
@@ -183,12 +177,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...keyboardIssues);
-    console.log(`   Found ${keyboardIssues.length} keyboard navigation issues`);
-  }
+      }
 
   async validateFocusManagement() {
-    console.log('🎯 Validating focus management...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts']);
     
@@ -224,12 +216,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...focusIssues);
-    console.log(`   Found ${focusIssues.length} focus management issues`);
-  }
+      }
 
   async checkSemanticHTML() {
-    console.log('📝 Checking semantic HTML...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts']);
     
@@ -277,12 +267,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...semanticIssues);
-    console.log(`   Found ${semanticIssues.length} semantic HTML issues`);
-  }
+      }
 
   async analyzeImages() {
-    console.log('🖼️  Analyzing images...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts']);
     
@@ -325,12 +313,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...imageIssues);
-    console.log(`   Found ${imageIssues.length} image accessibility issues`);
-  }
+      }
 
   async checkForms() {
-    console.log('📋 Checking forms...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts']);
     
@@ -373,12 +359,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...formIssues);
-    console.log(`   Found ${formIssues.length} form accessibility issues`);
-  }
+      }
 
   async validateHeadings() {
-    console.log('📑 Validating heading structure...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts']);
     
@@ -414,12 +398,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...headingIssues);
-    console.log(`   Found ${headingIssues.length} heading structure issues`);
-  }
+      }
 
   async checkLanguageAttributes() {
-    console.log('🌐 Checking language attributes...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts']);
     
@@ -450,12 +432,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...languageIssues);
-    console.log(`   Found ${languageIssues.length} language attribute issues`);
-  }
+      }
 
   async analyzeInteractiveElements() {
-    console.log('🖱️  Analyzing interactive elements...');
-    
+        
     const srcDir = path.join(__dirname, '../src');
     const files = this.getAllFiles(srcDir, ['.tsx', '.ts']);
     
@@ -498,12 +478,10 @@ class AccessibilityAuditor {
     }
     
     this.auditResults.issues.push(...interactiveIssues);
-    console.log(`   Found ${interactiveIssues.length} interactive element issues`);
-  }
+      }
 
   calculateAccessibilityScore() {
-    console.log('📊 Calculating accessibility score...');
-    
+        
     let score = 100;
     
     // Deduct points for issues
@@ -528,32 +506,24 @@ class AccessibilityAuditor {
   }
 
   generateReport() {
-    console.log('\n♿ Accessibility Audit Report');
-    console.log('============================');
-    console.log(`Overall Accessibility Score: ${this.auditResults.score}/100`);
-    console.log(`Issues Found: ${this.auditResults.issues.length}`);
-    console.log(`WCAG Level: ${this.auditResults.wcagLevel}`);
-    
+                        
     if (this.auditResults.issues.length > 0) {
-      console.log('\n🚨 Issues by Severity:');
-      
+            
       const bySeverity = this.auditResults.issues.reduce((acc, issue) => {
         acc[issue.severity] = (acc[issue.severity] || 0) + 1;
         return acc;
       }, {});
       
       Object.entries(bySeverity).forEach(([severity, count]) => {
-        console.log(`   ${severity.toUpperCase()}: ${count} issues`);
+        }: ${count} issues`);
       });
       
-      console.log('\n📋 Top Issues:');
-      this.auditResults.issues
+            this.auditResults.issues
         .filter(issue => issue.severity === 'high' || issue.severity === 'critical')
         .slice(0, 10)
         .forEach(issue => {
-          console.log(`   ${issue.severity.toUpperCase()}: ${issue.issue}`);
-          if (issue.file) console.log(`     File: ${issue.file}`);
-        });
+          }: ${issue.issue}`);
+          if (issue.file)         });
     }
     
     // Generate recommendations
@@ -562,17 +532,15 @@ class AccessibilityAuditor {
     // Save detailed report
     const reportPath = path.join(__dirname, '../accessibility-audit-report.json');
     fs.writeFileSync(reportPath, JSON.stringify(this.auditResults, null, 2));
-    console.log(`\n📄 Detailed report saved to: ${reportPath}`);
-    
+        
     // Generate HTML report
     this.generateHTMLReport();
     
     if (this.auditResults.score < 80) {
-      console.log('\n❌ Accessibility score below acceptable threshold (80)');
+      ');
       process.exit(1);
     } else {
-      console.log('\n✅ Accessibility audit passed');
-    }
+          }
   }
 
   generateRecommendations() {
@@ -617,11 +585,9 @@ class AccessibilityAuditor {
     this.auditResults.recommendations = recommendations;
     
     if (recommendations.length > 0) {
-      console.log('\n💡 Recommendations:');
-      recommendations.forEach(rec => {
-        console.log(`   ${rec.priority.toUpperCase()}: ${rec.title}`);
-        console.log(`     ${rec.description}`);
-      });
+            recommendations.forEach(rec => {
+        }: ${rec.title}`);
+              });
     }
   }
 
@@ -670,8 +636,7 @@ class AccessibilityAuditor {
     
     const htmlPath = path.join(__dirname, '../accessibility-audit-report.html');
     fs.writeFileSync(htmlPath, html);
-    console.log(`📄 HTML report saved to: ${htmlPath}`);
-  }
+      }
 
   // Helper methods
   isLowContrastColor(color) {

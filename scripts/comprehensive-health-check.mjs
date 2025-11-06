@@ -413,6 +413,152 @@ async function checkConfiguration() {
   return results;
 }
 
+async function checkDeployment() {
+  log('🚀 Checking Deployment...', 'cyan');
+  
+  const results = {
+    metrics: {},
+    issues: [],
+    score: 100,
+    status: 'healthy',
+  };
+
+  // Check for deployment configs
+  const hasVercel = existsSync(join(projectRoot, 'vercel.json')) || 
+                    existsSync(join(projectRoot, '.vercel'));
+  const hasEAS = existsSync(join(projectRoot, 'apps/mobile/eas.json')) ||
+                 existsSync(join(projectRoot, 'eas.json'));
+  const hasDocker = existsSync(join(projectRoot, 'docker-compose.yml')) ||
+                    existsSync(join(projectRoot, 'Dockerfile'));
+
+  results.metrics.vercel = hasVercel;
+  results.metrics.eas = hasEAS;
+  results.metrics.docker = hasDocker;
+
+  // Check CI/CD
+  const hasCI = existsSync(join(projectRoot, '.github/workflows'));
+  if (hasCI) {
+    try {
+      const workflows = readdirSync(join(projectRoot, '.github/workflows'));
+      results.metrics.workflows = workflows.length;
+    } catch {
+      results.metrics.workflows = 0;
+    }
+  }
+
+  // Score based on deployment readiness
+  if (hasCI && (hasVercel || hasEAS || hasDocker)) {
+    results.score = 100;
+    results.status = 'healthy';
+  } else if (hasCI) {
+    results.score = 70;
+    results.status = 'warning';
+    results.issues.push('CI/CD configured but deployment platform not detected');
+  } else {
+    results.score = 50;
+    results.status = 'critical';
+    results.issues.push('No CI/CD configuration found');
+  }
+
+  return results;
+}
+
+async function checkMonitoring() {
+  log('📊 Checking Monitoring...', 'cyan');
+  
+  const results = {
+    metrics: {},
+    issues: [],
+    score: 100,
+    status: 'healthy',
+  };
+
+  // Check for monitoring configs
+  const hasPrometheus = existsSync(join(projectRoot, 'prometheus.yml'));
+  const hasGrafana = existsSync(join(projectRoot, 'grafana'));
+  const hasSentry = execSync('grep -r "SENTRY" --include="*.ts" --include="*.tsx" --include="*.js" . | grep -v node_modules | head -1', {
+    encoding: 'utf8',
+    cwd: projectRoot,
+  }).trim().length > 0;
+
+  results.metrics.prometheus = hasPrometheus;
+  results.metrics.grafana = hasGrafana;
+  results.metrics.sentry = hasSentry;
+
+  // Check observability
+  const hasOTEL = execSync('grep -r "opentelemetry\\|OTEL" --include="*.ts" --include="*.js" . | grep -v node_modules | head -1', {
+    encoding: 'utf8',
+    cwd: projectRoot,
+  }).trim().length > 0;
+
+  results.metrics.openTelemetry = hasOTEL;
+
+  // Score
+  const monitoringCount = [hasPrometheus, hasGrafana, hasSentry, hasOTEL].filter(Boolean).length;
+  if (monitoringCount >= 3) {
+    results.score = 100;
+  } else if (monitoringCount >= 2) {
+    results.score = 75;
+    results.status = 'warning';
+  } else if (monitoringCount >= 1) {
+    results.score = 50;
+    results.status = 'warning';
+    results.issues.push('Limited monitoring setup');
+  } else {
+    results.score = 30;
+    results.status = 'critical';
+    results.issues.push('No monitoring configured');
+  }
+
+  return results;
+}
+
+async function checkCompliance() {
+  log('📋 Checking Compliance...', 'cyan');
+  
+  const results = {
+    metrics: {},
+    issues: [],
+    score: 100,
+    status: 'healthy',
+  };
+
+  // Check for compliance files
+  const hasLicense = existsSync(join(projectRoot, 'LICENSE'));
+  const hasSecurity = existsSync(join(projectRoot, 'SECURITY.md'));
+  const hasPrivacy = execSync('find . -name "*privacy*" -o -name "*gdpr*" | grep -v node_modules | head -1', {
+    encoding: 'utf8',
+    cwd: projectRoot,
+  }).trim().length > 0;
+
+  results.metrics.license = hasLicense;
+  results.metrics.securityPolicy = hasSecurity;
+  results.metrics.privacyPolicy = hasPrivacy;
+
+  // Check GDPR compliance
+  const hasDSAR = execSync('grep -r "DSAR\\|gdpr\\|data export" --include="*.ts" --include="*.tsx" . | grep -v node_modules | head -1', {
+    encoding: 'utf8',
+    cwd: projectRoot,
+  }).trim().length > 0;
+
+  results.metrics.gdprCompliant = hasDSAR;
+
+  // Score
+  const complianceCount = [hasLicense, hasSecurity, hasPrivacy, hasDSAR].filter(Boolean).length;
+  if (complianceCount >= 3) {
+    results.score = 100;
+  } else if (complianceCount >= 2) {
+    results.score = 70;
+    results.status = 'warning';
+  } else {
+    results.score = 50;
+    results.status = 'warning';
+    results.issues.push('Some compliance documentation missing');
+  }
+
+  return results;
+}
+
 async function generateHealthDashboard(allResults) {
   log('\n📊 Generating Health Dashboard...', 'cyan');
 
@@ -478,6 +624,9 @@ async function main() {
   healthChecks.documentation = await checkDocumentation();
   healthChecks.dependencies = await checkDependencies();
   healthChecks.configuration = await checkConfiguration();
+  healthChecks.deployment = await checkDeployment();
+  healthChecks.monitoring = await checkMonitoring();
+  healthChecks.compliance = await checkCompliance();
 
   // Generate dashboard
   const dashboard = await generateHealthDashboard(healthChecks);

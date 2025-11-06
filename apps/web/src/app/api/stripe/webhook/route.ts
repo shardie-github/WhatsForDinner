@@ -40,8 +40,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (existingEvent) {
-      console.log(`Event ${event.id} already processed`);
-      return NextResponse.json({ received: true });
+            return NextResponse.json({ received: true });
     }
 
     // Store the event
@@ -51,8 +50,7 @@ export async function POST(request: NextRequest) {
       data: event,
     });
 
-    console.log(`Processing Stripe event: ${event.type}`);
-
+    
     switch (event.type) {
       case 'checkout.session.completed':
         await handleCheckoutSessionCompleted(event.data.object);
@@ -79,8 +77,7 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
-    }
+            }
 
     // Mark event as processed
     await supabaseAdmin
@@ -114,10 +111,7 @@ async function handleCheckoutSessionCompleted(session: any) {
     })
     .eq('id', tenantId);
 
-  console.log(
-    `Checkout completed for tenant ${tenantId}, user ${userId}, plan ${plan}`
-  );
-}
+  }
 
 async function handleSubscriptionCreated(subscription: any) {
   const { tenantId, userId, plan } = subscription.metadata;
@@ -155,8 +149,7 @@ async function handleSubscriptionCreated(subscription: any) {
     })
     .eq('id', tenantId);
 
-  console.log(`Subscription created for tenant ${tenantId}, plan ${plan}`);
-}
+  }
 
 async function handleSubscriptionUpdated(subscription: any) {
   const { tenantId } = subscription.metadata;
@@ -193,10 +186,7 @@ async function handleSubscriptionUpdated(subscription: any) {
       .eq('id', tenantId);
   }
 
-  console.log(
-    `Subscription updated for tenant ${tenantId}, status: ${subscription.status}`
-  );
-}
+  }
 
 async function handleSubscriptionDeleted(subscription: any) {
   const { tenantId } = subscription.metadata;
@@ -223,8 +213,7 @@ async function handleSubscriptionDeleted(subscription: any) {
     })
     .eq('id', tenantId);
 
-  console.log(`Subscription deleted for tenant ${tenantId}`);
-}
+  }
 
 async function handleInvoicePaymentSucceeded(invoice: any) {
   const subscription = await stripe.subscriptions.retrieve(
@@ -245,8 +234,7 @@ async function handleInvoicePaymentSucceeded(invoice: any) {
     })
     .eq('id', tenantId);
 
-  console.log(`Payment succeeded for tenant ${tenantId}`);
-}
+  }
 
 async function handleInvoicePaymentFailed(invoice: any) {
   const subscription = await stripe.subscriptions.retrieve(
@@ -267,5 +255,4 @@ async function handleInvoicePaymentFailed(invoice: any) {
     })
     .eq('id', tenantId);
 
-  console.log(`Payment failed for tenant ${tenantId}`);
-}
+  }

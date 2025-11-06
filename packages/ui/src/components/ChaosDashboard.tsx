@@ -13,8 +13,7 @@ export const ChaosDashboard: React.FC = () => {
   const runExperiment = async (experimentId: string) => {
     try {
       const result = await chaosService.runExperiment(experimentId);
-      console.log('Experiment completed:', result);
-    } catch (error) {
+          } catch (error) {
       console.error('Experiment failed:', error);
     }
   };

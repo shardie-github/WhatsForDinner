@@ -34,8 +34,7 @@ class LighthouseAuditor {
   }
 
   async runFullAudit() {
-    console.log('🔍 Starting comprehensive Lighthouse audit...\n');
-
+    
     try {
       await this.auditPerformance();
       await this.auditAccessibility();
@@ -47,9 +46,7 @@ class LighthouseAuditor {
       this.calculateOverallScore();
       this.generateReport();
       
-      console.log('\n✅ Lighthouse audit completed successfully!');
-      console.log(`📊 Overall Score: ${this.auditResults.overallScore}/100`);
-      
+                  
       return this.auditResults;
     } catch (error) {
       console.error('❌ Lighthouse audit failed:', error);
@@ -58,8 +55,7 @@ class LighthouseAuditor {
   }
 
   async auditPerformance() {
-    console.log('⚡ Auditing performance...');
-    
+        
     try {
       // Run Lighthouse performance audit
       const command = `npx lighthouse http://localhost:3000 --only-categories=performance --output=json --output-path=./lighthouse-performance.json --chrome-flags="--headless"`;
@@ -130,15 +126,13 @@ class LighthouseAuditor {
         this.auditResults.categories.performance.issues = performanceIssues;
       }
       
-      console.log('✅ Performance audit completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Performance audit failed:', error.message);
     }
   }
 
   async auditAccessibility() {
-    console.log('♿ Auditing accessibility...');
-    
+        
     try {
       // Run Lighthouse accessibility audit
       const command = `npx lighthouse http://localhost:3000 --only-categories=accessibility --output=json --output-path=./lighthouse-accessibility.json --chrome-flags="--headless"`;
@@ -198,15 +192,13 @@ class LighthouseAuditor {
         this.auditResults.categories.accessibility.issues = accessibilityIssues;
       }
       
-      console.log('✅ Accessibility audit completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Accessibility audit failed:', error.message);
     }
   }
 
   async auditBestPractices() {
-    console.log('✅ Auditing best practices...');
-    
+        
     try {
       // Run Lighthouse best practices audit
       const command = `npx lighthouse http://localhost:3000 --only-categories=best-practices --output=json --output-path=./lighthouse-best-practices.json --chrome-flags="--headless"`;
@@ -256,15 +248,13 @@ class LighthouseAuditor {
         this.auditResults.categories.bestPractices.issues = bestPracticesIssues;
       }
       
-      console.log('✅ Best practices audit completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Best practices audit failed:', error.message);
     }
   }
 
   async auditSEO() {
-    console.log('🔍 Auditing SEO...');
-    
+        
     try {
       // Run Lighthouse SEO audit
       const command = `npx lighthouse http://localhost:3000 --only-categories=seo --output=json --output-path=./lighthouse-seo.json --chrome-flags="--headless"`;
@@ -314,15 +304,13 @@ class LighthouseAuditor {
         this.auditResults.categories.seo.issues = seoIssues;
       }
       
-      console.log('✅ SEO audit completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ SEO audit failed:', error.message);
     }
   }
 
   async auditPWA() {
-    console.log('📱 Auditing PWA compliance...');
-    
+        
     try {
       // Run Lighthouse PWA audit
       const command = `npx lighthouse http://localhost:3000 --only-categories=pwa --output=json --output-path=./lighthouse-pwa.json --chrome-flags="--headless"`;
@@ -372,15 +360,13 @@ class LighthouseAuditor {
         this.auditResults.categories.pwa.issues = pwaIssues;
       }
       
-      console.log('✅ PWA audit completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ PWA audit failed:', error.message);
     }
   }
 
   async generateRecommendations() {
-    console.log('💡 Generating recommendations...');
-    
+        
     const recommendations = [];
     
     // Performance recommendations
@@ -433,8 +419,7 @@ class LighthouseAuditor {
     
     this.auditResults.recommendations = recommendations;
     
-    console.log('✅ Recommendations generated');
-  }
+      }
 
   calculateOverallScore() {
     const scores = Object.values(this.auditResults.categories).map(category => category.score);
@@ -461,10 +446,7 @@ class LighthouseAuditor {
     const markdownReport = this.generateMarkdownReport(report);
     fs.writeFileSync('LIGHTHOUSE_AUDIT_REPORT.md', markdownReport);
     
-    console.log('\n📊 Lighthouse audit report generated:');
-    console.log('  - LIGHTHOUSE_AUDIT_REPORT.json');
-    console.log('  - LIGHTHOUSE_AUDIT_REPORT.md');
-  }
+              }
 
   generateMarkdownReport(report) {
     return `# Lighthouse Audit Report
@@ -541,8 +523,7 @@ if (require.main === module) {
   const auditor = new LighthouseAuditor();
   auditor.runFullAudit()
     .then(results => {
-      console.log('\n✅ Lighthouse audit completed successfully!');
-      process.exit(0);
+            process.exit(0);
     })
     .catch(error => {
       console.error('❌ Lighthouse audit failed:', error);

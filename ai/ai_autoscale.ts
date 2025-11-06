@@ -70,8 +70,7 @@ class AIAutoScale {
     prediction: CostPrediction;
     recommendations: ScalingRecommendation[];
   }> {
-    console.log('💰 Analyzing usage metrics and costs...');
-
+    
     try {
       // Collect usage metrics
       const metrics = await this.collectUsageMetrics();
@@ -336,8 +335,7 @@ class AIAutoScale {
         category: discussion.category
       });
 
-      console.log(`✅ Budget alert discussion created: ${data.html_url}`);
-    } catch (error) {
+          } catch (error) {
       console.error('Failed to create budget alert:', error);
     }
   }
@@ -414,8 +412,7 @@ ${prediction.recommendations.map(rec => `- ${rec}`).join('\n')}
       if (error) {
         console.error('Error storing cost analysis:', error);
       } else {
-        console.log('✅ Cost analysis stored successfully');
-      }
+              }
     } catch (error) {
       console.error('Failed to store cost analysis:', error);
     }
@@ -425,17 +422,14 @@ ${prediction.recommendations.map(rec => `- ${rec}`).join('\n')}
    * Run daily cost analysis
    */
   async runDailyAnalysis() {
-    console.log('💰 Running daily cost analysis...');
-    
+        
     try {
       const analysis = await this.analyzeUsage();
       
       // Generate daily report
       const report = this.generateDailyReport(analysis);
-      console.log(report);
-      
-      console.log('✅ Daily cost analysis completed');
-    } catch (error) {
+            
+          } catch (error) {
       console.error('Daily cost analysis failed:', error);
     }
   }

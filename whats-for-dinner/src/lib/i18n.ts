@@ -364,8 +364,7 @@ class I18nManager {
         for (const [namespace, keys] of Object.entries(namespaces)) {
           const filePath = `public/locales/${locale}/${namespace}.json`;
           // In a real implementation, you would write the file here
-          console.log(`Generated ${filePath}:`, keys);
-        }
+                  }
       }
 
     } catch (error) {

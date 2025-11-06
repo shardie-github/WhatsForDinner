@@ -12,8 +12,7 @@ export async function generateWeeklyReports(): Promise<void> {
   const reportsDir = './guardian/reports';
 
   if (!fs.existsSync(logsDir)) {
-    console.log('No Guardian logs found, skipping report generation');
-    return;
+        return;
   }
 
   // Ensure reports directory exists
@@ -47,21 +46,18 @@ export async function generateWeeklyReports(): Promise<void> {
 
       reportsGenerated++;
 
-      console.log(`Generated report for user ${userId}`);
-    } catch (error) {
+          } catch (error) {
       console.error(`Failed to generate report for ${file}:`, error);
     }
   }
 
-  console.log(`Generated ${reportsGenerated} weekly reports`);
-}
+  }
 
 // Run if called directly
 if (require.main === module) {
   generateWeeklyReports()
     .then(() => {
-      console.log('Weekly report generation complete');
-      process.exit(0);
+            process.exit(0);
     })
     .catch((error) => {
       console.error('Weekly report generation failed:', error);

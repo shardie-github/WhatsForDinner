@@ -17,17 +17,14 @@ function check(name: string, fn: () => boolean | string): void {
     const result = fn();
     if (result === true) {
       results.push({ name, status: 'pass', message: 'OK' });
-      console.log(`? ${name}`);
-    } else if (typeof result === 'string') {
+          } else if (typeof result === 'string') {
       results.push({ name, status: 'warn', message: result });
-      console.log(`??  ${name}: ${result}`);
-    } else {
+          } else {
       results.push({ name, status: 'fail', message: 'Failed' });
-      console.log(`? ${name}: Failed`);
-    }
+          }
   } catch (error) {
     results.push({ name, status: 'fail', message: String(error) });
-    console.log(`? ${name}: ${String(error)}`);
+    }`);
   }
 }
 
@@ -113,12 +110,10 @@ check('Port 3000 available', () => {
 });
 
 // Summary
-console.log('\n--- Summary ---');
 const passed = results.filter((r) => r.status === 'pass').length;
 const warned = results.filter((r) => r.status === 'warn').length;
 const failed = results.filter((r) => r.status === 'fail').length;
 
-console.log(`Passed: ${passed}, Warnings: ${warned}, Failed: ${failed}`);
 
 if (failed > 0) {
   process.exit(1);

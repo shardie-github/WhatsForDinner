@@ -12,18 +12,14 @@ export const ENABLE_BILLING = process.env.ENABLE_BILLING === 'true';
 
 export async function handleStripeWebhook(event: Stripe.Event) {
   if (!ENABLE_BILLING) {
-    console.log('Billing disabled - webhook ignored');
-    return;
+        return;
   }
 
   switch (event.type) {
     case 'payment_intent.succeeded':
-      console.log('Payment succeeded:', event.data.object);
-      break;
+            break;
     case 'customer.subscription.created':
-      console.log('Subscription created:', event.data.object);
-      break;
+            break;
     default:
-      console.log('Unhandled webhook:', event.type);
-  }
+        }
 }

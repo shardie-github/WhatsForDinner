@@ -91,8 +91,7 @@ class AIPerformanceWatcher {
    * Run AI performance analysis
    */
   async analyzePerformance(): Promise<PerformanceReport> {
-    console.log('🤖 Analyzing AI performance metrics...');
-
+    
     try {
       // Collect performance metrics
       const metrics = await this.collectPerformanceMetrics();
@@ -181,8 +180,7 @@ class AIPerformanceWatcher {
 
       // If no metrics in database, generate mock data for demonstration
       if (metrics.length === 0) {
-        console.log('No performance metrics found, generating mock data...');
-        metrics.push(...this.generateMockMetrics());
+                metrics.push(...this.generateMockMetrics());
       }
 
     } catch (error) {
@@ -487,8 +485,7 @@ class AIPerformanceWatcher {
       if (error) {
         console.error('Error storing performance report:', error);
       } else {
-        console.log('✅ Performance report stored successfully');
-      }
+              }
     } catch (error) {
       console.error('Failed to store performance report:', error);
     }
@@ -515,8 +512,7 @@ class AIPerformanceWatcher {
         labels: issue.labels
       });
 
-      console.log(`✅ Performance issue created: ${data.html_url}`);
-    } catch (error) {
+          } catch (error) {
       console.error('Failed to create performance issue:', error);
     }
   }
@@ -580,19 +576,16 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
    * Run nightly performance check
    */
   async runNightlyCheck() {
-    console.log('🌙 Running nightly AI performance check...');
-    
+        
     try {
       const report = await this.analyzePerformance();
       
-      console.log(`✅ Nightly check completed: ${report.total_requests} requests analyzed`);
-      console.log(`💰 Total cost: $${report.total_cost.toFixed(2)}`);
-      console.log(`⚡ Average latency: ${report.avg_latency.toFixed(0)}ms`);
-      console.log(`✅ Success rate: ${(report.success_rate * 100).toFixed(1)}%`);
+            }`);
+      }ms`);
+      .toFixed(1)}%`);
       
       if (report.alerts.length > 0) {
-        console.log(`⚠️  ${report.alerts.length} performance alerts found`);
-      }
+              }
     } catch (error) {
       console.error('Nightly performance check failed:', error);
     }

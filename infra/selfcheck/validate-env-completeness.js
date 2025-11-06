@@ -57,8 +57,7 @@ function extractEnvVarsFromSchema() {
 }
 
 function validateEnvCompleteness() {
-  console.log('🔍 Validating environment variable completeness...');
-  
+    
   // Check schema exists
   if (!fs.existsSync(ENV_SCHEMA)) {
     console.error('❌ Environment validation schema not found!');
@@ -70,9 +69,7 @@ function validateEnvCompleteness() {
   const exampleVars = extractEnvVarsFromExample();
   const schemaVars = extractEnvVarsFromSchema();
   
-  console.log(`📋 Found ${exampleVars.length} vars in .env.example`);
-  console.log(`📋 Found ${schemaVars.length} vars in schema`);
-  
+      
   // Find vars in example but not in schema
   const missingInSchema = exampleVars.filter(v => !schemaVars.includes(v));
   
@@ -109,15 +106,13 @@ function validateEnvCompleteness() {
     process.exit(1);
   }
   
-  console.log('✅ Environment variable completeness validated');
-  return true;
+    return true;
 }
 
 // Main
 try {
   validateEnvCompleteness();
-  console.log('✅ Environment validation passed!');
-  process.exit(0);
+    process.exit(0);
 } catch (error) {
   console.error('❌ Environment validation failed:', error.message);
   process.exit(1);

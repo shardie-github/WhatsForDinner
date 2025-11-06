@@ -49,10 +49,9 @@ class RevenueCatManager {
       if (Capacitor.isNativePlatform()) {
         // Native RevenueCat SDK initialization
         // await Purchases.configure({ apiKey: this.apiKey, appUserID: userId });
-        console.log('[RevenueCat] Initialized (native)');
+        ');
       } else {
-        console.log('[RevenueCat] Web mode - using Stripe');
-      }
+              }
 
       if (userId) {
         await this.identifyUser(userId);
@@ -70,8 +69,7 @@ class RevenueCatManager {
    */
   async identifyUser(userId: string): Promise<void> {
     // await Purchases.logIn(userId);
-    console.log('[RevenueCat] User identified:', userId);
-  }
+      }
 
   /**
    * Get available products

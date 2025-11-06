@@ -24,7 +24,7 @@ export async function requestATTPermission(): Promise<'authorized' | 'denied' | 
     // return result.status;
     
     // Placeholder - implement when ATT plugin is added
-    console.log('ATT permission request (placeholder)');
+    ');
     return 'not-determined';
   } catch (error) {
     console.error('Failed to request ATT permission:', error);

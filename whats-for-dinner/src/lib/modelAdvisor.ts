@@ -477,8 +477,7 @@ export class ModelAdvisor {
       this.modelCache.clear();
       this.performanceCache.clear();
 
-      console.log('Model advisor data refreshed');
-    } catch (error) {
+          } catch (error) {
       console.error('Error refreshing model data:', error);
     }
   }

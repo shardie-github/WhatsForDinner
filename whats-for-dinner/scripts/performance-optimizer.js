@@ -33,8 +33,7 @@ class PerformanceOptimizer {
   }
 
   async runFullOptimization() {
-    console.log('🚀 Starting comprehensive performance optimization...\n');
-
+    
     try {
       await this.analyzeDatabaseQueries();
       await this.optimizeDatabaseIndexes();
@@ -50,9 +49,7 @@ class PerformanceOptimizer {
       this.calculateOverallScore();
       this.generateReport();
       
-      console.log('\n✅ Performance optimization completed successfully!');
-      console.log(`📊 Overall Performance Score: ${this.optimizationResults.overallScore}/100`);
-      
+                  
       return this.optimizationResults;
     } catch (error) {
       console.error('❌ Performance optimization failed:', error);
@@ -61,8 +58,7 @@ class PerformanceOptimizer {
   }
 
   async analyzeDatabaseQueries() {
-    console.log('🔍 Analyzing database queries...');
-    
+        
     try {
       // Analyze Supabase queries
       const queryFiles = this.findFiles('src/**/*.ts');
@@ -113,15 +109,13 @@ class PerformanceOptimizer {
         });
       }
 
-      console.log('✅ Database query analysis completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Database query analysis failed:', error.message);
     }
   }
 
   async optimizeDatabaseIndexes() {
-    console.log('🗄️  Optimizing database indexes...');
-    
+        
     try {
       // Create optimized indexes
       const indexOptimizations = [
@@ -165,15 +159,13 @@ class PerformanceOptimizer {
         recommendations: ['Apply database indexes for better query performance']
       });
 
-      console.log('✅ Database index optimization completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Database index optimization failed:', error.message);
     }
   }
 
   async implementCachingLayers() {
-    console.log('💾 Implementing caching layers...');
-    
+        
     try {
       // Create Redis caching configuration
       const redisConfig = `
@@ -266,15 +258,13 @@ export const useAnalytics = (eventType) => {
         recommendations: ['Configure Redis instance', 'Implement cache invalidation strategies']
       });
 
-      console.log('✅ Caching layers implemented');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Caching implementation failed:', error.message);
     }
   }
 
   async configureCDN() {
-    console.log('🌐 Configuring CDN...');
-    
+        
     try {
       // Create CDN configuration
       const cdnConfig = `
@@ -355,15 +345,13 @@ module.exports = nextConfig;
         recommendations: ['Set up CDN provider', 'Configure image optimization service']
       });
 
-      console.log('✅ CDN configuration completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ CDN configuration failed:', error.message);
     }
   }
 
   async optimizeBundleSize() {
-    console.log('📦 Optimizing bundle size...');
-    
+        
     try {
       // Analyze bundle size
       const bundleAnalysis = execSync('npm run build 2>&1', { encoding: 'utf8' });
@@ -426,15 +414,13 @@ module.exports = withBundleAnalyzer(nextConfig);
         recommendations: ['Enable bundle analysis', 'Implement code splitting']
       });
 
-      console.log('✅ Bundle size optimization completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Bundle size optimization failed:', error.message);
     }
   }
 
   async setupPerformanceMonitoring() {
-    console.log('📊 Setting up performance monitoring...');
-    
+        
     try {
       // Create performance monitoring configuration
       const monitoringConfig = `
@@ -564,15 +550,13 @@ export default PerformanceMonitor;
         recommendations: ['Configure analytics service', 'Set up alerting for performance issues']
       });
 
-      console.log('✅ Performance monitoring setup completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Performance monitoring setup failed:', error.message);
     }
   }
 
   async optimizeImages() {
-    console.log('🖼️  Optimizing images...');
-    
+        
     try {
       // Create image optimization script
       const imageOptimizationScript = `
@@ -633,15 +617,13 @@ optimizer.optimizeAllImages('./public/images', './public/images/optimized');
         recommendations: ['Run image optimization script', 'Implement responsive images']
       });
 
-      console.log('✅ Image optimization completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Image optimization failed:', error.message);
     }
   }
 
   async implementLazyLoading() {
-    console.log('⏳ Implementing lazy loading...');
-    
+        
     try {
       // Create lazy loading components
       const lazyLoadingComponents = `
@@ -720,15 +702,13 @@ export const LazyImage = ({ src, alt, ...props }) => {
         recommendations: ['Apply lazy loading to heavy components', 'Implement progressive loading']
       });
 
-      console.log('✅ Lazy loading implementation completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Lazy loading implementation failed:', error.message);
     }
   }
 
   async optimizeAPIs() {
-    console.log('🔌 Optimizing APIs...');
-    
+        
     try {
       // Create API optimization middleware
       const apiOptimization = `
@@ -839,15 +819,13 @@ export const monitorAPITime = (req: NextRequest, handler: Function) => {
         recommendations: ['Apply optimization middleware to all APIs', 'Monitor API performance']
       });
 
-      console.log('✅ API optimization completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ API optimization failed:', error.message);
     }
   }
 
   async setupServiceWorkers() {
-    console.log('⚙️  Setting up service workers...');
-    
+        
     try {
       // Create service worker for caching
       const serviceWorker = `
@@ -904,11 +882,9 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
-        console.log('SW registered: ', registration);
-      })
+              })
       .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
-      });
+              });
   });
 }
 `;
@@ -922,8 +898,7 @@ if ('serviceWorker' in navigator) {
         recommendations: ['Register service worker in app', 'Implement cache strategies']
       });
 
-      console.log('✅ Service workers setup completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Service workers setup failed:', error.message);
     }
   }
@@ -959,10 +934,7 @@ if ('serviceWorker' in navigator) {
     const markdownReport = this.generateMarkdownReport(report);
     fs.writeFileSync('PERFORMANCE_OPTIMIZATION_REPORT.md', markdownReport);
     
-    console.log('\n📊 Performance optimization report generated:');
-    console.log('  - PERFORMANCE_OPTIMIZATION_REPORT.json');
-    console.log('  - PERFORMANCE_OPTIMIZATION_REPORT.md');
-  }
+              }
 
   generateMarkdownReport(report) {
     return `# Performance Optimization Report
@@ -1011,8 +983,7 @@ if (require.main === module) {
   const optimizer = new PerformanceOptimizer();
   optimizer.runFullOptimization()
     .then(results => {
-      console.log('\n✅ Performance optimization completed successfully!');
-      process.exit(0);
+            process.exit(0);
     })
     .catch(error => {
       console.error('❌ Performance optimization failed:', error);

@@ -137,8 +137,7 @@ export default function RecipeCard({
               recipeId={recipeId}
               userId={userId}
               onFeedbackSubmitted={feedback => {
-                console.log('Feedback submitted:', feedback);
-              }}
+                              }}
             />
           </div>
         )}

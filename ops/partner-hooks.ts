@@ -146,8 +146,7 @@ For questions, contact: partners@whatsfordinner.app
 }
 
 async function generatePartnerPack(): Promise<void> {
-  console.log('Generating partner pack...');
-
+  
   if (!existsSync(PARTNERS_DIR)) {
     mkdirSync(PARTNERS_DIR, { recursive: true });
   }
@@ -168,8 +167,7 @@ async function generatePartnerPack(): Promise<void> {
     generatePartnerREADME()
   );
 
-  console.log('✅ Partner pack generated');
-}
+  }
 
 if (require.main === module) {
   generatePartnerPack().catch(error => {

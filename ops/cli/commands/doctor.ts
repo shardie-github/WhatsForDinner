@@ -15,8 +15,7 @@ interface CheckResult {
 }
 
 export async function runDoctor(options: { fix?: boolean; verbose?: boolean }) {
-  console.log('🔍 Running comprehensive system health checks...\n');
-
+  
   const checks: CheckResult[] = [];
   let passCount = 0;
   let failCount = 0;
@@ -49,8 +48,7 @@ export async function runDoctor(options: { fix?: boolean; verbose?: boolean }) {
         status: 'fail',
         message: 'Dependencies not installed',
         fix: () => {
-          console.log('   Installing dependencies...');
-          execSync('pnpm install', { stdio: 'inherit' });
+                    execSync('pnpm install', { stdio: 'inherit' });
         },
       });
       failCount++;
@@ -98,8 +96,7 @@ export async function runDoctor(options: { fix?: boolean; verbose?: boolean }) {
       status: 'fail',
       message: 'Linting errors found',
       fix: () => {
-        console.log('   Running lint fix...');
-        execSync('pnpm lintfix', { stdio: 'inherit' });
+                execSync('pnpm lintfix', { stdio: 'inherit' });
       },
     });
     failCount++;
@@ -160,24 +157,19 @@ export async function runDoctor(options: { fix?: boolean; verbose?: boolean }) {
   }
 
   // Print results
-  console.log('\n📊 Check Results:\n');
-  checks.forEach((check) => {
+    checks.forEach((check) => {
     const icon = check.status === 'pass' ? '✓' : check.status === 'fail' ? '✗' : '⚠';
     const color = check.status === 'pass' ? '\x1b[32m' : check.status === 'fail' ? '\x1b[31m' : '\x1b[33m';
-    console.log(`${color}${icon}\x1b[0m ${check.name.padEnd(25)} ${check.message}`);
+    } ${check.message}`);
     if (options.verbose && check.status === 'fail' && check.fix) {
-      console.log(`   Fix available: ${check.fix.toString()}`);
+      }`);
     }
   });
 
-  console.log(`\n✅ Passed: ${passCount}`);
-  console.log(`❌ Failed: ${failCount}`);
-  console.log(`⚠️  Warnings: ${warnCount}`);
-
+      
   // Auto-fix if requested
   if (options.fix) {
-    console.log('\n🔧 Attempting auto-fix...\n');
-    checks.forEach((check) => {
+        checks.forEach((check) => {
       if (check.status === 'fail' && check.fix) {
         try {
           check.fix();

@@ -165,8 +165,7 @@ async function runNegativeTests(): Promise<{ passed: boolean; message: string }[
 }
 
 async function sbGuard(): Promise<void> {
-  console.log('🛡️  Running RLS Guard...\n');
-
+  
   const report = await scanRLS();
   const negativeTests = await runNegativeTests();
 
@@ -219,10 +218,7 @@ async function sbGuard(): Promise<void> {
   writeFileSync(join(REPORTS_DIR, 'rls-audit.md'), markdown);
   writeFileSync(join(REPORTS_DIR, 'rls-audit.json'), JSON.stringify(report, null, 2));
 
-  console.log(`✅ RLS audit complete`);
-  console.log(`📄 Report saved to ops/reports/rls-audit.md`);
-  console.log(`Violations: ${report.violations.length}`);
-
+      
   if (report.violations.length > 0) {
     process.exit(1);
   }

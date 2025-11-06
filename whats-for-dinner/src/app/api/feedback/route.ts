@@ -62,8 +62,7 @@ export async function POST(request: NextRequest) {
     if (validatedData.attachments && validatedData.attachments.length > 0) {
       // In a real implementation, you would upload files to a storage service
       // and store the URLs in the database
-      console.log('File attachments received:', validatedData.attachments.length);
-    }
+          }
 
     // Send notification to support team for high priority feedback
     if (validatedData.priority === 'urgent' || validatedData.priority === 'high') {
@@ -104,8 +103,7 @@ export async function POST(request: NextRequest) {
 async function sendUrgentNotification(feedbackId: string, feedback: any) {
   // Send urgent notification to support team
   // This could be Slack, email, or any other notification system
-  console.log(`URGENT FEEDBACK: ${feedbackId} - ${feedback.title}`);
-  
+    
   // Example Slack notification
   if (process.env.SLACK_WEBHOOK_URL) {
     try {
@@ -187,14 +185,12 @@ async function routeFeedback(feedbackId: string, feedback: any) {
     })
     .eq('id', feedbackId);
 
-  console.log(`Feedback ${feedbackId} routed to ${assignedTeam} team`);
-}
+  }
 
 async function sendConfirmationEmail(email: string, feedbackId: string) {
   // Send confirmation email to user
   // This would integrate with your email service (Resend, SendGrid, etc.)
-  console.log(`Sending confirmation email to ${email} for feedback ${feedbackId}`);
-  
+    
   // Example with Resend
   if (process.env.RESEND_API_KEY) {
     try {

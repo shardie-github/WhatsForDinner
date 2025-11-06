@@ -57,8 +57,7 @@ async function extractMessages(): Promise<Message[]> {
 }
 
 async function generateLanguagePacks(): Promise<void> {
-  console.log('Extracting messages...');
-  const messages = await extractMessages();
+    const messages = await extractMessages();
 
   if (!existsSync(LOCALES_DIR)) {
     mkdirSync(LOCALES_DIR, { recursive: true });
@@ -82,9 +81,7 @@ async function generateLanguagePacks(): Promise<void> {
   }
   writeFileSync(join(LOCALES_DIR, 'translations.csv'), csv);
 
-  console.log(`✅ Extracted ${messages.length} messages`);
-  console.log(`📄 Language packs generated in ${LOCALES_DIR}`);
-}
+    }
 
 async function validateTranslations(): Promise<{ passed: boolean; missing: string[] }> {
   const enPack = JSON.parse(
@@ -131,11 +128,9 @@ if (require.main === module) {
         result.missing.forEach(m => console.error(`  - ${m}`));
         process.exit(1);
       }
-      console.log('✅ All translations valid');
-    });
+          });
   } else {
-    console.log('Usage: i18n.ts [extract|validate]');
-    process.exit(1);
+        process.exit(1);
   }
 }
 

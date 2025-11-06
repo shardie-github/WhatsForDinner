@@ -89,8 +89,7 @@ function generateLintChecklist(): string {
 }
 
 async function generateStorePack(): Promise<void> {
-  console.log('Generating store pack...');
-
+  
   if (!existsSync(STORE_DIR)) {
     mkdirSync(STORE_DIR, { recursive: true });
   }
@@ -107,8 +106,7 @@ async function generateStorePack(): Promise<void> {
   // Checklist
   writeFileSync(join(STORE_DIR, 'lint-checklist.md'), generateLintChecklist());
 
-  console.log('✅ Store pack generated');
-}
+  }
 
 if (require.main === module) {
   generateStorePack().catch(error => {

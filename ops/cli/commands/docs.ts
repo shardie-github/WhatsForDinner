@@ -7,8 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export async function runDocs(options: { rebuild?: boolean; watch?: boolean }) {
-  console.log('📚 Generating documentation...\n');
-
+  
   const docsDir = path.join(process.cwd(), 'ops', 'docs');
   if (!fs.existsSync(docsDir)) {
     fs.mkdirSync(docsDir, { recursive: true });
@@ -16,26 +15,20 @@ export async function runDocs(options: { rebuild?: boolean; watch?: boolean }) {
 
   try {
     // Generate API docs
-    console.log('1️⃣ Generating API documentation...');
-    if (fs.existsSync('scripts/api-generate.js')) {
+        if (fs.existsSync('scripts/api-generate.js')) {
       execSync('node scripts/api-generate.js', { stdio: 'inherit' });
     }
 
     // Generate runbooks
-    console.log('\n2️⃣ Generating runbooks...');
-    generateRunbooks(docsDir);
+        generateRunbooks(docsDir);
 
     // Generate HTML index
-    console.log('\n3️⃣ Generating HTML index...');
-    generateHTMLIndex(docsDir);
+        generateHTMLIndex(docsDir);
 
     if (options.watch) {
-      console.log('\n👀 Watching for changes...');
-      console.log('   ⚠️  Watch mode not yet implemented');
-    }
+                }
 
-    console.log(`\n✅ Documentation generated: ${docsDir}`);
-    console.log(`   Open: ${path.join(docsDir, 'index.html')}`);
+        }`);
   } catch (error) {
     console.error('\n❌ Documentation generation failed:', error);
     process.exit(1);

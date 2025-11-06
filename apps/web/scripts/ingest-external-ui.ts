@@ -80,4 +80,4 @@ function processDir(dir: string) {
 
 const report = processDir(SRC);
 fs.writeFileSync(path.join(DEST, "_import-report.txt"), report.join("\n"), "utf8");
-console.log("✅ External UI ingest complete.\n", report.join("\n"));
+);

@@ -53,8 +53,7 @@ function initializeObservability() {
   });
 
   sdk.start();
-  console.log('✅ Observability initialized');
-
+  
   return sdk;
 }
 
@@ -83,8 +82,7 @@ async function generateMetricsReport(): Promise<void> {
   const html = generateDashboardHTML(metrics);
   writeFileSync(join(REPORTS_DIR, 'index.html'), html);
 
-  console.log('✅ Metrics report generated');
-}
+  }
 
 function generateDashboardHTML(metrics: KPIMetrics): string {
   return `<!DOCTYPE html>
@@ -198,8 +196,7 @@ if (require.main === module) {
       process.exit(1);
     });
   } else {
-    console.log('Usage: observability.ts [init|report]');
-    process.exit(1);
+        process.exit(1);
   }
 }
 

@@ -55,8 +55,7 @@ function logEvidence(message: string) {
   const timestamp = new Date().toISOString();
   const logLine = `[${timestamp}] ${message}`;
   evidence.push(logLine);
-  console.log(logLine);
-}
+  }
 
 async function checkEnvironment(): Promise<ConnectivityCheck[]> {
   logEvidence('Checking environment variables and secrets...');
@@ -668,8 +667,7 @@ async function checkJobs(): Promise<ConnectivityCheck[]> {
 }
 
 async function main() {
-  console.log('?? Nomad Monorepo Wiring Harness');
-  console.log('=' .repeat(60));
+    );
   
   const startTime = Date.now();
   
@@ -724,27 +722,16 @@ async function main() {
 
   const duration = Date.now() - startTime;
   
-  console.log('\n?? Connectivity Matrix Summary');
-  console.log('=' .repeat(60));
-  console.log(`Total Checks: ${summary.total}`);
-  console.log(`? Pass: ${summary.pass}`);
-  console.log(`? Fail: ${summary.fail}`);
-  console.log(`??  Degraded: ${summary.degraded}`);
-  console.log(`??  Skip: ${summary.skip}`);
-  console.log(`\n??  Duration: ${duration}ms`);
-  console.log(`\n?? Reports:`);
-  console.log(`   - JSON: ${join(REPORT_DIR, 'connectivity.json')}`);
-  console.log(`   - Markdown: ${join(REPORT_DIR, 'wiring_report.md')}`);
+    );
+                }`);
+  }`);
   
   if (summary.fail > 0) {
-    console.log('\n? FAILURES DETECTED - Review wiring_report.md for details');
-    process.exit(1);
+        process.exit(1);
   } else if (summary.degraded > 0) {
-    console.log('\n??  DEGRADED MODES DETECTED - Review wiring_report.md for recommendations');
-    process.exit(0);
+        process.exit(0);
   } else {
-    console.log('\n? ALL SYSTEMS CONNECTED');
-    process.exit(0);
+        process.exit(0);
   }
 }
 

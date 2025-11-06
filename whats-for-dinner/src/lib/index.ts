@@ -74,17 +74,9 @@ export type { AgentConfig, AgentAction, AgentMemory } from './agents/baseAgent';
  */
 export async function initializeAutonomousSystem(): Promise<void> {
   try {
-    console.log('🚀 Initializing Autonomous "What\'s for Dinner" System...');
-
+    
     // The orchestrator will handle all initialization
-    console.log('✅ Autonomous system initialized successfully');
-    console.log(
-      '🎯 System is now self-healing, self-optimizing, and continuously learning'
-    );
-    console.log('🛡️ Security guardrails and compliance monitoring active');
-    console.log('🧠 Cognitive continuity and knowledge evolution enabled');
-    console.log('📊 Predictive optimization and behavioral analytics running');
-  } catch (error) {
+                      } catch (error) {
     console.error('❌ Failed to initialize autonomous system:', error);
     throw error;
   }
@@ -125,10 +117,8 @@ ${healthEmoji} Autonomous System Status: ${status.overall.toUpperCase()}
  */
 export async function shutdownAutonomousSystem(): Promise<void> {
   try {
-    console.log('🛑 Shutting down autonomous system...');
-    await autonomousOrchestrator.shutdown();
-    console.log('✅ Autonomous system shutdown completed');
-  } catch (error) {
+        await autonomousOrchestrator.shutdown();
+      } catch (error) {
     console.error('❌ Error during system shutdown:', error);
     throw error;
   }

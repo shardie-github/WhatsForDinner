@@ -46,8 +46,7 @@ function findMigrationDirs() {
 
 // Validate migration files exist
 function validateMigrations() {
-  console.log('🔍 Validating migration consistency...');
-  
+    
   // Check that expected directory exists
   if (!fs.existsSync(EXPECTED_MIGRATION_DIR)) {
     console.error('❌ Expected migration directory not found:', EXPECTED_MIGRATION_DIR);
@@ -70,8 +69,7 @@ function validateMigrations() {
   
   // Check master schema exists
   if (fs.existsSync(MASTER_SCHEMA)) {
-    console.log('✅ Master schema file found:', MASTER_SCHEMA);
-  } else {
+      } else {
     console.warn('⚠️  Master schema file not found:', MASTER_SCHEMA);
     console.warn('   Consider creating a master schema for validation');
   }
@@ -80,17 +78,14 @@ function validateMigrations() {
   const migrationFiles = fs.readdirSync(EXPECTED_MIGRATION_DIR)
     .filter(f => f.endsWith('.sql'));
   
-  console.log(`✅ Found ${migrationFiles.length} migration files in expected location`);
-  console.log('✅ All migrations are in the correct location');
-  
+      
   return true;
 }
 
 // Main
 try {
   validateMigrations();
-  console.log('✅ Migration validation passed!');
-  process.exit(0);
+    process.exit(0);
 } catch (error) {
   console.error('❌ Migration validation failed:', error.message);
   process.exit(1);

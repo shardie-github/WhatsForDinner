@@ -33,9 +33,5 @@ const seedData: SeedData = {
   mealPlans: [],
 };
 
-console.log('Seed data prepared:');
-console.log(`- ${seedData.recipes.length} recipes`);
-console.log(`- ${seedData.households.length} households`);
-console.log('\nUse this data to populate your local database.');
 
 export default seedData;

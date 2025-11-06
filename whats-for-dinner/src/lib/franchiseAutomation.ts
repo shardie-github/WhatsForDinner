@@ -495,74 +495,56 @@ export class FranchiseAutomation {
    */
   private async deployDatabase(franchise: any): Promise<void> {
     // This would create a new Supabase project for the franchise
-    console.log(
-      `Deploying database for franchise: ${franchise.franchise_name}`
-    );
-  }
+      }
 
   /**
    * Deploy storage infrastructure
    */
   private async deployStorage(franchise: any): Promise<void> {
     // This would set up file storage for the franchise
-    console.log(`Deploying storage for franchise: ${franchise.franchise_name}`);
-  }
+      }
 
   /**
    * Deploy CDN infrastructure
    */
   private async deployCDN(franchise: any): Promise<void> {
     // This would configure CDN for the franchise domain
-    console.log(`Deploying CDN for franchise: ${franchise.franchise_name}`);
-  }
+      }
 
   /**
    * Deploy monitoring infrastructure
    */
   private async deployMonitoring(franchise: any): Promise<void> {
     // This would set up monitoring and alerting
-    console.log(
-      `Deploying monitoring for franchise: ${franchise.franchise_name}`
-    );
-  }
+      }
 
   /**
    * Configure domain
    */
   private async configureDomain(franchise: any): Promise<void> {
     // This would configure DNS and domain settings
-    console.log(
-      `Configuring domain for franchise: ${franchise.franchise_name}`
-    );
-  }
+      }
 
   /**
    * Setup SSL certificate
    */
   private async setupSSL(franchise: any): Promise<void> {
     // This would set up SSL certificate for the domain
-    console.log(`Setting up SSL for franchise: ${franchise.franchise_name}`);
-  }
+      }
 
   /**
    * Deploy application code
    */
   private async deployApplication(franchise: any): Promise<void> {
     // This would deploy the application code with franchise customizations
-    console.log(
-      `Deploying application for franchise: ${franchise.franchise_name}`
-    );
-  }
+      }
 
   /**
    * Configure integrations
    */
   private async configureIntegrations(franchise: any): Promise<void> {
     // This would configure all necessary integrations
-    console.log(
-      `Configuring integrations for franchise: ${franchise.franchise_name}`
-    );
-  }
+      }
 
   /**
    * Run health checks
@@ -571,10 +553,7 @@ export class FranchiseAutomation {
     franchise: any
   ): Promise<{ allHealthy: boolean; errors: string[] }> {
     // This would run comprehensive health checks
-    console.log(
-      `Running health checks for franchise: ${franchise.franchise_name}`
-    );
-
+    
     // Mock health check results
     return {
       allHealthy: true,
@@ -591,18 +570,14 @@ export class FranchiseAutomation {
     errors?: string[]
   ): Promise<void> {
     // This would send notifications to franchise owners and administrators
-    console.log(
-      `Sending ${status} notification for franchise: ${franchise.franchise_name}`
-    );
-  }
+      }
 
   /**
    * Redeploy franchise
    */
   private async redeployFranchise(franchiseId: string): Promise<void> {
     // This would trigger a redeployment with updated configuration
-    console.log(`Redeploying franchise: ${franchiseId}`);
-  }
+      }
 }
 
 export const franchiseAutomation = FranchiseAutomation.getInstance();

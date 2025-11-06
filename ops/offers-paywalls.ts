@@ -85,8 +85,7 @@ async function toggleOffer(offerId: string, enabled: boolean): Promise<void> {
     throw new Error(`Failed to toggle offer: ${error.message}`);
   }
 
-  console.log(`✅ Offer ${offerId} ${enabled ? 'enabled' : 'disabled'}`);
-}
+  }
 
 // Admin UI would be at /admin/pricing
 // This is just the backend logic

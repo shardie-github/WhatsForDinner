@@ -63,8 +63,7 @@ class AISelfDiagnose {
    * Analyze deployment metrics and generate health report
    */
   async analyzeDeployment(deployId: string, environment: string): Promise<HealthMetrics> {
-    console.log(`🔍 Analyzing deployment ${deployId} in ${environment}...`);
-
+    
     // Collect metrics from various sources
     const metrics = await this.collectMetrics(deployId, environment);
     
@@ -257,8 +256,7 @@ class AISelfDiagnose {
         return;
       }
 
-      console.log('✅ Health metrics stored successfully');
-    } catch (error) {
+          } catch (error) {
       console.error('Failed to store metrics:', error);
     }
   }
@@ -282,8 +280,7 @@ class AISelfDiagnose {
         labels: issue.labels
       });
 
-      console.log(`✅ GitHub issue created: ${data.html_url}`);
-    } catch (error) {
+          } catch (error) {
       console.error('Failed to create GitHub issue:', error);
     }
   }
@@ -327,8 +324,7 @@ ${metrics.recommendations.infrastructure.length > 0 ? `**Infrastructure:**\n${me
    * Run weekly health audit
    */
   async runWeeklyAudit() {
-    console.log('🔍 Running weekly AI health audit...');
-    
+        
     try {
       // Get recent deployments
       const { data: recentDeploys } = await this.supabase
@@ -338,8 +334,7 @@ ${metrics.recommendations.infrastructure.length > 0 ? `**Infrastructure:**\n${me
         .order('created_at', { ascending: false });
 
       if (!recentDeploys || recentDeploys.length === 0) {
-        console.log('No recent deployments found for audit');
-        return;
+                return;
       }
 
       // Analyze trends
@@ -351,8 +346,7 @@ ${metrics.recommendations.infrastructure.length > 0 ? `**Infrastructure:**\n${me
       // Post as PR comment
       await this.postPRComment(report);
 
-      console.log('✅ Weekly audit completed');
-    } catch (error) {
+          } catch (error) {
       console.error('Weekly audit failed:', error);
     }
   }
@@ -390,7 +384,7 @@ ${trends.criticalDeploys > 0 ? '- Review deployment process for stability improv
 
   private async postPRComment(report: string) {
     // Implementation would post to the latest PR
-    console.log('📝 Weekly report generated (PR comment posting not implemented in demo)');
+    ');
   }
 }
 

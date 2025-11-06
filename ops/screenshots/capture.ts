@@ -54,7 +54,7 @@ async function captureScreenshot(
   url: string,
   config: ScreenshotConfig
 ) {
-  console.log(`Capturing ${config.name} (${config.width}x${config.height})...`);
+  ...`);
   
   const context = await browser.newContext({
     viewport: { width: config.width, height: config.height },
@@ -82,8 +82,7 @@ async function captureScreenshot(
       fullPage: false,
     });
     
-    console.log(`? Saved: ${outputFile}`);
-  } catch (error) {
+      } catch (error) {
     console.error(`? Failed to capture ${config.name}:`, error);
   } finally {
     await context.close();
@@ -91,9 +90,7 @@ async function captureScreenshot(
 }
 
 async function captureScreenshots() {
-  console.log('Starting screenshot capture...');
-  console.log(`Base URL: ${BASE_URL}`);
-  
+      
   const browser = await chromium.launch({ headless: true });
   
   try {
@@ -139,8 +136,7 @@ async function captureScreenshots() {
       });
     }
     
-    console.log('\n? All screenshots captured successfully!');
-  } catch (error) {
+      } catch (error) {
     console.error('Error capturing screenshots:', error);
     process.exit(1);
   } finally {

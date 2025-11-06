@@ -86,8 +86,7 @@ function generateWhyThisWins(): string {
 }
 
 async function generateDocs(): Promise<void> {
-  console.log('Generating documentation...');
-
+  
   if (!existsSync(DOCS_DIR)) {
     mkdirSync(DOCS_DIR, { recursive: true });
   }
@@ -131,8 +130,7 @@ async function generateDocs(): Promise<void> {
 
   writeFileSync(join(DOCS_DIR, 'index.html'), indexHtml);
 
-  console.log('✅ Documentation generated');
-}
+  }
 
 if (require.main === module) {
   generateDocs().catch(error => {

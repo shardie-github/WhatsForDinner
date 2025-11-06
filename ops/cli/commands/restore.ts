@@ -8,8 +8,7 @@ import * as path from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
 
 export async function runRestore(options: { snapshot?: string; dryRun?: boolean }) {
-  console.log('🔄 Restoring from snapshot...\n');
-
+  
   const snapshotDir = path.join(process.cwd(), 'ops', 'snapshots');
   const snapshotFile = options.snapshot 
     ? path.resolve(options.snapshot)
@@ -21,10 +20,8 @@ export async function runRestore(options: { snapshot?: string; dryRun?: boolean 
   }
 
   if (options.dryRun) {
-    console.log('   Dry run - validating snapshot...');
-    console.log(`   Snapshot: ${snapshotFile}`);
-    console.log(`   Size: ${fs.statSync(snapshotFile).size} bytes`);
-    console.log('✅ Snapshot validation passed (dry run)');
+            .size} bytes`);
+    ');
     return;
   }
 
@@ -36,12 +33,9 @@ export async function runRestore(options: { snapshot?: string; dryRun?: boolean 
       throw new Error('Supabase credentials not configured');
     }
 
-    console.log('   ⚠️  WARNING: This will overwrite the current database!');
-    console.log('   Restoring from:', snapshotFile);
-    
+            
     // In production, use: psql or Supabase CLI
-    console.log('   ⚠️  Restore not yet implemented - use Supabase CLI or pg_restore');
-    
+        
   } catch (error) {
     console.error('❌ Restore failed:', error);
     process.exit(1);

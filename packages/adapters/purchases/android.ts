@@ -144,8 +144,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
         skus: [getSKU('android', 'premium_monthly'), getSKU('android', 'premium_annual')],
       });
       
-      console.log('Available products:', products);
-    } catch (error) {
+          } catch (error) {
       console.error('Billing initialization error:', error);
       throw error;
     }

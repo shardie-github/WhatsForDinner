@@ -6,8 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export async function runInit(options: { force?: boolean }) {
-  console.log('🚀 Initializing ops framework...\n');
-
+  
   const opsDir = path.join(process.cwd(), 'ops');
   const configPath = path.join(opsDir, 'ops.config.json');
 
@@ -29,8 +28,7 @@ export async function runInit(options: { force?: boolean }) {
     const fullPath = path.join(process.cwd(), dir);
     if (!fs.existsSync(fullPath)) {
       fs.mkdirSync(fullPath, { recursive: true });
-      console.log(`✓ Created ${dir}/`);
-    }
+          }
   });
 
   // Create ops.config.json
@@ -63,8 +61,7 @@ export async function runInit(options: { force?: boolean }) {
       },
     };
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-    console.log('✓ Created ops.config.json');
-  }
+      }
 
   // Create .env.example if missing
   if (!fs.existsSync('.env.example')) {
@@ -95,8 +92,7 @@ ENABLE_BILLING=false
 ENABLE_QUIET_MODE=false
 `;
     fs.writeFileSync('.env.example', envExample);
-    console.log('✓ Created .env.example');
-  }
+      }
 
   // Create .envrc template
   if (!fs.existsSync('.envrc')) {
@@ -109,12 +105,6 @@ if [ -f .env.local ]; then
 fi
 `;
     fs.writeFileSync('.envrc', envrc);
-    console.log('✓ Created .envrc');
-  }
+      }
 
-  console.log('\n✅ Ops framework initialized successfully!');
-  console.log('\nNext steps:');
-  console.log('  1. Copy .env.example to .env.local and fill in values');
-  console.log('  2. Run: npm run ops doctor');
-  console.log('  3. Run: npm run ops check');
-}
+          }

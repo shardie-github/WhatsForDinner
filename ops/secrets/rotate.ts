@@ -75,8 +75,7 @@ async function rotateSecrets(): Promise<SecretRotation[]> {
   writeFileSync(logPath, JSON.stringify(rotationsLog, null, 2));
 
   // Update Supabase secrets (via CLI)
-  console.log('Updating Supabase secrets...');
-  for (const rotation of rotations) {
+    for (const rotation of rotations) {
     try {
       execSync(`supabase secrets set ${rotation.name}=${rotation.newValue}`, {
         stdio: 'inherit'
@@ -87,8 +86,7 @@ async function rotateSecrets(): Promise<SecretRotation[]> {
   }
 
   // Update Vercel secrets (via API)
-  console.log('Updating Vercel secrets...');
-  const vercelToken = (await secretsManager.getSecret('VERCEL_TOKEN')) || process.env.VERCEL_TOKEN;
+    const vercelToken = (await secretsManager.getSecret('VERCEL_TOKEN')) || process.env.VERCEL_TOKEN;
   const vercelProjectId = (await secretsManager.getSecret('VERCEL_PROJECT_ID')) || process.env.VERCEL_PROJECT_ID;
   const vercelOrgId = (await secretsManager.getSecret('VERCEL_ORG_ID')) || process.env.VERCEL_ORG_ID;
 
@@ -119,8 +117,7 @@ function requireEnv(name: string): string {
 function checkSecretRotation(): void {
   const logPath = join(SECRETS_DIR, 'rotations.json');
   if (!existsSync(logPath)) {
-    console.log('⚠️  No rotation history found. Run ops rotate-secrets first.');
-    return;
+        return;
   }
 
   const rotations: SecretRotation[] = JSON.parse(readFileSync(logPath, 'utf-8'));
@@ -141,14 +138,12 @@ if (require.main === module) {
   
   if (command === 'rotate') {
     rotateSecrets().then(rotations => {
-      console.log(`✅ Rotated ${rotations.length} secrets`);
-      console.log('Rotated secrets:', rotations.map(r => r.name).join(', '));
+            .join(', '));
     });
   } else if (command === 'check') {
     checkSecretRotation();
   } else {
-    console.log('Usage: node secrets.ts [rotate|check]');
-    process.exit(1);
+        process.exit(1);
   }
 }
 

@@ -41,28 +41,23 @@ class HealthChecker {
   }
 
   async checkEnvironment() {
-    console.log('🔍 Checking environment variables...');
-    
+        
     try {
       const validation = validateEnvironmentVariables();
       
       if (validation.valid) {
         this.results.environment = { status: 'pass', details: ['All required environment variables are present'] };
-        console.log('✅ Environment variables: PASS');
-      } else {
+              } else {
         this.results.environment = { status: 'fail', details: validation.errors };
-        console.log('❌ Environment variables: FAIL');
-        validation.errors.forEach(error => console.log(`   - ${error}`));
+                validation.errors.forEach(error => );
       }
     } catch (error) {
       this.results.environment = { status: 'error', details: [error.message] };
-      console.log('❌ Environment check error:', error.message);
-    }
+          }
   }
 
   async checkDatabase() {
-    console.log('🗄️  Checking database connectivity...');
-    
+        
     try {
       // Test basic connectivity
       const { data, error } = await supabase
@@ -72,9 +67,7 @@ class HealthChecker {
 
       if (error) {
         this.results.database = { status: 'fail', details: [error.message] };
-        console.log('❌ Database connectivity: FAIL');
-        console.log(`   - ${error.message}`);
-        return;
+                        return;
       }
 
       // Test admin connectivity if available
@@ -86,22 +79,19 @@ class HealthChecker {
 
         if (adminError) {
           this.results.database = { status: 'warn', details: ['Basic connectivity works, but admin access failed'] };
-          console.log('⚠️  Database connectivity: WARN (admin access failed)');
+          ');
           return;
         }
       }
 
       this.results.database = { status: 'pass', details: ['Database connectivity successful'] };
-      console.log('✅ Database connectivity: PASS');
-    } catch (error) {
+          } catch (error) {
       this.results.database = { status: 'error', details: [error.message] };
-      console.log('❌ Database check error:', error.message);
-    }
+          }
   }
 
   async checkRLS() {
-    console.log('🔒 Checking RLS policies...');
-    
+        
     try {
       // Test that unauthenticated requests are blocked
       const { data, error } = await supabase
@@ -112,23 +102,19 @@ class HealthChecker {
       // RLS should either return empty data or an error for unauthenticated requests
       if (error && error.code === 'PGRST301') {
         this.results.rls = { status: 'pass', details: ['RLS is properly blocking unauthenticated requests'] };
-        console.log('✅ RLS policies: PASS');
-      } else if (data && data.length === 0) {
+              } else if (data && data.length === 0) {
         this.results.rls = { status: 'pass', details: ['RLS is working (empty result for unauthenticated request)'] };
-        console.log('✅ RLS policies: PASS');
-      } else {
+              } else {
         this.results.rls = { status: 'warn', details: ['RLS may not be properly configured'] };
-        console.log('⚠️  RLS policies: WARN (unexpected response)');
+        ');
       }
     } catch (error) {
       this.results.rls = { status: 'error', details: [error.message] };
-      console.log('❌ RLS check error:', error.message);
-    }
+          }
   }
 
   async checkEdgeFunctions() {
-    console.log('⚡ Checking Edge Functions...');
-    
+        
     const functions = ['api', 'generate-meal', 'job-processor'];
     const results = [];
 
@@ -157,61 +143,46 @@ class HealthChecker {
 
     if (hasErrors) {
       this.results.edgeFunctions = { status: 'fail', details: results };
-      console.log('❌ Edge Functions: FAIL');
-    } else if (hasWarnings) {
+          } else if (hasWarnings) {
       this.results.edgeFunctions = { status: 'warn', details: results };
-      console.log('⚠️  Edge Functions: WARN');
-    } else {
+          } else {
       this.results.edgeFunctions = { status: 'pass', details: results };
-      console.log('✅ Edge Functions: PASS');
-    }
+          }
 
-    results.forEach(result => console.log(`   ${result}`));
+    results.forEach(result => );
   }
 
   async checkOverall() {
-    console.log('📊 Overall health assessment...');
-    
+        
     const statuses = Object.values(this.results).map(r => r.status);
     const hasFailures = statuses.includes('fail') || statuses.includes('error');
     const hasWarnings = statuses.includes('warn');
 
     if (hasFailures) {
       this.results.overall = { status: 'fail', details: ['Health check failed - critical issues found'] };
-      console.log('❌ Overall Health: FAIL');
-    } else if (hasWarnings) {
+          } else if (hasWarnings) {
       this.results.overall = { status: 'warn', details: ['Health check passed with warnings'] };
-      console.log('⚠️  Overall Health: WARN');
-    } else {
+          } else {
       this.results.overall = { status: 'pass', details: ['All health checks passed'] };
-      console.log('✅ Overall Health: PASS');
-    }
+          }
   }
 
   async runAllChecks() {
-    console.log('🏥 Starting comprehensive health check...\n');
-    
+        
     await this.checkEnvironment();
-    console.log('');
-    
+        
     await this.checkDatabase();
-    console.log('');
-    
+        
     await this.checkRLS();
-    console.log('');
-    
+        
     await this.checkEdgeFunctions();
-    console.log('');
-    
+        
     await this.checkOverall();
-    console.log('');
-
+    
     // Summary
-    console.log('📋 Health Check Summary:');
-    console.log('========================');
-    Object.entries(this.results).forEach(([check, result]) => {
+            Object.entries(this.results).forEach(([check, result]) => {
       const icon = result.status === 'pass' ? '✅' : result.status === 'warn' ? '⚠️' : '❌';
-      console.log(`${icon} ${check.toUpperCase()}: ${result.status.toUpperCase()}`);
+      }: ${result.status.toUpperCase()}`);
     });
 
     // Exit with appropriate code

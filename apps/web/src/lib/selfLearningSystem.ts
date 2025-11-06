@@ -53,8 +53,7 @@ export class SelfLearningSystem {
    * Start continuous learning process
    */
   async start(): Promise<void> {
-    console.log('?? Starting Self-Learning System...');
-
+    
     // Run learning cycle every 24 hours
     this.learningInterval = setInterval(async () => {
       await this.runLearningCycle();
@@ -63,8 +62,7 @@ export class SelfLearningSystem {
     // Run initial cycle
     await this.runLearningCycle();
 
-    console.log('? Self-Learning System started');
-  }
+      }
 
   /**
    * Stop learning system
@@ -74,16 +72,14 @@ export class SelfLearningSystem {
       clearInterval(this.learningInterval);
       this.learningInterval = null;
     }
-    console.log('?? Self-Learning System stopped');
-  }
+      }
 
   /**
    * Run a complete learning cycle
    */
   async runLearningCycle(): Promise<LearningCycle> {
     if (this.learningCycleActive) {
-      console.log('Learning cycle already in progress, skipping...');
-      return {} as LearningCycle;
+            return {} as LearningCycle;
     }
 
     this.learningCycleActive = true;
@@ -91,8 +87,7 @@ export class SelfLearningSystem {
     const startTime = new Date().toISOString();
 
     try {
-      console.log(`?? Starting learning cycle ${cycleId}...`);
-
+      
       // 1. Collect data from all sources
       const data = await this.collectLearningData();
 
@@ -121,8 +116,7 @@ export class SelfLearningSystem {
 
       await this.storeLearningCycle(cycle);
 
-      console.log(`? Learning cycle ${cycleId} completed: ${insights.length} insights, ${actionsTaken} actions`);
-
+      
       return cycle;
     } catch (error) {
       console.error('Error in learning cycle:', error);

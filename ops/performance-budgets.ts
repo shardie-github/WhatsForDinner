@@ -116,24 +116,20 @@ async function checkBudgets(): Promise<BudgetReport> {
 }
 
 async function runLighthouseCI(): Promise<void> {
-  console.log('Running Lighthouse CI...');
-  
+    
   try {
     execSync('lhci autorun', { stdio: 'inherit' });
-    console.log('✅ Lighthouse CI completed');
-  } catch (error) {
+      } catch (error) {
     console.error('❌ Lighthouse CI failed');
     throw error;
   }
 }
 
 async function runBundleAnalyzer(): Promise<void> {
-  console.log('Running bundle analyzer...');
-  
+    
   try {
     execSync('pnpm analyze:bundle', { stdio: 'inherit' });
-    console.log('✅ Bundle analysis completed');
-  } catch (error) {
+      } catch (error) {
     console.error('❌ Bundle analysis failed');
     throw error;
   }
@@ -145,18 +141,16 @@ if (require.main === module) {
   if (command === 'check') {
     checkBudgets().then(report => {
       const failed = report.budgets.filter(b => !b.passed);
-      console.log('\n📊 Performance Budgets:');
-      report.budgets.forEach(budget => {
+            report.budgets.forEach(budget => {
         const icon = budget.passed ? '✅' : '❌';
-        console.log(`${icon} ${budget.metric}: ${budget.actual} (budget: ${budget.budget})`);
+        `);
       });
       
       if (failed.length > 0) {
         console.error(`\n❌ ${failed.length} budget(s) failed`);
         process.exit(1);
       } else {
-        console.log('\n✅ All budgets passed');
-      }
+              }
     });
   } else if (command === 'lighthouse') {
     runLighthouseCI().catch(error => {
@@ -167,8 +161,7 @@ if (require.main === module) {
       process.exit(1);
     });
   } else {
-    console.log('Usage: performance-budgets.ts [check|lighthouse|bundle]');
-    process.exit(1);
+        process.exit(1);
   }
 }
 

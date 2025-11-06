@@ -144,11 +144,9 @@ function detectCycles(graph) {
 }
 
 function validateCircularDeps() {
-  console.log('🔍 Checking for circular dependencies...');
-  
+    
   const graph = buildDependencyGraph();
-  console.log(`📊 Built dependency graph with ${graph.size} files`);
-  
+    
   const cycles = detectCycles(graph);
   
   if (cycles.length > 0) {
@@ -167,15 +165,13 @@ function validateCircularDeps() {
     process.exit(1);
   }
   
-  console.log('✅ No circular dependencies detected');
-  return true;
+    return true;
 }
 
 // Main
 try {
   validateCircularDeps();
-  console.log('✅ Circular dependency check passed!');
-  process.exit(0);
+    process.exit(0);
 } catch (error) {
   console.error('❌ Circular dependency check failed:', error.message);
   process.exit(1);

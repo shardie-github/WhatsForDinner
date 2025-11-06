@@ -13,8 +13,7 @@ const SYSTEM_MAP = path.join(WORKSPACE_ROOT, 'src/observability/system_intellige
 const GUARDRAILS = path.join(WORKSPACE_ROOT, 'infra/selfcheck/guardrails.yaml');
 
 function detectDrift() {
-  console.log('🔍 Detecting architectural drift...');
-  
+    
   const drift = [];
   
   // Check if system intelligence map exists
@@ -95,8 +94,7 @@ function detectDrift() {
   try {
     const guardrailsContent = fs.readFileSync(GUARDRAILS, 'utf8');
     const guardrailCount = (guardrailsContent.match(/- name:/g) || []).length;
-    console.log(`📊 Found ${guardrailCount} guardrails defined`);
-    
+        
     if (guardrailCount === 0) {
       drift.push({
         type: 'no_guardrails',
@@ -112,8 +110,7 @@ function detectDrift() {
   if (systemMap.architectural_intent) {
     for (const [intent, status] of Object.entries(systemMap.architectural_intent)) {
       if (status.status === 'planned' && status.remaining_work && status.remaining_work.length > 0) {
-        console.log(`📋 Intent "${intent}" is planned with ${status.remaining_work.length} items remaining`);
-        // This is informational, not drift
+                // This is informational, not drift
       }
     }
   }
@@ -126,14 +123,12 @@ try {
   const drift = detectDrift();
   
   if (drift.length === 0) {
-    console.log('✅ No architectural drift detected');
-    process.exit(0);
+        process.exit(0);
   } else {
-    console.log(`\n⚠️  Detected ${drift.length} drift issue(s):`);
+    :`);
     drift.forEach((issue, index) => {
-      console.log(`\n${index + 1}. [${issue.severity.toUpperCase()}] ${issue.type}`);
-      console.log(`   ${issue.message}`);
-    });
+      }] ${issue.type}`);
+          });
     
     // Exit with error if critical issues found
     const criticalIssues = drift.filter(d => d.severity === 'critical');

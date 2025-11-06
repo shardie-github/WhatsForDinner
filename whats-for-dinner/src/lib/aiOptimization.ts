@@ -147,8 +147,7 @@ export class AIOptimizationService {
         expires_at: expiresAt,
       });
 
-      console.log(`Cached response for tenant ${tenantId}`);
-    } catch (error) {
+          } catch (error) {
       console.error('Error caching response:', error);
     }
   }
@@ -174,8 +173,7 @@ export class AIOptimizationService {
     // Try to get cached response first
     const cached = await this.getCachedResponse(prompt, preferences, tenantId);
     if (cached) {
-      console.log(`Using cached response for tenant ${tenantId}`);
-      return {
+            return {
         response: cached.response_data,
         tokens: cached.tokens_used,
         cost: cached.cost_usd,
@@ -223,8 +221,7 @@ export class AIOptimizationService {
     } catch (error) {
       // If fallback is enabled and we have a cached response, use it
       if (this.config.fallbackToCache && cached) {
-        console.log(`Falling back to cached response for tenant ${tenantId}`);
-        return {
+                return {
           response: cached.response_data,
           tokens: cached.tokens_used,
           cost: cached.cost_usd,
@@ -243,8 +240,7 @@ export class AIOptimizationService {
   async cleanupExpiredCache(): Promise<void> {
     try {
       await supabase.rpc('cleanup_expired_cache');
-      console.log('Cleaned up expired cache entries');
-    } catch (error) {
+          } catch (error) {
       console.error('Error cleaning up cache:', error);
     }
   }

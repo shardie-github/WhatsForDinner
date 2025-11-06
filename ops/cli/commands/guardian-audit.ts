@@ -27,8 +27,7 @@ export async function runGuardianAudit(options: { verbose?: boolean }): Promise<
     checks: [],
   };
 
-  console.log('🔍 Running Guardian audit...\n');
-
+  
   // Check 1: Verify Guardian logs directory exists
   const logsDir = './guardian/logs';
   if (!fs.existsSync(logsDir)) {
@@ -183,28 +182,21 @@ export async function runGuardianAudit(options: { verbose?: boolean }): Promise<
   }
 
   // Print results
-  console.log('Audit Results:\n');
-  for (const check of result.checks) {
+    for (const check of result.checks) {
     const icon = check.passed ? '✅' : '❌';
-    console.log(`${icon} ${check.name}: ${check.message}`);
-  }
+      }
 
   if (result.errors.length > 0) {
-    console.log('\n❌ Errors:');
-    for (const error of result.errors) {
-      console.log(`  - ${error}`);
-    }
+        for (const error of result.errors) {
+          }
   }
 
   if (result.warnings.length > 0) {
-    console.log('\n⚠️  Warnings:');
-    for (const warning of result.warnings) {
-      console.log(`  - ${warning}`);
-    }
+        for (const warning of result.warnings) {
+          }
   }
 
-  console.log(`\n${result.passed ? '✅' : '❌'} Audit ${result.passed ? 'passed' : 'failed'}`);
-
+  
   if (!result.passed) {
     process.exit(1);
   }

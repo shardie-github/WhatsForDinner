@@ -217,8 +217,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   generator
     .generate()
     .then((path) => {
-      console.log(`? Evidence bundle generated: ${path}`);
-      process.exit(0);
+            process.exit(0);
     })
     .catch((error) => {
       console.error('? Failed to generate evidence bundle:', error);

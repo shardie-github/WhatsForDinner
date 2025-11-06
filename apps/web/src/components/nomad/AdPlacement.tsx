@@ -35,15 +35,13 @@ export function AdPlacement({ tier = 'free', type = 'feed-tile' }: AdPlacementPr
 
   const handleAdClick = () => {
     // Track ad click
-    console.log('Ad clicked:', type);
-    // In production: window.location.href = adUrl;
+        // In production: window.location.href = adUrl;
   };
 
   const handleDismiss = () => {
     setDismissed(true);
     // Track dismissal
-    console.log('Ad dismissed:', type);
-  };
+      };
 
   if (type === 'banner') {
     const adUnitId = process.env.NEXT_PUBLIC_ADMOB_BANNER_UNIT_ID;

@@ -29,8 +29,7 @@ async function validateStripeWebhook(signature: string, payload: string): Promis
 }
 
 async function handleWebhook(event: WebhookEvent): Promise<void> {
-  console.log(`Handling webhook: ${event.type}`);
-
+  
   // Log webhook for audit
   if (!existsSync(REPORTS_DIR)) {
     mkdirSync(REPORTS_DIR, { recursive: true });
@@ -50,17 +49,13 @@ import { secretsManager } from './secrets-manager-unified.mjs';
   // Handle event types
   switch (event.type) {
     case 'checkout.session.completed':
-      console.log('Checkout completed');
-      break;
+            break;
     case 'customer.subscription.created':
-      console.log('Subscription created');
-      break;
+            break;
     case 'customer.subscription.updated':
-      console.log('Subscription updated');
-      break;
+            break;
     case 'customer.subscription.deleted':
-      console.log('Subscription cancelled');
-      break;
+            break;
   }
 }
 
@@ -79,13 +74,11 @@ if (require.main === module) {
       timestamp: new Date().toISOString()
     };
     handleWebhook(testEvent).then(() => {
-      console.log('✅ Webhook test passed');
-    });
+          });
   } else if (command === 'check') {
-    console.log(`Billing enabled: ${isBillingEnabled()}`);
+    }`);
   } else {
-    console.log('Usage: billing-stub.ts [test|check]');
-    process.exit(1);
+        process.exit(1);
   }
 }
 

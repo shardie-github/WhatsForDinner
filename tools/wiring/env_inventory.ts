@@ -157,8 +157,7 @@ async function findConsumers(envVar: string): Promise<string[]> {
 }
 
 async function main() {
-  console.log('?? Generating Environment Inventory...');
-  
+    
   // Find consumers for each env var
   for (const envVar of envVars) {
     envVar.consumers = await findConsumers(envVar.name);
@@ -235,14 +234,12 @@ ${setVars.filter(v => !v.isSet && !v.required).map(v =>
     JSON.stringify({ timestamp: new Date().toISOString(), vars: setVars }, null, 2),
   );
   
-  console.log(`\n? Environment inventory generated:`);
-  console.log(`   - Markdown: ${join(REPORT_DIR, 'env_inventory.md')}`);
-  console.log(`   - JSON: ${join(REPORT_DIR, 'env_inventory.json')}`);
+    }`);
+  }`);
   
   const missingRequired = setVars.filter(v => v.required && !v.isSet);
   if (missingRequired.length > 0) {
-    console.log(`\n??  Missing ${missingRequired.length} required environment variables!`);
-    process.exit(1);
+        process.exit(1);
   }
 }
 

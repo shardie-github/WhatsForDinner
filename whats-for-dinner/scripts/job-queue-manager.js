@@ -22,8 +22,7 @@ class JobQueueManager {
   }
 
   async start() {
-    console.log('🚀 Starting Job Queue Manager...')
-    this.isRunning = true
+        this.isRunning = true
     
     // Process jobs every 30 seconds
     this.processingInterval = setInterval(async () => {
@@ -35,19 +34,16 @@ class JobQueueManager {
     // Schedule cleanup jobs
     this.scheduleCleanupJobs()
 
-    console.log('✅ Job Queue Manager started')
-  }
+      }
 
   async stop() {
-    console.log('🛑 Stopping Job Queue Manager...')
-    this.isRunning = false
+        this.isRunning = false
     
     if (this.processingInterval) {
       clearInterval(this.processingInterval)
     }
 
-    console.log('✅ Job Queue Manager stopped')
-  }
+      }
 
   async processJobs() {
     try {
@@ -63,8 +59,7 @@ class JobQueueManager {
       const result = await response.json()
       
       if (result.job_id) {
-        console.log(`📋 Processed job ${result.job_id}: ${result.success ? '✅' : '❌'}`)
-        if (result.error) {
+                if (result.error) {
           console.error(`   Error: ${result.error}`)
         }
       }
@@ -76,16 +71,14 @@ class JobQueueManager {
   scheduleCleanupJobs() {
     // Run cleanup every day at 2 AM
     cron.schedule('0 2 * * *', async () => {
-      console.log('🧹 Running daily cleanup...')
-      await this.createCleanupJob('old_jobs', 30)
+            await this.createCleanupJob('old_jobs', 30)
       await this.createCleanupJob('expired_cache', 7)
       await this.createCleanupJob('expired_invites', 7)
     })
 
     // Run analytics processing every 6 hours
     cron.schedule('0 */6 * * *', async () => {
-      console.log('📊 Running analytics processing...')
-      await this.createAnalyticsJob('popular_ingredients')
+            await this.createAnalyticsJob('popular_ingredients')
       await this.createAnalyticsJob('cuisine_preferences')
       await this.createAnalyticsJob('user_engagement')
     })
@@ -106,7 +99,7 @@ class JobQueueManager {
       if (error) {
         console.error(`❌ Error creating cleanup job for ${cleanupType}:`, error.message)
       } else {
-        console.log(`✅ Created cleanup job for ${cleanupType} (job ID: ${data})`)
+        `)
       }
     } catch (error) {
       console.error(`❌ Error creating cleanup job:`, error.message)
@@ -128,7 +121,7 @@ class JobQueueManager {
       if (error) {
         console.error(`❌ Error creating analytics job for ${analysisType}:`, error.message)
       } else {
-        console.log(`✅ Created analytics job for ${analysisType} (job ID: ${data})`)
+        `)
       }
     } catch (error) {
       console.error(`❌ Error creating analytics job:`, error.message)
@@ -175,7 +168,7 @@ class JobQueueManager {
         return null
       }
 
-      console.log(`✅ Created meal generation job (ID: ${data})`)
+      `)
       return data
     } catch (error) {
       console.error('❌ Error creating meal generation job:', error.message)
@@ -202,14 +195,7 @@ async function main() {
     case 'stats':
       const stats = await manager.getJobStats()
       if (stats) {
-        console.log('📊 Job Queue Statistics:')
-        console.log(`   Total jobs: ${stats.total_jobs}`)
-        console.log(`   Pending: ${stats.pending_jobs}`)
-        console.log(`   Processing: ${stats.processing_jobs}`)
-        console.log(`   Completed: ${stats.completed_jobs}`)
-        console.log(`   Failed: ${stats.failed_jobs}`)
-        console.log(`   Avg processing time: ${stats.avg_processing_time || 'N/A'}`)
-      }
+                                                              }
       break
 
     case 'create-meal-job':
@@ -219,8 +205,7 @@ async function main() {
       
       const jobId = await manager.createMealGenerationJob(pantryItems, userId, tenantId)
       if (jobId) {
-        console.log(`Created meal generation job: ${jobId}`)
-      }
+              }
       break
 
     case 'cleanup':
@@ -230,13 +215,7 @@ async function main() {
       break
 
     default:
-      console.log('Usage: node job-queue-manager.js <command>')
-      console.log('Commands:')
-      console.log('  start              - Start the job queue manager')
-      console.log('  stats              - Show job queue statistics')
-      console.log('  create-meal-job    - Create a meal generation job')
-      console.log('  cleanup            - Create cleanup jobs')
-      break
+                                          break
   }
 }
 

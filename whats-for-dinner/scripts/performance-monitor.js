@@ -23,8 +23,7 @@ class PerformanceMonitor {
   }
 
   async runBundleAnalysis() {
-    console.log('🔍 Running bundle analysis...');
-    
+        
     try {
       // Run Next.js build with bundle analyzer
       execSync('npm run build', { 
@@ -32,22 +31,19 @@ class PerformanceMonitor {
         stdio: 'inherit'
       });
       
-      console.log('✅ Bundle analysis completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Bundle analysis failed:', error.message);
     }
   }
 
   async runLighthouseAudit() {
-    console.log('🚀 Running Lighthouse audit...');
-    
+        
     try {
       // Install lighthouse if not present
       try {
         execSync('npx lighthouse --version', { stdio: 'ignore' });
       } catch {
-        console.log('Installing Lighthouse...');
-        execSync('npm install -g lighthouse', { stdio: 'inherit' });
+                execSync('npm install -g lighthouse', { stdio: 'inherit' });
       }
 
       // Run lighthouse audit
@@ -57,15 +53,13 @@ class PerformanceMonitor {
         stdio: 'inherit'
       });
       
-      console.log('✅ Lighthouse audit completed');
-    } catch (error) {
+          } catch (error) {
       console.error('❌ Lighthouse audit failed:', error.message);
     }
   }
 
   async generatePerformanceReport() {
-    console.log('📊 Generating performance report...');
-    
+        
     const report = {
       timestamp: new Date().toISOString(),
       summary: {
@@ -146,8 +140,7 @@ class PerformanceMonitor {
       markdownReport
     );
 
-    console.log('✅ Performance report generated');
-  }
+      }
 
   async getBundleSize() {
     try {
@@ -299,15 +292,12 @@ For questions about this report, contact the performance team or create an issue
   }
 
   async run() {
-    console.log('🚀 Starting performance monitoring...\n');
-    
+        
     await this.runBundleAnalysis();
     await this.runLighthouseAudit();
     await this.generatePerformanceReport();
     
-    console.log('\n✅ Performance monitoring completed!');
-    console.log(`📁 Reports saved to: ${this.reportsDir}`);
-  }
+          }
 }
 
 // Run if called directly

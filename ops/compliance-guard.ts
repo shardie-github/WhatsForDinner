@@ -52,8 +52,7 @@ async function generateDataInventory(): Promise<DataInventory[]> {
 async function exportDSAR(userId: string): Promise<string> {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   
-  console.log(`Exporting data for user ${userId}...`);
-
+  
   // Collect all user data
   const data: Record<string, any> = {};
 
@@ -106,8 +105,7 @@ async function exportDSAR(userId: string): Promise<string> {
 async function deleteDSAR(userId: string): Promise<void> {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   
-  console.log(`Deleting data for user ${userId}...`);
-
+  
   // Delete in order (respecting foreign keys)
   await supabase.from('pantry_items').delete().eq('user_id', userId);
   await supabase.from('recipes').delete().eq('user_id', userId);
@@ -121,8 +119,7 @@ async function deleteDSAR(userId: string): Promise<void> {
     timestamp: new Date().toISOString()
   });
 
-  console.log('✅ User data deleted');
-}
+  }
 
 function redactLogs(logContent: string): string {
   // Redact email addresses
@@ -149,8 +146,7 @@ function checkDoNotTrack(): boolean {
 }
 
 async function generateComplianceReport(): Promise<void> {
-  console.log('Generating compliance report...');
-
+  
   const inventory = await generateDataInventory();
   const cookieConsent = checkCookieConsent();
   const doNotTrack = checkDoNotTrack();
@@ -177,8 +173,7 @@ async function generateComplianceReport(): Promise<void> {
   }
 
   writeFileSync(join(REPORTS_DIR, 'compliance.md'), markdown);
-  console.log('✅ Compliance report generated');
-}
+  }
 
 if (require.main === module) {
   const command = process.argv[2];
@@ -191,8 +186,7 @@ if (require.main === module) {
         process.exit(1);
       }
       exportDSAR(args[0]).then(path => {
-        console.log(`✅ Export saved to: ${path}`);
-      });
+              });
       break;
     case 'delete':
       if (!args[0]) {
@@ -211,8 +205,7 @@ if (require.main === module) {
       });
       break;
     default:
-      console.log('Usage: compliance-guard.ts [export|delete|report]');
-      process.exit(1);
+            process.exit(1);
   }
 }
 

@@ -8,8 +8,7 @@ import * as path from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
 
 export async function runSnapshot(options: { encrypt?: boolean; subset?: string }) {
-  console.log('📸 Creating database snapshot...\n');
-
+  
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const snapshotDir = path.join(process.cwd(), 'ops', 'snapshots');
   const snapshotFile = path.join(snapshotDir, `snapshot-${timestamp}.sql`);
@@ -29,9 +28,7 @@ export async function runSnapshot(options: { encrypt?: boolean; subset?: string 
     // Create snapshot using Supabase CLI or pg_dump
     const tables = options.subset ? options.subset.split(',') : [];
     
-    console.log('   Connecting to database...');
-    console.log('   Creating snapshot...');
-
+        
     // For now, create a placeholder
     const snapshot = `-- Database Snapshot
 -- Created: ${new Date().toISOString()}
@@ -44,13 +41,10 @@ export async function runSnapshot(options: { encrypt?: boolean; subset?: string 
     fs.writeFileSync(snapshotFile, snapshot);
 
     if (options.encrypt) {
-      console.log('   Encrypting snapshot...');
-      // Encryption would be implemented here
-      console.log('   ⚠️  Encryption not yet implemented');
-    }
+            // Encryption would be implemented here
+          }
 
-    console.log(`✅ Snapshot created: ${snapshotFile}`);
-    
+        
     // Update latest snapshot symlink
     const latestLink = path.join(snapshotDir, 'latest.sql');
     if (fs.existsSync(latestLink)) {

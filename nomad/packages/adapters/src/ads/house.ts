@@ -46,8 +46,7 @@ export class HouseAdRenderer {
   handlePress(target: string): void {
     if (target.startsWith('nomad://')) {
       // Deep link handling would be implemented here
-      console.log('Deep link:', target);
-    } else if (target.startsWith('http')) {
+          } else if (target.startsWith('http')) {
       window.open(target, '_blank');
     }
   }

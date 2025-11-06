@@ -202,8 +202,7 @@ export class UGCGrowth {
       // 2. Track the posted content IDs
       // 3. Set up webhooks to track engagement
 
-      console.log('Share URLs generated:', shareUrls);
-    } catch (error) {
+          } catch (error) {
       console.error('Failed to share to social:', error);
       throw error;
     }

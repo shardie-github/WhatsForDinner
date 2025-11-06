@@ -36,8 +36,7 @@ export async function initPushNotifications(
 ): Promise<void> {
   // Check if push notifications are available
   if (!Capacitor.isNativePlatform()) {
-    console.log('Push notifications not available on web');
-    return;
+        return;
   }
 
   try {
@@ -50,8 +49,7 @@ export async function initPushNotifications(
         value: token.value,
         platform: Capacitor.getPlatform() as 'ios' | 'android',
       };
-      console.log('Push registration success, token:', pushToken);
-      onToken(pushToken);
+            onToken(pushToken);
       
       // Send token to backend
       sendTokenToBackend(pushToken);
@@ -64,14 +62,12 @@ export async function initPushNotifications(
 
     // Handle notification received
     PushNotifications.addListener('pushNotificationReceived', (notification) => {
-      console.log('Push notification received:', notification);
-      onNotification(notification);
+            onNotification(notification);
     });
 
     // Handle notification action (tap)
     PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
-      console.log('Push notification action:', action);
-      onAction(action);
+            onAction(action);
     });
   } catch (error) {
     console.error('Failed to initialize push notifications:', error);

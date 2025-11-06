@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-11-06T02:41:32.076Z",
+  "timestamp": "2025-11-06T02:47:47.374Z",
   "overall": {
-    "score": 53,
-    "status": "critical",
+    "score": 85,
+    "status": "healthy",
     "categories": {}
   },
   "categories": {
@@ -12,12 +12,12 @@
       "metrics": {
         "typescriptFiles": 966,
         "todos": 18,
-        "consoleLogs": 1101,
+        "consoleLogs": 2,
         "testFiles": 43,
         "estimatedCoverage": 9
       },
-      "score": 50,
-      "status": "critical"
+      "score": 60,
+      "status": "warning"
     },
     "security": {
       "vulnerabilities": 0,
@@ -26,8 +26,8 @@
         "Dangerous code patterns detected"
       ],
       "metrics": {
-        "potentialSecrets": 3041,
-        "dangerousPatterns": 132,
+        "potentialSecrets": 2988,
+        "dangerousPatterns": 131,
         "rlsPolicies": 19
       },
       "score": 65,
@@ -69,13 +69,11 @@
     },
     "documentation": {
       "metrics": {
-        "documentationFiles": 411,
-        "keyDocs": 2
+        "documentationFiles": 416,
+        "keyDocs": 5
       },
-      "issues": [
-        "Missing CONTRIBUTING.md"
-      ],
-      "score": 90,
+      "issues": [],
+      "score": 100,
       "status": "healthy"
     },
     "dependencies": {
@@ -98,17 +96,41 @@
       "score": 100,
       "status": "healthy"
     },
-    "deployment": {},
-    "monitoring": {},
-    "compliance": {}
+    "deployment": {
+      "metrics": {
+        "vercel": false,
+        "eas": true,
+        "docker": true,
+        "workflows": 32
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    },
+    "monitoring": {
+      "metrics": {
+        "prometheus": true,
+        "grafana": true,
+        "sentry": true,
+        "openTelemetry": true
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    },
+    "compliance": {
+      "metrics": {
+        "license": true,
+        "securityPolicy": true,
+        "privacyPolicy": true,
+        "gdprCompliant": true
+      },
+      "issues": [],
+      "score": 100,
+      "status": "healthy"
+    }
   },
   "recommendations": [
-    {
-      "category": "codeQuality",
-      "priority": "high",
-      "issues": [],
-      "score": 50
-    },
     {
       "category": "testing",
       "priority": "high",
@@ -116,6 +138,12 @@
         "Low test coverage - critical for production"
       ],
       "score": 20
+    },
+    {
+      "category": "codeQuality",
+      "priority": "medium",
+      "issues": [],
+      "score": 60
     },
     {
       "category": "security",
@@ -129,18 +157,18 @@
   ],
   "priorities": [
     {
-      "category": "codeQuality",
-      "priority": "high",
-      "issues": [],
-      "score": 50
-    },
-    {
       "category": "testing",
       "priority": "high",
       "issues": [
         "Low test coverage - critical for production"
       ],
       "score": 20
+    },
+    {
+      "category": "codeQuality",
+      "priority": "medium",
+      "issues": [],
+      "score": 60
     },
     {
       "category": "security",

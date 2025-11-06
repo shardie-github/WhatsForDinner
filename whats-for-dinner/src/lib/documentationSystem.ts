@@ -711,8 +711,7 @@ async function getRecipes() {
       limit: 10,
       cuisine: 'italian'
     });
-    console.log('Recipes:', recipes);
-  } catch (error) {
+      } catch (error) {
     console.error('Error:', error.message);
   }
 }
