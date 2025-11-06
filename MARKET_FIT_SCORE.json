@@ -1,0 +1,127 @@
+{
+  "score": {
+    "overall": 66.13,
+    "dimensions": {
+      "PRODUCT_FIT": {
+        "name": "Product-Market Fit",
+        "score": 78.5,
+        "weight": 0.25,
+        "weightedScore": 19.63
+      },
+      "MARKET_DEMAND": {
+        "name": "Market Demand",
+        "score": 77,
+        "weight": 0.2,
+        "weightedScore": 15.4
+      },
+      "USER_ACQUISITION": {
+        "name": "User Acquisition",
+        "score": 55.5,
+        "weight": 0.2,
+        "weightedScore": 11.1
+      },
+      "RETENTION": {
+        "name": "User Retention",
+        "score": 55,
+        "weight": 0.15,
+        "weightedScore": 8.25
+      },
+      "ENGAGEMENT": {
+        "name": "User Engagement",
+        "score": 61.75,
+        "weight": 0.1,
+        "weightedScore": 6.18
+      },
+      "MONETIZATION": {
+        "name": "Monetization",
+        "score": 55.75,
+        "weight": 0.1,
+        "weightedScore": 5.58
+      }
+    },
+    "timestamp": "2025-11-06T03:13:06.560Z"
+  },
+  "marketData": {
+    "PRODUCT_FIT": {
+      "coreFeaturesComplete": 85,
+      "userSatisfaction": 70,
+      "productQuality": 90,
+      "featureAdoption": 65
+    },
+    "MARKET_DEMAND": {
+      "marketSize": 75,
+      "growthRate": 80,
+      "competitionLevel": 70,
+      "marketTrends": 85
+    },
+    "USER_ACQUISITION": {
+      "signupRate": 60,
+      "conversionRate": 55,
+      "viralCoefficient": 40,
+      "channelEffectiveness": 65
+    },
+    "RETENTION": {
+      "day1Retention": 70,
+      "day7Retention": 50,
+      "day30Retention": 40,
+      "churnRate": 60
+    },
+    "ENGAGEMENT": {
+      "dailyActiveUsers": 55,
+      "sessionFrequency": 60,
+      "timeInApp": 65,
+      "featureUsage": 70
+    },
+    "MONETIZATION": {
+      "revenuePerUser": 50,
+      "conversionToPaid": 45,
+      "lifetimeValue": 55,
+      "paymentSuccess": 90
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "category": "User Acquisition",
+      "action": "Continue optimizing user acquisition. Current score: 55.5",
+      "score": 55.5
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "User Retention",
+      "action": "Continue optimizing user retention. Current score: 55",
+      "score": 55
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "User Engagement",
+      "action": "Continue optimizing user engagement. Current score: 61.75",
+      "score": 61.75
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Monetization",
+      "action": "Continue optimizing monetization. Current score: 55.75",
+      "score": 55.75
+    },
+    {
+      "priority": "HIGH",
+      "category": "Growth",
+      "action": "Improve user acquisition channels and conversion funnel",
+      "score": 55.5
+    },
+    {
+      "priority": "HIGH",
+      "category": "Retention",
+      "action": "Implement onboarding improvements and engagement features",
+      "score": 55
+    }
+  ],
+  "generatedAt": "2025-11-06T03:13:06.561Z",
+  "interpretation": {
+    "excellent": false,
+    "good": true,
+    "fair": false,
+    "poor": false
+  }
+}

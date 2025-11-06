@@ -174,7 +174,11 @@
     "fix:all": "node scripts/auto-fix-all-issues.mjs",
     "improve:all": "node scripts/comprehensive-improvements.mjs",
     "test:scaffold": "node scripts/create-test-scaffolding.mjs",
+    "test:generate": "node scripts/generate-comprehensive-tests.mjs",
     "coverage:analyze": "node scripts/improve-test-coverage.mjs",
+    "market-fit:score": "node scripts/market-fit-scorer.mjs",
+    "gtm:audit": "node scripts/gtm-readiness-audit.mjs",
+    "audit:all": "node scripts/market-fit-scorer.mjs && node scripts/gtm-readiness-audit.mjs",
     "secrets:remediate": "node scripts/address-secrets-findings.mjs"
   },
   "dependencies": {
