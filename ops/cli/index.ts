@@ -174,4 +174,16 @@ program
     await runGuardianVerify(options);
   });
 
+// Identify stack credentials command
+program
+  .command('identify-stack-credentials')
+  .alias('stack-creds')
+  .description('Identify missing credentials between staging and production stacks')
+  .option('--dry-run', 'Dry run without making changes', true)
+  .option('--auto-share', 'Attempt to automatically share credentials via API')
+  .action(async (options) => {
+    const { runIdentifyStackCredentials } = await import('./commands/identify-stack-credentials.js');
+    await runIdentifyStackCredentials(options);
+  });
+
 program.parse(process.argv);
