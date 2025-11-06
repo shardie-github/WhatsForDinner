@@ -157,7 +157,15 @@
     "supa:link": "supabase link --project-ref $SUPABASE_PROJECT_REF",
     "supa:migrate:plan": "supabase db changes commit --use-migra",
     "supa:migrate:apply": "supabase db push --local false",
-    "supa:status": "supabase db remote commit --dry-run || true"
+    "supa:status": "supabase db remote commit --dry-run || true",
+    "secrets:migrate": "node scripts/migrate-secrets-to-supabase-vercel.mjs",
+    "secrets:migrate:dry-run": "node scripts/migrate-secrets-to-supabase-vercel.mjs --dry-run",
+    "secrets:sync": "node scripts/sync-secrets-supabase-vercel.mjs bidirectional",
+    "secrets:sync:sb-to-vercel": "node scripts/sync-secrets-supabase-vercel.mjs supabase-to-vercel",
+    "secrets:sync:vercel-to-sb": "node scripts/sync-secrets-supabase-vercel.mjs vercel-to-supabase",
+    "secrets:get": "node scripts/secrets-manager-unified.mjs get",
+    "secrets:set": "node scripts/secrets-manager-unified.mjs set",
+    "secrets:validate": "node scripts/secrets-manager-unified.mjs validate"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"

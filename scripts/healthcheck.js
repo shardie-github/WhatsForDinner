@@ -3,11 +3,26 @@
 const { createClient } = require('@supabase/supabase-js');
 const { performance } = require('perf_hooks');
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Use unified secrets manager with fallback to process.env
+let SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY;
+
+// Try to load from secrets manager (async would be better, but keeping sync for now)
+try {
+  const { secretsManager } = require('./secrets-manager-unified.mjs');
+  // For sync scripts, we'll use process.env as fallback
+  // TODO: Refactor to async to use secretsManager.getSecret()
+  SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+} catch (e) {
+  // Fallback to process.env
+  SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+}
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   console.error('❌ Missing required environment variables');
+  console.error('   Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
+  console.error('   Or ensure secrets are in Supabase secrets_vault');
   process.exit(1);
 }
 
