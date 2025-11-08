@@ -1,0 +1,12 @@
+{
+  "*.{ts,tsx,js,jsx}": [
+    "prettier --write",
+    "eslint --fix --cache"
+  ],
+  "*.{json,md,css,scss}": [
+    "prettier --write"
+  ],
+  "*.{ts,tsx}": [
+    "bash -c 'pnpm type-check --noEmit || true'"
+  ]
+}

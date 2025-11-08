@@ -130,13 +130,40 @@ whats-for-dinner/
 │   ├── ui/              # Shared UI components (cross-platform)
 │   ├── utils/           # Shared utilities and hooks
 │   ├── theme/           # Design system and theming
-│   └── config/          # Shared configurations
+│   ├── config/          # Shared configurations
+│   └── server/          # Server-side utilities and APIs
 ├── scripts/             # Automation and tooling
 ├── ops/                 # Self-operating production framework
 └── docs/                # Comprehensive documentation
 ```
 
 **Everything is shared. Nothing is duplicated.**
+
+---
+
+## ⚡ Performance
+
+**Optimized for speed, size, and user experience.**
+
+### Web Performance
+- **Bundle Optimization**: Code splitting, tree-shaking, and lazy loading
+- **Image Optimization**: WebP/AVIF support, lazy loading, responsive images
+- **Font Optimization**: `font-display: swap`, subset fonts, preloading
+- **Core Web Vitals**: Targeting < 2.5s LCP, < 200ms TBT, < 0.1 CLS
+
+### Mobile Performance
+- **Hermes Engine**: Enabled for faster startup and lower memory usage
+- **ProGuard**: Enabled for smaller APK size (15-20% reduction)
+- **Resource Shrinking**: Automatic removal of unused resources
+- **Native Performance**: Optimized animations and native components
+
+### Monitoring
+- **Lighthouse CI**: Automated performance checks
+- **Bundle Analyzer**: Track bundle size and composition
+- **Performance Budgets**: Enforced in CI/CD pipeline
+- **Web Vitals**: Real user monitoring
+
+**See [Performance Playbook](./docs/PERFORMANCE_PLAYBOOK.md) for detailed optimization strategies.**
 
 ---
 
