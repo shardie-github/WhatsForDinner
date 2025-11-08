@@ -49,17 +49,34 @@ pnpm install
 - [ ] Set `DATABASE_URL`
 - [ ] Set `PRISMA_CLIENT_ENGINE_TYPE=wasm`
 
-## Step 3: Generate Prisma Client
+## Step 3: Sync Prisma Schema from Supabase ⚠️ IMPORTANT
 
 ```bash
-pnpm prisma generate
+pnpm db:sync
 ```
 
-- [ ] Prisma client generated successfully
-- [ ] No errors in generation
-- [ ] Client files exist in `node_modules/.prisma/client`
+**Why?** Prisma schema must match what's actually in Supabase database.
 
-## Step 4: Deploy Database Migrations
+- [ ] Schema synced from Supabase successfully
+- [ ] Backup created (check `prisma/schema.prisma.backup.*`)
+- [ ] Prisma client generated automatically
+- [ ] No errors in sync process
+
+**Alternative (manual):**
+```bash
+npx prisma db pull
+npx prisma format
+npx prisma generate
+```
+
+## Step 4: Verify Prisma Schema
+
+- [ ] Review `prisma/schema.prisma` matches Supabase tables
+- [ ] Check for any missing tables or columns
+- [ ] Verify `engineType = "wasm"` is set
+- [ ] Run `git diff prisma/schema.prisma` to see changes
+
+## Step 5: Deploy Database Migrations
 
 ### Prisma Migrations
 
@@ -91,7 +108,7 @@ supabase functions deploy webhook-ingest
 - [ ] `webhook-ingest` function deployed
 - [ ] Functions accessible via Supabase dashboard
 
-## Step 6: Verify Setup
+## Step 7: Verify Setup
 
 ### Local Verification
 

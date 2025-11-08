@@ -104,6 +104,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:migrate:dev": "prisma migrate dev",
+    "db:pull": "prisma db pull",
+    "db:sync": "tsx scripts/sync-prisma-from-supabase.ts",
     "db:studio": "prisma studio",
     "smoke:test": "tsx scripts/smoke.ts",
     "doctor": "tsx scripts/reality-check.ts",

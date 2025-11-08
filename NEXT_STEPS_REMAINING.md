@@ -48,17 +48,35 @@ cp .env.example .env.local
 2. Add same variables as Vercel
 3. See `docs/secrets.md` for exact list
 
-### 3. Generate Prisma Client
+### 3. Sync Prisma Schema from Supabase ⚠️ IMPORTANT
+
+**Before generating Prisma client, sync the schema from your actual Supabase database:**
 
 ```bash
 # After setting DATABASE_URL in .env.local:
+pnpm db:sync
+
+# This will:
+# 1. Pull schema from Supabase database
+# 2. Update prisma/schema.prisma to match reality
+# 3. Format and generate Prisma client
+```
+
+**Why?** The Prisma schema must match what's actually in Supabase, not just migrations.
+
+See `docs/prisma-supabase-sync.md` for details.
+
+### 4. Generate Prisma Client (if not done by db:sync)
+
+```bash
+# If db:sync didn't generate client:
 npx prisma generate
 
 # Or if pnpm works:
 pnpm prisma generate
 ```
 
-### 4. Deploy Database Migrations
+### 5. Deploy Database Migrations
 
 #### Prisma Migrations
 
@@ -85,7 +103,7 @@ supabase link --project-ref ghqyxhbyyirveptgwoqm
 supabase db push
 ```
 
-### 5. Deploy Edge Functions
+### 6. Deploy Edge Functions
 
 ```bash
 # Login to Supabase CLI
@@ -140,8 +158,8 @@ curl https://ghqyxhbyyirveptgwoqm.supabase.co/functions/v1/app-health \
 cp .env.example .env.local
 # Edit .env.local with real values
 
-# 2. Generate Prisma client
-npx prisma generate
+# 2. Sync Prisma schema from Supabase (IMPORTANT!)
+pnpm db:sync
 
 # 3. Deploy migrations
 npx prisma migrate deploy
