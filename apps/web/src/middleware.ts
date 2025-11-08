@@ -5,9 +5,24 @@ import { logger } from '@/lib/logger';
 import { processGuardianEvent } from '@/lib/guardian-middleware';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { checkRateLimit, getRateLimitIdentifier } from '@/lib/rate-limiting-redis';
+import { validateRequestSize } from '@/lib/input-validation';
 
 // Rate limiting store (in production, use Redis or similar)
+// TODO: Migrate to Redis for distributed rate limiting
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+// Cleanup old rate limit entries periodically
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => {
+    const now = Date.now();
+    for (const [key, value] of rateLimitStore.entries()) {
+      if (value.resetTime < now) {
+        rateLimitStore.delete(key);
+      }
+    }
+  }, 60000); // Clean up every minute
+}
 
 // Rate limiting configuration (can be overridden via env vars)
 const getRateLimitConfig = () => {
@@ -77,6 +92,29 @@ export async function middleware(request: NextRequest) {
   const spanId = await observabilitySystem.startSpan(traceId, 'middleware');
 
   try {
+    // Request size validation
+    const sizeValidation = validateRequestSize(request);
+    if (!sizeValidation.valid) {
+      await observabilitySystem.finishSpan(spanId, 'error', {
+        error: 'Request size validation failed',
+      });
+      await observabilitySystem.finishTrace(traceId, 'error');
+      
+      return new NextResponse(
+        JSON.stringify({
+          error: 'Request too large',
+          message: sizeValidation.error,
+        }),
+        {
+          status: 413,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Trace-Id': traceId,
+          },
+        }
+      );
+    }
+    
     // Security headers
     const response = NextResponse.next();
 
@@ -90,64 +128,72 @@ export async function middleware(request: NextRequest) {
       'camera=(), microphone=(), geolocation=()'
     );
 
-    // Content Security Policy
+    // Content Security Policy - Enhanced security
     const csp = [
       "default-src 'self'",
+      // Scripts - use nonces in production for better security
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://js.sentry-cdn.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: https:",
-      "connect-src 'self' https://api.openai.com https://*.supabase.co https://www.google-analytics.com https://*.sentry.io https://*.posthog.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "img-src 'self' data: https: blob:",
+      "connect-src 'self' https://api.openai.com https://*.supabase.co https://www.google-analytics.com https://*.sentry.io https://*.posthog.com wss://*.supabase.co",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
       "frame-src 'none'",
       "object-src 'none'",
+      "media-src 'self'",
+      "worker-src 'self' blob:",
+      "manifest-src 'self'",
       "upgrade-insecure-requests",
+      "block-all-mixed-content",
     ].join('; ');
 
     response.headers.set('Content-Security-Policy', csp);
     
+    // Additional security headers
+    response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
+    response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+    response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+    
     // HSTS Header (only in production with HTTPS)
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production' || process.env.FORCE_HSTS === 'true') {
       response.headers.set(
         'Strict-Transport-Security',
         'max-age=31536000; includeSubDomains; preload'
       );
     }
+    
+    // Expect-CT header for certificate transparency
+    if (process.env.NODE_ENV === 'production') {
+      response.headers.set(
+        'Expect-CT',
+        'max-age=86400, enforce'
+      );
+    }
 
-    // Rate limiting
-    const rateLimit = getRateLimit(pathname);
-    if (rateLimit) {
-      const key = `${ip}:${pathname}`;
-      const now = Date.now();
-      const windowStart = now - rateLimit.window;
-
-      // Clean up old entries
-      for (const [k, v] of rateLimitStore.entries()) {
-        if (v.resetTime < now) {
-          rateLimitStore.delete(k);
-        }
+    // Rate limiting - Try Redis first, fallback to in-memory
+    const rateLimitConfig = getRateLimit(pathname);
+    if (rateLimitConfig) {
+      // Try to get user ID for better rate limiting
+      let userId: string | undefined;
+      try {
+        const supabase = createRouteHandlerClient({ cookies });
+        const { data: { user } } = await supabase.auth.getUser();
+        userId = user?.id;
+      } catch {
+        // User not authenticated, use IP-based rate limiting
       }
-
-      const current = rateLimitStore.get(key) || {
-        count: 0,
-        resetTime: now + rateLimit.window,
-      };
-
-      if (current.resetTime < now) {
-        current.count = 0;
-        current.resetTime = now + rateLimit.window;
-      }
-
-      current.count++;
-      rateLimitStore.set(key, current);
-
-      if (current.count > rateLimit.requests) {
+      
+      const identifier = getRateLimitIdentifier(request, userId);
+      const rateLimitResult = await checkRateLimit(identifier, rateLimitConfig);
+      
+      if (!rateLimitResult.allowed) {
         await monitoringSystem.recordCounter('rate_limit_exceeded', 1, {
           path: pathname,
           ip,
           userAgent,
+          identifier,
         });
 
         await logger.warn(
@@ -156,8 +202,8 @@ export async function middleware(request: NextRequest) {
             path: pathname,
             ip,
             userAgent,
-            count: current.count,
-            limit: rateLimit.requests,
+            identifier,
+            limit: rateLimitConfig.requests,
           },
           'middleware',
           'rate_limiting'
@@ -165,40 +211,37 @@ export async function middleware(request: NextRequest) {
 
         await observabilitySystem.finishSpan(spanId, 'error', {
           error: 'Rate limit exceeded',
-          rateLimit: current.count,
         });
         await observabilitySystem.finishTrace(traceId, 'error');
 
+        const retryAfter = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000);
+        
         return new NextResponse(
           JSON.stringify({
             error: 'Rate limit exceeded',
-            retryAfter: Math.ceil((current.resetTime - now) / 1000),
+            retryAfter,
           }),
           {
             status: 429,
             headers: {
               'Content-Type': 'application/json',
-              'Retry-After': Math.ceil(
-                (current.resetTime - now) / 1000
-              ).toString(),
-              'X-RateLimit-Limit': rateLimit.requests.toString(),
-              'X-RateLimit-Remaining': Math.max(
-                0,
-                rateLimit.requests - current.count
-              ).toString(),
-              'X-RateLimit-Reset': current.resetTime.toString(),
+              'Retry-After': retryAfter.toString(),
+              'X-RateLimit-Limit': rateLimitConfig.requests.toString(),
+              'X-RateLimit-Remaining': '0',
+              'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
+              'X-Trace-Id': traceId,
             },
           }
         );
       }
 
       // Add rate limit headers
-      response.headers.set('X-RateLimit-Limit', rateLimit.requests.toString());
+      response.headers.set('X-RateLimit-Limit', rateLimitConfig.requests.toString());
       response.headers.set(
         'X-RateLimit-Remaining',
-        Math.max(0, rateLimit.requests - current.count).toString()
+        rateLimitResult.remaining.toString()
       );
-      response.headers.set('X-RateLimit-Reset', current.resetTime.toString());
+      response.headers.set('X-RateLimit-Reset', new Date(rateLimitResult.resetTime).toISOString());
     }
 
     // Request logging
@@ -353,10 +396,16 @@ export async function middleware(request: NextRequest) {
     });
     await observabilitySystem.finishTrace(traceId, 'error');
 
+    // Don't leak error details in production
+    const errorMessage = process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : error instanceof Error ? error.message : 'Unknown error';
+    
     return new NextResponse(
       JSON.stringify({
         error: 'Internal server error',
         traceId,
+        ...(process.env.NODE_ENV !== 'production' && { details: errorMessage }),
       }),
       {
         status: 500,
