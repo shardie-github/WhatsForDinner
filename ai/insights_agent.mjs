@@ -14,8 +14,13 @@ class AIInsightsAgent {
       apiKey: process.env.OPENAI_API_KEY
     });
     
+    // Extract project ref from URL or use explicit env var
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const urlMatch = supabaseUrl?.match(/https:\/\/([^.]+)\.supabase\.co/);
+    const projectRef = process.env.SUPABASE_PROJECT_REF || urlMatch?.[1] || '';
+    
     this.supabase = createClient(
-      process.env.SUPABASE_URL || `https://${process.env.SUPABASE_PROJECT_REF || 'ghqyxhbyyirveptgwoqm'}.supabase.co`,
+      supabaseUrl || `https://${projectRef}.supabase.co`,
       process.env.SUPABASE_ANON_KEY || ''
     );
     

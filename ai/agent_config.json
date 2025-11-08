@@ -1,5 +1,5 @@
 {
-  "project_ref": "ghqyxhbyyirveptgwoqm",
+  "project_ref": "",
   "embeddings_table": "ai_embeddings",
   "models": {
     "chat": "gpt-4-turbo-preview",

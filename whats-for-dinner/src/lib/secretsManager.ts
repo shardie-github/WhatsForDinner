@@ -416,14 +416,29 @@ export function validateEnvironmentVariables(): { valid: boolean; errors: string
     }
   }
   
-  // Validate Supabase project reference
-  if (process.env.SUPABASE_PROJECT_REF && process.env.SUPABASE_PROJECT_REF !== 'ghqyxhbyyirveptgwoqm') {
-    errors.push(`SUPABASE_PROJECT_REF should be 'ghqyxhbyyirveptgwoqm', got: ${process.env.SUPABASE_PROJECT_REF}`);
-  }
-  
-  // Validate Supabase URL format
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && !process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('https://')) {
-    errors.push('NEXT_PUBLIC_SUPABASE_URL should start with https://');
+  // Extract and validate Supabase project reference from URL
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('https://')) {
+      errors.push('NEXT_PUBLIC_SUPABASE_URL should start with https://');
+    } else {
+      // Extract project ref from Supabase URL (format: https://<project-ref>.supabase.co)
+      const urlMatch = process.env.NEXT_PUBLIC_SUPABASE_URL.match(/https:\/\/([^.]+)\.supabase\.co/);
+      if (urlMatch && urlMatch[1]) {
+        const extractedProjectRef = urlMatch[1];
+        
+        // If SUPABASE_PROJECT_REF is set, validate it matches the URL
+        if (process.env.SUPABASE_PROJECT_REF) {
+          if (process.env.SUPABASE_PROJECT_REF !== extractedProjectRef) {
+            errors.push(`SUPABASE_PROJECT_REF (${process.env.SUPABASE_PROJECT_REF}) does not match project ref in NEXT_PUBLIC_SUPABASE_URL (${extractedProjectRef})`);
+          }
+        } else {
+          // Set SUPABASE_PROJECT_REF from URL if not already set
+          process.env.SUPABASE_PROJECT_REF = extractedProjectRef;
+        }
+      } else {
+        errors.push('NEXT_PUBLIC_SUPABASE_URL does not match expected Supabase URL format (https://<project-ref>.supabase.co)');
+      }
+    }
   }
   
   // Check for service role key in client-side environment

@@ -16,8 +16,13 @@ class EmbeddingsGenerator {
       apiKey: (await secretsManager.getSecret('OPENAI_API_KEY')) || process.env.OPENAI_API_KEY
     });
     
+    // Extract project ref from URL or use explicit env var
+    const supabaseUrl = (await secretsManager.getSecret('SUPABASE_URL')) || process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const urlMatch = supabaseUrl?.match(/https:\/\/([^.]+)\.supabase\.co/);
+    const projectRef = (await secretsManager.getSecret('SUPABASE_PROJECT_REF')) || process.env.SUPABASE_PROJECT_REF || urlMatch?.[1] || '';
+    
     this.supabase = createClient(
-      (await secretsManager.getSecret('SUPABASE_URL')) || process.env.SUPABASE_URL || `https://${(await secretsManager.getSecret('SUPABASE_PROJECT_REF')) || process.env.SUPABASE_PROJECT_REF || 'ghqyxhbyyirveptgwoqm'}.supabase.co`,
+      supabaseUrl || `https://${projectRef}.supabase.co`,
       (await secretsManager.getSecret('SUPABASE_ANON_KEY')) || process.env.SUPABASE_ANON_KEY || ''
     );
   }
