@@ -1,0 +1,533 @@
+// Prisma Schema for What's For Dinner
+// Generated from Drizzle schema to enable Prisma migrations
+// Engine Type: WASM (Termux/Android compatible)
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "wasm"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// CORE SCHEMA
+// ============================================================================
+
+enum Plan {
+  free
+  premium
+  partner
+}
+
+enum Role {
+  owner
+  adult
+  teen
+  child
+}
+
+enum RecipeSource {
+  curated
+  partner
+  user
+}
+
+enum HealthMetricKind {
+  weight
+  sleep
+  water
+  steps
+  calories
+}
+
+enum RoomKind {
+  family
+  dm
+}
+
+model User {
+  id          String   @id @default(uuid()) @db.Uuid
+  email       String   @unique @db.VarChar(255)
+  plan        Plan     @default(free)
+  preferences Json?    @db.JsonB
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  ownedHouseholds         Household[]              @relation("HouseholdOwner")
+  householdMemberships    HouseholdMember[]
+  mealPlans               MealPlan[]
+  healthMetrics           HealthMetric[]
+  recipes                 Recipe[]
+  featureFlags            FeatureFlag?
+  adImpressions           AdImpression[]
+  events                  Event[]
+  emailSubscriptions      EmailSubscription[]
+  referralCodes           ReferralCode[]
+  referralsAsReferrer     Referral[]               @relation("Referrer")
+  referralsAsReferee      Referral[]               @relation("Referee")
+  privacyPrefs            PrivacyPref?
+  appAllowlist            AppAllowlist[]
+  signalToggles           SignalToggle[]
+  telemetryEvents         TelemetryEvent[]
+  privacyTransparencyLog  PrivacyTransparencyLog[] @relation("UserActor")
+  privacyTransparencyLogs PrivacyTransparencyLog[] @relation("User")
+  mfaEnforcedSessions     MfaEnforcedSession[]
+  dsarRequests            DsarRequest[]
+  messagesAsSender        Message[]                @relation("MessageSender")
+
+  @@map("users")
+}
+
+model Household {
+  id        String   @id @default(uuid()) @db.Uuid
+  ownerId   String   @map("owner_id") @db.Uuid
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  owner        User              @relation("HouseholdOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members      HouseholdMember[]
+  mealPlans    MealPlan[]
+  groceryLists GroceryList[]
+  rooms        Room[]
+
+  @@map("households")
+}
+
+model HouseholdMember {
+  householdId String   @map("household_id") @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  role        Role     @default(adult)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([householdId, userId])
+  @@map("household_members")
+}
+
+model Recipe {
+  id          String       @id @default(uuid()) @db.Uuid
+  title       String
+  mediaUrl    String?      @map("media_url")
+  steps       Json         @db.JsonB
+  ingredients Json         @db.JsonB
+  macros      Json?        @db.JsonB
+  tags        String[]     @default([])
+  source      RecipeSource @default(user)
+  userId      String?      @map("user_id") @db.Uuid
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("recipes")
+}
+
+model MealPlan {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  householdId String?  @map("household_id") @db.Uuid
+  day         DateTime @db.Date
+  items       Json     @db.JsonB
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  household Household? @relation(fields: [householdId], references: [id], onDelete: Cascade)
+
+  @@index([userId, day], name: "meal_plans_user_day_idx")
+  @@map("meal_plans")
+}
+
+model GroceryList {
+  id          String   @id @default(uuid()) @db.Uuid
+  householdId String   @map("household_id") @db.Uuid
+  name        String?
+  items       Json     @default("[]") @db.JsonB
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+
+  @@map("grocery_lists")
+}
+
+model HealthMetric {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @map("user_id") @db.Uuid
+  kind      HealthMetricKind
+  value     Decimal          @db.Decimal
+  unit      String
+  ts        DateTime         @default(now()) @db.Timestamptz(6)
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, kind, ts], name: "health_metrics_user_kind_ts_idx")
+  @@map("health_metrics")
+}
+
+model Room {
+  id           String   @id @default(uuid()) @db.Uuid
+  householdId  String?  @map("household_id") @db.Uuid
+  kind         RoomKind @default(family)
+  participants String[] @default([]) @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  household Household? @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@map("rooms")
+}
+
+model Message {
+  id          String   @id @default(uuid()) @db.Uuid
+  roomId      String   @map("room_id") @db.Uuid
+  senderId    String   @map("sender_id") @db.Uuid
+  body        String
+  attachments Json     @default("[]") @db.JsonB
+  ts          DateTime @default(now()) @db.Timestamptz(6)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  room   Room  @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender User? @relation("MessageSender", fields: [senderId], references: [id], onDelete: SetNull)
+
+  @@index([roomId, ts], name: "messages_room_ts_idx")
+  @@map("messages")
+}
+
+model FeatureFlag {
+  userId    String   @id @map("user_id") @db.Uuid
+  flags     Json     @default("{}") @db.JsonB
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("feature_flags")
+}
+
+model AdImpression {
+  id       String   @id @default(uuid()) @db.Uuid
+  userId   String?  @map("user_id") @db.Uuid
+  slot     String
+  kind     String
+  ts       DateTime @default(now()) @db.Timestamptz(6)
+  metadata Json?    @default("{}") @db.JsonB
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("ad_impressions")
+}
+
+model Event {
+  id     String   @id @default(uuid()) @db.Uuid
+  userId String?  @map("user_id") @db.Uuid
+  name   String
+  props  Json     @default("{}") @db.JsonB
+  ts     DateTime @default(now()) @db.Timestamptz(6)
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, ts], name: "events_user_ts_idx")
+  @@map("events")
+}
+
+model ApiKey {
+  id          String   @id @default(uuid()) @db.Uuid
+  partnerSlug String   @map("partner_slug")
+  keyHash     String   @map("key_hash")
+  scopes      String[] @default([])
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("api_keys")
+}
+
+model WebhookEvent {
+  id          String    @id @default(uuid()) @db.Uuid
+  source      String
+  externalId  String    @map("external_id")
+  payload     Json      @db.JsonB
+  processedAt DateTime? @map("processed_at") @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@unique([source, externalId])
+  @@map("webhook_events")
+}
+
+// ============================================================================
+// GROWTH SYSTEMS SCHEMA
+// ============================================================================
+
+enum EmailSubscriptionStatus {
+  subscribed
+  unsubscribed
+  bounced
+}
+
+enum ReferralStatus {
+  clicked
+  signed_up
+  converted
+}
+
+enum PromoOfferKind {
+  percentage
+  fixed
+  trial_days
+}
+
+enum PromoDuration {
+  once
+  repeat
+  lifecycle
+}
+
+enum ExperimentStatus {
+  draft
+  running
+  paused
+  complete
+}
+
+enum PricingPlatform {
+  ios
+  android
+  web
+  any
+}
+
+enum PricingPlan {
+  monthly
+  annual
+}
+
+model EmailSubscription {
+  id        String                  @id @default(uuid()) @db.Uuid
+  userId    String?                 @map("user_id") @db.Uuid
+  email     String                  @db.VarChar(255)
+  status    EmailSubscriptionStatus @default(subscribed)
+  source    String?
+  ts        DateTime                @default(now()) @db.Timestamptz(6)
+  createdAt DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime                @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "email_subscriptions_user_id_idx")
+  @@index([email], name: "email_subscriptions_email_idx")
+  @@index([status], name: "email_subscriptions_status_idx")
+  @@map("email_subscriptions")
+}
+
+model ReferralProgram {
+  id             String   @id @default(uuid()) @db.Uuid
+  slug           String   @unique
+  active         Boolean  @default(true)
+  rewardSender   Json     @default("{}") @map("reward_sender") @db.JsonB
+  rewardReceiver Json     @default("{}") @map("reward_receiver") @db.JsonB
+  termsUrl       String?  @map("terms_url")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  codes     ReferralCode[]
+  referrals Referral[]
+
+  @@map("referral_programs")
+}
+
+model ReferralCode {
+  id          String    @id @default(uuid()) @db.Uuid
+  programId   String    @map("program_id") @db.Uuid
+  code        String    @unique
+  ownerUserId String    @map("owner_user_id") @db.Uuid
+  uses        Int       @default(0)
+  maxUses     Int?      @map("max_uses")
+  expiresAt   DateTime? @map("expires_at") @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  program   ReferralProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  owner     User            @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  referrals Referral[]
+
+  @@index([programId], name: "referral_codes_program_id_idx")
+  @@index([ownerUserId], name: "referral_codes_owner_user_id_idx")
+  @@index([code], name: "referral_codes_code_idx")
+  @@map("referral_codes")
+}
+
+model Referral {
+  id             String         @id @default(uuid()) @db.Uuid
+  programId      String         @map("program_id") @db.Uuid
+  codeId         String         @map("code_id") @db.Uuid
+  referrerUserId String         @map("referrer_user_id") @db.Uuid
+  refereeUserId  String?        @map("referee_user_id") @db.Uuid
+  refereeEmail   String?        @map("referee_email") @db.VarChar(255)
+  status         ReferralStatus @default(clicked)
+  ts             DateTime       @default(now()) @db.Timestamptz(6)
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  program  ReferralProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  code     ReferralCode    @relation(fields: [codeId], references: [id], onDelete: Cascade)
+  referrer User            @relation("Referrer", fields: [referrerUserId], references: [id], onDelete: Cascade)
+  referee  User?           @relation("Referee", fields: [refereeUserId], references: [id], onDelete: SetNull)
+
+  @@index([codeId], name: "referrals_code_id_idx")
+  @@index([referrerUserId], name: "referrals_referrer_user_id_idx")
+  @@index([refereeUserId], name: "referrals_referee_user_id_idx")
+  @@index([status], name: "referrals_status_idx")
+  @@map("referrals")
+}
+
+// Note: Additional models (PromoOffer, Experiment, PricingRule, etc.) 
+// can be added as needed. This covers the core tables referenced by RLS policies.
+
+// ============================================================================
+// PRIVACY & MONITORING (simplified - add more as needed)
+// ============================================================================
+
+model PrivacyPref {
+  userId            String    @id @map("user_id") @db.Uuid
+  monitoringEnabled Boolean   @default(false) @map("monitoring_enabled")
+  dataRetentionDays Int       @default(14) @map("data_retention_days")
+  mfaRequired       Boolean   @default(true) @map("mfa_required")
+  lastReviewedAt    DateTime? @map("last_reviewed_at") @db.Timestamptz(6)
+  pausedUntil       DateTime? @map("paused_until") @db.Timestamptz(6)
+  killSwitchActive  Boolean   @default(false) @map("kill_switch_active")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "privacy_prefs_user_id_idx")
+  @@map("privacy_prefs")
+}
+
+model AppAllowlist {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  appId     String   @map("app_id")
+  appName   String   @map("app_name")
+  enabled   Boolean  @default(false)
+  scope     String   @default("metadata_only")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, appId])
+  @@index([userId], name: "app_allowlist_user_id_idx")
+  @@index([appId], name: "app_allowlist_app_id_idx")
+  @@map("app_allowlist")
+}
+
+model SignalToggle {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  signalKey    String   @map("signal_key")
+  enabled      Boolean  @default(false)
+  samplingRate Decimal  @default(1.0) @map("sampling_rate") @db.Decimal(3, 2)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, signalKey])
+  @@index([userId], name: "signal_toggles_user_id_idx")
+  @@index([signalKey], name: "signal_toggles_signal_key_idx")
+  @@map("signal_toggles")
+}
+
+model TelemetryEvent {
+  id                   String   @id @default(uuid()) @db.Uuid
+  userId               String   @map("user_id") @db.Uuid
+  ts                   DateTime @default(now()) @db.Timestamptz(6)
+  appId                String   @map("app_id")
+  eventType            String   @map("event_type")
+  durationMs           Int?     @map("duration_ms")
+  metadataRedactedJson Json?    @map("metadata_redacted_json") @db.JsonB
+  encryptedPayload     String?  @map("encrypted_payload")
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "telemetry_events_user_id_idx")
+  @@index([ts], name: "telemetry_events_ts_idx")
+  @@index([appId], name: "telemetry_events_app_id_idx")
+  @@index([userId, ts], name: "telemetry_events_user_ts_idx")
+  @@map("telemetry_events")
+}
+
+model PrivacyTransparencyLog {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  action       String
+  actorId      String?  @map("actor_id") @db.Uuid
+  entityType   String?  @map("entity_type")
+  entityId     String?  @map("entity_id") @db.Uuid
+  oldValueHash String?  @map("old_value_hash")
+  newValueHash String?  @map("new_value_hash")
+  metadata     Json?    @default("{}") @db.JsonB
+  ts           DateTime @default(now()) @db.Timestamptz(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user  User  @relation("User", fields: [userId], references: [id], onDelete: Cascade)
+  actor User? @relation("UserActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([userId], name: "privacy_transparency_log_user_id_idx")
+  @@index([ts], name: "privacy_transparency_log_ts_idx")
+  @@index([action], name: "privacy_transparency_log_action_idx")
+  @@map("privacy_transparency_log")
+}
+
+model MfaEnforcedSession {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  sessionToken String   @unique @map("session_token")
+  expiresAt    DateTime @map("expires_at") @db.Timestamptz(6)
+  actionType   String   @map("action_type")
+  verifiedAt   DateTime @default(now()) @map("verified_at") @db.Timestamptz(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "mfa_enforced_sessions_user_id_idx")
+  @@index([sessionToken], name: "mfa_enforced_sessions_session_token_idx")
+  @@index([expiresAt], name: "mfa_enforced_sessions_expires_at_idx")
+  @@map("mfa_enforced_sessions")
+}
+
+model DsarRequest {
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String?   @map("user_id") @db.Uuid
+  email          String    @db.VarChar(255)
+  type           String
+  status         String    @default("received")
+  submittedAt    DateTime  @default(now()) @map("submitted_at") @db.Timestamptz(6)
+  verifiedAt     DateTime? @map("verified_at") @db.Timestamptz(6)
+  completedAt    DateTime? @map("completed_at") @db.Timestamptz(6)
+  reason         String?
+  channel        String    @default("portal")
+  region         String    @default("gdpr")
+  windowDeadline DateTime  @map("window_deadline") @db.Timestamptz(6)
+  artifacts      Json      @default("[]") @db.JsonB
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId], name: "dsar_requests_user_id_idx")
+  @@index([email], name: "dsar_requests_email_idx")
+  @@index([status], name: "dsar_requests_status_idx")
+  @@index([region], name: "dsar_requests_region_idx")
+  @@index([windowDeadline], name: "dsar_requests_window_deadline_idx")
+  @@map("dsar_requests")
+}

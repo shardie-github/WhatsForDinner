@@ -1,0 +1,13 @@
+{
+  "buildCommand": "pnpm install && pnpm prisma generate && pnpm build",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "framework": "nextjs",
+  "functions": {
+    "apps/web/src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "PRISMA_CLIENT_ENGINE_TYPE": "wasm"
+  }
+}

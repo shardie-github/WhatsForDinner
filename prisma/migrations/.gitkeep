@@ -1,0 +1,2 @@
+# Prisma migrations directory
+# Migrations will be generated here when you run: pnpm prisma migrate dev
