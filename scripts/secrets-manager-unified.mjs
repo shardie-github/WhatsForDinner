@@ -33,14 +33,13 @@ class UnifiedSecretsManager {
       }
     }
 
+    // Get Supabase URL from environment variables only
+    // Priority: NEXT_PUBLIC_SUPABASE_URL > SUPABASE_URL > null
+    // Never construct from VERCEL_URL as they are unrelated
     const supabaseUrl = 
       process.env.NEXT_PUBLIC_SUPABASE_URL || 
       process.env.SUPABASE_URL ||
-      process.env.VERCEL_ENV === 'production' 
-        ? process.env.VERCEL_URL 
-          ? `https://${process.env.VERCEL_URL.replace('https://', '').split('.')[0]}.supabase.co`
-          : null
-        : null;
+      null;
 
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
