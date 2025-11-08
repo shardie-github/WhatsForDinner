@@ -1,0 +1,2177 @@
+ai/ai_autoscale.ts:470 - default
+ai/privacy_guard.ts:416 - default
+ai/self_diagnose.ts:395 - default
+ops/ai-guardrails.ts:168 - AIAgentGuardrails (used in module)
+ops/ai-guardrails.ts:168 - dryRunAgent (used in module)
+ops/compliance-guard.ts:212 - exportDSAR (used in module)
+ops/compliance-guard.ts:212 - deleteDSAR (used in module)
+ops/compliance-guard.ts:212 - redactLogs (used in module)
+ops/compliance-guard.ts:212 - generateComplianceReport (used in module)
+ops/cost-caps.ts:140 - checkCostCaps (used in module)
+ops/cost-caps.ts:140 - simulateCosts (used in module)
+ops/cost-caps.ts:140 - throttleRequest (used in module)
+ops/growth-engine.ts:175 - generateGrowthReport (used in module)
+ops/growth-engine.ts:175 - calculateCohorts (used in module)
+ops/growth-engine.ts:175 - normalizeUTM (used in module)
+ops/i18n.ts:137 - extractMessages (used in module)
+ops/i18n.ts:137 - generateLanguagePacks (used in module)
+ops/i18n.ts:137 - validateTranslations (used in module)
+ops/observability.ts:203 - initializeObservability (used in module)
+ops/observability.ts:203 - generateMetricsReport (used in module)
+ops/offers-paywalls.ts:93 - syncPricingFromSupabase (used in module)
+ops/offers-paywalls.ts:93 - toggleOffer (used in module)
+ops/offers-paywalls.ts:93 - getDefaultOffers (used in module)
+ops/partner-hooks.ts:179 - generatePartnerPack (used in module)
+ops/store-pack.ts:118 - generateStorePack (used in module)
+scripts/browser-compatibility-test.ts:177 - checkFile (used in module)
+scripts/browser-compatibility-test.ts:177 - findSourceFiles (used in module)
+scripts/chaos-mini.ts:465 - ChaosMini (used in module)
+scripts/chaos-mini.ts:465 - ChaosReport (used in module)
+scripts/chaos-mini.ts:465 - ChaosTest (used in module)
+scripts/generate-icons.ts:71 - generateIcons (used in module)
+scripts/migrate-emc.ts:429 - EMCMigrator (used in module)
+scripts/migrate-emc.ts:429 - MigrationStep (used in module)
+scripts/migrate-emc.ts:429 - EMCConfig (used in module)
+scripts/monitoring-alerts-config.ts:234 - testAlerts (used in module)
+scripts/monitoring-alerts-config.ts:252 - getAlertConfig
+scripts/monitoring-alerts-config.ts:257 - getAlert
+scripts/monitoring-alerts-config.ts:265 - DEFAULT_CONFIG (used in module)
+scripts/monitoring-alerts-config.ts:265 - sendAlert (used in module)
+scripts/privacy-compliance-check.ts:229 - runPrivacyComplianceChecks (used in module)
+scripts/slo-checker.ts:322 - SLOChecker (used in module)
+scripts/slo-checker.ts:322 - SLOReport (used in module)
+scripts/slo-checker.ts:322 - SLOMetrics (used in module)
+watchers/api_contract.watcher.ts:742 - default
+watchers/db_integrity.watcher.ts:615 - default
+whats-for-dinner/next.config.ts:89 - default
+whats-for-dinner/playwright.config.ts:6 - default
+apps/web/capacitor.config.ts:55 - default
+apps/web/next.config.ts:181 - default
+apps/web/playwright.config.ts:6 - default
+packages/ui/PricingSurvey.tsx:18 - PricingSurvey
+packages/ui/vitest.config.ts:16 - default
+server/api/bridge.ts:29 - handleHydrogenRequest (used in module)
+server/api/bridge.ts:151 - hydrogenMiddleware (used in module)
+server/api/bridge.ts:6 - HydrogenRequest (used in module)
+server/api/bridge.ts:13 - HydrogenResponse (used in module)
+server/api/bridge.ts:19 - HydrogenContext (used in module)
+server/api/bridge.ts:187 - hydrogenUtils (used in module)
+server/api/bridge.ts:249 - default
+tests/reality/playwright.config.ts:3 - default
+tests/reality/synthetic-monitor.ts:102 - monitor (used in module)
+tests/reality/synthetic-monitors.spec.ts:90 - notifyFailure
+tests/red-team/security.spec.ts:139 - runRedTeamTests (used in module)
+tools/scripts/backup-run.ts:391 - BackupRunner (used in module)
+tools/scripts/evidence-bundle.ts:228 - EvidenceBundleGenerator (used in module)
+tools/scripts/restore-run.ts:379 - RestoreRunner (used in module)
+tools/wiring/env_inventory.ts:253 - generateEnvInventory
+tools/wiring/harness.ts:797 - runWiringHarness
+tools/wiring/wire_doctor.ts:259 - runWireDoctor
+apps/admin.disabled/layout.tsx:26 - default
+apps/admin.disabled/page.tsx:34 - default
+apps/billing.disabled/page.tsx:34 - default
+apps/developers.disabled/page.tsx:59 - default
+apps/favorites.disabled/page.tsx:9 - default
+apps/landing.disabled/page.tsx:138 - default
+apps/pantry.disabled/page.tsx:8 - default
+ops/screenshots/capture.ts:152 - captureScreenshots (used in module)
+ops/scripts/generate-dashboard.ts:8 - generateObservabilityDashboard
+ops/scripts/generate-store-pack.ts:8 - generateStorePack
+ops/scripts/growth-report.ts:8 - generateGrowthReport
+ops/scripts/performance-budgets.ts:15 - checkPerformanceBudgets
+whats-for-dinner/src/middleware.ts:24 - middleware
+whats-for-dinner/src/middleware.ts:294 - config
+whats-for-dinner/tests/global-setup.ts:60 - default
+whats-for-dinner/tests/global-teardown.ts:61 - default
+whats-for-dinner/tests/supabase-validation.test.ts:303 - runSupabaseValidation (used in module)
+agents/continuous-improvement/src/index.ts:111 - ContinuousImprovementAgent (used in module)
+agents/continuous-improvement/src/index.ts:112 - default
+nomad/packages/testing/vitest.config.ts:3 - default
+nomad/tools/scripts/seed.ts:37 - default
+packages/adapters/crm/index.ts:13 - getCRMAdapter (used in module)
+packages/adapters/crm/index.ts:5 - EmailMessage
+packages/adapters/crm/index.ts:17 - EmailTemplate
+packages/adapters/crm/index.ts:26 - EmailSubscription
+packages/adapters/crm/index.ts:33 - CRMAdapter (used in module)
+packages/adapters/crm/index.ts:20 - SendGridConfig
+packages/adapters/crm/index.ts:26 - SendGridAdapter
+packages/adapters/crm/index.ts:162 - sendGridAdapter (used in module)
+packages/adapters/crm/index.ts:52 - KlaviyoAdapter
+packages/adapters/crm/index.ts:262 - klaviyoAdapter (used in module)
+packages/adapters/crm/index.ts:9 - NoopAdapter
+packages/adapters/crm/index.ts:39 - noopAdapter (used in module)
+packages/adapters/purchases/android.ts:11 - AndroidPurchaseAdapter
+packages/adapters/purchases/index.ts:66 - getPurchaseAdapter (used in module)
+packages/adapters/purchases/index.ts:90 - initializePurchases
+packages/adapters/purchases/index.ts:98 - getEntitlements (used in module)
+packages/adapters/purchases/index.ts:106 - purchase (used in module)
+packages/adapters/purchases/index.ts:114 - restore (used in module)
+packages/adapters/purchases/index.ts:122 - isPremium (used in module)
+packages/adapters/purchases/index.ts:130 - getReceiptData (used in module)
+packages/adapters/purchases/ios.ts:11 - IOSPurchaseAdapter
+packages/adapters/purchases/web.ts:10 - WebPurchaseAdapter
+packages/analytics/consent/index.ts:7 - ConsentPurpose
+packages/analytics/consent/index.ts:14 - ConsentStatus
+packages/analytics/consent/index.ts:20 - AgeGateStatus
+packages/analytics/consent/index.ts:25 - ConsentState
+packages/analytics/consent/index.ts:46 - ConsentTransition
+packages/analytics/consent/index.ts:67 - ConsentModel
+packages/analytics/consent/index.ts:9 - ConsentEvent
+packages/analytics/consent/index.ts:15 - ConsentEventListener
+packages/analytics/consent/index.ts:17 - ConsentStore
+packages/analytics/consent/index.ts:250 - ConsentStorage
+packages/config/src/env.ts:67 - validateEnv (used in module)
+packages/config/src/env.ts:98 - env (used in module)
+packages/config/src/env.ts:103 - Env
+packages/config/src/index.ts:52 - getSKU
+packages/config/src/index.ts:59 - getPlanBySKU
+packages/config/src/index.ts:71 - isPremiumPlan
+packages/config/src/index.ts:78 - getPlanDisplayName
+packages/config/src/index.ts:6 - SubscriptionPlan
+packages/config/src/index.ts:8 - SubscriptionSKU
+packages/config/src/index.ts:18 - SUBSCRIPTION_SKUS
+packages/data/src/experiments.ts:126 - useExperiment
+packages/data/src/experiments.ts:200 - useExperiments
+packages/data/src/experiments.ts:9 - ExperimentAssignment (used in module)
+packages/data/src/pricing.ts:112 - usePrice
+packages/data/src/pricing.ts:139 - useRevenueSummary
+packages/data/src/pricing.ts:151 - useElasticity
+packages/data/src/pricing.ts:163 - useSubmitSurvey
+packages/data/src/pricing.ts:8 - PriceRecommendation (used in module)
+packages/data/src/pricing.ts:15 - RevenueSummary (used in module)
+packages/data/src/pricing.ts:30 - ElasticityData (used in module)
+packages/server/src/index.ts:37 - paginateQuery
+packages/server/src/index.ts:334 - computeResponseETag
+packages/server/src/index.ts:339 - closeDb
+packages/server/src/index.ts:15 - db
+packages/server/src/index.ts:62 - usersRepo
+packages/server/src/index.ts:84 - mealPlansRepo
+packages/server/src/index.ts:154 - recipesRepo
+packages/server/src/index.ts:191 - groceryListsRepo
+packages/server/src/index.ts:225 - healthMetricsRepo
+packages/server/src/index.ts:254 - eventsRepo
+packages/server/src/index.ts:283 - webhookEventsRepo
+packages/server/src/index.ts:312 - featureFlagsRepo
+packages/server/src/index.ts:19 - verifySupabaseJWT
+packages/server/src/index.ts:52 - extractToken
+packages/server/src/index.ts:61 - getAuthContext
+packages/server/src/index.ts:76 - requireAuth
+packages/server/src/index.ts:94 - requirePlan
+packages/server/src/index.ts:9 - AuthContext
+packages/server/src/index.ts:21 - generateCSRFToken
+packages/server/src/index.ts:26 - validateCSRF
+packages/server/src/index.ts:34 - validateCSRFMiddleware
+packages/server/src/index.ts:52 - csrfMiddleware
+packages/server/src/index.ts:74 - corsMiddleware
+packages/server/src/index.ts:95 - setCORSHeaders
+packages/server/src/index.ts:106 - rateLimit
+packages/server/src/index.ts:134 - rateLimitMiddleware
+packages/server/src/index.ts:158 - verifyHMAC
+packages/server/src/index.ts:172 - bodySizeLimitMiddleware
+packages/server/src/index.ts:74 - startWorker
+packages/server/src/index.ts:146 - stopWorker
+packages/server/src/index.ts:161 - queueHealth
+packages/server/src/index.ts:56 - queue
+packages/server/src/index.ts:184 - checkQueueHealth
+packages/server/src/index.ts:184 - getQueueMetrics
+packages/server/src/index.ts:33 - initOpenTelemetry
+packages/server/src/index.ts:66 - initMetrics
+packages/server/src/index.ts:4 - logger
+packages/server/src/index.ts:4 - Plan
+packages/server/src/index.ts:5 - Role
+packages/server/src/index.ts:6 - RecipeSource
+packages/server/src/index.ts:9 - RequestContext
+packages/server/src/index.ts:20 - PaginationParams
+packages/server/src/index.ts:25 - PaginatedResponse
+packages/server/src/index.ts:36 - paginationSchema
+packages/server/src/index.ts:41 - dateRangeSchema
+packages/testing/chaos/scenarios.ts:176 - getAllScenarios (used in module)
+packages/testing/chaos/scenarios.ts:190 - getScenario (used in module)
+packages/testing/chaos/scenarios.ts:197 - isFaultActive
+packages/testing/chaos/scenarios.ts:204 - executeFaultHook
+packages/testing/chaos/scenarios.ts:214 - runScenario (used in module)
+packages/testing/chaos/scenarios.ts:291 - runScenarios
+packages/testing/chaos/scenarios.ts:311 - validateMetricsDelta
+packages/testing/chaos/scenarios.ts:16 - ChaosScenario (used in module)
+packages/testing/chaos/scenarios.ts:25 - ChaosResult (used in module)
+packages/testing/chaos/scenarios.ts:40 - dbConnectionLoss (used in module)
+packages/testing/chaos/scenarios.ts:62 - queueOverload (used in module)
+packages/testing/chaos/scenarios.ts:85 - apiLatencyInjection (used in module)
+packages/testing/chaos/scenarios.ts:105 - redisFailure (used in module)
+packages/testing/chaos/scenarios.ts:125 - externalAPIFailure (used in module)
+packages/testing/chaos/scenarios.ts:145 - memoryLeak (used in module)
+packages/testing/fixtures/synthetic.ts:8 - SyntheticUser (used in module)
+packages/testing/fixtures/synthetic.ts:24 - PartnerSandbox (used in module)
+packages/testing/fixtures/synthetic.ts:32 - SampleSKU (used in module)
+packages/testing/fixtures/synthetic.ts:40 - ReferralCode (used in module)
+packages/testing/fixtures/synthetic.ts:47 - Coupon (used in module)
+packages/testing/fixtures/synthetic.ts:54 - PaywallVariant (used in module)
+packages/testing/fixtures/synthetic.ts:64 - userA (used in module)
+packages/testing/fixtures/synthetic.ts:81 - userB (used in module)
+packages/testing/fixtures/synthetic.ts:98 - userC (used in module)
+packages/testing/fixtures/synthetic.ts:115 - partnerSandbox (used in module)
+packages/testing/fixtures/synthetic.ts:124 - sampleSKUs (used in module)
+packages/testing/fixtures/synthetic.ts:149 - referralCode (used in module)
+packages/testing/fixtures/synthetic.ts:157 - coupon (used in module)
+packages/testing/fixtures/synthetic.ts:165 - paywallVariants (used in module)
+packages/testing/fixtures/synthetic.ts:198 - ConsentState (used in module)
+packages/testing/fixtures/synthetic.ts:206 - consentStates (used in module)
+packages/testing/fixtures/synthetic.ts:231 - MealPlanFixture (used in module)
+packages/testing/fixtures/synthetic.ts:247 - sampleMealPlan (used in module)
+packages/testing/fixtures/synthetic.ts:286 - GroceryListFixture (used in module)
+packages/testing/fixtures/synthetic.ts:297 - sampleGroceryList (used in module)
+packages/testing/fixtures/synthetic.ts:309 - HealthMetricFixture (used in module)
+packages/testing/fixtures/synthetic.ts:317 - sampleHealthMetrics (used in module)
+packages/testing/fixtures/synthetic.ts:342 - ChatMessageFixture (used in module)
+packages/testing/fixtures/synthetic.ts:349 - sampleChatMessage (used in module)
+packages/testing/fixtures/synthetic.ts:357 - fixtures
+packages/testing/perf/runner.ts:268 - PerfTestRunner (used in module)
+packages/testing/perf/scenarios.ts:13 - PerfScenario (used in module)
+packages/testing/perf/scenarios.ts:31 - PerfBaseline (used in module)
+packages/theme/src/index.ts:2 - colors
+packages/theme/src/index.ts:105 - spacing
+packages/theme/src/index.ts:118 - borderRadius
+packages/theme/src/index.ts:128 - typography
+packages/theme/src/index.ts:160 - shadows
+packages/theme/src/index.ts:191 - breakpoints
+packages/theme/src/index.ts:200 - zIndex
+packages/theme/src/index.ts:216 - animation
+packages/theme/src/index.ts:230 - layout
+packages/theme/src/index.ts:3 - themeConfig
+packages/theme/src/index.ts:16 - tailwindConfig
+packages/theme/src/index.ts:69 - nativeWindConfig
+packages/theme/src/index.ts:4 - nomadColors
+packages/theme/src/index.ts:100 - nomadTypography
+packages/theme/src/index.ts:134 - nomadSpacing
+packages/theme/src/index.ts:148 - nomadBorderRadius
+packages/theme/src/index.ts:159 - nomadElevation
+packages/theme/src/index.ts:174 - nomadMotion
+packages/theme/src/index.ts:203 - nomadBreakpoints
+packages/theme/src/index.ts:211 - nomadZIndex
+packages/theme/src/index.ts:226 - nomadThemes
+packages/theme/src/index.ts:323 - nomadIcons
+packages/theme/src/index.ts:359 - nomadAdPlacements
+packages/theme/src/index.ts:396 - nomadComponents
+packages/theme/src/index.ts:434 - NomadTheme
+packages/theme/src/index.ts:435 - SeasonalTheme
+packages/utils/src/chaos-service.ts:6 - ChaosExperiment (used in module)
+packages/utils/src/chaos-service.ts:18 - ChaosResult (used in module)
+packages/utils/src/chaos-service.ts:241 - default
+packages/utils/src/experimentation-service.ts:6 - Experiment (used in module)
+packages/utils/src/experimentation-service.ts:17 - ExperimentResult (used in module)
+packages/utils/src/experimentation-service.ts:163 - default
+packages/utils/src/failure-injector.ts:6 - FailureConfig (used in module)
+packages/utils/src/failure-injector.ts:108 - default
+packages/utils/src/feature-flags.ts:7 - FeatureFlag (used in module)
+packages/utils/src/feature-flags.ts:19 - FeatureFlagsConfig (used in module)
+packages/utils/src/feature-flags.ts:132 - default
+packages/utils/src/i18n.ts:13 - extractMessages
+packages/utils/src/i18n.ts:33 - generateLanguagePacks
+packages/utils/src/i18n.ts:8 - MessageKey (used in module)
+packages/utils/src/image-optimizer.ts:6 - ImageOptimizationOptions (used in module)
+packages/utils/src/image-optimizer.ts:14 - ImageOptimizer (used in module)
+packages/utils/src/image-optimizer.ts:97 - default
+packages/utils/src/index.ts:4 - cn
+packages/utils/src/index.ts:6 - useDeviceMode
+packages/utils/src/index.ts:15 - getResponsiveValue
+packages/utils/src/index.ts:25 - getPlatformValue
+packages/utils/src/index.ts:2 - isWeb
+packages/utils/src/index.ts:3 - isIOS
+packages/utils/src/index.ts:4 - isAndroid
+packages/utils/src/index.ts:3 - RecipeSchema
+packages/utils/src/index.ts:22 - PantryItemSchema
+packages/utils/src/index.ts:32 - UserPreferencesSchema
+packages/utils/src/index.ts:40 - Recipe
+packages/utils/src/index.ts:41 - PantryItem
+packages/utils/src/index.ts:42 - UserPreferences
+packages/utils/src/index.ts:5 - useDeviceInfo
+packages/utils/src/index.ts:31 - useResponsiveValue
+packages/utils/src/index.ts:44 - usePlatformStyles
+packages/utils/src/index.ts:57 - usePantry
+packages/utils/src/index.ts:83 - useTheme
+packages/utils/src/index.ts:136 - useThemeSync
+packages/utils/src/index.ts:154 - useThemeColors
+packages/utils/src/index.ts:81 - ThemeMode
+packages/utils/src/index.ts:5 - requireEnv
+packages/utils/src/index.ts:15 - requireEnvArray
+packages/utils/src/index.ts:25 - optionalEnv
+packages/utils/src/index.ts:35 - extractSupabaseProjectRef
+packages/utils/src/index.ts:49 - getSupabaseProjectRef
+packages/utils/src/index.ts:64 - validateEnv
+packages/utils/src/privacy-service.ts:6 - PersonalData (used in module)
+packages/utils/src/privacy-service.ts:19 - ConsentRecord (used in module)
+packages/utils/src/privacy-service.ts:231 - default
+packages/utils/src/quiet-mode.ts:10 - QuietModeConfig (used in module)
+apps/mobile/app/_layout.tsx:28 - default
+apps/mobile/app/favorites.tsx:7 - default
+apps/mobile/app/index.tsx:13 - default
+apps/mobile/app/pantry.tsx:8 - default
+apps/mobile/app/profile.tsx:7 - default
+apps/web/emails/PremiumUpsell.tsx:14 - PremiumUpsellEmail (used in module)
+apps/web/emails/PremiumUpsell.tsx:50 - default
+apps/web/emails/Receipt.tsx:15 - ReceiptEmail (used in module)
+apps/web/emails/Receipt.tsx:44 - default
+apps/web/emails/ReferralInvite.tsx:14 - ReferralInviteEmail (used in module)
+apps/web/emails/ReferralInvite.tsx:43 - default
+apps/web/emails/WeeklyDigest.tsx:31 - WeeklyDigestEmail (used in module)
+apps/web/emails/WeeklyDigest.tsx:109 - default
+apps/web/emails/Welcome.tsx:24 - WelcomeEmail (used in module)
+apps/web/emails/Welcome.tsx:89 - default
+apps/web/emails/Winback.tsx:12 - WinbackEmail (used in module)
+apps/web/emails/Winback.tsx:32 - default
+apps/web/src/middleware.ts:72 - middleware
+apps/web/src/middleware.ts:438 - config (used in module)
+apps/web/tests/global-setup.ts:59 - default
+apps/web/tests/global-teardown.ts:61 - default
+packages/ui/MessageCenter/index.tsx:35 - MessageCenter
+packages/ui/MessageCenter/index.tsx:14 - InAppMessage (used in module)
+apps/admin.disabled/analytics/page.tsx:38 - default
+apps/admin.disabled/billing/page.tsx:43 - default
+apps/admin.disabled/copywriter/page.tsx:6 - default
+apps/admin.disabled/funnel/page.tsx:20 - default
+apps/admin.disabled/settings/page.tsx:49 - default
+apps/admin.disabled/social/page.tsx:11 - default
+apps/admin.disabled/system/metrics.tsx:36 - default
+apps/admin.disabled/users/page.tsx:48 - default
+ops/cli/commands/dr-rehearsal.ts:9 - runDRRehearsal
+whats-for-dinner/src/app/layout.tsx:27 - default
+whats-for-dinner/src/app/layout.tsx:8 - metadata
+whats-for-dinner/src/components/Navbar.tsx:26 - default
+whats-for-dinner/src/components/PWAInstaller.tsx:10 - default
+whats-for-dinner/src/components/ShareableMealCard.tsx:26 - default
+whats-for-dinner/src/components/SkeletonLoader.tsx:8 - SkeletonLoader
+whats-for-dinner/src/components/SkeletonLoader.tsx:12 - RecipeCardSkeleton
+whats-for-dinner/src/components/SkeletonLoader.tsx:38 - PantryItemSkeleton
+whats-for-dinner/src/components/SkeletonLoader.tsx:54 - InputPromptSkeleton
+whats-for-dinner/src/components/SkeletonLoader.tsx:87 - NavbarSkeleton
+whats-for-dinner/src/hooks/useFavorites.ts:11 - useFavorites
+whats-for-dinner/src/hooks/useFavorites.ts:47 - useAddToFavorites
+whats-for-dinner/src/hooks/useFavorites.ts:68 - useRemoveFavorite
+whats-for-dinner/src/hooks/usePantry.ts:6 - usePantryItems
+whats-for-dinner/src/hooks/usePantry.ts:28 - useAddPantryItem
+whats-for-dinner/src/hooks/usePantry.ts:59 - useUpdatePantryItem
+whats-for-dinner/src/hooks/usePantry.ts:81 - useDeletePantryItem
+whats-for-dinner/src/hooks/useRecipes.ts:17 - useGenerateRecipes
+whats-for-dinner/src/hooks/useRecipes.ts:69 - useRecipes
+whats-for-dinner/src/hooks/useRecipes.ts:74 - useSavedRecipes
+whats-for-dinner/src/hooks/useRecipes.ts:98 - useSaveRecipe
+whats-for-dinner/src/hooks/useRecipes.ts:130 - useDeleteRecipe
+whats-for-dinner/src/lib/accessibilityAuditSystem.ts:15 - AccessibilityIssue (used in module)
+whats-for-dinner/src/lib/accessibilityAuditSystem.ts:29 - ColorContrastResult (used in module)
+whats-for-dinner/src/lib/accessibilityAuditSystem.ts:39 - KeyboardNavigationIssue (used in module)
+whats-for-dinner/src/lib/accessibilityAuditSystem.ts:47 - ScreenReaderIssue (used in module)
+whats-for-dinner/src/lib/accessibilityAuditSystem.ts:55 - AccessibilityReport (used in module)
+whats-for-dinner/src/lib/accessibilityAuditSystem.ts:70 - AccessibilityTest (used in module)
+whats-for-dinner/src/lib/accessibilityAuditSystem.ts:79 - AccessibilityAuditSystem (used in module)
+whats-for-dinner/src/lib/accessibilityAuditSystem.ts:633 - accessibilityAuditSystem
+whats-for-dinner/src/lib/adminDashboardSystem.ts:18 - UserMetrics (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:29 - UserSegment (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:38 - UserActivity (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:46 - JobQueueMetrics (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:57 - JobTypeMetrics (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:65 - BillingMetrics (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:77 - RevenueSource (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:84 - SystemHealth (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:92 - ComponentHealth (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:101 - SystemAlert (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:112 - AuditLog (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:124 - RBACPermission (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:133 - RBACRole (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:142 - RBACUser (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:151 - AdminDashboardSystem (used in module)
+whats-for-dinner/src/lib/adminDashboardSystem.ts:771 - adminDashboardSystem
+whats-for-dinner/src/lib/aiCommerceHub.ts:5 - FinancialSummary (used in module)
+whats-for-dinner/src/lib/aiCommerceHub.ts:34 - PricingSuggestion (used in module)
+whats-for-dinner/src/lib/aiCommerceHub.ts:55 - RevenueAnalysis (used in module)
+whats-for-dinner/src/lib/aiCommerceHub.ts:79 - AICommerceHub (used in module)
+whats-for-dinner/src/lib/aiCommerceHub.ts:589 - aiCommerceHub
+whats-for-dinner/src/lib/aiConfig.ts:407 - initializeDefaultConfig
+whats-for-dinner/src/lib/aiConfig.ts:4 - AIConfig (used in module)
+whats-for-dinner/src/lib/aiConfig.ts:16 - PromptTemplate (used in module)
+whats-for-dinner/src/lib/aiConfig.ts:23 - ModelEvaluation (used in module)
+whats-for-dinner/src/lib/aiCopywriter.ts:4 - CopyVariant (used in module)
+whats-for-dinner/src/lib/aiCopywriter.ts:26 - AITestResult (used in module)
+whats-for-dinner/src/lib/aiCopywriter.ts:33 - AICopywriter
+whats-for-dinner/src/lib/aiDecisionEngine.ts:22 - DecisionContext (used in module)
+whats-for-dinner/src/lib/aiDecisionEngine.ts:66 - DecisionOutcome (used in module)
+whats-for-dinner/src/lib/aiDecisionEngine.ts:76 - LearningInsight (used in module)
+whats-for-dinner/src/lib/aiDecisionEngine.ts:85 - AIDecisionEngine (used in module)
+whats-for-dinner/src/lib/aiMonitoringAgent.ts:16 - LogPattern (used in module)
+whats-for-dinner/src/lib/aiMonitoringAgent.ts:26 - AnomalyDetection (used in module)
+whats-for-dinner/src/lib/aiMonitoringAgent.ts:40 - SelfHealingAction (used in module)
+whats-for-dinner/src/lib/aiMonitoringAgent.ts:51 - AIMonitoringAgent (used in module)
+whats-for-dinner/src/lib/aiOptimization.ts:27 - AIOptimizationService (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:16 - UserProfile (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:31 - TastePreferences (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:44 - MoodProfile (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:54 - DietaryRestrictions (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:62 - NutritionalGoals (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:74 - TimeConstraints (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:81 - BudgetPreferences (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:89 - CulturalPreferences (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:97 - LearningData (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:106 - RecipeInteraction (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:115 - FeedbackHistory (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:123 - SearchHistory (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:131 - PurchaseHistory (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:140 - SocialInteraction (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:148 - PersonalizedRecommendation (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:161 - RecipeGenerationRequest (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:175 - GeneratedRecipe (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:191 - RecipeIngredient (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:199 - RecipeInstruction (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:207 - NutritionInfo (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:219 - ChefPartnership (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:232 - ChefContent (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:246 - LicensingInfo (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:255 - RecipeEBook (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:273 - AIPersonalizationEngine (used in module)
+whats-for-dinner/src/lib/aiPersonalizationEngine.ts:1009 - aiPersonalizationEngine
+whats-for-dinner/src/lib/aiSafetyGuardrails.ts:46 - SafetyMetrics (used in module)
+whats-for-dinner/src/lib/aiSafetyGuardrails.ts:55 - AISafetyGuardrails (used in module)
+whats-for-dinner/src/lib/alertingSystem.ts:22 - AlertChannel (used in module)
+whats-for-dinner/src/lib/alertingSystem.ts:32 - AlertRoutingRule (used in module)
+whats-for-dinner/src/lib/alertingSystem.ts:41 - AlertCondition (used in module)
+whats-for-dinner/src/lib/alertingSystem.ts:47 - EscalationPolicy (used in module)
+whats-for-dinner/src/lib/alertingSystem.ts:54 - EscalationStep (used in module)
+whats-for-dinner/src/lib/alertingSystem.ts:60 - Alert (used in module)
+whats-for-dinner/src/lib/alertingSystem.ts:77 - AlertTemplate (used in module)
+whats-for-dinner/src/lib/alertingSystem.ts:88 - AlertThrottle (used in module)
+whats-for-dinner/src/lib/alertingSystem.ts:97 - AlertingSystem (used in module)
+whats-for-dinner/src/lib/analytics.ts:235 - useAnalytics
+whats-for-dinner/src/lib/analytics.ts:4 - AnalyticsEvent (used in module)
+whats-for-dinner/src/lib/analytics.ts:15 - RecipeMetrics (used in module)
+whats-for-dinner/src/lib/analytics.ts:29 - SystemMetrics (used in module)
+whats-for-dinner/src/lib/anomalyDetectionEngine.ts:20 - AnomalyDetectionConfig (used in module)
+whats-for-dinner/src/lib/anomalyDetectionEngine.ts:45 - TimeSeriesData (used in module)
+whats-for-dinner/src/lib/anomalyDetectionEngine.ts:51 - AnomalyPattern (used in module)
+whats-for-dinner/src/lib/anomalyDetectionEngine.ts:62 - AnomalyDetectionEngine (used in module)
+whats-for-dinner/src/lib/autonomousOrchestrator.ts:59 - AutonomousOrchestrator (used in module)
+whats-for-dinner/src/lib/autonomousSystem.ts:37 - AutonomousSystem (used in module)
+whats-for-dinner/src/lib/cognitiveContinuity.ts:57 - MemoryAgent (used in module)
+whats-for-dinner/src/lib/cognitiveContinuity.ts:86 - CognitiveContinuity (used in module)
+whats-for-dinner/src/lib/complianceAudit.ts:3 - AuditLog (used in module)
+whats-for-dinner/src/lib/complianceAudit.ts:19 - AnomalyDetection (used in module)
+whats-for-dinner/src/lib/complianceAudit.ts:32 - ComplianceReport (used in module)
+whats-for-dinner/src/lib/complianceAudit.ts:48 - ComplianceAudit (used in module)
+whats-for-dinner/src/lib/complianceAudit.ts:724 - complianceAudit
+whats-for-dinner/src/lib/continuousAutonomousAgent.ts:29 - OptimizationRecommendation (used in module)
+whats-for-dinner/src/lib/continuousAutonomousAgent.ts:48 - SystemHealthSnapshot (used in module)
+whats-for-dinner/src/lib/continuousAutonomousAgent.ts:69 - ComponentHealth (used in module)
+whats-for-dinner/src/lib/continuousAutonomousAgent.ts:77 - LearningInsight (used in module)
+whats-for-dinner/src/lib/continuousAutonomousAgent.ts:89 - ContinuousAutonomousAgent (used in module)
+whats-for-dinner/src/lib/cors.ts:48 - handleCORS (used in module)
+whats-for-dinner/src/lib/cors.ts:78 - setCORSHeaders (used in module)
+whats-for-dinner/src/lib/cors.ts:129 - createCORSResponse (used in module)
+whats-for-dinner/src/lib/cors.ts:146 - createCORSErrorResponse
+whats-for-dinner/src/lib/cors.ts:154 - withCORS
+whats-for-dinner/src/lib/cors.ts:205 - setSecurityHeaders
+whats-for-dinner/src/lib/cors.ts:11 - CORSOptions (used in module)
+whats-for-dinner/src/lib/cors.ts:19 - corsConfig (used in module)
+whats-for-dinner/src/lib/cors.ts:174 - rateLimitConfig
+whats-for-dinner/src/lib/cors.ts:183 - securityHeaders (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:15 - Platform (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:25 - PlatformCapabilities (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:38 - PlatformLimitations (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:47 - Feature (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:59 - FeatureImplementation (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:65 - ImplementationDetails (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:73 - FeatureTesting (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:81 - TestCoverage (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:88 - TestCase (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:99 - OfflineData (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:111 - SyncOperation (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:125 - ParityReport (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:137 - ParityIssue (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:149 - TestResult (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:159 - SyncStatus (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:170 - CrossPlatformParitySystem (used in module)
+whats-for-dinner/src/lib/crossPlatformParitySystem.ts:1011 - crossPlatformParitySystem
+whats-for-dinner/src/lib/deploymentManager.ts:17 - DeploymentConfig (used in module)
+whats-for-dinner/src/lib/deploymentManager.ts:27 - HealthCheckResult (used in module)
+whats-for-dinner/src/lib/deploymentManager.ts:34 - DeploymentStatus (used in module)
+whats-for-dinner/src/lib/deploymentManager.ts:819 - deploymentManager
+whats-for-dinner/src/lib/documentationSystem.ts:16 - DocumentationConfig (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:30 - DocumentationSection (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:45 - APIEndpoint (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:60 - APIParameter (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:69 - APIResponse (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:76 - APIExample (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:90 - AuthenticationInfo (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:97 - RateLimitInfo (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:103 - ValidationRule (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:109 - ChangelogEntry (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:125 - TroubleshootingGuide (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:140 - TroubleshootingSolution (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:150 - UserGuide (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:166 - DeveloperGuide (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:180 - CodeExample (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:189 - DocumentationReport (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:202 - DocumentationSystem (used in module)
+whats-for-dinner/src/lib/documentationSystem.ts:1398 - documentationSystem
+whats-for-dinner/src/lib/featureFlags.ts:482 - useFeatureFlag
+whats-for-dinner/src/lib/featureFlags.ts:497 - runABTest
+whats-for-dinner/src/lib/featureFlags.ts:8 - FeatureFlag (used in module)
+whats-for-dinner/src/lib/featureFlags.ts:21 - FeatureFlagVariant (used in module)
+whats-for-dinner/src/lib/featureFlags.ts:29 - FeatureFlagTargeting (used in module)
+whats-for-dinner/src/lib/featureFlags.ts:38 - TargetingRule (used in module)
+whats-for-dinner/src/lib/featureFlags.ts:44 - ExperimentConfig (used in module)
+whats-for-dinner/src/lib/featureFlags.ts:55 - ExperimentSuccessCriteria (used in module)
+whats-for-dinner/src/lib/featureFlags.ts:62 - UserContext (used in module)
+whats-for-dinner/src/lib/federatedGateway.ts:5 - FederatedRequest (used in module)
+whats-for-dinner/src/lib/federatedGateway.ts:17 - FederatedResponse (used in module)
+whats-for-dinner/src/lib/federatedGateway.ts:32 - FederatedAPIGateway (used in module)
+whats-for-dinner/src/lib/federatedGateway.ts:662 - federatedGateway
+whats-for-dinner/src/lib/feedbackSystem.ts:552 - useFeedback
+whats-for-dinner/src/lib/feedbackSystem.ts:5 - RecipeFeedback (used in module)
+whats-for-dinner/src/lib/feedbackSystem.ts:15 - FeedbackSummary (used in module)
+whats-for-dinner/src/lib/feedbackSystem.ts:22 - TrainingData (used in module)
+whats-for-dinner/src/lib/franchiseAutomation.ts:4 - FranchiseDeployment (used in module)
+whats-for-dinner/src/lib/franchiseAutomation.ts:19 - DeploymentManifest (used in module)
+whats-for-dinner/src/lib/franchiseAutomation.ts:47 - FranchiseConfig (used in module)
+whats-for-dinner/src/lib/franchiseAutomation.ts:70 - FranchiseAutomation (used in module)
+whats-for-dinner/src/lib/franchiseAutomation.ts:583 - franchiseAutomation
+whats-for-dinner/src/lib/growthAnalytics.ts:13 - CohortRetentionData (used in module)
+whats-for-dinner/src/lib/growthAnalytics.ts:21 - GrowthMetricsSummary (used in module)
+whats-for-dinner/src/lib/growthAnalytics.ts:32 - FunnelConversionRates (used in module)
+whats-for-dinner/src/lib/healthCheck.ts:750 - GET
+whats-for-dinner/src/lib/healthCheck.ts:747 - healthCheckSystem (used in module)
+whats-for-dinner/src/lib/i18n.ts:445 - useTranslation
+whats-for-dinner/src/lib/i18n.ts:8 - Locale (used in module)
+whats-for-dinner/src/lib/i18n.ts:23 - Translation (used in module)
+whats-for-dinner/src/lib/i18n.ts:35 - TranslationNamespace (used in module)
+whats-for-dinner/src/lib/i18n.ts:42 - LocalizationConfig (used in module)
+whats-for-dinner/src/lib/i18n.ts:442 - i18n (used in module)
+whats-for-dinner/src/lib/index.ts:75 - initializeAutonomousSystem
+whats-for-dinner/src/lib/index.ts:88 - getSystemStatusSummary
+whats-for-dinner/src/lib/index.ts:118 - shutdownAutonomousSystem
+whats-for-dinner/src/lib/index.ts:7 - autonomousSystem
+whats-for-dinner/src/lib/index.ts:8 - autonomousOrchestrator (used in module)
+whats-for-dinner/src/lib/index.ts:9 - continuousAutonomousAgent
+whats-for-dinner/src/lib/index.ts:12 - aiSafetyGuardrails
+whats-for-dinner/src/lib/index.ts:13 - secretsIntelligence
+whats-for-dinner/src/lib/index.ts:16 - predictiveOptimization
+whats-for-dinner/src/lib/index.ts:17 - cognitiveContinuity
+whats-for-dinner/src/lib/index.ts:20 - observabilityAudit
+whats-for-dinner/src/lib/index.ts:21 - anomalyDetectionEngine
+whats-for-dinner/src/lib/index.ts:22 - aiDecisionEngine
+whats-for-dinner/src/lib/index.ts:23 - alertingSystem
+whats-for-dinner/src/lib/index.ts:26 - BuildAgent
+whats-for-dinner/src/lib/index.ts:27 - InsightAgent
+whats-for-dinner/src/lib/index.ts:28 - HealAgent
+whats-for-dinner/src/lib/index.ts:29 - EthicsAgent
+whats-for-dinner/src/lib/index.ts:30 - BaseAgent
+whats-for-dinner/src/lib/index.ts:33 - run_terminal_cmd
+whats-for-dinner/src/lib/index.ts:37 - SystemMetrics
+whats-for-dinner/src/lib/index.ts:38 - AgentState
+whats-for-dinner/src/lib/index.ts:39 - DiagnosticResult
+whats-for-dinner/src/lib/index.ts:42 - SafetyViolation
+whats-for-dinner/src/lib/index.ts:43 - PromptSanitizationResult
+whats-for-dinner/src/lib/index.ts:44 - ThreatSimulationResult
+whats-for-dinner/src/lib/index.ts:47 - Secret
+whats-for-dinner/src/lib/index.ts:48 - SecretVault
+whats-for-dinner/src/lib/index.ts:49 - SecurityScanResult
+whats-for-dinner/src/lib/index.ts:50 - SecretsManifest
+whats-for-dinner/src/lib/index.ts:53 - BuildPrediction
+whats-for-dinner/src/lib/index.ts:54 - ResourceScalingDecision
+whats-for-dinner/src/lib/index.ts:55 - BehavioralAnalytics
+whats-for-dinner/src/lib/index.ts:58 - KnowledgeEntry
+whats-for-dinner/src/lib/index.ts:59 - MetaPrompt
+whats-for-dinner/src/lib/index.ts:60 - LearningSession
+whats-for-dinner/src/lib/index.ts:61 - AutonomousReflection
+whats-for-dinner/src/lib/index.ts:64 - AuditEvent
+whats-for-dinner/src/lib/index.ts:65 - ComplianceCheck
+whats-for-dinner/src/lib/index.ts:66 - SystemHealth
+whats-for-dinner/src/lib/index.ts:67 - AutonomyAudit
+whats-for-dinner/src/lib/index.ts:69 - SystemStatus
+whats-for-dinner/src/lib/index.ts:69 - AutonomousAction
+whats-for-dinner/src/lib/index.ts:70 - AgentConfig
+whats-for-dinner/src/lib/index.ts:70 - AgentAction
+whats-for-dinner/src/lib/index.ts:70 - AgentMemory
+whats-for-dinner/src/lib/logger.ts:316 - useLogger
+whats-for-dinner/src/lib/logger.ts:4 - LogEntry (used in module)
+whats-for-dinner/src/lib/logger.ts:17 - ErrorReport (used in module)
+whats-for-dinner/src/lib/loggingAnalyticsSystem.ts:15 - ErrorEvent (used in module)
+whats-for-dinner/src/lib/loggingAnalyticsSystem.ts:30 - UserEvent (used in module)
+whats-for-dinner/src/lib/loggingAnalyticsSystem.ts:52 - PerformanceEvent (used in module)
+whats-for-dinner/src/lib/loggingAnalyticsSystem.ts:64 - SessionReplay (used in module)
+whats-for-dinner/src/lib/loggingAnalyticsSystem.ts:82 - AnalyticsConfig (used in module)
+whats-for-dinner/src/lib/loggingAnalyticsSystem.ts:108 - LoggingReport (used in module)
+whats-for-dinner/src/lib/loggingAnalyticsSystem.ts:128 - LoggingAnalyticsSystem (used in module)
+whats-for-dinner/src/lib/loggingAnalyticsSystem.ts:702 - loggingAnalyticsSystem
+whats-for-dinner/src/lib/marketingAutomation.ts:7 - EmailTemplate (used in module)
+whats-for-dinner/src/lib/marketingAutomation.ts:18 - EmailCampaign (used in module)
+whats-for-dinner/src/lib/marketingAutomation.ts:42 - MarketingAutomation
+whats-for-dinner/src/lib/modelAdvisor.ts:4 - ModelRecommendation (used in module)
+whats-for-dinner/src/lib/modelAdvisor.ts:15 - ModelPerformance (used in module)
+whats-for-dinner/src/lib/modelAdvisor.ts:26 - ModelAdvisor (used in module)
+whats-for-dinner/src/lib/modelAdvisor.ts:486 - modelAdvisor
+whats-for-dinner/src/lib/monetizationSystem.ts:16 - AffiliatePartner (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:29 - DeliveryPartner (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:39 - GroceryPartner (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:48 - CookingSuppliesPartner
+whats-for-dinner/src/lib/monetizationSystem.ts:55 - SubscriptionPartner
+whats-for-dinner/src/lib/monetizationSystem.ts:62 - SubscriptionTier (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:72 - AffiliateLink (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:88 - GroceryDeal (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:110 - ChefPartnership (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:126 - ChefContent (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:145 - LicensingInfo (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:155 - Subscription (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:171 - RevenueTransaction (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:184 - RevenueAnalytics (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:198 - MonetizationConfig (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:211 - MonetizationSystem (used in module)
+whats-for-dinner/src/lib/monetizationSystem.ts:1003 - monetizationSystem
+whats-for-dinner/src/lib/monitoring.ts:712 - recordAPIMetric
+whats-for-dinner/src/lib/monitoring.ts:739 - recordAIMetric
+whats-for-dinner/src/lib/monitoring.ts:751 - recordSecurityMetric
+whats-for-dinner/src/lib/observability.ts:724 - withTrace
+whats-for-dinner/src/lib/observability.ts:753 - withSpan
+whats-for-dinner/src/lib/observability.ts:773 - trackError (used in module)
+whats-for-dinner/src/lib/observabilityAudit.ts:115 - ObservabilityAudit (used in module)
+whats-for-dinner/src/lib/openaiClient.ts:17 - Recipe
+whats-for-dinner/src/lib/openaiService.ts:27 - generateRecipes (used in module)
+whats-for-dinner/src/lib/openaiService.ts:290 - generateRecipesWithFallback
+whats-for-dinner/src/lib/performanceOptimizationSystem.ts:15 - QueryAnalysis (used in module)
+whats-for-dinner/src/lib/performanceOptimizationSystem.ts:27 - CacheStrategy (used in module)
+whats-for-dinner/src/lib/performanceOptimizationSystem.ts:37 - PerformanceMetrics (used in module)
+whats-for-dinner/src/lib/performanceOptimizationSystem.ts:55 - OptimizationRecommendation (used in module)
+whats-for-dinner/src/lib/performanceOptimizationSystem.ts:68 - PerformanceOptimizationSystem (used in module)
+whats-for-dinner/src/lib/performanceOptimizer.ts:552 - measurePerformance
+whats-for-dinner/src/lib/performanceOptimizer.ts:578 - measureBundleSize
+whats-for-dinner/src/lib/predictiveOptimization.ts:61 - OptimizationRecommendation (used in module)
+whats-for-dinner/src/lib/predictiveOptimization.ts:78 - PredictiveOptimization (used in module)
+whats-for-dinner/src/lib/queryClient.ts:3 - queryClient
+whats-for-dinner/src/lib/realTimeAnalytics.ts:15 - AnalyticsEvent (used in module)
+whats-for-dinner/src/lib/realTimeAnalytics.ts:28 - UserSession (used in module)
+whats-for-dinner/src/lib/realTimeAnalytics.ts:52 - ConversionFunnel (used in module)
+whats-for-dinner/src/lib/realTimeAnalytics.ts:60 - FunnelStep (used in module)
+whats-for-dinner/src/lib/realTimeAnalytics.ts:69 - DropOffPoint (used in module)
+whats-for-dinner/src/lib/realTimeAnalytics.ts:562 - realTimeAnalytics
+whats-for-dinner/src/lib/realTimeAnalytics.ts:565 - RealTimeAnalytics (used in module)
+whats-for-dinner/src/lib/secretsIntelligence.ts:97 - SecretsIntelligence (used in module)
+whats-for-dinner/src/lib/secretsManager.ts:14 - SecretConfig (used in module)
+whats-for-dinner/src/lib/secretsManager.ts:22 - SecretValue (used in module)
+whats-for-dinner/src/lib/secretsManager.ts:468 - SecretsManager (used in module)
+whats-for-dinner/src/lib/securityValidation.ts:17 - SecurityConfig (used in module)
+whats-for-dinner/src/lib/securityValidation.ts:27 - SecurityViolation (used in module)
+whats-for-dinner/src/lib/securityValidation.ts:556 - SecurityValidator (used in module)
+whats-for-dinner/src/lib/socialAutomator.ts:4 - SocialPost (used in module)
+whats-for-dinner/src/lib/socialAutomator.ts:23 - TrendingTheme (used in module)
+whats-for-dinner/src/lib/socialAutomator.ts:32 - ContentStrategy (used in module)
+whats-for-dinner/src/lib/socialAutomator.ts:40 - SocialAutomator
+whats-for-dinner/src/lib/stripe.ts:7 - stripe (used in module)
+whats-for-dinner/src/lib/stripe.ts:12 - STRIPE_CONFIG (used in module)
+whats-for-dinner/src/lib/stripe.ts:63 - PlanType (used in module)
+whats-for-dinner/src/lib/stripe.ts:65 - CreateCheckoutSessionParams (used in module)
+whats-for-dinner/src/lib/stripe.ts:73 - CreateCustomerPortalSessionParams (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:16 - TestResult (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:32 - TestCoverage (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:41 - PerformanceMetrics (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:51 - TestSuite (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:62 - TestConfig (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:78 - LoadTestConfig (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:87 - LoadTestScenario (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:93 - LoadTestRequest (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:102 - TestReport (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:118 - FlakyTestAnalysis (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:126 - TestingSuiteSystem (used in module)
+whats-for-dinner/src/lib/testingSuiteSystem.ts:822 - testingSuiteSystem
+whats-for-dinner/src/lib/theme.ts:23 - ThemeProvider
+whats-for-dinner/src/lib/theme.ts:88 - useTheme (used in module)
+whats-for-dinner/src/lib/theme.ts:145 - applyThemeVariables
+whats-for-dinner/src/lib/theme.ts:155 - ThemeToggle
+whats-for-dinner/src/lib/theme.ts:181 - ThemeSelector
+whats-for-dinner/src/lib/theme.ts:201 - useDarkMode
+whats-for-dinner/src/lib/theme.ts:207 - cn
+whats-for-dinner/src/lib/theme.ts:97 - themeVariables (used in module)
+whats-for-dinner/src/lib/theme.ts:212 - darkModeClasses
+whats-for-dinner/src/lib/theme.ts:224 - themeConfig
+whats-for-dinner/src/lib/ugcGrowth.ts:3 - UGCShare (used in module)
+whats-for-dinner/src/lib/ugcGrowth.ts:43 - MealCard (used in module)
+whats-for-dinner/src/lib/ugcGrowth.ts:63 - ShareAnalytics (used in module)
+whats-for-dinner/src/lib/ugcGrowth.ts:73 - UGCGrowth
+whats-for-dinner/src/lib/uiEnhancementSystem.ts:15 - ThemeConfig (used in module)
+whats-for-dinner/src/lib/uiEnhancementSystem.ts:72 - AnimationConfig (used in module)
+whats-for-dinner/src/lib/uiEnhancementSystem.ts:81 - MicroInteraction (used in module)
+whats-for-dinner/src/lib/uiEnhancementSystem.ts:92 - PWAConfig (used in module)
+whats-for-dinner/src/lib/uiEnhancementSystem.ts:102 - ResponsiveBreakpoint (used in module)
+whats-for-dinner/src/lib/uiEnhancementSystem.ts:110 - UIEnhancementReport (used in module)
+whats-for-dinner/src/lib/uiEnhancementSystem.ts:136 - UIEnhancementSystem (used in module)
+whats-for-dinner/src/lib/uiEnhancementSystem.ts:790 - uiEnhancementSystem
+whats-for-dinner/src/lib/utils.ts:4 - cn
+whats-for-dinner/src/lib/utils.ts:8 - formatDate (used in module)
+whats-for-dinner/src/lib/utils.ts:16 - formatTime
+whats-for-dinner/src/lib/utils.ts:23 - formatRelativeTime
+whats-for-dinner/src/lib/utils.ts:52 - debounce
+whats-for-dinner/src/lib/utils.ts:63 - throttle
+whats-for-dinner/src/lib/utils.ts:77 - generateId
+whats-for-dinner/src/lib/utils.ts:81 - capitalize
+whats-for-dinner/src/lib/utils.ts:85 - truncate
+whats-for-dinner/src/lib/utils.ts:90 - isValidEmail
+whats-for-dinner/src/lib/utils.ts:95 - sleep
+whats-for-dinner/src/lib/validation.ts:17 - GenerateRecipesRequestSchema (used in module)
+whats-for-dinner/src/lib/validation.ts:25 - PantryItemSchema (used in module)
+whats-for-dinner/src/lib/validation.ts:31 - UserProfileSchema (used in module)
+whats-for-dinner/src/lib/validation.ts:37 - EnvSchema (used in module)
+whats-for-dinner/src/lib/validation.ts:76 - GenerateRecipesRequest
+whats-for-dinner/src/lib/validation.ts:79 - PantryItem
+whats-for-dinner/src/lib/validation.ts:80 - UserProfile
+whats-for-dinner/src/lib/workflowManager.ts:8 - WorkflowStep (used in module)
+whats-for-dinner/src/lib/workflowManager.ts:18 - Workflow (used in module)
+whats-for-dinner/src/lib/workflowManager.ts:716 - workflowManager
+whats-for-dinner/src/observability/index.ts:38 - initializeObservability (used in module)
+whats-for-dinner/src/observability/index.ts:55 - shutdownObservability (used in module)
+whats-for-dinner/src/observability/index.ts:69 - getObservabilityHealth (used in module)
+whats-for-dinner/src/observability/index.ts:7 - logger (used in module)
+whats-for-dinner/src/observability/index.ts:7 - createLogger
+whats-for-dinner/src/observability/index.ts:7 - requestLogger
+whats-for-dinner/src/observability/index.ts:8 - LogLevel
+whats-for-dinner/src/observability/index.ts:8 - LogContext
+whats-for-dinner/src/observability/index.ts:8 - LogEntry
+whats-for-dinner/src/observability/index.ts:11 - tracer
+whats-for-dinner/src/observability/index.ts:12 - createSpan
+whats-for-dinner/src/observability/index.ts:13 - withSpan
+whats-for-dinner/src/observability/index.ts:14 - withSpanSync
+whats-for-dinner/src/observability/index.ts:15 - addSpanAttributes
+whats-for-dinner/src/observability/index.ts:16 - addSpanEvent
+whats-for-dinner/src/observability/index.ts:17 - getCurrentSpanContext
+whats-for-dinner/src/observability/index.ts:18 - withDatabaseSpan
+whats-for-dinner/src/observability/index.ts:19 - withHttpSpan
+whats-for-dinner/src/observability/index.ts:20 - withBusinessSpan
+whats-for-dinner/src/observability/index.ts:21 - withAISpan
+whats-for-dinner/src/observability/index.ts:22 - shutdownTracing (used in module)
+whats-for-dinner/src/observability/index.ts:24 - SpanContext
+whats-for-dinner/src/observability/index.ts:24 - SpanOptions
+whats-for-dinner/src/observability/index.ts:27 - counters
+whats-for-dinner/src/observability/index.ts:28 - histograms
+whats-for-dinner/src/observability/index.ts:29 - gauges
+whats-for-dinner/src/observability/index.ts:30 - record (used in module)
+whats-for-dinner/src/observability/index.ts:31 - recordMetric
+whats-for-dinner/src/observability/index.ts:32 - recordPerformance
+whats-for-dinner/src/observability/index.ts:33 - shutdownMetrics (used in module)
+whats-for-dinner/src/observability/index.ts:35 - MetricLabels
+whats-for-dinner/src/observability/index.ts:81 - default
+whats-for-dinner/src/observability/logger.ts:289 - default
+whats-for-dinner/src/observability/metrics.ts:270 - meter (used in module)
+whats-for-dinner/src/observability/metrics.ts:270 - meterProvider (used in module)
+whats-for-dinner/src/observability/metrics.ts:271 - default
+whats-for-dinner/src/observability/tracing.ts:227 - sdk (used in module)
+whats-for-dinner/src/observability/tracing.ts:228 - default
+whats-for-dinner/src/utils/commandRunner.ts:8 - CommandResult (used in module)
+whats-for-dinner/src/utils/commandRunner.ts:16 - CommandRunner (used in module)
+apps/mobile/src/hooks/useRecipes.ts:67 - useRecipes
+nomad/packages/analytics/src/index.ts:92 - sanitizeEvent
+nomad/packages/analytics/src/index.ts:116 - shouldSample
+nomad/packages/analytics/src/index.ts:125 - validateEvent
+nomad/packages/analytics/src/index.ts:3 - EventName
+nomad/packages/analytics/src/index.ts:31 - BaseEvent
+nomad/packages/analytics/src/index.ts:38 - MealAddedEvent
+nomad/packages/analytics/src/index.ts:48 - MealPlanGeneratedEvent
+nomad/packages/analytics/src/index.ts:57 - PremiumUpsellViewedEvent
+nomad/packages/analytics/src/index.ts:65 - AdImpressionEvent
+nomad/packages/analytics/src/index.ts:74 - AnalyticsEvent
+nomad/packages/analytics/src/index.ts:111 - SamplingConfig
+nomad/packages/analytics/src/index.ts:5 - ConsentState
+nomad/packages/analytics/src/index.ts:11 - AnalyticsGovernance
+nomad/packages/analytics/src/index.ts:84 - analyticsGovernance
+nomad/packages/config/src/index.ts:3 - houseAds
+nomad/packages/config/src/index.ts:28 - mergeFlags
+nomad/packages/config/src/index.ts:38 - isFeatureEnabled
+nomad/packages/config/src/index.ts:1 - FeatureFlags
+nomad/packages/config/src/index.ts:12 - defaultFlags
+nomad/packages/config/src/index.ts:23 - RemoteConfig
+nomad/packages/config/src/index.ts:147 - getSeasonalTheme
+nomad/packages/config/src/index.ts:166 - getThemeTokens
+nomad/packages/config/src/index.ts:175 - toRNColors
+nomad/packages/config/src/index.ts:185 - toWebColors
+nomad/packages/config/src/index.ts:1 - ThemeMode
+nomad/packages/config/src/index.ts:2 - Season
+nomad/packages/config/src/index.ts:4 - ColorPalette
+nomad/packages/config/src/index.ts:19 - ThemeTokens
+nomad/packages/config/src/index.ts:96 - lightTheme
+nomad/packages/config/src/index.ts:116 - darkTheme
+nomad/packages/data/src/index.ts:3 - AuditFieldsSchema
+nomad/packages/data/src/index.ts:10 - AuditFields
+nomad/packages/data/src/index.ts:12 - SubscriptionPlanSchema
+nomad/packages/data/src/index.ts:13 - SubscriptionPlan
+nomad/packages/data/src/index.ts:15 - MemberRoleSchema
+nomad/packages/data/src/index.ts:16 - MemberRole
+nomad/packages/data/src/index.ts:18 - UserPreferencesSchema
+nomad/packages/data/src/index.ts:30 - UserSchema
+nomad/packages/data/src/index.ts:40 - User
+nomad/packages/data/src/index.ts:41 - UserPreferences
+nomad/packages/data/src/index.ts:43 - HouseholdSchema
+nomad/packages/data/src/index.ts:57 - Household
+nomad/packages/data/src/index.ts:59 - MealSlotSchema
+nomad/packages/data/src/index.ts:60 - MealSlot
+nomad/packages/data/src/index.ts:62 - MealItemSchema
+nomad/packages/data/src/index.ts:75 - MealPlanSchema
+nomad/packages/data/src/index.ts:83 - MealPlan
+nomad/packages/data/src/index.ts:84 - MealItem
+nomad/packages/data/src/index.ts:86 - RecipeSchema
+nomad/packages/data/src/index.ts:116 - Recipe
+nomad/packages/data/src/index.ts:118 - GroceryItemSchema
+nomad/packages/data/src/index.ts:128 - GroceryListSchema
+nomad/packages/data/src/index.ts:136 - GroceryList
+nomad/packages/data/src/index.ts:137 - GroceryItem
+nomad/packages/data/src/index.ts:139 - HealthMetricKindSchema
+nomad/packages/data/src/index.ts:150 - HealthMetricSchema
+nomad/packages/data/src/index.ts:161 - HealthMetric
+nomad/packages/data/src/index.ts:162 - HealthMetricKind
+nomad/packages/data/src/index.ts:164 - MessageAttachmentSchema
+nomad/packages/data/src/index.ts:171 - MessageSchema
+nomad/packages/data/src/index.ts:185 - Message
+nomad/packages/data/src/index.ts:187 - ChatRoomSchema
+nomad/packages/data/src/index.ts:196 - ChatRoom
+nomad/packages/data/src/index.ts:3 - v1
+nomad/packages/data/src/index.ts:1 - API_VERSION
+nomad/packages/data/src/index.ts:7 - endpoints
+nomad/packages/data/src/index.ts:81 - APIResponse
+nomad/packages/data/src/index.ts:90 - APIError
+nomad/packages/data/src/index.ts:96 - PaginatedResponse
+nomad/packages/data/src/index.ts:159 - createApiClient
+nomad/packages/data/src/index.ts:4 - ApiClientConfig
+nomad/packages/data/src/index.ts:1 - queryKeys
+nomad/packages/data/src/index.ts:209 - createBackgroundSyncTask
+nomad/packages/data/src/index.ts:3 - OfflineQueueItem
+nomad/packages/data/src/index.ts:12 - ConflictResolutionStrategy
+nomad/packages/data/src/index.ts:17 - OfflineSyncManager
+nomad/packages/data/src/index.ts:204 - BackgroundSyncConfig
+nomad/packages/i18n/src/index.ts:13 - initI18n
+nomad/packages/i18n/src/index.ts:35 - t
+nomad/packages/i18n/src/index.ts:64 - useT
+nomad/packages/i18n/src/index.ts:74 - formatDate
+nomad/packages/i18n/src/index.ts:83 - formatNumber
+nomad/packages/i18n/src/index.ts:89 - isRTL
+nomad/packages/i18n/src/index.ts:94 - getTextDirection
+nomad/packages/i18n/src/index.ts:7 - I18nConfig
+nomad/packages/i18n/src/index.ts:40 - TranslationKey
+nomad/packages/i18n/src/index.ts:1 - en
+nomad/packages/i18n/src/index.ts:1 - fr
+nomad/packages/i18n/src/index.ts:1 - ar
+nomad/packages/ui/src/index.ts:16 - AdSlot
+nomad/packages/ui/src/index.ts:6 - AdSlotProps
+nomad/packages/ui/src/index.ts:17 - Button
+nomad/packages/ui/src/index.ts:3 - ButtonProps
+apps/mobile/src/screens/SettingsPrivacy.tsx:12 - SettingsPrivacy
+apps/mobile/src/screens/SettingsSubscription.tsx:18 - SettingsSubscription
+ui/src/components/Card/Card.native.tsx:10 - Card
+ui/src/components/Card/Card.native.tsx:5 - CardProps (used in module)
+packages/server/src/analytics/revenue.ts:20 - RevenueMetrics (used in module)
+packages/server/src/audit/index.ts:16 - AuditLogEntry (used in module)
+packages/server/src/auth/admin.ts:113 - extractAdminToken (used in module)
+packages/server/src/auth/admin.ts:174 - requireAdminAuth
+packages/server/src/auth/admin.ts:192 - requireRole
+packages/server/src/auth/admin.ts:241 - generateTOTPSecret
+packages/server/src/auth/admin.ts:248 - verifyTOTP
+packages/server/src/auth/admin.ts:18 - AdminRole (used in module)
+packages/server/src/auth/admin.ts:20 - AdminAuthContext (used in module)
+packages/server/src/compliance/dsar.ts:12 - generateDataInventory
+packages/server/src/compliance/dsar.ts:60 - handleDSAR
+packages/server/src/compliance/dsar.ts:98 - redactLogs
+packages/server/src/controls/ccm.ts:290 - recordControlEvidence (used in module)
+packages/server/src/controls/ccm.ts:508 - getControlsDashboard
+packages/server/src/controls/ccm.ts:21 - ControlDefinition (used in module)
+packages/server/src/db/drizzle.config.ts:6 - default
+packages/server/src/db/schema.ts:5 - planEnum (used in module)
+packages/server/src/db/schema.ts:6 - roleEnum (used in module)
+packages/server/src/db/schema.ts:7 - recipeSourceEnum (used in module)
+packages/server/src/db/schema.ts:8 - healthMetricKindEnum (used in module)
+packages/server/src/db/schema.ts:9 - roomKindEnum (used in module)
+packages/server/src/db/schema.ts:27 - households (used in module)
+packages/server/src/db/schema.ts:36 - householdMembers (used in module)
+packages/server/src/db/schema.ts:106 - rooms (used in module)
+packages/server/src/db/schema.ts:116 - messages
+packages/server/src/db/schema.ts:138 - adImpressions
+packages/server/src/db/schema.ts:159 - apiKeys (used in module)
+packages/server/src/db/schema.ts:180 - usersRelations
+packages/server/src/db/schema.ts:188 - householdsRelations
+packages/server/src/db/schema.ts:196 - mealPlansRelations
+packages/server/src/db/schema.ts:206 - emailSubscriptionStatusEnum (used in module)
+packages/server/src/db/schema.ts:207 - referralStatusEnum (used in module)
+packages/server/src/db/schema.ts:208 - promoOfferKindEnum (used in module)
+packages/server/src/db/schema.ts:209 - promoDurationEnum (used in module)
+packages/server/src/db/schema.ts:210 - experimentStatusEnum (used in module)
+packages/server/src/db/schema.ts:211 - pricingPlatformEnum (used in module)
+packages/server/src/db/schema.ts:212 - pricingPlanEnum (used in module)
+packages/server/src/db/schema.ts:215 - emailSubscriptions
+packages/server/src/db/schema.ts:397 - referralProgramsRelations
+packages/server/src/db/schema.ts:402 - referralCodesRelations
+packages/server/src/db/schema.ts:408 - referralsRelations
+packages/server/src/db/schema.ts:415 - experimentsRelations
+packages/server/src/db/schema.ts:421 - experimentVariantsRelations
+packages/server/src/db/schema.ts:425 - experimentAssignmentsRelations
+packages/server/src/db/schema.ts:435 - transactionStatusEnum (used in module)
+packages/server/src/db/schema.ts:436 - transactionPlatformEnum (used in module)
+packages/server/src/db/schema.ts:437 - ltvSegmentEnum (used in module)
+packages/server/src/db/schema.ts:550 - partnerStatusEnum (used in module)
+packages/server/src/db/schema.ts:551 - partnerTierEnum (used in module)
+packages/server/src/db/schema.ts:552 - catalogFeedSourceEnum (used in module)
+packages/server/src/db/schema.ts:554 - campaignKindEnum (used in module)
+packages/server/src/db/schema.ts:555 - campaignStatusEnum (used in module)
+packages/server/src/db/schema.ts:556 - creativeKindEnum (used in module)
+packages/server/src/db/schema.ts:557 - creativeStatusEnum (used in module)
+packages/server/src/db/schema.ts:558 - partnerLinkKindEnum (used in module)
+packages/server/src/db/schema.ts:559 - attributionModelEnum (used in module)
+packages/server/src/db/schema.ts:560 - payoutStatusEnum (used in module)
+packages/server/src/db/schema.ts:561 - fraudRelatedKindEnum (used in module)
+packages/server/src/db/schema.ts:778 - fraudSignals
+packages/server/src/db/schema.ts:793 - partnersRelations
+packages/server/src/db/schema.ts:804 - campaignsRelations
+packages/server/src/db/schema.ts:812 - catalogFeedsRelations
+packages/server/src/db/schema.ts:816 - catalogItemsRelations
+packages/server/src/db/schema.ts:820 - creativesRelations
+packages/server/src/db/schema.ts:824 - clicksRelations
+packages/server/src/db/schema.ts:830 - conversionsRelations
+packages/server/src/db/schema.ts:841 - adminRoleEnum (used in module)
+packages/server/src/db/schema.ts:842 - adminStatusEnum (used in module)
+packages/server/src/db/schema.ts:843 - moderationEntityKindEnum (used in module)
+packages/server/src/db/schema.ts:844 - moderationPriorityEnum (used in module)
+packages/server/src/db/schema.ts:845 - moderationStatusEnum (used in module)
+packages/server/src/db/schema.ts:846 - incidentSeverityEnum (used in module)
+packages/server/src/db/schema.ts:847 - incidentStatusEnum (used in module)
+packages/server/src/db/schema.ts:848 - dataAccessActionEnum (used in module)
+packages/server/src/db/schema.ts:928 - dataAccessLogs (used in module)
+packages/server/src/db/schema.ts:958 - adminUsersRelations
+packages/server/src/db/schema.ts:965 - auditLogsRelations
+packages/server/src/db/schema.ts:969 - moderationQueueRelations
+packages/server/src/db/schema.ts:973 - incidentsRelations
+packages/server/src/db/schema.ts:977 - dataAccessLogsRelations
+packages/server/src/db/schema.ts:987 - dsarRequestTypeEnum (used in module)
+packages/server/src/db/schema.ts:988 - dsarRequestStatusEnum (used in module)
+packages/server/src/db/schema.ts:989 - dsarChannelEnum (used in module)
+packages/server/src/db/schema.ts:990 - dsarRegionEnum (used in module)
+packages/server/src/db/schema.ts:991 - dsarArtifactKindEnum (used in module)
+packages/server/src/db/schema.ts:992 - lawfulBasisEnum (used in module)
+packages/server/src/db/schema.ts:993 - riskCategoryEnum (used in module)
+packages/server/src/db/schema.ts:994 - riskSeverityEnum (used in module)
+packages/server/src/db/schema.ts:995 - riskLikelihoodEnum (used in module)
+packages/server/src/db/schema.ts:996 - riskStatusEnum (used in module)
+packages/server/src/db/schema.ts:997 - controlFrameworkEnum (used in module)
+packages/server/src/db/schema.ts:998 - controlFrequencyEnum (used in module)
+packages/server/src/db/schema.ts:999 - evidenceKindEnum (used in module)
+packages/server/src/db/schema.ts:1000 - controlStatusEnum (used in module)
+packages/server/src/db/schema.ts:1001 - controlResultEnum (used in module)
+packages/server/src/db/schema.ts:1002 - vendorCategoryEnum (used in module)
+packages/server/src/db/schema.ts:1003 - vendorRiskLevelEnum (used in module)
+packages/server/src/db/schema.ts:1004 - vendorStatusEnum (used in module)
+packages/server/src/db/schema.ts:1005 - residualRiskEnum (used in module)
+packages/server/src/db/schema.ts:1006 - dpiaDecisionEnum (used in module)
+packages/server/src/db/schema.ts:1007 - regulatoryRegionEnum (used in module)
+packages/server/src/db/schema.ts:1147 - dpiaRecords (used in module)
+packages/server/src/db/schema.ts:1193 - dsarRequestsRelations
+packages/server/src/db/schema.ts:1198 - dsarArtifactsRelations
+packages/server/src/db/schema.ts:1202 - processingActivitiesRelations
+packages/server/src/db/schema.ts:1206 - controlsRelations
+packages/server/src/db/schema.ts:1210 - controlEvidenceRelations
+packages/server/src/db/schema.ts:1214 - dpiaRecordsRelations
+packages/server/src/db/schema.ts:1223 - monitoringScopeEnum (used in module)
+packages/server/src/db/schema.ts:1224 - telemetryEventTypeEnum (used in module)
+packages/server/src/db/schema.ts:1225 - transparencyLogActionEnum (used in module)
+packages/server/src/db/schema.ts:1228 - privacyPrefs (used in module)
+packages/server/src/db/schema.ts:1243 - appAllowlist (used in module)
+packages/server/src/db/schema.ts:1259 - signalToggles (used in module)
+packages/server/src/db/schema.ts:1274 - telemetryEvents (used in module)
+packages/server/src/db/schema.ts:1292 - privacyTransparencyLog (used in module)
+packages/server/src/db/schema.ts:1311 - mfaEnforcedSessions (used in module)
+packages/server/src/db/schema.ts:1326 - privacyPrefsRelations
+packages/server/src/db/schema.ts:1335 - appAllowlistRelations
+packages/server/src/db/schema.ts:1339 - signalTogglesRelations
+packages/server/src/db/schema.ts:1343 - telemetryEventsRelations
+packages/server/src/db/schema.ts:1347 - privacyTransparencyLogRelations
+packages/server/src/db/schema.ts:1352 - mfaEnforcedSessionsRelations
+packages/server/src/experiments/service.ts:236 - checkGuardrails (used in module)
+packages/server/src/experiments/service.ts:303 - getExperimentStats
+packages/server/src/experiments/service.ts:341 - calculateMinSampleSize
+packages/server/src/experiments/service.ts:13 - ExperimentAssignment (used in module)
+packages/server/src/experiments/service.ts:19 - GuardrailCheck
+packages/server/src/incidents/automation.ts:43 - detectErrorRateSpike
+packages/server/src/incidents/automation.ts:79 - detectSLOViolations (used in module)
+packages/server/src/incidents/automation.ts:121 - detectHealthCheckFailures (used in module)
+packages/server/src/incidents/automation.ts:164 - createIncidentFromTrigger (used in module)
+packages/server/src/incidents/automation.ts:275 - runIncidentDetection
+packages/server/src/incidents/automation.ts:307 - autoUpdateIncidentTimeline
+packages/server/src/incidents/automation.ts:334 - getDefaultConfig
+packages/server/src/incidents/automation.ts:22 - IncidentTrigger (used in module)
+packages/server/src/incidents/automation.ts:31 - AutoIncidentConfig (used in module)
+packages/server/src/incidents/service.ts:309 - generateWeeklyDigest
+packages/server/src/incidents/service.ts:13 - CreateIncidentInput (used in module)
+packages/server/src/incidents/service.ts:20 - UpdateIncidentInput (used in module)
+packages/server/src/incidents/service.ts:25 - TimelineEntry (used in module)
+packages/server/src/jobs/elasticityModel.ts:98 - computeElasticityModels
+packages/server/src/jobs/priceOptimizer.ts:132 - optimizePrices
+packages/server/src/jobs/revenueAggregator.ts:17 - dailyRevenueAggregation
+packages/server/src/jobs/revenueAggregator.ts:38 - weeklyLTVSegmentation
+packages/server/src/jobs/vanWestendorpModel.ts:60 - updateVanWestendorpPricing
+packages/server/src/jobs/weeklyGuardianReport.ts:10 - generateWeeklyReports (used in module)
+packages/server/src/journeys/engine.ts:311 - processJourney (used in module)
+packages/server/src/journeys/engine.ts:413 - triggerJourneyStep
+packages/server/src/journeys/engine.ts:14 - JourneyRule (used in module)
+packages/server/src/journeys/engine.ts:20 - JourneyStep (used in module)
+packages/server/src/journeys/engine.ts:28 - UserContext (used in module)
+packages/server/src/journeys/engine.ts:36 - JourneyState (used in module)
+packages/server/src/journeys/engine.ts:48 - builtInJourneys (used in module)
+packages/server/src/observability/cost-tracker.ts:19 - getCostConfig (used in module)
+packages/server/src/observability/cost-tracker.ts:10 - CostConfig (used in module)
+packages/server/src/observability/cost-tracker.ts:34 - CostTracker (used in module)
+packages/server/src/observability/cost-tracker.ts:68 - costTracker
+packages/server/src/observability/health.ts:183 - registerHealthRoutes
+packages/server/src/observability/health.ts:225 - runHealthCheck
+packages/server/src/observability/health.ts:18 - HealthCheckResult (used in module)
+packages/server/src/observability/health.ts:29 - ServiceHealth (used in module)
+packages/server/src/observability/otel.ts:42 - initOpenTelemetrySDK
+packages/server/src/observability/otel.ts:142 - getTracer (used in module)
+packages/server/src/observability/otel.ts:149 - getMeter (used in module)
+packages/server/src/observability/otel.ts:156 - shutdownOpenTelemetry
+packages/server/src/observability/otel.ts:171 - withSpan
+packages/server/src/observability/otel.ts:29 - OTELConfig (used in module)
+packages/server/src/observability/slo.ts:64 - initSLOMetrics
+packages/server/src/observability/slo.ts:102 - recordAvailabilitySuccess
+packages/server/src/observability/slo.ts:110 - recordAvailabilityFailure
+packages/server/src/observability/slo.ts:117 - recordLatency
+packages/server/src/observability/slo.ts:126 - recordError
+packages/server/src/observability/slo.ts:133 - calculateSLOStatus (used in module)
+packages/server/src/observability/slo.ts:185 - exportSLOSummary
+packages/server/src/observability/slo.ts:15 - SLOTarget (used in module)
+packages/server/src/observability/slo.ts:22 - SLOStatus (used in module)
+packages/server/src/observability/telemetry.ts:12 - initializeObservability (used in module)
+packages/server/src/observability/telemetry.ts:52 - default
+packages/server/src/partners/integrations.ts:16 - validatePartnerWebhook
+packages/server/src/partners/integrations.ts:7 - PartnerWebhookSchema (used in module)
+packages/server/src/partners/integrations.ts:14 - PartnerWebhook (used in module)
+packages/server/src/partners/integrations.ts:20 - PartnerIntegration (used in module)
+packages/server/src/partners/integrations.ts:27 - partnerIntegrations
+packages/server/src/partners/links.ts:123 - resolveLinkToken
+packages/server/src/partners/links.ts:201 - verifySignedUrl
+packages/server/src/partners/links.ts:17 - LinkParams (used in module)
+packages/server/src/partners/links.ts:26 - SignedLink (used in module)
+packages/server/src/payments/index.ts:33 - verifyAppleReceipt
+packages/server/src/payments/index.ts:8 - AppleReceiptVerificationRequest
+packages/server/src/payments/index.ts:15 - AppleSubscriptionStatus
+packages/server/src/payments/index.ts:32 - verifyGooglePurchase
+packages/server/src/payments/index.ts:8 - GooglePurchaseVerificationRequest
+packages/server/src/payments/index.ts:14 - GoogleSubscriptionStatus
+packages/server/src/payments/stripe-webhook.ts:13 - handleStripeWebhook
+packages/server/src/payments/stripe-webhook.ts:11 - ENABLE_BILLING (used in module)
+packages/server/src/payouts/runner.ts:275 - runPayoutCycleHandler
+packages/server/src/pricing/engine.ts:17 - PriceRecommendation (used in module)
+packages/server/src/queue/health.ts:10 - QueueHealthStatus (used in module)
+packages/server/src/routes/experiments.ts:16 - GET_ASSIGNMENTS
+packages/server/src/routes/experiments.ts:62 - POST_EXPOSURE
+packages/server/src/routes/mealplan.ts:29 - GET
+packages/server/src/routes/mealplan.ts:63 - POST
+packages/server/src/routes/mealplan.ts:124 - aiGenerate
+packages/server/src/routes/partner.ts:76 - POST_AUTH_TOKEN
+packages/server/src/routes/partner.ts:112 - POST_CATALOG_SYNC
+packages/server/src/routes/partner.ts:261 - POST_CAMPAIGNS
+packages/server/src/routes/partner.ts:309 - GET_CAMPAIGNS
+packages/server/src/routes/partner.ts:345 - POST_LINKS
+packages/server/src/routes/partner.ts:387 - GET_REPORTS_SUMMARY
+packages/server/src/routes/partner.ts:485 - GET_PAYOUTS
+packages/server/src/routes/partnerConvert.ts:32 - POST
+packages/server/src/routes/partnerWebhook.ts:10 - POST
+packages/server/src/routes/paymentsVerify.ts:29 - POST
+packages/server/src/routes/paywall.ts:228 - POST_IMPRESSION
+packages/server/src/routes/paywall.ts:260 - POST_CTA
+packages/server/src/routes/pricing.ts:62 - GET_CURRENT
+packages/server/src/routes/pricing.ts:95 - POST_SURVEY
+packages/server/src/routes/pricing.ts:160 - GET_REVENUE_SUMMARY
+packages/server/src/routes/pricing.ts:213 - GET_ELASTICITY
+packages/server/src/routes/pricing.ts:272 - POST_PRICE_EXPERIMENT
+packages/server/src/routes/privacy.dsar.ts:97 - POST
+packages/server/src/routes/privacy.dsar.ts:163 - verifyDSAR
+packages/server/src/routes/privacy.dsar.ts:231 - getMyDSARs
+packages/server/src/routes/privacy.dsar.ts:272 - fulfillDSAR
+packages/server/src/routes/privacy.dsar.ts:328 - eraseDSAR
+packages/server/src/routes/referrals.ts:61 - POST_PROGRAMS
+packages/server/src/routes/reports.regulatory.ts:32 - generateRegulatoryReport (used in module)
+packages/server/src/routes/reports.regulatory.ts:226 - GET
+packages/server/src/routes/reports.regulatory.ts:258 - generateReport
+packages/server/src/routes/reports.regulatory.ts:291 - downloadReport
+packages/server/src/routes/vendors.ts:43 - GET
+packages/server/src/routes/vendors.ts:82 - POST
+packages/server/src/routes/vendors.ts:127 - PUT
+packages/server/src/routes/vendors.ts:194 - DELETE
+packages/server/src/routes/vendors.ts:260 - getVendor
+packages/server/src/security/helmet.ts:21 - securityHeadersMiddleware
+packages/server/src/security/llm-guardrails.ts:7 - LLMCallOptions (used in module)
+packages/server/src/security/llm-guardrails.ts:14 - LLMGuardrails (used in module)
+packages/server/src/security/llm-guardrails.ts:103 - llmGuardrails
+packages/utils/src/guardian/index.ts:6 - DataScope
+packages/utils/src/guardian/index.ts:7 - DataClass
+packages/utils/src/guardian/index.ts:8 - RiskLevel
+packages/utils/src/guardian/index.ts:9 - ResponseAction
+packages/utils/src/guardian/index.ts:11 - GuardianEvent
+packages/utils/src/guardian/index.ts:34 - RiskAssessment
+packages/utils/src/guardian/index.ts:47 - TrustReport
+packages/utils/src/guardian/index.ts:74 - PolicyConfig
+packages/utils/src/guardian/index.ts:95 - TrustFabricModel
+packages/utils/src/guardian/index.ts:114 - GuardianLedgerEntry
+packages/utils/src/guardian/index.ts:20 - Guardian
+packages/utils/src/guardian/index.ts:10 - GuardianInspector
+packages/utils/src/guardian/index.ts:132 - createGuardianMiddleware
+packages/utils/src/guardian/index.ts:9 - TelemetryEvent
+packages/utils/src/guardian/index.ts:19 - GuardianMiddleware
+packages/utils/src/guardian/index.ts:10 - UserBehavior
+packages/utils/src/guardian/index.ts:17 - TrustFabricAI
+packages/utils/src/guardian/index.ts:9 - PrivacyState
+packages/utils/src/guardian/index.ts:17 - PrivacyInsurance
+packages/utils/src/guardian/index.ts:9 - ExplanationRequest
+packages/utils/src/guardian/index.ts:19 - GuardianGPT
+packages/utils/src/guardian/index.ts:15 - withGuardian
+packages/utils/src/guardian/index.ts:69 - useGuardian
+packages/utils/src/guardian/index.ts:116 - guardServerAction
+packages/utils/src/guardian/index.ts:152 - useExplainability
+packages/utils/src/guardian/index.ts:183 - GuardianBatchProcessor
+packages/utils/src/guardian/index.ts:254 - guardianManager
+packages/utils/src/guardian/index.ts:14 - OptimizedGuardian
+packages/utils/src/guardian/index.ts:54 - BatchLedgerWriter
+packages/utils/src/guardian/index.ts:130 - OptimizedInspector
+packages/utils/src/guardian/index.ts:169 - CompressedLedgerWriter
+packages/utils/src/guardian/index.ts:204 - GuardianPerformanceMonitor
+packages/utils/src/guardian/index.ts:268 - performanceMonitor
+apps/community-portal/src/app/layout.tsx:13 - default
+apps/community-portal/src/app/layout.tsx:8 - metadata
+apps/community-portal/src/app/page.tsx:9 - default
+apps/community-portal/src/components/community-events.tsx:80 - CommunityEvents
+apps/community-portal/src/components/community-header.tsx:16 - CommunityHeader
+apps/community-portal/src/components/community-stats.tsx:66 - CommunityStats
+apps/community-portal/src/components/featured-posts.tsx:64 - FeaturedPosts
+apps/community-portal/src/components/leaderboard.tsx:128 - Leaderboard
+apps/community-portal/src/components/recent-posts.tsx:93 - RecentPosts
+apps/community-portal/src/lib/utils.ts:4 - cn
+apps/web/src/app/layout.tsx:144 - default (used in module)
+apps/web/src/app/layout.tsx:52 - metadata
+apps/web/src/app/sitemap.ts:3 - default
+apps/web/src/components/Analytics.tsx:8 - Analytics
+apps/web/src/components/Analytics.tsx:75 - trackEvent
+apps/web/src/components/Breadcrumb.tsx:16 - Breadcrumb
+apps/web/src/components/CacheRefresh.tsx:5 - default
+apps/web/src/components/CapacitorInit.tsx:6 - CapacitorInit
+apps/web/src/components/CoreWebVitals.tsx:100 - CoreWebVitals
+apps/web/src/components/EmailCapture.tsx:20 - default
+apps/web/src/components/EmptyStateGuide.tsx:16 - default
+apps/web/src/components/ErrorBoundary.tsx:17 - ErrorBoundary
+apps/web/src/components/GDPRConsent.tsx:13 - GDPRConsent
+apps/web/src/components/GroceryIntegration.tsx:16 - default
+apps/web/src/components/LeadMagnet.tsx:22 - LeadMagnet
+apps/web/src/components/LoadingState.tsx:11 - LoadingState
+apps/web/src/components/LoadingState.tsx:31 - SkeletonLoader
+apps/web/src/components/LoadingState.tsx:42 - CardSkeleton
+apps/web/src/components/Navbar.tsx:26 - default
+apps/web/src/components/OnboardingChecklist.tsx:23 - default
+apps/web/src/components/OnboardingFlow.tsx:34 - default
+apps/web/src/components/PantryExpirationWidget.tsx:18 - default
+apps/web/src/components/Paywall.tsx:12 - default
+apps/web/src/components/PerformanceDashboard.tsx:68 - PerformanceDashboard
+apps/web/src/components/PerformanceHUD.tsx:12 - default
+apps/web/src/components/PWAInstaller.tsx:10 - default
+apps/web/src/components/ReferralProgram.tsx:20 - default
+apps/web/src/components/ShareableMealCard.tsx:25 - default
+apps/web/src/components/SkeletonLoader.tsx:8 - SkeletonLoader
+apps/web/src/components/SkeletonLoader.tsx:12 - RecipeCardSkeleton
+apps/web/src/components/SkeletonLoader.tsx:38 - PantryItemSkeleton
+apps/web/src/components/SkeletonLoader.tsx:54 - InputPromptSkeleton
+apps/web/src/components/SkeletonLoader.tsx:87 - NavbarSkeleton
+apps/web/src/components/SocialShare.tsx:18 - default
+apps/web/src/components/StoreListing.tsx:9 - AppStoreListing
+apps/web/src/components/StoreListing.tsx:54 - generateAppStoreMetadata
+apps/web/src/components/StructuredData.tsx:69 - WebsiteStructuredData
+apps/web/src/components/StructuredData.tsx:103 - OrganizationStructuredData
+apps/web/src/components/StructuredData.tsx:133 - BreadcrumbStructuredData
+apps/web/src/components/SubscriptionManager.tsx:18 - SubscriptionManager
+apps/web/src/components/ThemeProvider.tsx:17 - ThemeProvider
+apps/web/src/components/ThemeToggle.tsx:6 - ThemeToggle
+apps/web/src/components/TrustFooterLinks.tsx:10 - TrustFooterLinks
+apps/web/src/hooks/useFavorites.ts:11 - useFavorites
+apps/web/src/hooks/useFavorites.ts:47 - useAddToFavorites
+apps/web/src/hooks/useFavorites.ts:68 - useRemoveFavorite
+apps/web/src/hooks/usePantry.ts:6 - usePantryItems
+apps/web/src/hooks/usePantry.ts:28 - useAddPantryItem
+apps/web/src/hooks/usePantry.ts:59 - useUpdatePantryItem
+apps/web/src/hooks/usePantry.ts:81 - useDeletePantryItem
+apps/web/src/hooks/useRecipes.ts:18 - useGenerateRecipes
+apps/web/src/hooks/useRecipes.ts:70 - useRecipes
+apps/web/src/hooks/useRecipes.ts:75 - useSavedRecipes
+apps/web/src/hooks/useRecipes.ts:99 - useSaveRecipe
+apps/web/src/hooks/useRecipes.ts:131 - useDeleteRecipe
+apps/web/src/hooks/useTrustFlags.ts:13 - useTrustFlag
+apps/web/src/hooks/useTrustFlags.ts:31 - useTrustFlags
+apps/web/src/lib/accessibility.ts:10 - useKeyboardNavigation
+apps/web/src/lib/accessibility.ts:49 - SkipToMainContent
+apps/web/src/lib/accessibility.ts:63 - ScreenReaderOnly
+apps/web/src/lib/accessibility.ts:70 - useFocusTrap
+apps/web/src/lib/accessibility.ts:112 - useHighContrast
+apps/web/src/lib/accessibility.ts:156 - LiveRegion
+apps/web/src/lib/accessibility.ts:171 - announceToScreenReader
+apps/web/src/lib/aiCommerceHub.ts:5 - FinancialSummary (used in module)
+apps/web/src/lib/aiCommerceHub.ts:34 - PricingSuggestion (used in module)
+apps/web/src/lib/aiCommerceHub.ts:55 - RevenueAnalysis (used in module)
+apps/web/src/lib/aiCommerceHub.ts:79 - AICommerceHub (used in module)
+apps/web/src/lib/aiCommerceHub.ts:589 - aiCommerceHub
+apps/web/src/lib/aiConfig.ts:407 - initializeDefaultConfig
+apps/web/src/lib/aiConfig.ts:4 - AIConfig (used in module)
+apps/web/src/lib/aiConfig.ts:16 - PromptTemplate (used in module)
+apps/web/src/lib/aiConfig.ts:23 - ModelEvaluation (used in module)
+apps/web/src/lib/aiCopywriter.ts:4 - CopyVariant (used in module)
+apps/web/src/lib/aiCopywriter.ts:26 - AITestResult (used in module)
+apps/web/src/lib/aiOptimization.ts:27 - AIOptimizationService (used in module)
+apps/web/src/lib/aiSafetyGuardrails.ts:46 - SafetyMetrics (used in module)
+apps/web/src/lib/aiSafetyGuardrails.ts:55 - AISafetyGuardrails (used in module)
+apps/web/src/lib/analytics.ts:221 - useAnalytics
+apps/web/src/lib/analytics.ts:4 - AnalyticsEvent (used in module)
+apps/web/src/lib/analytics.ts:15 - RecipeMetrics (used in module)
+apps/web/src/lib/analytics.ts:29 - SystemMetrics (used in module)
+apps/web/src/lib/auth-middleware.ts:26 - getAuthenticatedUser (used in module)
+apps/web/src/lib/auth-middleware.ts:67 - requireAuth (used in module)
+apps/web/src/lib/auth-middleware.ts:95 - requireTenantAccess (used in module)
+apps/web/src/lib/auth-middleware.ts:141 - getTenantContext
+apps/web/src/lib/auth-middleware.ts:11 - AuthenticatedUser (used in module)
+apps/web/src/lib/auth-middleware.ts:17 - AuthContext (used in module)
+apps/web/src/lib/autonomousInfrastructure.ts:11 - InfrastructureHealth (used in module)
+apps/web/src/lib/autonomousInfrastructure.ts:25 - InfrastructureIssue (used in module)
+apps/web/src/lib/autonomousInfrastructure.ts:35 - AutoScalingDecision (used in module)
+apps/web/src/lib/autonomousInfrastructure.ts:43 - SelfHealingAction (used in module)
+apps/web/src/lib/autonomousInfrastructure.ts:53 - AutonomousInfrastructure (used in module)
+apps/web/src/lib/autonomousOrchestrator.ts:59 - AutonomousOrchestrator (used in module)
+apps/web/src/lib/autonomousSystem.ts:37 - AutonomousSystem (used in module)
+apps/web/src/lib/businessReadinessOrchestrator.ts:14 - BusinessReadinessReport (used in module)
+apps/web/src/lib/businessReadinessOrchestrator.ts:28 - BusinessMetrics (used in module)
+apps/web/src/lib/businessReadinessOrchestrator.ts:37 - BusinessReadinessOrchestrator (used in module)
+apps/web/src/lib/cognitiveContinuity.ts:57 - MemoryAgent (used in module)
+apps/web/src/lib/cognitiveContinuity.ts:86 - CognitiveContinuity (used in module)
+apps/web/src/lib/complianceAudit.ts:3 - AuditLog (used in module)
+apps/web/src/lib/complianceAudit.ts:19 - AnomalyDetection (used in module)
+apps/web/src/lib/complianceAudit.ts:32 - ComplianceReport (used in module)
+apps/web/src/lib/complianceAudit.ts:48 - ComplianceAudit (used in module)
+apps/web/src/lib/complianceAudit.ts:724 - complianceAudit
+apps/web/src/lib/croOptimizer.ts:11 - CTAPlacement (used in module)
+apps/web/src/lib/croOptimizer.ts:34 - FunnelStage (used in module)
+apps/web/src/lib/croOptimizer.ts:42 - CROInsights (used in module)
+apps/web/src/lib/croOptimizer.ts:53 - CROOptimizer (used in module)
+apps/web/src/lib/csrf-client.ts:8 - useCSRFToken (used in module)
+apps/web/src/lib/csrf-client.ts:33 - CSRFTokenInput
+apps/web/src/lib/csrf-middleware.ts:7 - withCSRFProtection
+apps/web/src/lib/csrf.ts:12 - generateCSRFToken
+apps/web/src/lib/csrf.ts:27 - validateCSRFToken
+apps/web/src/lib/csrf.ts:58 - getCSRFToken
+apps/web/src/lib/db-optimization.ts:17 - cachedQuery
+apps/web/src/lib/db-optimization.ts:60 - paginatedQuery
+apps/web/src/lib/db-optimization.ts:97 - batchQuery
+apps/web/src/lib/db-optimization.ts:125 - recordQueryMetrics
+apps/web/src/lib/db-optimization.ts:139 - getQueryMetrics
+apps/web/src/lib/db-optimization.ts:143 - getAverageQueryTime
+apps/web/src/lib/db-optimization.ts:155 - selectColumns
+apps/web/src/lib/db-optimization.ts:44 - PaginationOptions (used in module)
+apps/web/src/lib/db-optimization.ts:51 - PaginatedResult (used in module)
+apps/web/src/lib/db-optimization.ts:116 - QueryMetrics (used in module)
+apps/web/src/lib/db-optimization.ts:164 - queryOptimizations
+apps/web/src/lib/enhanced-onboarding.ts:112 - getOnboardingProgress (used in module)
+apps/web/src/lib/enhanced-onboarding.ts:149 - initializeOnboarding (used in module)
+apps/web/src/lib/enhanced-onboarding.ts:182 - completeOnboardingStep
+apps/web/src/lib/enhanced-onboarding.ts:230 - getNextOnboardingStep
+apps/web/src/lib/enhanced-onboarding.ts:276 - isOnboardingComplete
+apps/web/src/lib/enhanced-onboarding.ts:287 - getOnboardingCompletionRate
+apps/web/src/lib/enhanced-onboarding.ts:8 - OnboardingStep (used in module)
+apps/web/src/lib/enhanced-onboarding.ts:21 - OnboardingProgress (used in module)
+apps/web/src/lib/enhanced-onboarding.ts:34 - DEFAULT_ONBOARDING_STEPS (used in module)
+apps/web/src/lib/experiments.ts:60 - assignVariant
+apps/web/src/lib/experiments.ts:108 - trackConversion
+apps/web/src/lib/experiments.ts:143 - getVariant
+apps/web/src/lib/experiments.ts:181 - shouldShowExperiment
+apps/web/src/lib/experiments.ts:9 - Experiment (used in module)
+apps/web/src/lib/experiments.ts:19 - ExperimentAssignment (used in module)
+apps/web/src/lib/experiments.ts:25 - ConversionEvent
+apps/web/src/lib/experiments.ts:37 - EXPERIMENTS (used in module)
+apps/web/src/lib/featureGates.ts:87 - hasFeature (used in module)
+apps/web/src/lib/featureGates.ts:99 - getFeaturesForPlan
+apps/web/src/lib/featureGates.ts:108 - getUpgradeMessage
+apps/web/src/lib/featureGates.ts:128 - getRequiredPlan
+apps/web/src/lib/featureGates.ts:6 - PlanType (used in module)
+apps/web/src/lib/featureGates.ts:8 - FeatureConfig (used in module)
+apps/web/src/lib/featureGates.ts:16 - FEATURES (used in module)
+apps/web/src/lib/federatedGateway.ts:5 - FederatedRequest (used in module)
+apps/web/src/lib/federatedGateway.ts:17 - FederatedResponse (used in module)
+apps/web/src/lib/federatedGateway.ts:32 - FederatedAPIGateway (used in module)
+apps/web/src/lib/federatedGateway.ts:662 - federatedGateway
+apps/web/src/lib/feedbackSystem.ts:552 - useFeedback
+apps/web/src/lib/feedbackSystem.ts:5 - RecipeFeedback (used in module)
+apps/web/src/lib/feedbackSystem.ts:15 - FeedbackSummary (used in module)
+apps/web/src/lib/feedbackSystem.ts:22 - TrainingData (used in module)
+apps/web/src/lib/fetchWithCSRF.ts:7 - fetchWithCSRF
+apps/web/src/lib/franchiseAutomation.ts:4 - FranchiseDeployment (used in module)
+apps/web/src/lib/franchiseAutomation.ts:19 - DeploymentManifest (used in module)
+apps/web/src/lib/franchiseAutomation.ts:47 - FranchiseConfig (used in module)
+apps/web/src/lib/franchiseAutomation.ts:70 - FranchiseAutomation (used in module)
+apps/web/src/lib/franchiseAutomation.ts:583 - franchiseAutomation
+apps/web/src/lib/funnelTracking.ts:8 - FunnelStage (used in module)
+apps/web/src/lib/funnelTracking.ts:15 - FunnelEvent
+apps/web/src/lib/funnelTracking.ts:184 - funnelTracker (used in module)
+apps/web/src/lib/growthAnalytics.ts:13 - CohortRetentionData (used in module)
+apps/web/src/lib/growthAnalytics.ts:21 - GrowthMetricsSummary (used in module)
+apps/web/src/lib/growthAnalytics.ts:32 - FunnelConversionRates (used in module)
+apps/web/src/lib/guardian-middleware.ts:11 - processGuardianEvent
+apps/web/src/lib/healthCheck.ts:750 - GET
+apps/web/src/lib/healthCheck.ts:747 - healthCheckSystem (used in module)
+apps/web/src/lib/index.ts:80 - initializeAutonomousSystem
+apps/web/src/lib/index.ts:96 - getSystemStatusSummary
+apps/web/src/lib/index.ts:126 - shutdownAutonomousSystem
+apps/web/src/lib/index.ts:7 - autonomousSystem
+apps/web/src/lib/index.ts:8 - autonomousOrchestrator (used in module)
+apps/web/src/lib/index.ts:11 - aiSafetyGuardrails
+apps/web/src/lib/index.ts:12 - secretsIntelligence
+apps/web/src/lib/index.ts:15 - predictiveOptimization
+apps/web/src/lib/index.ts:16 - cognitiveContinuity
+apps/web/src/lib/index.ts:19 - croOptimizer
+apps/web/src/lib/index.ts:20 - monetizationHub
+apps/web/src/lib/index.ts:21 - businessReadinessOrchestrator (used in module)
+apps/web/src/lib/index.ts:24 - autonomousInfrastructure
+apps/web/src/lib/index.ts:25 - selfLearningSystem
+apps/web/src/lib/index.ts:28 - observabilityAudit
+apps/web/src/lib/index.ts:31 - BuildAgent
+apps/web/src/lib/index.ts:32 - InsightAgent
+apps/web/src/lib/index.ts:33 - HealAgent
+apps/web/src/lib/index.ts:34 - EthicsAgent
+apps/web/src/lib/index.ts:35 - BaseAgent
+apps/web/src/lib/index.ts:38 - run_terminal_cmd
+apps/web/src/lib/index.ts:42 - SystemMetrics
+apps/web/src/lib/index.ts:43 - AgentState
+apps/web/src/lib/index.ts:44 - DiagnosticResult
+apps/web/src/lib/index.ts:47 - SafetyViolation
+apps/web/src/lib/index.ts:48 - PromptSanitizationResult
+apps/web/src/lib/index.ts:49 - ThreatSimulationResult
+apps/web/src/lib/index.ts:52 - Secret
+apps/web/src/lib/index.ts:53 - SecretVault
+apps/web/src/lib/index.ts:54 - SecurityScanResult
+apps/web/src/lib/index.ts:55 - SecretsManifest
+apps/web/src/lib/index.ts:58 - BuildPrediction
+apps/web/src/lib/index.ts:59 - ResourceScalingDecision
+apps/web/src/lib/index.ts:60 - BehavioralAnalytics
+apps/web/src/lib/index.ts:63 - KnowledgeEntry
+apps/web/src/lib/index.ts:64 - MetaPrompt
+apps/web/src/lib/index.ts:65 - LearningSession
+apps/web/src/lib/index.ts:66 - AutonomousReflection
+apps/web/src/lib/index.ts:69 - AuditEvent
+apps/web/src/lib/index.ts:70 - ComplianceCheck
+apps/web/src/lib/index.ts:71 - SystemHealth
+apps/web/src/lib/index.ts:72 - AutonomyAudit
+apps/web/src/lib/index.ts:74 - SystemStatus
+apps/web/src/lib/index.ts:74 - AutonomousAction
+apps/web/src/lib/index.ts:75 - AgentConfig
+apps/web/src/lib/index.ts:75 - AgentAction
+apps/web/src/lib/index.ts:75 - AgentMemory
+apps/web/src/lib/input-validation.ts:23 - sanitizeString (used in module)
+apps/web/src/lib/input-validation.ts:39 - sanitizeObject (used in module)
+apps/web/src/lib/input-validation.ts:62 - validateRequestSize (used in module)
+apps/web/src/lib/input-validation.ts:100 - validateRequestBody
+apps/web/src/lib/input-validation.ts:178 - validateQueryParams
+apps/web/src/lib/input-validation.ts:219 - withRequestSizeValidation
+apps/web/src/lib/input-validation.ts:242 - commonSchemas
+apps/web/src/lib/integrations-config.ts:6 - getIntegrationsConfig (used in module)
+apps/web/src/lib/integrations-config.ts:72 - isIntegrationEnabled
+apps/web/src/lib/logger.ts:302 - useLogger
+apps/web/src/lib/logger.ts:4 - LogEntry (used in module)
+apps/web/src/lib/logger.ts:17 - ErrorReport (used in module)
+apps/web/src/lib/marketingAutomation.ts:7 - EmailTemplate (used in module)
+apps/web/src/lib/marketingAutomation.ts:18 - EmailCampaign (used in module)
+apps/web/src/lib/marketingAutomation.ts:42 - MarketingAutomation
+apps/web/src/lib/modelAdvisor.ts:4 - ModelRecommendation (used in module)
+apps/web/src/lib/modelAdvisor.ts:15 - ModelPerformance (used in module)
+apps/web/src/lib/modelAdvisor.ts:26 - ModelAdvisor (used in module)
+apps/web/src/lib/modelAdvisor.ts:486 - modelAdvisor
+apps/web/src/lib/monetizationHub.ts:11 - MonetizationStrategy (used in module)
+apps/web/src/lib/monetizationHub.ts:22 - UpsellOpportunity (used in module)
+apps/web/src/lib/monetizationHub.ts:32 - RevenueForecast (used in module)
+apps/web/src/lib/monetizationHub.ts:45 - MonetizationHub (used in module)
+apps/web/src/lib/monitoring.ts:712 - recordAPIMetric
+apps/web/src/lib/monitoring.ts:739 - recordAIMetric
+apps/web/src/lib/monitoring.ts:751 - recordSecurityMetric
+apps/web/src/lib/monitoringAlerts.ts:142 - loadMonitoringConfig (used in module)
+apps/web/src/lib/monitoringAlerts.ts:191 - shouldTriggerAlert
+apps/web/src/lib/monitoringAlerts.ts:209 - sendAlert
+apps/web/src/lib/monitoringAlerts.ts:8 - AlertThreshold (used in module)
+apps/web/src/lib/monitoringAlerts.ts:16 - MonitoringConfig (used in module)
+apps/web/src/lib/monitoringAlerts.ts:50 - defaultAlerts (used in module)
+apps/web/src/lib/observability.ts:724 - withTrace
+apps/web/src/lib/observability.ts:753 - withSpan
+apps/web/src/lib/observability.ts:773 - trackError (used in module)
+apps/web/src/lib/observabilityAudit.ts:115 - ObservabilityAudit (used in module)
+apps/web/src/lib/openaiClient.ts:17 - Recipe
+apps/web/src/lib/openaiService.ts:27 - generateRecipes (used in module)
+apps/web/src/lib/openaiService.ts:290 - generateRecipesWithFallback
+apps/web/src/lib/performanceOptimizer.ts:552 - measurePerformance
+apps/web/src/lib/performanceOptimizer.ts:578 - measureBundleSize
+apps/web/src/lib/predictiveOptimization.ts:61 - OptimizationRecommendation (used in module)
+apps/web/src/lib/predictiveOptimization.ts:78 - PredictiveOptimization (used in module)
+apps/web/src/lib/queryClient.ts:3 - queryClient
+apps/web/src/lib/rate-limiting-redis.ts:59 - checkRateLimit
+apps/web/src/lib/rate-limiting-redis.ts:122 - getRateLimitIdentifier
+apps/web/src/lib/rate-limiting-redis.ts:10 - RateLimitConfig (used in module)
+apps/web/src/lib/rate-limiting.ts:28 - getIdentifier (used in module)
+apps/web/src/lib/rate-limiting.ts:41 - rateLimit (used in module)
+apps/web/src/lib/rate-limiting.ts:92 - withRateLimit
+apps/web/src/lib/rate-limiting.ts:9 - RateLimitConfig (used in module)
+apps/web/src/lib/rate-limiting.ts:123 - rateLimiters
+apps/web/src/lib/resilience.ts:89 - withRetry (used in module)
+apps/web/src/lib/resilience.ts:138 - createResilientSupabaseClient
+apps/web/src/lib/resilience.ts:202 - getCircuitBreakerHealth
+apps/web/src/lib/resilience.ts:224 - isTransientError (used in module)
+apps/web/src/lib/resilience.ts:253 - withGracefulDegradation
+apps/web/src/lib/resilience.ts:130 - circuitBreakers (used in module)
+apps/web/src/lib/secretsIntelligence.ts:97 - SecretsIntelligence (used in module)
+apps/web/src/lib/secretsManager.ts:386 - redactSensitiveData (used in module)
+apps/web/src/lib/securityValidation.ts:1070 - securityValidator
+apps/web/src/lib/selfLearningSystem.ts:13 - LearningInsight (used in module)
+apps/web/src/lib/selfLearningSystem.ts:25 - LearningCycle (used in module)
+apps/web/src/lib/selfLearningSystem.ts:40 - SelfLearningSystem (used in module)
+apps/web/src/lib/socialAutomator.ts:4 - SocialPost (used in module)
+apps/web/src/lib/socialAutomator.ts:23 - TrendingTheme (used in module)
+apps/web/src/lib/socialAutomator.ts:32 - ContentStrategy (used in module)
+apps/web/src/lib/socialAutomator.ts:40 - SocialAutomator
+apps/web/src/lib/stripe.ts:7 - stripe (used in module)
+apps/web/src/lib/stripe.ts:12 - STRIPE_CONFIG (used in module)
+apps/web/src/lib/stripe.ts:63 - PlanType (used in module)
+apps/web/src/lib/stripe.ts:65 - CreateCheckoutSessionParams (used in module)
+apps/web/src/lib/stripe.ts:73 - CreateCustomerPortalSessionParams (used in module)
+apps/web/src/lib/trust-flags.ts:55 - isTrustFlagEnabled (used in module)
+apps/web/src/lib/trust-flags.ts:124 - getEnabledTrustFlags
+apps/web/src/lib/trust-flags.ts:133 - getTrustFlag
+apps/web/src/lib/trust-flags.ts:141 - useTrustFlag
+apps/web/src/lib/ugcGrowth.ts:3 - UGCShare (used in module)
+apps/web/src/lib/ugcGrowth.ts:43 - MealCard (used in module)
+apps/web/src/lib/ugcGrowth.ts:63 - ShareAnalytics (used in module)
+apps/web/src/lib/ugcGrowth.ts:73 - UGCGrowth
+apps/web/src/lib/user-acquisition.ts:35 - trackAcquisition
+apps/web/src/lib/user-acquisition.ts:69 - getAcquisitionChannels
+apps/web/src/lib/user-acquisition.ts:113 - getConversionFunnel (used in module)
+apps/web/src/lib/user-acquisition.ts:154 - createReferralCode
+apps/web/src/lib/user-acquisition.ts:179 - processReferral
+apps/web/src/lib/user-acquisition.ts:231 - getReferralProgram
+apps/web/src/lib/user-acquisition.ts:245 - optimizeConversionFunnel
+apps/web/src/lib/user-acquisition.ts:8 - AcquisitionChannel (used in module)
+apps/web/src/lib/user-acquisition.ts:17 - ReferralProgram (used in module)
+apps/web/src/lib/user-acquisition.ts:25 - ConversionFunnel (used in module)
+apps/web/src/lib/utils.ts:4 - cn
+apps/web/src/lib/utils.ts:8 - formatDate (used in module)
+apps/web/src/lib/utils.ts:16 - formatTime
+apps/web/src/lib/utils.ts:23 - formatRelativeTime
+apps/web/src/lib/utils.ts:52 - debounce
+apps/web/src/lib/utils.ts:63 - throttle
+apps/web/src/lib/utils.ts:77 - generateId
+apps/web/src/lib/utils.ts:81 - capitalize
+apps/web/src/lib/utils.ts:85 - truncate
+apps/web/src/lib/utils.ts:90 - isValidEmail
+apps/web/src/lib/utils.ts:95 - sleep
+apps/web/src/lib/validation.ts:4 - sanitizeString (used in module)
+apps/web/src/lib/validation.ts:127 - escapeSqlString
+apps/web/src/lib/validation.ts:132 - validateNoSqlInjection (used in module)
+apps/web/src/lib/validation.ts:64 - GenerateRecipesRequestSchema (used in module)
+apps/web/src/lib/validation.ts:82 - SanitizedStringSchema
+apps/web/src/lib/validation.ts:87 - IdSchema
+apps/web/src/lib/validation.ts:90 - RateLimitConfigSchema
+apps/web/src/lib/validation.ts:96 - PantryItemSchema (used in module)
+apps/web/src/lib/validation.ts:108 - UserProfileSchema (used in module)
+apps/web/src/lib/validation.ts:143 - SecureStringSchema
+apps/web/src/lib/validation.ts:151 - EnvSchema (used in module)
+apps/web/src/lib/validation.ts:190 - GenerateRecipesRequest
+apps/web/src/lib/validation.ts:193 - PantryItem
+apps/web/src/lib/validation.ts:194 - UserProfile
+apps/web/src/lib/verify-landing-pages.ts:19 - verifyLandingPages
+apps/web/src/lib/workflowManager.ts:8 - WorkflowStep (used in module)
+apps/web/src/lib/workflowManager.ts:18 - Workflow (used in module)
+apps/web/src/lib/workflowManager.ts:716 - workflowManager
+apps/web/src/utils/commandRunner.ts:8 - CommandResult (used in module)
+apps/web/src/utils/commandRunner.ts:16 - CommandRunner (used in module)
+packages/ui/src/components/ABTest.tsx:10 - ABTest (used in module)
+packages/ui/src/components/ABTest.tsx:30 - default
+packages/ui/src/components/ChaosDashboard.tsx:4 - ChaosDashboard (used in module)
+packages/ui/src/components/ChaosDashboard.tsx:42 - default
+packages/ui/src/components/ConsentManager.tsx:9 - ConsentManager (used in module)
+packages/ui/src/components/ConsentManager.tsx:96 - default
+packages/ui/src/components/ExperimentDashboard.tsx:8 - ExperimentDashboard (used in module)
+packages/ui/src/components/ExperimentDashboard.tsx:52 - default
+packages/ui/src/components/ResponsiveImage.tsx:15 - ResponsiveImage (used in module)
+packages/ui/src/components/ResponsiveImage.tsx:41 - default
+packages/ui/src/stories/Button.stories.ts:25 - default
+packages/ui/src/stories/Button.stories.ts:29 - Primary
+packages/ui/src/stories/Button.stories.ts:36 - Secondary
+packages/ui/src/stories/Button.stories.ts:42 - Large
+packages/ui/src/stories/Button.stories.ts:49 - Small
+packages/ui/src/stories/Button.tsx:5 - ButtonProps (used in module)
+packages/ui/src/stories/Header.stories.ts:23 - default
+packages/ui/src/stories/Header.stories.ts:26 - LoggedIn
+packages/ui/src/stories/Header.stories.ts:34 - LoggedOut
+packages/ui/src/stories/Header.tsx:10 - HeaderProps (used in module)
+packages/ui/src/stories/Page.stories.ts:16 - default
+packages/ui/src/stories/Page.stories.ts:19 - LoggedOut
+packages/ui/src/stories/Page.stories.ts:22 - LoggedIn
+whats-for-dinner/src/app/admin/layout.tsx:26 - default
+whats-for-dinner/src/app/admin/page.tsx:34 - default
+whats-for-dinner/src/app/auth/page.tsx:7 - default
+whats-for-dinner/src/app/billing/page.tsx:34 - default
+whats-for-dinner/src/app/developers/page.tsx:59 - default
+whats-for-dinner/src/app/favorites/page.tsx:9 - default
+whats-for-dinner/src/app/landing/page.tsx:138 - default
+whats-for-dinner/src/app/offline/page.tsx:3 - default
+whats-for-dinner/src/app/pantry/page.tsx:8 - default
+whats-for-dinner/src/app/ugc/page.tsx:6 - default
+whats-for-dinner/src/components/compliance/AgeGate.tsx:23 - AgeGate
+whats-for-dinner/src/components/experimentation/ExperimentProvider.tsx:20 - ExperimentProvider
+whats-for-dinner/src/components/experimentation/ExperimentProvider.tsx:78 - useExperiment (used in module)
+whats-for-dinner/src/components/experimentation/ExperimentProvider.tsx:87 - useFeatureFlag
+whats-for-dinner/src/components/experimentation/ExperimentProvider.tsx:103 - useABTest
+whats-for-dinner/src/components/feedback/FeedbackWidget.tsx:61 - FeedbackWidget
+whats-for-dinner/src/components/feedback/SupportChat.tsx:72 - SupportChat
+whats-for-dinner/src/components/i18n/LanguageSelector.tsx:19 - LanguageSelector
+whats-for-dinner/src/components/i18n/LanguageSelector.tsx:169 - TranslationProgress
+whats-for-dinner/src/components/monetization/OrderIntegration.tsx:36 - OrderIntegration
+whats-for-dinner/src/components/ui/badge.tsx:26 - BadgeProps (used in module)
+whats-for-dinner/src/components/ui/badge.tsx:36 - badgeVariants (used in module)
+whats-for-dinner/src/components/ui/button.tsx:36 - ButtonProps (used in module)
+whats-for-dinner/src/components/ui/button.tsx:56 - buttonVariants (used in module)
+whats-for-dinner/src/components/ui/card.tsx:81 - CardFooter (used in module)
+whats-for-dinner/src/components/ui/card.tsx:83 - CardDescription (used in module)
+whats-for-dinner/src/components/ui/input.tsx:4 - InputProps (used in module)
+whats-for-dinner/src/components/ui/switch.tsx:26 - Switch (used in module)
+whats-for-dinner/src/components/ui/tabs.tsx:53 - Tabs (used in module)
+whats-for-dinner/src/components/ui/tabs.tsx:53 - TabsList (used in module)
+whats-for-dinner/src/components/ui/tabs.tsx:53 - TabsTrigger (used in module)
+whats-for-dinner/src/components/ui/tabs.tsx:53 - TabsContent (used in module)
+whats-for-dinner/src/components/ui/textarea.tsx:4 - TextareaProps (used in module)
+whats-for-dinner/src/components/ui/textarea.tsx:22 - Textarea (used in module)
+whats-for-dinner/src/lib/agents/ethicsAgent.ts:9 - SafetyViolation (used in module)
+whats-for-dinner/src/lib/agents/ethicsAgent.ts:23 - ComplianceCheck (used in module)
+whats-for-dinner/src/lib/agents/ethicsAgent.ts:31 - EthicalGuideline (used in module)
+whats-for-dinner/src/lib/agents/healAgent.ts:10 - CodeIssue (used in module)
+whats-for-dinner/src/lib/agents/healAgent.ts:20 - RepairResult (used in module)
+whats-for-dinner/src/lib/agents/insightAgent.ts:10 - KPIMetrics (used in module)
+whats-for-dinner/src/lib/agents/insightAgent.ts:19 - OptimizationSuggestion (used in module)
+whats-for-dinner/src/lib/ai-agents/agentOrchestrator.ts:9 - AIAgent (used in module)
+whats-for-dinner/src/lib/ai-agents/agentOrchestrator.ts:24 - AgentType (used in module)
+whats-for-dinner/src/lib/ai-agents/agentOrchestrator.ts:36 - AgentTool (used in module)
+whats-for-dinner/src/lib/ai-agents/agentOrchestrator.ts:43 - AgentMemory (used in module)
+whats-for-dinner/src/lib/ai-agents/agentOrchestrator.ts:51 - AgentInteraction (used in module)
+whats-for-dinner/src/lib/ai-agents/agentOrchestrator.ts:61 - AgentPackage (used in module)
+whats-for-dinner/src/lib/ai-agents/agentOrchestrator.ts:602 - agentOrchestrator
+whats-for-dinner/src/lib/compliance/legalAutomation.ts:9 - LegalDocument (used in module)
+whats-for-dinner/src/lib/compliance/legalAutomation.ts:23 - ComplianceCheck (used in module)
+whats-for-dinner/src/lib/compliance/legalAutomation.ts:33 - ComplianceIssue (used in module)
+whats-for-dinner/src/lib/compliance/legalAutomation.ts:44 - DataSubjectRequest (used in module)
+whats-for-dinner/src/lib/compliance/legalAutomation.ts:55 - AgeGateConfig
+whats-for-dinner/src/lib/compliance/legalAutomation.ts:805 - legalAutomation
+whats-for-dinner/src/lib/growth/growthAutomation.ts:9 - GrowthExperiment (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:23 - ExperimentVariant (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:31 - ExperimentMetric (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:38 - TargetAudience (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:49 - SuccessCriteria (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:56 - ExperimentResults (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:77 - UserJourney (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:85 - JourneyStep (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:93 - ReferralProgram (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:105 - ReferralConditions (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:112 - PricingExperiment
+whats-for-dinner/src/lib/growth/growthAutomation.ts:121 - PricingVariant (used in module)
+whats-for-dinner/src/lib/growth/growthAutomation.ts:770 - growthAutomation
+whats-for-dinner/src/lib/monetization/affiliateSystem.ts:8 - AffiliatePartner (used in module)
+whats-for-dinner/src/lib/monetization/affiliateSystem.ts:23 - DeliveryOrder (used in module)
+whats-for-dinner/src/lib/monetization/affiliateSystem.ts:37 - GroceryOrder (used in module)
+whats-for-dinner/src/lib/monetization/affiliateSystem.ts:51 - OrderItem (used in module)
+whats-for-dinner/src/lib/monetization/affiliateSystem.ts:61 - ChefPartnership (used in module)
+whats-for-dinner/src/lib/monetization/affiliateSystem.ts:75 - ChefPackage (used in module)
+whats-for-dinner/src/lib/monetization/affiliateSystem.ts:87 - AffiliateAnalytics (used in module)
+whats-for-dinner/src/lib/monetization/affiliateSystem.ts:651 - affiliateSystem
+whats-for-dinner/src/lib/partner-api/apiGateway.ts:9 - APIKey (used in module)
+whats-for-dinner/src/lib/partner-api/apiGateway.ts:24 - Partner (used in module)
+whats-for-dinner/src/lib/partner-api/apiGateway.ts:38 - Webhook (used in module)
+whats-for-dinner/src/lib/partner-api/apiGateway.ts:48 - APIRequest
+whats-for-dinner/src/lib/partner-api/apiGateway.ts:446 - partnerAPIGateway
+whats-for-dinner/supabase/functions/_shared/cors.ts:1 - corsHeaders
+nomad/apps/web/src/app/layout.tsx:14 - default
+nomad/apps/web/src/app/layout.tsx:8 - metadata
+nomad/apps/web/src/app/middleware.ts:4 - middleware
+nomad/apps/web/src/app/middleware.ts:15 - config
+nomad/apps/web/src/app/page.tsx:3 - default
+nomad/apps/web/src/app/robots.ts:3 - default
+nomad/apps/web/src/app/sitemap.ts:3 - default
+apps/mobile/src/features/consent/ConsentGate.tsx:19 - ConsentGate
+nomad/apps/mobile/src/app/_layout.tsx:15 - default
+nomad/apps/mobile/src/app/onboarding.tsx:7 - default
+nomad/packages/adapters/src/ads/index.ts:4 - AdSlot
+nomad/packages/adapters/src/ads/index.ts:12 - AdContext
+nomad/packages/adapters/src/ads/index.ts:28 - AdDecision
+nomad/packages/adapters/src/ads/index.ts:50 - AdEngine
+nomad/packages/adapters/src/ads/index.ts:257 - adEngine
+nomad/packages/adapters/src/ads/index.ts:5 - AdMobConfig
+nomad/packages/adapters/src/ads/index.ts:10 - BannerAdProps
+nomad/packages/adapters/src/ads/index.ts:19 - InterstitialAd
+nomad/packages/adapters/src/ads/index.ts:27 - RewardedAd
+nomad/packages/adapters/src/ads/index.ts:35 - AdMobManager
+nomad/packages/adapters/src/ads/index.ts:100 - admobManager
+nomad/packages/adapters/src/ads/index.ts:3 - GPTSlot
+nomad/packages/adapters/src/ads/index.ts:9 - GPTConfig
+nomad/packages/adapters/src/ads/index.ts:15 - GPTManager
+nomad/packages/adapters/src/ads/index.ts:142 - gptManager
+nomad/packages/adapters/src/ads/index.ts:18 - getHouseAd
+nomad/packages/adapters/src/ads/index.ts:22 - getRandomHouseAd
+nomad/packages/adapters/src/ads/index.ts:3 - HouseAd
+nomad/packages/adapters/src/ads/index.ts:13 - HouseAdProps
+nomad/packages/adapters/src/ads/index.ts:36 - HouseAdRenderer
+nomad/packages/adapters/src/ads/index.ts:55 - houseAdRenderer
+nomad/packages/adapters/src/analytics/index.ts:1 - AnalyticsAdapter
+nomad/packages/adapters/src/analytics/index.ts:12 - AnalyticsEvent
+nomad/packages/adapters/src/analytics/index.ts:18 - UserIdentity
+nomad/packages/adapters/src/analytics/index.ts:3 - PostHogAdapter
+nomad/packages/adapters/src/analytics/index.ts:3 - SegmentAdapter
+nomad/packages/adapters/src/analytics/index.ts:3 - NoopAdapter
+nomad/packages/adapters/src/auth/index.ts:3 - AuthCredentials (used in module)
+nomad/packages/adapters/src/auth/index.ts:8 - OAuthProvider
+nomad/packages/adapters/src/auth/index.ts:19 - AuthSession (used in module)
+nomad/packages/adapters/src/auth/index.ts:30 - AuthAdapter (used in module)
+nomad/packages/adapters/src/auth/index.ts:40 - SupabaseAuthAdapter
+nomad/packages/adapters/src/auth/index.ts:179 - SecureStorageAdapter (used in module)
+nomad/packages/adapters/src/auth/index.ts:185 - MobileSecureStorage
+nomad/packages/adapters/src/partners/index.ts:1 - InstacartConfig
+nomad/packages/adapters/src/partners/index.ts:7 - InstacartCartItem
+nomad/packages/adapters/src/partners/index.ts:14 - InstacartCart
+nomad/packages/adapters/src/partners/index.ts:19 - InstacartAdapter
+nomad/packages/adapters/src/partners/index.ts:1 - WalmartConfig
+nomad/packages/adapters/src/partners/index.ts:7 - WalmartCartItem
+nomad/packages/adapters/src/partners/index.ts:14 - WalmartCart
+nomad/packages/adapters/src/partners/index.ts:19 - WalmartAdapter
+nomad/packages/adapters/src/wearables/index.ts:1 - WearableSyncConfig (used in module)
+nomad/packages/adapters/src/wearables/index.ts:13 - HealthDataPoint (used in module)
+nomad/packages/adapters/src/wearables/index.ts:21 - WearableAdapter (used in module)
+nomad/packages/adapters/src/wearables/index.ts:33 - GoogleFitAdapter
+nomad/packages/adapters/src/wearables/index.ts:77 - AppleHealthAdapter
+nomad/packages/adapters/src/wearables/index.ts:120 - WearableManager (used in module)
+nomad/packages/adapters/src/wearables/index.ts:151 - wearableManager
+packages/server/src/partners/catalog/api.ts:6 - ParsedCatalogItem (used in module)
+packages/server/src/partners/catalog/api.ts:18 - APIFeedConfig (used in module)
+packages/server/src/partners/catalog/xml.ts:8 - ParsedCatalogItem (used in module)
+packages/server/src/routes/admin/moderation.ts:53 - GET_MODERATION_QUEUE
+packages/server/src/routes/admin/moderation.ts:179 - POST_MODERATION_ASSIGN
+packages/server/src/routes/admin/moderation.ts:230 - PATCH_MODERATION_RESOLVE
+packages/server/src/routes/admin/moderation.ts:317 - POST_MODERATION_CREATE
+apps/community-portal/src/components/ui/avatar.tsx:47 - Avatar (used in module)
+apps/community-portal/src/components/ui/avatar.tsx:47 - AvatarImage (used in module)
+apps/community-portal/src/components/ui/avatar.tsx:47 - AvatarFallback (used in module)
+apps/community-portal/src/components/ui/badge.tsx:25 - BadgeProps (used in module)
+apps/community-portal/src/components/ui/badge.tsx:35 - Badge (used in module)
+apps/community-portal/src/components/ui/badge.tsx:35 - badgeVariants (used in module)
+apps/community-portal/src/components/ui/button.tsx:35 - ButtonProps (used in module)
+apps/community-portal/src/components/ui/button.tsx:55 - Button (used in module)
+apps/community-portal/src/components/ui/button.tsx:55 - buttonVariants (used in module)
+apps/community-portal/src/components/ui/card.tsx:78 - Card (used in module)
+apps/community-portal/src/components/ui/card.tsx:78 - CardHeader (used in module)
+apps/community-portal/src/components/ui/card.tsx:78 - CardFooter (used in module)
+apps/community-portal/src/components/ui/card.tsx:78 - CardTitle (used in module)
+apps/community-portal/src/components/ui/card.tsx:78 - CardDescription (used in module)
+apps/community-portal/src/components/ui/card.tsx:78 - CardContent (used in module)
+apps/community-portal/src/components/ui/input.tsx:4 - InputProps (used in module)
+apps/community-portal/src/components/ui/input.tsx:24 - Input (used in module)
+apps/web/src/app/affiliate/page.tsx:49 - default
+apps/web/src/app/analytics/page.tsx:57 - default
+apps/web/src/app/auth/page.tsx:7 - default
+apps/web/src/app/community/page.tsx:10 - default
+apps/web/src/app/compare/page.tsx:9 - default
+apps/web/src/app/compare/page.tsx:4 - metadata
+apps/web/src/app/consent/ConsentGate.tsx:18 - ConsentGate
+apps/web/src/app/cookie-policy/page.tsx:13 - default
+apps/web/src/app/cookie-policy/page.tsx:8 - metadata
+apps/web/src/app/demo/page.tsx:6 - default
+apps/web/src/app/help/page.tsx:12 - default
+apps/web/src/app/help/page.tsx:7 - metadata
+apps/web/src/app/integrations/page.tsx:17 - default
+apps/web/src/app/integrations/page.tsx:12 - metadata
+apps/web/src/app/investors/page.tsx:14 - default
+apps/web/src/app/journal/page.tsx:15 - default
+apps/web/src/app/meal-planner/page.tsx:43 - default
+apps/web/src/app/nutrition/page.tsx:39 - default
+apps/web/src/app/offline/page.tsx:3 - default
+apps/web/src/app/partners/page.tsx:121 - default
+apps/web/src/app/play/page.tsx:98 - default
+apps/web/src/app/pricing/page.tsx:78 - default
+apps/web/src/app/privacy/page.tsx:13 - default
+apps/web/src/app/privacy/page.tsx:8 - metadata
+apps/web/src/app/privacy-policy/page.tsx:13 - default
+apps/web/src/app/privacy-policy/page.tsx:8 - metadata
+apps/web/src/app/profile/page.tsx:9 - default
+apps/web/src/app/providers/consent-provider.tsx:20 - ConsentProvider
+apps/web/src/app/providers/consent-provider.tsx:4 - Consent (used in module)
+apps/web/src/app/providers/consent-provider.tsx:74 - useConsent
+apps/web/src/app/referral/page.tsx:34 - default
+apps/web/src/app/refund-policy/page.tsx:17 - default
+apps/web/src/app/refund-policy/page.tsx:12 - metadata
+apps/web/src/app/security/page.tsx:11 - default
+apps/web/src/app/settings/page.tsx:28 - default
+apps/web/src/app/status/page.tsx:65 - default
+apps/web/src/app/status/page.tsx:4 - metadata
+apps/web/src/app/support/page.tsx:16 - default
+apps/web/src/app/terms-of-service/page.tsx:14 - default
+apps/web/src/app/terms-of-service/page.tsx:9 - metadata
+apps/web/src/app/test/page.tsx:6 - default
+apps/web/src/app/trust/page.tsx:7 - default
+apps/web/src/app/ugc/page.tsx:6 - default
+apps/web/src/app/wiki/page.tsx:31 - default
+apps/web/src/components/agent/SuggestionsDrawer.tsx:14 - default
+apps/web/src/components/gamification/BadgeCollection.tsx:8 - default
+apps/web/src/components/gamification/CommunityChallenges.tsx:7 - default
+apps/web/src/components/gamification/GamificationProvider.tsx:12 - GamificationProvider
+apps/web/src/components/gamification/Leaderboard.tsx:8 - default
+apps/web/src/components/gamification/NotificationsCenter.tsx:6 - default
+apps/web/src/components/gamification/ProgressChart.tsx:7 - default
+apps/web/src/components/gamification/ProgressRing.tsx:3 - default
+apps/web/src/components/gamification/PushNotificationSetup.tsx:6 - usePushNotifications (used in module)
+apps/web/src/components/gamification/PushNotificationSetup.tsx:105 - default
+apps/web/src/components/gamification/QuestCard.tsx:4 - default
+apps/web/src/components/gamification/ReferralSection.tsx:8 - default
+apps/web/src/components/gamification/StreakFlame.tsx:2 - default
+apps/web/src/components/gamification/WeeklyChallenges.tsx:9 - default
+apps/web/src/components/integrations/Cloudinary.tsx:16 - CloudinaryIntegration
+apps/web/src/components/integrations/Cloudinary.tsx:24 - CldImage (used in module)
+apps/web/src/components/integrations/Cloudinary.tsx:24 - CldVideo (used in module)
+apps/web/src/components/integrations/ConsentGate.tsx:5 - default
+apps/web/src/components/integrations/HCaptcha.tsx:27 - HCaptcha (used in module)
+apps/web/src/components/integrations/index.tsx:10 - IntegrationsLoader
+apps/web/src/components/integrations/LiveVisitors.tsx:7 - default
+apps/web/src/components/integrations/Lottie.tsx:11 - LottieIntegration
+apps/web/src/components/integrations/Lottie.tsx:19 - LottiePlayer (used in module)
+apps/web/src/components/motion/FadeIn.tsx:5 - default
+apps/web/src/components/motion/InViewReveal.tsx:11 - default
+apps/web/src/components/motion/StaggerList.tsx:11 - default
+apps/web/src/components/nomad/AdMobIntegration.tsx:91 - showInterstitialAd
+apps/web/src/components/nomad/AdPlacement.tsx:15 - AdPlacement
+apps/web/src/components/nomad/FamilyFeedCard.tsx:19 - FamilyFeedCard
+apps/web/src/components/nomad/GroceryListCard.tsx:18 - GroceryListCard
+apps/web/src/components/nomad/HealthMetricsCard.tsx:17 - HealthMetricsCard
+apps/web/src/components/nomad/MealPlanCard.tsx:18 - MealPlanCard
+apps/web/src/components/nomad/RecipeSpotlightCard.tsx:20 - RecipeSpotlightCard
+apps/web/src/components/nomad/StreaksBadgesCard.tsx:26 - StreaksBadgesCard
+apps/web/src/components/privacy/ConsentOnboardingWizard.tsx:26 - ConsentOnboardingWizard
+apps/web/src/components/privacy/ConsentPanel.tsx:2 - default
+apps/web/src/components/privacy/PrivacyHUD.tsx:19 - PrivacyHUD
+apps/web/src/components/programs/ConversionTracker.tsx:19 - ConversionTracker
+apps/web/src/components/programs/ProgramStats.tsx:32 - ProgramStats
+apps/web/src/components/programs/ShareWidget.tsx:27 - ShareWidget
+apps/web/src/components/reco/RecoDrawer.tsx:4 - default
+apps/web/src/components/sections/FeaturesSection.tsx:30 - default
+apps/web/src/components/sections/HeroSection.tsx:8 - default
+apps/web/src/components/sections/TestimonialsSection.tsx:24 - default
+apps/web/src/components/social/AvatarStack.tsx:1 - default
+apps/web/src/components/social/CommentSection.tsx:6 - default
+apps/web/src/components/social/FamilyCookOff.tsx:9 - default
+apps/web/src/components/social/FriendsList.tsx:6 - default
+apps/web/src/components/social/LiveCookingFeed.tsx:7 - default
+apps/web/src/components/social/ReactionBar.tsx:7 - default
+apps/web/src/components/social/ShareButton.tsx:2 - default
+apps/web/src/components/social/StartCookingActivity.tsx:8 - default
+apps/web/src/components/ui/animated-card.tsx:65 - AnimatedCardWrapper
+apps/web/src/components/ui/animated-card.tsx:13 - AnimatedCard (used in module)
+apps/web/src/components/ui/badge.tsx:26 - BadgeProps (used in module)
+apps/web/src/components/ui/badge.tsx:36 - badgeVariants (used in module)
+apps/web/src/components/ui/button.tsx:35 - ButtonProps (used in module)
+apps/web/src/components/ui/button.tsx:55 - buttonVariants (used in module)
+apps/web/src/components/ui/dialog.tsx:107 - Dialog (used in module)
+apps/web/src/components/ui/dialog.tsx:108 - DialogPortal (used in module)
+apps/web/src/components/ui/dialog.tsx:109 - DialogOverlay (used in module)
+apps/web/src/components/ui/dialog.tsx:110 - DialogClose (used in module)
+apps/web/src/components/ui/dialog.tsx:111 - DialogTrigger (used in module)
+apps/web/src/components/ui/dialog.tsx:112 - DialogContent (used in module)
+apps/web/src/components/ui/dialog.tsx:113 - DialogHeader (used in module)
+apps/web/src/components/ui/dialog.tsx:114 - DialogFooter (used in module)
+apps/web/src/components/ui/dialog.tsx:115 - DialogTitle (used in module)
+apps/web/src/components/ui/dialog.tsx:116 - DialogDescription (used in module)
+apps/web/src/components/ui/input.tsx:4 - InputProps (used in module)
+apps/web/src/components/ui/loading-spinner.tsx:39 - LoadingOverlay
+apps/web/src/components/ui/progress-bar.tsx:15 - ProgressBar
+apps/web/src/components/ui/sheet.tsx:125 - Sheet (used in module)
+apps/web/src/components/ui/sheet.tsx:126 - SheetPortal (used in module)
+apps/web/src/components/ui/sheet.tsx:127 - SheetOverlay (used in module)
+apps/web/src/components/ui/sheet.tsx:128 - SheetTrigger (used in module)
+apps/web/src/components/ui/sheet.tsx:129 - SheetClose (used in module)
+apps/web/src/components/ui/sheet.tsx:130 - SheetContent (used in module)
+apps/web/src/components/ui/sheet.tsx:131 - SheetHeader (used in module)
+apps/web/src/components/ui/sheet.tsx:132 - SheetFooter (used in module)
+apps/web/src/components/ui/sheet.tsx:133 - SheetTitle (used in module)
+apps/web/src/components/ui/sheet.tsx:134 - SheetDescription (used in module)
+apps/web/src/components/ui/switch.tsx:26 - Switch (used in module)
+apps/web/src/components/ui/tabs.tsx:53 - Tabs (used in module)
+apps/web/src/components/ui/tabs.tsx:53 - TabsList (used in module)
+apps/web/src/components/ui/tabs.tsx:53 - TabsTrigger (used in module)
+apps/web/src/components/ui/tabs.tsx:53 - TabsContent (used in module)
+apps/web/src/components/ui/textarea.tsx:4 - TextareaProps (used in module)
+apps/web/src/components/ui/textarea.tsx:22 - Textarea (used in module)
+apps/web/src/components/ui/toast.tsx:117 - ToastProps (used in module)
+apps/web/src/components/ui/toast.tsx:118 - ToastActionElement (used in module)
+apps/web/src/components/ui/toast.tsx:119 - ToastProvider (used in module)
+apps/web/src/components/ui/toast.tsx:120 - ToastViewport (used in module)
+apps/web/src/components/ui/toast.tsx:121 - Toast (used in module)
+apps/web/src/components/ui/toast.tsx:122 - ToastTitle (used in module)
+apps/web/src/components/ui/toast.tsx:123 - ToastDescription (used in module)
+apps/web/src/components/ui/toast.tsx:124 - ToastClose (used in module)
+apps/web/src/components/ui/toast.tsx:125 - ToastAction (used in module)
+apps/web/src/components/ui/toaster.tsx:70 - reducer (used in module)
+apps/web/src/components/ui/toaster.tsx:206 - useToast (used in module)
+apps/web/src/components/ui/toaster.tsx:206 - toast (used in module)
+apps/web/src/components/ui/toaster.tsx:206 - Toaster (used in module)
+apps/web/src/components/wiki/ChatBot.tsx:25 - default
+apps/web/src/hooks/nomad/useNomadData.ts:6 - useUserProfile
+apps/web/src/hooks/nomad/useNomadData.ts:17 - useUpdateUserProfile
+apps/web/src/hooks/nomad/useNomadData.ts:37 - useMealPlans
+apps/web/src/hooks/nomad/useNomadData.ts:52 - useCreateMealPlan
+apps/web/src/hooks/nomad/useNomadData.ts:71 - useDeleteMealPlan
+apps/web/src/hooks/nomad/useNomadData.ts:89 - useRecipes
+apps/web/src/hooks/nomad/useNomadData.ts:111 - useAIRecipeRecommendations
+apps/web/src/hooks/nomad/useNomadData.ts:131 - useNutritionData
+apps/web/src/hooks/nomad/useNomadData.ts:149 - useFamily
+apps/web/src/hooks/nomad/useNomadData.ts:160 - useFamilyChat (used in module)
+apps/web/src/hooks/nomad/useNomadData.ts:174 - useSendFamilyMessage
+apps/web/src/hooks/nomad/useNomadData.ts:196 - useRealtimeFamilyChat (used in module)
+apps/web/src/lib/agent/events.ts:1 - track
+apps/web/src/lib/agent/feature-extract.ts:3 - computeSignalsForUser
+apps/web/src/lib/agent/recommender.ts:12 - makeRecommendations
+apps/web/src/lib/agent/recommender.ts:65 - persistRecommendations
+apps/web/src/lib/agents/ethicsAgent.ts:9 - SafetyViolation (used in module)
+apps/web/src/lib/agents/ethicsAgent.ts:23 - ComplianceCheck (used in module)
+apps/web/src/lib/agents/ethicsAgent.ts:31 - EthicalGuideline (used in module)
+apps/web/src/lib/agents/healAgent.ts:10 - CodeIssue (used in module)
+apps/web/src/lib/agents/healAgent.ts:20 - RepairResult (used in module)
+apps/web/src/lib/agents/insightAgent.ts:10 - KPIMetrics (used in module)
+apps/web/src/lib/agents/insightAgent.ts:19 - OptimizationSuggestion (used in module)
+apps/web/src/lib/auth/apple-sign-in.ts:24 - signInWithApple
+apps/web/src/lib/auth/apple-sign-in.ts:50 - isAppleSignInAvailable
+apps/web/src/lib/auth/apple-sign-in.ts:57 - linkAppleSignInToSupabase
+apps/web/src/lib/auth/apple-sign-in.ts:8 - AppleSignInResult (used in module)
+apps/web/src/lib/capacitor/att-prompt.ts:15 - requestATTPermission
+apps/web/src/lib/capacitor/att-prompt.ts:38 - getATTStatus
+apps/web/src/lib/capacitor/att-prompt.ts:56 - shouldShowATTRationale
+apps/web/src/lib/capacitor/att-prompt.ts:64 - markATTRationaleShown
+apps/web/src/lib/capacitor/deep-links.ts:40 - openInAppBrowser
+apps/web/src/lib/capacitor/deep-links.ts:55 - getLaunchUrl (used in module)
+apps/web/src/lib/capacitor/deep-links.ts:67 - navigateFromDeepLink
+apps/web/src/lib/capacitor/deep-links.ts:9 - DeepLinkData (used in module)
+apps/web/src/lib/capacitor/init.ts:21 - initializeCapacitor
+apps/web/src/lib/capacitor/init.ts:109 - cleanupCapacitor
+apps/web/src/lib/capacitor/push-notifications.ts:19 - requestPushPermission
+apps/web/src/lib/capacitor/push-notifications.ts:102 - getPushToken
+apps/web/src/lib/capacitor/push-notifications.ts:109 - unregisterPushNotifications
+apps/web/src/lib/capacitor/push-notifications.ts:9 - PushToken (used in module)
+apps/web/src/lib/capacitor/secure-storage.ts:13 - setSecure (used in module)
+apps/web/src/lib/capacitor/secure-storage.ts:28 - getSecure (used in module)
+apps/web/src/lib/capacitor/secure-storage.ts:41 - removeSecure (used in module)
+apps/web/src/lib/capacitor/secure-storage.ts:52 - setAuthToken
+apps/web/src/lib/capacitor/secure-storage.ts:59 - getAuthToken
+apps/web/src/lib/capacitor/secure-storage.ts:66 - clearAuthToken
+apps/web/src/lib/capacitor/secure-storage.ts:73 - setRefreshToken
+apps/web/src/lib/capacitor/secure-storage.ts:80 - getRefreshToken
+apps/web/src/lib/monetization/index.ts:11 - MONETIZATION_MODE (used in module)
+apps/web/src/lib/monetization/index.ts:16 - Product (used in module)
+apps/web/src/lib/monetization/index.ts:25 - PurchaseResult (used in module)
+apps/web/src/lib/monetization/index.ts:168 - monetization
+apps/web/src/lib/monetization/native-billing.ts:10 - NativeProduct (used in module)
+apps/web/src/lib/monetization/native-billing.ts:18 - PurchaseTransaction (used in module)
+apps/web/src/lib/monetization/revenuecat.ts:8 - Product (used in module)
+apps/web/src/lib/monetization/revenuecat.ts:17 - PurchaseResult (used in module)
+apps/web/src/lib/monetization/revenuecat.ts:23 - Entitlement (used in module)
+apps/web/src/lib/nomad/external-apis.ts:27 - getNutritionFromBarcode (used in module)
+apps/web/src/lib/nomad/external-apis.ts:65 - getNutritionFromEdamam (used in module)
+apps/web/src/lib/nomad/external-apis.ts:104 - getNutritionFromNutritionix (used in module)
+apps/web/src/lib/nomad/external-apis.ts:163 - getNutritionData
+apps/web/src/lib/nomad/external-apis.ts:196 - initGoogleFitAuth
+apps/web/src/lib/nomad/external-apis.ts:214 - syncGoogleFitData
+apps/web/src/lib/nomad/external-apis.ts:268 - syncAppleHealthData
+apps/web/src/lib/nomad/external-apis.ts:288 - initAdMob
+apps/web/src/lib/nomad/external-apis.ts:304 - loadAdMobBanner
+apps/web/src/lib/nomad/external-apis.ts:318 - showAdMobInterstitial
+apps/web/src/lib/nomad/external-apis.ts:333 - isAPIConfigured
+apps/web/src/lib/nomad/realtime.ts:10 - useRealtimeFamilyChat
+apps/web/src/lib/nomad/realtime.ts:57 - useRealtimeFamilyActivity
+apps/web/src/lib/nomad/realtime.ts:103 - useRealtimeGroceryList
+apps/web/src/lib/nomad/realtime.ts:149 - useRealtimeMealPlans
+apps/web/src/lib/offline/db.ts:1 - idb (used in module)
+apps/web/src/lib/offline/sync.ts:3 - syncUp
+apps/web/src/lib/offline/sync.ts:9 - syncDown
+apps/web/src/lib/optimization/ab-testing.ts:22 - getVariant
+apps/web/src/lib/optimization/ab-testing.ts:48 - trackConversion
+apps/web/src/lib/optimization/ab-testing.ts:6 - ABTestVariant (used in module)
+apps/web/src/lib/optimization/ab-testing.ts:12 - ABTest (used in module)
+apps/web/src/lib/optimization/conversion-funnel.ts:24 - trackFunnelStage
+apps/web/src/lib/optimization/conversion-funnel.ts:57 - getFunnelMetrics
+apps/web/src/lib/optimization/conversion-funnel.ts:76 - identifyDropOffs
+apps/web/src/lib/optimization/conversion-funnel.ts:6 - FunnelStage (used in module)
+apps/web/src/lib/optimization/conversion-funnel.ts:15 - FunnelEvent
+apps/web/src/lib/performance/code-splitting.tsx:14 - createLazyComponent
+apps/web/src/lib/performance/code-splitting.tsx:48 - SuspenseWrapper
+apps/web/src/lib/performance/code-splitting.tsx:86 - preloadComponent (used in module)
+apps/web/src/lib/performance/code-splitting.tsx:109 - preloadComponents
+apps/web/src/lib/performance/prefetch.ts:8 - PrefetchConfig
+apps/web/src/lib/performance/prefetch.ts:219 - intelligentPrefetcher (used in module)
+apps/web/src/lib/privacy/mfa-middleware.ts:26 - generateElevatedSessionToken (used in module)
+apps/web/src/lib/privacy/mfa-middleware.ts:33 - createElevatedSession (used in module)
+apps/web/src/lib/privacy/mfa-middleware.ts:56 - verifyElevatedSession (used in module)
+apps/web/src/lib/privacy/mfa-middleware.ts:82 - requireMFA
+apps/web/src/lib/privacy/mfa-middleware.ts:158 - verifyMFAAndCreateSession
+apps/web/src/lib/privacy/mfa-middleware.ts:188 - cleanupExpiredMfaSessions
+apps/web/src/lib/privacy/mfa-middleware.ts:14 - ElevatedSession
+apps/web/src/lib/privacy/observability.ts:24 - getPrivacyHealthMetrics (used in module)
+apps/web/src/lib/privacy/observability.ts:57 - generatePrivacyHealthReport
+apps/web/src/lib/privacy/redaction.ts:39 - redactMetadata (used in module)
+apps/web/src/lib/privacy/redaction.ts:72 - hashIdentifier
+apps/web/src/lib/privacy/redaction.ts:86 - validateTelemetryEvent (used in module)
+apps/web/src/lib/privacy/redaction.ts:120 - shouldSample (used in module)
+apps/web/src/lib/privacy/redaction.ts:171 - processTelemetryEvent
+apps/web/src/lib/privacy/redaction.ts:6 - TelemetryEvent (used in module)
+apps/web/src/lib/privacy/redaction.ts:127 - TelemetryRateLimiter (used in module)
+apps/web/src/lib/programs/tracking.ts:16 - trackProgramEvent (used in module)
+apps/web/src/lib/programs/tracking.ts:37 - getAttributionCode
+apps/web/src/lib/programs/tracking.ts:53 - setAttributionCode
+apps/web/src/lib/programs/tracking.ts:63 - handleAttributionOnSignup
+apps/web/src/lib/programs/tracking.ts:82 - trackReferralClick
+apps/web/src/lib/programs/tracking.ts:101 - trackAffiliateClick
+apps/web/src/lib/programs/tracking.ts:6 - ProgramType (used in module)
+apps/web/src/lib/programs/tracking.ts:7 - EventType (used in module)
+apps/web/src/lib/services/cost-calculator.ts:64 - getIngredientPrice (used in module)
+apps/web/src/lib/services/cost-calculator.ts:204 - getRecipeCost (used in module)
+apps/web/src/lib/services/cost-calculator.ts:232 - getCostPerServing
+apps/web/src/lib/services/cost-calculator.ts:243 - getMealPlanCost
+apps/web/src/lib/services/cost-calculator.ts:259 - compareRecipeCosts
+apps/web/src/lib/services/cost-calculator.ts:282 - calculateSavingsVsEatingOut
+apps/web/src/lib/services/meal-plan-generator.ts:50 - generateWeeklyMealPlan
+apps/web/src/lib/services/meal-plan-generator.ts:9 - MealPlanPreferences (used in module)
+apps/web/src/lib/services/meal-plan-generator.ts:18 - MealPlanDay (used in module)
+apps/web/src/lib/services/meal-plan-generator.ts:26 - WeeklyMealPlan (used in module)
+apps/web/src/lib/services/meal-plan-generator.ts:39 - ShoppingListItem (used in module)
+apps/web/src/lib/services/nutrition-service.ts:45 - searchUSDAFoods (used in module)
+apps/web/src/lib/services/nutrition-service.ts:71 - getFoodNutrition (used in module)
+apps/web/src/lib/services/nutrition-service.ts:154 - getIngredientNutrition (used in module)
+apps/web/src/lib/services/nutrition-service.ts:318 - isNutritionVerified
+apps/web/src/lib/services/pantry-intelligence.ts:24 - getDaysUntilExpiration (used in module)
+apps/web/src/lib/services/pantry-intelligence.ts:39 - getExpirationUrgency (used in module)
+apps/web/src/lib/services/pantry-intelligence.ts:49 - getExpiringItems (used in module)
+apps/web/src/lib/services/pantry-intelligence.ts:86 - getUseSoonItems
+apps/web/src/lib/services/pantry-intelligence.ts:96 - suggestRecipesForExpiringItems
+apps/web/src/lib/services/pantry-intelligence.ts:110 - calculateWasteReduction (used in module)
+apps/web/src/lib/services/pantry-intelligence.ts:167 - estimateExpirationDate
+apps/web/src/lib/services/pantry-intelligence.ts:224 - getPantryEfficiencyScore
+apps/web/src/lib/services/pantry-intelligence.ts:6 - PantryItem (used in module)
+apps/web/src/lib/services/pantry-intelligence.ts:16 - ExpiringItem (used in module)
+apps/web/src/lib/supabase/client.ts:2 - supabase
+apps/web/src/lib/supabase/server.ts:4 - createClient
+apps/web/src/lib/telemetry/track.ts:1 - track
+apps/web/src/lib/types/programs.ts:7 - ReferralStats
+apps/web/src/lib/types/programs.ts:14 - Referral
+apps/web/src/lib/types/programs.ts:32 - ReferralReward
+apps/web/src/lib/types/programs.ts:44 - AffiliateStats
+apps/web/src/lib/types/programs.ts:52 - Affiliate
+apps/web/src/lib/types/programs.ts:75 - AffiliateConversion
+apps/web/src/lib/types/programs.ts:90 - Partner
+apps/web/src/lib/types/programs.ts:111 - PartnerRevenueShare
+apps/web/src/lib/types/programs.ts:126 - ProgramType
+apps/web/src/lib/types/programs.ts:128 - ProgramStatus
+apps/web/src/lib/wiki/auto-update.ts:13 - AutoUpdateConfig (used in module)
+apps/web/src/lib/wiki/auto-update.ts:22 - WikiAutoUpdate (used in module)
+apps/web/src/lib/wiki/auto-update.ts:312 - wikiAutoUpdate
+packages/ui/src/components/Badge/Badge.native.tsx:10 - Badge
+packages/ui/src/components/Badge/Badge.native.tsx:5 - BadgeProps (used in module)
+packages/ui/src/components/Badge/index.ts:2 - Badge
+packages/ui/src/components/Badge/index.ts:3 - BadgeProps
+packages/ui/src/components/Button/Button.native.tsx:16 - Button
+packages/ui/src/components/Button/Button.native.tsx:5 - ButtonProps (used in module)
+packages/ui/src/components/Button/index.ts:1 - Button
+packages/ui/src/components/Button/index.ts:2 - ButtonProps
+packages/ui/src/components/Card/Card.native.tsx:14 - Card
+packages/ui/src/components/Card/Card.native.tsx:5 - CardProps (used in module)
+packages/ui/src/components/Card/Card.tsx:2 - Card
+packages/ui/src/components/Card/Card.tsx:3 - CardProps
+packages/ui/src/components/Card/index.ts:12 - Card
+packages/ui/src/components/Card/index.ts:4 - CardProps
+packages/ui/src/components/Icon/Icon.native.tsx:11 - Icon
+packages/ui/src/components/Icon/Icon.native.tsx:5 - IconProps (used in module)
+packages/ui/src/components/Icon/index.ts:2 - Icon
+packages/ui/src/components/Icon/index.ts:3 - IconProps
+packages/ui/src/components/Image/Image.native.tsx:10 - Image (used in module)
+packages/ui/src/components/Image/Image.native.tsx:5 - ImageProps (used in module)
+packages/ui/src/components/Image/index.ts:2 - Image
+packages/ui/src/components/Image/index.ts:3 - ImageProps
+packages/ui/src/components/Input/index.ts:2 - Input
+packages/ui/src/components/Input/index.ts:3 - InputProps
+packages/ui/src/components/Input/Input.native.tsx:18 - Input
+packages/ui/src/components/Input/Input.native.tsx:5 - InputProps (used in module)
+packages/ui/src/components/SafeAreaView/index.ts:2 - SafeAreaView
+packages/ui/src/components/SafeAreaView/index.ts:3 - SafeAreaViewProps
+packages/ui/src/components/SafeAreaView/SafeAreaView.native.tsx:10 - SafeAreaView
+packages/ui/src/components/SafeAreaView/SafeAreaView.native.tsx:5 - SafeAreaViewProps (used in module)
+packages/ui/src/components/Skeleton/index.ts:2 - Skeleton
+packages/ui/src/components/Skeleton/index.ts:3 - SkeletonProps
+packages/ui/src/components/Skeleton/Skeleton.native.tsx:10 - Skeleton
+packages/ui/src/components/Skeleton/Skeleton.native.tsx:5 - SkeletonProps (used in module)
+packages/ui/src/components/Text/index.ts:1 - Text
+packages/ui/src/components/Text/index.ts:2 - TextProps
+packages/ui/src/components/Text/Text.native.tsx:12 - Text (used in module)
+packages/ui/src/components/Text/Text.native.tsx:4 - TextProps (used in module)
+packages/ui/src/components/ThemeToggle/index.ts:9 - ThemeToggle
+packages/ui/src/components/ThemeToggle/index.ts:5 - ThemeToggleProps
+packages/ui/src/components/ThemeToggle/ThemeToggle.native.tsx:11 - ThemeToggle
+packages/ui/src/components/ThemeToggle/ThemeToggle.native.tsx:6 - ThemeToggleProps (used in module)
+packages/ui/src/components/View/index.ts:2 - View
+packages/ui/src/components/View/index.ts:3 - ViewProps
+packages/ui/src/components/View/View.native.tsx:10 - View (used in module)
+packages/ui/src/components/View/View.native.tsx:5 - ViewProps (used in module)
+whats-for-dinner/src/app/admin/agents/page.tsx:39 - default
+whats-for-dinner/src/app/admin/analytics/page.tsx:40 - default
+whats-for-dinner/src/app/admin/billing/page.tsx:43 - default
+whats-for-dinner/src/app/admin/copywriter/page.tsx:6 - default
+whats-for-dinner/src/app/admin/experiments/page.tsx:27 - default
+whats-for-dinner/src/app/admin/funnel/page.tsx:20 - default
+whats-for-dinner/src/app/admin/performance/page.tsx:60 - default
+whats-for-dinner/src/app/admin/revenue/page.tsx:34 - default
+whats-for-dinner/src/app/admin/settings/page.tsx:49 - default
+whats-for-dinner/src/app/admin/social/page.tsx:11 - default
+whats-for-dinner/src/app/admin/system/metrics.tsx:36 - default
+whats-for-dinner/src/app/admin/users/page.tsx:48 - default
+whats-for-dinner/src/app/api/alerts/route.ts:4 - GET
+whats-for-dinner/src/app/api/alerts/route.ts:39 - PATCH
+whats-for-dinner/src/app/api/errors/route.ts:4 - GET
+whats-for-dinner/src/app/api/federation/route.ts:16 - POST
+whats-for-dinner/src/app/api/federation/route.ts:75 - GET
+whats-for-dinner/src/app/api/feedback/route.ts:23 - POST
+whats-for-dinner/src/app/api/feedback/route.ts:228 - GET
+whats-for-dinner/src/app/api/health/route.ts:3 - GET
+whats-for-dinner/src/app/api/logs/route.ts:4 - GET
+whats-for-dinner/src/app/api/metrics/route.ts:4 - GET
+whats-for-dinner/src/app/api/metrics/route.ts:60 - POST
+whats-for-dinner/src/app/api/performance/route.ts:4 - GET
+whats-for-dinner/src/app/api/performance/route.ts:30 - POST
+whats-for-dinner/src/app/api/traces/route.ts:4 - GET
+whats-for-dinner/src/app/partners/portal/page.tsx:50 - default
+nomad/apps/web/src/app/app/page.tsx:6 - default
+nomad/apps/web/src/app/login/page.tsx:6 - default
+nomad/apps/mobile/src/app/(tabs)/_layout.tsx:4 - default
+nomad/apps/mobile/src/app/(tabs)/index.tsx:19 - default
+apps/web/app/admin/(console)/wiring/page.tsx:40 - default
+apps/web/app/api/_sandbox/partner-webhook/route.ts:29 - POST
+apps/web/app/api/_sandbox/payments-webhook/route.ts:36 - POST
+apps/web/app/api/_sandbox/payments-webhook/route.ts:99 - GET
+apps/web/src/app/(marketing)/blog/page.tsx:80 - default
+apps/web/src/app/(marketing)/for-churches/page.tsx:22 - default
+apps/web/src/app/(marketing)/for-corporate/page.tsx:22 - default
+apps/web/src/app/(marketing)/for-families/page.tsx:25 - default
+apps/web/src/app/(marketing)/for-fitness/page.tsx:22 - default
+apps/web/src/app/(marketing)/for-healthcare/page.tsx:22 - default
+apps/web/src/app/(marketing)/for-schools/page.tsx:22 - default
+apps/web/src/app/(marketing)/for-seniors/page.tsx:22 - default
+apps/web/src/app/(marketing)/for-wellness/page.tsx:22 - default
+apps/web/src/app/(marketing)/home/page.tsx:41 - default
+apps/web/src/app/(marketing)/homepage-demo/page.tsx:6 - default
+apps/web/src/app/(marketing)/landing-A/page.tsx:359 - default
+apps/web/src/app/(marketing)/landing-B/page.tsx:374 - default
+apps/web/src/app/(marketing)/landing-C/page.tsx:369 - default
+apps/web/src/app/(marketing)/privacy/page.tsx:5 - default
+apps/web/src/app/(marketing)/roadmap/page.tsx:88 - default
+apps/web/src/app/(marketing)/subscriptions/page.tsx:5 - default
+apps/web/src/app/(marketing)/terms/page.tsx:5 - default
+apps/web/src/app/(marketing)/vs-competitors/page.tsx:10 - default
+apps/web/src/app/(marketing)/vs-competitors/page.tsx:4 - metadata
+apps/web/src/app/account/audit-log/page.tsx:21 - default
+apps/web/src/app/account/audit-log/page.tsx:8 - metadata
+apps/web/src/app/account/delete/page.tsx:26 - default
+apps/web/src/app/account/export/page.tsx:13 - default
+apps/web/src/app/account/export/page.tsx:8 - metadata
+apps/web/src/app/admin/wiki/page.tsx:24 - default
+apps/web/src/app/api/alerts/route.ts:39 - PATCH
+apps/web/src/app/api/chat/route.ts:10 - POST
+apps/web/src/app/api/export/route.ts:6 - runtime
+apps/web/src/app/api/feedback/route.ts:6 - runtime
+apps/web/src/app/api/ingest/route.ts:3 - runtime
+apps/web/src/app/dashboard/trust/page.tsx:12 - default
+apps/web/src/app/guardian/onboarding/page.tsx:48 - default
+apps/web/src/app/nomad/cooking/page.tsx:12 - default
+apps/web/src/app/nomad/dashboard/page.tsx:34 - default
+apps/web/src/app/nomad/health-tracker/page.tsx:11 - default
+apps/web/src/app/nomad/meal-planner/page.tsx:27 - default
+apps/web/src/app/nomad/onboarding/page.tsx:29 - default
+apps/web/src/app/partners/portal/page.tsx:50 - default
+apps/web/src/app/privacy/onboarding/page.tsx:3 - default
+apps/web/src/app/privacy/requests/page.tsx:22 - default
+apps/web/src/app/r/[code]/page.tsx:6 - default
+apps/web/src/app/r/[token]/route.ts:17 - GET
+apps/web/src/app/settings/billing/page.tsx:63 - default
+apps/web/src/app/settings/legal/page.tsx:5 - default
+apps/web/src/app/settings/privacy/page.tsx:23 - default
+apps/web/src/lib/reco/whatsfordinner/engine.ts:3 - recoForWhatsForDinner
+whats-for-dinner/src/app/api/billing/checkout/route.ts:7 - POST
+whats-for-dinner/src/app/api/billing/portal/route.ts:6 - POST
+whats-for-dinner/src/app/api/commerce/hub/route.ts:20 - POST
+whats-for-dinner/src/app/api/commerce/hub/route.ts:97 - GET
+whats-for-dinner/src/app/api/developers/keys/route.ts:16 - GET
+whats-for-dinner/src/app/api/developers/keys/route.ts:53 - POST
+whats-for-dinner/src/app/api/developers/usage/route.ts:5 - GET
+whats-for-dinner/src/app/api/i18n/translations/route.ts:16 - GET
+whats-for-dinner/src/app/api/i18n/translations/route.ts:61 - POST
+whats-for-dinner/src/app/api/i18n/translations/route.ts:136 - PUT
+whats-for-dinner/src/app/api/i18n/translations/route.ts:175 - DELETE
+whats-for-dinner/src/app/api/observability/alerts/route.ts:4 - GET
+whats-for-dinner/src/app/api/observability/alerts/route.ts:81 - PATCH
+whats-for-dinner/src/app/api/observability/dashboard/route.ts:5 - GET
+whats-for-dinner/src/app/api/observability/errors/route.ts:4 - GET
+whats-for-dinner/src/app/api/observability/health/route.ts:4 - GET
+whats-for-dinner/src/app/api/observability/logs/route.ts:4 - GET
+whats-for-dinner/src/app/api/observability/metrics/route.ts:4 - GET
+whats-for-dinner/src/app/api/observability/report/route.ts:6 - GET
+whats-for-dinner/src/app/api/observability/traces/route.ts:4 - GET
+whats-for-dinner/src/app/api/partners/revenue/route.ts:5 - GET
+whats-for-dinner/src/app/api/partners/stats/route.ts:5 - GET
+whats-for-dinner/src/app/api/performance/optimize/route.ts:4 - POST
+whats-for-dinner/src/app/api/performance/recommendations/route.ts:4 - GET
+whats-for-dinner/src/app/api/stripe/webhook/route.ts:6 - POST
+whats-for-dinner/src/app/api/support/chat/route.ts:5 - POST
+apps/web/src/app/(marketing)/blog/[slug]/page.tsx:117 - default
+apps/web/src/app/admin/(console)/costs/page.tsx:45 - default
+apps/web/src/app/admin/(console)/dashboard/page.tsx:26 - default
+apps/web/src/app/admin/(console)/governance/page.tsx:19 - default
+apps/web/src/app/admin/(console)/incidents/page.tsx:27 - default
+apps/web/src/app/admin/(console)/moderation/page.tsx:24 - default
+apps/web/src/app/api/agent/suggest/route.ts:5 - runtime
+apps/web/src/app/api/audit/me/route.ts:6 - runtime
+apps/web/src/app/api/billing/invoice/route.ts:10 - GET
+apps/web/src/app/api/billing/refund/route.ts:15 - POST
+apps/web/src/app/api/billing/refund/route.ts:141 - GET
+apps/web/src/app/api/email/program-welcome/route.ts:10 - POST
+apps/web/src/app/api/gdpr/delete/route.ts:10 - DELETE
+apps/web/src/app/api/nomad/mealplan/route.ts:97 - DELETE
+apps/web/src/app/api/observability/alerts/route.ts:81 - PATCH
+apps/web/src/app/api/privacy/consent/route.ts:157 - POST_MFA_VERIFY
+apps/web/src/app/api/privacy/consent/route.ts:187 - POST_APPS
+apps/web/src/app/api/privacy/consent/route.ts:250 - POST_SIGNALS
+apps/web/src/app/api/privacy/consent/route.ts:313 - POST_EXPORT
+apps/web/src/app/api/privacy/consent/route.ts:380 - POST_DELETE
+apps/web/src/app/api/privacy/consent/route.ts:425 - GET_LOG
+apps/web/src/app/api/privacy/consent/route.ts:464 - GET_PREFS
+apps/web/src/app/api/programs/analytics/route.ts:10 - GET
+apps/web/src/app/api/programs/attribution/route.ts:12 - GET
+apps/web/src/app/api/programs/attribution/route.ts:72 - POST
+apps/web/src/app/api/programs/track/route.ts:10 - POST
+apps/web/src/app/api/reco/whatsfordinner/route.ts:3 - runtime
+apps/web/src/app/api/support/ticket/route.ts:10 - POST
+apps/web/src/app/api/support/ticket/route.ts:66 - GET
+apps/web/src/app/api/telemetry/ingest/route.ts:2 - runtime
+apps/web/src/app/api/user/me/route.ts:47 - PATCH
+apps/web/src/app/nomad/family/chat/page.tsx:10 - default
+apps/web/src/app/settings/account/delete/page.tsx:6 - default
+apps/web/src/app/settings/account/profile/page.tsx:3 - default
+whats-for-dinner/src/app/api/developers/keys/[id]/route.ts:12 - PATCH
+whats-for-dinner/src/app/api/developers/keys/[id]/route.ts:70 - DELETE
+whats-for-dinner/src/app/api/partners/v1/meal-plans/route.ts:31 - GET
+whats-for-dinner/src/app/api/partners/v1/meal-plans/route.ts:163 - POST
+whats-for-dinner/src/app/api/partners/v1/nutrition/route.ts:20 - POST
+whats-for-dinner/src/app/api/partners/v1/nutrition/route.ts:91 - GET
+whats-for-dinner/src/app/api/partners/v1/recipes/route.ts:38 - GET
+whats-for-dinner/src/app/api/partners/v1/recipes/route.ts:173 - POST
+whats-for-dinner/src/app/api/traces/[traceId]/spans/route.ts:4 - GET
+apps/web/src/app/admin/(console)/governance/controls/page.tsx:38 - default
+apps/web/src/app/api/admin/wiki/sync-markdown/route.ts:8 - POST
+apps/web/src/app/api/developers/keys/[id]/route.ts:11 - PATCH
+apps/web/src/app/api/developers/keys/[id]/route.ts:67 - DELETE
+apps/web/src/app/api/programs/rewards/distribute/route.ts:10 - POST

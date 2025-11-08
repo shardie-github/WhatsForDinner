@@ -22,7 +22,11 @@ export default {
       foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#ffffff"
     },
-    package: "com.hardonia.whatsfordinner"
+    package: "com.hardonia.whatsfordinner",
+    // Performance optimizations
+    enableHermes: true,
+    minifyEnabled: true,
+    shrinkResources: true
   },
   web: {
     favicon: "./assets/favicon.png",

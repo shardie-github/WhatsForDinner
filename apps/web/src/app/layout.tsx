@@ -38,15 +38,21 @@ if (typeof window !== 'undefined') {
   });
 }
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const inter = Inter({ 
+  subsets: ['latin'], 
+  variable: '--font-sans',
+  display: 'swap'
+});
 const poppins = Poppins({ 
   subsets: ['latin'], 
   weight: ['400', '500', '600', '700'],
-  variable: '--font-display' 
+  variable: '--font-display',
+  display: 'swap'
 });
 const playfair = Playfair_Display({ 
   subsets: ['latin'], 
-  variable: '--font-serif' 
+  variable: '--font-serif',
+  display: 'swap'
 });
 
 export const metadata: Metadata = {
