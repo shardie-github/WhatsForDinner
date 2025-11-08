@@ -36,6 +36,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   
+  // Security: Remove X-Powered-By header
+  generateEtags: true,
+  
+  // Performance: Optimize production builds
+  swcMinify: true,
+  
+  // Performance: Enable static page generation optimization
+  optimizeFonts: true,
+  
   // Phase 2: Bundle optimization with code splitting
   webpack: (config, { isServer, dev, webpack }) => {
     if (!isServer && !dev) {
@@ -140,7 +149,15 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
           },
         ],
       },
