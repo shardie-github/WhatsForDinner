@@ -48,9 +48,13 @@ class AISelfDiagnose {
   private projectRef: string;
 
   constructor() {
-    this.projectRef = process.env.SUPABASE_PROJECT_REF || 'ghqyxhbyyirveptgwoqm';
+    // Extract project ref from URL or use explicit env var
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const urlMatch = supabaseUrl?.match(/https:\/\/([^.]+)\.supabase\.co/);
+    this.projectRef = process.env.SUPABASE_PROJECT_REF || urlMatch?.[1] || '';
+    
     this.supabase = createClient(
-      process.env.SUPABASE_URL || `https://${this.projectRef}.supabase.co`,
+      supabaseUrl || `https://${this.projectRef}.supabase.co`,
       process.env.SUPABASE_ANON_KEY || ''
     );
     
