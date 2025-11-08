@@ -101,8 +101,12 @@
     "mobile:sync": "cd apps/web && npx cap sync",
     "mobile:open:ios": "cd apps/web && npx cap open ios",
     "mobile:open:android": "cd apps/web && npx cap open android",
-    "db:generate": "cd packages/server && drizzle-kit generate",
-    "db:migrate": "cd packages/server && drizzle-kit migrate",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "smoke:test": "tsx scripts/smoke.ts",
+    "doctor": "tsx scripts/reality-check.ts",
     "queue:worker": "tsx packages/server/src/queue/index.ts",
     "dev:api": "next dev -p 3000",
     "dev:fastify": "tsx apps/api/src/server.ts",
@@ -210,7 +214,9 @@
     "pa11y-ci": "^3.1.0",
     "wait-on": "^7.2.0",
     "supabase": "^2.5.0",
-    "vercel": "^39.0.0"
+    "vercel": "^39.0.0",
+    "prisma": "^5.22.0",
+    "@prisma/client": "^5.22.0"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
