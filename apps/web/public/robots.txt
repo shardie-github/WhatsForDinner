@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
-Sitemap: https://your-domain.com/sitemap.xml
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+Sitemap: https://whatsfordinner.com/sitemap.xml

@@ -1,6 +1,13 @@
 import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 
+// Bundle analyzer (only when ANALYZE=true)
+const withBundleAnalyzer = process.env.ANALYZE === 'true'
+  ? require('@next/bundle-analyzer')({
+      enabled: true,
+    })
+  : (config: NextConfig) => config;
+
 const nextConfig: NextConfig = {
   output: 'export',
   transpilePackages: ["@whats-for-dinner/ui", "@whats-for-dinner/utils", "@whats-for-dinner/theme", "@whats-for-dinner/config"],
@@ -186,4 +193,5 @@ const configWithSentry = process.env.NEXT_PUBLIC_SENTRY_DSN || process.env.SENTR
     })
   : nextConfig;
 
-export default configWithSentry;
+// Apply bundle analyzer if enabled
+export default withBundleAnalyzer(configWithSentry);

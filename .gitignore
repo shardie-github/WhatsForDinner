@@ -92,3 +92,55 @@ logs
 tmp/
 temp/
 *.tmp
+
+# Bundle analyzer
+.next/analyze/
+.analyze/
+
+# Storybook
+storybook-static/
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Turbo
+.turbo/
+
+# PWA
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+
+# Environment files (additional)
+.env.test
+.env.production
+.env.staging
+
+# MacOS
+.AppleDouble
+.LSOverride
+
+# Windows
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
