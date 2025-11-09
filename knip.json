@@ -1,0 +1,9 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "ignore": [
+    ".github/workflows/final_assurance_release.yml"
+  ],
+  "ignoreDependencies": [
+    "@opentelemetry/exporter-otlp-http"
+  ]
+}
