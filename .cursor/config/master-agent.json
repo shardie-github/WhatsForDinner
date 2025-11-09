@@ -1,0 +1,72 @@
+{
+  "agentMode": "hardonia-global",
+  "autoRun": true,
+  "repoType": "monorepo",
+  "detectedStack": {
+    "web": "nextjs",
+    "mobile": "expo",
+    "backend": "supabase",
+    "deployment": "vercel",
+    "monorepo": "turborepo"
+  },
+  "agents": {
+    "reliability": {
+      "enabled": true,
+      "schedule": "0 */6 * * *",
+      "metricsStore": "supabase",
+      "alertThreshold": 3
+    },
+    "cost": {
+      "enabled": true,
+      "schedule": "0 0 * * *",
+      "providers": ["vercel", "supabase", "expo"],
+      "overrunThreshold": 0.1
+    },
+    "security": {
+      "enabled": true,
+      "schedule": "0 */12 * * *",
+      "sbomEnabled": true,
+      "licenseScan": true,
+      "vulnerabilityScan": true
+    },
+    "documentation": {
+      "enabled": true,
+      "schedule": "0 2 * * *",
+      "autoUpdate": true,
+      "intentLogging": true
+    },
+    "planning": {
+      "enabled": true,
+      "schedule": "0 3 * * 1",
+      "issueCreation": true,
+      "epicClustering": true
+    },
+    "observability": {
+      "enabled": true,
+      "schedule": "0 */1 * * *",
+      "telemetryEndpoint": "/api/metrics",
+      "dashboardRefresh": 60000
+    },
+    "reflection": {
+      "enabled": true,
+      "schedule": "0 4 * * *",
+      "selfEvaluation": true,
+      "optimizationSuggestions": true
+    }
+  },
+  "artifacts": {
+    "reliability": "/admin/reliability.json",
+    "compliance": "/admin/compliance.json",
+    "metrics": "/admin/metrics.jsx",
+    "intentLog": "/docs/intent-log.md",
+    "roadmap": "/roadmap/current-sprint.md",
+    "nextSteps": "/auto/next-steps.md",
+    "sbom": "/security/sbom.json"
+  },
+  "safety": {
+    "neverExposeSecrets": true,
+    "requireCI": true,
+    "preferPR": true,
+    "retainAudits": 3
+  }
+}

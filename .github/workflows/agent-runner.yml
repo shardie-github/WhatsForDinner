@@ -1,0 +1,73 @@
+name: Unified Agent Runner
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    # Allow manual triggering
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'agents/**'
+      - '.cursor/config/master-agent.json'
+      - 'package.json'
+
+jobs:
+  run-agents:
+    runs-on: ubuntu-latest
+    name: Run Unified Agent System
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git log analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Unified Agent
+        run: pnpm agent:run
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit agent artifacts
+        if: github.event_name == 'schedule'
+        run: |
+          git config --local user.email "agent@hardonia.dev"
+          git config --local user.name "Unified Agent"
+          git add admin/ security/ roadmap/ auto/ docs/intent-log.md .cursor/
+          git diff --staged --quiet || git commit -m "🤖 Agent cycle: autonomous improvements and monitoring"
+          git push || echo "No changes to commit"
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-artifacts
+          path: |
+            admin/*.json
+            admin/*.md
+            security/*.json
+            roadmap/*.md
+            auto/*.md
+            .cursor/agent-discoveries.md
+          retention-days: 30
