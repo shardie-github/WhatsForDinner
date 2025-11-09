@@ -1,18 +1,89 @@
 /**
  * Middleware for Automatic Monetization Tracking
  * Zero-effort tracking for affiliate links, API usage, and more
+ * Enhanced with Vercel security hardening: preview guards, admin protection, CSP
  */
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
+const ADMIN_PATHS = [/^\/admin(\/.*)?$/];
+const CSP_MODE: 'strict' | 'balanced' | 'loose' = (process.env.CSP_MODE as any) || 'balanced';
+const IMAGE_DOMAINS = (process.env.NEXT_PUBLIC_IMAGE_DOMAINS || 'images.unsplash.com,cdn.shopify.com').split(',').map(d => d.trim());
+const PREVIEW_REQUIRE_AUTH = process.env.PREVIEW_REQUIRE_AUTH !== 'false';
+
 export async function middleware(request: NextRequest) {
+  const url = request.nextUrl;
   const response = NextResponse.next();
 
-  // 1. Affiliate Link Tracking (Automatic)
-  const affiliateCode = request.nextUrl.searchParams.get('ref');
-  if (affiliateCode && request.nextUrl.pathname.startsWith('/')) {
+  // Detect preview environment
+  const isPreview = url.host.includes('-git-') || url.host.includes('-vercel.app') || process.env.VERCEL_ENV === 'preview';
+
+  // 1. Preview Environment Hardening
+  if (isPreview) {
+    // Add preview banner header (frontend can render if present)
+    response.headers.set('X-Preview-Env', 'true');
+
+    // Admin path protection in preview
+    const needsAdminGuard = ADMIN_PATHS.some(rx => rx.test(url.pathname));
+    if (needsAdminGuard && PREVIEW_REQUIRE_AUTH) {
+      const authHeader = request.headers.get('authorization') || '';
+      const adminAuthSecret = process.env.ADMIN_BASIC_AUTH; // Expected format: "user:pass" (base64 encoded in env)
+      
+      if (!adminAuthSecret) {
+        // No secret configured - deny access in preview
+        return new NextResponse('Protected in preview environment', {
+          status: 401,
+          headers: {
+            'WWW-Authenticate': 'Basic realm="Admin Preview"',
+            'X-Preview-Env': 'true',
+          },
+        });
+      }
+
+      // Basic auth check
+      if (!authHeader.startsWith('Basic ')) {
+        return new NextResponse('Unauthorized', {
+          status: 401,
+          headers: {
+            'WWW-Authenticate': 'Basic realm="Admin"',
+            'X-Preview-Env': 'true',
+          },
+        });
+      }
+
+      // Verify credentials (basic check - in production, use proper verification)
+      try {
+        const encoded = authHeader.replace('Basic ', '');
+        const decoded = Buffer.from(encoded, 'base64').toString('utf-8');
+        const [user, pass] = decoded.split(':');
+        const [expectedUser, expectedPass] = adminAuthSecret.split(':');
+        
+        if (user !== expectedUser || pass !== expectedPass) {
+          return new NextResponse('Unauthorized', {
+            status: 401,
+            headers: {
+              'WWW-Authenticate': 'Basic realm="Admin"',
+              'X-Preview-Env': 'true',
+            },
+          });
+        }
+      } catch {
+        return new NextResponse('Unauthorized', {
+          status: 401,
+          headers: {
+            'WWW-Authenticate': 'Basic realm="Admin"',
+            'X-Preview-Env': 'true',
+          },
+        });
+      }
+    }
+  }
+
+  // 2. Affiliate Link Tracking (Automatic)
+  const affiliateCode = url.searchParams.get('ref');
+  if (affiliateCode && url.pathname.startsWith('/')) {
     // Track affiliate click automatically
     try {
       const supabase = createClient();
@@ -32,7 +103,7 @@ export async function middleware(request: NextRequest) {
         });
 
         // Track click (async, don't block)
-        fetch(`${request.nextUrl.origin}/api/affiliate/track`, {
+        fetch(`${url.origin}/api/affiliate/track`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -46,8 +117,8 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 2. API Rate Limiting (Automatic)
-  if (request.nextUrl.pathname.startsWith('/api/v1/')) {
+  // 3. API Rate Limiting (Automatic)
+  if (url.pathname.startsWith('/api/v1/')) {
     const apiKey = request.headers.get('x-api-key');
     if (apiKey) {
       try {
@@ -82,7 +153,7 @@ export async function middleware(request: NextRequest) {
           // Track usage (async)
           supabase.from('api_usage').insert({
             key_id: key.id,
-            endpoint: request.nextUrl.pathname,
+            endpoint: url.pathname,
             requests_count: 1,
             created_at: new Date().toISOString(),
           }).catch(() => {});
@@ -105,15 +176,15 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 3. Apply Security Headers (Automatic)
+  // 4. Apply Security Headers (Automatic) with CSP mode and image domains
   const { applySecurityHeaders } = await import('@/lib/security/headers');
-  applySecurityHeaders(response.headers);
+  applySecurityHeaders(response.headers, CSP_MODE, IMAGE_DOMAINS);
 
   return response;
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
   ],
 };

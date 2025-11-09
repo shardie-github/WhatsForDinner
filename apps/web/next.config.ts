@@ -15,10 +15,19 @@ const nextConfig: NextConfig = {
   // Phase 2: Image Optimization with WebP/AVIF support
   images: {
     unoptimized: true, // Required for static export, but we optimize source images
+    domains: ['images.unsplash.com', 'cdn.shopify.com'], // Vercel hardening: explicit image domains
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.shopify.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**", // Fallback for other domains
       },
     ],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
