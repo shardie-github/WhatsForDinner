@@ -191,7 +191,16 @@
     "secrets:remediate": "node scripts/address-secrets-findings.mjs",
     "reliability:orchestrate": "node scripts/reliability-orchestrator.mjs",
     "reliability:check": "node scripts/reliability-orchestrator.mjs --check-only",
-    "reliability:dashboard": "node scripts/reliability-orchestrator.mjs --no-prs"
+    "reliability:dashboard": "node scripts/reliability-orchestrator.mjs --no-prs",
+    "agent:run": "tsx agents/unified-agent.ts",
+    "agent:reliability": "tsx -e \"import('./agents/unified-agent.ts').then(m => { const a = new m.UnifiedAgent(); a.getRepoContext(); import('./agents/reliability-agent.ts').then(r => { const ra = new r.ReliabilityAgent(process.cwd(), a.getRepoContext()); ra.run(); }); })\"",
+    "agent:cost": "tsx -e \"import('./agents/unified-agent.ts').then(m => { const a = new m.UnifiedAgent(); import('./agents/cost-agent.ts').then(c => { const ca = new c.CostAgent(process.cwd(), a.getRepoContext()); ca.run(); }); })\"",
+    "agent:security": "tsx -e \"import('./agents/unified-agent.ts').then(m => { const a = new m.UnifiedAgent(); import('./agents/security-agent.ts').then(s => { const sa = new s.SecurityAgent(process.cwd(), a.getRepoContext()); sa.run(); }); })\"",
+    "agent:docs": "tsx -e \"import('./agents/unified-agent.ts').then(m => { const a = new m.UnifiedAgent(); import('./agents/documentation-agent.ts').then(d => { const da = new d.DocumentationAgent(process.cwd(), a.getRepoContext()); da.run(); }); }); })\"",
+    "agent:planning": "tsx -e \"import('./agents/unified-agent.ts').then(m => { const a = new m.UnifiedAgent(); import('./agents/planning-agent.ts').then(p => { const pa = new p.PlanningAgent(process.cwd(), a.getRepoContext()); pa.run(); }); }); })\"",
+    "agent:observability": "tsx -e \"import('./agents/unified-agent.ts').then(m => { const a = new m.UnifiedAgent(); import('./agents/observability-agent.ts').then(o => { const oa = new o.ObservabilityAgent(process.cwd(), a.getRepoContext()); oa.run(); }); }); })\"",
+    "agent:reflection": "tsx -e \"import('./agents/unified-agent.ts').then(m => { const a = new m.UnifiedAgent(); import('./agents/reflection-agent.ts').then(r => { const ra = new r.ReflectionAgent(process.cwd(), a.getRepoContext()); ra.run(); }); }); })\"",
+    "agent:learning": "tsx -e \"import('./agents/unified-agent.ts').then(m => { const a = new m.UnifiedAgent(); import('./agents/learning-agent.ts').then(l => { const la = new l.LearningAgent(process.cwd(), a.getRepoContext()); la.run(); }); }); })\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"
