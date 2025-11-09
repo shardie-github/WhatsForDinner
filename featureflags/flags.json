@@ -1,0 +1,122 @@
+{
+  "version": "1.0",
+  "description": "Feature flags for growth experiments and feature rollouts",
+  "flags": [
+    {
+      "key": "onboarding_conversion_optimization",
+      "name": "Onboarding Conversion Optimization",
+      "description": "A/B test for optimized onboarding flow",
+      "enabled": true,
+      "variants": [
+        {
+          "key": "control",
+          "name": "Control (Current Flow)",
+          "allocation": 50,
+          "description": "Current onboarding flow, no changes"
+        },
+        {
+          "key": "treatment",
+          "name": "Treatment (Optimized Flow)",
+          "allocation": 50,
+          "description": "Optimized onboarding flow with reduced friction"
+        }
+      ],
+      "experiment_slug": "onboarding-conversion-optimization",
+      "created_at": "2025-01-09T00:00:00Z"
+    },
+    {
+      "key": "pricing_page_ab_test",
+      "name": "Pricing Page A/B Test",
+      "description": "A/B test for optimized pricing page",
+      "enabled": true,
+      "variants": [
+        {
+          "key": "control",
+          "name": "Control (Current Page)",
+          "allocation": 50,
+          "description": "Current pricing page, no changes"
+        },
+        {
+          "key": "treatment",
+          "name": "Treatment (Optimized Page)",
+          "allocation": 50,
+          "description": "Optimized pricing page with better layout and value props"
+        }
+      ],
+      "experiment_slug": "pricing-page-ab-test",
+      "created_at": "2025-01-09T00:00:00Z"
+    },
+    {
+      "key": "refund_prevention_flow",
+      "name": "Refund Prevention Flow",
+      "description": "Proactive refund prevention flow for at-risk users",
+      "enabled": true,
+      "variants": [
+        {
+          "key": "control",
+          "name": "Control (No Prevention)",
+          "allocation": 50,
+          "description": "No proactive refund prevention"
+        },
+        {
+          "key": "treatment",
+          "name": "Treatment (Prevention Flow)",
+          "allocation": 50,
+          "description": "Proactive refund prevention flow enabled"
+        }
+      ],
+      "experiment_slug": "refund-prevention-flow",
+      "created_at": "2025-01-09T00:00:00Z"
+    },
+    {
+      "key": "retention_email_campaign",
+      "name": "Retention Email Campaign",
+      "description": "Targeted retention emails for at-risk users",
+      "enabled": true,
+      "variants": [
+        {
+          "key": "control",
+          "name": "Control (No Emails)",
+          "allocation": 50,
+          "description": "No retention emails sent"
+        },
+        {
+          "key": "treatment",
+          "name": "Treatment (Email Campaign)",
+          "allocation": 50,
+          "description": "Retention email campaign enabled"
+        }
+      ],
+      "experiment_slug": "retention-email-campaign",
+      "created_at": "2025-01-09T00:00:00Z"
+    },
+    {
+      "key": "channel_attribution_optimization",
+      "name": "Channel Attribution Optimization",
+      "description": "Multi-touch attribution and channel optimization",
+      "enabled": true,
+      "variants": [
+        {
+          "key": "control",
+          "name": "Control (Current Attribution)",
+          "allocation": 0,
+          "description": "Current attribution model, no optimization"
+        },
+        {
+          "key": "treatment",
+          "name": "Treatment (Optimized Attribution)",
+          "allocation": 100,
+          "description": "Optimized channel allocation based on CAC/LTV"
+        }
+      ],
+      "experiment_slug": "channel-attribution-optimization",
+      "created_at": "2025-01-09T00:00:00Z",
+      "note": "This is a data analysis experiment, not a user-facing A/B test"
+    }
+  ],
+  "metadata": {
+    "timezone": "America/Toronto",
+    "last_updated": "2025-01-09T00:00:00Z",
+    "owner": "Growth Team"
+  }
+}

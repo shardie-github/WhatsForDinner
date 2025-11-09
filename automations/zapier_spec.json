@@ -1,0 +1,298 @@
+{
+  "name": "Finance Automation & Growth Execution Chain - Zapier/Make Blueprint",
+  "version": "1.0",
+  "description": "No-code automation blueprint for ETL pipeline using Zapier or Make.com",
+  "timezone": "America/Toronto",
+  "workflows": [
+    {
+      "name": "Nightly ETL - Meta Ads",
+      "trigger": {
+        "type": "schedule",
+        "schedule": "Daily at 01:10 America/Toronto",
+        "timezone": "America/Toronto"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "action": "HTTP Request",
+          "config": {
+            "method": "GET",
+            "url": "https://graph.facebook.com/v18.0/{ad_account_id}/insights",
+            "headers": {
+              "Authorization": "Bearer {META_TOKEN}"
+            },
+            "params": {
+              "time_range": "{\"since\":\"{yesterday}\",\"until\":\"{today}\"}",
+              "fields": "ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,spend,impressions,clicks,actions,action_values",
+              "level": "ad",
+              "time_increment": "1"
+            }
+          }
+        },
+        {
+          "step": 2,
+          "action": "Data Transform",
+          "config": {
+            "transform": "Map Meta API response to Supabase format"
+          }
+        },
+        {
+          "step": 3,
+          "action": "Supabase Insert",
+          "config": {
+            "table": "spend",
+            "operation": "upsert",
+            "conflict_columns": ["channel", "campaign_id", "ad_set_id", "ad_id", "date", "hour"]
+          }
+        },
+        {
+          "step": 4,
+          "action": "Supabase Insert",
+          "config": {
+            "table": "etl_logs",
+            "operation": "insert",
+            "data": {
+              "job_name": "pull_ads_meta",
+              "status": "completed",
+              "records_processed": "{step1.count}",
+              "records_inserted": "{step3.inserted}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nightly ETL - TikTok Ads",
+      "trigger": {
+        "type": "schedule",
+        "schedule": "Daily at 01:15 America/Toronto",
+        "timezone": "America/Toronto"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "action": "HTTP Request",
+          "config": {
+            "method": "POST",
+            "url": "https://business-api.tiktok.com/open_api/v1.3/report/integrated/get/",
+            "headers": {
+              "Access-Token": "{TIKTOK_TOKEN}",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "advertiser_id": "{TIKTOK_ADVERTISER_ID}",
+              "service_type": "AUCTION",
+              "report_type": "BASIC",
+              "data_level": "AUCTION_AD",
+              "dimensions": ["ad_id", "stat_time_day"],
+              "metrics": ["spend", "impressions", "clicks", "conversions", "conversion_value"],
+              "start_date": "{yesterday}",
+              "end_date": "{today}",
+              "page_size": 1000
+            }
+          }
+        },
+        {
+          "step": 2,
+          "action": "Data Transform",
+          "config": {
+            "transform": "Map TikTok API response to Supabase format"
+          }
+        },
+        {
+          "step": 3,
+          "action": "Supabase Insert",
+          "config": {
+            "table": "spend",
+            "operation": "upsert",
+            "conflict_columns": ["channel", "campaign_id", "ad_set_id", "ad_id", "date", "hour"]
+          }
+        },
+        {
+          "step": 4,
+          "action": "Supabase Insert",
+          "config": {
+            "table": "etl_logs",
+            "operation": "insert"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nightly ETL - Shopify Orders",
+      "trigger": {
+        "type": "schedule",
+        "schedule": "Daily at 01:20 America/Toronto",
+        "timezone": "America/Toronto"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "action": "HTTP Request",
+          "config": {
+            "method": "GET",
+            "url": "https://{SHOPIFY_STORE}.myshopify.com/admin/api/2024-01/orders.json",
+            "headers": {
+              "Authorization": "Basic {base64(SHOPIFY_API_KEY:SHOPIFY_PASSWORD)}",
+              "Content-Type": "application/json"
+            },
+            "params": {
+              "status": "any",
+              "created_at_min": "{yesterday}T00:00:00-05:00",
+              "created_at_max": "{today}T23:59:59-05:00",
+              "limit": "250"
+            }
+          }
+        },
+        {
+          "step": 2,
+          "action": "Data Transform",
+          "config": {
+            "transform": "Map Shopify orders to Supabase format, handle pagination"
+          }
+        },
+        {
+          "step": 3,
+          "action": "Supabase Insert",
+          "config": {
+            "table": "orders",
+            "operation": "upsert",
+            "conflict_columns": ["external_id"]
+          }
+        },
+        {
+          "step": 4,
+          "action": "Supabase Insert",
+          "config": {
+            "table": "etl_logs",
+            "operation": "insert"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nightly ETL - Compute Metrics",
+      "trigger": {
+        "type": "schedule",
+        "schedule": "Daily at 01:25 America/Toronto",
+        "timezone": "America/Toronto"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "action": "Supabase Query",
+          "config": {
+            "query": "SELECT total_cents, refund_amount_cents, status FROM orders WHERE ordered_at::date = '{yesterday}'"
+          }
+        },
+        {
+          "step": 2,
+          "action": "Supabase Query",
+          "config": {
+            "query": "SELECT spend_cents, conversions FROM spend WHERE date = '{yesterday}'"
+          }
+        },
+        {
+          "step": 3,
+          "action": "Code/Function",
+          "config": {
+            "language": "javascript",
+            "code": "Compute metrics: revenue, orders, refund_rate, cac, ltv, margins, cash_flow"
+          }
+        },
+        {
+          "step": 4,
+          "action": "Supabase Insert",
+          "config": {
+            "table": "metrics_daily",
+            "operation": "upsert",
+            "conflict_columns": ["metric_date", "metric_name", "breakdown"]
+          }
+        },
+        {
+          "step": 5,
+          "action": "Supabase Insert",
+          "config": {
+            "table": "etl_logs",
+            "operation": "insert"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Alert - High Refund Rate",
+      "trigger": {
+        "type": "schedule",
+        "schedule": "Daily at 09:00 America/Toronto",
+        "timezone": "America/Toronto"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "action": "Supabase Query",
+          "config": {
+            "query": "SELECT metric_value FROM metrics_daily WHERE metric_name = 'refund_rate' AND metric_date = '{yesterday}'"
+          }
+        },
+        {
+          "step": 2,
+          "action": "Conditional Logic",
+          "config": {
+            "condition": "IF metric_value > 6 THEN send alert"
+          }
+        },
+        {
+          "step": 3,
+          "action": "Email/Slack",
+          "config": {
+            "message": "Alert: Refund rate is {metric_value}% (threshold: 6%)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Alert - ETL Job Failure",
+      "trigger": {
+        "type": "webhook",
+        "source": "Supabase",
+        "event": "etl_logs.status = 'failed'"
+      },
+      "steps": [
+        {
+          "step": 1,
+          "action": "Email/Slack",
+          "config": {
+            "message": "ETL Job Failed: {job_name}\nError: {error_message}\nTime: {started_at}"
+          }
+        }
+      ]
+    }
+  ],
+  "credentials": {
+    "supabase": {
+      "url": "{SUPABASE_URL}",
+      "service_role_key": "{SUPABASE_SERVICE_ROLE_KEY}"
+    },
+    "meta": {
+      "token": "{META_TOKEN}",
+      "ad_account_id": "{META_AD_ACCOUNT_ID}"
+    },
+    "tiktok": {
+      "token": "{TIKTOK_TOKEN}",
+      "advertiser_id": "{TIKTOK_ADVERTISER_ID}"
+    },
+    "shopify": {
+      "api_key": "{SHOPIFY_API_KEY}",
+      "password": "{SHOPIFY_PASSWORD}",
+      "store": "{SHOPIFY_STORE}"
+    }
+  },
+  "notes": [
+    "This is a blueprint/specification for implementing in Zapier or Make.com",
+    "Replace {placeholders} with actual values from environment variables",
+    "Adjust schedule times based on your timezone and ETL job duration",
+    "Add error handling and retry logic as needed",
+    "Consider rate limits for API calls",
+    "Monitor workflow execution for failures"
+  ]
+}
