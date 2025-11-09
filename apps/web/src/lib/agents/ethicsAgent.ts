@@ -36,11 +36,20 @@ export interface EthicalGuideline {
   lastViolation: string | null;
 }
 
+export interface ThreatSimulationResult {
+  threatType: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  detected: boolean;
+  mitigation: string;
+  timestamp: string;
+  details: Record<string, unknown>;
+}
+
 export class EthicsAgent extends BaseAgent {
   private safetyViolations: SafetyViolation[] = [];
   private complianceChecks: ComplianceCheck[] = [];
   private ethicalGuidelines: EthicalGuideline[] = [];
-  private threatSimulationResults: any[] = [];
+  private threatSimulationResults: ThreatSimulationResult[] = [];
 
   constructor() {
     const config: AgentConfig = {

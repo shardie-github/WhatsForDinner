@@ -5,8 +5,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
-export async function POST(request: NextRequest) {
+async function handler(request: NextRequest) {
   try {
     const { affiliateCode, referralId, productId } = await request.json();
 
@@ -64,3 +65,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export const POST = withTelemetry(handler);

@@ -1,7 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { logger } from './logger';
 import { monitoringSystem } from './monitoring';
 import { withErrorBoundary, fireAndForget } from './error-boundaries';
+
+// Type-safe metadata for log entries
+type LogMetadata = Record<string, string | number | boolean | null | undefined>;
 
 interface LogEntry {
   id: string;
@@ -13,9 +16,12 @@ interface LogEntry {
   userId?: string;
   sessionId?: string;
   requestId?: string;
-  metadata: any;
+  metadata: LogMetadata;
   tags: string[];
 }
+
+// Type-safe metadata for trace spans
+type SpanMetadata = Record<string, string | number | boolean | null | undefined>;
 
 interface TraceSpan {
   id: string;
@@ -28,8 +34,11 @@ interface TraceSpan {
   status: 'started' | 'completed' | 'error';
   tags: Record<string, string>;
   logs: LogEntry[];
-  metadata: any;
+  metadata: SpanMetadata;
 }
+
+// Type-safe metadata for traces
+type TraceMetadata = Record<string, string | number | boolean | null | undefined>;
 
 interface Trace {
   id: string;
@@ -42,11 +51,11 @@ interface Trace {
   userId?: string;
   sessionId?: string;
   requestId?: string;
-  metadata: any;
+  metadata: TraceMetadata;
 }
 
 class ObservabilitySystem {
-  private supabase: any;
+  private supabase: SupabaseClient;
   private activeTraces: Map<string, Trace> = new Map();
   private activeSpans: Map<string, TraceSpan> = new Map();
 
@@ -63,7 +72,7 @@ class ObservabilitySystem {
     userId?: string,
     sessionId?: string,
     requestId?: string,
-    metadata: any = {}
+    metadata: TraceMetadata = {}
   ): Promise<string> {
     try {
       const traceId = this.generateId();
@@ -106,7 +115,7 @@ class ObservabilitySystem {
     name: string,
     parentId?: string,
     tags: Record<string, string> = {},
-    metadata: any = {}
+    metadata: SpanMetadata = {}
   ): Promise<string> {
     try {
       const spanId = this.generateId();

@@ -1,0 +1,4 @@
+ERROR: Error loading /workspace/apps/web/jest.config.js
+Reason: Cannot find module 'next/jest'
+Require stack:
+- /workspace/apps/web/jest.config.js

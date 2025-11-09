@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { logger } from '@/lib/logger';
 import Stripe from 'stripe';
+import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-12-18.acacia',
@@ -12,7 +13,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function GET(request: NextRequest) {
+async function handler(request: NextRequest) {
   try {
     const userId = request.headers.get('x-user-id');
     if (!userId) {
@@ -62,3 +63,5 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export const GET = withTelemetry(handler);

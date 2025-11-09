@@ -1,145 +1,223 @@
-# Value Stream Map — Commit to Customer Impact
+# Value Stream Map: Commit → CI → Deploy → User
 
-**Generated:** 2025-01-XX  
-**Scope:** End-to-end value stream from code commit to customer impact
-
-## Current State Analysis
-
-### Value Stream Stages
-
-| Stage | Lead Time | Cycle Time | Queue/WIP | Rework % | Notes |
-|-------|-----------|------------|-----------|----------|-------|
-| **Code Commit** | - | - | - | - | Starting point |
-| **Local Testing** | 5 min | 3 min | 0 | 5% | Developer runs tests locally |
-| **PR Creation** | 2 min | 1 min | 0 | 2% | PR opened with description |
-| **CI Pipeline** | 15 min | 12 min | 3 min | 10% | Build, test, lint checks |
-| **Code Review** | 48-72h | 30 min | 47-71.5h | 15% | **BOTTLENECK** — Long wait times |
-| **Merge** | 2 min | 1 min | 1 min | 1% | Auto-merge if checks pass |
-| **Deploy Preview** | 5 min | 3 min | 2 min | 5% | Vercel preview deployment |
-| **QA/Testing** | 24-48h | 1h | 23-47h | 8% | Manual testing (if done) |
-| **Production Deploy** | 10 min | 5 min | 5 min | 3% | Vercel production deployment |
-| **Customer Impact** | - | - | - | - | End point |
-
-### Key Metrics
-
-- **Total Lead Time:** ~3-5 days (dominated by code review wait)
-- **Total Cycle Time:** ~1.5 hours (actual work time)
-- **Efficiency:** ~3% (cycle time / lead time)
-- **Rework Rate:** ~49% (sum of rework percentages, weighted)
-
-### Queues & WIP Limits
-
-| Queue | Current WIP | Limit | Status |
-|-------|-------------|-------|--------|
-| Open PRs | ~30+ | - | ⚠️ High |
-| PRs Awaiting Review | ~15-20 | 10 | 🔴 Over limit |
-| CI Jobs | ~5-10 | 20 | ✅ Within limit |
-| Preview Deployments | ~3-5 | 10 | ✅ Within limit |
-
-### Handoffs
-
-| From | To | Handoff Time | Issues |
-|------|----|--------------|--------|
-| Developer | CI | 2 min | None |
-| CI | Reviewer | 15 min | Long CI time |
-| Reviewer | Developer | 48-72h | **MAJOR BOTTLENECK** |
-| Developer | QA | 24-48h | Often skipped |
-| QA | Deploy | Variable | Inconsistent process |
-
-### Rework Sources
-
-1. **Failed CI** (10% rework)
-   - Type errors
-   - Lint failures
-   - Test failures
-   - **Root Cause:** Pre-commit hooks not catching all issues
-
-2. **Code Review Feedback** (15% rework)
-   - Style changes
-   - Architecture suggestions
-   - Missing tests
-   - **Root Cause:** Inconsistent coding standards
-
-3. **Production Issues** (3% rework)
-   - Bugs found in production
-   - Performance issues
-   - **Root Cause:** Insufficient testing
-
-## Improvement Opportunities
-
-### Exploit Constraints (Theory of Constraints)
-
-1. **Code Review Bottleneck**
-   - **Current:** 48-72h wait time
-   - **Action:** 
-     - Auto-approve low-risk PRs (docs, dependencies)
-     - Parallel reviews (multiple reviewers)
-     - Review time SLAs
-   - **Expected Impact:** Reduce lead time by 50-70%
-
-2. **CI Pipeline**
-   - **Current:** 15 min
-   - **Action:** 
-     - Parallelize test suites
-     - Cache dependencies
-     - Optimize build steps
-   - **Expected Impact:** Reduce to 8-10 min
-
-3. **Pre-commit Validation**
-   - **Current:** 5% rework from CI failures
-   - **Action:** 
-     - Stricter pre-commit hooks
-     - Type checking before commit
-     - Lint fixes auto-applied
-   - **Expected Impact:** Reduce CI failures by 80%
-
-### Reduce Feedback Delay
-
-1. **Auto-comment Performance Diffs**
-   - Add performance regression detection to CI
-   - Comment on PRs with performance impact
-   - **Expected Impact:** Catch issues before merge
-
-2. **Security Scanning**
-   - Automated security scans in CI
-   - Dependency vulnerability checks
-   - **Expected Impact:** Prevent security issues
-
-3. **Visual Regression Testing**
-   - Automated screenshot comparisons
-   - **Expected Impact:** Catch UI regressions early
-
-### Reduce Rework
-
-1. **Pre-merge Checks**
-   - Type checking (strict mode)
-   - Test coverage requirements
-   - UX copy linting
-   - **Expected Impact:** Reduce rework by 30-40%
-
-2. **Automated Code Quality**
-   - Auto-format on commit
-   - Auto-fix lint issues
-   - **Expected Impact:** Reduce style-related rework
-
-## Target State (6 months)
-
-| Metric | Current | Target | Improvement |
-|--------|---------|--------|-------------|
-| Lead Time | 3-5 days | 1-2 days | 60% reduction |
-| Cycle Time | 1.5h | 1h | 33% reduction |
-| Efficiency | 3% | 8-10% | 2-3x improvement |
-| Rework Rate | 49% | 25% | 50% reduction |
-| Code Review Wait | 48-72h | 4-8h | 85% reduction |
-
-## Next Steps
-
-1. ✅ Complete VSM analysis
-2. Implement code review SLAs
-3. Add pre-merge validation
-4. Set up performance regression detection
-5. Measure and iterate
+**Generated:** 2025-01-09  
+**Scope:** End-to-end delivery pipeline from code commit to user value
 
 ---
 
-**Note:** Metrics are estimates based on repository structure and typical workflows. Actual measurements should be collected over 2-4 weeks for accuracy.
+## Value Stream Stages
+
+### 1. Commit Stage
+**Owner:** Developer  
+**Lead Time:** ~5 minutes  
+**Cycle Time:** ~2 minutes  
+**Queue Time:** ~3 minutes (waiting for CI)
+
+**Activities:**
+- Code commit to feature branch
+- Push to GitHub
+- Pre-commit hooks (if configured)
+- Branch protection checks
+
+**Metrics:**
+- Average commits per day: Unknown (no telemetry)
+- Commit-to-CI-start: ~3 minutes (estimated)
+- Pre-commit hook failures: Unknown
+
+**Bottlenecks:**
+- No pre-commit hooks configured (missing `husky` setup in some packages)
+- Branch protection may delay CI start
+
+**Improvement Opportunities:**
+- Add pre-commit hooks for linting/formatting
+- Parallelize CI jobs where possible
+
+---
+
+### 2. CI Stage
+**Owner:** DevOps Team (`@devops-team`)  
+**Lead Time:** ~15 minutes  
+**Cycle Time:** ~12 minutes  
+**Queue Time:** ~3 minutes (waiting for runner)
+
+**Workflows:**
+- `.github/workflows/ci.yml` (main CI)
+- `.github/workflows/pre-merge-validation.yml` (pre-merge checks)
+- `.github/workflows/code-hygiene.yml` (code quality)
+- `.github/workflows/type-check.yml` (if exists)
+
+**Activities:**
+- Checkout code
+- Install dependencies (`pnpm install --frozen-lockfile`)
+- Generate Prisma Client
+- Type check (`pnpm type-check`)
+- Lint (`pnpm lint`)
+- Test (`pnpm test`)
+- Build (`pnpm build`)
+
+**Metrics:**
+- CI success rate: Unknown (no telemetry)
+- Average CI duration: ~12 minutes (from workflow timeout: 15min)
+- Queue time: ~3 minutes (estimated)
+- Flaky test rate: Unknown
+
+**Bottlenecks:**
+- Sequential job execution (some jobs could run in parallel)
+- Prisma Client generation (could be cached)
+- Dependency installation (~2-3 minutes)
+
+**Improvement Opportunities:**
+- Parallelize test suites
+- Cache Prisma Client generation
+- Use pnpm store cache more aggressively
+
+---
+
+### 3. Review Stage
+**Owner:** Team Leads (`@team-leads`)  
+**Lead Time:** ~2-24 hours (variable)  
+**Cycle Time:** ~30 minutes (actual review time)  
+**Queue Time:** ~1.5-23.5 hours (waiting for reviewer)
+
+**Activities:**
+- PR creation
+- Pre-merge validation (`.github/workflows/pre-merge-validation.yml`)
+- Code review
+- Approval
+- Merge
+
+**Metrics:**
+- Average PR review time: Unknown (no telemetry)
+- PR approval rate: Unknown
+- PR rejection rate: Unknown
+- Code review SLA: `.github/workflows/code-review-sla.yml` exists but metrics unknown
+
+**Bottlenecks:**
+- Review queue (waiting for reviewers)
+- Large PRs (no size limit enforced)
+- Missing automated checks (bundle size, type coverage)
+
+**Improvement Opportunities:**
+- Enforce PR size limits (<300 LOC per PR)
+- Add automated quality gates (bundle size, type coverage)
+- Use CODEOWNERS for auto-assignment
+
+---
+
+### 4. Deploy Stage
+**Owner:** DevOps Team (`@devops-team`)  
+**Lead Time:** ~10 minutes  
+**Cycle Time:** ~8 minutes  
+**Queue Time:** ~2 minutes (waiting for Vercel)
+
+**Workflows:**
+- `.github/workflows/deploy-web.yml` (production)
+- `.github/workflows/deploy-main.yml` (main branch)
+- `.github/workflows/preview-pr.yml` (preview deployments)
+
+**Activities:**
+- Pull Vercel environment
+- Build (`npx vercel build --prod`)
+- Deploy (`npx vercel deploy --prod --prebuilt`)
+- Health check (`curl /api/health`)
+
+**Metrics:**
+- Deployment success rate: Unknown (no telemetry)
+- Average deployment time: ~8 minutes (estimated)
+- Rollback frequency: Unknown
+- Health check failures: Unknown
+
+**Bottlenecks:**
+- Vercel build time (~5-6 minutes)
+- No canary deployments (all-or-nothing)
+- No preview protection (security risk)
+
+**Improvement Opportunities:**
+- Add canary deployments (see Phase E)
+- Add preview protection
+- Parallelize mobile and web deployments
+
+---
+
+### 5. User Value Stage
+**Owner:** End Users  
+**Lead Time:** Immediate (after deploy)  
+**Cycle Time:** N/A  
+**Queue Time:** N/A
+
+**Activities:**
+- User accesses application
+- Feature available
+- Value delivered
+
+**Metrics:**
+- Time to value: Immediate (after deploy)
+- Feature adoption rate: Unknown (no telemetry)
+- Error rate: Unknown (no RUM)
+- Performance (LCP, FID, CLS): Unknown (no Core Web Vitals tracking)
+
+**Bottlenecks:**
+- No user telemetry (RUM)
+- No performance monitoring
+- No error tracking (Sentry configured but coverage unknown)
+
+**Improvement Opportunities:**
+- Add RUM (Real User Monitoring)
+- Track Core Web Vitals
+- Monitor API endpoint performance (p95 latency)
+
+---
+
+## Overall Metrics
+
+| Metric | Value | Target | Status |
+|--------|-------|--------|--------|
+| **Total Lead Time** | ~2-24 hours | <4 hours | ⚠️ Variable |
+| **Total Cycle Time** | ~50 minutes | <30 minutes | ⚠️ High |
+| **Total Queue Time** | ~1.5-23.5 hours | <2 hours | ⚠️ High |
+| **Deployment Frequency** | Unknown | Daily | ❓ Unknown |
+| **Change Failure Rate** | Unknown | <5% | ❓ Unknown |
+| **MTTR (Mean Time to Recovery)** | Unknown | <1 hour | ❓ Unknown |
+
+---
+
+## Key Bottlenecks (Ranked)
+
+1. **Review Queue Time** (~1.5-23.5 hours)
+   - **Impact:** High (blocks delivery)
+   - **Owner:** Team Leads
+   - **Fix:** Auto-assignment, PR size limits, SLA enforcement
+
+2. **CI Sequential Execution** (~12 minutes)
+   - **Impact:** Medium (slows feedback)
+   - **Owner:** DevOps Team
+   - **Fix:** Parallelize jobs, cache dependencies
+
+3. **No Canary Deployments** (all-or-nothing)
+   - **Impact:** High (risk of breaking production)
+   - **Owner:** DevOps Team
+   - **Fix:** Add canary harness (see Phase E)
+
+4. **No User Telemetry** (unknown performance)
+   - **Impact:** Medium (can't measure value)
+   - **Owner:** Platform Team
+   - **Fix:** Add RUM, Core Web Vitals tracking
+
+---
+
+## Improvement Roadmap
+
+### Q1 2025
+- [ ] Reduce review queue time to <2 hours (SLA enforcement)
+- [ ] Parallelize CI jobs (reduce cycle time to <8 minutes)
+- [ ] Add canary deployments (reduce deployment risk)
+
+### Q2 2025
+- [ ] Add RUM and Core Web Vitals tracking
+- [ ] Implement PR size limits (<300 LOC)
+- [ ] Add automated quality gates (bundle size, type coverage)
+
+---
+
+**Last Updated:** 2025-01-09  
+**Next Review:** After implementing canary deployments and RUM

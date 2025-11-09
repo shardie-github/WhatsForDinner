@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
 /**
  * Simple health check endpoint (Edge-compatible)
@@ -6,7 +7,7 @@ import { NextResponse } from 'next/server';
  */
 export const runtime = 'edge';
 
-export async function GET() {
+async function handler(_req: NextRequest) {
   return NextResponse.json(
     {
       ok: true,
@@ -21,3 +22,5 @@ export async function GET() {
     }
   );
 }
+
+export const GET = withTelemetry(handler);

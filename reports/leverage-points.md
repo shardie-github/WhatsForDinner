@@ -1,222 +1,223 @@
-# Leverage Points — Ranked Actions for System Optimization
+# Leverage Points: Top Bottleneck + 3 Experiments
 
-**Generated:** 2025-01-XX  
-**Framework:** Theory of Constraints + Systems Thinking
+**Generated:** 2025-01-09  
+**Scope:** Highest-impact improvements for delivery velocity and reliability  
+**Method:** Value Stream Map analysis + code review findings
 
-## Executive Summary
+---
 
-Analysis of the value stream and system flows reveals 5 key leverage points ranked by impact and effort. Focus on exploiting constraints and reducing feedback delay.
-
-## Top 5 Leverage Points
-
-### 1. Code Review Bottleneck (Highest Impact)
+## Top Bottleneck: Review Queue Time
 
 **Current State:**
-- Longest queue: 48-72h wait time
-- Highest variance: CoV ~60% (inconsistent review times)
-- Top feedback latency: 2-3 days from PR creation to feedback
+- Review queue time: ~1.5-23.5 hours (highly variable)
+- Average PR review time: Unknown (no telemetry)
+- PR approval rate: Unknown
+- No SLA enforcement despite `.github/workflows/code-review-sla.yml` existing
 
-**Root Cause:**
-- Limited reviewer capacity
-- No review SLAs
-- Low-risk PRs wait same as high-risk PRs
+**Impact:**
+- **Lead Time:** Blocks delivery (largest component of total lead time)
+- **Developer Experience:** Frustration, context switching
+- **Velocity:** Reduced feature delivery speed
 
-**Actions:**
-1. **Exploit the Constraint**
-   - Auto-approve low-risk PRs (docs, dependencies, config)
-   - Parallel reviews (require 2 reviewers, but both can review simultaneously)
-   - Review time SLAs: 4h for urgent, 24h for normal, 48h for low-priority
+**Root Causes:**
+1. No auto-assignment (relies on manual CODEOWNERS)
+2. No PR size limits (large PRs take longer to review)
+3. No SLA enforcement (workflow exists but metrics unknown)
+4. Reviewers may be overloaded (no visibility)
 
-2. **Protect Constraint Capacity**
-   - Pre-merge validation to reduce review burden
-   - Auto-format code to reduce style comments
-   - Clear PR descriptions to speed up review
+**Metric:** Average time from PR creation to first review comment
 
-**Expected Impact:**
-- Reduce lead time by 50-70% (from 3-5 days to 1-2 days)
-- Reduce queue length from 15-20 to 5-10 PRs
-- **Effort:** Medium (2-3 weeks to implement)
+**Current Baseline:** Unknown (need to measure)
 
-**Metrics:**
-- Code review wait time (target: <8h for 90% of PRs)
-- PR queue length (target: <10)
-- Review comments per PR (target: reduce by 30%)
+**Target:** <2 hours (from VSM target)
+
+**Owner:** `@team-leads` (per RACI)
+
+**2-Week Target:** Reduce average review queue time by 50% (e.g., from 12 hours to 6 hours)
+
+**Experiments:**
+
+### Experiment 1: Auto-Assignment via CODEOWNERS
+- **Hypothesis:** Auto-assigning reviewers based on CODEOWNERS will reduce queue time
+- **Implementation:** Configure GitHub auto-assignment in repository settings
+- **Metric:** Time to first review comment
+- **Success Criteria:** <2 hours for 80% of PRs
+
+### Experiment 2: PR Size Limits
+- **Hypothesis:** Enforcing <300 LOC per PR will reduce review time per PR
+- **Implementation:** Add GitHub Action to check PR size, block if >300 LOC
+- **Metric:** Average PR review time
+- **Success Criteria:** <30 minutes per PR
+
+### Experiment 3: Review SLA Enforcement
+- **Hypothesis:** Enforcing SLA with alerts will improve reviewer responsiveness
+- **Implementation:** Enhance `.github/workflows/code-review-sla.yml` to alert on SLA violations
+- **Metric:** SLA compliance rate (% of PRs reviewed within SLA)
+- **Success Criteria:** >90% compliance
 
 ---
 
-### 2. CI Pipeline Duration (High Impact)
+## Experiment 2: Parallelize CI Jobs
 
 **Current State:**
-- Cycle time: 15 min
-- Variance: CoV ~20% (relatively consistent)
-- Failure rate: ~10% (causes rework)
+- CI cycle time: ~12 minutes
+- Jobs run sequentially (type-check → lint → test → build)
+- Some jobs could run in parallel
 
-**Root Cause:**
-- Sequential test execution
-- No dependency caching
-- Redundant build steps
+**Impact:**
+- **Feedback Time:** Faster feedback to developers
+- **Developer Experience:** Less waiting
+- **Velocity:** Slightly improved (not the biggest bottleneck)
 
-**Actions:**
-1. **Parallelize Non-Bottleneck Stages**
-   - Run test suites in parallel
-   - Split E2E tests across multiple jobs
-   - Cache dependencies (node_modules, build artifacts)
+**Metric:** CI cycle time (time from start to completion)
 
-2. **Optimize Build Steps**
-   - Skip unnecessary steps (e.g., type-check if already done pre-commit)
-   - Use incremental builds
-   - Optimize Docker images if used
+**Current Baseline:** ~12 minutes
 
-**Expected Impact:**
-- Reduce CI time from 15min to 8-10min (33-47% reduction)
-- Reduce failure rate from 10% to 5% (better caching = fewer flaky tests)
-- **Effort:** Medium (1-2 weeks)
+**Target:** <8 minutes
 
-**Metrics:**
-- CI pipeline duration (target: <10min p95)
-- CI failure rate (target: <5%)
-- Cache hit rate (target: >80%)
+**Owner:** `@devops-team` (per RACI)
+
+**2-Week Target:** Reduce CI cycle time by 33% (from 12min to 8min)
+
+**Experiments:**
+
+### Experiment 1: Parallelize Type-Check and Lint
+- **Hypothesis:** Type-check and lint can run in parallel (no dependencies)
+- **Implementation:** Split into separate jobs in `.github/workflows/ci.yml`
+- **Metric:** CI cycle time
+- **Success Criteria:** <10 minutes
+
+### Experiment 2: Cache Prisma Client Generation
+- **Hypothesis:** Caching Prisma Client generation will reduce CI time
+- **Implementation:** Cache Prisma Client in GitHub Actions cache
+- **Metric:** Prisma generation time
+- **Success Criteria:** <30 seconds (from ~2 minutes)
+
+### Experiment 3: Parallelize Test Suites
+- **Hypothesis:** Splitting tests into parallel jobs will reduce test time
+- **Implementation:** Use test matrix strategy to run tests in parallel
+- **Metric:** Test execution time
+- **Success Criteria:** <5 minutes (from ~8 minutes)
 
 ---
 
-### 3. Pre-Merge Validation (Medium-High Impact)
+## Experiment 3: Add Canary Deployments
 
 **Current State:**
-- Rework from CI failures: 10%
-- Rework from code review: 15%
-- Total rework: ~25% of PRs
+- Deployment strategy: All-or-nothing (deploy to 100% of users)
+- No gradual rollout
+- High risk of breaking production
+- Rollback requires full redeploy
 
-**Root Cause:**
-- Type errors caught in CI, not locally
-- Lint issues found in review, not pre-commit
-- Missing tests discovered late
+**Impact:**
+- **Reliability:** Reduced risk of production incidents
+- **Confidence:** Safer deployments
+- **MTTR:** Faster recovery (canary can be stopped quickly)
 
-**Actions:**
-1. **Reduce Rework at Source**
-   - Stricter pre-commit hooks (type-check, lint, test)
-   - Auto-format on commit
-   - Test coverage requirements (fail PR if coverage drops)
+**Metric:** Deployment failure rate (% of deployments causing incidents)
 
-2. **Add Pre-Merge Checks**
-   - Type coverage check (fail if <95%)
-   - UX copy linting (ban phrases, tone check)
-   - Security scanning (dependency vulnerabilities)
+**Current Baseline:** Unknown (no telemetry)
 
-**Expected Impact:**
-- Reduce rework rate from 25% to 15% (40% reduction)
-- Reduce CI failures from 10% to 3%
-- Reduce review comments from 15% to 8%
-- **Effort:** Low-Medium (1 week)
+**Target:** <5% (industry standard)
 
-**Metrics:**
-- Rework rate (target: <15%)
-- CI failure rate (target: <5%)
-- Pre-commit hook pass rate (target: >95%)
+**Owner:** `@devops-team` (per RACI)
+
+**2-Week Target:** Implement canary harness for `checkout` module (from inputs)
+
+**Experiments:**
+
+### Experiment 1: Vercel Preview → Canary Promotion
+- **Hypothesis:** Using Vercel preview deployments as canary will reduce risk
+- **Implementation:** Configure canary promotion workflow (see Phase E)
+- **Metric:** Canary failure rate (% of canaries stopped before production)
+- **Success Criteria:** >0% (any caught failures are wins)
+
+### Experiment 2: Feature Flags for Gradual Rollout
+- **Hypothesis:** Using feature flags will allow gradual rollout without canary infrastructure
+- **Implementation:** Add feature flag system (if not exists) or use existing
+- **Metric:** Feature flag usage (% of deployments using flags)
+- **Success Criteria:** >50% of deployments use flags
+
+### Experiment 3: Shadow Deployments
+- **Hypothesis:** Shadow deployments (test new code without serving traffic) will catch issues
+- **Implementation:** Deploy to shadow environment, compare metrics
+- **Metric:** Shadow failure rate (% of shadows catching issues)
+- **Success Criteria:** >0% (any caught failures are wins)
 
 ---
 
-### 4. Feedback Delay Reduction (Medium Impact)
+## Experiment 4: Add RUM and API Telemetry
 
 **Current State:**
-- Time from error to fix: Variable (hours to days)
-- Performance regressions: Caught post-deploy
-- Security issues: Found in audits, not PRs
+- No Real User Monitoring (RUM)
+- No API endpoint telemetry (p95 latency unknown)
+- No Core Web Vitals tracking
+- Performance issues unknown until users report
 
-**Actions:**
-1. **Auto-Comment Performance Diffs**
-   - Run Lighthouse CI on PRs
-   - Comment bundle size changes
-   - Alert on performance regressions (>10% slower)
+**Impact:**
+- **Observability:** Can't measure user experience
+- **SLO Compliance:** Can't verify SLO targets (p95 <400ms, LCP <2.5s)
+- **Performance:** Can't optimize what we can't measure
 
-2. **Security Scanning in CI**
-   - Dependency vulnerability scanning
-   - Secret scanning
-   - SAST (Static Application Security Testing)
+**Metric:** % of endpoints with telemetry coverage
 
-3. **Visual Regression Testing**
-   - Screenshot comparisons on PRs
-   - Alert on visual changes
+**Current Baseline:** 0%
 
-**Expected Impact:**
-- Reduce time-to-fix from days to hours
-- Catch 80% of performance regressions before merge
-- Catch 90% of security issues before merge
-- **Effort:** Medium (2 weeks)
+**Target:** 100% (all API endpoints)
 
-**Metrics:**
-- Time from error to fix (target: <4h for critical)
-- Performance regression detection rate (target: >80%)
-- Security issue detection rate (target: >90%)
+**Owner:** `@platform-team` (per RACI)
 
----
+**2-Week Target:** Add telemetry to top 10 API endpoints (see Phase C)
 
-### 5. Observability & Telemetry (Medium Impact)
+**Experiments:**
 
-**Current State:**
-- Error tracking: Sentry configured
-- Performance monitoring: PostHog configured
-- Feedback latency: Variable (depends on alerting)
+### Experiment 1: Add RUM to Web App
+- **Hypothesis:** Adding RUM will reveal performance issues
+- **Implementation:** Integrate Sentry RUM or similar (Sentry already configured)
+- **Metric:** RUM coverage (% of page loads tracked)
+- **Success Criteria:** >90% coverage
 
-**Actions:**
-1. **Improve Error Taxonomy**
-   - Use centralized error types (already exists in `errors.ts`)
-   - Add error context (user ID, tenant, feature)
-   - Alert on new error patterns
+### Experiment 2: Instrument API Endpoints
+- **Hypothesis:** Adding p95 latency tracking will reveal slow endpoints
+- **Implementation:** Add middleware to track API response times (see Phase C)
+- **Metric:** % of endpoints with telemetry
+- **Success Criteria:** 100% (all endpoints)
 
-2. **Reduce Feedback Latency**
-   - Real-time error alerts (PagerDuty/Slack)
-   - Automated error grouping
-   - Error forecasting (identify hotspots)
-
-**Expected Impact:**
-- Reduce MTTR from hours to minutes
-- Improve error detection rate
-- Enable proactive fixes
-- **Effort:** Low-Medium (1 week)
-
-**Metrics:**
-- MTTR (target: <30min for critical errors)
-- Error detection rate (target: >95%)
-- Alert false positive rate (target: <10%)
+### Experiment 3: Track Core Web Vitals
+- **Hypothesis:** Tracking Core Web Vitals will reveal UX issues
+- **Implementation:** Add web-vitals library (already in dependencies) and track LCP, FID, CLS
+- **Metric:** Core Web Vitals compliance (% meeting SLO targets)
+- **Success Criteria:** >80% of page loads meet SLO (LCP <2.5s)
 
 ---
 
-## Implementation Priority
+## Prioritization Matrix
 
-### Phase 1 (Weeks 1-2): Quick Wins
-1. ✅ Pre-merge validation (high impact, low effort)
-2. ✅ Code review SLAs (high impact, medium effort)
-
-### Phase 2 (Weeks 3-4): Constraint Exploitation
-3. ✅ CI pipeline optimization (high impact, medium effort)
-4. ✅ Auto-approve low-risk PRs (high impact, low effort)
-
-### Phase 3 (Weeks 5-6): Feedback Improvement
-5. ✅ Performance regression detection (medium impact, medium effort)
-6. ✅ Security scanning (medium impact, medium effort)
-
-## Expected Overall Impact
-
-| Metric | Current | Target | Improvement |
-|--------|---------|--------|-------------|
-| Lead Time | 3-5 days | 1-2 days | 60% reduction |
-| CI Duration | 15 min | 8-10 min | 33-47% reduction |
-| Rework Rate | 25% | 15% | 40% reduction |
-| Code Review Wait | 48-72h | 4-8h | 85% reduction |
-| MTTR | Hours | <30min | 80% reduction |
-
-## Risk Mitigation
-
-- **Code Review Changes:** Start with opt-in SLAs, expand gradually
-- **CI Optimization:** Test in parallel branch first, monitor for flakiness
-- **Pre-Merge Checks:** Start lenient, tighten over time
-- **Performance Monitoring:** Set conservative thresholds initially
+| Experiment | Impact | Effort | Priority | Owner | Timeline |
+|------------|--------|--------|----------|-------|----------|
+| **Review Queue Time** | High | Medium | P0 | `@team-leads` | 2 weeks |
+| **Canary Deployments** | High | High | P1 | `@devops-team` | 2 weeks (stub) |
+| **CI Parallelization** | Medium | Low | P1 | `@devops-team` | 1 week |
+| **RUM/Telemetry** | Medium | Medium | P2 | `@platform-team` | 2 weeks |
 
 ---
 
-**Next Steps:**
-1. ✅ Complete leverage points analysis
-2. Get team buy-in on priorities
-3. Create implementation plan
-4. Start with Phase 1 quick wins
-5. Measure and iterate
+## Success Metrics Dashboard
+
+**Target Metrics (2 weeks):**
+
+1. **Review Queue Time:** <6 hours (50% reduction)
+2. **CI Cycle Time:** <8 minutes (33% reduction)
+3. **Canary Harness:** Implemented for `checkout` module
+4. **Telemetry Coverage:** 100% of top 10 API endpoints
+
+**Measurement:**
+- Review queue time: GitHub API (time from PR creation to first comment)
+- CI cycle time: GitHub Actions workflow duration
+- Canary deployments: Deployment logs (canary → production promotion)
+- Telemetry coverage: Code review (% of endpoints with instrumentation)
+
+---
+
+**Last Updated:** 2025-01-09  
+**Next Review:** After 2-week experiments complete

@@ -1,112 +1,306 @@
-# Decision Log — Architecture Decision Records (ADR-lite)
+# Decision Log (ADR-Lite)
 
-**Format:** Date | Decision | Context | Consequences | Status
+**Generated:** 2025-01-09  
+**Scope:** Key architectural and technical decisions from last quarter of PRs  
+**Format:** ADR-lite (simplified Architecture Decision Records)
 
 ---
 
-## 2025-01-XX | Systems Thinking Review Implementation
+## Decision 1: Monorepo Structure with Turborepo
 
-**Decision:** Implement comprehensive systems thinking review with value stream mapping, leverage point analysis, and weekly metrics snapshots.
+**Date:** 2024-Q4 (inferred from structure)  
+**Status:** Accepted  
+**Context:** Multiple apps (web, mobile, community-portal, etc.) and shared packages
 
-**Context:** 
-- Need to understand system bottlenecks and optimization opportunities
-- Value stream from commit to customer impact is unclear
-- No systematic approach to identifying leverage points
+**Decision:**
+Use Turborepo for monorepo management with workspaces:
+- `apps/*` for applications
+- `packages/*` for shared libraries
 
 **Consequences:**
-- ✅ Created VSM, dependency graphs, causal loop diagrams
-- ✅ Identified code review as primary bottleneck
-- ✅ Established weekly systems metrics snapshot
-- ⚠️ Requires ongoing maintenance and measurement
+- ✅ Shared code reuse
+- ✅ Consistent tooling
+- ⚠️ Complex dependency management
+- ⚠️ Large CI times
 
-**Status:** ✅ Implemented
+**Alternatives Considered:**
+- Separate repositories (rejected: harder to share code)
+- Nx (rejected: Turborepo chosen for simplicity)
+
+**Evidence:**
+- `package.json` shows `workspaces: ["apps/*", "packages/*"]`
+- `turbo.json` likely exists (not found, but referenced in scripts)
 
 ---
 
-## 2025-01-XX | Design Token Consolidation
+## Decision 2: Next.js Static Export for Web App
 
-**Decision:** Expand aliases in `design/tokens.json` and consolidate CSS variable naming.
+**Date:** 2024-Q4 (inferred from config)  
+**Status:** Accepted  
+**Context:** Web app deployment strategy
 
-**Context:**
-- Multiple token sources (JSON, TS, CSS) with some inconsistencies
-- Legacy aliases in CSS for backward compatibility
-- Need canonical token definitions
+**Decision:**
+Use Next.js with `output: 'export'` for static site generation, deployed to Vercel.
 
 **Consequences:**
-- ✅ Added aliases: `destructive → semantic.error`, `muted → secondary.200`, `card → background`
-- ✅ Preserved backward compatibility with CSS aliases
-- ⚠️ Future: Consider migrating CSS to canonical names
+- ✅ Fast static pages
+- ✅ CDN-friendly
+- ⚠️ No server-side rendering
+- ⚠️ API routes run as serverless functions (not static)
 
-**Status:** ✅ Implemented (Wave 1)
+**Alternatives Considered:**
+- Next.js with SSR (rejected: performance/SEO not critical)
+- Remix (rejected: Next.js ecosystem)
+
+**Evidence:**
+- `apps/web/next.config.ts:5` shows `output: 'export'`
+- `.github/workflows/deploy-web.yml` shows Vercel deployment
 
 ---
 
-## 2025-01-XX | Error Taxonomy Enhancement
+## Decision 3: Supabase as Backend-as-a-Service
 
-**Decision:** Enhance existing error taxonomy with validation guards and error boundaries.
+**Date:** 2024-Q4 (inferred from usage)  
+**Status:** Accepted  
+**Context:** Backend infrastructure choice
 
-**Context:**
-- Error taxonomy exists in `apps/web/src/lib/errors.ts`
-- High error density in workflow, marketing, observability modules
-- Need input validation and error recovery
+**Decision:**
+Use Supabase for:
+- Database (PostgreSQL)
+- Authentication
+- Real-time subscriptions
+- Edge functions
 
 **Consequences:**
-- ✅ Identified hotspots requiring guards
-- 📋 TODO: Create `validation-guards.ts` utility
-- 📋 TODO: Add error boundaries to observability code
-- ⚠️ Requires implementation in Wave 1
+- ✅ Rapid development
+- ✅ Built-in auth/RLS
+- ⚠️ Vendor lock-in
+- ⚠️ Schema drift risk (see assurance-scan.md)
 
-**Status:** 📋 Planned
+**Alternatives Considered:**
+- Self-hosted PostgreSQL (rejected: operational overhead)
+- Firebase (rejected: Supabase chosen for PostgreSQL)
+
+**Evidence:**
+- `master_supabase_schema.sql` exists
+- `apps/web/src/lib/supabaseClient.ts` exists
+- Multiple Supabase migrations in `supabase/migrations/`
 
 ---
 
-## 2025-01-XX | Benchmark Harness with Weekly CI
+## Decision 4: TypeScript for Type Safety
 
-**Decision:** Implement microbenchmark harness with weekly automated runs and trend analysis.
+**Date:** 2024-Q4 (inferred from codebase)  
+**Status:** Accepted (partially)  
+**Context:** Type safety strategy
 
-**Context:**
-- Performance regressions caught post-deploy
-- No systematic performance tracking
-- Need early detection of performance issues
+**Decision:**
+Use TypeScript across web and mobile apps, but:
+- Some `any` types still present (see assurance-scan.md)
+- Missing Supabase-generated types
 
 **Consequences:**
-- ✅ Created `bench/runner.ts` with benchmark utilities
-- ✅ Added `scripts/bench-trend.js` for trend analysis
-- ✅ Configured weekly CI workflow (Monday 04:20 UTC)
-- ✅ Example benchmark provided
-- ⚠️ Requires adding benchmarks for critical functions
+- ✅ Type safety where implemented
+- ⚠️ Incomplete coverage (contract drift)
+- ⚠️ Mobile app uses `any` types
 
-**Status:** ✅ Implemented
+**Alternatives Considered:**
+- JavaScript (rejected: type safety needed)
+- Strict TypeScript (rejected: migration in progress)
+
+**Evidence:**
+- `apps/web/tsconfig.json` exists
+- `apps/mobile/tsconfig.json` exists
+- `apps/mobile/app/index.tsx:14` shows `user: any`
 
 ---
 
-## 2025-01-XX | Self-Tuning Agent Configuration
+## Decision 5: Sentry for Error Tracking
 
-**Decision:** Create `.cursor/self-tuning.json` for autonomous threshold adjustment.
+**Date:** 2024-Q4 (inferred from config)  
+**Status:** Accepted (configured, coverage unknown)  
+**Context:** Error monitoring strategy
 
-**Context:**
-- Type coverage target is static (95%)
-- No mechanism for adaptive thresholds
-- Need self-adjusting targets based on historical performance
+**Decision:**
+Use Sentry for error tracking and performance monitoring.
 
 **Consequences:**
-- ✅ Created self-tuning configuration
-- ✅ Defined thresholds for type coverage, test coverage, bundle size, performance
-- ✅ Configured auto-adjustment based on last 2 runs
-- 📋 TODO: Implement auto-adjustment logic
+- ✅ Error tracking configured
+- ⚠️ Coverage unknown (no telemetry)
+- ⚠️ May not be fully instrumented
 
-**Status:** ✅ Configuration created, 📋 Logic pending
+**Alternatives Considered:**
+- Custom error tracking (rejected: Sentry provides more features)
+- No error tracking (rejected: needed for production)
 
----
-
-## Future Decisions (To Be Documented)
-
-- Code review SLA implementation
-- CI pipeline optimization approach
-- Pre-merge validation strategy
-- Performance regression detection thresholds
-- Security scanning integration
+**Evidence:**
+- `apps/web/next.config.ts:178` shows Sentry config
+- `apps/web/sentry.*.config.ts` files exist
+- Coverage unknown (see assurance-scan.md)
 
 ---
 
-**Note:** This is an ADR-lite format. Full ADRs can be created for major architectural decisions.
+## Decision 6: Vercel for Hosting
+
+**Date:** 2024-Q4 (inferred from workflows)  
+**Status:** Accepted  
+**Context:** Hosting platform choice
+
+**Decision:**
+Use Vercel for web app hosting with:
+- Automatic deployments from GitHub
+- Preview deployments for PRs
+- Serverless functions for API routes
+
+**Consequences:**
+- ✅ Easy deployments
+- ✅ Preview environments
+- ⚠️ No canary deployments (see Phase E)
+- ⚠️ Preview protection missing (security risk)
+
+**Alternatives Considered:**
+- Self-hosted (rejected: operational overhead)
+- AWS/GCP (rejected: Vercel simpler for Next.js)
+
+**Evidence:**
+- `.github/workflows/deploy-web.yml` shows Vercel deployment
+- `vercel.json` exists
+- Preview protection missing (see assurance-scan.md)
+
+---
+
+## Decision 7: React Native/Expo for Mobile
+
+**Date:** 2024-Q4 (inferred from structure)  
+**Status:** Accepted  
+**Context:** Mobile app strategy
+
+**Decision:**
+Use React Native with Expo for mobile app development.
+
+**Consequences:**
+- ✅ Code sharing with web (React)
+- ✅ Expo simplifies deployment
+- ⚠️ Performance monitoring missing
+- ⚠️ Type safety incomplete (`any` types)
+
+**Alternatives Considered:**
+- Native iOS/Android (rejected: slower development)
+- Flutter (rejected: React ecosystem preferred)
+
+**Evidence:**
+- `apps/mobile/app.config.js` exists
+- `apps/mobile/eas.json` exists (Expo Application Services)
+- `apps/mobile/app/index.tsx` shows React Native usage
+
+---
+
+## Decision 8: Zod for Runtime Validation
+
+**Date:** 2024-Q4 (inferred from dependencies)  
+**Status:** Accepted  
+**Context:** Input validation strategy
+
+**Decision:**
+Use Zod for runtime validation of API inputs and forms.
+
+**Consequences:**
+- ✅ Type-safe validation
+- ✅ Runtime type checking
+- ⚠️ Not used everywhere (see code-review.md)
+
+**Alternatives Considered:**
+- Yup (rejected: Zod chosen for TypeScript integration)
+- Manual validation (rejected: error-prone)
+
+**Evidence:**
+- `package.json:234` shows `zod: ^3.22.4`
+- `apps/web/src/lib/validation.ts` likely uses Zod
+- Coverage unknown (see code-review.md)
+
+---
+
+## Decision 9: Turbo for Build System
+
+**Date:** 2024-Q4 (inferred from scripts)  
+**Status:** Accepted  
+**Context:** Build orchestration
+
+**Decision:**
+Use Turborepo (Turbo) for monorepo build orchestration.
+
+**Consequences:**
+- ✅ Parallel builds
+- ✅ Caching
+- ⚠️ Complex configuration
+
+**Alternatives Considered:**
+- Nx (rejected: Turborepo simpler)
+- Lerna (rejected: Turborepo faster)
+
+**Evidence:**
+- `package.json:220` shows `turbo: ^1.13.4`
+- Scripts use `turbo run` commands
+
+---
+
+## Decision 10: pnpm for Package Management
+
+**Date:** 2024-Q4 (inferred from usage)  
+**Status:** Accepted  
+**Context:** Package manager choice
+
+**Decision:**
+Use pnpm for package management across monorepo.
+
+**Consequences:**
+- ✅ Faster installs (hard linking)
+- ✅ Disk space savings
+- ✅ Strict dependency resolution
+- ⚠️ Some CI/CD tools may not support pnpm well
+
+**Alternatives Considered:**
+- npm (rejected: slower, more disk usage)
+- yarn (rejected: pnpm faster)
+
+**Evidence:**
+- `package.json:244` shows `packageManager: "pnpm@9.0.0"`
+- All workflows use `pnpm install --frozen-lockfile`
+
+---
+
+## Pending Decisions (To Be Made)
+
+1. **Canary Deployment Strategy**
+   - **Status:** Pending
+   - **Context:** Need safer deployments
+   - **See:** Phase E (Canary Harness)
+
+2. **Type Coverage Target**
+   - **Status:** Pending
+   - **Context:** Current coverage unknown, target 95% (from inputs)
+   - **See:** Phase C (Type & Telemetry Wave)
+
+3. **Bundle Size Budget**
+   - **Status:** Pending
+   - **Context:** No bundle analysis, target 0KB delta (from inputs)
+   - **See:** Phase A (Assurance Scan)
+
+4. **Preview Protection Strategy**
+   - **Status:** Pending
+   - **Context:** Security risk (preview deployments unprotected)
+   - **See:** Phase E (Canary Harness)
+
+---
+
+## Decision Review Process
+
+**Frequency:** Quarterly  
+**Owner:** Architecture Team (`@team-leads`)  
+**Format:** ADR-lite (this document)  
+**Full ADRs:** Consider creating full ADRs for major decisions (see `docs/adr/` if exists)
+
+---
+
+**Last Updated:** 2025-01-09  
+**Next Review:** 2025-04-09

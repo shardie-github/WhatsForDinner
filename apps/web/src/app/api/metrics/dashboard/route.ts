@@ -5,6 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
 export const runtime = 'edge';
 export const revalidate = 60; // Cache for 60 seconds
@@ -16,11 +17,11 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 interface MetricData {
   source: string;
-  metric: Record<string, any>;
+  metric: Record<string, unknown>;
   ts: string;
 }
 
-export async function GET(request: NextRequest) {
+async function handler(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const days = parseInt(searchParams.get('days') || '7');
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Aggregate by source
-    const aggregated: Record<string, any> = {
+    const aggregated: Record<string, unknown> = {
       performance: {
         webVitals: { LCP: 0, CLS: 0, TTFB: 0, FID: 0 },
         supabase: { avgLatencyMs: 0, queryCount: 0 },
@@ -185,3 +186,5 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export const GET = withTelemetry(handler);

@@ -12,21 +12,21 @@ export type Database = {
         Row: {
           id: string;
           name: string | null;
-          preferences: any | null;
+          preferences: Record<string, unknown> | null;
           tenant_id: string | null;
           role: 'owner' | 'editor' | 'viewer';
         };
         Insert: {
           id: string;
           name?: string | null;
-          preferences?: any | null;
+          preferences?: Record<string, unknown> | null;
           tenant_id?: string | null;
           role?: 'owner' | 'editor' | 'viewer';
         };
         Update: {
           id?: string;
           name?: string | null;
-          preferences?: any | null;
+          preferences?: Record<string, unknown> | null;
           tenant_id?: string | null;
           role?: 'owner' | 'editor' | 'viewer';
         };
@@ -41,8 +41,8 @@ export type Database = {
           status: 'active' | 'inactive' | 'suspended' | 'cancelled';
           created_at: string;
           updated_at: string;
-          settings: any;
-          metadata: any;
+          settings: Record<string, unknown>;
+          metadata: Record<string, unknown>;
         };
         Insert: {
           id?: string;
@@ -53,8 +53,8 @@ export type Database = {
           status?: 'active' | 'inactive' | 'suspended' | 'cancelled';
           created_at?: string;
           updated_at?: string;
-          settings?: any;
-          metadata?: any;
+          settings?: Record<string, unknown>;
+          metadata?: Record<string, unknown>;
         };
         Update: {
           id?: string;
@@ -65,8 +65,8 @@ export type Database = {
           status?: 'active' | 'inactive' | 'suspended' | 'cancelled';
           created_at?: string;
           updated_at?: string;
-          settings?: any;
-          metadata?: any;
+          settings?: Record<string, unknown>;
+          metadata?: Record<string, unknown>;
         };
       };
       tenant_memberships: {
@@ -225,14 +225,14 @@ export type Database = {
           id: number;
           user_id: string;
           title: string;
-          details: any;
+          details: Record<string, unknown>;
           calories: number;
           time: string;
         };
         Insert: {
           user_id: string;
           title: string;
-          details: any;
+          details: Record<string, unknown>;
           calories: number;
           time: string;
         };
@@ -377,7 +377,7 @@ export type Database = {
           id: string;
           level: 'error' | 'warn' | 'info' | 'debug';
           message: string;
-          context: any;
+          context: Record<string, unknown>;
           user_id: string | null;
           session_id: string | null;
           stack_trace: string | null;
@@ -418,7 +418,7 @@ export type Database = {
           stack_trace: string | null;
           user_id: string | null;
           session_id: string | null;
-          context: any;
+          context: Record<string, unknown>;
           resolved: boolean;
           created_at: string;
           resolved_at: string | null;
@@ -669,7 +669,7 @@ export type Database = {
             | 'activation'
             | 'retention'
             | 'churn';
-          event_data: any;
+          event_data: Record<string, unknown>;
           timestamp: string;
           page_url: string | null;
           referrer: string | null;

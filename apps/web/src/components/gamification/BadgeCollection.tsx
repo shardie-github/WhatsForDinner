@@ -1,113 +1,86 @@
-"use client";
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase/client";
-import Badge from "./Badge";
-import Confetti from "./Confetti";
-import { motion, AnimatePresence } from "framer-motion";
+/**
+ * Badge Collection Component
+ * Shows user's unlocked badges
+ */
 
-export default function BadgeCollection() {
-  const [badges, setBadges] = useState<any[]>([]);
-  const [userBadges, setUserBadges] = useState<Set<number>>(new Set());
-  const [newBadge, setNewBadge] = useState<number | null>(null);
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Award, Lock } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { gamificationSystem, type Badge as BadgeType } from '@/lib/gamification/system';
+
+interface BadgeCollectionProps {
+  userId: string;
+}
+
+const rarityColors = {
+  common: 'bg-gray-100 text-gray-800',
+  rare: 'bg-blue-100 text-blue-800',
+  epic: 'bg-purple-100 text-purple-800',
+  legendary: 'bg-yellow-100 text-yellow-800',
+};
+
+export function BadgeCollection({ userId }: BadgeCollectionProps) {
+  const [badges, setBadges] = useState<BadgeType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadBadges();
-  }, []);
+    const loadBadges = async () => {
+      const userBadges = await gamificationSystem.getUserBadges(userId);
+      setBadges(userBadges);
+      setIsLoading(false);
+    };
 
-  async function loadBadges() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data: allBadges } = await supabase
-      .from("badges")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    const { data: earned } = await supabase
-      .from("user_badges")
-      .select("badge_id")
-      .eq("user_id", user.id);
-
-    if (allBadges) {
-      setBadges(allBadges);
-      if (earned) {
-        setUserBadges(new Set(earned.map(b => b.badge_id)));
-      }
+    if (userId) {
+      loadBadges();
     }
+  }, [userId]);
+
+  if (isLoading) {
+    return <div className="animate-pulse">Loading badges...</div>;
   }
 
-  useEffect(() => {
-    // Listen for new badge unlocks
-    const channel = supabase
-      .channel('badge-unlocks')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'user_badges',
-        filter: `user_id=eq.${(async () => {
-          const { data: { user } } = await supabase.auth.getUser();
-          return user?.id;
-        })()}`
-      }, (payload) => {
-        setNewBadge((payload.new as any).badge_id);
-        loadBadges();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Badges</h2>
-      
-      <AnimatePresence>
-        {newBadge && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            onClick={() => setNewBadge(null)}
-          >
-            <div className="bg-card rounded-xl border p-6 max-w-sm text-center">
-              <div className="text-6xl mb-4">🏆</div>
-              <div className="text-xl font-bold mb-2">Badge Unlocked!</div>
-              <div className="text-sm text-muted-foreground">
-                {badges.find(b => b.id === newBadge)?.name}
-              </div>
-              <Confetti when={true} />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-        {badges.map((badge) => {
-          const isEarned = userBadges.has(badge.id);
-          return (
-            <div
-              key={badge.id}
-              className={`relative rounded-xl border p-3 ${
-                isEarned ? "bg-card border-primary" : "bg-muted/50 opacity-50"
-              }`}
-            >
-              {isEarned && (
-                <div className="absolute top-2 right-2 text-sm">✓</div>
-              )}
-              <div className="text-3xl mb-2 text-center">{badge.emoji || "🏅"}</div>
-              <div className="text-xs font-semibold text-center">{badge.name}</div>
-              {badge.description && (
-                <div className="text-xs text-muted-foreground mt-1 text-center">
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Award className="w-5 h-5" />
+          Badge Collection ({badges.length})
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {badges.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <Lock className="w-12 h-12 mx-auto mb-2 opacity-50" />
+            <p>No badges yet. Start generating recipes to earn your first badge!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {badges.map((badge) => (
+              <div
+                key={badge.id}
+                className="flex flex-col items-center p-4 border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <div className="text-4xl mb-2">{badge.icon}</div>
+                <div className="text-sm font-semibold text-center mb-1">{badge.name}</div>
+                <div className="text-xs text-muted-foreground text-center mb-2">
                   {badge.description}
                 </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
+                <Badge className={rarityColors[badge.rarity]}>
+                  {badge.rarity}
+                </Badge>
+                {badge.unlockedAt && (
+                  <div className="text-xs text-muted-foreground mt-2">
+                    {new Date(badge.unlockedAt).toLocaleDateString()}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
