@@ -1,0 +1,68 @@
+name: Expo EAS Build & Submit
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build'
+        required: true
+        type: choice
+        options:
+          - all
+          - ios
+          - android
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build iOS
+        if: github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' || github.event.inputs.platform == ''
+        working-directory: apps/mobile
+        run: eas build --platform ios --profile production --non-interactive
+
+      - name: Build Android
+        if: github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' || github.event.inputs.platform == ''
+        working-directory: apps/mobile
+        run: eas build --platform android --profile production --non-interactive
+
+      - name: Submit iOS
+        if: startsWith(github.ref, 'refs/tags/v') && (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' || github.event.inputs.platform == '')
+        working-directory: apps/mobile
+        run: eas submit -p ios --latest --non-interactive
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+
+      - name: Submit Android
+        if: startsWith(github.ref, 'refs/tags/v') && (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' || github.event.inputs.platform == '')
+        working-directory: apps/mobile
+        run: eas submit -p android --latest --non-interactive
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}

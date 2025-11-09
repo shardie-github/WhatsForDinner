@@ -5,15 +5,20 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
+      "channel": "preview",
       "ios": {
         "simulator": true
       }
     },
     "production": {
+      "distribution": "store",
+      "channel": "production",
+      "autoIncrement": "version",
       "ios": {
         "bundleIdentifier": "com.hardonia.whatsfordinner"
       },
@@ -34,5 +39,10 @@
         "track": "internal"
       }
     }
+  },
+  "updates": {
+    "enabled": true,
+    "checkAutomatically": "ON_LOAD",
+    "fallbackToCacheTimeout": 0
   }
 }
