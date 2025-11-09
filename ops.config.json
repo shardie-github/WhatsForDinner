@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json.schemastore.org/ops-config",
+  "version": "1.0.0",
+  "slo": {
+    "ttfb_ms": 200,
+    "api_p95_ms": 400,
+    "lcp_s": 2.5,
+    "uptime_pct": 99.9,
+    "error_rate_pct": 0.1,
+    "description": "Service Level Objectives for production monitoring"
+  },
+  "budgets": {
+    "vercel_usd": 50,
+    "supabase_usd": 35,
+    "expo_usd": 15,
+    "total_usd": 100,
+    "alert_threshold_pct": 80,
+    "description": "Monthly cost budgets with alert thresholds"
+  },
+  "webhooks": {
+    "reliability": "RELIABILITY_ALERT_WEBHOOK",
+    "security": "SECURITY_ALERT_WEBHOOK",
+    "cost": "COST_ALERT_WEBHOOK",
+    "description": "Webhook secret names for alert routing (values stored in secrets, never committed)"
+  },
+  "branches": {
+    "default": "main",
+    "staging": "develop",
+    "description": "Branch naming conventions"
+  },
+  "labels": [
+    "auto/security",
+    "auto/perf",
+    "auto/docs",
+    "auto/maint"
+  ],
+  "schedules": {
+    "light": "5 */12 * * *",
+    "heavy": "15 3 * * 1",
+    "description": "Cron schedules for agent runs (light: every 12h, heavy: weekly Monday 3:15 AM)"
+  },
+  "migration": {
+    "canary_flag": "MIGRATION_CANARY",
+    "description": "Environment flag that must be set to true for migrations to run (safety guard)"
+  },
+  "admin": {
+    "basic_auth_secret": "ADMIN_BASIC_AUTH",
+    "description": "Secret name for Basic Auth credentials (format: username:password, base64 encoded)"
+  },
+  "telemetry": {
+    "expo_flag": "EXPO_PUBLIC_TELEMETRY",
+    "description": "Feature flag to enable Expo TTI telemetry collection"
+  },
+  "regression": {
+    "cycles_before_issue": 3,
+    "description": "Number of consecutive cycles with regression before opening parent issue"
+  }
+}

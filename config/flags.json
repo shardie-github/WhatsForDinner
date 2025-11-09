@@ -1,0 +1,15 @@
+{
+  "flags": {
+    "canary_example": {
+      "enabled": false,
+      "env": "staging",
+      "description": "Example canary flag for performance testing. Agent can toggle this in staging builds."
+    }
+  },
+  "config": {
+    "provider": "json",
+    "refreshInterval": 30000,
+    "fallbackValue": false,
+    "logging": true
+  }
+}

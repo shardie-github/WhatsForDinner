@@ -65,6 +65,22 @@
         "startDate": null,
         "endDate": null
       }
+    },
+    "canary_example": {
+      "description": "Example canary flag for performance testing. Agent can toggle this in staging builds.",
+      "environments": {
+        "development": false,
+        "staging": true,
+        "canary": true,
+        "production": false
+      },
+      "rollout": {
+        "strategy": "percentage",
+        "percentage": 0,
+        "targetUsers": [],
+        "startDate": null,
+        "endDate": null
+      }
     }
   },
   "config": {

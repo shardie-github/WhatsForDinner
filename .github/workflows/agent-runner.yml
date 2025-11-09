@@ -2,8 +2,8 @@ name: Unified Agent Runner
 
 on:
   schedule:
-    # Run every 6 hours
-    - cron: "0 */6 * * *"
+    # Run every 12 hours at :05 (light maintenance)
+    - cron: "5 */12 * * *"
   workflow_dispatch:
     # Allow manual triggering
   push:

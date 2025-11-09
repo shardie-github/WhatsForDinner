@@ -1,0 +1,231 @@
+name: Weekly Deep Maintenance
+
+on:
+  schedule:
+    # Run every Monday at 3:15 AM UTC
+    - cron: "15 3 * * 1"
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  weekly-maintenance:
+    runs-on: ubuntu-latest
+    name: Weekly Security & Dependency Maintenance
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate SBOM (CycloneDX)
+        id: sbom
+        run: |
+          mkdir -p security
+          # Generate SBOM using license-checker or CycloneDX
+          # Fallback to license-checker if CycloneDX not available
+          if command -v cyclonedx-bom &> /dev/null; then
+            cyclonedx-bom -o security/sbom.json
+          else
+            # Use license-checker as fallback
+            npx license-checker --json > security/dependencies.json || true
+            # Convert to minimal SBOM format
+            node -e "
+              const fs = require('fs');
+              const deps = JSON.parse(fs.readFileSync('security/dependencies.json', 'utf8'));
+              const sbom = {
+                bomFormat: 'CycloneDX',
+                specVersion: '1.4',
+                version: 1,
+                metadata: {
+                  timestamp: new Date().toISOString(),
+                  tools: [{ name: 'license-checker', version: 'latest' }]
+                },
+                components: Object.keys(deps).map(name => ({
+                  type: 'library',
+                  name: name.split('@')[0],
+                  version: name.split('@')[1] || 'unknown',
+                  licenses: deps[name].licenses ? [{ license: { id: deps[name].licenses } }] : []
+                }))
+              };
+              fs.writeFileSync('security/sbom.json', JSON.stringify(sbom, null, 2));
+            "
+          fi
+        continue-on-error: true
+
+      - name: License Scan
+        id: license_scan
+        run: |
+          mkdir -p security
+          # Scan for restricted licenses
+          npx license-checker --summary --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC' > security/license-summary.txt || true
+          
+          # Count restricted licenses
+          npx license-checker --json > security/license-details.json || true
+          node -e "
+            const fs = require('fs');
+            const deps = JSON.parse(fs.readFileSync('security/license-details.json', 'utf8'));
+            const restricted = ['GPL', 'AGPL', 'LGPL', 'CPOL', 'MS-PL'];
+            const restrictedDeps = Object.entries(deps)
+              .filter(([name, info]) => {
+                const license = (info.licenses || '').toString().toUpperCase();
+                return restricted.some(r => license.includes(r));
+              })
+              .map(([name]) => name);
+            
+            const report = {
+              timestamp: new Date().toISOString(),
+              restrictedLicenseCount: restrictedDeps.length,
+              restrictedLicenses: restrictedDeps,
+              totalDependencies: Object.keys(deps).length
+            };
+            
+            fs.writeFileSync('security/license-report.json', JSON.stringify(report, null, 2));
+            console.log('Restricted licenses:', restrictedDeps.length);
+            console.log('Restricted deps:', JSON.stringify(restrictedDeps));
+          "
+
+      - name: Dependency Outdated Check
+        id: outdated
+        run: |
+          mkdir -p security
+          # Get outdated packages summary
+          pnpm outdated --format=json > security/outdated.json || echo '[]' > security/outdated.json
+          
+          # Generate human-readable summary
+          pnpm outdated > security/outdated-summary.txt || echo 'No outdated packages' > security/outdated-summary.txt
+
+      - name: Update Security Compliance Report
+        run: |
+          # Append license scan results to SECURITY_COMPLIANCE_REPORT.md
+          if [ -f "security/license-report.json" ]; then
+            node -e "
+              const fs = require('fs');
+              const report = JSON.parse(fs.readFileSync('security/license-report.json', 'utf8'));
+              const complianceReport = fs.readFileSync('SECURITY_COMPLIANCE_REPORT.md', 'utf8');
+              
+              const licenseSection = \`
+## License Compliance (Weekly Scan)
+
+**Scan Date:** \${report.timestamp}
+**Restricted Licenses Found:** \${report.restrictedLicenseCount}
+**Total Dependencies:** \${report.totalDependencies}
+**Status:** \${report.restrictedLicenseCount > 0 ? '⚠️ Warning' : '✅ Pass'}
+
+### Restricted Licenses Detected:
+\${report.restrictedLicenses.length > 0 ? report.restrictedLicenses.map(d => '- ' + d).join('\\n') : 'None'}
+
+\`;
+              
+              // Append to report (before final ---)
+              const updated = complianceReport.replace(/^---$/m, licenseSection + '\\n---');
+              fs.writeFileSync('SECURITY_COMPLIANCE_REPORT.md', updated);
+            "
+          fi
+
+      - name: Create Dependency Report
+        run: |
+          mkdir -p security
+          node -e "
+            const fs = require('fs');
+            const outdated = JSON.parse(fs.readFileSync('security/outdated.json', 'utf8'));
+            const licenseReport = fs.existsSync('security/license-report.json') 
+              ? JSON.parse(fs.readFileSync('security/license-report.json', 'utf8'))
+              : { restrictedLicenseCount: 0, totalDependencies: 0 };
+            
+            const report = {
+              timestamp: new Date().toISOString(),
+              week: new Date().toISOString().split('T')[0],
+              dependencies: {
+                total: licenseReport.totalDependencies || 0,
+                outdated: outdated.length || 0,
+                restrictedLicenses: licenseReport.restrictedLicenseCount || 0
+              },
+              sbom: {
+                generated: fs.existsSync('security/sbom.json'),
+                location: 'security/sbom.json'
+              },
+              recommendations: []
+            };
+            
+            if (outdated.length > 10) {
+              report.recommendations.push('Consider updating outdated dependencies');
+            }
+            if (licenseReport.restrictedLicenseCount > 0) {
+              report.recommendations.push('Review restricted licenses for compliance');
+            }
+            
+            fs.writeFileSync('security/dependency-report.json', JSON.stringify(report, null, 2));
+          "
+
+      - name: Create Maintenance PR
+        if: github.event_name == 'schedule'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: maint/weekly-security-deps
+          title: "auto/maint: week-$(date +%V) security + deps"
+          body: |
+            ## Weekly Maintenance Report
+            
+            **Week:** $(date +%V)  
+            **Date:** $(date +%Y-%m-%d)
+            
+            ### SBOM
+            - ✅ SBOM generated: `security/sbom.json`
+            
+            ### License Scan
+            - Restricted licenses: ${{ steps.license_scan.outputs.restricted_count || 'See report' }}
+            - Report: `security/license-report.json`
+            
+            ### Dependencies
+            - Outdated packages: See `security/outdated-summary.txt`
+            - Full report: `security/dependency-report.json`
+            
+            ### Files Updated
+            - `SECURITY_COMPLIANCE_REPORT.md` - License scan results appended
+            - `security/sbom.json` - Software Bill of Materials
+            - `security/license-report.json` - License compliance report
+            - `security/dependency-report.json` - Dependency status report
+            
+            ### Next Steps
+            - [ ] Review restricted licenses
+            - [ ] Update critical outdated dependencies
+            - [ ] Verify SBOM completeness
+            
+            ---
+            **Generated by:** Weekly Maintenance Workflow  
+            **Configuration:** `ops.config.json`
+          labels: |
+            auto/maint
+            auto/security
+          commit-message: "auto/maint: Weekly security and dependency maintenance"
+          delete-branch: true
+
+      - name: Upload Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-maintenance-artifacts
+          path: |
+            security/sbom.json
+            security/license-report.json
+            security/license-details.json
+            security/outdated.json
+            security/outdated-summary.txt
+            security/dependency-report.json
+          retention-days: 90
