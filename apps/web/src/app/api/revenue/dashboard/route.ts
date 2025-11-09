@@ -10,6 +10,7 @@ import { engagementScorer } from '@/lib/revenue/engagement-scoring';
 import { adOptimizer } from '@/lib/revenue/advertising';
 import { passiveIncomeManager } from '@/lib/revenue/passive-income';
 import { subscriptionOptimizer } from '@/lib/revenue/subscription-optimizer';
+import { handleError, getErrorStatusCode, getUserFriendlyMessage } from '@/lib/errors';
 
 export async function GET() {
   try {
@@ -44,9 +45,17 @@ export async function GET() {
 
     return NextResponse.json(dashboard);
   } catch (error) {
+    const appError = handleError(error);
+    const statusCode = getErrorStatusCode(appError);
+    const message = getUserFriendlyMessage(appError);
+    
     return NextResponse.json(
-      { error: 'Failed to generate revenue dashboard' },
-      { status: 500 }
+      { 
+        error: message,
+        code: appError.code,
+        ...(process.env.NODE_ENV === 'development' && { details: appError.details }),
+      },
+      { status: statusCode }
     );
   }
 }
