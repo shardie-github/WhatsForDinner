@@ -188,7 +188,10 @@
     "test:enhance": "node scripts/enhance-test-files.mjs",
     "bugs:fix": "node scripts/fix-bugs.mjs",
     "security:pentest": "node scripts/penetration-testing.mjs",
-    "secrets:remediate": "node scripts/address-secrets-findings.mjs"
+    "secrets:remediate": "node scripts/address-secrets-findings.mjs",
+    "reliability:orchestrate": "node scripts/reliability-orchestrator.mjs",
+    "reliability:check": "node scripts/reliability-orchestrator.mjs --check-only",
+    "reliability:dashboard": "node scripts/reliability-orchestrator.mjs --no-prs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1"

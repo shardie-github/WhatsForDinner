@@ -9,8 +9,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, '..');
 
-const SUPABASE_URL = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE_KEY = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
+let SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY;
+try {
+  const { secretsManager } = await import('./secrets-manager-unified.mjs');
+  SUPABASE_URL = await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL') || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  SUPABASE_SERVICE_ROLE_KEY = await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY') || process.env.SUPABASE_SERVICE_ROLE_KEY;
+} catch (e) {
+  SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+}
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   console.error('❌ Missing required environment variables');
@@ -237,21 +244,20 @@ async function main() {
     
     printCostReport(supabaseUsage, vercelUsage, violations);
     
-    if (generateArtifact) {
-      const artifact = generateArtifact(supabaseUsage, vercelUsage, violations);
-      const artifactPath = join(projectRoot, 'REPORTS', 'cost-guard.json');
-      
-      // Ensure REPORTS directory exists
-      const fs = await import('fs');
-import { secretsManager } from './secrets-manager-unified.mjs';
-      const reportsDir = join(projectRoot, 'REPORTS');
-      if (!existsSync(reportsDir)) {
-        fs.mkdirSync(reportsDir, { recursive: true });
+      if (generateArtifact) {
+        const artifact = generateArtifact(supabaseUsage, vercelUsage, violations);
+        const artifactPath = join(projectRoot, 'REPORTS', 'cost-guard.json');
+        
+        // Ensure REPORTS directory exists
+        const fs = await import('fs');
+        const reportsDir = join(projectRoot, 'REPORTS');
+        if (!existsSync(reportsDir)) {
+          fs.mkdirSync(reportsDir, { recursive: true });
+        }
+        
+        fs.writeFileSync(artifactPath, artifact);
+        console.log(`\n📄 Artifact saved to: ${artifactPath}`);
       }
-      
-      fs.writeFileSync(artifactPath, artifact);
-      console.log(`\n📄 Artifact saved to: ${artifactPath}`);
-    }
     
     if (checkOnly) {
       const hasCritical = violations.some(v => v.severity === 'critical');
