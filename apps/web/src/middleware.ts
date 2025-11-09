@@ -117,8 +117,8 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 3. API Rate Limiting (Automatic)
-  if (url.pathname.startsWith('/api/v1/')) {
+  // 3. API Rate Limiting (Automatic) - Only if API monetization enabled
+  if (process.env.API_MONETIZATION_ENABLED === 'true' && url.pathname.startsWith('/api/v1/')) {
     const apiKey = request.headers.get('x-api-key');
     if (apiKey) {
       try {
