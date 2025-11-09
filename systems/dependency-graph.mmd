@@ -1,0 +1,59 @@
+graph TB
+    subgraph "Apps"
+        Web[apps/web<br/>Next.js App]
+        Mobile[apps/mobile<br/>React Native]
+        Community[apps/community-portal<br/>Next.js]
+    end
+
+    subgraph "Packages"
+        UI[packages/ui<br/>Component Library]
+        Utils[packages/utils<br/>Utilities]
+        Server[packages/server<br/>Backend Services]
+        Theme[packages/theme<br/>Design Tokens]
+        Config[packages/config<br/>Configuration]
+    end
+
+    subgraph "External Services"
+        Supabase[Supabase<br/>Database & Auth]
+        Vercel[Vercel<br/>Hosting]
+        Stripe[Stripe<br/>Payments]
+        Sentry[Sentry<br/>Error Tracking]
+    end
+
+    Web --> UI
+    Web --> Utils
+    Web --> Theme
+    Web --> Config
+    Web --> Supabase
+    Web --> Stripe
+    Web --> Sentry
+
+    Mobile --> UI
+    Mobile --> Utils
+    Mobile --> Theme
+    Mobile --> Config
+    Mobile --> Supabase
+
+    Community --> UI
+    Community --> Utils
+    Community --> Theme
+
+    Server --> Utils
+    Server --> Config
+    Server --> Supabase
+    Server --> Stripe
+
+    UI --> Theme
+    Utils --> Config
+
+    Web -.->|Deploy| Vercel
+    Mobile -.->|Build| EAS[Expo Application Services]
+
+    style Web fill:#10B981
+    style Mobile fill:#10B981
+    style UI fill:#3B82F6
+    style Utils fill:#3B82F6
+    style Server fill:#8B5CF6
+    style Theme fill:#F59E0B
+    style Supabase fill:#EC4899
+    style Vercel fill:#000000
