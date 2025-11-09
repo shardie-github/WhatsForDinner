@@ -1,0 +1,75 @@
+# Notification Utility
+
+## Overview
+
+The notification utility is used by the Hardonia Ops Agent to send alerts when regressions persist across multiple cycles (default: 3 cycles as configured in `ops.config.json`).
+
+## Webhook Configuration
+
+Webhook URLs are stored as GitHub secrets and referenced by name only in `ops.config.json`:
+
+- `RELIABILITY_ALERT_WEBHOOK` - For reliability/SLO violations
+- `SECURITY_ALERT_WEBHOOK` - For security incidents
+- `COST_ALERT_WEBHOOK` - For budget threshold violations
+
+**Important:** Never commit webhook URLs or tokens. Only reference secret names.
+
+## Usage
+
+The notification utility is called automatically by the agent when:
+
+1. A regression is detected
+2. The regression persists for `regression.cycles_before_issue` cycles (default: 3)
+3. A parent issue needs to be created
+
+## Implementation
+
+The notification logic is implemented in the agent system. See:
+
+- `agents/reliability-agent.ts` - For reliability alerts
+- `agents/security-agent.ts` - For security alerts  
+- `agents/cost-agent.ts` - For cost alerts
+
+## Alert Payload Format
+
+```json
+{
+  "type": "reliability|security|cost",
+  "severity": "warning|critical",
+  "title": "Alert title",
+  "message": "Alert message",
+  "metrics": {
+    "current": "current value",
+    "target": "target value",
+    "status": "pass|warning|fail"
+  },
+  "links": {
+    "dashboard": "/admin/metrics",
+    "runbook": "docs/runbooks/..."
+  },
+  "timestamp": "ISO 8601 timestamp"
+}
+```
+
+## Testing
+
+To test the notification pathway:
+
+1. Ensure webhook secrets are configured in GitHub
+2. Trigger a test regression (or use manual agent dispatch)
+3. Verify webhook receives payload
+4. Check alert appears in Slack/Discord
+
+## Integration
+
+The agent automatically:
+- Detects regressions from performance/security/cost reports
+- Tracks regression cycles
+- Sends alerts via configured webhooks
+- Creates GitHub issues when threshold is reached
+- Links to relevant runbooks and dashboards
+
+---
+
+**Configuration:** `ops.config.json`  
+**Agent Implementation:** `agents/*-agent.ts`
