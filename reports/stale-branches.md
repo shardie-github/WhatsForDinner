@@ -1,145 +1,190 @@
 # Branch Curator — Stale/Merged Cleanup Report
 
-**Generated:** 2025-01-09
+**Generated:** 2025-01-XX  
+**Default Branch:** `main`  
+**Current Branch:** `cursor/systems-audit-and-optimization-initiative-4e94`
 
 ## Executive Summary
 
-📊 **Merged branches:** Many branches have been merged to main  
-⚠️ **Unmerged branches:** 19+ branches not merged  
-🔍 **Analysis:** Review needed before cleanup
+Analysis of git branches reveals multiple remote branches that may be candidates for cleanup. **No automatic deletions performed** — manual review required.
 
-## Merged Branches (Safe to Delete)
+### Key Findings
 
-The following branches have been merged into `main`:
+- **Total Remote Branches:** 30+ branches found
+- **Merged to Main:** Only `main` itself (other branches may be merged but not deleted)
+- **Oldest Branches:** Several branches from 2+ weeks ago
+- **Current Branch:** Active work on systems audit
 
-```
-remotes/origin/chore/all-in-finisher-2024-12-19
-remotes/origin/cursor/analyze-product-gaps-for-premium-offering-d4ab
-remotes/origin/cursor/audit-and-enhance-trust-layer-f250
-remotes/origin/cursor/audit-and-secure-supabase-database-dfa4
-remotes/origin/cursor/automate-app-finalization-personalization-and-monetization-70b2
-remotes/origin/cursor/automate-canadian-venture-operations-suite-1302
-remotes/origin/cursor/automate-ci-cd-for-frontend-and-backend-0989
-remotes/origin/cursor/automate-devops-best-practices-for-what-s-for-dinner-cd43
-remotes/origin/cursor/automate-full-stack-testing-with-ci-ba5c
-remotes/origin/cursor/automate-production-finalization-and-polish-pipeline-7325
-remotes/origin/cursor/automate-production-framework-with-ops-cli-b82c
-remotes/origin/cursor/automate-production-framework-with-termux-and-wasm-16dc
-remotes/origin/cursor/automate-safe-and-auditable-releases-across-platforms-1465
-remotes/origin/cursor/automate-viral-growth-engine-with-ai-9fc3
-remotes/origin/cursor/automate-what-s-for-dinner-ecosystem-saas-2f4a
-remotes/origin/cursor/automated-backend-security-and-error-remediation-f235
-remotes/origin/cursor/automated-supabase-backend-audit-and-repair-da15
-```
+## Branch Analysis
 
-**⚠️ Note:** These are remote branches. Verify they're fully merged before deletion.
+### Recently Active Branches (< 1 week)
+- ✅ `cursor/systems-audit-and-optimization-initiative-4e94` — Current branch (8 minutes ago)
+- ✅ `origin/chore/safe-cleanup-foundation` — 7 hours ago
+- ✅ `origin/cursor/audit-and-enhance-trust-layer-f250` — 4 days ago
+- ✅ `origin/cursor/automate-canadian-venture-operations-suite-1302` — 4 days ago
+- ✅ `origin/cursor/automate-ci-cd-for-frontend-and-backend-0989` — 4 days ago
+- ✅ `origin/cursor/automate-integration-performance-and-accessibility-audits-497e` — 4 days ago
+- ✅ `origin/cursor/automate-production-framework-with-ops-cli-b82c` — 4 days ago
+- ✅ `origin/cursor/build-a-self-governing-privacy-guardian-system-af82` — 4 days ago
 
-## Unmerged Branches (Review Required)
+### Medium Age Branches (1-2 weeks)
+- ⚠️ `origin/chore/stepback-baseline` — 6 days ago
+- ⚠️ `origin/cursor/address-critical-and-high-priority-service-items-2c36` — 7 days ago
+- ⚠️ `origin/cursor/analyze-product-gaps-for-premium-offering-d4ab` — 7 days ago
+- ⚠️ `origin/cursor/audit-and-secure-supabase-database-dfa4` — 7 days ago
+- ⚠️ `origin/cursor/automated-backend-security-and-error-remediation-f235` — 6 days ago
+- ⚠️ `origin/cursor/automated-supabase-backend-audit-and-repair-da15` — 7 days ago
 
-The following branches have NOT been merged:
+### Potentially Stale Branches (> 2 weeks)
+- 🔴 `origin/chore/all-in-finisher-2024-12-19` — 13 days ago
+- 🔴 `origin/chore/repo-cleanup-full-20251026` — 13 days ago
+- 🔴 `origin/cursor/automate-app-finalization-personalization-and-monetization-70b2` — 2 weeks ago
+- 🔴 `origin/cursor/automate-devops-best-practices-for-what-s-for-dinner-cd43` — 13 days ago
+- 🔴 `origin/cursor/automate-full-stack-testing-with-ci-ba5c` — 2 weeks ago
+- 🔴 `origin/cursor/automate-production-finalization-and-polish-pipeline-7325` — 2 weeks ago
+- 🔴 `origin/cursor/automate-viral-growth-engine-with-ai-9fc3` — 2 weeks ago
+- 🔴 `origin/cursor/automate-what-s-for-dinner-ecosystem-saas-2f4a` — 13 days ago
+- 🔴 `origin/cursor/autonomous-intelligent-platform-evolution-30bf` — 2 weeks ago
+- 🔴 `origin/cursor/autonomous-quality-and-optimization-agent-6a95` — 2 weeks ago
+- 🔴 `origin/cursor/autonomous-system-health-and-optimization-3b8a` — 2 weeks ago
+- 🔴 `origin/cursor/bootstrap-supabase-backend-for-what-s-for-dinner-9fde` — 2 weeks ago
 
-```
-remotes/origin/chore/repo-cleanup-full-20251026
-remotes/origin/chore/safe-cleanup-foundation
-remotes/origin/chore/stepback-baseline
-remotes/origin/cursor/address-critical-and-high-priority-service-items-2c36
-remotes/origin/cursor/automate-integration-performance-and-accessibility-audits-497e
-remotes/origin/cursor/build-a-self-governing-privacy-guardian-system-af82
-remotes/origin/cursor/codebase-and-go-live-audit-checklist-cc27
-remotes/origin/cursor/explore-project-enhancements-618d
-remotes/origin/cursor/finalize-outstanding-agent-and-audit-items-for-deployment-2da0
-remotes/origin/cursor/generate-supbase-tables-and-rls-policies-6886
-remotes/origin/cursor/prepare-repository-for-go-live-readiness-7a75
-remotes/origin/cursor/prepare-repository-for-go-live-readiness-ef31
-remotes/origin/cursor/productionize-expo-supabase-vercel-app-b9d8
-remotes/origin/cursor/refactor-and-enhance-the-what-s-for-dinner-repository-ae81
-remotes/origin/cursor/setup-database-and-follow-updates-c405
-remotes/origin/cursor/setup-supabase-project-tables-and-backend-d19b
-remotes/origin/cursor/unified-hardonia-repo-agent-8c6f
-remotes/origin/cursor/verify-environment-variable-updates-and-placement-00c7
-remotes/origin/dependabot/npm_and_yarn/npm_and_yarn-e6a81f5c20
-remotes/origin/test/ci-workflow-verification
-```
+## Safe Cleanup Commands
 
-## Recommendations
-
-### Safe Actions (After Verification)
-
-1. **Delete merged branches** (after confirming merge):
-   ```bash
-   # For each merged branch:
-   git push origin --delete <branch-name>
-   ```
-
-2. **Archive old unmerged branches** (if no longer needed):
-   ```bash
-   # Create archive branch first
-   git branch archive/<branch-name> <branch-name>
-   git push origin archive/<branch-name>
-   # Then delete original
-   git push origin --delete <branch-name>
-   ```
-
-### Review Required
-
-1. **Check unmerged branches:**
-   - Review PR status
-   - Determine if still needed
-   - Archive or delete if obsolete
-
-2. **Check last commit date:**
-   ```bash
-   git for-each-ref --format='%(refname:short) %(committerdate)' refs/remotes/origin | sort -k2
-   ```
-
-3. **Identify stale branches** (>90 days old):
-   - Mark for review
-   - Contact branch owners
-   - Archive or delete if abandoned
-
-## Automated Cleanup Script (Safe Commands)
-
-**⚠️ WARNING:** Review before executing. No automatic deletions performed.
+### Check if Branch is Merged
 
 ```bash
-#!/bin/bash
-# Review merged branches
-echo "Merged branches (safe to delete after verification):"
-git branch -r --merged origin/main | grep -v "origin/main" | grep -v "origin/HEAD"
+# Check if branch is merged into main
+git branch --merged main | grep "branch-name"
 
-# Check last activity
-echo "\nLast activity per branch:"
-git for-each-ref --format='%(refname:short) %(committerdate:relative)' refs/remotes/origin | sort -k2
-
-# Archive old branches (>90 days)
-# git for-each-ref --format='%(refname:short) %(committerdate:unix)' refs/remotes/origin | \
-#   awk -v cutoff=$(date -d '90 days ago' +%s) '$2 < cutoff {print $1}' | \
-#   xargs -I {} git branch archive/{} {}
+# Check remote branches merged into main
+git branch -r --merged main | grep "origin/branch-name"
 ```
+
+### Safe Deletion Commands (Review Before Running)
+
+#### Local Branches (if merged)
+```bash
+# Delete local branch if merged
+git branch -d branch-name
+
+# Force delete local branch (use with caution)
+git branch -D branch-name
+```
+
+#### Remote Branches (if merged and confirmed safe)
+```bash
+# Delete remote branch (REQUIRES MANUAL VERIFICATION)
+git push origin --delete branch-name
+
+# Or using colon syntax
+git push origin :branch-name
+```
+
+### Risky Operations (DO NOT RUN AUTOMATICALLY)
+
+```bash
+# ⚠️ DO NOT RUN - Deletes all merged branches automatically
+git branch --merged main | grep -v "main" | xargs git branch -d
+
+# ⚠️ DO NOT RUN - Deletes all remote merged branches
+git branch -r --merged main | grep -v "main\|HEAD" | sed 's/origin\///' | xargs -I {} git push origin --delete {}
+```
+
+## Recommended Actions
+
+### Phase 1: Verification (Manual Review Required)
+
+1. **Check Merge Status**
+   ```bash
+   # For each potentially stale branch, verify if merged
+   git log main..origin/branch-name  # Shows commits not in main
+   git log origin/branch-name..main  # Shows commits in main not in branch
+   ```
+
+2. **Check for Open PRs**
+   - Review GitHub/GitLab for open PRs associated with branches
+   - Close PRs if merged or abandoned
+
+3. **Verify Branch Purpose**
+   - Some branches may be kept for reference
+   - Some may have unmerged but important work
+
+### Phase 2: Safe Cleanup (After Verification)
+
+#### High Confidence (Merged + Old + No Open PRs)
+- `origin/chore/all-in-finisher-2024-12-19` — Verify merged
+- `origin/chore/repo-cleanup-full-20251026` — Verify merged
+- `origin/cursor/automate-devops-best-practices-for-what-s-for-dinner-cd43` — Verify merged
+
+#### Medium Confidence (Requires PR Check)
+- Branches from 2 weeks ago that appear completed
+- Check GitHub for associated PRs
+
+#### Low Confidence (Keep for Now)
+- Branches less than 1 week old
+- Branches with active development
+- Branches with unmerged important work
+
+## Branch Naming Patterns
+
+### Cursor Agent Branches
+- Pattern: `cursor/*`
+- Many branches follow this pattern
+- May be auto-generated by Cursor agents
+
+### Chore Branches
+- Pattern: `chore/*`
+- Typically safe to clean up if merged
+
+### Feature Branches
+- Pattern: `cursor/feature-name-*`
+- Require verification before deletion
+
+## Automation Recommendations
+
+### GitHub Actions Workflow (Optional)
+
+```yaml
+name: Stale Branch Report
+on:
+  schedule:
+    - cron: '0 4 * * 1' # Weekly Monday 4 AM
+  workflow_dispatch:
+
+jobs:
+  stale-branch-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate stale branch report
+        run: |
+          echo "## Stale Branch Report" >> $GITHUB_STEP_SUMMARY
+          echo "Branches older than 30 days:" >> $GITHUB_STEP_SUMMARY
+          git for-each-ref --format='- %(refname:short) - %(committerdate:relative)' \
+            --sort=-committerdate refs/remotes/origin | \
+            grep -v 'HEAD\|main' | head -20 >> $GITHUB_STEP_SUMMARY
+```
+
+## Metrics
+
+- **Total Remote Branches:** 30+
+- **Branches > 2 weeks old:** ~12
+- **Branches < 1 week old:** ~8
+- **Merged to Main:** Needs verification per branch
 
 ## Next Steps
 
-1. ✅ **Report generated** - No destructive actions taken
-2. ⏳ **Manual review required** - Verify merged status
-3. ⏳ **Owner consultation** - Check with team before deletion
-4. ⏳ **Create issue** - Document cleanup plan in `ops: stale branches report`
+1. ✅ Generate branch report
+2. **Manual Review Required:**
+   - Check GitHub for open PRs
+   - Verify merge status for old branches
+   - Confirm with team before deletion
+3. Create GitHub issue with cleanup recommendations
+4. Set up weekly stale branch report (optional)
 
-## Issue Template
+---
 
-**Title:** `ops: stale branches report`
-
-**Body:**
-```
-This report identifies merged and unmerged branches for cleanup.
-
-**Merged branches:** [List above]
-**Unmerged branches:** [List above]
-
-**Action items:**
-1. Verify merged branches are fully merged
-2. Review unmerged branches for relevance
-3. Archive or delete obsolete branches
-4. Update branch protection rules if needed
-
-**Commands provided:** See reports/stale-branches.md
-```
+**⚠️ IMPORTANT:** This report provides analysis only. **No branches were deleted automatically.** All cleanup actions require manual verification and approval.

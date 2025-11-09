@@ -1,101 +1,158 @@
 # OKRs — Objectives and Key Results
-# Quarterly objectives aligned with SLOs
+# Quarterly Objectives tied to SLOs
 
 version: "1.0"
 quarter: "Q1 2025"
-updated: "2025-01-09"
+updated: "2025-01-XX"
 
 objectives:
   - id: "reliability"
-    title: "Improve System Reliability"
-    description: "Reduce downtime and error rates while improving incident response"
+    title: "Achieve 99.9% Uptime SLA"
+    description: "Ensure system reliability meets customer expectations"
     key_results:
-      - metric: "Uptime"
-        target: "99.9%"
-        current: "99.5%"
-        unit: "percentage"
-        measurement: "Monthly uptime from monitoring"
-      
-      - metric: "Error Rate"
-        target: "<0.1%"
-        current: "0.5%"
-        unit: "percentage of requests"
-        measurement: "Sentry error tracking"
-      
-      - metric: "MTTR"
-        target: "<4 hours"
-        current: "8 hours"
-        unit: "hours"
-        measurement: "Issue opened → Fix merged"
-    
-    initiatives:
-      - "Implement error taxonomy and guards"
-      - "Add canary deployment for critical routes"
-      - "Improve observability and alerting"
-      - "Reduce CI feedback time"
-
-  - id: "performance"
-    title: "Optimize Performance"
-    description: "Improve Core Web Vitals and API response times"
-    key_results:
-      - metric: "p95 API Latency"
-        target: "<500ms"
-        current: "~800ms"
+      - metric: "uptime_percentage"
+        target: 99.9
+        current: 99.5
+        unit: "percent"
+        slo: "uptime_sla"
+      - metric: "p95_api_latency"
+        target: 200
+        current: 350
         unit: "milliseconds"
-        measurement: "API monitoring dashboard"
-      
-      - metric: "LCP"
-        target: "<2.5s"
-        current: "~3.5s"
-        unit: "seconds"
-        measurement: "Core Web Vitals"
-      
-      - metric: "Bundle Size"
-        target: "<500KB"
-        current: "~600KB"
-        unit: "KB gzipped"
-        measurement: "Bundle analyzer"
-    
-    initiatives:
-      - "Optimize bundle size (remove unused deps)"
-      - "Implement code splitting"
-      - "Optimize API routes"
-      - "Add performance budgets to CI"
-
-  - id: "developer-velocity"
-    title: "Increase Developer Velocity"
-    description: "Reduce cycle time and improve developer experience"
-    key_results:
-      - metric: "PR Cycle Time"
-        target: "<24 hours"
-        current: "~36 hours"
-        unit: "hours"
-        measurement: "PR open → merge time"
-      
-      - metric: "CI Duration"
-        target: "<10 min"
-        current: "~12 min"
+        slo: "api_latency_p95"
+      - metric: "mttr"
+        target: 30
+        current: 120
         unit: "minutes"
-        measurement: "Average CI build time"
-      
-      - metric: "Rework Rate"
-        target: "<10%"
-        current: "~20%"
-        unit: "percentage"
-        measurement: "Failed CI / total CI runs"
-    
+        slo: "incident_mttr"
+      - metric: "error_rate"
+        target: 0.1
+        current: 0.5
+        unit: "percent"
+        slo: "error_rate_5xx"
     initiatives:
-      - "Parallelize CI stages"
+      - "Implement error boundaries"
+      - "Add performance monitoring"
+      - "Optimize slowest API routes"
+      - "Reduce MTTR with better observability"
+
+  - id: "developer_productivity"
+    title: "Reduce Lead Time by 50%"
+    description: "Improve developer productivity and feature delivery speed"
+    key_results:
+      - metric: "lead_time"
+        target: 1.5
+        current: 3.5
+        unit: "days"
+        slo: "feature_lead_time"
+      - metric: "code_review_wait_time"
+        target: 8
+        current: 48
+        unit: "hours"
+        slo: "pr_review_time"
+      - metric: "ci_pipeline_duration"
+        target: 10
+        current: 15
+        unit: "minutes"
+        slo: "ci_duration"
+      - metric: "rework_rate"
+        target: 15
+        current: 25
+        unit: "percent"
+        slo: "pr_rework_rate"
+    initiatives:
+      - "Implement code review SLAs"
+      - "Optimize CI pipeline"
       - "Add pre-merge validation"
-      - "Implement review slots"
-      - "Auto-comment on PRs"
+      - "Auto-approve low-risk PRs"
 
-success_criteria:
-  - "All key results meet or exceed targets"
-  - "No critical incidents during quarter"
-  - "Developer satisfaction survey >4/5"
+  - id: "code_quality"
+    title: "Achieve 95% Type Coverage"
+    description: "Improve code quality and maintainability"
+    key_results:
+      - metric: "type_coverage"
+        target: 95
+        current: 85
+        unit: "percent"
+        slo: "typescript_coverage"
+      - metric: "test_coverage"
+        target: 80
+        current: 65
+        unit: "percent"
+        slo: "test_coverage"
+      - metric: "bundle_size"
+        target: 500
+        current: 750
+        unit: "kilobytes"
+        slo: "client_bundle_size"
+      - metric: "security_vulnerabilities"
+        target: 0
+        current: 3
+        unit: "count"
+        slo: "security_vulns"
+    initiatives:
+      - "Strengthen TypeScript usage"
+      - "Increase test coverage"
+      - "Optimize bundle size"
+      - "Remediate security vulnerabilities"
 
-review_schedule:
-  - "Weekly: Progress check"
-  - "Monthly: Deep dive"
-  - "Quarterly: Retrospective and planning"
+slos:
+  - name: "uptime_sla"
+    target: 99.9
+    window: "30d"
+    description: "System uptime over 30 days"
+  
+  - name: "api_latency_p95"
+    target: 200
+    window: "7d"
+    description: "95th percentile API latency"
+  
+  - name: "incident_mttr"
+    target: 30
+    window: "30d"
+    description: "Mean Time To Recovery for incidents"
+  
+  - name: "error_rate_5xx"
+    target: 0.1
+    window: "7d"
+    description: "5xx error rate percentage"
+  
+  - name: "feature_lead_time"
+    target: 1.5
+    window: "30d"
+    description: "Time from PR creation to production"
+  
+  - name: "pr_review_time"
+    target: 8
+    window: "7d"
+    description: "Time from PR creation to first review"
+  
+  - name: "ci_duration"
+    target: 10
+    window: "7d"
+    description: "CI pipeline duration (p95)"
+  
+  - name: "pr_rework_rate"
+    target: 15
+    window: "30d"
+    description: "Percentage of PRs requiring rework"
+  
+  - name: "typescript_coverage"
+    target: 95
+    window: "30d"
+    description: "TypeScript type coverage percentage"
+  
+  - name: "test_coverage"
+    target: 80
+    window: "30d"
+    description: "Test coverage percentage"
+  
+  - name: "client_bundle_size"
+    target: 500
+    window: "7d"
+    description: "Client bundle size (KB)"
+  
+  - name: "security_vulns"
+    target: 0
+    window: "7d"
+    description: "Critical/High security vulnerabilities"

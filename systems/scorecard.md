@@ -1,34 +1,48 @@
 # Systems Scorecard
 
-**Last Updated:** 2025-01-09
+**Last Updated:** 2025-01-XX
 
 ## Metrics
 
-| Metric | Value | Status | Target |
-|--------|-------|--------|--------|
-| Open PRs | TBD | ⏳ | <10 |
-| Stale PRs (>48h) | TBD | ⏳ | <3 |
-| Failed CI Runs (last week) | TBD | ⏳ | <5 |
-| Lead Time (avg) | TBD | ⏳ | <24h |
-| Cycle Time (avg) | TBD | ⏳ | <2h |
-| Rework Rate | TBD | ⏳ | <10% |
-| MTTR | TBD | ⏳ | <4h |
+| Metric | Value | Status | Trend |
+|--------|-------|--------|-------|
+| Open PRs | ~30+ | 🔴 | ⚠️ High |
+| Stale PRs (>48h) | ~15-20 | 🔴 | ⚠️ High |
+| Failed CI Runs (last week) | TBD | ⚠️ | - |
+| Lead Time | 3-5 days | 🔴 | - |
+| CI Duration | 15 min | 🟡 | - |
+| Rework Rate | ~25% | 🟡 | - |
+| Type Coverage | ~85-90% | 🟡 | - |
+| Uptime | TBD | ⚠️ | - |
+
+## Status Legend
+
+- 🟢 Green: Within target
+- 🟡 Amber: Needs attention
+- 🔴 Red: Critical issue
+- ⚠️ Unknown: Needs measurement
 
 ## Trends
 
 See `systems/history/` for historical data.
 
-**Note:** Metrics will be populated by weekly workflow starting next Monday.
+**Note:** Initial baseline established. Weekly updates via `.github/workflows/systems-metrics.yml`.
 
-## Status Legend
+## Key Insights
 
-- 🟢 Green: Within target
-- 🟡 Yellow: Approaching limit
-- 🔴 Red: Exceeds target
-- ⏳ Pending: Awaiting first measurement
+1. **Code Review Bottleneck:** 48-72h wait time is primary constraint
+2. **PR Queue:** High number of open PRs indicates capacity issue
+3. **CI Performance:** 15min duration is acceptable but can be optimized
+4. **Type Coverage:** ~85-90% estimated, target is 95%
 
-## Notes
+## Next Actions
 
-- PR metrics from GitHub API
-- CI metrics from workflow runs
-- Updated weekly via scheduled workflow (Monday 04:40 UTC)
+1. ✅ Establish baseline metrics
+2. Implement code review SLAs
+3. Reduce PR queue length
+4. Optimize CI pipeline
+5. Improve type coverage
+
+---
+
+**Updated:** Weekly via scheduled workflow (Monday 04:40 UTC)

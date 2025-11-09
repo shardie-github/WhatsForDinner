@@ -1,29 +1,53 @@
-graph LR
-    subgraph "Reinforcing Loops"
-        R1[Feature Throughput]
-        R1 -->|More Features| R1A[User Value]
-        R1A -->|Revenue| R1B[Team Growth]
-        R1B -->|More Developers| R1
-        
-        R2[Telemetry-Driven Fixes]
-        R2 -->|Better Observability| R2A[Faster Debugging]
-        R2A -->|More Fixes| R2B[Higher Quality]
-        R2B -->|Less Technical Debt| R2
+graph TB
+    %% Reinforcing Loops (R)
+    
+    subgraph R1["R1: Feature Throughput"]
+        FT[Feature Throughput] -->|More Features| CS[Customer Satisfaction]
+        CS -->|More Revenue| RT[Resource Time]
+        RT -->|More Developers| FT
     end
-
-    subgraph "Balancing Loops"
-        B1[Incident Response]
-        B1 -->|Incidents| B1A[Team Attention]
-        B1A -->|Fixes| B1B[Stability]
-        B1B -->|Fewer Incidents| B1
-        
-        B2[Tech Debt]
-        B2 -->|Accumulation| B2A[Slower Development]
-        B2A -->|Refactoring| B2B[Reduced Debt]
-        B2B -->|Faster Development| B2
+    
+    subgraph R2["R2: Incident Response"]
+        IR[Incident Response] -->|Faster Fixes| SR[System Reliability]
+        SR -->|Less Firefighting| ET[Engineering Time]
+        ET -->|More Time for Features| IR
     end
-
-    style R1 fill:#10B981
-    style R2 fill:#10B981
-    style B1 fill:#F59E0B
-    style B2 fill:#F59E0B
+    
+    subgraph R3["R3: Telemetry-Driven Fixes"]
+        TF[Telemetry & Monitoring] -->|Better Visibility| PQ[Problem Quality]
+        PQ -->|Faster Diagnosis| FR[Fix Rate]
+        FR -->|More Data| TF
+    end
+    
+    %% Balancing Loops (B)
+    
+    subgraph B1["B1: Tech Debt"]
+        TD[Tech Debt] -->|Slows Development| FT
+        FT -->|New Features| TD
+        TD -.->|Refactoring| TD
+    end
+    
+    subgraph B2["B2: Quality vs Speed"]
+        QV[Quality Velocity] -->|Higher Quality| CS
+        QV -.->|Takes Time| SV[Speed Velocity]
+        SV -->|Faster Delivery| CS
+    end
+    
+    subgraph B3["B3: Team Capacity"]
+        TC[Team Capacity] -->|Limited| FT
+        FT -->|More Work| TC
+        TC -.->|Hiring| TC
+    end
+    
+    %% Connections
+    SR --> CS
+    FR --> SR
+    TD --> IR
+    QV --> TD
+    
+    style R1 fill:#dbeafe
+    style R2 fill:#dbeafe
+    style R3 fill:#dbeafe
+    style B1 fill:#fef3c7
+    style B2 fill:#fef3c7
+    style B3 fill:#fef3c7

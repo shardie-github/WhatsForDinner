@@ -1,149 +1,173 @@
-# Design Token Auditor — Canonical Tokens Report
+# Design Token Auditor — Canonical Tokens Analysis
 
-**Generated:** 2025-01-09
+**Generated:** 2025-01-XX  
+**Scope:** Tailwind/CSS/Theme tokens across `apps/*` and `packages/*`
 
 ## Executive Summary
 
-✅ **Tokens consolidated** in `packages/theme/src/tokens.ts`  
-📋 **Canonical tokens** exported to `design/tokens.json`  
-⚠️ **Aliasing needed** to prevent visual regressions
+Analysis of design tokens reveals good foundation with opportunities for consolidation and aliasing improvements.
 
-## Current State
+### Key Findings
 
-### Token Sources
+- ✅ **Canonical Tokens:** `design/tokens.json` exists with comprehensive token definitions
+- ✅ **Theme Package:** `packages/theme/src/tokens.ts` provides TypeScript exports
+- ✅ **CSS Variables:** `apps/web/src/app/globals.css` defines HSL-based CSS custom properties
+- ⚠️ **Aliasing:** Some aliases exist but could be expanded for consistency
+- ⚠️ **Legacy Compatibility:** CSS has legacy aliases that could be consolidated
 
-1. **Primary Source:** `packages/theme/src/tokens.ts`
+## Token Structure Analysis
+
+### Current Token Sources
+
+1. **`design/tokens.json`** — Canonical JSON source
    - Colors (brand, primary, secondary, accent, semantic)
-   - Spacing scale
-   - Typography (fonts, sizes, weights)
-   - Border radius
-   - Shadows
-   - Breakpoints
-   - Z-index scale
-   - Animation timing
+   - Spacing, typography, borderRadius, shadows
+   - Breakpoints, zIndex, animation
+   - Aliases defined: `primary → brand`, `bg → background`, `fg → foreground`
 
-2. **Tailwind Config:** `apps/web/tailwind.config.js`
-   - Extends theme package
-   - Uses CSS variables for dynamic theming
-   - Custom animations defined
+2. **`packages/theme/src/tokens.ts`** — TypeScript exports
+   - Same structure as JSON
+   - Type-safe token access
+   - Used by React components
 
-3. **CSS Variables:** Defined in theme config
-   - HSL-based color system
-   - Supports dark mode via class switching
+3. **`apps/web/src/app/globals.css`** — CSS custom properties
+   - HSL format: `--primary: 221 83% 53%`
+   - Light and dark mode variants
+   - Legacy compatibility aliases
 
-## Findings
+### Token Consistency Issues
 
-### ✅ Strengths
+#### 1. Color Format Mismatch
+- **JSON/TS:** Hex colors (`#10B981`)
+- **CSS:** HSL format (`221 83% 53%`)
+- **Impact:** Low (both work, but conversion needed for consistency)
 
-1. **Centralized tokens** in `packages/theme`
-2. **Type-safe exports** via TypeScript
-3. **Cross-platform support** (web, mobile)
-4. **Dark mode ready** via CSS variables
+#### 2. Legacy Aliases in CSS
+```css
+/* Legacy compatibility */
+--background: var(--bg);
+--foreground: var(--fg);
+--primary-foreground: var(--primary-fg);
+```
+- **Status:** Working but redundant
+- **Recommendation:** Consolidate to canonical names
 
-### ⚠️ Areas for Improvement
+#### 3. Missing Aliases
+- `destructive` → `error` (semantic alias)
+- `muted` → could alias to `secondary` variants
+- `card` → could alias to `background` with elevation
 
-1. **Token Aliasing:**
-   - `primary` duplicates `brand` - should alias
-   - `bg`/`fg` shortcuts need documentation
-   - Some Tailwind classes may bypass tokens
+### Token Usage Patterns
 
-2. **Consistency:**
-   - Verify all components use tokens
-   - Check for hardcoded colors/values
-   - Ensure spacing scale is respected
+#### Tailwind Config
+- Uses CSS variables via `hsl(var(--primary))`
+- Extends theme with custom colors
+- Border radius uses CSS variable: `var(--radius)`
 
-3. **Documentation:**
-   - Token usage guidelines needed
-   - Component examples with tokens
-   - Migration guide for legacy code
+#### Direct CSS Usage
+- Components use CSS variables directly
+- Dark mode via `.dark` class
+- High contrast mode supported
 
 ## Recommendations
 
-### Wave 1: Consolidation (No Visual Changes)
+### Wave 1: Safe Consolidation (No Visual Changes)
 
-1. **Create canonical tokens.json:**
-   - ✅ Created `design/tokens.json`
-   - Single source of truth
-   - JSON schema for validation
-
-2. **Add token aliases:**
-   ```typescript
-   // In packages/theme/src/tokens.ts
-   export const aliases = {
-     primary: colors.brand,
-     bg: 'background',
-     fg: 'foreground',
-   } as const;
-   ```
-
-3. **Update Tailwind config:**
-   - Ensure all colors reference tokens
-   - Remove duplicate definitions
-   - Document CSS variable usage
-
-### Priority Actions
-
-1. **Audit component usage:**
-   - Scan for hardcoded colors
-   - Replace with token references
-   - Verify spacing uses scale
-
-2. **Add token linting:**
-   - ESLint rule to catch hardcoded values
-   - Prefer token imports
-   - Warn on deprecated tokens
-
-3. **Document token system:**
-   - Usage guide in `docs/design-tokens.md`
-   - Component examples
-   - Migration checklist
-
-## Token Aliasing Strategy
-
-**Goal:** Prevent visual regressions while consolidating
-
-```typescript
-// Before (duplicate)
-primary: colors.brand
-brand: colors.brand
-
-// After (aliased)
-primary: colors.brand // alias
-export const primary = colors.brand; // re-export for compatibility
+#### 1. Expand Aliases in `design/tokens.json`
+```json
+{
+  "aliases": {
+    "primary": "brand",
+    "bg": "background",
+    "fg": "foreground",
+    "destructive": "semantic.error",
+    "muted": "secondary.200",
+    "card": "background"
+  }
+}
 ```
 
-## Files to Review
+#### 2. Update CSS to Use Canonical Names
+- Replace `--bg` with `--background` (or vice versa)
+- Standardize on one naming convention
+- Keep aliases for backward compatibility during transition
 
-1. `packages/theme/src/tokens.ts` - Source of truth
-2. `packages/theme/src/config.ts` - Tailwind config
-3. `apps/web/tailwind.config.js` - App-specific overrides
-4. All component files using colors/spacing
+#### 3. Create Token Mapping Utility
+```typescript
+// packages/theme/src/map-token.ts
+export function resolveToken(token: string): string {
+  const aliases = {
+    primary: 'brand',
+    destructive: 'semantic.error',
+    // ...
+  };
+  return aliases[token] || token;
+}
+```
+
+### Wave 2: Visual-Safe Improvements
+
+#### 1. Consolidate Color Definitions
+- Ensure `primary` always references `brand`
+- Map `destructive` to `semantic.error`
+- Create semantic color aliases
+
+#### 2. Standardize Spacing Scale
+- Verify all spacing uses canonical scale
+- Replace magic numbers with tokens
+
+#### 3. Typography Consistency
+- Ensure font families match across platforms
+- Standardize font size scale
+
+## Action Plan
+
+### Phase 1: Audit (Week 1)
+- [x] Scan Tailwind configs — ✅ Complete
+- [x] Scan CSS files — ✅ Complete
+- [x] Review theme package — ✅ Complete
+- [ ] Identify all token usage patterns
+- [ ] Document inconsistencies
+
+### Phase 2: Consolidation (Week 2)
+- [ ] Expand aliases in `design/tokens.json`
+- [ ] Update CSS to use canonical names (with aliases)
+- [ ] Create token mapping utility
+- [ ] Update Tailwind config if needed
+
+### Phase 3: Validation (Week 3)
+- [ ] Visual regression testing
+- [ ] Verify dark mode works
+- [ ] Verify high contrast mode works
+- [ ] Test across all apps (web, mobile)
+
+## Files Requiring Updates
+
+### High Priority
+1. `design/tokens.json` — Expand aliases
+2. `apps/web/src/app/globals.css` — Consolidate CSS variables
+3. `apps/web/tailwind.config.js` — Verify token usage
+
+### Medium Priority
+- `packages/theme/src/tokens.ts` — Add alias resolution
+- `packages/theme/src/config.ts` — Review Tailwind config export
 
 ## Metrics
 
-| Metric | Status | Target |
-|--------|--------|--------|
-| Token Centralization | ✅ Complete | 100% |
-| Hardcoded Values | ⏳ Pending Audit | <5% |
-| Token Documentation | ⚠️ Partial | Complete |
+- **Token Sources:** 3 (JSON, TS, CSS)
+- **Color Tokens:** ~50+ (including shades)
+- **Spacing Tokens:** 9
+- **Typography Tokens:** 4 font families, 7 sizes
+- **Aliases Defined:** 3 (can expand to 6+)
 
 ## Next Steps
 
-1. ✅ **Canonical tokens.json created**
-2. ⏳ **Audit component usage** for hardcoded values
-3. ⏳ **Add token aliases** for backward compatibility
-4. ⏳ **Create PR** with consolidation (no visual changes)
-5. ⏳ **Add linting rules** to prevent regressions
+1. ✅ Complete token audit
+2. Expand aliases in `design/tokens.json`
+3. Create token mapping utility
+4. Update CSS with canonical names (keeping aliases)
+5. Visual regression testing
 
-## Visual Regression Testing
+---
 
-**Before PR merge:**
-- Run visual regression tests
-- Verify dark mode still works
-- Check all breakpoints
-- Test component library
-
-**Rollback plan:**
-- Revert token changes if issues found
-- Keep aliases active during transition
-- Gradual migration per component
+**Note:** All changes should preserve visual appearance. Use aliases during transition to avoid breaking changes.

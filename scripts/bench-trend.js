@@ -2,142 +2,191 @@
 /**
  * Benchmark Trend Analyzer
  * 
- * Compares current benchmark results with historical data
- * to detect performance regressions.
+ * Compares current benchmark results with historical baseline
+ * and generates trend reports.
  */
 
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
-const BENCH_DIR = path.join(__dirname, '../bench');
-const HISTORY_DIR = path.join(__dirname, '../bench/history');
-const THRESHOLD_PERCENT = 10; // Alert if performance degrades by 10%
+const BENCH_DIR = path.join(__dirname, '..', 'bench');
+const HISTORY_DIR = path.join(BENCH_DIR, 'history');
+const RESULTS_FILE = path.join(BENCH_DIR, 'results.json');
 
-async function loadLatestBaseline() {
+/**
+ * Load benchmark results from file
+ */
+function loadResults(filepath) {
+  if (!fs.existsSync(filepath)) {
+    return null;
+  }
   try {
-    const files = await fs.readdir(HISTORY_DIR);
-    const jsonFiles = files
-      .filter((f) => f.endsWith('.json'))
-      .sort()
-      .reverse();
-
-    if (jsonFiles.length === 0) {
-      console.log('No baseline found. This will be the baseline.');
-      return null;
-    }
-
-    const latest = jsonFiles[0];
-    const content = await fs.readFile(path.join(HISTORY_DIR, latest), 'utf-8');
+    const content = fs.readFileSync(filepath, 'utf-8');
     return JSON.parse(content);
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      await fs.mkdir(HISTORY_DIR, { recursive: true });
-      return null;
-    }
-    throw error;
+    console.error(`Error loading results from ${filepath}:`, error.message);
+    return null;
   }
 }
 
-async function loadCurrentResults() {
-  const resultFile = path.join(BENCH_DIR, 'results.json');
-  try {
-    const content = await fs.readFile(resultFile, 'utf-8');
-    return JSON.parse(content);
-  } catch (error) {
-    console.error('No current results found. Run benchmarks first.');
-    throw error;
+/**
+ * Get latest baseline from history
+ */
+function getLatestBaseline() {
+  if (!fs.existsSync(HISTORY_DIR)) {
+    return null;
   }
+
+  const files = fs.readdirSync(HISTORY_DIR)
+    .filter(f => f.endsWith('.json'))
+    .map(f => ({
+      name: f,
+      path: path.join(HISTORY_DIR, f),
+      date: f.replace('.json', ''),
+    }))
+    .sort((a, b) => b.date.localeCompare(a.date));
+
+  if (files.length === 0) {
+    return null;
+  }
+
+  return loadResults(files[0].path);
 }
 
+/**
+ * Compare results and calculate trends
+ */
 function compareResults(baseline, current) {
-  const comparisons = [];
+  const trends = [];
 
   for (const currentResult of current) {
-    const baselineResult = baseline?.find((b) => b.name === currentResult.name);
-
+    const baselineResult = baseline.find(b => b.name === currentResult.name);
+    
     if (!baselineResult) {
-      comparisons.push({
+      trends.push({
         name: currentResult.name,
         status: 'new',
-        message: 'New benchmark (no baseline)',
+        message: 'New benchmark',
       });
       continue;
     }
 
-    const changePercent =
-      ((currentResult.averageTime - baselineResult.averageTime) /
-        baselineResult.averageTime) *
-      100;
-    const isRegression = changePercent > THRESHOLD_PERCENT;
-    const isImprovement = changePercent < -THRESHOLD_PERCENT;
+    const change = currentResult.averageTime - baselineResult.averageTime;
+    const changePercent = (change / baselineResult.averageTime) * 100;
+    const faster = change < 0;
 
-    comparisons.push({
+    let status = 'stable';
+    if (Math.abs(changePercent) > 10) {
+      status = faster ? 'improved' : 'regressed';
+    }
+
+    trends.push({
       name: currentResult.name,
-      status: isRegression ? 'regression' : isImprovement ? 'improvement' : 'stable',
-      changePercent: changePercent.toFixed(2),
-      baselineTime: baselineResult.averageTime.toFixed(4),
-      currentTime: currentResult.averageTime.toFixed(4),
-      message: isRegression
-        ? `⚠️  Performance regression: ${changePercent.toFixed(2)}% slower`
-        : isImprovement
-        ? `✅ Performance improvement: ${Math.abs(changePercent).toFixed(2)}% faster`
-        : `✓ Stable: ${changePercent.toFixed(2)}% change`,
+      status,
+      change,
+      changePercent: Math.abs(changePercent),
+      faster,
+      baseline: baselineResult.averageTime,
+      current: currentResult.averageTime,
     });
   }
 
-  return comparisons;
+  return trends;
 }
 
-async function saveBaseline(results) {
-  const timestamp = new Date().toISOString().split('T')[0];
-  const filename = path.join(HISTORY_DIR, `${timestamp}.json`);
-  await fs.writeFile(filename, JSON.stringify(results, null, 2), 'utf-8');
-  console.log(`\nBaseline saved to ${filename}`);
-}
+/**
+ * Generate trend report
+ */
+function generateReport(trends) {
+  console.log('\n📊 Benchmark Trend Report');
+  console.log('═'.repeat(60));
 
-async function main() {
-  try {
-    const baseline = await loadLatestBaseline();
-    const current = await loadCurrentResults();
+  const improved = trends.filter(t => t.status === 'improved');
+  const regressed = trends.filter(t => t.status === 'regressed');
+  const stable = trends.filter(t => t.status === 'stable');
+  const newBenchmarks = trends.filter(t => t.status === 'new');
 
-    console.log('\n📊 Benchmark Trend Analysis');
-    console.log('═'.repeat(60));
+  if (improved.length > 0) {
+    console.log('\n✅ Improved:');
+    improved.forEach(t => {
+      console.log(`  ${t.name}: ${t.changePercent.toFixed(2)}% faster (${t.baseline.toFixed(4)}ms → ${t.current.toFixed(4)}ms)`);
+    });
+  }
 
-    const comparisons = compareResults(baseline, current);
+  if (regressed.length > 0) {
+    console.log('\n⚠️  Regressed:');
+    regressed.forEach(t => {
+      console.log(`  ${t.name}: ${t.changePercent.toFixed(2)}% slower (${t.baseline.toFixed(4)}ms → ${t.current.toFixed(4)}ms)`);
+    });
+  }
 
-    let hasRegression = false;
+  if (stable.length > 0) {
+    console.log('\n➡️  Stable:');
+    stable.forEach(t => {
+      console.log(`  ${t.name}: ${t.changePercent.toFixed(2)}% change (within threshold)`);
+    });
+  }
 
-    for (const comp of comparisons) {
-      console.log(`\n${comp.name}:`);
-      console.log(`  ${comp.message}`);
-      if (comp.baselineTime) {
-        console.log(`  Baseline: ${comp.baselineTime}ms`);
-        console.log(`  Current:  ${comp.currentTime}ms`);
-      }
+  if (newBenchmarks.length > 0) {
+    console.log('\n🆕 New Benchmarks:');
+    newBenchmarks.forEach(t => {
+      console.log(`  ${t.name}`);
+    });
+  }
 
-      if (comp.status === 'regression') {
-        hasRegression = true;
-      }
-    }
+  console.log('\n' + '═'.repeat(60));
+  console.log(`Total: ${trends.length} benchmarks`);
+  console.log(`Improved: ${improved.length} | Regressed: ${regressed.length} | Stable: ${stable.length} | New: ${newBenchmarks.length}`);
 
-    console.log('\n' + '═'.repeat(60));
-
-    if (hasRegression) {
-      console.log('\n⚠️  Performance regressions detected!');
-      process.exit(1);
-    } else {
-      console.log('\n✅ No performance regressions detected.');
-      // Save current results as new baseline
-      await saveBaseline(current);
-    }
-  } catch (error) {
-    console.error('Error analyzing trends:', error);
+  // Exit with error code if regressions found
+  if (regressed.length > 0) {
+    console.log('\n❌ Performance regressions detected!');
     process.exit(1);
   }
+}
+
+/**
+ * Main execution
+ */
+function main() {
+  const current = loadResults(RESULTS_FILE);
+  
+  if (!current) {
+    console.log('No current benchmark results found. Run benchmarks first.');
+    process.exit(0);
+  }
+
+  const baseline = getLatestBaseline();
+
+  if (!baseline) {
+    console.log('No baseline found. This will serve as the baseline.');
+    console.log('Saving current results as baseline...');
+    
+    // Create history directory if it doesn't exist
+    if (!fs.existsSync(HISTORY_DIR)) {
+      fs.mkdirSync(HISTORY_DIR, { recursive: true });
+    }
+
+    // Save as baseline
+    const today = new Date().toISOString().split('T')[0];
+    const baselinePath = path.join(HISTORY_DIR, `${today}.json`);
+    fs.writeFileSync(baselinePath, JSON.stringify(current, null, 2));
+    
+    console.log(`Baseline saved to ${baselinePath}`);
+    process.exit(0);
+  }
+
+  const trends = compareResults(baseline, current);
+  generateReport(trends);
+
+  // Save trend report
+  const reportPath = path.join(BENCH_DIR, 'trend-report.json');
+  fs.writeFileSync(reportPath, JSON.stringify(trends, null, 2));
+  console.log(`\nTrend report saved to ${reportPath}`);
 }
 
 if (require.main === module) {
   main();
 }
 
-module.exports = { compareResults, loadLatestBaseline, loadCurrentResults };
+module.exports = { compareResults, generateReport };

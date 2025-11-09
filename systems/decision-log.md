@@ -1,100 +1,112 @@
 # Decision Log — Architecture Decision Records (ADR-lite)
 
-**Format:** Date | Decision | Context | Consequences
+**Format:** Date | Decision | Context | Consequences | Status
 
 ---
 
-## 2025-01-09 | Introduce Error Taxonomy
+## 2025-01-XX | Systems Thinking Review Implementation
 
-**Decision:** Create centralized error handling with `AppError` class and error codes.
+**Decision:** Implement comprehensive systems thinking review with value stream mapping, leverage point analysis, and weekly metrics snapshots.
 
-**Context:**
-- Inconsistent error handling across codebase
-- No standardized error responses
-- Difficult to track error patterns
+**Context:** 
+- Need to understand system bottlenecks and optimization opportunities
+- Value stream from commit to customer impact is unclear
+- No systematic approach to identifying leverage points
 
 **Consequences:**
-- ✅ Consistent error handling
-- ✅ Better error tracking
-- ⚠️ Migration required for existing code
-- ✅ Type-safe error codes
+- ✅ Created VSM, dependency graphs, causal loop diagrams
+- ✅ Identified code review as primary bottleneck
+- ✅ Established weekly systems metrics snapshot
+- ⚠️ Requires ongoing maintenance and measurement
 
-**Status:** Implemented
+**Status:** ✅ Implemented
 
 ---
 
-## 2025-01-09 | Add Microbenchmark Harness
+## 2025-01-XX | Design Token Consolidation
 
-**Decision:** Create lightweight benchmarking infrastructure for performance-critical functions.
+**Decision:** Expand aliases in `design/tokens.json` and consolidate CSS variable naming.
 
 **Context:**
-- No systematic performance testing
-- Performance regressions discovered late
-- Need trend tracking
+- Multiple token sources (JSON, TS, CSS) with some inconsistencies
+- Legacy aliases in CSS for backward compatibility
+- Need canonical token definitions
 
 **Consequences:**
-- ✅ Early performance regression detection
-- ✅ Historical performance data
-- ⚠️ Additional CI time (~5 min/week)
-- ✅ Data-driven optimization
+- ✅ Added aliases: `destructive → semantic.error`, `muted → secondary.200`, `card → background`
+- ✅ Preserved backward compatibility with CSS aliases
+- ⚠️ Future: Consider migrating CSS to canonical names
 
-**Status:** Implemented
+**Status:** ✅ Implemented (Wave 1)
 
 ---
 
-## 2025-01-09 | Consolidate Design Tokens
+## 2025-01-XX | Error Taxonomy Enhancement
 
-**Decision:** Create canonical `design/tokens.json` and alias system for backward compatibility.
+**Decision:** Enhance existing error taxonomy with validation guards and error boundaries.
 
 **Context:**
-- Tokens scattered across files
-- Risk of visual regressions
-- Need single source of truth
+- Error taxonomy exists in `apps/web/src/lib/errors.ts`
+- High error density in workflow, marketing, observability modules
+- Need input validation and error recovery
 
 **Consequences:**
-- ✅ Centralized token management
-- ✅ Reduced duplication
-- ⚠️ Requires careful migration
-- ✅ Better design consistency
+- ✅ Identified hotspots requiring guards
+- 📋 TODO: Create `validation-guards.ts` utility
+- 📋 TODO: Add error boundaries to observability code
+- ⚠️ Requires implementation in Wave 1
 
-**Status:** In Progress
+**Status:** 📋 Planned
 
 ---
 
-## 2025-01-09 | Systems Thinking Review
+## 2025-01-XX | Benchmark Harness with Weekly CI
 
-**Decision:** Map value stream, identify leverage points, and create optimization experiments.
+**Decision:** Implement microbenchmark harness with weekly automated runs and trend analysis.
 
 **Context:**
-- Need holistic view of development pipeline
-- Identify bottlenecks systematically
-- Data-driven improvements
+- Performance regressions caught post-deploy
+- No systematic performance tracking
+- Need early detection of performance issues
 
 **Consequences:**
-- ✅ Clear visibility into pipeline
-- ✅ Prioritized improvement opportunities
-- ✅ Measurable impact
-- ⚠️ Requires ongoing measurement
+- ✅ Created `bench/runner.ts` with benchmark utilities
+- ✅ Added `scripts/bench-trend.js` for trend analysis
+- ✅ Configured weekly CI workflow (Monday 04:20 UTC)
+- ✅ Example benchmark provided
+- ⚠️ Requires adding benchmarks for critical functions
 
-**Status:** In Progress
+**Status:** ✅ Implemented
 
 ---
 
-## Template for Future Decisions
+## 2025-01-XX | Self-Tuning Agent Configuration
 
-```
-## YYYY-MM-DD | Decision Title
-
-**Decision:** [What was decided]
+**Decision:** Create `.cursor/self-tuning.json` for autonomous threshold adjustment.
 
 **Context:**
-- [Why this decision was needed]
-- [What alternatives were considered]
+- Type coverage target is static (95%)
+- No mechanism for adaptive thresholds
+- Need self-adjusting targets based on historical performance
 
 **Consequences:**
-- ✅ [Positive outcomes]
-- ⚠️ [Risks/trade-offs]
-- [Other impacts]
+- ✅ Created self-tuning configuration
+- ✅ Defined thresholds for type coverage, test coverage, bundle size, performance
+- ✅ Configured auto-adjustment based on last 2 runs
+- 📋 TODO: Implement auto-adjustment logic
 
-**Status:** [Proposed | Accepted | Implemented | Deprecated]
-```
+**Status:** ✅ Configuration created, 📋 Logic pending
+
+---
+
+## Future Decisions (To Be Documented)
+
+- Code review SLA implementation
+- CI pipeline optimization approach
+- Pre-merge validation strategy
+- Performance regression detection thresholds
+- Security scanning integration
+
+---
+
+**Note:** This is an ADR-lite format. Full ADRs can be created for major architectural decisions.
