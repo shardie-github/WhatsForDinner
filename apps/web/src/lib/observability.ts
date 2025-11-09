@@ -54,8 +54,6 @@ interface Trace {
   metadata: TraceMetadata;
 }
 
-import type { SupabaseClient } from '@supabase/supabase-js';
-
 class ObservabilitySystem {
   private supabase: SupabaseClient;
   private activeTraces: Map<string, Trace> = new Map();
