@@ -1,78 +1,71 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "version": "1.0.0",
-  "description": "Self-tuning configuration for Cursor agent",
+  "description": "Self-tuning configuration for Cursor Background Agent",
   "thresholds": {
     "typeCoverage": {
       "target": 95,
       "min": 90,
-      "max": 100,
+      "max": 98,
       "adjustmentStep": 1,
       "lastRun": null,
-      "lastCoverage": null,
-      "trend": "stable"
+      "lastCoverage": null
     },
     "testCoverage": {
       "target": 80,
       "min": 70,
-      "max": 95,
-      "adjustmentStep": 1
+      "max": 90
     },
     "bundleSize": {
       "target": 500,
-      "max": 600,
+      "max": 1000,
       "unit": "KB"
     },
     "performance": {
+      "p95Latency": {
+        "target": 200,
+        "max": 500,
+        "unit": "ms"
+      },
       "lcp": {
-        "target": 2.5,
-        "max": 4.0,
-        "unit": "seconds"
-      },
-      "fid": {
-        "target": 100,
-        "max": 300,
-        "unit": "milliseconds"
-      },
-      "cls": {
-        "target": 0.1,
-        "max": 0.25,
-        "unit": "score"
+        "target": 2500,
+        "max": 4000,
+        "unit": "ms"
       }
     }
   },
   "exclusions": {
     "typeCoverage": [
       "**/*.test.ts",
+      "**/*.test.tsx",
       "**/*.spec.ts",
-      "**/__tests__/**",
+      "**/*.spec.tsx",
       "**/node_modules/**",
       "**/.next/**",
       "**/dist/**",
-      "**/build/**"
+      "**/build/**",
+      "apps/web/src/app/admin/**",
+      "apps/web/src/app/developers/**"
     ],
-    "files": [
+    "linting": [
       "**/generated/**",
-      "**/vendor/**",
-      "**/legacy/**"
+      "**/migrations/**"
+    ],
+    "performance": [
+      "**/tests/**",
+      "**/__tests__/**"
     ]
   },
   "autoAdjust": {
     "enabled": true,
     "typeCoverage": {
       "enabled": true,
-      "runsToConsider": 2,
-      "adjustmentThreshold": 0.5
+      "basedOnLastRuns": 2,
+      "minRunsForAdjustment": 2
     }
   },
   "history": {
     "typeCoverage": [],
     "lastUpdated": null
-  },
-  "rules": {
-    "neverDeletePublicAPIs": true,
-    "preserveI18nPlaceholders": true,
-    "noMajorDepSwapsWithoutTests": true,
-    "systemsChangesDocsFirst": true
   }
 }

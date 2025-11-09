@@ -1,171 +1,206 @@
-# Error Prophet — Forecast Hotspots Report
+# Error Prophet — Forecast Hotspots Analysis
 
-**Generated:** 2025-01-09
+**Generated:** 2025-01-XX  
+**Scope:** Error patterns across `apps/web/src/lib` and API routes
 
 ## Executive Summary
 
-🔍 **Error patterns identified** across 30 files  
-⚠️ **Top hotspots** require error guards  
-📋 **Error taxonomy** needed for consistent handling
+Analysis of error handling patterns reveals existing error taxonomy with opportunities to add guards and narrow input validation in high-risk modules.
 
-## Error Hotspot Analysis
+### Key Findings
 
-### Top Error-Prone Modules
+- ✅ **Error Taxonomy:** `apps/web/src/lib/errors.ts` provides comprehensive error classes
+- 📊 **Error Patterns:** 2,061 error-related patterns across 100 files
+- 🔥 **Hotspots Identified:** 10+ modules with high error density
+- ⚠️ **Guards Needed:** Input validation and error boundaries in critical paths
 
-Based on error/exception keyword frequency:
+## Error Hotspot Ranking
 
-1. **`apps/web/src/lib/management/logger.ts`** - 13 instances
-   - Error logging and management
-   - **Risk:** High - Core error handling
+### Tier 1: Critical Hotspots (>50 error patterns)
 
-2. **`apps/web/src/lib/ux/forms.ts`** - 8 instances
-   - Form validation and error handling
-   - **Risk:** High - User-facing errors
+1. **`apps/web/src/lib/errors.ts`** — 101 patterns
+   - **Status:** ✅ Core error taxonomy exists
+   - **Action:** Enhance with additional error types if needed
+   - **Risk:** Low (well-structured)
 
-3. **`apps/web/src/lib/management/error-boundary.tsx`** - 26 instances
-   - React error boundaries
-   - **Risk:** Critical - Prevents crashes
+2. **`apps/web/src/lib/workflowManager.ts`** — 99 patterns
+   - **Status:** ⚠️ High error density
+   - **Action:** Add input validation guards
+   - **Risk:** High (workflow orchestration)
 
-4. **`apps/web/src/middleware.ts`** - 7 instances
-   - Request middleware
-   - **Risk:** High - Affects all requests
+3. **`apps/web/src/lib/marketingAutomation.ts`** — 98 patterns
+   - **Status:** ⚠️ High error density
+   - **Action:** Add validation for marketing data
+   - **Risk:** Medium (external integrations)
 
-5. **`apps/web/src/lib/telemetry-beacon.ts`** - 1 instance
-   - Telemetry collection
-   - **Risk:** Medium - Monitoring
+4. **`apps/web/src/lib/logger.ts`** — 54 patterns
+   - **Status:** ✅ Logging infrastructure
+   - **Action:** Ensure error logging doesn't throw
+   - **Risk:** Low (logging should be resilient)
 
-6. **API Routes** (multiple files):
-   - `apps/web/src/app/api/affiliate/**` - Multiple routes
-   - `apps/web/src/app/api/revenue/**` - Revenue endpoints
-   - `apps/web/src/app/api/metrics/**` - Metrics endpoints
-   - **Risk:** High - External-facing APIs
+### Tier 2: High-Risk Modules (20-50 patterns)
 
-## Error Patterns Identified
+5. **`apps/web/src/lib/observability.ts`** — 95 patterns
+   - **Status:** ⚠️ Observability code should be resilient
+   - **Action:** Add error boundaries, fail gracefully
+   - **Risk:** High (if observability fails, debugging is harder)
 
-### Common Patterns
+6. **`apps/web/src/lib/growthAnalytics.ts`** — 80 patterns
+   - **Status:** ⚠️ Analytics should not break user flows
+   - **Action:** Wrap in try-catch, use fire-and-forget
+   - **Risk:** Medium (should not affect core functionality)
 
-1. **Try-Catch Blocks:**
-   - Generic error handling
-   - Missing error taxonomy
-   - Inconsistent error responses
+7. **`apps/web/src/lib/agents/healAgent.ts`** — 44 patterns
+   - **Status:** ⚠️ Self-healing agent needs robust error handling
+   - **Action:** Add retry logic, circuit breakers
+   - **Risk:** High (autonomous systems)
 
-2. **Error Boundaries:**
-   - React error boundaries present
-   - Need consistent error UI
-   - Missing error recovery flows
+8. **`apps/web/src/lib/autonomousOrchestrator.ts`** — 36 patterns
+   - **Status:** ⚠️ Orchestration needs error recovery
+   - **Action:** Add state machine error handling
+   - **Risk:** High (system coordination)
 
-3. **API Error Handling:**
-   - Various error response formats
-   - Missing standardized error codes
-   - Inconsistent error messages
+9. **`apps/web/src/lib/feedbackSystem.ts`** — 63 patterns
+   - **Status:** ⚠️ User feedback should be resilient
+   - **Action:** Add validation, queue for retry
+   - **Risk:** Medium (user experience)
 
-## Recommendations
+10. **`apps/web/src/lib/ugcGrowth.ts`** — 48 patterns
+    - **Status:** ⚠️ User-generated content needs validation
+    - **Action:** Add content validation, sanitization
+    - **Risk:** Medium (security and quality)
 
-### Wave 1: Error Guards & Taxonomy
+## Existing Error Taxonomy
 
-1. **Create error taxonomy** (`src/lib/errors.ts`):
-   ```typescript
-   export enum ErrorCode {
-     VALIDATION_ERROR = 'VALIDATION_ERROR',
-     AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',
-     AUTHORIZATION_ERROR = 'AUTHORIZATION_ERROR',
-     NOT_FOUND = 'NOT_FOUND',
-     INTERNAL_ERROR = 'INTERNAL_ERROR',
-     EXTERNAL_SERVICE_ERROR = 'EXTERNAL_SERVICE_ERROR',
-   }
-   
-   export class AppError extends Error {
-     constructor(
-       public code: ErrorCode,
-       message: string,
-       public statusCode: number = 500,
-       public details?: unknown
-     ) {
-       super(message);
-     }
-   }
-   ```
+### ✅ Well-Defined Error Classes
 
-2. **Add input validation guards:**
-   - Narrow input types
-   - Use Zod schemas consistently
-   - Validate at API boundaries
+The `apps/web/src/lib/errors.ts` file provides:
+- `ErrorCode` enum with semantic codes
+- `AppError` base class with status codes
+- Specialized error classes (ValidationError, AuthenticationError, etc.)
+- User-friendly error messages
+- Error handling utilities
 
-3. **Strengthen error boundaries:**
-   - Consistent error UI
-   - Error recovery mechanisms
-   - User-friendly messages
+### Recommended Enhancements
 
-### Priority Files for Error Guards
+#### 1. Add Input Validation Guards
 
-1. **`apps/web/src/lib/errors.ts`** - Create error taxonomy
-2. **`apps/web/src/middleware.ts`** - Add request validation
-3. **`apps/web/src/lib/ux/forms.ts`** - Strengthen form validation
-4. **API routes** - Standardize error responses
-5. **Error boundary** - Enhance recovery flows
-
-## Error Taxonomy Structure
+Create `apps/web/src/lib/validation-guards.ts`:
 
 ```typescript
-// Error categories
-- ValidationError (400)
-- AuthenticationError (401)
-- AuthorizationError (403)
-- NotFoundError (404)
-- RateLimitError (429)
-- InternalError (500)
-- ExternalServiceError (502/503)
+import { z } from 'zod';
+import { ValidationError } from './errors';
+
+export function validateInput<T>(
+  schema: z.ZodSchema<T>,
+  data: unknown,
+  context?: string
+): T {
+  try {
+    return schema.parse(data);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError(
+        `Invalid input${context ? ` in ${context}` : ''}`,
+        { errors: error.errors }
+      );
+    }
+    throw error;
+  }
+}
 ```
 
-## Input Validation Strategy
+#### 2. Add Error Boundaries for Critical Modules
 
-**Narrow input validation at boundaries:**
+```typescript
+// apps/web/src/lib/error-boundaries.ts
+export function withErrorBoundary<T extends (...args: any[]) => Promise<any>>(
+  fn: T,
+  errorHandler?: (error: unknown) => void
+): T {
+  return (async (...args: Parameters<T>) => {
+    try {
+      return await fn(...args);
+    } catch (error) {
+      if (errorHandler) {
+        errorHandler(error);
+      }
+      // Log and rethrow or return safe default
+      throw error;
+    }
+  }) as T;
+}
+```
 
-1. **API Routes:**
-   - Validate request body with Zod
-   - Type-safe request handlers
-   - Consistent error responses
+#### 3. Narrow Input Validation for Hotspots
 
-2. **Forms:**
-   - Client-side validation
-   - Server-side verification
-   - Clear error messages
+Focus on:
+- `workflowManager.ts` — Validate workflow definitions
+- `marketingAutomation.ts` — Validate campaign data
+- `observability.ts` — Validate telemetry data
+- `agents/healAgent.ts` — Validate agent actions
 
-3. **Middleware:**
-   - Request validation
-   - Authentication checks
-   - Rate limiting
+## Action Plan
+
+### Wave 1: Add Guards & Error Taxonomy (Week 1)
+
+1. **Enhance Error Taxonomy**
+   - [x] Review existing `errors.ts` — ✅ Good foundation
+   - [ ] Add domain-specific error codes if needed
+   - [ ] Add error recovery strategies
+
+2. **Create Validation Guards**
+   - [ ] Create `validation-guards.ts` with Zod integration
+   - [ ] Add input validation to `workflowManager.ts`
+   - [ ] Add input validation to `marketingAutomation.ts`
+
+3. **Add Error Boundaries**
+   - [ ] Create `error-boundaries.ts` utility
+   - [ ] Wrap `observability.ts` functions
+   - [ ] Wrap `agents/healAgent.ts` functions
+
+4. **Narrow Input Validation**
+   - [ ] Add Zod schemas for workflow definitions
+   - [ ] Add Zod schemas for marketing campaigns
+   - [ ] Add Zod schemas for telemetry events
+
+## Files Requiring Updates
+
+### High Priority
+1. `apps/web/src/lib/validation-guards.ts` — **NEW** — Create validation utilities
+2. `apps/web/src/lib/workflowManager.ts` — Add input validation
+3. `apps/web/src/lib/marketingAutomation.ts` — Add input validation
+4. `apps/web/src/lib/observability.ts` — Add error boundaries
+
+### Medium Priority
+- `apps/web/src/lib/agents/healAgent.ts` — Add retry logic
+- `apps/web/src/lib/autonomousOrchestrator.ts` — Add state machine error handling
+- `apps/web/src/lib/growthAnalytics.ts` — Wrap in try-catch
+
+## Error Taxonomy Additions (If Needed)
+
+Consider adding:
+- `WORKFLOW_ERROR` — For workflow execution failures
+- `AGENT_ERROR` — For autonomous agent failures
+- `OBSERVABILITY_ERROR` — For telemetry failures (should be non-fatal)
+- `VALIDATION_ERROR` — ✅ Already exists
 
 ## Metrics
 
-| Metric | Current | Target |
-|--------|---------|--------|
-| Error Taxonomy Coverage | 0% | 80% |
-| Input Validation Coverage | ~50% | 90% |
-| Standardized Error Responses | ~30% | 100% |
-| Error Recovery Flows | Partial | Complete |
-
-## Implementation Plan
-
-### Phase 1: Foundation (Week 1)
-- [ ] Create `src/lib/errors.ts` with taxonomy
-- [ ] Add error types and codes
-- [ ] Create error utilities
-
-### Phase 2: Integration (Week 2)
-- [ ] Update top 5 error-prone files
-- [ ] Add input validation guards
-- [ ] Standardize API error responses
-
-### Phase 3: Validation (Week 3)
-- [ ] Test error handling flows
-- [ ] Verify error taxonomy usage
-- [ ] Monitor error rates
+- **Error Patterns Found:** 2,061 across 100 files
+- **Hotspot Files:** 10+ files with >20 patterns
+- **Error Taxonomy:** ✅ Comprehensive (exists)
+- **Guards Needed:** 4 critical modules
+- **Validation Needed:** 3 high-risk modules
 
 ## Next Steps
 
-1. ✅ **Error forecast report generated**
-2. ⏳ **Create error taxonomy** in `src/lib/errors.ts`
-3. ⏳ **Add validation guards** to hotspots
-4. ⏳ **Update error handling** in priority files
-5. ⏳ **Create PR** with error guards & taxonomy
+1. ✅ Complete error hotspot analysis
+2. Create `validation-guards.ts` utility
+3. Add input validation to top 3 hotspots
+4. Add error boundaries to observability code
+5. Test error handling in critical paths
+
+---
+
+**Note:** Error handling in observability and analytics should be non-fatal — failures should not break user flows.

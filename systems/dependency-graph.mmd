@@ -1,59 +1,69 @@
 graph TB
-    subgraph "Apps"
-        Web[apps/web<br/>Next.js App]
-        Mobile[apps/mobile<br/>React Native]
-        Community[apps/community-portal<br/>Next.js]
-    end
-
-    subgraph "Packages"
-        UI[packages/ui<br/>Component Library]
-        Utils[packages/utils<br/>Utilities]
-        Server[packages/server<br/>Backend Services]
-        Theme[packages/theme<br/>Design Tokens]
-        Config[packages/config<br/>Configuration]
-    end
-
-    subgraph "External Services"
-        Supabase[Supabase<br/>Database & Auth]
-        Vercel[Vercel<br/>Hosting]
-        Stripe[Stripe<br/>Payments]
-        Sentry[Sentry<br/>Error Tracking]
-    end
-
-    Web --> UI
-    Web --> Utils
-    Web --> Theme
-    Web --> Config
-    Web --> Supabase
-    Web --> Stripe
-    Web --> Sentry
-
-    Mobile --> UI
-    Mobile --> Utils
-    Mobile --> Theme
-    Mobile --> Config
-    Mobile --> Supabase
-
-    Community --> UI
-    Community --> Utils
-    Community --> Theme
-
-    Server --> Utils
-    Server --> Config
-    Server --> Supabase
-    Server --> Stripe
-
-    UI --> Theme
-    Utils --> Config
-
-    Web -.->|Deploy| Vercel
-    Mobile -.->|Build| EAS[Expo Application Services]
-
-    style Web fill:#10B981
-    style Mobile fill:#10B981
-    style UI fill:#3B82F6
-    style Utils fill:#3B82F6
-    style Server fill:#8B5CF6
-    style Theme fill:#F59E0B
-    style Supabase fill:#EC4899
-    style Vercel fill:#000000
+    %% Apps Layer
+    WebApp[apps/web<br/>Next.js Web App]
+    MobileApp[apps/mobile<br/>React Native]
+    CommunityPortal[apps/community-portal<br/>Community Features]
+    APIDocs[apps/api-docs<br/>API Documentation]
+    
+    %% Shared Packages
+    UIPackage[packages/ui<br/>UI Components]
+    ThemePackage[packages/theme<br/>Design Tokens]
+    UtilsPackage[packages/utils<br/>Utilities]
+    ServerPackage[packages/server<br/>Server Logic]
+    ConfigPackage[packages/config<br/>Configuration]
+    
+    %% External Services
+    Supabase[(Supabase<br/>Database & Auth)]
+    Vercel[Vercel<br/>Hosting]
+    Stripe[Stripe<br/>Payments]
+    OpenAI[OpenAI<br/>AI Services]
+    
+    %% Infrastructure
+    CI[GitHub Actions<br/>CI/CD]
+    Monitoring[Observability<br/>Sentry/PostHog]
+    
+    %% App Dependencies
+    WebApp --> UIPackage
+    WebApp --> ThemePackage
+    WebApp --> UtilsPackage
+    WebApp --> ServerPackage
+    WebApp --> ConfigPackage
+    
+    MobileApp --> UIPackage
+    MobileApp --> ThemePackage
+    MobileApp --> UtilsPackage
+    
+    CommunityPortal --> UIPackage
+    CommunityPortal --> ThemePackage
+    
+    %% Package Dependencies
+    UIPackage --> ThemePackage
+    ServerPackage --> UtilsPackage
+    ServerPackage --> ConfigPackage
+    
+    %% External Dependencies
+    WebApp --> Supabase
+    WebApp --> Stripe
+    WebApp --> OpenAI
+    ServerPackage --> Supabase
+    ServerPackage --> Stripe
+    
+    %% Infrastructure Dependencies
+    CI --> WebApp
+    CI --> MobileApp
+    CI --> ServerPackage
+    WebApp --> Vercel
+    Monitoring --> WebApp
+    Monitoring --> ServerPackage
+    
+    %% Data Flow
+    WebApp -.->|API Calls| ServerPackage
+    MobileApp -.->|API Calls| ServerPackage
+    CommunityPortal -.->|API Calls| ServerPackage
+    
+    style WebApp fill:#3b82f6,color:#fff
+    style MobileApp fill:#10b981,color:#fff
+    style Supabase fill:#22c55e,color:#fff
+    style Vercel fill:#000,color:#fff
+    style Stripe fill:#635bff,color:#fff
+    style OpenAI fill:#10a37f,color:#fff

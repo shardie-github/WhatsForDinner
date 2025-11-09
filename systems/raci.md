@@ -1,92 +1,89 @@
 # RACI Matrix — Roles & Responsibilities
 
-**Generated:** 2025-01-09
+**Generated:** 2025-01-XX  
+**Framework:** RACI (Responsible, Accountable, Consulted, Informed)
 
 ## Legend
 
-- **R** = Responsible (does the work)
-- **A** = Accountable (owns the outcome)
-- **C** = Consulted (provides input)
-- **I** = Informed (kept in loop)
+- **R (Responsible):** Does the work
+- **A (Accountable):** Owns the outcome (only one per activity)
+- **C (Consulted):** Provides input before/during
+- **I (Informed):** Notified after completion
 
-## Deployments
+## Deployment Activities
 
-| Activity | Frontend Team | Backend Team | DevOps Team | Team Leads | Security Team |
-|----------|---------------|--------------|-------------|------------|---------------|
-| **Deploy to Staging** | R | C | R | A | I |
-| **Deploy to Production** | R | C | R | A | C |
-| **Rollback** | R | C | R | A | I |
-| **Deploy Approval** | I | I | I | A | C |
+| Activity | Platform Team | DevOps Team | Frontend Team | Backend Team | Security Team | QA Team |
+|----------|---------------|-------------|--------------|-------------|---------------|---------|
+| **Code Deployment** | R | A | R | R | C | I |
+| **Database Migration** | C | A | I | R | C | C |
+| **Infrastructure Changes** | C | A | I | I | C | I |
+| **Feature Flag Toggle** | R | I | R | R | I | I |
+| **Rollback** | C | A | R | R | C | I |
 
-**Notes:**
-- Team Leads are accountable for production deploys
-- Security Team consulted for production (not staging)
-- DevOps handles infrastructure, teams handle code
+## Incident Response
 
-## Incidents
-
-| Activity | On-Call Engineer | Team Leads | DevOps Team | Security Team | Product Team |
-|----------|------------------|------------|-------------|---------------|--------------|
-| **Incident Detection** | R | I | I | I | I |
-| **Initial Response** | R | A | C | I | I |
-| **Root Cause Analysis** | R | A | C | C | I |
-| **Fix Implementation** | R | A | C | I | I |
-| **Post-Mortem** | C | A | C | C | I |
-
-**Notes:**
-- On-Call Engineer is first responder
-- Team Leads accountable for resolution
-- Security consulted for security-related incidents
+| Activity | Platform Team | DevOps Team | Frontend Team | Backend Team | Security Team | On-Call |
+|----------|---------------|-------------|--------------|-------------|---------------|---------|
+| **Incident Detection** | I | I | I | I | I | A |
+| **Incident Triage** | C | C | C | C | C | A |
+| **Incident Resolution** | R | R | R | R | R | A |
+| **Post-Mortem** | C | A | C | C | C | R |
+| **Follow-Up Actions** | R | A | R | R | C | I |
 
 ## Schema Changes
 
-| Activity | Backend Team | Database Team | DevOps Team | Team Leads | Frontend Team |
-|----------|--------------|---------------|-------------|------------|---------------|
-| **Schema Design** | R | C | I | A | C |
-| **Migration Creation** | R | R | I | A | I |
-| **Migration Review** | C | A | C | A | I |
-| **Migration Execution** | R | R | R | A | I |
-| **Rollback Plan** | R | R | R | A | I |
+| Activity | Platform Team | Backend Team | Database Team | Security Team | QA Team |
+|----------|---------------|--------------|--------------|---------------|---------|
+| **Schema Design** | C | R | A | C | C |
+| **Migration Creation** | I | R | A | C | C |
+| **Migration Review** | C | C | A | C | R |
+| **Migration Execution** | I | R | A | I | I |
+| **Rollback Plan** | C | R | A | C | C |
 
-**Notes:**
-- Database Team accountable for migration safety
-- Frontend Team consulted for breaking changes
-- Rollback plan required for all migrations
+## Code Review
 
-## Code Reviews
+| Activity | Author | Reviewer | Tech Lead | QA Team |
+|----------|--------|----------|-----------|---------|
+| **PR Creation** | A | I | I | I |
+| **Code Review** | R | A | C | C |
+| **Addressing Feedback** | A | C | I | I |
+| **Merge Approval** | R | A | C | I |
+| **Deployment** | I | I | A | I |
 
-| Activity | Author | Reviewer | Team Leads | QA Team |
-|----------|--------|----------|------------|---------|
-| **PR Creation** | R | I | I | I |
-| **Code Review** | I | R | C | I |
-| **Approval** | I | R | A | I |
-| **Merge** | R | I | A | I |
+## Security & Compliance
 
-**Notes:**
-- Reviewer responsible for quality
-- Team Leads accountable for approval
-- QA informed but not blocking (unless required)
+| Activity | Security Team | Platform Team | DevOps Team | All Teams |
+|----------|---------------|---------------|-------------|-----------|
+| **Security Audit** | A | C | C | I |
+| **Vulnerability Remediation** | A | R | R | I |
+| **Compliance Review** | A | C | C | I |
+| **Secret Rotation** | A | R | R | I |
+| **Access Management** | A | C | C | I |
 
-## Security
+## Notes
 
-| Activity | Security Team | Developers | Team Leads | DevOps |
-|----------|---------------|------------|------------|--------|
-| **Security Audit** | R | C | A | C |
-| **Vulnerability Fix** | C | R | A | I |
-| **Secret Rotation** | R | I | A | R |
-| **Access Management** | R | I | A | C |
+- **Accountable (A):** Only one person/team per activity
+- **Responsible (R):** Can be multiple people/teams
+- **Roles inferred from:** CODEOWNERS file, PR history, team structure
+- **TBD:** Marked where role is unclear — needs team discussion
 
-**Notes:**
-- Security Team owns security processes
-- Developers implement fixes
-- DevOps handles secret rotation infrastructure
+## Team Definitions (Inferred)
 
-## TBD (To Be Determined)
+- **Platform Team:** Owns shared packages, tooling, infrastructure
+- **DevOps Team:** Owns CI/CD, deployments, infrastructure
+- **Frontend Team:** Owns `apps/web`, UI components
+- **Backend Team:** Owns API routes, server logic, database
+- **Security Team:** Owns security audits, compliance
+- **QA Team:** Owns testing, quality assurance
+- **On-Call:** Rotating responsibility for incidents
 
-The following roles are inferred from CODEOWNERS but need confirmation:
+## Updates Required
 
-- **Platform Team** - Owns packages/* (needs clarification)
-- **Mobile Team** - Owns apps/mobile (needs clarification)
-- **Docs Team** - Owns documentation (needs clarification)
+This RACI matrix should be reviewed and updated:
+- Quarterly or when team structure changes
+- When new activities are added
+- When responsibilities shift
 
-**Action:** Review CODEOWNERS and confirm with team leads.
+---
+
+**Note:** Roles are inferred from CODEOWNERS and repository structure. Actual teams should review and confirm.

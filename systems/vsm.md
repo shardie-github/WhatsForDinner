@@ -1,71 +1,145 @@
 # Value Stream Map — Commit to Customer Impact
 
-**Generated:** 2025-01-09  
-**Scope:** Code → CI → Deploy → Observability → Feedback
+**Generated:** 2025-01-XX  
+**Scope:** End-to-end value stream from code commit to customer impact
 
-## Current State Value Stream
+## Current State Analysis
 
-### Stages & Metrics
+### Value Stream Stages
 
 | Stage | Lead Time | Cycle Time | Queue/WIP | Rework % | Notes |
 |-------|-----------|------------|-----------|----------|-------|
-| **Code** | - | - | - | - | Development phase |
-| **Commit** | <1 min | <1 min | 0 | 0% | Git commit |
-| **CI Build** | 5-15 min | 5-15 min | 0-2 | 5-10% | GitHub Actions |
-| **Test** | 3-10 min | 3-10 min | 0-1 | 5-15% | Unit + Integration |
-| **Review** | 2-48 hours | 15-60 min | 2-10 PRs | 10-20% | PR review queue |
-| **Merge** | <1 min | <1 min | 0 | 0% | Merge to main |
-| **Deploy Preview** | 2-5 min | 2-5 min | 0-3 | 2-5% | Vercel preview |
-| **Deploy Staging** | 5-10 min | 5-10 min | 0-1 | 5% | Manual trigger |
-| **Deploy Production** | 10-30 min | 10-30 min | 0 | 5% | Manual approval |
-| **Observability** | Real-time | Real-time | 0 | - | Sentry, PostHog |
-| **Feedback Loop** | 1-24 hours | - | - | - | Error → Fix |
+| **Code Commit** | - | - | - | - | Starting point |
+| **Local Testing** | 5 min | 3 min | 0 | 5% | Developer runs tests locally |
+| **PR Creation** | 2 min | 1 min | 0 | 2% | PR opened with description |
+| **CI Pipeline** | 15 min | 12 min | 3 min | 10% | Build, test, lint checks |
+| **Code Review** | 48-72h | 30 min | 47-71.5h | 15% | **BOTTLENECK** — Long wait times |
+| **Merge** | 2 min | 1 min | 1 min | 1% | Auto-merge if checks pass |
+| **Deploy Preview** | 5 min | 3 min | 2 min | 5% | Vercel preview deployment |
+| **QA/Testing** | 24-48h | 1h | 23-47h | 8% | Manual testing (if done) |
+| **Production Deploy** | 10 min | 5 min | 5 min | 3% | Vercel production deployment |
+| **Customer Impact** | - | - | - | - | End point |
 
-### Estimated Totals
+### Key Metrics
 
-- **Total Lead Time:** ~3-48 hours (code to production)
-- **Total Cycle Time:** ~30-120 minutes (active work)
-- **Total Rework:** ~15-30% (from PR reopen/failed CI)
+- **Total Lead Time:** ~3-5 days (dominated by code review wait)
+- **Total Cycle Time:** ~1.5 hours (actual work time)
+- **Efficiency:** ~3% (cycle time / lead time)
+- **Rework Rate:** ~49% (sum of rework percentages, weighted)
 
-### Bottlenecks Identified
+### Queues & WIP Limits
 
-1. **PR Review Queue** - Longest queue (2-48 hours)
-2. **CI Build Time** - High variance (5-15 min)
-3. **Manual Deploy** - Requires approval (10-30 min)
+| Queue | Current WIP | Limit | Status |
+|-------|-------------|-------|--------|
+| Open PRs | ~30+ | - | ⚠️ High |
+| PRs Awaiting Review | ~15-20 | 10 | 🔴 Over limit |
+| CI Jobs | ~5-10 | 20 | ✅ Within limit |
+| Preview Deployments | ~3-5 | 10 | ✅ Within limit |
 
 ### Handoffs
 
-1. Developer → CI (automated)
-2. CI → Reviewer (notification)
-3. Reviewer → Merge (manual)
-4. Merge → Deploy (automated)
-5. Deploy → Observability (automated)
-6. Observability → Developer (alert)
+| From | To | Handoff Time | Issues |
+|------|----|--------------|--------|
+| Developer | CI | 2 min | None |
+| CI | Reviewer | 15 min | Long CI time |
+| Reviewer | Developer | 48-72h | **MAJOR BOTTLENECK** |
+| Developer | QA | 24-48h | Often skipped |
+| QA | Deploy | Variable | Inconsistent process |
+
+### Rework Sources
+
+1. **Failed CI** (10% rework)
+   - Type errors
+   - Lint failures
+   - Test failures
+   - **Root Cause:** Pre-commit hooks not catching all issues
+
+2. **Code Review Feedback** (15% rework)
+   - Style changes
+   - Architecture suggestions
+   - Missing tests
+   - **Root Cause:** Inconsistent coding standards
+
+3. **Production Issues** (3% rework)
+   - Bugs found in production
+   - Performance issues
+   - **Root Cause:** Insufficient testing
 
 ## Improvement Opportunities
 
-### Exploit Constraints
+### Exploit Constraints (Theory of Constraints)
 
-1. **Parallelize CI stages** - Run tests in parallel
-2. **Protect review capacity** - Dedicated review slots
-3. **Automate safe deploys** - Auto-deploy to staging
+1. **Code Review Bottleneck**
+   - **Current:** 48-72h wait time
+   - **Action:** 
+     - Auto-approve low-risk PRs (docs, dependencies)
+     - Parallel reviews (multiple reviewers)
+     - Review time SLAs
+   - **Expected Impact:** Reduce lead time by 50-70%
+
+2. **CI Pipeline**
+   - **Current:** 15 min
+   - **Action:** 
+     - Parallelize test suites
+     - Cache dependencies
+     - Optimize build steps
+   - **Expected Impact:** Reduce to 8-10 min
+
+3. **Pre-commit Validation**
+   - **Current:** 5% rework from CI failures
+   - **Action:** 
+     - Stricter pre-commit hooks
+     - Type checking before commit
+     - Lint fixes auto-applied
+   - **Expected Impact:** Reduce CI failures by 80%
 
 ### Reduce Feedback Delay
 
-1. **Auto-comment on PRs** - Performance/security diffs
-2. **Real-time error alerts** - Immediate notification
-3. **Deploy status dashboard** - Visibility into pipeline
+1. **Auto-comment Performance Diffs**
+   - Add performance regression detection to CI
+   - Comment on PRs with performance impact
+   - **Expected Impact:** Catch issues before merge
+
+2. **Security Scanning**
+   - Automated security scans in CI
+   - Dependency vulnerability checks
+   - **Expected Impact:** Prevent security issues
+
+3. **Visual Regression Testing**
+   - Automated screenshot comparisons
+   - **Expected Impact:** Catch UI regressions early
 
 ### Reduce Rework
 
-1. **Pre-merge checks** - Type/test/UX lint
-2. **Local validation** - Run checks before push
-3. **Better error messages** - Clear failure reasons
+1. **Pre-merge Checks**
+   - Type checking (strict mode)
+   - Test coverage requirements
+   - UX copy linting
+   - **Expected Impact:** Reduce rework by 30-40%
 
-## Metrics to Track
+2. **Automated Code Quality**
+   - Auto-format on commit
+   - Auto-fix lint issues
+   - **Expected Impact:** Reduce style-related rework
 
-- Lead time per stage (trending)
-- Cycle time per stage (trending)
-- Queue length per stage (daily snapshot)
-- Rework rate (failed CI / total CI)
-- MTTR (mean time to resolution)
+## Target State (6 months)
+
+| Metric | Current | Target | Improvement |
+|--------|---------|--------|-------------|
+| Lead Time | 3-5 days | 1-2 days | 60% reduction |
+| Cycle Time | 1.5h | 1h | 33% reduction |
+| Efficiency | 3% | 8-10% | 2-3x improvement |
+| Rework Rate | 49% | 25% | 50% reduction |
+| Code Review Wait | 48-72h | 4-8h | 85% reduction |
+
+## Next Steps
+
+1. ✅ Complete VSM analysis
+2. Implement code review SLAs
+3. Add pre-merge validation
+4. Set up performance regression detection
+5. Measure and iterate
+
+---
+
+**Note:** Metrics are estimates based on repository structure and typical workflows. Actual measurements should be collected over 2-4 weeks for accuracy.
