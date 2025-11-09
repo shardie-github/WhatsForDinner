@@ -38,6 +38,13 @@ if (typeof window !== 'undefined') {
   });
 }
 
+// Performance Intelligence Layer: Telemetry beacon
+if (typeof window !== 'undefined') {
+  import('@/lib/telemetry-beacon').then(({ initTelemetry }) => {
+    initTelemetry();
+  });
+}
+
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const poppins = Poppins({ 
   subsets: ['latin'], 
@@ -147,10 +154,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   // [STAKE+TRUST:BEGIN:i18n_attributes]
-  // i18n locale detection - using browser locale as fallback
-      const locale = typeof window !== 'undefined' 
-        ? (navigator.language || navigator.languages?.[0] || 'en').split('-')[0]
-        : 'en';
+  // TODO: Replace with actual i18n locale detection
   const locale = "en"; // Future: Get from i18n system or user preference
   const direction = "ltr"; // Future: Support RTL languages (ar, he, fa, ur)
   // [STAKE+TRUST:END:i18n_attributes]
@@ -166,14 +170,17 @@ export default function RootLayout({
                   // Try enhanced SW first, fallback to default
                   navigator.serviceWorker.register('/sw-enhanced.js')
                     .then(function(registration) {
-                                          })
+                      console.log('Enhanced SW registered: ', registration);
+                    })
                     .catch(function() {
                       // Fallback to default SW if enhanced doesn't exist
                       navigator.serviceWorker.register('/sw.js')
                         .then(function(registration) {
-                                                  })
+                          console.log('SW registered: ', registration);
+                        })
                         .catch(function(registrationError) {
-                                                  });
+                          console.log('SW registration failed: ', registrationError);
+                        });
                     });
                 });
               }
@@ -196,10 +203,6 @@ export default function RootLayout({
           `
         }} />
         {/* [STAKE+TRUST:END:reduced_motion] */}
-        {/* [META:BEGIN:pwa] */}
-        <link rel="manifest" href="/manifest.json" />
-        <script dangerouslySetInnerHTML={{__html:`if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}`}} />
-        {/* [META:END:pwa] */}
       </head>
       <body className={`${inter.variable} ${poppins.variable} ${playfair.variable} font-sans antialiased`}>
         <SkipToMainContent />
@@ -264,12 +267,6 @@ export default function RootLayout({
             <IntegrationsLoader />
             {/* Agent Suggestions: show drawer site-wide when enabled and consent granted */}
             <SuggestionsDrawer />
-            {/* [META:BEGIN:mounts] */}
-            {/* Example mounts — wire auth user ID + app meta in your layout or provider */}
-            {/* <meta name="x-app-id" content={process.env.NEXT_PUBLIC_APP_ID || 'generic'} /> */}
-            {/* <ConsentPanel /> */}
-            {/* <RecoDrawer userId="{AUTH_USER_ID}" /> */}
-            {/* [META:END:mounts] */}
             <ToastProvider>
               <Toaster />
             </ToastProvider>
