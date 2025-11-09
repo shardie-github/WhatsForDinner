@@ -52,7 +52,8 @@ export async function middleware(request: NextRequest) {
     if (apiKey) {
       try {
         const supabase = createClient();
-        const keyHash = require('crypto').createHash('sha256').update(apiKey).digest('hex');
+        const crypto = await import('crypto');
+        const keyHash = crypto.createHash('sha256').update(apiKey).digest('hex');
         
         const { data: key } = await supabase
           .from('api_keys')

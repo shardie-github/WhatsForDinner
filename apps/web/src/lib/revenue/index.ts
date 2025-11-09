@@ -9,3 +9,6 @@ export * from './engagement-scoring';
 export * from './advertising';
 export * from './passive-income';
 export * from './subscription-optimizer';
+export * from './types';
+export * from './validation';
+export * from './hooks';
