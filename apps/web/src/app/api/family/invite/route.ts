@@ -48,7 +48,8 @@ async function handler(req: NextRequest) {
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
     // Create invite
-    await supabase.from('tenant_invites').insert({
+    await supabase.from('family_invites').insert({
+      family_owner_id: userId,
       email,
       role,
       token,
