@@ -1,0 +1,130 @@
+name: Systems Metrics Snapshot
+
+on:
+  schedule:
+    # Every Monday at 04:40 UTC
+    - cron: '40 4 * * 1'
+  workflow_dispatch:
+
+jobs:
+  systems-metrics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for analysis
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Calculate metrics
+        id: metrics
+        run: |
+          mkdir -p systems/history
+          
+          # Get date for filename
+          DATE=$(date +%Y-%m-%d)
+          
+          # Calculate PR metrics (last 7 days)
+          echo "Calculating PR metrics..."
+          PR_COUNT=$(gh pr list --state open --limit 100 --json number --jq 'length' 2>/dev/null || echo "0")
+          PR_OLD_COUNT=$(gh pr list --state open --limit 100 --json updatedAt --jq '[.[] | select(.updatedAt < (now - 172800))] | length' 2>/dev/null || echo "0")
+          
+          # Calculate CI metrics (from workflow runs)
+          echo "Calculating CI metrics..."
+          CI_RUNS=$(gh run list --limit 100 --json conclusion --jq '[.[] | select(.conclusion == "failure")] | length' 2>/dev/null || echo "0")
+          
+          # Create metrics JSON
+          cat > "systems/history/${DATE}.json" << EOF
+          {
+            "date": "${DATE}",
+            "pr_metrics": {
+              "open_prs": ${PR_COUNT},
+              "stale_prs_48h": ${PR_OLD_COUNT}
+            },
+            "ci_metrics": {
+              "failed_runs_last_week": ${CI_RUNS}
+            },
+            "notes": "Metrics calculated from GitHub API"
+          }
+          EOF
+          
+          echo "Metrics saved to systems/history/${DATE}.json"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update scorecard
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          LATEST=$(ls -t systems/history/*.json | head -1)
+          
+          if [ -f "$LATEST" ]; then
+            # Read latest metrics
+            OPEN_PRS=$(jq -r '.pr_metrics.open_prs' "$LATEST")
+            STALE_PRS=$(jq -r '.pr_metrics.stale_prs_48h' "$LATEST")
+            FAILED_CI=$(jq -r '.ci_metrics.failed_runs_last_week' "$LATEST")
+            
+            # Determine status badges
+            if [ "$OPEN_PRS" -lt 10 ]; then
+              PR_STATUS="🟢"
+            elif [ "$OPEN_PRS" -lt 20 ]; then
+              PR_STATUS="🟡"
+            else
+              PR_STATUS="🔴"
+            fi
+            
+            if [ "$STALE_PRS" -lt 3 ]; then
+              STALE_STATUS="🟢"
+            elif [ "$STALE_PRS" -lt 5 ]; then
+              STALE_STATUS="🟡"
+            else
+              STALE_STATUS="🔴"
+            fi
+            
+            # Update scorecard
+            cat > systems/scorecard.md << EOF
+          # Systems Scorecard
+          
+          **Last Updated:** ${DATE}
+          
+          ## Metrics
+          
+          | Metric | Value | Status |
+          |--------|-------|--------|
+          | Open PRs | ${OPEN_PRS} | ${PR_STATUS} |
+          | Stale PRs (>48h) | ${STALE_PRS} | ${STALE_STATUS} |
+          | Failed CI Runs (last week) | ${FAILED_CI} | ⚠️ |
+          
+          ## Trends
+          
+          See \`systems/history/\` for historical data.
+          
+          ## Notes
+          
+          - PR metrics from GitHub API
+          - CI metrics from workflow runs
+          - Updated weekly via scheduled workflow
+          EOF
+          fi
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add systems/history/*.json systems/scorecard.md
+          git diff --staged --quiet || git commit -m "chore: update systems metrics snapshot [skip ci]"
+          git push || echo "No changes to commit"

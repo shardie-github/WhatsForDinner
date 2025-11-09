@@ -1,0 +1,6 @@
+name,hypothesis,metric,owner,start,end,guardrails,rollback
+Pre-merge Preview Validation,Adding pre-merge validation checks will reduce CI failures by 30%,CI failure rate (failed CI / total CI),Platform Team,2025-01-16,2025-01-30,Max 5% increase in local dev time,Remove pre-commit hooks if blocking
+CI Concurrency Tuning,Parallelizing CI stages will reduce build time by 40%,CI duration (average build time),DevOps Team,2025-01-16,2025-01-30,No increase in resource usage,Disable parallel execution if issues
+Canary for Heaviest API,Canary deployment will reduce production incidents by 50%,Production incident rate (incidents / month),Backend Team,2025-01-23,2025-02-06,5% traffic max initially,Immediate rollback to 0% if errors spike
+Auto-comment on PRs,Auto-commenting performance/security diffs will reduce rework by 20%,Rework rate (failed CI / total CI),Platform Team,2025-01-16,2025-01-30,Non-blocking comments only,Disable auto-comments if noisy
+Review Slots System,Review slots will reduce review time variance by 50%,Review time variance (std dev),Team Leads,2025-01-23,2025-02-06,No increase in total review time,Remove slots if blocking

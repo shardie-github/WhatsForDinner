@@ -1,0 +1,83 @@
+name: Weekly Benchmarks
+
+on:
+  schedule:
+    # Every Monday at 04:20 UTC
+    - cron: '20 4 * * 1'
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run benchmarks
+        run: |
+          # Find and run all benchmark files
+          find bench -name "*.bench.ts" -o -name "*.bench.js" | while read file; do
+            echo "Running benchmark: $file"
+            npx tsx "$file" || true
+          done
+
+      - name: Save results
+        run: |
+          mkdir -p bench/history
+          # Combine results if multiple benchmarks ran
+          # For now, save example results
+          if [ -f bench/results.json ]; then
+            cp bench/results.json "bench/history/$(date +%Y-%m-%d).json"
+          fi
+
+      - name: Analyze trends
+        run: |
+          node scripts/bench-trend.js || echo "No baseline yet"
+
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('bench/results.json')) {
+              const results = JSON.parse(fs.readFileSync('bench/results.json', 'utf-8'));
+              const comment = `## Benchmark Results\n\n` +
+                results.map(r => 
+                  `- **${r.name}**: ${r.averageTime.toFixed(4)}ms (${r.opsPerSecond.toFixed(2)} ops/sec)`
+                ).join('\n');
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: |
+            bench/results.json
+            bench/history/*.json
+          retention-days: 90

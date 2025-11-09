@@ -1,0 +1,101 @@
+# OKRs — Objectives and Key Results
+# Quarterly objectives aligned with SLOs
+
+version: "1.0"
+quarter: "Q1 2025"
+updated: "2025-01-09"
+
+objectives:
+  - id: "reliability"
+    title: "Improve System Reliability"
+    description: "Reduce downtime and error rates while improving incident response"
+    key_results:
+      - metric: "Uptime"
+        target: "99.9%"
+        current: "99.5%"
+        unit: "percentage"
+        measurement: "Monthly uptime from monitoring"
+      
+      - metric: "Error Rate"
+        target: "<0.1%"
+        current: "0.5%"
+        unit: "percentage of requests"
+        measurement: "Sentry error tracking"
+      
+      - metric: "MTTR"
+        target: "<4 hours"
+        current: "8 hours"
+        unit: "hours"
+        measurement: "Issue opened → Fix merged"
+    
+    initiatives:
+      - "Implement error taxonomy and guards"
+      - "Add canary deployment for critical routes"
+      - "Improve observability and alerting"
+      - "Reduce CI feedback time"
+
+  - id: "performance"
+    title: "Optimize Performance"
+    description: "Improve Core Web Vitals and API response times"
+    key_results:
+      - metric: "p95 API Latency"
+        target: "<500ms"
+        current: "~800ms"
+        unit: "milliseconds"
+        measurement: "API monitoring dashboard"
+      
+      - metric: "LCP"
+        target: "<2.5s"
+        current: "~3.5s"
+        unit: "seconds"
+        measurement: "Core Web Vitals"
+      
+      - metric: "Bundle Size"
+        target: "<500KB"
+        current: "~600KB"
+        unit: "KB gzipped"
+        measurement: "Bundle analyzer"
+    
+    initiatives:
+      - "Optimize bundle size (remove unused deps)"
+      - "Implement code splitting"
+      - "Optimize API routes"
+      - "Add performance budgets to CI"
+
+  - id: "developer-velocity"
+    title: "Increase Developer Velocity"
+    description: "Reduce cycle time and improve developer experience"
+    key_results:
+      - metric: "PR Cycle Time"
+        target: "<24 hours"
+        current: "~36 hours"
+        unit: "hours"
+        measurement: "PR open → merge time"
+      
+      - metric: "CI Duration"
+        target: "<10 min"
+        current: "~12 min"
+        unit: "minutes"
+        measurement: "Average CI build time"
+      
+      - metric: "Rework Rate"
+        target: "<10%"
+        current: "~20%"
+        unit: "percentage"
+        measurement: "Failed CI / total CI runs"
+    
+    initiatives:
+      - "Parallelize CI stages"
+      - "Add pre-merge validation"
+      - "Implement review slots"
+      - "Auto-comment on PRs"
+
+success_criteria:
+  - "All key results meet or exceed targets"
+  - "No critical incidents during quarter"
+  - "Developer satisfaction survey >4/5"
+
+review_schedule:
+  - "Weekly: Progress check"
+  - "Monthly: Deep dive"
+  - "Quarterly: Retrospective and planning"

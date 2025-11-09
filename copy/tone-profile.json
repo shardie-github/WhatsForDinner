@@ -1,0 +1,34 @@
+{
+  "persona": "calm, authoritative, minimal",
+  "voice": {
+    "tone": "professional yet approachable",
+    "style": "concise and clear",
+    "formality": "conversational but polished"
+  },
+  "guidelines": {
+    "cta": "Use action verbs: 'Add to Cart', 'Save Changes', 'Continue'",
+    "errors": "Be helpful, not accusatory. Provide next steps.",
+    "success": "Celebrate wins briefly. 'Saved successfully.'",
+    "loading": "Be transparent. 'Loading...' or 'Processing...'"
+  },
+  "banned": ["click here", "please note"],
+  "preferred": {
+    "actions": ["Add to Cart", "Save", "Continue", "Cancel"],
+    "confirmations": ["Saved", "Updated", "Deleted"],
+    "errors": ["Something went wrong", "Please try again"]
+  },
+  "examples": {
+    "good": [
+      "Add to Cart",
+      "Save Changes",
+      "Something went wrong. Please try again.",
+      "Saved successfully"
+    ],
+    "bad": [
+      "Click here to add",
+      "Please note that...",
+      "Oops! Error occurred",
+      "Success!"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+graph LR
+    subgraph "Reinforcing Loops"
+        R1[Feature Throughput]
+        R1 -->|More Features| R1A[User Value]
+        R1A -->|Revenue| R1B[Team Growth]
+        R1B -->|More Developers| R1
+        
+        R2[Telemetry-Driven Fixes]
+        R2 -->|Better Observability| R2A[Faster Debugging]
+        R2A -->|More Fixes| R2B[Higher Quality]
+        R2B -->|Less Technical Debt| R2
+    end
+
+    subgraph "Balancing Loops"
+        B1[Incident Response]
+        B1 -->|Incidents| B1A[Team Attention]
+        B1A -->|Fixes| B1B[Stability]
+        B1B -->|Fewer Incidents| B1
+        
+        B2[Tech Debt]
+        B2 -->|Accumulation| B2A[Slower Development]
+        B2A -->|Refactoring| B2B[Reduced Debt]
+        B2B -->|Faster Development| B2
+    end
+
+    style R1 fill:#10B981
+    style R2 fill:#10B981
+    style B1 fill:#F59E0B
+    style B2 fill:#F59E0B
