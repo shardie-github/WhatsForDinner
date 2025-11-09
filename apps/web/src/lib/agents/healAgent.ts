@@ -6,6 +6,7 @@
 import { BaseAgent, AgentConfig, AgentAction } from './baseAgent';
 import { logger } from '../logger';
 import { run_terminal_cmd } from '../../utils/commandRunner';
+import { withErrorBoundary, withRetry } from '../error-boundaries';
 
 export interface CodeIssue {
   type: 'error' | 'warning' | 'performance' | 'security' | 'style';
@@ -655,3 +656,33 @@ export class HealAgent extends BaseAgent {
     return true; // For now, assume security won't be compromised
   }
 }
+
+// Wrap heal agent with error boundaries and retry logic
+const baseHealAgent = new HealAgent();
+
+export const healAgent = {
+  // Wrap run method with retry logic (healing operations should be resilient)
+  run: withErrorBoundary(
+    withRetry(
+      () => baseHealAgent.run(),
+      {
+        maxAttempts: 3,
+        baseDelay: 1000,
+        shouldRetry: (error) => {
+          // Retry on network errors, timeouts, but not on validation errors
+          return error instanceof Error && 
+            (error.message.includes('network') || 
+             error.message.includes('timeout') ||
+             error.message.includes('ECONNREFUSED'));
+        },
+      }
+    ),
+    (error) => {
+      logger.error('Heal agent failed after retries', { error }, 'api', 'heal-agent');
+    },
+    false // fallback: return false on error
+  ),
+  // Expose other methods directly (they handle their own errors)
+  diagnose: baseHealAgent.diagnose.bind(baseHealAgent),
+  heal: baseHealAgent.heal.bind(baseHealAgent),
+};

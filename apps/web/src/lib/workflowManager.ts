@@ -4,6 +4,15 @@ import { analytics } from './analytics';
 import { feedbackSystem } from './feedbackSystem';
 import { aiConfigManager } from './aiConfig';
 import { v4 as uuidv4 } from 'uuid';
+import { validateInput } from './validation-guards';
+import { withErrorBoundary } from './error-boundaries';
+import {
+  CreateWorkflowSchema,
+  WorkflowIdSchema,
+  UpdateWorkflowStepSchema,
+  UpdateWorkflowStatusSchema,
+  type ValidatedCreateWorkflow,
+} from './workflow-schemas';
 
 export interface WorkflowStep {
   name: string;
@@ -36,30 +45,37 @@ class WorkflowManager {
     steps: Omit<WorkflowStep, 'status' | 'started_at' | 'completed_at'>[],
     metadata: Record<string, any> = {}
   ): Promise<string> {
+    // Validate input
+    const validated = validateInput(
+      CreateWorkflowSchema,
+      { name, steps, metadata },
+      'workflow creation'
+    );
+
     const workflowId = uuidv4();
 
     const workflow: Workflow = {
       id: workflowId,
-      name,
+      name: validated.name,
       status: 'pending',
       current_step: null,
       progress_percentage: 0,
-      steps: steps.map(step => ({
+      steps: validated.steps.map(step => ({
         ...step,
         status: 'pending',
       })),
-      metadata,
+      metadata: validated.metadata || {},
       started_at: new Date().toISOString(),
     };
 
     try {
       const { error } = await supabase.from('workflow_state').insert({
         id: workflowId,
-        workflow_name: name,
+        workflow_name: validated.name,
         status: 'pending',
         current_step: null,
         progress_percentage: 0,
-        metadata: { steps: workflow.steps, ...metadata },
+        metadata: { steps: workflow.steps, ...validated.metadata },
         started_at: workflow.started_at,
       });
 
@@ -76,7 +92,7 @@ class WorkflowManager {
       this.activeWorkflows.set(workflowId, workflow);
       await logger.info(
         'Workflow created',
-        { workflowId, name, stepsCount: steps.length },
+        { workflowId, name: validated.name, stepsCount: validated.steps.length },
         'api',
         'workflow'
       );
@@ -94,6 +110,9 @@ class WorkflowManager {
   }
 
   async executeWorkflow(workflowId: string): Promise<boolean> {
+    // Validate workflow ID
+    validateInput(WorkflowIdSchema, { workflowId }, 'workflow execution');
+
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
       await logger.error(
@@ -713,4 +732,35 @@ class WorkflowManager {
   }
 }
 
-export const workflowManager = new WorkflowManager();
+// Wrap workflow manager methods with error boundaries for resilience
+const baseWorkflowManager = new WorkflowManager();
+
+// Create error-boundary wrapped instance
+export const workflowManager = {
+  createWorkflow: withErrorBoundary(
+    baseWorkflowManager.createWorkflow.bind(baseWorkflowManager),
+    (error, ...args) => {
+      logger.error(
+        'Workflow creation failed',
+        { error, args },
+        'api',
+        'workflow'
+      );
+    }
+  ),
+  executeWorkflow: withErrorBoundary(
+    baseWorkflowManager.executeWorkflow.bind(baseWorkflowManager),
+    (error, workflowId) => {
+      logger.error(
+        'Workflow execution failed',
+        { error, workflowId },
+        'api',
+        'workflow'
+      );
+    },
+    false // fallback: return false on error
+  ),
+  getWorkflow: baseWorkflowManager.getWorkflow.bind(baseWorkflowManager),
+  getAllWorkflows: baseWorkflowManager.getAllWorkflows.bind(baseWorkflowManager),
+  deleteWorkflow: baseWorkflowManager.deleteWorkflow.bind(baseWorkflowManager),
+};

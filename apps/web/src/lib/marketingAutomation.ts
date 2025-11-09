@@ -1,6 +1,15 @@
 import { Resend } from 'resend';
 import { supabase } from './supabaseClient';
 import { GrowthAnalytics } from './growthAnalytics';
+import { validateInput } from './validation-guards';
+import { fireAndForget } from './error-boundaries';
+import {
+  SendEmailSchema,
+  SendRecipeEmailSchema,
+  EmailCampaignSchema,
+  type ValidatedSendEmail,
+  type ValidatedSendRecipeEmail,
+} from './marketing-schemas';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -48,6 +57,13 @@ export class MarketingAutomation {
     userName: string,
     referralCode?: string
   ): Promise<void> {
+    // Validate input
+    const validated = validateInput(
+      SendEmailSchema,
+      { userEmail, userName, referralCode },
+      'welcome email'
+    );
+
     try {
       const template = await this.getEmailTemplate('welcome');
       if (!template) {
@@ -57,18 +73,18 @@ export class MarketingAutomation {
 
       const personalizedSubject = template.subject.replace(
         '{{name}}',
-        userName
+        validated.userName
       );
       const personalizedHtml = template.html
-        .replace(/{{name}}/g, userName)
-        .replace(/{{referral_code}}/g, referralCode || '');
+        .replace(/{{name}}/g, validated.userName)
+        .replace(/{{referral_code}}/g, validated.referralCode || '');
 
       const { error } = await resend.emails.send({
         from: "What's for Dinner <welcome@whatsfordinner.ai>",
-        to: [userEmail],
+        to: [validated.userEmail],
         subject: personalizedSubject,
         html: personalizedHtml,
-        text: template.text.replace(/{{name}}/g, userName),
+        text: template.text.replace(/{{name}}/g, validated.userName),
       });
 
       if (error) {
@@ -76,8 +92,11 @@ export class MarketingAutomation {
         throw error;
       }
 
-      // Track email sent event
-      await this.trackEmailEvent('welcome', userEmail, 'sent');
+      // Track email sent event (fire-and-forget for non-critical operation)
+      fireAndForget(
+        () => this.trackEmailEvent('welcome', validated.userEmail, 'sent'),
+        (error) => console.error('Failed to track email event:', error)
+      );
     } catch (error) {
       // Error handled: Failed to send welcome email:
       throw error;
@@ -92,6 +111,13 @@ export class MarketingAutomation {
     userName: string,
     recipeTitle: string
   ): Promise<void> {
+    // Validate input
+    const validated = validateInput(
+      SendRecipeEmailSchema,
+      { userEmail, userName, recipeTitle },
+      'first recipe email'
+    );
+
     try {
       const template = await this.getEmailTemplate('first_recipe');
       if (!template) {

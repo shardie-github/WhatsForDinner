@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { logger } from './logger';
 import { monitoringSystem } from './monitoring';
+import { withErrorBoundary, fireAndForget } from './error-boundaries';
 
 interface LogEntry {
   id: string;
@@ -718,10 +719,45 @@ class ObservabilitySystem {
   }
 }
 
-export const observabilitySystem = new ObservabilitySystem();
+// Create base instance
+const baseObservabilitySystem = new ObservabilitySystem();
+
+// Wrap critical methods with error boundaries (observability failures should not break user flows)
+export const observabilitySystem = {
+  startTrace: withErrorBoundary(
+    baseObservabilitySystem.startTrace.bind(baseObservabilitySystem),
+    (error) => {
+      // Log but don't throw - observability failures shouldn't break user flows
+      console.error('Observability trace start failed:', error);
+    },
+    '' // fallback: return empty string on error
+  ),
+  finishTrace: withErrorBoundary(
+    baseObservabilitySystem.finishTrace.bind(baseObservabilitySystem),
+    (error) => console.error('Observability trace finish failed:', error)
+  ),
+  startSpan: withErrorBoundary(
+    baseObservabilitySystem.startSpan.bind(baseObservabilitySystem),
+    (error) => console.error('Observability span start failed:', error),
+    '' // fallback
+  ),
+  finishSpan: withErrorBoundary(
+    baseObservabilitySystem.finishSpan.bind(baseObservabilitySystem),
+    (error) => console.error('Observability span finish failed:', error)
+  ),
+  log: fireAndForget(
+    (level, message, metadata) => baseObservabilitySystem.log(level, message, metadata),
+    (error) => console.error('Observability log failed:', error)
+  ),
+  trackMetric: fireAndForget(
+    (name, value, tags) => baseObservabilitySystem.trackMetric(name, value, tags),
+    (error) => console.error('Observability metric tracking failed:', error)
+  ),
+};
 
 // Utility functions for common observability tasks
-export async function withTrace<T>(
+export const withTrace = withErrorBoundary(
+  async function withTrace<T>(
   name: string,
   fn: (spanId: string) => Promise<T>,
   userId?: string,
@@ -750,7 +786,8 @@ export async function withTrace<T>(
   }
 }
 
-export async function withSpan<T>(
+export const withSpan = withErrorBoundary(
+  async function withSpan<T>(
   traceId: string,
   name: string,
   fn: (spanId: string) => Promise<T>,
@@ -770,9 +807,10 @@ export async function withSpan<T>(
   }
 }
 
-export async function trackError(
-  error: Error,
-  context: any = {}
-): Promise<void> {
-  await observabilitySystem.trackError(error, context);
-}
+// Wrap trackError with error boundary (observability should never break user flows)
+export const trackError = fireAndForget(
+  async (error: Error, context: any = {}) => {
+    await baseObservabilitySystem.trackError(error, context);
+  },
+  (error) => console.error('Observability trackError failed:', error)
+);
