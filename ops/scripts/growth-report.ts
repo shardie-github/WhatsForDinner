@@ -5,7 +5,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export async function generateGrowthReport() {
+// Removed unused export - not imported anywhere
+async function generateGrowthReport() {
   const reportsDir = path.join(process.cwd(), 'ops', 'reports');
   if (!fs.existsSync(reportsDir)) {
     fs.mkdirSync(reportsDir, { recursive: true });

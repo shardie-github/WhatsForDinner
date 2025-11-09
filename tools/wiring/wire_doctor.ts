@@ -256,4 +256,5 @@ if (import.meta.url === `file://${process.argv[1]}` || require.main === module) 
   });
 }
 
-export { main as runWireDoctor };
+// Removed unused export - not imported anywhere
+// export { main as runWireDoctor };

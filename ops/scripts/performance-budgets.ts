@@ -12,7 +12,8 @@ const BUDGETS = {
   jsSize: 170000,
 };
 
-export function checkPerformanceBudgets() {
+// Removed unused export - not imported anywhere
+function checkPerformanceBudgets() {
   const resultsDir = path.join(process.cwd(), 'ops', 'reports');
   if (!fs.existsSync(resultsDir)) {
     fs.mkdirSync(resultsDir, { recursive: true });

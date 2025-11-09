@@ -1,0 +1,152 @@
+agents/unified-agent.ts:45 - UnifiedAgent (used in module)
+ai/ai_autoscale.ts:470 - default
+ai/privacy_guard.ts:416 - default
+ai/self_diagnose.ts:395 - default
+ops/ai-guardrails.ts:168 - AIAgentGuardrails (used in module)
+ops/ai-guardrails.ts:168 - dryRunAgent (used in module)
+ops/compliance-guard.ts:212 - exportDSAR (used in module)
+ops/compliance-guard.ts:212 - deleteDSAR (used in module)
+ops/compliance-guard.ts:212 - redactLogs (used in module)
+ops/compliance-guard.ts:212 - generateComplianceReport (used in module)
+ops/cost-caps.ts:140 - checkCostCaps (used in module)
+ops/cost-caps.ts:140 - simulateCosts (used in module)
+ops/cost-caps.ts:140 - throttleRequest (used in module)
+ops/growth-engine.ts:175 - generateGrowthReport (used in module)
+ops/growth-engine.ts:175 - calculateCohorts (used in module)
+ops/growth-engine.ts:175 - normalizeUTM (used in module)
+ops/i18n.ts:137 - extractMessages (used in module)
+ops/i18n.ts:137 - generateLanguagePacks (used in module)
+ops/i18n.ts:137 - validateTranslations (used in module)
+ops/observability.ts:203 - initializeObservability (used in module)
+ops/observability.ts:203 - generateMetricsReport (used in module)
+ops/offers-paywalls.ts:93 - syncPricingFromSupabase (used in module)
+ops/offers-paywalls.ts:93 - toggleOffer (used in module)
+ops/offers-paywalls.ts:93 - getDefaultOffers (used in module)
+ops/partner-hooks.ts:179 - generatePartnerPack (used in module)
+ops/store-pack.ts:118 - generateStorePack (used in module)
+scripts/browser-compatibility-test.ts:177 - checkFile (used in module)
+scripts/browser-compatibility-test.ts:177 - findSourceFiles (used in module)
+scripts/chaos-mini.ts:465 - ChaosMini (used in module)
+scripts/chaos-mini.ts:465 - ChaosReport (used in module)
+scripts/chaos-mini.ts:465 - ChaosTest (used in module)
+scripts/generate-icons.ts:71 - generateIcons (used in module)
+scripts/migrate-emc.ts:429 - EMCMigrator (used in module)
+scripts/migrate-emc.ts:429 - MigrationStep (used in module)
+scripts/migrate-emc.ts:429 - EMCConfig (used in module)
+scripts/monitoring-alerts-config.ts:234 - testAlerts (used in module)
+scripts/monitoring-alerts-config.ts:252 - getAlertConfig
+scripts/monitoring-alerts-config.ts:257 - getAlert
+scripts/monitoring-alerts-config.ts:265 - DEFAULT_CONFIG (used in module)
+scripts/monitoring-alerts-config.ts:265 - sendAlert (used in module)
+scripts/privacy-compliance-check.ts:229 - runPrivacyComplianceChecks (used in module)
+scripts/slo-checker.ts:322 - SLOChecker (used in module)
+scripts/slo-checker.ts:322 - SLOReport (used in module)
+scripts/slo-checker.ts:322 - SLOMetrics (used in module)
+watchers/api_contract.watcher.ts:742 - default
+watchers/db_integrity.watcher.ts:615 - default
+whats-for-dinner/next.config.ts:89 - default
+whats-for-dinner/playwright.config.ts:6 - default
+apps/web/capacitor.config.ts:55 - default
+apps/web/next.config.ts:181 - default
+apps/web/playwright.config.ts:6 - default
+packages/ui/PricingSurvey.tsx:18 - PricingSurvey
+packages/ui/vitest.config.ts:16 - default
+server/api/bridge.ts:29 - handleHydrogenRequest (used in module)
+server/api/bridge.ts:151 - hydrogenMiddleware (used in module)
+server/api/bridge.ts:6 - HydrogenRequest (used in module)
+server/api/bridge.ts:13 - HydrogenResponse (used in module)
+server/api/bridge.ts:19 - HydrogenContext (used in module)
+server/api/bridge.ts:187 - hydrogenUtils (used in module)
+server/api/bridge.ts:249 - default
+tests/reality/playwright.config.ts:3 - default
+tests/reality/synthetic-monitor.ts:102 - monitor (used in module)
+tests/reality/synthetic-monitors.spec.ts:90 - notifyFailure
+tests/red-team/security.spec.ts:139 - runRedTeamTests (used in module)
+tools/scripts/backup-run.ts:391 - BackupRunner (used in module)
+tools/scripts/evidence-bundle.ts:228 - EvidenceBundleGenerator (used in module)
+tools/scripts/restore-run.ts:379 - RestoreRunner (used in module)
+tools/wiring/env_inventory.ts:253 - generateEnvInventory
+tools/wiring/harness.ts:797 - runWiringHarness
+tools/wiring/wire_doctor.ts:259 - runWireDoctor
+apps/admin.disabled/layout.tsx:26 - default
+apps/admin.disabled/page.tsx:34 - default
+apps/billing.disabled/page.tsx:34 - default
+apps/developers.disabled/page.tsx:59 - default
+apps/favorites.disabled/page.tsx:9 - default
+apps/landing.disabled/page.tsx:138 - default
+apps/pantry.disabled/page.tsx:8 - default
+ops/screenshots/capture.ts:152 - captureScreenshots (used in module)
+ops/scripts/generate-dashboard.ts:8 - generateObservabilityDashboard
+ops/scripts/generate-store-pack.ts:8 - generateStorePack
+ops/scripts/growth-report.ts:8 - generateGrowthReport
+ops/scripts/performance-budgets.ts:15 - checkPerformanceBudgets
+whats-for-dinner/src/middleware.ts:24 - middleware
+whats-for-dinner/src/middleware.ts:294 - config
+whats-for-dinner/tests/global-setup.ts:60 - default
+whats-for-dinner/tests/global-teardown.ts:61 - default
+whats-for-dinner/tests/supabase-validation.test.ts:303 - runSupabaseValidation (used in module)
+nomad/packages/testing/vitest.config.ts:3 - default
+nomad/tools/scripts/seed.ts:37 - default
+packages/adapters/crm/index.ts:13 - getCRMAdapter (used in module)
+packages/adapters/crm/index.ts:5 - EmailMessage
+packages/adapters/crm/index.ts:17 - EmailTemplate
+packages/adapters/crm/index.ts:26 - EmailSubscription
+packages/adapters/crm/index.ts:33 - CRMAdapter (used in module)
+packages/adapters/crm/index.ts:20 - SendGridConfig
+packages/adapters/crm/index.ts:26 - SendGridAdapter
+packages/adapters/crm/index.ts:162 - sendGridAdapter (used in module)
+packages/adapters/crm/index.ts:52 - KlaviyoAdapter
+packages/adapters/crm/index.ts:262 - klaviyoAdapter (used in module)
+packages/adapters/crm/index.ts:9 - NoopAdapter
+packages/adapters/crm/index.ts:39 - noopAdapter (used in module)
+packages/adapters/purchases/android.ts:11 - AndroidPurchaseAdapter
+packages/adapters/purchases/index.ts:66 - getPurchaseAdapter (used in module)
+packages/adapters/purchases/index.ts:90 - initializePurchases
+packages/adapters/purchases/index.ts:98 - getEntitlements (used in module)
+packages/adapters/purchases/index.ts:106 - purchase (used in module)
+packages/adapters/purchases/index.ts:114 - restore (used in module)
+packages/adapters/purchases/index.ts:122 - isPremium (used in module)
+packages/adapters/purchases/index.ts:130 - getReceiptData (used in module)
+packages/adapters/purchases/ios.ts:11 - IOSPurchaseAdapter
+packages/adapters/purchases/web.ts:10 - WebPurchaseAdapter
+packages/analytics/consent/index.ts:7 - ConsentPurpose
+packages/analytics/consent/index.ts:14 - ConsentStatus
+packages/analytics/consent/index.ts:20 - AgeGateStatus
+packages/analytics/consent/index.ts:25 - ConsentState
+packages/analytics/consent/index.ts:46 - ConsentTransition
+packages/analytics/consent/index.ts:67 - ConsentModel
+packages/analytics/consent/index.ts:9 - ConsentEvent
+packages/analytics/consent/index.ts:15 - ConsentEventListener
+packages/analytics/consent/index.ts:17 - ConsentStore
+packages/analytics/consent/index.ts:250 - ConsentStorage
+packages/config/src/env.ts:67 - validateEnv (used in module)
+packages/config/src/env.ts:98 - env (used in module)
+packages/config/src/env.ts:103 - Env
+packages/config/src/index.ts:52 - getSKU
+packages/config/src/index.ts:59 - getPlanBySKU
+packages/config/src/index.ts:71 - isPremiumPlan
+packages/config/src/index.ts:78 - getPlanDisplayName
+packages/config/src/index.ts:6 - SubscriptionPlan
+packages/config/src/index.ts:8 - SubscriptionSKU
+packages/config/src/index.ts:18 - SUBSCRIPTION_SKUS
+packages/data/src/experiments.ts:126 - useExperiment
+packages/data/src/experiments.ts:200 - useExperiments
+packages/data/src/experiments.ts:9 - ExperimentAssignment (used in module)
+packages/data/src/pricing.ts:112 - usePrice
+packages/data/src/pricing.ts:139 - useRevenueSummary
+packages/data/src/pricing.ts:151 - useElasticity
+packages/data/src/pricing.ts:163 - useSubmitSurvey
+packages/data/src/pricing.ts:8 - PriceRecommendation (used in module)
+packages/data/src/pricing.ts:15 - RevenueSummary (used in module)
+packages/data/src/pricing.ts:30 - ElasticityData (used in module)
+packages/server/src/index.ts:37 - paginateQuery
+packages/server/src/index.ts:334 - computeResponseETag
+packages/server/src/index.ts:339 - closeDb
+packages/server/src/index.ts:15 - db
+packages/server/src/index.ts:62 - usersRepo
+packages/server/src/index.ts:84 - mealPlansRepo
+packages/server/src/index.ts:154 - recipesRepo
+packages/server/src/index.ts:191 - groceryListsRepo
+packages/server/src/index.ts:225 - healthMetricsRepo
+packages/server/src/index.ts:254 - eventsRepo
+packages/server/src/index.ts:283 - webhookEventsRepo

@@ -5,7 +5,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function generateStorePack() {
+// Removed unused export - not imported anywhere
+function generateStorePack() {
   const storeDir = path.join(process.cwd(), 'ops', 'store');
   if (!fs.existsSync(storeDir)) {
     fs.mkdirSync(storeDir, { recursive: true });
