@@ -25,3 +25,6 @@ export * from './ux/forms';
 // Engagement
 export * from './engagement/analytics';
 export * from './engagement/ab-test';
+
+// Revenue Optimization
+export * from './revenue';
