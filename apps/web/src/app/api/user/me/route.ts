@@ -43,8 +43,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export const GET = withTelemetry(getHandler);
+
 // PATCH /api/user/me
-export async function PATCH(request: NextRequest) {
+async function patchHandler(request: NextRequest) {
   try {
     const ctx = await getAuthContext(request);
     if (!ctx?.user) {
@@ -90,3 +92,5 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export const PATCH = withTelemetry(patchHandler);

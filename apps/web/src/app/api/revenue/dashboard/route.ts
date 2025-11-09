@@ -3,7 +3,7 @@
  * Provides comprehensive revenue metrics and recommendations
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { revenueOptimizer } from '@/lib/revenue/optimization';
 import { roiAnalyzer } from '@/lib/revenue/roi-analysis';
 import { engagementScorer } from '@/lib/revenue/engagement-scoring';
@@ -11,8 +11,9 @@ import { adOptimizer } from '@/lib/revenue/advertising';
 import { passiveIncomeManager } from '@/lib/revenue/passive-income';
 import { subscriptionOptimizer } from '@/lib/revenue/subscription-optimizer';
 import { handleError, getErrorStatusCode, getUserFriendlyMessage } from '@/lib/errors';
+import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
-export async function GET() {
+async function handler(_req: NextRequest) {
   try {
     // This would typically fetch from your database
     // For now, returning structure with example data
@@ -59,3 +60,5 @@ export async function GET() {
     );
   }
 }
+
+export const GET = withTelemetry(handler);

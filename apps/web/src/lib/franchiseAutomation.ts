@@ -1,21 +1,6 @@
 import { supabase } from './supabaseClient';
 import { StripeService } from './stripe';
 
-export interface FranchiseDeployment {
-  id: string;
-  franchise_name: string;
-  domain: string;
-  tenant_id: string;
-  region: string;
-  status: 'pending' | 'deploying' | 'active' | 'failed' | 'suspended';
-  deployment_manifest: any;
-  custom_theme: any;
-  features_enabled: any;
-  stripe_account_id?: string;
-  created_at: string;
-  deployed_at?: string;
-}
-
 export interface DeploymentManifest {
   franchise_name: string;
   domain: string;
@@ -23,8 +8,8 @@ export interface DeploymentManifest {
   tenant_id: string;
   created_at: string;
   version: string;
-  features: any;
-  theme: any;
+  features: string[];
+  theme: ThemeConfig;
   infrastructure: {
     database: string;
     storage: string;
@@ -38,33 +23,68 @@ export interface DeploymentManifest {
     sms: boolean;
   };
   customizations: {
-    branding: any;
+    branding: BrandingConfig;
     features: string[];
-    limits: any;
+    limits: LimitsConfig;
   };
 }
+
+export interface ThemeConfig {
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    text: string;
+  };
+  fonts: {
+    heading: string;
+    body: string;
+  };
+  logo?: string;
+}
+
+export interface BrandingConfig {
+  logo: string;
+  colors: Record<string, string>;
+  fonts: Record<string, string>;
+}
+
+export interface LimitsConfig {
+  maxUsers: number;
+  maxRecipes: number;
+  maxApiCalls: number;
+}
+
+export interface FranchiseDeployment {
+  id: string;
+  franchise_name: string;
+  domain: string;
+  tenant_id: string;
+  region: string;
+  status: 'pending' | 'deploying' | 'active' | 'failed' | 'suspended';
+  deployment_manifest: DeploymentManifest;
+  custom_theme: ThemeConfig;
+  features_enabled: string[];
+  stripe_account_id?: string;
+  created_at: string;
+  deployed_at?: string;
+}
+
 
 export interface FranchiseConfig {
   name: string;
   domain: string;
   region: 'na' | 'eu' | 'apac';
-  customTheme: any;
+  customTheme: ThemeConfig;
   features: string[];
-  limits: {
-    maxUsers: number;
-    maxRecipes: number;
-    maxApiCalls: number;
-  };
+  limits: LimitsConfig;
   pricing: {
     free: number;
     pro: number;
     family: number;
   };
-  branding: {
-    logo: string;
-    colors: any;
-    fonts: any;
-  };
+  branding: BrandingConfig;
 }
 
 export class FranchiseAutomation {

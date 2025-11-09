@@ -9,9 +9,10 @@ import { Navbar } from '../src/components/Navbar';
 import { useGenerateRecipes, useSaveRecipe } from '../src/hooks/useRecipes';
 import { usePantryItems } from '../src/hooks/usePantry';
 import { Recipe } from '@whats-for-dinner/utils';
+import type { Profile, PantryItem } from '../src/types/supabase';
 
 export default function HomeScreen() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<Profile | null>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -21,7 +22,7 @@ export default function HomeScreen() {
   const saveRecipeMutation = useSaveRecipe();
   const { data: pantryItems = [], isLoading: pantryLoading } = usePantryItems();
 
-  const pantryItemNames = (pantryItems as any[]).map(item => item.ingredient);
+  const pantryItemNames = (pantryItems as PantryItem[]).map(item => item.ingredient);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);

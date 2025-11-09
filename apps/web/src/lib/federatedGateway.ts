@@ -6,9 +6,9 @@ export interface FederatedRequest {
   partner: string;
   endpoint: string;
   method: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   headers?: Record<string, string>;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   tenantId: string;
   userId?: string;
   requestId: string;
@@ -16,7 +16,7 @@ export interface FederatedRequest {
 
 export interface FederatedResponse {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   metadata: {
     partner: string;
@@ -31,7 +31,7 @@ export interface FederatedResponse {
 
 export class FederatedAPIGateway {
   private static instance: FederatedAPIGateway;
-  private partnerCache: Map<string, any> = new Map();
+  private partnerCache: Map<string, Record<string, unknown>> = new Map();
   private cacheExpiry: Map<string, number> = new Map();
   private readonly CACHE_TTL = 300000; // 5 minutes
 

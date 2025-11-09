@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { logger } from '@/lib/logger';
 import Stripe from 'stripe';
 import { withCSRFProtection } from '@/lib/csrf-middleware';
+import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-12-18.acacia',
@@ -90,4 +91,4 @@ async function handler(request: NextRequest) {
   }
 }
 
-export const POST = (req: NextRequest) => withCSRFProtection(handler, req);
+export const POST = (req: NextRequest) => withCSRFProtection(withTelemetry(handler), req);

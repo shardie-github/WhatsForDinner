@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No signature' }, { status: 400 });
     }
 
-    let event: any;
+    let event: Stripe.Event;
 
     try {
       event = StripeService.verifyWebhookSignature(body, signature);
@@ -95,7 +95,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleCheckoutSessionCompleted(session: any) {
+export const POST = withTelemetry(handler);
+
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
   const { tenantId, userId, plan } = session.metadata;
 
   if (!tenantId || !userId || !plan) {
@@ -113,7 +115,7 @@ async function handleCheckoutSessionCompleted(session: any) {
 
   }
 
-async function handleSubscriptionCreated(subscription: any) {
+async function handleSubscriptionCreated(subscription: Stripe.Subscription): Promise<void> {
   const { tenantId, userId, plan } = subscription.metadata;
 
   if (!tenantId || !userId || !plan) {
@@ -151,7 +153,7 @@ async function handleSubscriptionCreated(subscription: any) {
 
   }
 
-async function handleSubscriptionUpdated(subscription: any) {
+async function handleSubscriptionUpdated(subscription: Stripe.Subscription): Promise<void> {
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
@@ -188,7 +190,7 @@ async function handleSubscriptionUpdated(subscription: any) {
 
   }
 
-async function handleSubscriptionDeleted(subscription: any) {
+async function handleSubscriptionDeleted(subscription: Stripe.Subscription): Promise<void> {
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
@@ -215,7 +217,7 @@ async function handleSubscriptionDeleted(subscription: any) {
 
   }
 
-async function handleInvoicePaymentSucceeded(invoice: any) {
+async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
   const subscription = await stripe.subscriptions.retrieve(
     invoice.subscription
   );
@@ -236,7 +238,7 @@ async function handleInvoicePaymentSucceeded(invoice: any) {
 
   }
 
-async function handleInvoicePaymentFailed(invoice: any) {
+async function handleInvoicePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
   const subscription = await stripe.subscriptions.retrieve(
     invoice.subscription
   );
