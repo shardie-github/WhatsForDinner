@@ -1,34 +1,52 @@
 {
-  "persona": "calm, authoritative, minimal",
-  "voice": {
-    "tone": "professional yet approachable",
-    "style": "concise and clear",
-    "formality": "conversational but polished"
+  "persona": {
+    "description": "calm, authoritative, minimal",
+    "characteristics": [
+      "Direct and clear",
+      "Confident without being pushy",
+      "Concise and actionable",
+      "Professional yet approachable"
+    ]
+  },
+  "cta": {
+    "primary": "Add to Cart",
+    "alternatives": [
+      "Get Started",
+      "Continue",
+      "Submit",
+      "Save",
+      "Confirm"
+    ]
+  },
+  "banned": {
+    "phrases": [
+      "click here",
+      "please note"
+    ],
+    "replacements": {
+      "click here": "Select",
+      "please note": "Note:"
+    }
   },
   "guidelines": {
-    "cta": "Use action verbs: 'Add to Cart', 'Save Changes', 'Continue'",
-    "errors": "Be helpful, not accusatory. Provide next steps.",
-    "success": "Celebrate wins briefly. 'Saved successfully.'",
-    "loading": "Be transparent. 'Loading...' or 'Processing...'"
-  },
-  "banned": ["click here", "please note"],
-  "preferred": {
-    "actions": ["Add to Cart", "Save", "Continue", "Cancel"],
-    "confirmations": ["Saved", "Updated", "Deleted"],
-    "errors": ["Something went wrong", "Please try again"]
+    "voice": "Use active voice. Be direct.",
+    "tone": "Calm and authoritative. Avoid exclamation marks unless necessary.",
+    "length": "Keep copy concise. Remove unnecessary words.",
+    "clarity": "Use simple language. Avoid jargon unless necessary.",
+    "action": "Use action verbs. Make CTAs clear and specific."
   },
   "examples": {
     "good": [
       "Add to Cart",
-      "Save Changes",
-      "Something went wrong. Please try again.",
-      "Saved successfully"
+      "Continue to checkout",
+      "Save preferences",
+      "Get started"
     ],
     "bad": [
-      "Click here to add",
+      "Click here to add to cart",
       "Please note that...",
-      "Oops! Error occurred",
-      "Success!"
+      "You can click here",
+      "Please click here to continue"
     ]
   }
 }
