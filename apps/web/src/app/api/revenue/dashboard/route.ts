@@ -12,9 +12,29 @@ import { passiveIncomeManager } from '@/lib/revenue/passive-income';
 import { subscriptionOptimizer } from '@/lib/revenue/subscription-optimizer';
 import { handleError, getErrorStatusCode, getUserFriendlyMessage } from '@/lib/errors';
 import { withTelemetry } from '@/lib/telemetry/api-middleware';
+import { withRateLimit } from '@/lib/performance/rate-limiter';
+import { optimizedQuery } from '@/lib/db/optimization';
+import { performanceMonitor } from '@/lib/performance/monitor';
+import { successResponse } from '@/lib/api/response';
 
 async function handler(_req: NextRequest) {
+  const startTime = Date.now();
+  
   try {
+    // Rate limiting
+    const rateLimitResult = await withRateLimit(_req, {
+      window: 60, // 1 minute
+      max: 30, // 30 requests per minute
+      keyGenerator: (req) => {
+        const userId = req.headers.get('x-user-id');
+        return userId || req.headers.get('x-forwarded-for') || 'unknown';
+      },
+    });
+
+    if (!rateLimitResult.allowed) {
+      return rateLimitResult.response!;
+    }
+
     const { createClient } = await import('@/lib/supabase/server');
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -60,15 +80,35 @@ async function handler(_req: NextRequest) {
     });
     const totalRevenue = charges.data.reduce((sum, charge) => sum + (charge.amount / 100), 0);
 
-    // Get user counts from database
-    const { count: totalUsers } = await supabase
-      .from('profiles')
-      .select('*', { count: 'exact', head: true });
+    // Get user counts from database (optimized with caching)
+    const totalUsers = await optimizedQuery(
+      async () => {
+        const { count } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true });
+        return count || 0;
+      },
+      {
+        cacheKey: `dashboard:totalUsers:${user.id}`,
+        cacheTTL: 300, // 5 minutes
+        tags: ['dashboard', 'users'],
+      }
+    );
 
-    const { count: activeUsers } = await supabase
-      .from('subscriptions')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'active');
+    const activeUsers = await optimizedQuery(
+      async () => {
+        const { count } = await supabase
+          .from('subscriptions')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'active');
+        return count || 0;
+      },
+      {
+        cacheKey: `dashboard:activeUsers:${user.id}`,
+        cacheTTL: 300,
+        tags: ['dashboard', 'subscriptions'],
+      }
+    );
 
     // Calculate ARPU
     const arpu = totalUsers && totalUsers > 0 ? mrr / totalUsers : 0;
@@ -186,17 +226,31 @@ async function handler(_req: NextRequest) {
       },
     };
 
-    return NextResponse.json(dashboard);
+    // Track performance
+    const duration = Date.now() - startTime;
+    performanceMonitor.trackEndpoint('/api/revenue/dashboard', duration, 200);
+
+    return NextResponse.json(successResponse(dashboard));
   } catch (error) {
+    const duration = Date.now() - startTime;
+    performanceMonitor.trackEndpoint('/api/revenue/dashboard', duration, 500);
+    performanceMonitor.trackError('revenue_dashboard_error', '/api/revenue/dashboard');
+
     const appError = handleError(error);
     const statusCode = getErrorStatusCode(appError);
     const message = getUserFriendlyMessage(appError);
     
     return NextResponse.json(
       { 
-        error: message,
-        code: appError.code,
-        ...(process.env.NODE_ENV === 'development' && { details: appError.details }),
+        success: false,
+        error: {
+          code: appError.code,
+          message,
+          ...(process.env.NODE_ENV === 'development' && { details: appError.details }),
+        },
+        meta: {
+          timestamp: new Date().toISOString(),
+        },
       },
       { status: statusCode }
     );
