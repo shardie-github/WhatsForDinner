@@ -1,0 +1,12 @@
+{
+  "timestamp": null,
+  "checks": {
+    "https": { "passed": false, "details": "Pending check" },
+    "rls": { "passed": false, "details": "Pending check" },
+    "cors": { "passed": false, "details": "Pending check" },
+    "mfa": { "passed": false, "details": "Pending check" },
+    "secrets": { "passed": false, "details": "Pending check" }
+  },
+  "score": 0,
+  "recommendations": []
+}

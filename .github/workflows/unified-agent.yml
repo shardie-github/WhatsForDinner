@@ -1,0 +1,118 @@
+name: Unified Hardonia Agent
+
+on:
+  schedule:
+    # Run every 12 hours
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: 'Specific agent to run (leave empty for all)'
+        required: false
+        type: choice
+        options:
+          - ''
+          - reliability
+          - cost
+          - security
+          - documentation
+          - planning
+          - observability
+          - reflection
+
+jobs:
+  unified-agent:
+    runs-on: ubuntu-latest
+    name: Unified Hardonia Agent
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Run Unified Agent
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm run agent:run ${{ github.event.inputs.agent }}
+
+      - name: Upload Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-artifacts
+          path: |
+            admin/reliability.json
+            admin/reliability.md
+            admin/compliance.json
+            admin/compliance.md
+            security/sbom.json
+            docs/intent-log.md
+            roadmap/current-sprint.md
+            auto/next-steps.md
+            .cursor/agent-discoveries.md
+          retention-days: 90
+
+      - name: Commit Artifacts
+        if: always()
+        run: |
+          git config --local user.email "agent@hardonia.dev"
+          git config --local user.name "Hardonia Agent"
+          git add admin/ security/ docs/ roadmap/ auto/ .cursor/
+          git diff --staged --quiet || git commit -m "🤖 Agent cycle: Update artifacts [skip ci]"
+          git push || echo "No changes to commit"
+
+      - name: Create Summary Comment
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const nextSteps = fs.readFileSync('auto/next-steps.md', 'utf8');
+              const reliability = JSON.parse(fs.readFileSync('admin/reliability.json', 'utf8'));
+              const compliance = JSON.parse(fs.readFileSync('admin/compliance.json', 'utf8'));
+              
+              const comment = `## 🤖 Unified Agent Cycle Complete
+              
+              **Timestamp**: ${new Date().toISOString()}
+              
+              ### Reliability
+              - Status: ${reliability.status || 'pending'}
+              - Build Time: ${reliability.build_time ? reliability.build_time + 'ms' : 'N/A'}
+              
+              ### Compliance
+              - Score: ${(compliance.score * 100).toFixed(0)}%
+              - Checks Passed: ${Object.values(compliance.checks).filter(c => c.passed).length}/${Object.keys(compliance.checks).length}
+              
+              ### Next Steps
+              See \`auto/next-steps.md\` for recommendations.
+              `;
+              
+              console.log(comment);
+            } catch (error) {
+              console.log('Could not generate summary:', error.message);
+            }

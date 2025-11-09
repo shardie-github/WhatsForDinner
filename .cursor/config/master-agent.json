@@ -1,0 +1,70 @@
+{
+  "agentMode": "hardonia-global",
+  "autoRun": true,
+  "repoType": "monorepo",
+  "detectedStack": {
+    "web": "nextjs",
+    "mobile": "expo",
+    "backend": "supabase",
+    "deployment": "vercel"
+  },
+  "agents": {
+    "reliability": {
+      "enabled": true,
+      "schedule": "0 */6 * * *",
+      "metrics": ["uptime", "latency", "error_rate", "build_time"]
+    },
+    "cost": {
+      "enabled": true,
+      "schedule": "0 0 * * *",
+      "providers": ["vercel", "supabase", "expo"]
+    },
+    "security": {
+      "enabled": true,
+      "schedule": "0 */12 * * *",
+      "checks": ["sbom", "vulnerabilities", "secrets", "compliance"]
+    },
+    "documentation": {
+      "enabled": true,
+      "schedule": "0 2 * * *",
+      "artifacts": ["readme", "changelog", "architecture", "intent-log"]
+    },
+    "planning": {
+      "enabled": true,
+      "schedule": "0 3 * * *",
+      "extract": ["todos", "fixmes", "issues"]
+    },
+    "observability": {
+      "enabled": true,
+      "schedule": "*/15 * * * *",
+      "endpoints": ["/api/metrics", "/admin/metrics"]
+    },
+    "reflection": {
+      "enabled": true,
+      "schedule": "0 4 * * *",
+      "generate": "next-steps.md"
+    }
+  },
+  "artifacts": {
+    "reliability": {
+      "json": "/admin/reliability.json",
+      "md": "/admin/reliability.md"
+    },
+    "compliance": {
+      "json": "/admin/compliance.json",
+      "md": "/admin/compliance.md"
+    },
+    "sbom": "/security/sbom.json",
+    "metrics": "/admin/metrics.jsx",
+    "intentLog": "/docs/intent-log.md",
+    "roadmap": "/roadmap/current-sprint.md",
+    "nextSteps": "/auto/next-steps.md",
+    "discoveries": "/.cursor/agent-discoveries.md"
+  },
+  "safety": {
+    "neverExposeSecrets": true,
+    "requireCI": true,
+    "preferPR": true,
+    "retainSnapshots": 3
+  }
+}
