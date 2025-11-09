@@ -5,8 +5,24 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, memo } from 'react';
 import { LoadingSpinner } from '@/lib/ux/loading';
+
+interface OptimizationItem {
+  tool: string;
+  reasoning: string;
+  expectedImpact?: {
+    revenue?: number;
+    cost?: number;
+    margin?: number;
+  };
+}
+
+interface RecommendationItem {
+  tool: string;
+  reasoning: string;
+  expectedRevenueChange?: number;
+}
 
 interface RevenueData {
   summary: {
@@ -17,19 +33,19 @@ interface RevenueData {
     churnRate: number;
   };
   optimizations: {
-    pricing: any[];
-    subscriptions: any[];
-    advertising: any[];
-    passiveIncome: any[];
+    pricing: OptimizationItem[];
+    subscriptions: OptimizationItem[];
+    advertising: OptimizationItem[];
+    passiveIncome: OptimizationItem[];
   };
   recommendations: {
-    upsells: any[];
-    scaling: any[];
-    roi: any[];
+    upsells: RecommendationItem[];
+    scaling: RecommendationItem[];
+    roi: RecommendationItem[];
   };
 }
 
-export function RevenueDashboard() {
+function RevenueDashboard() {
   const [data, setData] = useState<RevenueData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,6 +56,17 @@ export function RevenueDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
+  const summaryCards = useMemo(() => {
+    if (!data) return null;
+    return [
+      { label: 'Total Revenue', value: `$${data.summary.totalRevenue.toLocaleString()}` },
+      { label: 'MRR', value: `$${data.summary.mrr.toLocaleString()}` },
+      { label: 'ARPU', value: `$${data.summary.arpu.toFixed(2)}` },
+      { label: 'LTV', value: `$${data.summary.ltv.toLocaleString()}` },
+      { label: 'Churn Rate', value: `${data.summary.churnRate.toFixed(1)}%` },
+    ];
+  }, [data]);
+
   if (loading) return <LoadingSpinner size="lg" />;
   if (!data) return <div>No revenue data</div>;
 
@@ -48,26 +75,12 @@ export function RevenueDashboard() {
       <h2 className="text-2xl font-bold">Revenue Dashboard</h2>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Total Revenue</p>
-          <p className="text-2xl font-bold">${data.summary.totalRevenue.toLocaleString()}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">MRR</p>
-          <p className="text-2xl font-bold">${data.summary.mrr.toLocaleString()}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">ARPU</p>
-          <p className="text-2xl font-bold">${data.summary.arpu.toFixed(2)}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">LTV</p>
-          <p className="text-2xl font-bold">${data.summary.ltv.toLocaleString()}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Churn Rate</p>
-          <p className="text-2xl font-bold">{data.summary.churnRate.toFixed(1)}%</p>
-        </div>
+        {summaryCards?.map((card, i) => (
+          <div key={i} className="bg-white p-4 rounded-lg shadow">
+            <p className="text-sm text-gray-600">{card.label}</p>
+            <p className="text-2xl font-bold">{card.value}</p>
+          </div>
+        ))}
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow">
@@ -77,9 +90,11 @@ export function RevenueDashboard() {
             <div key={i} className="border-l-4 border-blue-500 pl-4">
               <p className="font-semibold">{rec.tool}</p>
               <p className="text-sm text-gray-600">{rec.reasoning}</p>
-              <p className="text-sm text-green-600">
-                Expected Impact: ${rec.expectedImpact.revenue.toFixed(2)}
-              </p>
+              {rec.expectedRevenueChange && (
+                <p className="text-sm text-green-600">
+                  +${rec.expectedRevenueChange.toLocaleString()}
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -87,3 +102,5 @@ export function RevenueDashboard() {
     </div>
   );
 }
+
+export default memo(RevenueDashboard);
