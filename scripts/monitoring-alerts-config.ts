@@ -248,15 +248,15 @@ export async function testAlerts(): Promise<void> {
 
   }
 
-// Get configuration
-export function getAlertConfig(): MonitoringConfig {
-  return DEFAULT_CONFIG;
-}
+// Get configuration (removed unused export - not imported anywhere)
+// export function getAlertConfig(): MonitoringConfig {
+//   return DEFAULT_CONFIG;
+// }
 
-// Find alert by name
-export function getAlert(name: string): AlertConfig | undefined {
-  return DEFAULT_CONFIG.alerts.find(a => a.name === name);
-}
+// Find alert by name (removed unused export - not imported anywhere)
+// export function getAlert(name: string): AlertConfig | undefined {
+//   return DEFAULT_CONFIG.alerts.find(a => a.name === name);
+// }
 
 if (require.main === module) {
   testAlerts().catch(console.error);

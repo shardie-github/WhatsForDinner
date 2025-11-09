@@ -250,4 +250,5 @@ if (import.meta.url === `file://${process.argv[1]}` || require.main === module) 
   });
 }
 
-export { main as generateEnvInventory };
+// Removed unused export - not imported anywhere
+// export { main as generateEnvInventory };
