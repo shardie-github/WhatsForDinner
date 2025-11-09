@@ -1,0 +1,84 @@
+{
+  "revenue": {
+    "base_monthly_growth_rate": 0.25,
+    "optimistic_monthly_growth_rate": 0.50,
+    "conservative_monthly_growth_rate": 0.15,
+    "confidence": "medium",
+    "notes": "Based on current traction and market size. Conservative assumes slower adoption, Optimistic assumes strong product-market fit."
+  },
+  "cogs": {
+    "base_cogs_pct": 0.35,
+    "optimistic_cogs_pct": 0.30,
+    "conservative_cogs_pct": 0.40,
+    "confidence": "high",
+    "notes": "Includes payment processing, hosting, third-party API costs. Optimistic assumes scale efficiencies."
+  },
+  "cac": {
+    "base_cac": 45,
+    "optimistic_cac": 35,
+    "conservative_cac": 60,
+    "confidence": "medium",
+    "notes": "Base assumes current channel mix. Optimistic assumes improved conversion and organic growth. Conservative assumes higher competition."
+  },
+  "ltv": {
+    "base_ltv": 300,
+    "optimistic_ltv": 450,
+    "conservative_ltv": 200,
+    "confidence": "low",
+    "notes": "Requires validation through cohort analysis. Optimistic assumes higher retention and upsell. Conservative assumes churn risk."
+  },
+  "refund_rate": {
+    "base_refund_rate_pct": 0.05,
+    "optimistic_refund_rate_pct": 0.03,
+    "conservative_refund_rate_pct": 0.08,
+    "confidence": "medium",
+    "notes": "Base assumes current refund patterns. Conservative accounts for potential quality issues."
+  },
+  "operating_expenses": {
+    "sales_marketing": {
+      "base_monthly": 20000,
+      "growth_rate": 0.125,
+      "confidence": "high",
+      "notes": "Scales with revenue growth. Includes ad spend, tools, team."
+    },
+    "product_development": {
+      "base_monthly": 12000,
+      "growth_rate": 0.125,
+      "confidence": "high",
+      "notes": "Fixed team costs with incremental tooling."
+    },
+    "general_admin": {
+      "base_monthly": 8000,
+      "growth_rate": 0.125,
+      "confidence": "high",
+      "notes": "Legal, accounting, office, insurance."
+    }
+  },
+  "cash": {
+    "starting_cash": 500000,
+    "timezone": "America/Toronto",
+    "confidence": "high",
+    "notes": "Current cash position. Runway calculated based on monthly burn."
+  },
+  "metrics": {
+    "ltv_cac_ratio_target": 3.0,
+    "gross_margin_target": 0.70,
+    "ebitda_margin_target": 0.20,
+    "confidence": "medium",
+    "notes": "Industry benchmarks for SaaS. Base scenario achieves these by month 6-9."
+  },
+  "sensitivity": {
+    "revenue_sensitivity": "high",
+    "cac_sensitivity": "high",
+    "ltv_sensitivity": "medium",
+    "cogs_sensitivity": "low",
+    "notes": "Revenue and CAC have highest impact on runway and profitability."
+  },
+  "validation_required": [
+    "LTV calculation from actual cohort data",
+    "CAC by channel breakdown",
+    "Refund rate by product segment",
+    "COGS allocation accuracy",
+    "Monthly growth rate validation"
+  ]
+}
