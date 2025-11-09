@@ -6,6 +6,7 @@ import { useDeviceInfo, useTheme } from '@whats-for-dinner/utils';
 import { RecipeCard } from '../src/components/RecipeCard';
 import { InputPrompt } from '../src/components/InputPrompt';
 import { Navbar } from '../src/components/Navbar';
+import { QuickGenerateFAB } from '../src/components/QuickGenerateFAB';
 import { useGenerateRecipes, useSaveRecipe } from '../src/hooks/useRecipes';
 import { usePantryItems } from '../src/hooks/usePantry';
 import { Recipe } from '@whats-for-dinner/utils';
@@ -144,6 +145,15 @@ export default function HomeScreen() {
           )}
         </View>
       </ScrollView>
+      
+      {/* Quick Generate FAB */}
+      {pantryItemNames.length > 0 && (
+        <QuickGenerateFAB
+          onPress={() => generateRecipes(pantryItemNames, 'balanced')}
+          disabled={generateRecipesMutation.isPending}
+          loading={generateRecipesMutation.isPending}
+        />
+      )}
     </SafeAreaView>
   );
 }

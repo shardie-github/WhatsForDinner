@@ -9,6 +9,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { CoreWebVitals } from '@/components/CoreWebVitals';
 import { PerformanceDashboard } from '@/components/PerformanceDashboard';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { GDPRConsent } from '@/components/GDPRConsent';
 import { PrivacyHUD } from '@/components/privacy/PrivacyHUD';
 import { LiveRegion, SkipToMainContent } from '@/lib/accessibility';
@@ -256,6 +257,7 @@ export default function RootLayout({
             </div>
             </ThemeProvider>
             <PWAInstaller />
+            <PWAInstallPrompt />
             <Analytics />
             <CapacitorInit />
             <CoreWebVitals />

@@ -6,7 +6,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ShoppingCart, Star, Clock, Users, Sparkles } from 'lucide-react';
+import { ShoppingCart, Star, Clock, Users, Sparkles, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
