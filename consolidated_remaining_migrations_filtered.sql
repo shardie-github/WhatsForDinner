@@ -704,29 +704,37 @@ ALTER TABLE badges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE achievements ENABLE ROW LEVEL SECURITY;
 
 -- User Profiles: Users can read/update their own profile
+DROP POLICY IF EXISTS "Users can view own profile" ON user_profiles;
 CREATE POLICY "Users can view own profile" ON user_profiles
   FOR SELECT USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON user_profiles;
 CREATE POLICY "Users can update own profile" ON user_profiles
   FOR UPDATE USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can insert own profile" ON user_profiles;
 CREATE POLICY "Users can insert own profile" ON user_profiles
   FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- User Preferences: Users can manage their own preferences
+DROP POLICY IF EXISTS "Users can manage own preferences" ON user_dietary_preferences;
 CREATE POLICY "Users can manage own preferences" ON user_dietary_preferences
   FOR ALL USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can manage own allergens" ON user_allergens;
 CREATE POLICY "Users can manage own allergens" ON user_allergens
   FOR ALL USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can manage own goals" ON user_health_goals;
 CREATE POLICY "Users can manage own goals" ON user_health_goals
   FOR ALL USING (auth.uid() = user_id);
 
 -- Meal Plans: Users can manage their own plans, family members can view family plans
+DROP POLICY IF EXISTS "Users can manage own meal plans" ON meal_plans;
 CREATE POLICY "Users can manage own meal plans" ON meal_plans
   FOR ALL USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Family members can view family meal plans" ON meal_plans;
 CREATE POLICY "Family members can view family meal plans" ON meal_plans
   FOR SELECT USING (
     EXISTS (
@@ -737,23 +745,29 @@ CREATE POLICY "Family members can view family meal plans" ON meal_plans
   );
 
 -- Recipes: Public read, users can manage their own
+DROP POLICY IF EXISTS "Anyone can view recipes" ON recipes;
 CREATE POLICY "Anyone can view recipes" ON recipes
   FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can insert own recipes" ON recipes;
 CREATE POLICY "Users can insert own recipes" ON recipes
   FOR INSERT WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
 
+DROP POLICY IF EXISTS "Users can update own recipes" ON recipes;
 CREATE POLICY "Users can update own recipes" ON recipes
   FOR UPDATE USING (auth.uid() = user_id OR user_id IS NULL);
 
 -- Recipe Favorites: Users manage their own
+DROP POLICY IF EXISTS "Users can manage own favorites" ON recipe_favorites;
 CREATE POLICY "Users can manage own favorites" ON recipe_favorites
   FOR ALL USING (auth.uid() = user_id);
 
 -- Grocery Lists: Users can manage their own, family members can view/edit family lists
+DROP POLICY IF EXISTS "Users can manage own grocery lists" ON grocery_lists;
 CREATE POLICY "Users can manage own grocery lists" ON grocery_lists
   FOR ALL USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Family members can manage family grocery lists" ON grocery_lists;
 CREATE POLICY "Family members can manage family grocery lists" ON grocery_lists
   FOR ALL USING (
     EXISTS (
@@ -764,6 +778,7 @@ CREATE POLICY "Family members can manage family grocery lists" ON grocery_lists
   );
 
 -- Grocery List Items: Same as lists
+DROP POLICY IF EXISTS "Users can manage grocery items" ON grocery_list_items;
 CREATE POLICY "Users can manage grocery items" ON grocery_list_items
   FOR ALL USING (
     EXISTS (
@@ -781,14 +796,17 @@ CREATE POLICY "Users can manage grocery items" ON grocery_list_items
   );
 
 -- Health Metrics: Users manage their own
+DROP POLICY IF EXISTS "Users can manage own health metrics" ON health_metrics;
 CREATE POLICY "Users can manage own health metrics" ON health_metrics
   FOR ALL USING (auth.uid() = user_id);
 
 -- Wearable Sync: Users manage their own
+DROP POLICY IF EXISTS "Users can manage own wearable sync" ON wearable_sync;
 CREATE POLICY "Users can manage own wearable sync" ON wearable_sync
   FOR ALL USING (auth.uid() = user_id);
 
 -- Families: Members can view, admins can manage
+DROP POLICY IF EXISTS "Family members can view family" ON families;
 CREATE POLICY "Family members can view family" ON families
   FOR SELECT USING (
     EXISTS (
@@ -798,6 +816,7 @@ CREATE POLICY "Family members can view family" ON families
     )
   );
 
+DROP POLICY IF EXISTS "Family admins can update family" ON families;
 CREATE POLICY "Family admins can update family" ON families
   FOR UPDATE USING (
     EXISTS (
@@ -809,6 +828,7 @@ CREATE POLICY "Family admins can update family" ON families
   );
 
 -- Family Members: Members can view, admins can manage
+DROP POLICY IF EXISTS "Family members can view other members" ON family_members;
 CREATE POLICY "Family members can view other members" ON family_members
   FOR SELECT USING (
     EXISTS (
@@ -819,6 +839,7 @@ CREATE POLICY "Family members can view other members" ON family_members
   );
 
 -- Family Chat: Members can read/write
+DROP POLICY IF EXISTS "Family members can chat" ON family_chat_messages;
 CREATE POLICY "Family members can chat" ON family_chat_messages
   FOR ALL USING (
     EXISTS (
@@ -829,6 +850,7 @@ CREATE POLICY "Family members can chat" ON family_chat_messages
   );
 
 -- Family Activities: Members can view and create
+DROP POLICY IF EXISTS "Family members can view activities" ON family_activities;
 CREATE POLICY "Family members can view activities" ON family_activities
   FOR SELECT USING (
     EXISTS (
@@ -838,6 +860,7 @@ CREATE POLICY "Family members can view activities" ON family_activities
     )
   );
 
+DROP POLICY IF EXISTS "Family members can create activities" ON family_activities;
 CREATE POLICY "Family members can create activities" ON family_activities
   FOR INSERT WITH CHECK (
     EXISTS (
@@ -848,14 +871,17 @@ CREATE POLICY "Family members can create activities" ON family_activities
   );
 
 -- Streaks: Users manage their own
+DROP POLICY IF EXISTS "Users can manage own streaks" ON streaks;
 CREATE POLICY "Users can manage own streaks" ON streaks
   FOR ALL USING (auth.uid() = user_id);
 
 -- Badges: Users can view their own
+DROP POLICY IF EXISTS "Users can view own badges" ON badges;
 CREATE POLICY "Users can view own badges" ON badges
   FOR SELECT USING (auth.uid() = user_id);
 
 -- Achievements: Users manage their own
+DROP POLICY IF EXISTS "Users can manage own achievements" ON achievements;
 CREATE POLICY "Users can manage own achievements" ON achievements
   FOR ALL USING (auth.uid() = user_id);
 
@@ -1090,6 +1116,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'profiles' 
     AND policyname = 'profiles_read_own'
   ) THEN
+    DROP POLICY IF EXISTS "profiles_read_own" ON public;
     CREATE POLICY profiles_read_own ON public.profiles
     FOR SELECT TO authenticated
     USING (id = auth.uid());
@@ -1101,6 +1128,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'profiles' 
     AND policyname = 'profiles_write_own'
   ) THEN
+    DROP POLICY IF EXISTS "profiles_write_own" ON public;
     CREATE POLICY profiles_write_own ON public.profiles
     FOR UPDATE TO authenticated
     USING (id = auth.uid())
@@ -1113,6 +1141,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'profiles' 
     AND policyname = 'profiles_insert_own'
   ) THEN
+    DROP POLICY IF EXISTS "profiles_insert_own" ON public;
     CREATE POLICY profiles_insert_own ON public.profiles
     FOR INSERT TO authenticated
     WITH CHECK (id = auth.uid());
@@ -1480,6 +1509,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'organizations' 
     AND policyname = 'org_read_member'
   ) THEN
+    DROP POLICY IF EXISTS "org_read_member" ON public;
     CREATE POLICY org_read_member ON public.organizations
     FOR SELECT TO authenticated
     USING (
@@ -1496,6 +1526,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'organizations' 
     AND policyname = 'org_write_owner'
   ) THEN
+    DROP POLICY IF EXISTS "org_write_owner" ON public;
     CREATE POLICY org_write_owner ON public.organizations
     FOR ALL TO authenticated
     USING (
@@ -1522,6 +1553,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'user_organizations' 
     AND policyname = 'user_org_read_own'
   ) THEN
+    DROP POLICY IF EXISTS "user_org_read_own" ON public;
     CREATE POLICY user_org_read_own ON public.user_organizations
     FOR SELECT TO authenticated
     USING (user_id = auth.uid());
@@ -1533,6 +1565,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'user_organizations' 
     AND policyname = 'user_org_read_org_owner'
   ) THEN
+    DROP POLICY IF EXISTS "user_org_read_org_owner" ON public;
     CREATE POLICY user_org_read_org_owner ON public.user_organizations
     FOR SELECT TO authenticated
     USING (
@@ -1604,6 +1637,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'profiles' 
     AND policyname = 'profiles_read_own'
   ) THEN
+    DROP POLICY IF EXISTS "profiles_read_own" ON public;
     CREATE POLICY profiles_read_own ON public.profiles
     FOR SELECT TO authenticated
     USING (id = auth.uid());
@@ -1615,6 +1649,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'profiles' 
     AND policyname = 'profiles_write_own'
   ) THEN
+    DROP POLICY IF EXISTS "profiles_write_own" ON public;
     CREATE POLICY profiles_write_own ON public.profiles
     FOR UPDATE TO authenticated
     USING (id = auth.uid())
@@ -1627,6 +1662,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'profiles' 
     AND policyname = 'profiles_insert_own'
   ) THEN
+    DROP POLICY IF EXISTS "profiles_insert_own" ON public;
     CREATE POLICY profiles_insert_own ON public.profiles
     FOR INSERT TO authenticated
     WITH CHECK (id = auth.uid());
@@ -1638,6 +1674,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'profiles' 
     AND policyname = 'profiles_read_org'
   ) THEN
+    DROP POLICY IF EXISTS "profiles_read_org" ON public;
     CREATE POLICY profiles_read_org ON public.profiles
     FOR SELECT TO authenticated
     USING (
@@ -1899,6 +1936,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'api_usage' 
     AND policyname = 'api_usage_read_own'
   ) THEN
+    DROP POLICY IF EXISTS "api_usage_read_own" ON public;
     CREATE POLICY api_usage_read_own ON public.api_usage
     FOR SELECT TO authenticated
     USING (
@@ -1915,6 +1953,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'api_usage' 
     AND policyname = 'api_usage_insert'
   ) THEN
+    DROP POLICY IF EXISTS "api_usage_insert" ON public;
     CREATE POLICY api_usage_insert ON public.api_usage
     FOR INSERT TO authenticated, service_role
     WITH CHECK (user_id = auth.uid());
@@ -1947,6 +1986,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'event_logs' 
     AND policyname = 'event_logs_read_own'
   ) THEN
+    DROP POLICY IF EXISTS "event_logs_read_own" ON public;
     CREATE POLICY event_logs_read_own ON public.event_logs
     FOR SELECT TO authenticated
     USING (
@@ -1963,6 +2003,7 @@ BEGIN
     WHERE schemaname = 'public' AND tablename = 'event_logs' 
     AND policyname = 'event_logs_insert'
   ) THEN
+    DROP POLICY IF EXISTS "event_logs_insert" ON public;
     CREATE POLICY event_logs_insert ON public.event_logs
     FOR INSERT TO authenticated, service_role
     WITH CHECK (user_id = auth.uid());
@@ -2209,45 +2250,59 @@ alter table recipes enable row level security;
 alter table favorites enable row level security;
 
 -- Create policies
+DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
 create policy "Users can view own profile" on profiles
   for select using (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 create policy "Users can update own profile" on profiles
   for update using (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
 create policy "Users can insert own profile" on profiles
   for insert with check (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can view own pantry items" ON pantry_items;
 create policy "Users can view own pantry items" on pantry_items
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own pantry items" ON pantry_items;
 create policy "Users can insert own pantry items" on pantry_items
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own pantry items" ON pantry_items;
 create policy "Users can update own pantry items" on pantry_items
   for update using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own pantry items" ON pantry_items;
 create policy "Users can delete own pantry items" on pantry_items
   for delete using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own recipes" ON recipes;
 create policy "Users can view own recipes" on recipes
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own recipes" ON recipes;
 create policy "Users can insert own recipes" on recipes
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own recipes" ON recipes;
 create policy "Users can update own recipes" on recipes
   for update using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own recipes" ON recipes;
 create policy "Users can delete own recipes" on recipes
   for delete using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own favorites" ON favorites;
 create policy "Users can view own favorites" on favorites
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own favorites" ON favorites;
 create policy "Users can insert own favorites" on favorites
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own favorites" ON favorites;
 create policy "Users can delete own favorites" on favorites
   for delete using (auth.uid() = user_id);
 
@@ -2373,49 +2428,62 @@ alter table ai_config enable row level security;
 alter table workflow_state enable row level security;
 
 -- RLS Policies for analytics_events
+DROP POLICY IF EXISTS "Users can view own analytics events" ON analytics_events;
 create policy "Users can view own analytics events" on analytics_events
   for select using (auth.uid() = user_id or user_id is null);
 
+DROP POLICY IF EXISTS "System can insert analytics events" ON analytics_events;
 create policy "System can insert analytics events" on analytics_events
   for insert with check (true);
 
 -- RLS Policies for recipe_metrics
+DROP POLICY IF EXISTS "Users can view own recipe metrics" ON recipe_metrics;
 create policy "Users can view own recipe metrics" on recipe_metrics
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "System can insert recipe metrics" ON recipe_metrics;
 create policy "System can insert recipe metrics" on recipe_metrics
   for insert with check (true);
 
 -- RLS Policies for system_metrics (admin only)
+DROP POLICY IF EXISTS "System can manage system metrics" ON system_metrics;
 create policy "System can manage system metrics" on system_metrics
   for all using (true);
 
 -- RLS Policies for logs (admin only)
+DROP POLICY IF EXISTS "System can manage logs" ON logs;
 create policy "System can manage logs" on logs
   for all using (true);
 
 -- RLS Policies for error_reports
+DROP POLICY IF EXISTS "Users can view own error reports" ON error_reports;
 create policy "Users can view own error reports" on error_reports
   for select using (auth.uid() = user_id or user_id is null);
 
+DROP POLICY IF EXISTS "System can manage error reports" ON error_reports;
 create policy "System can manage error reports" on error_reports
   for all using (true);
 
 -- RLS Policies for recipe_feedback
+DROP POLICY IF EXISTS "Users can view own recipe feedback" ON recipe_feedback;
 create policy "Users can view own recipe feedback" on recipe_feedback
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own recipe feedback" ON recipe_feedback;
 create policy "Users can insert own recipe feedback" on recipe_feedback
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own recipe feedback" ON recipe_feedback;
 create policy "Users can update own recipe feedback" on recipe_feedback
   for update using (auth.uid() = user_id);
 
 -- RLS Policies for ai_config (admin only)
+DROP POLICY IF EXISTS "System can manage ai_config" ON ai_config;
 create policy "System can manage ai_config" on ai_config
   for all using (true);
 
 -- RLS Policies for workflow_state (admin only)
+DROP POLICY IF EXISTS "System can manage workflow_state" ON workflow_state;
 create policy "System can manage workflow_state" on workflow_state
   for all using (true);
 
@@ -2704,6 +2772,7 @@ alter table ai_cache enable row level security;
 alter table billing_events enable row level security;
 
 -- RLS Policies for tenants
+DROP POLICY IF EXISTS "Users can view tenants they belong to" ON tenants;
 create policy "Users can view tenants they belong to" on tenants
   for select using (
     id in (
@@ -2712,6 +2781,7 @@ create policy "Users can view tenants they belong to" on tenants
     )
   );
 
+DROP POLICY IF EXISTS "Tenant owners can update their tenant" ON tenants;
 create policy "Tenant owners can update their tenant" on tenants
   for update using (
     id in (
@@ -2721,6 +2791,7 @@ create policy "Tenant owners can update their tenant" on tenants
   );
 
 -- RLS Policies for tenant_memberships
+DROP POLICY IF EXISTS "Users can view memberships for their tenants" ON tenant_memberships;
 create policy "Users can view memberships for their tenants" on tenant_memberships
   for select using (
     tenant_id in (
@@ -2729,6 +2800,7 @@ create policy "Users can view memberships for their tenants" on tenant_membershi
     )
   );
 
+DROP POLICY IF EXISTS "Tenant owners can manage memberships" ON tenant_memberships;
 create policy "Tenant owners can manage memberships" on tenant_memberships
   for all using (
     tenant_id in (
@@ -2738,6 +2810,7 @@ create policy "Tenant owners can manage memberships" on tenant_memberships
   );
 
 -- RLS Policies for subscriptions
+DROP POLICY IF EXISTS "Users can view their tenant subscriptions" ON subscriptions;
 create policy "Users can view their tenant subscriptions" on subscriptions
   for select using (
     tenant_id in (
@@ -2747,6 +2820,7 @@ create policy "Users can view their tenant subscriptions" on subscriptions
   );
 
 -- RLS Policies for usage_logs
+DROP POLICY IF EXISTS "Users can view usage logs for their tenants" ON usage_logs;
 create policy "Users can view usage logs for their tenants" on usage_logs
   for select using (
     tenant_id in (
@@ -2755,10 +2829,12 @@ create policy "Users can view usage logs for their tenants" on usage_logs
     )
   );
 
+DROP POLICY IF EXISTS "System can insert usage logs" ON usage_logs;
 create policy "System can insert usage logs" on usage_logs
   for insert with check (true);
 
 -- RLS Policies for tenant_invites
+DROP POLICY IF EXISTS "Users can view invites for their tenants" ON tenant_invites;
 create policy "Users can view invites for their tenants" on tenant_invites
   for select using (
     tenant_id in (
@@ -2767,6 +2843,7 @@ create policy "Users can view invites for their tenants" on tenant_invites
     )
   );
 
+DROP POLICY IF EXISTS "Tenant owners can manage invites" ON tenant_invites;
 create policy "Tenant owners can manage invites" on tenant_invites
   for all using (
     tenant_id in (
@@ -2776,6 +2853,7 @@ create policy "Tenant owners can manage invites" on tenant_invites
   );
 
 -- RLS Policies for ai_cache
+DROP POLICY IF EXISTS "Users can access cache for their tenants" ON ai_cache;
 create policy "Users can access cache for their tenants" on ai_cache
   for select using (
     tenant_id in (
@@ -2784,10 +2862,12 @@ create policy "Users can access cache for their tenants" on ai_cache
     )
   );
 
+DROP POLICY IF EXISTS "System can manage ai_cache" ON ai_cache;
 create policy "System can manage ai_cache" on ai_cache
   for all using (true);
 
 -- RLS Policies for billing_events
+DROP POLICY IF EXISTS "System can manage billing events" ON billing_events;
 create policy "System can manage billing events" on billing_events
   for all using (true);
 
@@ -2812,6 +2892,7 @@ drop policy if exists "Users can insert own favorites" on favorites;
 drop policy if exists "Users can delete own favorites" on favorites;
 
 -- Create new tenant-aware policies
+DROP POLICY IF EXISTS "Users can view profiles in their tenants" ON profiles;
 create policy "Users can view profiles in their tenants" on profiles
   for select using (
     tenant_id in (
@@ -2820,6 +2901,7 @@ create policy "Users can view profiles in their tenants" on profiles
     )
   );
 
+DROP POLICY IF EXISTS "Users can update profiles in their tenants" ON profiles;
 create policy "Users can update profiles in their tenants" on profiles
   for update using (
     tenant_id in (
@@ -2828,6 +2910,7 @@ create policy "Users can update profiles in their tenants" on profiles
     )
   );
 
+DROP POLICY IF EXISTS "Users can insert profiles in their tenants" ON profiles;
 create policy "Users can insert profiles in their tenants" on profiles
   for insert with check (
     tenant_id in (
@@ -2836,6 +2919,7 @@ create policy "Users can insert profiles in their tenants" on profiles
     )
   );
 
+DROP POLICY IF EXISTS "Users can view pantry items in their tenants" ON pantry_items;
 create policy "Users can view pantry items in their tenants" on pantry_items
   for select using (
     tenant_id in (
@@ -2844,6 +2928,7 @@ create policy "Users can view pantry items in their tenants" on pantry_items
     )
   );
 
+DROP POLICY IF EXISTS "Users can insert pantry items in their tenants" ON pantry_items;
 create policy "Users can insert pantry items in their tenants" on pantry_items
   for insert with check (
     tenant_id in (
@@ -2852,6 +2937,7 @@ create policy "Users can insert pantry items in their tenants" on pantry_items
     )
   );
 
+DROP POLICY IF EXISTS "Users can update pantry items in their tenants" ON pantry_items;
 create policy "Users can update pantry items in their tenants" on pantry_items
   for update using (
     tenant_id in (
@@ -2860,6 +2946,7 @@ create policy "Users can update pantry items in their tenants" on pantry_items
     )
   );
 
+DROP POLICY IF EXISTS "Users can delete pantry items in their tenants" ON pantry_items;
 create policy "Users can delete pantry items in their tenants" on pantry_items
   for delete using (
     tenant_id in (
@@ -2868,6 +2955,7 @@ create policy "Users can delete pantry items in their tenants" on pantry_items
     )
   );
 
+DROP POLICY IF EXISTS "Users can view recipes in their tenants" ON recipes;
 create policy "Users can view recipes in their tenants" on recipes
   for select using (
     tenant_id in (
@@ -2876,6 +2964,7 @@ create policy "Users can view recipes in their tenants" on recipes
     )
   );
 
+DROP POLICY IF EXISTS "Users can insert recipes in their tenants" ON recipes;
 create policy "Users can insert recipes in their tenants" on recipes
   for insert with check (
     tenant_id in (
@@ -2884,6 +2973,7 @@ create policy "Users can insert recipes in their tenants" on recipes
     )
   );
 
+DROP POLICY IF EXISTS "Users can update recipes in their tenants" ON recipes;
 create policy "Users can update recipes in their tenants" on recipes
   for update using (
     tenant_id in (
@@ -2892,6 +2982,7 @@ create policy "Users can update recipes in their tenants" on recipes
     )
   );
 
+DROP POLICY IF EXISTS "Users can delete recipes in their tenants" ON recipes;
 create policy "Users can delete recipes in their tenants" on recipes
   for delete using (
     tenant_id in (
@@ -2900,6 +2991,7 @@ create policy "Users can delete recipes in their tenants" on recipes
     )
   );
 
+DROP POLICY IF EXISTS "Users can view favorites in their tenants" ON favorites;
 create policy "Users can view favorites in their tenants" on favorites
   for select using (
     tenant_id in (
@@ -2908,6 +3000,7 @@ create policy "Users can view favorites in their tenants" on favorites
     )
   );
 
+DROP POLICY IF EXISTS "Users can insert favorites in their tenants" ON favorites;
 create policy "Users can insert favorites in their tenants" on favorites
   for insert with check (
     tenant_id in (
@@ -2916,6 +3009,7 @@ create policy "Users can insert favorites in their tenants" on favorites
     )
   );
 
+DROP POLICY IF EXISTS "Users can delete favorites in their tenants" ON favorites;
 create policy "Users can delete favorites in their tenants" on favorites
   for delete using (
     tenant_id in (
@@ -2928,6 +3022,7 @@ create policy "Users can delete favorites in their tenants" on favorites
 drop policy if exists "Users can view own analytics events" on analytics_events;
 drop policy if exists "System can insert analytics events" on analytics_events;
 
+DROP POLICY IF EXISTS "Users can view analytics events in their tenants" ON analytics_events;
 create policy "Users can view analytics events in their tenants" on analytics_events
   for select using (
     tenant_id in (
@@ -2943,6 +3038,7 @@ create policy "System can insert analytics events" on analytics_events
 drop policy if exists "Users can view own recipe metrics" on recipe_metrics;
 drop policy if exists "System can insert recipe metrics" on recipe_metrics;
 
+DROP POLICY IF EXISTS "Users can view recipe metrics in their tenants" ON recipe_metrics;
 create policy "Users can view recipe metrics in their tenants" on recipe_metrics
   for select using (
     tenant_id in (
@@ -2959,6 +3055,7 @@ drop policy if exists "Users can view own recipe feedback" on recipe_feedback;
 drop policy if exists "Users can insert own recipe feedback" on recipe_feedback;
 drop policy if exists "Users can update own recipe feedback" on recipe_feedback;
 
+DROP POLICY IF EXISTS "Users can view recipe feedback in their tenants" ON recipe_feedback;
 create policy "Users can view recipe feedback in their tenants" on recipe_feedback
   for select using (
     tenant_id in (
@@ -2967,6 +3064,7 @@ create policy "Users can view recipe feedback in their tenants" on recipe_feedba
     )
   );
 
+DROP POLICY IF EXISTS "Users can insert recipe feedback in their tenants" ON recipe_feedback;
 create policy "Users can insert recipe feedback in their tenants" on recipe_feedback
   for insert with check (
     tenant_id in (
@@ -2975,6 +3073,7 @@ create policy "Users can insert recipe feedback in their tenants" on recipe_feed
     )
   );
 
+DROP POLICY IF EXISTS "Users can update recipe feedback in their tenants" ON recipe_feedback;
 create policy "Users can update recipe feedback in their tenants" on recipe_feedback
   for update using (
     tenant_id in (
@@ -3221,84 +3320,108 @@ GRANT USAGE ON SCHEMA public TO app_readonly;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO app_readonly;
 
 -- RLS Policies for users table
+DROP POLICY IF EXISTS "Users can view own profile" ON public;
 CREATE POLICY "Users can view own profile" ON public.users
     FOR SELECT USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON public;
 CREATE POLICY "Users can update own profile" ON public.users
     FOR UPDATE USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can insert own profile" ON public;
 CREATE POLICY "Users can insert own profile" ON public.users
     FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- RLS Policies for recipes table
+DROP POLICY IF EXISTS "Users can view own recipes" ON public;
 CREATE POLICY "Users can view own recipes" ON public.recipes
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own recipes" ON public;
 CREATE POLICY "Users can insert own recipes" ON public.recipes
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own recipes" ON public;
 CREATE POLICY "Users can update own recipes" ON public.recipes
     FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own recipes" ON public;
 CREATE POLICY "Users can delete own recipes" ON public.recipes
     FOR DELETE USING (auth.uid() = user_id);
 
 -- RLS Policies for pantry_items table
+DROP POLICY IF EXISTS "Users can view own pantry items" ON public;
 CREATE POLICY "Users can view own pantry items" ON public.pantry_items
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own pantry items" ON public;
 CREATE POLICY "Users can insert own pantry items" ON public.pantry_items
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own pantry items" ON public;
 CREATE POLICY "Users can update own pantry items" ON public.pantry_items
     FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own pantry items" ON public;
 CREATE POLICY "Users can delete own pantry items" ON public.pantry_items
     FOR DELETE USING (auth.uid() = user_id);
 
 -- RLS Policies for favorites table
+DROP POLICY IF EXISTS "Users can view own favorites" ON public;
 CREATE POLICY "Users can view own favorites" ON public.favorites
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own favorites" ON public;
 CREATE POLICY "Users can insert own favorites" ON public.favorites
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own favorites" ON public;
 CREATE POLICY "Users can delete own favorites" ON public.favorites
     FOR DELETE USING (auth.uid() = user_id);
 
 -- RLS Policies for tenant_usage table
+DROP POLICY IF EXISTS "Users can view own tenant usage" ON public;
 CREATE POLICY "Users can view own tenant usage" ON public.tenant_usage
     FOR SELECT USING (auth.uid() = user_id);
 
 -- RLS Policies for tenant_settings table
+DROP POLICY IF EXISTS "Users can view own tenant settings" ON public;
 CREATE POLICY "Users can view own tenant settings" ON public.tenant_settings
     FOR SELECT USING (auth.uid() = user_id);
 
 -- RLS Policies for audit_logs table
+DROP POLICY IF EXISTS "Users can view own audit logs" ON public;
 CREATE POLICY "Users can view own audit logs" ON public.audit_logs
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "System can insert audit logs" ON public;
 CREATE POLICY "System can insert audit logs" ON public.audit_logs
     FOR INSERT WITH CHECK (true);
 
 -- RLS Policies for api_keys table
+DROP POLICY IF EXISTS "Users can view own API keys" ON public;
 CREATE POLICY "Users can view own API keys" ON public.api_keys
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own API keys" ON public;
 CREATE POLICY "Users can insert own API keys" ON public.api_keys
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own API keys" ON public;
 CREATE POLICY "Users can update own API keys" ON public.api_keys
     FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own API keys" ON public;
 CREATE POLICY "Users can delete own API keys" ON public.api_keys
     FOR DELETE USING (auth.uid() = user_id);
 
 -- RLS Policies for billing_events table
+DROP POLICY IF EXISTS "Users can view own billing events" ON public;
 CREATE POLICY "Users can view own billing events" ON public.billing_events
     FOR SELECT USING (auth.uid() = user_id);
 
 -- Admin policies (for app_admin role)
+DROP POLICY IF EXISTS "Admins can view all users" ON public;
 CREATE POLICY "Admins can view all users" ON public.users
     FOR SELECT USING (
         EXISTS (
@@ -3308,6 +3431,7 @@ CREATE POLICY "Admins can view all users" ON public.users
         )
     );
 
+DROP POLICY IF EXISTS "Admins can view all recipes" ON public;
 CREATE POLICY "Admins can view all recipes" ON public.recipes
     FOR SELECT USING (
         EXISTS (
@@ -3317,6 +3441,7 @@ CREATE POLICY "Admins can view all recipes" ON public.recipes
         )
     );
 
+DROP POLICY IF EXISTS "Admins can view all pantry items" ON public;
 CREATE POLICY "Admins can view all pantry items" ON public.pantry_items
     FOR SELECT USING (
         EXISTS (
@@ -3326,6 +3451,7 @@ CREATE POLICY "Admins can view all pantry items" ON public.pantry_items
         )
     );
 
+DROP POLICY IF EXISTS "Admins can view all audit logs" ON public;
 CREATE POLICY "Admins can view all audit logs" ON public.audit_logs
     FOR SELECT USING (
         EXISTS (
@@ -3336,6 +3462,7 @@ CREATE POLICY "Admins can view all audit logs" ON public.audit_logs
     );
 
 -- Super admin policies (for app_super_admin role)
+DROP POLICY IF EXISTS "Super admins can do everything" ON public;
 CREATE POLICY "Super admins can do everything" ON public.users
     FOR ALL USING (
         EXISTS (
@@ -3860,6 +3987,7 @@ alter table churn_predictions enable row level security;
 alter table winback_campaigns enable row level security;
 
 -- RLS Policies for growth_metrics
+DROP POLICY IF EXISTS "Users can view growth metrics for their tenants" ON growth_metrics;
 create policy "Users can view growth metrics for their tenants" on growth_metrics
   for select using (
     tenant_id in (
@@ -3868,51 +3996,65 @@ create policy "Users can view growth metrics for their tenants" on growth_metric
     )
   );
 
+DROP POLICY IF EXISTS "System can manage growth metrics" ON growth_metrics;
 create policy "System can manage growth metrics" on growth_metrics
   for all using (true);
 
 -- RLS Policies for referrals
+DROP POLICY IF EXISTS "Users can view their own referrals" ON referrals;
 create policy "Users can view their own referrals" on referrals
   for select using (referrer_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can create referrals" ON referrals;
 create policy "Users can create referrals" on referrals
   for insert with check (referrer_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can update their own referrals" ON referrals;
 create policy "Users can update their own referrals" on referrals
   for update using (referrer_id = auth.uid());
 
 -- RLS Policies for funnel_events
+DROP POLICY IF EXISTS "Users can view their own funnel events" ON funnel_events;
 create policy "Users can view their own funnel events" on funnel_events
   for select using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "System can insert funnel events" ON funnel_events;
 create policy "System can insert funnel events" on funnel_events
   for insert with check (true);
 
 -- RLS Policies for ab_test_assignments
+DROP POLICY IF EXISTS "Users can view their own test assignments" ON ab_test_assignments;
 create policy "Users can view their own test assignments" on ab_test_assignments
   for select using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "System can manage test assignments" ON ab_test_assignments;
 create policy "System can manage test assignments" on ab_test_assignments
   for all using (true);
 
 -- RLS Policies for ugc_shares
+DROP POLICY IF EXISTS "Users can view their own shares" ON ugc_shares;
 create policy "Users can view their own shares" on ugc_shares
   for select using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can create shares" ON ugc_shares;
 create policy "Users can create shares" on ugc_shares
   for insert with check (user_id = auth.uid());
 
 -- RLS Policies for churn_predictions
+DROP POLICY IF EXISTS "Users can view their own churn predictions" ON churn_predictions;
 create policy "Users can view their own churn predictions" on churn_predictions
   for select using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "System can manage churn predictions" ON churn_predictions;
 create policy "System can manage churn predictions" on churn_predictions
   for all using (true);
 
 -- RLS Policies for winback_campaigns
+DROP POLICY IF EXISTS "Users can view their own winback campaigns" ON winback_campaigns;
 create policy "Users can view their own winback campaigns" on winback_campaigns
   for select using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "System can manage winback campaigns" ON winback_campaigns;
 create policy "System can manage winback campaigns" on winback_campaigns
   for all using (true);
 
@@ -4348,20 +4490,25 @@ alter table developer_portal_sessions enable row level security;
 alter table sdk_downloads enable row level security;
 
 -- RLS Policies for partner_registry
+DROP POLICY IF EXISTS "Partners can view their own registry" ON partner_registry;
 create policy "Partners can view their own registry" on partner_registry
   for select using (true); -- Public read for discovery
 
+DROP POLICY IF EXISTS "System can manage partner registry" ON partner_registry;
 create policy "System can manage partner registry" on partner_registry
   for all using (true);
 
 -- RLS Policies for federated_api_endpoints
+DROP POLICY IF EXISTS "Public can view active endpoints" ON federated_api_endpoints;
 create policy "Public can view active endpoints" on federated_api_endpoints
   for select using (is_active = true);
 
+DROP POLICY IF EXISTS "System can manage endpoints" ON federated_api_endpoints;
 create policy "System can manage endpoints" on federated_api_endpoints
   for all using (true);
 
 -- RLS Policies for api_usage_tracking
+DROP POLICY IF EXISTS "Tenants can view their usage" ON api_usage_tracking;
 create policy "Tenants can view their usage" on api_usage_tracking
   for select using (
     tenant_id in (
@@ -4370,17 +4517,21 @@ create policy "Tenants can view their usage" on api_usage_tracking
     )
   );
 
+DROP POLICY IF EXISTS "System can manage usage tracking" ON api_usage_tracking;
 create policy "System can manage usage tracking" on api_usage_tracking
   for all using (true);
 
 -- RLS Policies for ai_model_advisor
+DROP POLICY IF EXISTS "Public can view model advisor" ON ai_model_advisor;
 create policy "Public can view model advisor" on ai_model_advisor
   for select using (is_active = true);
 
+DROP POLICY IF EXISTS "System can manage model advisor" ON ai_model_advisor;
 create policy "System can manage model advisor" on ai_model_advisor
   for all using (true);
 
 -- RLS Policies for ai_evolution_logs
+DROP POLICY IF EXISTS "Tenants can view their evolution logs" ON ai_evolution_logs;
 create policy "Tenants can view their evolution logs" on ai_evolution_logs
   for select using (
     tenant_id in (
@@ -4389,10 +4540,12 @@ create policy "Tenants can view their evolution logs" on ai_evolution_logs
     )
   );
 
+DROP POLICY IF EXISTS "System can manage evolution logs" ON ai_evolution_logs;
 create policy "System can manage evolution logs" on ai_evolution_logs
   for all using (true);
 
 -- RLS Policies for franchise_deployments
+DROP POLICY IF EXISTS "Franchise owners can view their deployments" ON franchise_deployments;
 create policy "Franchise owners can view their deployments" on franchise_deployments
   for select using (
     tenant_id in (
@@ -4401,10 +4554,12 @@ create policy "Franchise owners can view their deployments" on franchise_deploym
     )
   );
 
+DROP POLICY IF EXISTS "System can manage franchise deployments" ON franchise_deployments;
 create policy "System can manage franchise deployments" on franchise_deployments
   for all using (true);
 
 -- RLS Policies for compliance_audit_logs
+DROP POLICY IF EXISTS "Tenants can view their audit logs" ON compliance_audit_logs;
 create policy "Tenants can view their audit logs" on compliance_audit_logs
   for select using (
     tenant_id in (
@@ -4413,10 +4568,12 @@ create policy "Tenants can view their audit logs" on compliance_audit_logs
     )
   );
 
+DROP POLICY IF EXISTS "System can manage audit logs" ON compliance_audit_logs;
 create policy "System can manage audit logs" on compliance_audit_logs
   for all using (true);
 
 -- RLS Policies for anomaly_detections
+DROP POLICY IF EXISTS "Tenants can view their anomalies" ON anomaly_detections;
 create policy "Tenants can view their anomalies" on anomaly_detections
   for select using (
     tenant_id in (
@@ -4425,20 +4582,25 @@ create policy "Tenants can view their anomalies" on anomaly_detections
     )
   );
 
+DROP POLICY IF EXISTS "System can manage anomalies" ON anomaly_detections;
 create policy "System can manage anomalies" on anomaly_detections
   for all using (true);
 
 -- RLS Policies for developer_portal_sessions
+DROP POLICY IF EXISTS "Developers can view their sessions" ON developer_portal_sessions;
 create policy "Developers can view their sessions" on developer_portal_sessions
   for select using (developer_id = auth.uid());
 
+DROP POLICY IF EXISTS "Developers can manage their sessions" ON developer_portal_sessions;
 create policy "Developers can manage their sessions" on developer_portal_sessions
   for all using (developer_id = auth.uid());
 
 -- RLS Policies for sdk_downloads
+DROP POLICY IF EXISTS "Developers can view their downloads" ON sdk_downloads;
 create policy "Developers can view their downloads" on sdk_downloads
   for select using (developer_id = auth.uid());
 
+DROP POLICY IF EXISTS "System can manage downloads" ON sdk_downloads;
 create policy "System can manage downloads" on sdk_downloads
   for all using (true);
 
@@ -4760,6 +4922,7 @@ alter table job_results enable row level security;
 alter table job_logs enable row level security;
 
 -- RLS Policies for jobs_queue
+DROP POLICY IF EXISTS "Users can view jobs in their tenants" ON jobs_queue;
 create policy "Users can view jobs in their tenants" on jobs_queue
   for select using (
     tenant_id in (
@@ -4768,10 +4931,12 @@ create policy "Users can view jobs in their tenants" on jobs_queue
     )
   );
 
+DROP POLICY IF EXISTS "System can manage all jobs" ON jobs_queue;
 create policy "System can manage all jobs" on jobs_queue
   for all using (true);
 
 -- RLS Policies for job_results
+DROP POLICY IF EXISTS "Users can view job results in their tenants" ON job_results;
 create policy "Users can view job results in their tenants" on job_results
   for select using (
     job_id in (
@@ -4783,10 +4948,12 @@ create policy "Users can view job results in their tenants" on job_results
     )
   );
 
+DROP POLICY IF EXISTS "System can manage job results" ON job_results;
 create policy "System can manage job results" on job_results
   for all using (true);
 
 -- RLS Policies for job_logs
+DROP POLICY IF EXISTS "Users can view job logs in their tenants" ON job_logs;
 create policy "Users can view job logs in their tenants" on job_logs
   for select using (
     job_id in (
@@ -4798,6 +4965,7 @@ create policy "Users can view job logs in their tenants" on job_logs
     )
   );
 
+DROP POLICY IF EXISTS "System can manage job logs" ON job_logs;
 create policy "System can manage job logs" on job_logs
   for all using (true);
 
@@ -6025,10 +6193,12 @@ ALTER TABLE admin_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE admin_audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- Admin users can only see their own records
+DROP POLICY IF EXISTS "Admin users can view own records" ON admin_users;
 CREATE POLICY "Admin users can view own records" ON admin_users
     FOR SELECT USING (auth.uid() = user_id);
 
 -- Super admins can see all admin users
+DROP POLICY IF EXISTS "Super admins can view all admin users" ON admin_users;
 CREATE POLICY "Super admins can view all admin users" ON admin_users
     FOR SELECT USING (
         EXISTS (
@@ -6038,10 +6208,12 @@ CREATE POLICY "Super admins can view all admin users" ON admin_users
     );
 
 -- Admin users can update their own records
+DROP POLICY IF EXISTS "Admin users can update own records" ON admin_users;
 CREATE POLICY "Admin users can update own records" ON admin_users
     FOR UPDATE USING (auth.uid() = user_id);
 
 -- Super admins can manage all admin users
+DROP POLICY IF EXISTS "Super admins can manage all admin users" ON admin_users;
 CREATE POLICY "Super admins can manage all admin users" ON admin_users
     FOR ALL USING (
         EXISTS (
@@ -6051,6 +6223,7 @@ CREATE POLICY "Super admins can manage all admin users" ON admin_users
     );
 
 -- Admin sessions are private to the admin user
+DROP POLICY IF EXISTS "Admin sessions are private" ON admin_sessions;
 CREATE POLICY "Admin sessions are private" ON admin_sessions
     FOR ALL USING (
         admin_user_id IN (
@@ -6059,6 +6232,7 @@ CREATE POLICY "Admin sessions are private" ON admin_sessions
     );
 
 -- Audit logs are readable by admins
+DROP POLICY IF EXISTS "Admins can view audit logs" ON admin_audit_logs;
 CREATE POLICY "Admins can view audit logs" ON admin_audit_logs
     FOR SELECT USING (
         EXISTS (
@@ -6356,99 +6530,128 @@ alter table community_events enable row level security;
 alter table community_event_submissions enable row level security;
 
 -- RLS Policies for community_posts
+DROP POLICY IF EXISTS "Anyone can view published posts" ON community_posts;
 create policy "Anyone can view published posts" on community_posts
   for select using (status = 'published');
 
+DROP POLICY IF EXISTS "Users can view their own posts" ON community_posts;
 create policy "Users can view their own posts" on community_posts
   for select using (auth.uid() = author_id);
 
+DROP POLICY IF EXISTS "Users can create posts" ON community_posts;
 create policy "Users can create posts" on community_posts
   for insert with check (auth.uid() = author_id);
 
+DROP POLICY IF EXISTS "Users can update their own posts" ON community_posts;
 create policy "Users can update their own posts" on community_posts
   for update using (auth.uid() = author_id);
 
+DROP POLICY IF EXISTS "Users can delete their own posts" ON community_posts;
 create policy "Users can delete their own posts" on community_posts
   for delete using (auth.uid() = author_id);
 
 -- RLS Policies for community_votes
+DROP POLICY IF EXISTS "Users can view votes" ON community_votes;
 create policy "Users can view votes" on community_votes
   for select using (true);
 
+DROP POLICY IF EXISTS "Users can create votes" ON community_votes;
 create policy "Users can create votes" on community_votes
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own votes" ON community_votes;
 create policy "Users can update their own votes" on community_votes
   for update using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete their own votes" ON community_votes;
 create policy "Users can delete their own votes" on community_votes
   for delete using (auth.uid() = user_id);
 
 -- RLS Policies for community_comments
+DROP POLICY IF EXISTS "Anyone can view approved comments" ON community_comments;
 create policy "Anyone can view approved comments" on community_comments
   for select using (is_approved = true);
 
+DROP POLICY IF EXISTS "Users can view their own comments" ON community_comments;
 create policy "Users can view their own comments" on community_comments
   for select using (auth.uid() = author_id);
 
+DROP POLICY IF EXISTS "Users can create comments" ON community_comments;
 create policy "Users can create comments" on community_comments
   for insert with check (auth.uid() = author_id);
 
+DROP POLICY IF EXISTS "Users can update their own comments" ON community_comments;
 create policy "Users can update their own comments" on community_comments
   for update using (auth.uid() = author_id);
 
+DROP POLICY IF EXISTS "Users can delete their own comments" ON community_comments;
 create policy "Users can delete their own comments" on community_comments
   for delete using (auth.uid() = author_id);
 
 -- RLS Policies for community_follows
+DROP POLICY IF EXISTS "Users can view follows" ON community_follows;
 create policy "Users can view follows" on community_follows
   for select using (true);
 
+DROP POLICY IF EXISTS "Users can create follows" ON community_follows;
 create policy "Users can create follows" on community_follows
   for insert with check (auth.uid() = follower_id);
 
+DROP POLICY IF EXISTS "Users can delete their own follows" ON community_follows;
 create policy "Users can delete their own follows" on community_follows
   for delete using (auth.uid() = follower_id);
 
 -- RLS Policies for community_bookmarks
+DROP POLICY IF EXISTS "Users can view their own bookmarks" ON community_bookmarks;
 create policy "Users can view their own bookmarks" on community_bookmarks
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create bookmarks" ON community_bookmarks;
 create policy "Users can create bookmarks" on community_bookmarks
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete their own bookmarks" ON community_bookmarks;
 create policy "Users can delete their own bookmarks" on community_bookmarks
   for delete using (auth.uid() = user_id);
 
 -- RLS Policies for community_reports
+DROP POLICY IF EXISTS "Users can create reports" ON community_reports;
 create policy "Users can create reports" on community_reports
   for insert with check (auth.uid() = reporter_id);
 
+DROP POLICY IF EXISTS "Users can view their own reports" ON community_reports;
 create policy "Users can view their own reports" on community_reports
   for select using (auth.uid() = reporter_id);
 
 -- RLS Policies for community_achievements
+DROP POLICY IF EXISTS "Users can view their own achievements" ON community_achievements;
 create policy "Users can view their own achievements" on community_achievements
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Anyone can view public achievements" ON community_achievements;
 create policy "Anyone can view public achievements" on community_achievements
   for select using (true);
 
 -- RLS Policies for community_leaderboard
+DROP POLICY IF EXISTS "Anyone can view leaderboard" ON community_leaderboard;
 create policy "Anyone can view leaderboard" on community_leaderboard
   for select using (true);
 
 -- RLS Policies for community_events
+DROP POLICY IF EXISTS "Anyone can view active events" ON community_events;
 create policy "Anyone can view active events" on community_events
   for select using (status in ('upcoming', 'active'));
 
+DROP POLICY IF EXISTS "Users can create events" ON community_events;
 create policy "Users can create events" on community_events
   for insert with check (auth.uid() = created_by);
 
 -- RLS Policies for community_event_submissions
+DROP POLICY IF EXISTS "Users can view their own submissions" ON community_event_submissions;
 create policy "Users can view their own submissions" on community_event_submissions
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create submissions" ON community_event_submissions;
 create policy "Users can create submissions" on community_event_submissions
   for insert with check (auth.uid() = user_id);
 
@@ -6861,90 +7064,111 @@ alter table chef_notifications enable row level security;
 alter table chef_verification_documents enable row level security;
 
 -- RLS Policies for chef_profiles
+DROP POLICY IF EXISTS "Anyone can view approved chef profiles" ON chef_profiles;
 create policy "Anyone can view approved chef profiles" on chef_profiles
   for select using (status = 'approved');
 
+DROP POLICY IF EXISTS "Users can view their own chef profile" ON chef_profiles;
 create policy "Users can view their own chef profile" on chef_profiles
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create chef profile" ON chef_profiles;
 create policy "Users can create chef profile" on chef_profiles
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own chef profile" ON chef_profiles;
 create policy "Users can update their own chef profile" on chef_profiles
   for update using (auth.uid() = user_id);
 
 -- RLS Policies for recipe_packs
+DROP POLICY IF EXISTS "Anyone can view published recipe packs" ON recipe_packs;
 create policy "Anyone can view published recipe packs" on recipe_packs
   for select using (is_published = true);
 
+DROP POLICY IF EXISTS "Chefs can view their own recipe packs" ON recipe_packs;
 create policy "Chefs can view their own recipe packs" on recipe_packs
   for select using (
     chef_id in (select id from chef_profiles where user_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Chefs can create recipe packs" ON recipe_packs;
 create policy "Chefs can create recipe packs" on recipe_packs
   for insert with check (
     chef_id in (select id from chef_profiles where user_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Chefs can update their own recipe packs" ON recipe_packs;
 create policy "Chefs can update their own recipe packs" on recipe_packs
   for update using (
     chef_id in (select id from chef_profiles where user_id = auth.uid())
   );
 
 -- RLS Policies for recipe_pack_reviews
+DROP POLICY IF EXISTS "Anyone can view reviews" ON recipe_pack_reviews;
 create policy "Anyone can view reviews" on recipe_pack_reviews
   for select using (true);
 
+DROP POLICY IF EXISTS "Users can create reviews" ON recipe_pack_reviews;
 create policy "Users can create reviews" on recipe_pack_reviews
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own reviews" ON recipe_pack_reviews;
 create policy "Users can update their own reviews" on recipe_pack_reviews
   for update using (auth.uid() = user_id);
 
 -- RLS Policies for chef_offers
+DROP POLICY IF EXISTS "Anyone can view active offers" ON chef_offers;
 create policy "Anyone can view active offers" on chef_offers
   for select using (is_active = true and valid_until > now());
 
+DROP POLICY IF EXISTS "Chefs can manage their offers" ON chef_offers;
 create policy "Chefs can manage their offers" on chef_offers
   for all using (
     chef_id in (select id from chef_profiles where user_id = auth.uid())
   );
 
 -- RLS Policies for chef_analytics
+DROP POLICY IF EXISTS "Chefs can view their analytics" ON chef_analytics;
 create policy "Chefs can view their analytics" on chef_analytics
   for select using (
     chef_id in (select id from chef_profiles where user_id = auth.uid())
   );
 
 -- RLS Policies for chef_earnings
+DROP POLICY IF EXISTS "Chefs can view their earnings" ON chef_earnings;
 create policy "Chefs can view their earnings" on chef_earnings
   for select using (
     chef_id in (select id from chef_profiles where user_id = auth.uid())
   );
 
 -- RLS Policies for chef_followers
+DROP POLICY IF EXISTS "Anyone can view followers" ON chef_followers;
 create policy "Anyone can view followers" on chef_followers
   for select using (true);
 
+DROP POLICY IF EXISTS "Users can follow chefs" ON chef_followers;
 create policy "Users can follow chefs" on chef_followers
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can unfollow chefs" ON chef_followers;
 create policy "Users can unfollow chefs" on chef_followers
   for delete using (auth.uid() = user_id);
 
 -- RLS Policies for chef_notifications
+DROP POLICY IF EXISTS "Chefs can view their notifications" ON chef_notifications;
 create policy "Chefs can view their notifications" on chef_notifications
   for select using (
     chef_id in (select id from chef_profiles where user_id = auth.uid())
   );
 
 -- RLS Policies for chef_verification_documents
+DROP POLICY IF EXISTS "Chefs can view their verification documents" ON chef_verification_documents;
 create policy "Chefs can view their verification documents" on chef_verification_documents
   for select using (
     chef_id in (select id from chef_profiles where user_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Chefs can upload verification documents" ON chef_verification_documents;
 create policy "Chefs can upload verification documents" on chef_verification_documents
   for insert with check (
     chef_id in (select id from chef_profiles where user_id = auth.uid())
@@ -7256,65 +7480,83 @@ alter table referral_rewards enable row level security;
 alter table social_widgets enable row level security;
 
 -- RLS Policies for referral_codes
+DROP POLICY IF EXISTS "Users can view their own referral codes" ON referral_codes;
 create policy "Users can view their own referral codes" on referral_codes
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create referral codes" ON referral_codes;
 create policy "Users can create referral codes" on referral_codes
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own referral codes" ON referral_codes;
 create policy "Users can update their own referral codes" on referral_codes
   for update using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Anyone can view active referral codes" ON referral_codes;
 create policy "Anyone can view active referral codes" on referral_codes
   for select using (is_active = true);
 
 -- RLS Policies for referral_tracking
+DROP POLICY IF EXISTS "Users can view their referral tracking" ON referral_tracking;
 create policy "Users can view their referral tracking" on referral_tracking
   for select using (auth.uid() = referrer_id or auth.uid() = referred_id);
 
+DROP POLICY IF EXISTS "System can create referral tracking" ON referral_tracking;
 create policy "System can create referral tracking" on referral_tracking
   for insert with check (true);
 
 -- RLS Policies for social_shares
+DROP POLICY IF EXISTS "Users can view their own shares" ON social_shares;
 create policy "Users can view their own shares" on social_shares
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create shares" ON social_shares;
 create policy "Users can create shares" on social_shares
   for insert with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Anyone can view public shares" ON social_shares;
 create policy "Anyone can view public shares" on social_shares
   for select using (true);
 
 -- RLS Policies for viral_campaigns
+DROP POLICY IF EXISTS "Anyone can view active campaigns" ON viral_campaigns;
 create policy "Anyone can view active campaigns" on viral_campaigns
   for select using (is_active = true and end_date > now());
 
+DROP POLICY IF EXISTS "Users can create campaigns" ON viral_campaigns;
 create policy "Users can create campaigns" on viral_campaigns
   for insert with check (auth.uid() = created_by);
 
 -- RLS Policies for user_badges
+DROP POLICY IF EXISTS "Users can view their own badges" ON user_badges;
 create policy "Users can view their own badges" on user_badges
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Anyone can view public badges" ON user_badges;
 create policy "Anyone can view public badges" on user_badges
   for select using (true);
 
 -- RLS Policies for social_leaderboard
+DROP POLICY IF EXISTS "Anyone can view leaderboard" ON social_leaderboard;
 create policy "Anyone can view leaderboard" on social_leaderboard
   for select using (true);
 
 -- RLS Policies for social_analytics
+DROP POLICY IF EXISTS "Users can view their analytics" ON social_analytics;
 create policy "Users can view their analytics" on social_analytics
   for select using (auth.uid() = user_id);
 
 -- RLS Policies for referral_rewards
+DROP POLICY IF EXISTS "Users can view their rewards" ON referral_rewards;
 create policy "Users can view their rewards" on referral_rewards
   for select using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can claim their rewards" ON referral_rewards;
 create policy "Users can claim their rewards" on referral_rewards
   for update using (auth.uid() = user_id);
 
 -- RLS Policies for social_widgets
+DROP POLICY IF EXISTS "Anyone can view active widgets" ON social_widgets;
 create policy "Anyone can view active widgets" on social_widgets
   for select using (is_active = true);
 
@@ -7569,23 +7811,28 @@ ALTER TABLE flag_audit_log ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for config_flags
 -- Anonymous users can only read enabled flags (for client-side evaluation)
+DROP POLICY IF EXISTS "Anonymous users can read enabled flags" ON config_flags;
 CREATE POLICY "Anonymous users can read enabled flags" ON config_flags
   FOR SELECT USING (enabled = true AND (expires_at IS NULL OR expires_at > NOW()));
 
 -- Authenticated users can read all flags (for admin interfaces)
+DROP POLICY IF EXISTS "Authenticated users can read all flags" ON config_flags;
 CREATE POLICY "Authenticated users can read all flags" ON config_flags
   FOR SELECT USING (auth.role() = 'authenticated');
 
 -- Service role can do everything (for server-side operations)
+DROP POLICY IF EXISTS "Service role can manage flags" ON config_flags;
 CREATE POLICY "Service role can manage flags" ON config_flags
   FOR ALL USING (auth.role() = 'service_role');
 
 -- RLS Policies for flag_audit_log
 -- Only service role can write to audit log
+DROP POLICY IF EXISTS "Service role can write audit log" ON flag_audit_log;
 CREATE POLICY "Service role can write audit log" ON flag_audit_log
   FOR INSERT WITH CHECK (auth.role() = 'service_role');
 
 -- Authenticated users can read audit log
+DROP POLICY IF EXISTS "Authenticated users can read audit log" ON flag_audit_log;
 CREATE POLICY "Authenticated users can read audit log" ON flag_audit_log
   FOR SELECT USING (auth.role() = 'authenticated');
 
@@ -8016,6 +8263,7 @@ DROP POLICY IF EXISTS "Users can update profiles in their tenants" ON profiles;
 DROP POLICY IF EXISTS "Users can insert profiles in their tenants" ON profiles;
 
 -- Profiles: Users can view/update profiles in their tenants
+DROP POLICY IF EXISTS "profiles_select_tenant" ON profiles;
 CREATE POLICY "profiles_select_tenant" ON profiles
   FOR SELECT
   USING (
@@ -8024,6 +8272,7 @@ CREATE POLICY "profiles_select_tenant" ON profiles
     OR auth.uid() = id    -- Users can always see their own profile
   );
 
+DROP POLICY IF EXISTS "profiles_update_tenant" ON profiles;
 CREATE POLICY "profiles_update_tenant" ON profiles
   FOR UPDATE
   USING (
@@ -8035,6 +8284,7 @@ CREATE POLICY "profiles_update_tenant" ON profiles
     OR auth.uid() = id
   );
 
+DROP POLICY IF EXISTS "profiles_insert_tenant" ON profiles;
 CREATE POLICY "profiles_insert_tenant" ON profiles
   FOR INSERT
   WITH CHECK (
@@ -8052,19 +8302,23 @@ DROP POLICY IF EXISTS "Users can insert pantry items in their tenants" ON pantry
 DROP POLICY IF EXISTS "Users can update pantry items in their tenants" ON pantry_items;
 DROP POLICY IF EXISTS "Users can delete pantry items in their tenants" ON pantry_items;
 
+DROP POLICY IF EXISTS "pantry_items_select_tenant" ON pantry_items;
 CREATE POLICY "pantry_items_select_tenant" ON pantry_items
   FOR SELECT
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "pantry_items_insert_tenant" ON pantry_items;
 CREATE POLICY "pantry_items_insert_tenant" ON pantry_items
   FOR INSERT
   WITH CHECK (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "pantry_items_update_tenant" ON pantry_items;
 CREATE POLICY "pantry_items_update_tenant" ON pantry_items
   FOR UPDATE
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())))
   WITH CHECK (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "pantry_items_delete_tenant" ON pantry_items;
 CREATE POLICY "pantry_items_delete_tenant" ON pantry_items
   FOR DELETE
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
@@ -8079,19 +8333,23 @@ DROP POLICY IF EXISTS "Users can insert recipes in their tenants" ON recipes;
 DROP POLICY IF EXISTS "Users can update recipes in their tenants" ON recipes;
 DROP POLICY IF EXISTS "Users can delete recipes in their tenants" ON recipes;
 
+DROP POLICY IF EXISTS "recipes_select_tenant" ON recipes;
 CREATE POLICY "recipes_select_tenant" ON recipes
   FOR SELECT
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "recipes_insert_tenant" ON recipes;
 CREATE POLICY "recipes_insert_tenant" ON recipes
   FOR INSERT
   WITH CHECK (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "recipes_update_tenant" ON recipes;
 CREATE POLICY "recipes_update_tenant" ON recipes
   FOR UPDATE
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())))
   WITH CHECK (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "recipes_delete_tenant" ON recipes;
 CREATE POLICY "recipes_delete_tenant" ON recipes
   FOR DELETE
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
@@ -8104,14 +8362,17 @@ DROP POLICY IF EXISTS "Users can view favorites in their tenants" ON favorites;
 DROP POLICY IF EXISTS "Users can insert favorites in their tenants" ON favorites;
 DROP POLICY IF EXISTS "Users can delete favorites in their tenants" ON favorites;
 
+DROP POLICY IF EXISTS "favorites_select_tenant" ON favorites;
 CREATE POLICY "favorites_select_tenant" ON favorites
   FOR SELECT
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "favorites_insert_tenant" ON favorites;
 CREATE POLICY "favorites_insert_tenant" ON favorites
   FOR INSERT
   WITH CHECK (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "favorites_delete_tenant" ON favorites;
 CREATE POLICY "favorites_delete_tenant" ON favorites
   FOR DELETE
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
@@ -8121,67 +8382,81 @@ CREATE POLICY "favorites_delete_tenant" ON favorites
 -- ============================================================================
 
 -- Tenants: Users can view their tenants, owners can update
+DROP POLICY IF EXISTS "tenants_select_membership" ON tenants;
 CREATE POLICY "tenants_select_membership" ON tenants
   FOR SELECT
   USING (id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "tenants_update_owner" ON tenants;
 CREATE POLICY "tenants_update_owner" ON tenants
   FOR UPDATE
   USING (is_tenant_owner(auth.uid(), id))
   WITH CHECK (is_tenant_owner(auth.uid(), id));
 
+DROP POLICY IF EXISTS "tenants_insert_system" ON tenants;
 CREATE POLICY "tenants_insert_system" ON tenants
   FOR INSERT
   WITH CHECK (true);  -- Only system can create tenants via function
 
 -- Tenant memberships: Users can view memberships for their tenants
+DROP POLICY IF EXISTS "tenant_memberships_select_tenant" ON tenant_memberships;
 CREATE POLICY "tenant_memberships_select_tenant" ON tenant_memberships
   FOR SELECT
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "tenant_memberships_all_owner" ON tenant_memberships;
 CREATE POLICY "tenant_memberships_all_owner" ON tenant_memberships
   FOR ALL
   USING (is_tenant_owner(auth.uid(), tenant_id))
   WITH CHECK (is_tenant_owner(auth.uid(), tenant_id));
 
 -- Subscriptions: Users can view their tenant subscriptions
+DROP POLICY IF EXISTS "subscriptions_select_tenant" ON subscriptions;
 CREATE POLICY "subscriptions_select_tenant" ON subscriptions
   FOR SELECT
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "subscriptions_all_system" ON subscriptions;
 CREATE POLICY "subscriptions_all_system" ON subscriptions
   FOR ALL
   USING (true);  -- System manages subscriptions via webhooks
 
 -- Usage logs: Users can view their tenant usage
+DROP POLICY IF EXISTS "usage_logs_select_tenant" ON usage_logs;
 CREATE POLICY "usage_logs_select_tenant" ON usage_logs
   FOR SELECT
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "usage_logs_insert_system" ON usage_logs;
 CREATE POLICY "usage_logs_insert_system" ON usage_logs
   FOR INSERT
   WITH CHECK (true);  -- System can insert usage logs
 
 -- Tenant invites: Owners can manage invites
+DROP POLICY IF EXISTS "tenant_invites_select_owner" ON tenant_invites;
 CREATE POLICY "tenant_invites_select_owner" ON tenant_invites
   FOR SELECT
   USING (is_tenant_owner(auth.uid(), tenant_id));
 
+DROP POLICY IF EXISTS "tenant_invites_all_owner" ON tenant_invites;
 CREATE POLICY "tenant_invites_all_owner" ON tenant_invites
   FOR ALL
   USING (is_tenant_owner(auth.uid(), tenant_id))
   WITH CHECK (is_tenant_owner(auth.uid(), tenant_id));
 
 -- AI cache: Users can access cache for their tenants
+DROP POLICY IF EXISTS "ai_cache_select_tenant" ON ai_cache;
 CREATE POLICY "ai_cache_select_tenant" ON ai_cache
   FOR SELECT
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "ai_cache_all_system" ON ai_cache;
 CREATE POLICY "ai_cache_all_system" ON ai_cache
   FOR ALL
   USING (true);  -- System manages cache
 
 -- Billing events: System only
+DROP POLICY IF EXISTS "billing_events_all_system" ON billing_events;
 CREATE POLICY "billing_events_all_system" ON billing_events
   FOR ALL
   USING (true);
@@ -8195,6 +8470,7 @@ DROP POLICY IF EXISTS "Users can view own analytics events" ON analytics_events;
 DROP POLICY IF EXISTS "System can insert analytics events" ON analytics_events;
 DROP POLICY IF EXISTS "Users can view analytics events in their tenants" ON analytics_events;
 
+DROP POLICY IF EXISTS "analytics_events_select_tenant" ON analytics_events;
 CREATE POLICY "analytics_events_select_tenant" ON analytics_events
   FOR SELECT
   USING (
@@ -8202,6 +8478,7 @@ CREATE POLICY "analytics_events_select_tenant" ON analytics_events
     OR tenant_id IS NULL
   );
 
+DROP POLICY IF EXISTS "analytics_events_insert_system" ON analytics_events;
 CREATE POLICY "analytics_events_insert_system" ON analytics_events
   FOR INSERT
   WITH CHECK (true);
@@ -8211,10 +8488,12 @@ DROP POLICY IF EXISTS "Users can view own recipe metrics" ON recipe_metrics;
 DROP POLICY IF EXISTS "System can insert recipe metrics" ON recipe_metrics;
 DROP POLICY IF EXISTS "Users can view recipe metrics in their tenants" ON recipe_metrics;
 
+DROP POLICY IF EXISTS "recipe_metrics_select_tenant" ON recipe_metrics;
 CREATE POLICY "recipe_metrics_select_tenant" ON recipe_metrics
   FOR SELECT
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "recipe_metrics_insert_system" ON recipe_metrics;
 CREATE POLICY "recipe_metrics_insert_system" ON recipe_metrics
   FOR INSERT
   WITH CHECK (true);
@@ -8227,14 +8506,17 @@ DROP POLICY IF EXISTS "Users can view recipe feedback in their tenants" ON recip
 DROP POLICY IF EXISTS "Users can insert recipe feedback in their tenants" ON recipe_feedback;
 DROP POLICY IF EXISTS "Users can update recipe feedback in their tenants" ON recipe_feedback;
 
+DROP POLICY IF EXISTS "recipe_feedback_select_tenant" ON recipe_feedback;
 CREATE POLICY "recipe_feedback_select_tenant" ON recipe_feedback
   FOR SELECT
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "recipe_feedback_insert_tenant" ON recipe_feedback;
 CREATE POLICY "recipe_feedback_insert_tenant" ON recipe_feedback
   FOR INSERT
   WITH CHECK (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "recipe_feedback_update_tenant" ON recipe_feedback;
 CREATE POLICY "recipe_feedback_update_tenant" ON recipe_feedback
   FOR UPDATE
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())))
@@ -8247,17 +8529,20 @@ CREATE POLICY "recipe_feedback_update_tenant" ON recipe_feedback
 -- Super admin can view all (respects RLS but with broader access)
 -- Note: In Supabase, service_role bypasses RLS, but authenticated admin users need explicit policies
 
+DROP POLICY IF EXISTS "admin_profiles_select_all" ON profiles;
 CREATE POLICY "admin_profiles_select_all" ON profiles
   FOR SELECT
   TO app_admin, app_super_admin
   USING (is_admin(auth.uid()));
 
+DROP POLICY IF EXISTS "admin_tenants_select_all" ON tenants;
 CREATE POLICY "admin_tenants_select_all" ON tenants
   FOR SELECT
   TO app_admin, app_super_admin
   USING (is_admin(auth.uid()));
 
 -- Super admin policies (if needed for specific admin operations)
+DROP POLICY IF EXISTS "super_admin_all_profiles" ON profiles;
 CREATE POLICY "super_admin_all_profiles" ON profiles
   FOR ALL
   TO app_super_admin
@@ -8269,11 +8554,13 @@ CREATE POLICY "super_admin_all_profiles" ON profiles
 -- ============================================================================
 
 -- Readonly can view data in their tenants
+DROP POLICY IF EXISTS "readonly_profiles_select" ON profiles;
 CREATE POLICY "readonly_profiles_select" ON profiles
   FOR SELECT
   TO app_readonly
   USING (tenant_id IN (SELECT tenant_id FROM get_user_tenants(auth.uid())));
 
+DROP POLICY IF EXISTS "readonly_tenants_select" ON tenants;
 CREATE POLICY "readonly_tenants_select" ON tenants
   FOR SELECT
   TO app_readonly
@@ -9540,6 +9827,7 @@ ALTER TABLE vanwestendorp_surveys ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ltv_segments ENABLE ROW LEVEL SECURITY;
 
 -- Transactions: Admin can see all, users see only their own aggregated data
+DROP POLICY IF EXISTS "transactions_admin_all" ON transactions;
 CREATE POLICY transactions_admin_all ON transactions
   FOR ALL
   TO authenticated
@@ -9552,11 +9840,13 @@ CREATE POLICY transactions_admin_all ON transactions
   );
 
 -- Revenue snapshots: Only aggregated queries for non-admin
+DROP POLICY IF EXISTS "revenue_snapshots_read" ON revenue_snapshots;
 CREATE POLICY revenue_snapshots_read ON revenue_snapshots
   FOR SELECT
   TO authenticated
   USING (true); -- Allow read, but API should only return aggregated data
 
+DROP POLICY IF EXISTS "revenue_snapshots_admin" ON revenue_snapshots;
 CREATE POLICY revenue_snapshots_admin ON revenue_snapshots
   FOR ALL
   TO authenticated
@@ -9569,6 +9859,7 @@ CREATE POLICY revenue_snapshots_admin ON revenue_snapshots
   );
 
 -- Price experiments: Admin only
+DROP POLICY IF EXISTS "price_experiments_admin" ON price_experiments;
 CREATE POLICY price_experiments_admin ON price_experiments
   FOR ALL
   TO authenticated
@@ -9581,6 +9872,7 @@ CREATE POLICY price_experiments_admin ON price_experiments
   );
 
 -- Elasticity results: Read for premium analytics, write admin only
+DROP POLICY IF EXISTS "elasticity_results_read" ON elasticity_results;
 CREATE POLICY elasticity_results_read ON elasticity_results
   FOR SELECT
   TO authenticated
@@ -9592,6 +9884,7 @@ CREATE POLICY elasticity_results_read ON elasticity_results
     )
   );
 
+DROP POLICY IF EXISTS "elasticity_results_admin" ON elasticity_results;
 CREATE POLICY elasticity_results_admin ON elasticity_results
   FOR ALL
   TO authenticated
@@ -9604,6 +9897,7 @@ CREATE POLICY elasticity_results_admin ON elasticity_results
   );
 
 -- Van Westendorp surveys: Users can insert their own, read aggregated only
+DROP POLICY IF EXISTS "vanwestendorp_surveys_insert" ON vanwestendorp_surveys;
 CREATE POLICY vanwestendorp_surveys_insert ON vanwestendorp_surveys
   FOR INSERT
   TO authenticated
@@ -9611,12 +9905,14 @@ CREATE POLICY vanwestendorp_surveys_insert ON vanwestendorp_surveys
     user_id IS NULL OR user_id = auth.uid()
   );
 
+DROP POLICY IF EXISTS "vanwestendorp_surveys_read_aggregated" ON vanwestendorp_surveys;
 CREATE POLICY vanwestendorp_surveys_read_aggregated ON vanwestendorp_surveys
   FOR SELECT
   TO authenticated
   USING (true); -- Allow read, but API should only return aggregated data
 
 -- LTV segments: Premium analytics can read, admin can write
+DROP POLICY IF EXISTS "ltv_segments_read" ON ltv_segments;
 CREATE POLICY ltv_segments_read ON ltv_segments
   FOR SELECT
   TO authenticated
@@ -9628,6 +9924,7 @@ CREATE POLICY ltv_segments_read ON ltv_segments
     )
   );
 
+DROP POLICY IF EXISTS "ltv_segments_admin" ON ltv_segments;
 CREATE POLICY ltv_segments_admin ON ltv_segments
   FOR ALL
   TO authenticated
@@ -10004,46 +10301,54 @@ CREATE OR REPLACE FUNCTION is_admin() RETURNS boolean AS $$
 $$ LANGUAGE sql STABLE;
 
 -- Partners RLS
+DROP POLICY IF EXISTS "partners_select_own" ON partners;
 CREATE POLICY partners_select_own ON partners
   FOR SELECT
   USING (
     id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "partners_update_own" ON partners;
 CREATE POLICY partners_update_own ON partners
   FOR UPDATE
   USING (
     id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "partners_insert_admin" ON partners;
 CREATE POLICY partners_insert_admin ON partners
   FOR INSERT
   WITH CHECK (is_admin());
 
 -- Partner API keys RLS
+DROP POLICY IF EXISTS "partner_api_keys_select_own" ON partner_api_keys;
 CREATE POLICY partner_api_keys_select_own ON partner_api_keys
   FOR SELECT
   USING (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "partner_api_keys_insert_admin" ON partner_api_keys;
 CREATE POLICY partner_api_keys_insert_admin ON partner_api_keys
   FOR INSERT
   WITH CHECK (is_admin());
 
 -- Catalog feeds RLS
+DROP POLICY IF EXISTS "catalog_feeds_select_own" ON catalog_feeds;
 CREATE POLICY catalog_feeds_select_own ON catalog_feeds
   FOR SELECT
   USING (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "catalog_feeds_insert_own" ON catalog_feeds;
 CREATE POLICY catalog_feeds_insert_own ON catalog_feeds
   FOR INSERT
   WITH CHECK (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "catalog_feeds_update_own" ON catalog_feeds;
 CREATE POLICY catalog_feeds_update_own ON catalog_feeds
   FOR UPDATE
   USING (
@@ -10051,18 +10356,21 @@ CREATE POLICY catalog_feeds_update_own ON catalog_feeds
   );
 
 -- Catalog items RLS
+DROP POLICY IF EXISTS "catalog_items_select_own" ON catalog_items;
 CREATE POLICY catalog_items_select_own ON catalog_items
   FOR SELECT
   USING (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "catalog_items_insert_own" ON catalog_items;
 CREATE POLICY catalog_items_insert_own ON catalog_items
   FOR INSERT
   WITH CHECK (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "catalog_items_update_own" ON catalog_items;
 CREATE POLICY catalog_items_update_own ON catalog_items
   FOR UPDATE
   USING (
@@ -10070,18 +10378,21 @@ CREATE POLICY catalog_items_update_own ON catalog_items
   );
 
 -- Campaigns RLS
+DROP POLICY IF EXISTS "campaigns_select_own" ON campaigns;
 CREATE POLICY campaigns_select_own ON campaigns
   FOR SELECT
   USING (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "campaigns_insert_own" ON campaigns;
 CREATE POLICY campaigns_insert_own ON campaigns
   FOR INSERT
   WITH CHECK (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "campaigns_update_own" ON campaigns;
 CREATE POLICY campaigns_update_own ON campaigns
   FOR UPDATE
   USING (
@@ -10089,6 +10400,7 @@ CREATE POLICY campaigns_update_own ON campaigns
   );
 
 -- Creatives RLS (inherits from campaign partner_id via JOIN)
+DROP POLICY IF EXISTS "creatives_select_own" ON creatives;
 CREATE POLICY creatives_select_own ON creatives
   FOR SELECT
   USING (
@@ -10099,6 +10411,7 @@ CREATE POLICY creatives_select_own ON creatives
     ) OR is_admin()
   );
 
+DROP POLICY IF EXISTS "creatives_insert_own" ON creatives;
 CREATE POLICY creatives_insert_own ON creatives
   FOR INSERT
   WITH CHECK (
@@ -10111,6 +10424,7 @@ CREATE POLICY creatives_insert_own ON creatives
 );
 
 -- Placements RLS (similar to creatives)
+DROP POLICY IF EXISTS "placements_select_own" ON placements;
 CREATE POLICY placements_select_own ON placements
   FOR SELECT
   USING (
@@ -10122,12 +10436,14 @@ CREATE POLICY placements_select_own ON placements
   );
 
 -- Partner links RLS
+DROP POLICY IF EXISTS "partner_links_select_own" ON partner_links;
 CREATE POLICY partner_links_select_own ON partner_links
   FOR SELECT
   USING (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "partner_links_insert_own" ON partner_links;
 CREATE POLICY partner_links_insert_own ON partner_links
   FOR INSERT
   WITH CHECK (
@@ -10136,6 +10452,7 @@ CREATE POLICY partner_links_insert_own ON partner_links
 
 -- Clicks RLS
 -- Partners can see their own clicks; users can see their own clicks
+DROP POLICY IF EXISTS "clicks_select_own" ON clicks;
 CREATE POLICY clicks_select_own ON clicks
   FOR SELECT
   USING (
@@ -10144,17 +10461,20 @@ CREATE POLICY clicks_select_own ON clicks
     OR is_admin()
   );
 
+DROP POLICY IF EXISTS "clicks_insert_public" ON clicks;
 CREATE POLICY clicks_insert_public ON clicks
   FOR INSERT
   WITH CHECK (true); -- Public endpoint for redirect handler
 
 -- Conversions RLS
+DROP POLICY IF EXISTS "conversions_select_own" ON conversions;
 CREATE POLICY conversions_select_own ON conversions
   FOR SELECT
   USING (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "conversions_insert_partner" ON conversions;
 CREATE POLICY conversions_insert_partner ON conversions
   FOR INSERT
   WITH CHECK (
@@ -10162,25 +10482,30 @@ CREATE POLICY conversions_insert_partner ON conversions
   );
 
 -- Payouts RLS
+DROP POLICY IF EXISTS "payouts_select_own" ON payouts;
 CREATE POLICY payouts_select_own ON payouts
   FOR SELECT
   USING (
     partner_id = get_partner_id_from_jwt() OR is_admin()
   );
 
+DROP POLICY IF EXISTS "payouts_insert_admin" ON payouts;
 CREATE POLICY payouts_insert_admin ON payouts
   FOR INSERT
   WITH CHECK (is_admin());
 
+DROP POLICY IF EXISTS "payouts_update_admin" ON payouts;
 CREATE POLICY payouts_update_admin ON payouts
   FOR UPDATE
   USING (is_admin());
 
 -- Fraud signals RLS (admin only)
+DROP POLICY IF EXISTS "fraud_signals_select_admin" ON fraud_signals;
 CREATE POLICY fraud_signals_select_admin ON fraud_signals
   FOR SELECT
   USING (is_admin());
 
+DROP POLICY IF EXISTS "fraud_signals_insert_admin" ON fraud_signals;
 CREATE POLICY fraud_signals_insert_admin ON fraud_signals
   FOR INSERT
   WITH CHECK (is_admin());
@@ -10546,6 +10871,7 @@ CREATE INDEX IF NOT EXISTS idx_regulatory_reports_generated_at ON regulatory_rep
 -- DSAR Requests: Users can read their own requests
 ALTER TABLE dsar_requests ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "dsar_requests_user_select" ON dsar_requests;
 CREATE POLICY dsar_requests_user_select ON dsar_requests
   FOR SELECT
   USING (
@@ -10557,10 +10883,12 @@ CREATE POLICY dsar_requests_user_select ON dsar_requests
     )
   );
 
+DROP POLICY IF EXISTS "dsar_requests_user_insert" ON dsar_requests;
 CREATE POLICY dsar_requests_user_insert ON dsar_requests
   FOR INSERT
   WITH CHECK (true); -- Anyone can submit DSAR
 
+DROP POLICY IF EXISTS "dsar_requests_admin_update" ON dsar_requests;
 CREATE POLICY dsar_requests_admin_update ON dsar_requests
   FOR UPDATE
   USING (
@@ -10574,6 +10902,7 @@ CREATE POLICY dsar_requests_admin_update ON dsar_requests
 -- DSAR Artifacts: Users can read their own artifacts
 ALTER TABLE dsar_artifacts ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "dsar_artifacts_user_select" ON dsar_artifacts;
 CREATE POLICY dsar_artifacts_user_select ON dsar_artifacts
   FOR SELECT
   USING (
@@ -10592,6 +10921,7 @@ CREATE POLICY dsar_artifacts_user_select ON dsar_artifacts
 -- Control Evidence: Read-only for auditors and admins
 ALTER TABLE control_evidence ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "control_evidence_read" ON control_evidence;
 CREATE POLICY control_evidence_read ON control_evidence
   FOR SELECT
   USING (
@@ -10605,6 +10935,7 @@ CREATE POLICY control_evidence_read ON control_evidence
 -- Processing Activities: Read-only for auditors, full access for privacy officer
 ALTER TABLE processing_activities ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "processing_activities_read" ON processing_activities;
 CREATE POLICY processing_activities_read ON processing_activities
   FOR SELECT
   USING (
@@ -10615,6 +10946,7 @@ CREATE POLICY processing_activities_read ON processing_activities
     )
   );
 
+DROP POLICY IF EXISTS "processing_activities_modify" ON processing_activities;
 CREATE POLICY processing_activities_modify ON processing_activities
   FOR ALL
   USING (
@@ -10628,6 +10960,7 @@ CREATE POLICY processing_activities_modify ON processing_activities
 -- Risk Register: Read for auditors, modify for privacy officer
 ALTER TABLE risk_register ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "risk_register_read" ON risk_register;
 CREATE POLICY risk_register_read ON risk_register
   FOR SELECT
   USING (
@@ -10638,6 +10971,7 @@ CREATE POLICY risk_register_read ON risk_register
     )
   );
 
+DROP POLICY IF EXISTS "risk_register_modify" ON risk_register;
 CREATE POLICY risk_register_modify ON risk_register
   FOR ALL
   USING (
@@ -10651,6 +10985,7 @@ CREATE POLICY risk_register_modify ON risk_register
 -- Controls: Read for auditors, modify for privacy officer
 ALTER TABLE controls ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "controls_read" ON controls;
 CREATE POLICY controls_read ON controls
   FOR SELECT
   USING (
@@ -10661,6 +10996,7 @@ CREATE POLICY controls_read ON controls
     )
   );
 
+DROP POLICY IF EXISTS "controls_modify" ON controls;
 CREATE POLICY controls_modify ON controls
   FOR ALL
   USING (
@@ -10674,6 +11010,7 @@ CREATE POLICY controls_modify ON controls
 -- Vendor Catalog: Read for auditors, modify for privacy officer
 ALTER TABLE vendor_catalog ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "vendor_catalog_read" ON vendor_catalog;
 CREATE POLICY vendor_catalog_read ON vendor_catalog
   FOR SELECT
   USING (
@@ -10684,6 +11021,7 @@ CREATE POLICY vendor_catalog_read ON vendor_catalog
     )
   );
 
+DROP POLICY IF EXISTS "vendor_catalog_modify" ON vendor_catalog;
 CREATE POLICY vendor_catalog_modify ON vendor_catalog
   FOR ALL
   USING (
@@ -10697,6 +11035,7 @@ CREATE POLICY vendor_catalog_modify ON vendor_catalog
 -- DPIA Records: Read for auditors, modify for privacy officer
 ALTER TABLE dpia_records ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "dpia_records_read" ON dpia_records;
 CREATE POLICY dpia_records_read ON dpia_records
   FOR SELECT
   USING (
@@ -10707,6 +11046,7 @@ CREATE POLICY dpia_records_read ON dpia_records
     )
   );
 
+DROP POLICY IF EXISTS "dpia_records_modify" ON dpia_records;
 CREATE POLICY dpia_records_modify ON dpia_records
   FOR ALL
   USING (
@@ -10720,6 +11060,7 @@ CREATE POLICY dpia_records_modify ON dpia_records
 -- Regulatory Reports: Read for auditors and privacy officer
 ALTER TABLE regulatory_reports ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "regulatory_reports_read" ON regulatory_reports;
 CREATE POLICY regulatory_reports_read ON regulatory_reports
   FOR SELECT
   USING (
@@ -10938,20 +11279,25 @@ ALTER TABLE recipe_collection_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE cost_savings_tracking ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for nutrition_cache (public read, authenticated write)
+DROP POLICY IF EXISTS "nutrition_cache_select_public" ON nutrition_cache;
 CREATE POLICY "nutrition_cache_select_public" ON nutrition_cache
   FOR SELECT USING (expires_at > NOW());
 
+DROP POLICY IF EXISTS "nutrition_cache_insert_authenticated" ON nutrition_cache;
 CREATE POLICY "nutrition_cache_insert_authenticated" ON nutrition_cache
   FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
 -- RLS Policies for ingredient_prices (public read)
+DROP POLICY IF EXISTS "ingredient_prices_select_public" ON ingredient_prices;
 CREATE POLICY "ingredient_prices_select_public" ON ingredient_prices
   FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "ingredient_prices_insert_authenticated" ON ingredient_prices;
 CREATE POLICY "ingredient_prices_insert_authenticated" ON ingredient_prices
   FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
 -- RLS Policies for meal_plans (tenant-based)
+DROP POLICY IF EXISTS "meal_plans_select_tenant" ON meal_plans;
 CREATE POLICY "meal_plans_select_tenant" ON meal_plans
   FOR SELECT USING (
     tenant_id IN (
@@ -10959,6 +11305,7 @@ CREATE POLICY "meal_plans_select_tenant" ON meal_plans
     )
   );
 
+DROP POLICY IF EXISTS "meal_plans_insert_tenant" ON meal_plans;
 CREATE POLICY "meal_plans_insert_tenant" ON meal_plans
   FOR INSERT WITH CHECK (
     tenant_id IN (
@@ -10966,6 +11313,7 @@ CREATE POLICY "meal_plans_insert_tenant" ON meal_plans
     )
   );
 
+DROP POLICY IF EXISTS "meal_plans_update_tenant" ON meal_plans;
 CREATE POLICY "meal_plans_update_tenant" ON meal_plans
   FOR UPDATE USING (
     tenant_id IN (
@@ -10973,6 +11321,7 @@ CREATE POLICY "meal_plans_update_tenant" ON meal_plans
     )
   );
 
+DROP POLICY IF EXISTS "meal_plans_delete_tenant" ON meal_plans;
 CREATE POLICY "meal_plans_delete_tenant" ON meal_plans
   FOR DELETE USING (
     tenant_id IN (
@@ -10981,6 +11330,7 @@ CREATE POLICY "meal_plans_delete_tenant" ON meal_plans
   );
 
 -- RLS Policies for meal_plan_days (tenant-based via meal_plan)
+DROP POLICY IF EXISTS "meal_plan_days_select_tenant" ON meal_plan_days;
 CREATE POLICY "meal_plan_days_select_tenant" ON meal_plan_days
   FOR SELECT USING (
     EXISTS (
@@ -10991,6 +11341,7 @@ CREATE POLICY "meal_plan_days_select_tenant" ON meal_plan_days
     )
   );
 
+DROP POLICY IF EXISTS "meal_plan_days_insert_tenant" ON meal_plan_days;
 CREATE POLICY "meal_plan_days_insert_tenant" ON meal_plan_days
   FOR INSERT WITH CHECK (
     EXISTS (
@@ -11001,6 +11352,7 @@ CREATE POLICY "meal_plan_days_insert_tenant" ON meal_plan_days
     )
   );
 
+DROP POLICY IF EXISTS "meal_plan_days_update_tenant" ON meal_plan_days;
 CREATE POLICY "meal_plan_days_update_tenant" ON meal_plan_days
   FOR UPDATE USING (
     EXISTS (
@@ -11011,6 +11363,7 @@ CREATE POLICY "meal_plan_days_update_tenant" ON meal_plan_days
     )
   );
 
+DROP POLICY IF EXISTS "meal_plan_days_delete_tenant" ON meal_plan_days;
 CREATE POLICY "meal_plan_days_delete_tenant" ON meal_plan_days
   FOR DELETE USING (
     EXISTS (
@@ -11022,6 +11375,7 @@ CREATE POLICY "meal_plan_days_delete_tenant" ON meal_plan_days
   );
 
 -- RLS Policies for user_preferences (tenant-based)
+DROP POLICY IF EXISTS "user_preferences_select_tenant" ON user_preferences;
 CREATE POLICY "user_preferences_select_tenant" ON user_preferences
   FOR SELECT USING (
     tenant_id IN (
@@ -11029,6 +11383,7 @@ CREATE POLICY "user_preferences_select_tenant" ON user_preferences
     )
   );
 
+DROP POLICY IF EXISTS "user_preferences_insert_tenant" ON user_preferences;
 CREATE POLICY "user_preferences_insert_tenant" ON user_preferences
   FOR INSERT WITH CHECK (
     tenant_id IN (
@@ -11036,6 +11391,7 @@ CREATE POLICY "user_preferences_insert_tenant" ON user_preferences
     )
   );
 
+DROP POLICY IF EXISTS "user_preferences_update_tenant" ON user_preferences;
 CREATE POLICY "user_preferences_update_tenant" ON user_preferences
   FOR UPDATE USING (
     tenant_id IN (
@@ -11043,6 +11399,7 @@ CREATE POLICY "user_preferences_update_tenant" ON user_preferences
     )
   );
 
+DROP POLICY IF EXISTS "user_preferences_delete_tenant" ON user_preferences;
 CREATE POLICY "user_preferences_delete_tenant" ON user_preferences
   FOR DELETE USING (
     tenant_id IN (
@@ -11051,6 +11408,7 @@ CREATE POLICY "user_preferences_delete_tenant" ON user_preferences
   );
 
 -- RLS Policies for user_interactions (tenant-based)
+DROP POLICY IF EXISTS "user_interactions_select_tenant" ON user_interactions;
 CREATE POLICY "user_interactions_select_tenant" ON user_interactions
   FOR SELECT USING (
     tenant_id IN (
@@ -11058,6 +11416,7 @@ CREATE POLICY "user_interactions_select_tenant" ON user_interactions
     )
   );
 
+DROP POLICY IF EXISTS "user_interactions_insert_tenant" ON user_interactions;
 CREATE POLICY "user_interactions_insert_tenant" ON user_interactions
   FOR INSERT WITH CHECK (
     tenant_id IN (
@@ -11066,6 +11425,7 @@ CREATE POLICY "user_interactions_insert_tenant" ON user_interactions
   );
 
 -- RLS Policies for recipe_shares (public read if token matches, tenant write)
+DROP POLICY IF EXISTS "recipe_shares_select_public" ON recipe_shares;
 CREATE POLICY "recipe_shares_select_public" ON recipe_shares
   FOR SELECT USING (
     is_public = true OR
@@ -11074,6 +11434,7 @@ CREATE POLICY "recipe_shares_select_public" ON recipe_shares
     )
   );
 
+DROP POLICY IF EXISTS "recipe_shares_insert_tenant" ON recipe_shares;
 CREATE POLICY "recipe_shares_insert_tenant" ON recipe_shares
   FOR INSERT WITH CHECK (
     tenant_id IN (
@@ -11081,6 +11442,7 @@ CREATE POLICY "recipe_shares_insert_tenant" ON recipe_shares
     )
   );
 
+DROP POLICY IF EXISTS "recipe_shares_update_tenant" ON recipe_shares;
 CREATE POLICY "recipe_shares_update_tenant" ON recipe_shares
   FOR UPDATE USING (
     tenant_id IN (
@@ -11088,6 +11450,7 @@ CREATE POLICY "recipe_shares_update_tenant" ON recipe_shares
     )
   );
 
+DROP POLICY IF EXISTS "recipe_shares_delete_tenant" ON recipe_shares;
 CREATE POLICY "recipe_shares_delete_tenant" ON recipe_shares
   FOR DELETE USING (
     tenant_id IN (
@@ -11096,6 +11459,7 @@ CREATE POLICY "recipe_shares_delete_tenant" ON recipe_shares
   );
 
 -- RLS Policies for recipe_collections (tenant-based)
+DROP POLICY IF EXISTS "recipe_collections_select_tenant" ON recipe_collections;
 CREATE POLICY "recipe_collections_select_tenant" ON recipe_collections
   FOR SELECT USING (
     is_public = true OR
@@ -11104,6 +11468,7 @@ CREATE POLICY "recipe_collections_select_tenant" ON recipe_collections
     )
   );
 
+DROP POLICY IF EXISTS "recipe_collections_insert_tenant" ON recipe_collections;
 CREATE POLICY "recipe_collections_insert_tenant" ON recipe_collections
   FOR INSERT WITH CHECK (
     tenant_id IN (
@@ -11111,6 +11476,7 @@ CREATE POLICY "recipe_collections_insert_tenant" ON recipe_collections
     )
   );
 
+DROP POLICY IF EXISTS "recipe_collections_update_tenant" ON recipe_collections;
 CREATE POLICY "recipe_collections_update_tenant" ON recipe_collections
   FOR UPDATE USING (
     tenant_id IN (
@@ -11118,6 +11484,7 @@ CREATE POLICY "recipe_collections_update_tenant" ON recipe_collections
     )
   );
 
+DROP POLICY IF EXISTS "recipe_collections_delete_tenant" ON recipe_collections;
 CREATE POLICY "recipe_collections_delete_tenant" ON recipe_collections
   FOR DELETE USING (
     tenant_id IN (
@@ -11126,6 +11493,7 @@ CREATE POLICY "recipe_collections_delete_tenant" ON recipe_collections
   );
 
 -- RLS Policies for recipe_collection_items (tenant-based via collection)
+DROP POLICY IF EXISTS "collection_items_select_tenant" ON recipe_collection_items;
 CREATE POLICY "collection_items_select_tenant" ON recipe_collection_items
   FOR SELECT USING (
     EXISTS (
@@ -11136,6 +11504,7 @@ CREATE POLICY "collection_items_select_tenant" ON recipe_collection_items
     )
   );
 
+DROP POLICY IF EXISTS "collection_items_insert_tenant" ON recipe_collection_items;
 CREATE POLICY "collection_items_insert_tenant" ON recipe_collection_items
   FOR INSERT WITH CHECK (
     EXISTS (
@@ -11146,6 +11515,7 @@ CREATE POLICY "collection_items_insert_tenant" ON recipe_collection_items
     )
   );
 
+DROP POLICY IF EXISTS "collection_items_delete_tenant" ON recipe_collection_items;
 CREATE POLICY "collection_items_delete_tenant" ON recipe_collection_items
   FOR DELETE USING (
     EXISTS (
@@ -11157,6 +11527,7 @@ CREATE POLICY "collection_items_delete_tenant" ON recipe_collection_items
   );
 
 -- RLS Policies for cost_savings_tracking (tenant-based)
+DROP POLICY IF EXISTS "cost_savings_select_tenant" ON cost_savings_tracking;
 CREATE POLICY "cost_savings_select_tenant" ON cost_savings_tracking
   FOR SELECT USING (
     tenant_id IN (
@@ -11164,6 +11535,7 @@ CREATE POLICY "cost_savings_select_tenant" ON cost_savings_tracking
     )
   );
 
+DROP POLICY IF EXISTS "cost_savings_insert_tenant" ON cost_savings_tracking;
 CREATE POLICY "cost_savings_insert_tenant" ON cost_savings_tracking
   FOR INSERT WITH CHECK (
     tenant_id IN (
@@ -11909,12 +12281,19 @@ alter table public.recommendations enable row level security;
 alter table public.support_diagnostics enable row level security;
 
 -- Policies: owner-only for PII; recommendations readable by owner.
+DROP POLICY IF EXISTS "events_owner" ON public;
 create policy "events_owner" on public.events for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "sessions_owner" ON public;
 create policy "sessions_owner" on public.sessions for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "apps_owner" ON public;
 create policy "apps_owner" on public.user_apps for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "signals_owner" ON public;
 create policy "signals_owner" on public.signals for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "segments_owner" ON public;
 create policy "segments_owner" on public.user_segments for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "reco_owner" ON public;
 create policy "reco_owner" on public.recommendations for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "diag_owner" ON public;
 create policy "diag_owner" on public.support_diagnostics for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- Comments for documentation
@@ -11994,26 +12373,35 @@ alter table public.posts enable row level security;
 alter table public.reactions enable row level security;
 
 -- Policies: owner can CRUD their own data; public can read posts
+DROP POLICY IF EXISTS "own_profile" ON public;
 create policy "own_profile" on public.profiles
   for all using (auth.uid() = id) with check (auth.uid() = id);
 
+DROP POLICY IF EXISTS "own_journal" ON public;
 create policy "own_journal" on public.journal_entries
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own_streak" ON public;
 create policy "own_streak" on public.streaks
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own_badges" ON public;
 create policy "own_badges" on public.user_badges
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "read_posts" ON public;
 create policy "read_posts" on public.posts for select using (true);
+DROP POLICY IF EXISTS "write_own_posts" ON public;
 create policy "write_own_posts" on public.posts
   for insert with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "edit_own_posts" ON public;
 create policy "edit_own_posts" on public.posts
   for update using (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "react_own" ON public;
 create policy "react_own" on public.reactions
   for insert with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "unreact_own" ON public;
 create policy "unreact_own" on public.reactions
   for delete using (auth.uid() = user_id);
 
@@ -12213,12 +12601,17 @@ alter table public.community_challenges enable row level security;
 alter table public.community_challenge_contributions enable row level security;
 
 -- Comments policies
+DROP POLICY IF EXISTS "read_comments" ON public;
 create policy "read_comments" on public.comments for select using (true);
+DROP POLICY IF EXISTS "create_own_comments" ON public;
 create policy "create_own_comments" on public.comments for insert with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "edit_own_comments" ON public;
 create policy "edit_own_comments" on public.comments for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "delete_own_comments" ON public;
 create policy "delete_own_comments" on public.comments for delete using (auth.uid() = user_id);
 
 -- Moderation policies (admin only)
+DROP POLICY IF EXISTS "moderators_only" ON public;
 create policy "moderators_only" on public.moderation_actions for all using (
   exists (select 1 from public.profiles where id = auth.uid() and id in (
     select user_id from auth.users where raw_user_meta_data->>'role' = 'moderator' or raw_user_meta_data->>'role' = 'admin'
@@ -12226,31 +12619,41 @@ create policy "moderators_only" on public.moderation_actions for all using (
 );
 
 -- Referrals policies
+DROP POLICY IF EXISTS "own_referrals" ON public;
 create policy "own_referrals" on public.referrals for all using (auth.uid() = referrer_id or auth.uid() = referred_id);
 
 -- Weekly challenges policies
+DROP POLICY IF EXISTS "read_challenges" ON public;
 create policy "read_challenges" on public.weekly_challenges for select using (true);
+DROP POLICY IF EXISTS "own_challenge_progress" ON public;
 create policy "own_challenge_progress" on public.user_challenge_progress for all using (auth.uid() = user_id);
 
 -- Leaderboard policies
+DROP POLICY IF EXISTS "read_leaderboards" ON public;
 create policy "read_leaderboards" on public.leaderboard_entries for select using (true);
 
 -- Notifications policies
+DROP POLICY IF EXISTS "own_notifications" ON public;
 create policy "own_notifications" on public.notifications for all using (auth.uid() = user_id);
 
 -- Activity log policies
+DROP POLICY IF EXISTS "own_activity" ON public;
 create policy "own_activity" on public.activity_log for all using (auth.uid() = user_id);
 
 -- Friendships policies
+DROP POLICY IF EXISTS "own_friendships" ON public;
 create policy "own_friendships" on public.friendships for all using (
   auth.uid() = requester_id or auth.uid() = addressee_id
 );
 
 -- Push subscriptions policies
+DROP POLICY IF EXISTS "own_subscriptions" ON public;
 create policy "own_subscriptions" on public.push_subscriptions for all using (auth.uid() = user_id);
 
 -- Community challenges policies
+DROP POLICY IF EXISTS "read_community_challenges" ON public;
 create policy "read_community_challenges" on public.community_challenges for select using (true);
+DROP POLICY IF EXISTS "own_contributions" ON public;
 create policy "own_contributions" on public.community_challenge_contributions for all using (auth.uid() = user_id);
 
 -- Function to update leaderboard
@@ -12456,16 +12859,23 @@ alter table public.cook_off_participants enable row level security;
 alter table public.cooking_activity_likes enable row level security;
 
 -- Cooking activities policies
+DROP POLICY IF EXISTS "read_cooking_activities" ON public;
 create policy "read_cooking_activities" on public.cooking_activities for select using (true);
+DROP POLICY IF EXISTS "create_own_cooking" ON public;
 create policy "create_own_cooking" on public.cooking_activities for insert with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "update_own_cooking" ON public;
 create policy "update_own_cooking" on public.cooking_activities for update using (auth.uid() = user_id);
 
 -- Cook-offs policies
+DROP POLICY IF EXISTS "read_cook_offs" ON public;
 create policy "read_cook_offs" on public.cook_offs for select using (true);
+DROP POLICY IF EXISTS "participate_cook_off" ON public;
 create policy "participate_cook_off" on public.cook_off_participants for all using (auth.uid() = user_id);
 
 -- Likes policies
+DROP POLICY IF EXISTS "like_cooking" ON public;
 create policy "like_cooking" on public.cooking_activity_likes for insert with check (auth.uid() = user_id);
+DROP POLICY IF EXISTS "unlike_cooking" ON public;
 create policy "unlike_cooking" on public.cooking_activity_likes for delete using (auth.uid() = user_id);
 
 -- Function to update cooking activity likes count
@@ -12528,6 +12938,7 @@ create table if not exists public.meal_prefs (
   updated_at timestamptz default now()
 );
 alter table public.meal_prefs enable row level security;
+DROP POLICY IF EXISTS "prefs_owner" ON public;
 create policy "prefs_owner" on public.meal_prefs for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 
@@ -12548,6 +12959,7 @@ create table if not exists public.telemetry_events (
   ts timestamptz default now()
 );
 alter table public.telemetry_events enable row level security;
+DROP POLICY IF EXISTS "telemetry_owner" ON public;
 create policy "telemetry_owner" on public.telemetry_events for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 
@@ -12690,16 +13102,20 @@ CREATE POLICY IF NOT EXISTS "service_role bypass" ON public.users
 CREATE POLICY "own read" ON public.users FOR SELECT
   USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.users FOR INSERT
   WITH CHECK (auth.uid() = id);
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.users FOR UPDATE
   USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "own delete" ON public;
 CREATE POLICY "own delete" ON public.users FOR DELETE
   USING (auth.uid() = id);
 
 -- Households table policies (users can read households they're members of)
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.households FOR SELECT
   USING (
     auth.uid() = owner_id OR
@@ -12710,16 +13126,20 @@ CREATE POLICY "own read" ON public.households FOR SELECT
     )
   );
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.households FOR INSERT
   WITH CHECK (auth.uid() = owner_id);
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.households FOR UPDATE
   USING (auth.uid() = owner_id);
 
+DROP POLICY IF EXISTS "own delete" ON public;
 CREATE POLICY "own delete" ON public.households FOR DELETE
   USING (auth.uid() = owner_id);
 
 -- Household members policies
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.household_members FOR SELECT
   USING (
     auth.uid() = user_id OR
@@ -12730,6 +13150,7 @@ CREATE POLICY "own read" ON public.household_members FOR SELECT
     )
   );
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.household_members FOR INSERT
   WITH CHECK (
     auth.uid() = user_id OR
@@ -12740,6 +13161,7 @@ CREATE POLICY "own write" ON public.household_members FOR INSERT
     )
   );
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.household_members FOR UPDATE
   USING (
     auth.uid() = user_id OR
@@ -12750,6 +13172,7 @@ CREATE POLICY "own update" ON public.household_members FOR UPDATE
     )
   );
 
+DROP POLICY IF EXISTS "own delete" ON public;
 CREATE POLICY "own delete" ON public.household_members FOR DELETE
   USING (
     auth.uid() = user_id OR
@@ -12761,19 +13184,24 @@ CREATE POLICY "own delete" ON public.household_members FOR DELETE
   );
 
 -- Recipes table policies
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.recipes FOR SELECT
   USING (auth.uid() = user_id OR user_id IS NULL);
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.recipes FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.recipes FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own delete" ON public;
 CREATE POLICY "own delete" ON public.recipes FOR DELETE
   USING (auth.uid() = user_id);
 
 -- Meal plans policies
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.meal_plans FOR SELECT
   USING (
     auth.uid() = user_id OR
@@ -12784,16 +13212,20 @@ CREATE POLICY "own read" ON public.meal_plans FOR SELECT
     )
   );
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.meal_plans FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.meal_plans FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own delete" ON public;
 CREATE POLICY "own delete" ON public.meal_plans FOR DELETE
   USING (auth.uid() = user_id);
 
 -- Grocery lists policies
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.grocery_lists FOR SELECT
   USING (
     EXISTS (
@@ -12803,6 +13235,7 @@ CREATE POLICY "own read" ON public.grocery_lists FOR SELECT
     )
   );
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.grocery_lists FOR INSERT
   WITH CHECK (
     EXISTS (
@@ -12812,6 +13245,7 @@ CREATE POLICY "own write" ON public.grocery_lists FOR INSERT
     )
   );
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.grocery_lists FOR UPDATE
   USING (
     EXISTS (
@@ -12821,6 +13255,7 @@ CREATE POLICY "own update" ON public.grocery_lists FOR UPDATE
     )
   );
 
+DROP POLICY IF EXISTS "own delete" ON public;
 CREATE POLICY "own delete" ON public.grocery_lists FOR DELETE
   USING (
     EXISTS (
@@ -12831,6 +13266,7 @@ CREATE POLICY "own delete" ON public.grocery_lists FOR DELETE
   );
 
 -- Rooms policies
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.rooms FOR SELECT
   USING (
     auth.uid() = ANY(participants) OR
@@ -12841,16 +13277,20 @@ CREATE POLICY "own read" ON public.rooms FOR SELECT
     )
   );
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.rooms FOR INSERT
   WITH CHECK (auth.uid() = ANY(participants));
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.rooms FOR UPDATE
   USING (auth.uid() = ANY(participants));
 
+DROP POLICY IF EXISTS "own delete" ON public;
 CREATE POLICY "own delete" ON public.rooms FOR DELETE
   USING (auth.uid() = ANY(participants));
 
 -- Messages policies
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.messages FOR SELECT
   USING (
     EXISTS (
@@ -12867,42 +13307,54 @@ CREATE POLICY "own read" ON public.messages FOR SELECT
     )
   );
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.messages FOR INSERT
   WITH CHECK (auth.uid() = sender_id);
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.messages FOR UPDATE
   USING (auth.uid() = sender_id);
 
+DROP POLICY IF EXISTS "own delete" ON public;
 CREATE POLICY "own delete" ON public.messages FOR DELETE
   USING (auth.uid() = sender_id);
 
 -- Health metrics policies
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.health_metrics FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.health_metrics FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.health_metrics FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own delete" ON public;
 CREATE POLICY "own delete" ON public.health_metrics FOR DELETE
   USING (auth.uid() = user_id);
 
 -- Feature flags policies
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.feature_flags FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.feature_flags FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "own update" ON public;
 CREATE POLICY "own update" ON public.feature_flags FOR UPDATE
   USING (auth.uid() = user_id);
 
 -- Events policies (users can only see their own events)
+DROP POLICY IF EXISTS "own read" ON public;
 CREATE POLICY "own read" ON public.events FOR SELECT
   USING (auth.uid() = user_id OR user_id IS NULL);
 
+DROP POLICY IF EXISTS "own write" ON public;
 CREATE POLICY "own write" ON public.events FOR INSERT
   WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
 
@@ -12934,12 +13386,14 @@ create index if not exists idx_metrics_log_metric_gin on public.metrics_log usin
 alter table public.metrics_log enable row level security;
 
 -- Service role can read/write (for API endpoints)
+DROP POLICY IF EXISTS "service_role_full_access" ON public;
 create policy "service_role_full_access" on public.metrics_log
   for all
   using (auth.jwt() ->> 'role' = 'service_role')
   with check (auth.jwt() ->> 'role' = 'service_role');
 
 -- Authenticated users can read their own metrics (if user_id in metric jsonb)
+DROP POLICY IF EXISTS "authenticated_read_own" ON public;
 create policy "authenticated_read_own" on public.metrics_log
   for select
   using (
@@ -12948,6 +13402,7 @@ create policy "authenticated_read_own" on public.metrics_log
   );
 
 -- Anonymous can insert telemetry (for beacon endpoints)
+DROP POLICY IF EXISTS "anonymous_insert_telemetry" ON public;
 create policy "anonymous_insert_telemetry" on public.metrics_log
   for insert
   with check (
@@ -12956,6 +13411,7 @@ create policy "anonymous_insert_telemetry" on public.metrics_log
   );
 
 -- Admin users can read all (if admin role exists)
+DROP POLICY IF EXISTS "admin_read_all" ON public;
 create policy "admin_read_all" on public.metrics_log
   for select
   using (
@@ -13409,54 +13865,68 @@ ALTER TABLE family_invites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscription_usage ENABLE ROW LEVEL SECURITY;
 
 -- User streaks: Users can read/update their own streaks
+DROP POLICY IF EXISTS "Users can view own streaks" ON user_streaks;
 CREATE POLICY "Users can view own streaks" ON user_streaks
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own streaks" ON user_streaks;
 CREATE POLICY "Users can update own streaks" ON user_streaks
   FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own streaks" ON user_streaks;
 CREATE POLICY "Users can insert own streaks" ON user_streaks
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- User badges: Users can read their own badges
+DROP POLICY IF EXISTS "Users can view own badges" ON user_badges;
 CREATE POLICY "Users can view own badges" ON user_badges
   FOR SELECT USING (auth.uid() = user_id);
 
 -- User credits: Users can read their own credits
+DROP POLICY IF EXISTS "Users can view own credits" ON user_credits;
 CREATE POLICY "Users can view own credits" ON user_credits
   FOR SELECT USING (auth.uid() = user_id);
 
 -- Credit transactions: Users can read their own transactions
+DROP POLICY IF EXISTS "Users can view own transactions" ON credit_transactions;
 CREATE POLICY "Users can view own transactions" ON credit_transactions
   FOR SELECT USING (auth.uid() = user_id);
 
 -- Recipe collections: Public read for active collections, creators can manage
+DROP POLICY IF EXISTS "Anyone can view active collections" ON recipe_collections;
 CREATE POLICY "Anyone can view active collections" ON recipe_collections
   FOR SELECT USING (status = 'active');
 
+DROP POLICY IF EXISTS "Creators can manage own collections" ON recipe_collections;
 CREATE POLICY "Creators can manage own collections" ON recipe_collections
   FOR ALL USING (auth.uid() = creator_id);
 
 -- Collection purchases: Users can read their own purchases
+DROP POLICY IF EXISTS "Users can view own purchases" ON collection_purchases;
 CREATE POLICY "Users can view own purchases" ON collection_purchases
   FOR SELECT USING (auth.uid() = user_id);
 
 -- Recipe shares: Users can read their own shares
+DROP POLICY IF EXISTS "Users can view own shares" ON recipe_shares;
 CREATE POLICY "Users can view own shares" ON recipe_shares
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create own shares" ON recipe_shares;
 CREATE POLICY "Users can create own shares" ON recipe_shares
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Share rewards: Users can read their own rewards
+DROP POLICY IF EXISTS "Users can view own rewards" ON share_rewards;
 CREATE POLICY "Users can view own rewards" ON share_rewards
   FOR SELECT USING (auth.uid() = sharer_id OR auth.uid() = recipient_id);
 
 -- Recipe images: Public read, recipe owners can manage
+DROP POLICY IF EXISTS "Anyone can view recipe images" ON recipe_images;
 CREATE POLICY "Anyone can view recipe images" ON recipe_images
   FOR SELECT USING (true);
 
 -- Family members: Members can view their family
+DROP POLICY IF EXISTS "Family members can view family" ON family_members;
 CREATE POLICY "Family members can view family" ON family_members
   FOR SELECT USING (
     auth.uid() = family_owner_id OR 
@@ -13465,10 +13935,12 @@ CREATE POLICY "Family members can view family" ON family_members
   );
 
 -- Family invites: Owners can manage invites
+DROP POLICY IF EXISTS "Owners can manage invites" ON family_invites;
 CREATE POLICY "Owners can manage invites" ON family_invites
   FOR ALL USING (auth.uid() = family_owner_id);
 
 -- Subscription usage: Users can read their own usage
+DROP POLICY IF EXISTS "Users can view own usage" ON subscription_usage;
 CREATE POLICY "Users can view own usage" ON subscription_usage
   FOR SELECT USING (auth.uid() = user_id);
 
@@ -14580,3 +15052,28 @@ COMMENT ON TABLE secret_rotation_logs IS 'Audit log for secret rotations';
 COMMENT ON COLUMN secret_rotation_logs.new_hash IS 'SHA256 hash of the new secret value';
 
 
+
+
+-- ============================================================================
+-- ENABLE RLS ON TABLES THAT NEED IT
+-- ============================================================================
+
+-- Enable RLS on api_keys
+ALTER TABLE IF EXISTS api_keys ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS on knowledge_base_updates
+ALTER TABLE IF EXISTS knowledge_base_updates ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS on legal_hold
+ALTER TABLE IF EXISTS legal_hold ENABLE ROW LEVEL SECURITY;
+
+-- Enable RLS on webhook_events
+ALTER TABLE IF EXISTS webhook_events ENABLE ROW LEVEL SECURITY;
+
+
+-- ============================================================================
+-- SECURITY NOTES
+-- ============================================================================
+-- Functions without explicit SECURITY DEFINER/INVOKER default to SECURITY INVOKER
+-- Review functions marked with SECURITY DEFINER carefully
+-- ============================================================================
