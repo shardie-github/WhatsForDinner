@@ -1,150 +1,82 @@
 /**
  * Feature Flags Middleware
  * 
- * Simple feature flag handler for A/B testing and gradual rollouts.
- * Reads flags from /featureflags/flags.json
- * 
- * Usage:
- *   import { getFlag, isEnabled } from '@/middleware/flags';
- *   
- *   if (isEnabled('prefill_onboarding', userId)) {
- *     // Show pre-filled onboarding
- *   }
+ * Reads feature flags from /featureflags/flags.json and provides helper functions.
  */
 
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-interface FlagConfig {
+interface FeatureFlag {
   enabled: boolean;
   rollout_percentage: number;
-  description?: string;
-  owner?: string;
-  experiment?: string;
+  description: string;
+  owner: string;
+  experiment: string | null;
 }
 
-type FlagsConfig = Record<string, FlagConfig>;
+interface FlagsConfig {
+  [key: string]: FeatureFlag;
+}
 
 let flagsCache: FlagsConfig | null = null;
-let cacheTimestamp = 0;
-const CACHE_TTL = 60000; // 1 minute
 
 function loadFlags(): FlagsConfig {
-  const now = Date.now();
-  
-  // Return cached flags if still valid
-  if (flagsCache && now - cacheTimestamp < CACHE_TTL) {
-    return flagsCache;
-  }
+  if (flagsCache) return flagsCache;
 
   try {
-    const flagsPath = path.join(process.cwd(), 'featureflags', 'flags.json');
-    const flagsData = fs.readFileSync(flagsPath, 'utf-8');
-    flagsCache = JSON.parse(flagsData);
-    cacheTimestamp = now;
+    const flagsPath = process.env.FEATURE_FLAGS_PATH || join(process.cwd(), 'featureflags', 'flags.json');
+    const flagsJson = readFileSync(flagsPath, 'utf-8');
+    flagsCache = JSON.parse(flagsJson);
     return flagsCache!;
   } catch (error) {
-    console.error('Error loading feature flags:', error);
+    console.warn('Failed to load feature flags:', error);
     return {};
   }
 }
 
 /**
- * Get feature flag configuration
+ * Check if a feature flag is enabled for a user
  */
-export function getFlag(flagName: string): FlagConfig | null {
+export function isFlagEnabled(flagName: string, userId?: string): boolean {
+  const flags = loadFlags();
+  const flag = flags[flagName];
+
+  if (!flag) return false;
+  if (!flag.enabled) return false;
+
+  // If rollout_percentage is 100, enable for all
+  if (flag.rollout_percentage >= 100) return true;
+
+  // If no userId, use random (for anonymous users)
+  if (!userId) {
+    return Math.random() * 100 < flag.rollout_percentage;
+  }
+
+  // Use userId hash for consistent rollout
+  const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return (hash % 100) < flag.rollout_percentage;
+}
+
+/**
+ * Get all enabled flags for a user
+ */
+export function getEnabledFlags(userId?: string): string[] {
+  const flags = loadFlags();
+  return Object.keys(flags).filter((flagName) => isFlagEnabled(flagName, userId));
+}
+
+/**
+ * Get flag metadata
+ */
+export function getFlagMetadata(flagName: string): FeatureFlag | null {
   const flags = loadFlags();
   return flags[flagName] || null;
 }
 
 /**
- * Check if feature flag is enabled for a specific user
- * Uses consistent hashing to ensure same user always gets same treatment
- */
-export function isEnabled(flagName: string, userId?: string | null): boolean {
-  const flag = getFlag(flagName);
-  
-  if (!flag) {
-    return false;
-  }
-
-  if (!flag.enabled) {
-    return false;
-  }
-
-  // If rollout is 100%, everyone gets it
-  if (flag.rollout_percentage >= 100) {
-    return true;
-  }
-
-  // If no userId provided, use random (for anonymous users)
-  if (!userId) {
-    return Math.random() * 100 < flag.rollout_percentage;
-  }
-
-  // Use consistent hashing to ensure same user always gets same treatment
-  const hash = crypto
-    .createHash('md5')
-    .update(`${flagName}:${userId}`)
-    .digest('hex');
-  
-  const hashValue = parseInt(hash.substring(0, 8), 16);
-  const bucket = hashValue % 100;
-  
-  return bucket < flag.rollout_percentage;
-}
-
-/**
- * Get experiment assignment for a user
- * Returns experiment name if flag is part of an experiment and user is in treatment
- */
-export function getExperimentAssignment(
-  flagName: string,
-  userId?: string | null
-): string | null {
-  const flag = getFlag(flagName);
-  
-  if (!flag || !flag.experiment) {
-    return null;
-  }
-
-  if (isEnabled(flagName, userId)) {
-    return flag.experiment;
-  }
-
-  return null;
-}
-
-/**
- * Check if user is in control or treatment group for an experiment
- */
-export function getExperimentGroup(
-  flagName: string,
-  userId?: string | null
-): 'control' | 'treatment' | null {
-  const flag = getFlag(flagName);
-  
-  if (!flag || !flag.experiment) {
-    return null;
-  }
-
-  return isEnabled(flagName, userId) ? 'treatment' : 'control';
-}
-
-/**
- * Reload flags from disk (useful for testing or manual updates)
+ * Reload flags (useful for testing or hot-reload)
  */
 export function reloadFlags(): void {
   flagsCache = null;
-  cacheTimestamp = 0;
 }
-
-// Export default for convenience
-export default {
-  getFlag,
-  isEnabled,
-  getExperimentAssignment,
-  getExperimentGroup,
-  reloadFlags,
-};

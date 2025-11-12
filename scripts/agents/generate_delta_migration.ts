@@ -1,179 +1,240 @@
-// /scripts/agents/generate_delta_migration.ts
-import fs from "fs";
-import path from "path";
-import pg from "pg";
+#!/usr/bin/env tsx
+/**
+ * Delta Migration Generator
+ * 
+ * Introspects database and generates a migration file containing ONLY missing objects.
+ * Idempotent: Safe to re-run, never duplicates.
+ * 
+ * Usage:
+ *   tsx scripts/agents/generate_delta_migration.ts
+ * 
+ * Environment:
+ *   SUPABASE_DB_URL (required) - PostgreSQL connection string
+ */
 
-const REQUIRED = {
-  tables: {
-    events: `CREATE TABLE IF NOT EXISTS public.events(
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  occurred_at timestamptz NOT NULL DEFAULT now(),
-  user_id uuid,
-  event_name text NOT NULL,
-  props jsonb NOT NULL DEFAULT '{}'::jsonb
-);`,
-    orders: `CREATE TABLE IF NOT EXISTS public.orders(
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  placed_at timestamptz NOT NULL DEFAULT now(),
-  order_number text UNIQUE,
-  user_id uuid,
-  items jsonb NOT NULL DEFAULT '[]'::jsonb,
-  subtotal_cents integer NOT NULL DEFAULT 0,
-  shipping_cents integer NOT NULL DEFAULT 0,
-  tax_cents integer NOT NULL DEFAULT 0,
-  discount_cents integer NOT NULL DEFAULT 0,
-  total_cents integer NOT NULL DEFAULT 0,
-  currency text NOT NULL DEFAULT 'USD',
-  source text
-);`,
-    spend: `CREATE TABLE IF NOT EXISTS public.spend(
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  platform text NOT NULL,
-  campaign_id text,
-  adset_id text,
-  date date NOT NULL,
-  spend_cents integer NOT NULL DEFAULT 0,
-  clicks integer NOT NULL DEFAULT 0,
-  impressions integer NOT NULL DEFAULT 0,
-  conv integer NOT NULL DEFAULT 0
-);`,
-    experiments: `CREATE TABLE IF NOT EXISTS public.experiments(
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  key text UNIQUE NOT NULL,
-  name text NOT NULL,
-  status text NOT NULL DEFAULT 'draft',
-  start_at timestamptz,
-  end_at timestamptz
-);`,
-    experiment_arms: `CREATE TABLE IF NOT EXISTS public.experiment_arms(
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  experiment_id uuid REFERENCES public.experiments(id) ON DELETE CASCADE,
-  arm_key text NOT NULL,
-  weight numeric NOT NULL DEFAULT 0.5
-);`,
-    metrics_daily: `CREATE TABLE IF NOT EXISTS public.metrics_daily(
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  day date NOT NULL,
-  sessions integer NOT NULL DEFAULT 0,
-  add_to_carts integer NOT NULL DEFAULT 0,
-  orders integer NOT NULL DEFAULT 0,
-  revenue_cents integer NOT NULL DEFAULT 0,
-  refunds_cents integer NOT NULL DEFAULT 0,
-  aov_cents integer NOT NULL DEFAULT 0,
-  cac_cents integer NOT NULL DEFAULT 0,
-  conversion_rate numeric NOT NULL DEFAULT 0
-);`,
-    feedback_loops: `CREATE TABLE IF NOT EXISTS public.feedback_loops(
-  id serial PRIMARY KEY,
-  name text, loop_type text, delay_days int, bottleneck text,
-  leverage_point text, fix text, owner text, metric text, created_at timestamptz default now()
-);`,
-    safeguards: `CREATE TABLE IF NOT EXISTS public.safeguards(
-  id serial PRIMARY KEY,
-  action text, risk text, mitigation text, owner text, kpi text, created_at timestamptz default now()
-);`,
-    constraints: `CREATE TABLE IF NOT EXISTS public.constraints(
-  id serial PRIMARY KEY,
-  stage text, constraint text, cause text, impact numeric,
-  fix text, cost numeric, benefit numeric, owner text, kpi text
-);`,
-    resilience_checks: `CREATE TABLE IF NOT EXISTS public.resilience_checks(
-  id serial PRIMARY KEY,
-  subsystem text, failure_mode text, impact text,
-  recovery_plan text, score int, owner text, created_at timestamptz default now()
-);`
-  },
-  columns: {
-    metrics_daily: {
-      gross_margin_cents: "integer NOT NULL DEFAULT 0",
-      traffic: "integer NOT NULL DEFAULT 0"
-    }
-  },
-  indexes: {
-    events: ["idx_events_name_time(event_name, occurred_at)"],
-    orders: ["idx_orders_placed_at(placed_at)"],
-    spend: ["idx_spend_platform_dt(platform, date)"],
-    metrics_daily: ["idx_metrics_day(day)"]
-  },
-  extensions: ["pgcrypto","pg_trgm"],
-  rlsTables: [
-    "events","orders","spend","experiments","experiment_arms","metrics_daily",
-    "feedback_loops","safeguards","constraints","resilience_checks"
-  ]
-};
+import { Client } from 'pg';
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 
-function stamp(){
-  const d=new Date(),p=(n:number)=>String(n).padStart(2,"0");
-  return `${d.getUTCFullYear()}${p(d.getUTCMonth()+1)}${p(d.getUTCDate())}${p(d.getUTCHours())}${p(d.getUTCMinutes())}${p(d.getUTCSeconds())}`;
+const DB_URL = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
+
+if (!DB_URL) {
+  console.error('❌ SUPABASE_DB_URL or DATABASE_URL required');
+  process.exit(1);
 }
 
-async function main(){
-  const outDir="supabase/migrations";
-  fs.mkdirSync(outDir,{recursive:true});
-  const dbUrl=process.env.SUPABASE_DB_URL||process.env.DATABASE_URL;
-  if(!dbUrl) throw new Error("Missing SUPABASE_DB_URL or DATABASE_URL");
-  const pool=new pg.Pool({connectionString:dbUrl});
-  const c=await pool.connect();
-  try{
-    let sql=""; // build only missing
+interface MissingObject {
+  type: 'extension' | 'table' | 'column' | 'index' | 'function' | 'policy';
+  name: string;
+  sql: string;
+}
 
-    // Extensions
-    const extRows=await c.query("select extname from pg_extension");
-    const have=new Set(extRows.rows.map((r:any)=>r.extname));
-    for(const e of REQUIRED.extensions){ if(!have.has(e)) sql+=`CREATE EXTENSION IF NOT EXISTS ${e};\n`; }
+async function generateDeltaMigration() {
+  const client = new Client({ connectionString: DB_URL });
+  const missing: MissingObject[] = [];
 
-    // Tables
-    for(const [t,ddl] of Object.entries(REQUIRED.tables)){
-      const {rows}=await c.query(`select to_regclass('public.${t}') as r`);
-      if(!rows[0].r) sql+=`\n-- create table ${t}\n${ddl}\n`;
-    }
+  try {
+    await client.connect();
+    console.log('✅ Connected to database');
 
-    // Columns
-    for(const [t,cols] of Object.entries(REQUIRED.columns)){
-      for(const [col,def] of Object.entries(cols as Record<string,string>)){
-        const {rowCount}=await c.query(
-          `select 1 from information_schema.columns where table_schema='public' and table_name=$1 and column_name=$2`,
-          [t,col]
-        );
-        if(rowCount===0) sql+=`\nALTER TABLE public.${t} ADD COLUMN IF NOT EXISTS ${col} ${def};\n`;
+    // Check extensions
+    const extensions = ['pgcrypto', 'pg_trgm'];
+    for (const ext of extensions) {
+      const result = await client.query(
+        `SELECT EXISTS(SELECT 1 FROM pg_extension WHERE extname = $1) as exists`,
+        [ext]
+      );
+      if (!result.rows[0].exists) {
+        missing.push({
+          type: 'extension',
+          name: ext,
+          sql: `CREATE EXTENSION IF NOT EXISTS ${ext};`,
+        });
       }
     }
 
-    // Indexes
-    for(const [t,idxs] of Object.entries(REQUIRED.indexes)){
-      for(const idxDef of idxs as string[]){
-        const name=idxDef.split("(")[0];
-        const ex=await c.query(`select to_regclass('public.${name}') as r`);
-        if(!ex.rows[0].r) sql+=`\nCREATE INDEX IF NOT EXISTS ${name} ON public.${t}${idxDef.substring(name.length)};\n`;
+    // Check tables
+    const tables = [
+      {
+        name: 'events',
+        sql: `CREATE TABLE IF NOT EXISTS public.events (
+    id BIGSERIAL PRIMARY KEY,
+    event_name TEXT NOT NULL,
+    event_time TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    user_id TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);`,
+      },
+      {
+        name: 'spend',
+        sql: `CREATE TABLE IF NOT EXISTS public.spend (
+    id BIGSERIAL PRIMARY KEY,
+    platform TEXT NOT NULL,
+    date DATE NOT NULL,
+    spend DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    impressions BIGINT DEFAULT 0,
+    clicks BIGINT DEFAULT 0,
+    conversions BIGINT DEFAULT 0,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE(platform, date)
+);`,
+      },
+      {
+        name: 'metrics_daily',
+        sql: `CREATE TABLE IF NOT EXISTS public.metrics_daily (
+    id BIGSERIAL PRIMARY KEY,
+    date DATE NOT NULL UNIQUE,
+    mrr DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    active_users INTEGER NOT NULL DEFAULT 0,
+    new_users INTEGER NOT NULL DEFAULT 0,
+    activation_rate DECIMAL(5, 2) DEFAULT 0,
+    retention_7d DECIMAL(5, 2) DEFAULT 0,
+    retention_30d DECIMAL(5, 2) DEFAULT 0,
+    cac DECIMAL(10, 2) DEFAULT 0,
+    ltv DECIMAL(10, 2) DEFAULT 0,
+    ltv_cac_ratio DECIMAL(5, 2) DEFAULT 0,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);`,
+      },
+    ];
+
+    for (const table of tables) {
+      const result = await client.query(
+        `SELECT EXISTS(
+          SELECT 1 FROM information_schema.tables 
+          WHERE table_schema = 'public' AND table_name = $1
+        ) as exists`,
+        [table.name]
+      );
+      if (!result.rows[0].exists) {
+        missing.push({
+          type: 'table',
+          name: table.name,
+          sql: table.sql,
+        });
       }
     }
 
-    // RLS enable + guarded select policies
-    const rls=await c.query(`
-      select c.relname, c.relrowsecurity,
-             coalesce((select count(*) from pg_policies p where p.schemaname='public' and p.tablename=c.relname),0) as pols
-      from pg_class c join pg_namespace n on n.oid=c.relnamespace
-      where n.nspname='public' and c.relkind='r'
-    `);
-    const map=new Map<string,{rowsec:boolean,pols:number}>();
-    rls.rows.forEach((r:any)=>map.set(r.relname,{rowsec:r.relrowsecurity,pols:Number(r.pols)}));
+    // Check indexes
+    const indexes = [
+      {
+        name: 'idx_events_name_time',
+        sql: `CREATE INDEX IF NOT EXISTS idx_events_name_time ON public.events(event_name, event_time DESC);`,
+      },
+      {
+        name: 'idx_spend_platform_dt',
+        sql: `CREATE INDEX IF NOT EXISTS idx_spend_platform_dt ON public.spend(platform, date DESC);`,
+      },
+      {
+        name: 'idx_metrics_day',
+        sql: `CREATE INDEX IF NOT EXISTS idx_metrics_day ON public.metrics_daily(date DESC);`,
+      },
+    ];
 
-    for(const t of REQUIRED.rlsTables){
-      if(!map.get(t)?.rowsec) sql+=`\nALTER TABLE public.${t} ENABLE ROW LEVEL SECURITY;\n`;
-      sql+=`
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='${t}' AND policyname='${t}_select_all_srv') THEN
-    CREATE POLICY ${t}_select_all_srv ON public.${t} FOR SELECT USING (true);
-  END IF;
-END $$;
+    for (const idx of indexes) {
+      const result = await client.query(
+        `SELECT EXISTS(
+          SELECT 1 FROM pg_indexes 
+          WHERE schemaname = 'public' AND indexname = $1
+        ) as exists`,
+        [idx.name]
+      );
+      if (!result.rows[0].exists) {
+        missing.push({
+          type: 'index',
+          name: idx.name,
+          sql: idx.sql,
+        });
+      }
+    }
+
+    // Check functions (simplified - just check if they exist)
+    const functions = ['upsert_events', 'upsert_spend', 'recompute_metrics_daily', 'system_healthcheck'];
+    for (const func of functions) {
+      const result = await client.query(
+        `SELECT EXISTS(
+          SELECT 1 FROM pg_proc p
+          JOIN pg_namespace n ON p.pronamespace = n.oid
+          WHERE n.nspname = 'public' AND p.proname = $1
+        ) as exists`,
+        [func]
+      );
+      if (!result.rows[0].exists) {
+        // Functions are complex, reference the main migration file
+        missing.push({
+          type: 'function',
+          name: func,
+          sql: `-- Function ${func} missing. Please apply /supabase/migrations/000000000800_upsert_functions.sql`,
+        });
+      }
+    }
+
+    // Check RLS policies
+    const policies = [
+      { table: 'events', name: 'events_select_policy' },
+      { table: 'spend', name: 'spend_select_policy' },
+      { table: 'metrics_daily', name: 'metrics_daily_select_policy' },
+    ];
+
+    for (const policy of policies) {
+      const result = await client.query(
+        `SELECT EXISTS(
+          SELECT 1 FROM pg_policies 
+          WHERE schemaname = 'public' 
+          AND tablename = $1 
+          AND policyname = $2
+        ) as exists`,
+        [policy.table, policy.name]
+      );
+      if (!result.rows[0].exists) {
+        missing.push({
+          type: 'policy',
+          name: policy.name,
+          sql: `CREATE POLICY ${policy.name} ON public.${policy.table}
+    FOR SELECT
+    USING (true);`,
+        });
+      }
+    }
+
+    // Generate migration file if missing objects found
+    if (missing.length > 0) {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+      const filename = `${timestamp}_delta.sql`;
+      const filepath = join(process.cwd(), 'supabase', 'migrations', filename);
+
+      let sql = `-- Delta Migration: Only Missing Objects
+-- Generated: ${new Date().toISOString()}
+-- Idempotent: Safe to re-run
+
 `;
-    }
 
-    if(sql.trim().length===0){ console.log("No delta required."); return; }
-    const file=path.join(outDir,`${stamp()}_delta.sql`);
-    fs.writeFileSync(file,`-- AUTO-GENERATED DELTA\nSET statement_timeout=0;\n${sql}`);
-    console.log("✅ wrote",file);
-  } finally { c.release(); await pool.end(); }
+      for (const obj of missing) {
+        sql += `-- ${obj.type.toUpperCase()}: ${obj.name}\n`;
+        sql += `${obj.sql}\n\n`;
+      }
+
+      writeFileSync(filepath, sql);
+      console.log(`✅ Generated delta migration: ${filepath}`);
+      console.log(`   Missing objects: ${missing.length}`);
+      missing.forEach((m) => console.log(`   - ${m.type}: ${m.name}`));
+    } else {
+      console.log('✅ No missing objects found. Database is up to date.');
+    }
+  } catch (error) {
+    console.error('❌ Error generating delta migration:', error);
+    process.exit(1);
+  } finally {
+    await client.end();
+  }
 }
-main().catch(e=>{ console.error(e); process.exit(1); });
+
+generateDeltaMigration().catch((error) => {
+  console.error('❌ Fatal error:', error);
+  process.exit(1);
+});

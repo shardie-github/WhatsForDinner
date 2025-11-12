@@ -1,42 +1,34 @@
-# READY_loop_fix_001: Fix Acquisition → Activation Loop
+# READY: User Activation → Product Improvement Loop
 
-**Type:** System Health Fix  
-**Priority:** High  
-**Owner:** Growth Lead  
-**Status:** Ready
+**Type:** Loop Fix  
+**Priority:** HIGH  
+**Owner:** Product Lead  
+**KPI:** Weekly reviews running, activation rate +5%  
+**30-Day Signal:** Weekly activation reviews running, activation rate improves by 5%
+
+---
 
 ## Problem
 
-Empty pantry requires manual input (5+ minutes), activation rate only 60%. Acquisition → Activation loop is broken.
+Activation data not systematically analyzed, product improvements not measured for impact.
+
+---
 
 ## Solution
 
-Pre-fill onboarding with sample items and auto-generate first meal plan.
+1. Implement weekly activation review
+2. A/B test all product changes
+3. Measure impact of product changes on activation
 
-## Implementation
+---
 
-1. Pre-fill pantry with 10-15 common Canadian pantry items (7 days)
-2. Add one-click "Generate my first meal plan" button (7 days)
-3. A/B test: 50% rollout (7 days)
-4. Measure: activation rate, time-to-activation (7 days)
+## Acceptance Criteria
 
-## Success Criteria
+- [ ] Weekly activation review process established
+- [ ] A/B testing framework for product changes
+- [ ] Activation impact dashboard created
+- [ ] Activation rate improves by 5%
 
-- Activation rate: 75%+ (treatment) vs. 60% (control)
-- Time-to-activation: <2 minutes (treatment) vs. 5+ minutes (control)
+---
 
-## KPI
-
-**Target:** Activation rate >75%
-
-## 30-Day Signal
-
-Activation rate >70% in treatment group
-
-## Dependencies
-
-None
-
-## Impact
-
-**High** - Fixes broken acquisition → activation loop, increases activation rate by 25%
+**Related:** `/solutions/system/loop_fixes.md`

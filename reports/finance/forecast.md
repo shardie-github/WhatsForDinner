@@ -1,218 +1,110 @@
-# Financial Forecast & Unit Economics
+# Financial Forecast & Model
 
 **Generated:** 2025-01-27  
-**Model:** Base/Optimistic/Conservative scenarios  
-**Time Horizon:** 12 months
+**Model Version:** 1.0  
+**Forecast Period:** 2025-01 to 2025-05
 
 ---
 
 ## Executive Summary
 
-**Current State:** $0 revenue, infrastructure built but not activated  
-**90-Day Target:** $500+/month revenue (monetization activation)  
-**12-Month Target:** $2,000+/month MRR, 1,000+ users
+**Current State:** No revenue (all monetization channels built but not enabled)  
+**30-Day Target:** $5,000 MRR  
+**90-Day Target:** $12,000 MRR  
+**Key Assumption:** Monetization activation drives immediate revenue
 
-**Key Leverage Points:**
-1. Activate monetization channels ($500/month passive revenue)
-2. Reduce CAC via referral program ($30 → $20)
-3. Increase ARPU via upsells ($12 → $15)
-4. Reduce churn via retention loops (5% → 3%)
-
----
-
-## Unit Economics Summary
-
-| Metric | Base Case | Optimistic Case | Conservative Case |
-|--------|-----------|-----------------|-------------------|
-| **ARPU** | $12/month | $15/month | $10/month |
-| **COGS** | $1.65/month | $1.50/month | $1.80/month |
-| **Gross Margin** | 86% | 90% | 83% |
-| **CAC** | $30 | $20 | $40 |
-| **LTV** | $144 | $240 | $100 |
-| **LTV/CAC** | 4.8x | 12x | 2.5x |
-| **Payback Period** | 2.5 months | 1.3 months | 4.0 months |
-| **Monthly Churn** | 5% | 3% | 8% |
-
-**Verdict:** Base case shows healthy unit economics (LTV/CAC 4.8x). Optimistic case is exceptional (12x). Conservative case requires optimization (2.5x).
+**Unit Economics:**
+- CAC: $45 (initial) → $38 (optimized)
+- LTV: $150 (initial) → $180 (improved)
+- LTV/CAC: 3.33x → 4.74x (target: >3x)
 
 ---
 
 ## Revenue Forecast
 
-### Month-by-Month MRR Projection (Base Case)
-
-| Month | Users | MRR | ARR | Notes |
-|-------|-------|-----|-----|-------|
-| 1 | 50 | $600 | $7,200 | Initial launch, monetization activated |
-| 2 | 150 | $1,800 | $21,600 | Referral program launched |
-| 3 | 300 | $3,600 | $43,200 | Grocery partnerships live |
-| 6 | 600 | $7,200 | $86,400 | Product simplification complete |
-| 12 | 1,000 | $12,000 | $144,000 | Steady growth |
-
-### Revenue Breakdown (Month 12, Base Case)
-
-- **Subscription Revenue:** $12,000/month (1,000 users × $12 ARPU)
-- **Affiliate Revenue:** $200/month (grocery affiliate links)
-- **API Monetization:** $200/month (API usage fees)
-- **Data Insights:** $100/month (anonymized data)
-- **Total MRR:** $12,500/month
+| Month | MRR (CAD) | ARR (CAD) | Active Users | CAC (CAD) | LTV (CAD) | LTV/CAC |
+|-------|-----------|-----------|--------------|-----------|-----------|---------|
+| 2025-01 | $0 | $0 | 0 | $45 | $150 | 3.33x |
+| 2025-02 | $5,000 | $60,000 | 100 | $42 | $165 | 3.93x |
+| 2025-03 | $12,000 | $144,000 | 300 | $38 | $180 | 4.74x |
+| 2025-04 | $25,000 | $300,000 | 800 | $38 | $180 | 4.74x |
+| 2025-05 | $45,000 | $540,000 | 2,000 | $38 | $180 | 4.74x |
 
 ---
 
-## Cost Structure
+## Key Assumptions
 
-### Monthly Operating Expenses
+### Revenue Assumptions
+- **rev_001:** Initial revenue = $0 (current state, 95% confidence)
+- **rev_002:** Month 2 revenue = $5,000 after monetization activation (70% confidence)
+- **rev_003:** Month 3 revenue = $12,000 with growth (65% confidence)
 
-| Category | Base Case | Optimistic | Conservative |
-|----------|-----------|------------|--------------|
-| **Infrastructure** | $200 | $200 | $150 |
-| **Tools** | $300 | $300 | $200 |
-| **Team** | $4,500 | $7,500 | $2,650 |
-| **Total OpEx** | $5,000 | $8,000 | $3,000 |
+### CAC Assumptions
+- **cac_001:** Initial CAC = $45 (industry benchmark, 60% confidence)
+- **cac_002:** CAC improves to $42 with optimization (65% confidence)
+- **cac_003:** CAC optimizes to $38 (70% confidence)
 
-### Cost per User
+### LTV Assumptions
+- **ltv_001:** Initial LTV = $150 (projection, 60% confidence)
+- **ltv_002:** LTV improves to $165 with retention (65% confidence)
+- **ltv_003:** LTV optimizes to $180 (70% confidence)
 
-- **COGS:** $1.65/user/month (payment processing)
-- **OpEx Allocation:** $5/user/month (at 1,000 users)
-- **Total Cost per User:** $6.65/user/month
+### User Growth Assumptions
+- **users_001:** Current active users = 0 (current state, 95% confidence)
+- **users_002:** Month 2 active users = 100 (70% confidence)
+- **users_003:** Month 3 active users = 300 (65% confidence)
 
----
-
-## Path to Profitability
-
-### Break-Even Analysis
-
-**Break-Even Users:** 417 users (Base Case)
-- Revenue needed: $5,000/month (OpEx)
-- At $12 ARPU: 417 users
-
-**Months to Break-Even:** 12 months (Base Case)
-- Month 1: 50 users
-- Month 6: 600 users (above break-even)
-- Month 12: 1,000 users (2.4x break-even)
-
-### Cash Flow Projection
-
-**Assumptions:**
-- Starting cash: $60,000
-- Monthly burn: $5,000 (OpEx - Revenue)
-- Month 6: Break-even reached
-- Month 12: Positive cash flow
-
-**Runway:** 12 months (Base Case)
-- Conservative: 18 months
-- Optimistic: 8 months
+### Churn Assumptions
+- **churn_001:** Initial monthly churn = 5% (industry benchmark, 70% confidence)
+- **churn_002:** Churn improves to 4% with product improvements (65% confidence)
+- **churn_003:** Churn optimizes to 3% (70% confidence)
 
 ---
 
-## Sensitivity Analysis
+## Scenario Analysis
 
-### Key Variables Impact
+### Base Case (70% probability)
+- Month 2: $5,000 MRR, 100 users
+- Month 3: $12,000 MRR, 300 users
+- Month 5: $45,000 MRR, 2,000 users
 
-| Variable | Change | Impact on LTV/CAC |
-|----------|--------|------------------|
-| **CAC** | -33% ($30 → $20) | +67% (4.8x → 8x) |
-| **ARPU** | +25% ($12 → $15) | +25% (4.8x → 6x) |
-| **Churn** | -40% (5% → 3%) | +67% (LTV $144 → $240) |
-| **Referral Rate** | +20% (0% → 20%) | CAC -33% ($30 → $20) |
+### Optimistic Case (20% probability)
+- Month 2: $8,000 MRR, 150 users
+- Month 3: $20,000 MRR, 500 users
+- Month 5: $75,000 MRR, 3,500 users
 
-**Combined Effect:** If all levers activated:
-- CAC: $30 → $20 (-33%)
-- ARPU: $12 → $15 (+25%)
-- Churn: 5% → 3% (-40%)
-- LTV: $144 → $240 (+67%)
-- **LTV/CAC: 4.8x → 12x (+150%)**
-
----
-
-## Risk Factors
-
-### Financial Risks
-
-1. **Revenue Activation Delayed**
-   - Risk: Monetization channels not enabled
-   - Impact: $0 revenue for 6+ months
-   - Mitigation: Enable channels immediately (7 days)
-
-2. **CAC Exceeds Budget**
-   - Risk: Paid CAC >$60, referral rate <5%
-   - Impact: LTV/CAC <2x, unsustainable
-   - Mitigation: Focus on organic growth, activate referral program
-
-3. **Churn Rate Spikes**
-   - Risk: Monthly churn >10%
-   - Impact: LTV <$100, negative unit economics
-   - Mitigation: Improve retention loops, fix product issues
-
-4. **Runway Insufficient**
-   - Risk: Burn rate >revenue, <6 months cash
-   - Impact: Business viability threatened
-   - Mitigation: Lean operations, focus on revenue, fundraise if needed
+### Pessimistic Case (10% probability)
+- Month 2: $2,000 MRR, 50 users
+- Month 3: $6,000 MRR, 150 users
+- Month 5: $20,000 MRR, 800 users
 
 ---
 
-## Recommendations
+## Key Risks
 
-### Immediate Actions (30 Days)
+1. **Revenue Activation Risk:** Monetization channels may not activate as expected
+   - Mitigation: Run `pnpm monetization:enable` immediately
+   - Monitor: Daily revenue dashboard
 
-1. **Activate Monetization Channels**
-   - Target: $500/month passive revenue
-   - Effort: Low (1 day)
-   - Impact: High (infinite ROI from $0)
+2. **CAC Validation Risk:** CAC assumptions not validated with real data
+   - Mitigation: Launch free tier, measure real CAC
+   - Monitor: CAC by channel, optimize channels
 
-2. **Connect Revenue Dashboard**
-   - Target: Real-time revenue visibility
-   - Effort: Low (7 days)
-   - Impact: Medium (data-driven decisions)
-
-### Short-Term Actions (60 Days)
-
-3. **Activate Referral Program**
-   - Target: CAC $30 → $20
-   - Effort: Medium (30 days)
-   - Impact: High (33% CAC reduction)
-
-4. **Optimize Onboarding**
-   - Target: Activation rate 60% → 75%
-   - Effort: Low (7 days)
-   - Impact: Medium (25% activation lift)
-
-### Long-Term Actions (90 Days)
-
-5. **Build Retention Loops**
-   - Target: Churn 5% → 3%
-   - Effort: Medium (60 days)
-   - Impact: High (LTV $144 → $240)
-
-6. **Upsell to Pro Tier**
-   - Target: ARPU $12 → $15
-   - Effort: Low (30 days)
-   - Impact: Medium (25% ARPU increase)
+3. **LTV Validation Risk:** LTV assumptions not validated with real data
+   - Mitigation: Measure retention, optimize pricing
+   - Monitor: 30/60/90-day retention, LTV by cohort
 
 ---
 
-## Success Metrics
+## Next Steps
 
-### 30-Day Signals
-
-- Revenue dashboard shows non-zero revenue
-- Monetization channels generating $500+/month
-- At least 50 users acquired
-
-### 60-Day Signals
-
-- Referral program active, 20% of users from referrals
-- Activation rate >75%
-- CAC <$25 (blended)
-
-### 90-Day Signals
-
-- MRR >$1,000/month
-- 300+ users
-- LTV/CAC >6x
-- Churn <4%
+1. **Immediate (Week 1):** Enable monetization channels, measure baseline
+2. **30 Days:** Validate CAC/LTV with real data, optimize channels
+3. **60 Days:** Scale successful channels, improve unit economics
+4. **90 Days:** Review forecast vs. actual, update model
 
 ---
 
-*Financial model assumptions documented in `/models/assumptions.json`*  
-*Raw data in `/models/finance_model.csv`*
+**Model Files:**
+- `/models/finance_model.csv` - Raw data
+- `/models/assumptions.json` - Assumptions with confidence scores

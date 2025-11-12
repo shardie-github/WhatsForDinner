@@ -1,48 +1,67 @@
-# READY_realignment_003: Simplify Product Positioning
+# READY: Canadian Grocery Integration Activation
 
 **Type:** Realignment  
-**Priority:** 0.9 (Impact × Confidence ÷ Time)  
-**Owner:** Product Lead  
-**Status:** Ready  
-**Estimated Effort:** 90 days
+**Priority:** HIGH  
+**Owner:** Partnerships Lead  
+**KPI:** 2+ grocery APIs integrated, grocery list sync working  
+**30-Day Signal:** 2+ grocery APIs integrated, grocery list sync functional, users can add items to cart  
+**Impact:** HIGH  
+**Effort:** MEDIUM  
+**Confidence:** 80%  
+**Priority Score:** 8.0 (Impact × Confidence ÷ Effort)
 
-## Objective
+---
 
-Strip product to core value prop: pantry-first meal planning. Archive enterprise features.
+## Problem
 
-## Steps
+Core differentiator (Canadian grocery integration) mentioned but only 3 stores (Loblaws, Metro, Sobeys) referenced, no evidence of active integrations. This loses competitive advantage.
 
-1. Define core features: pantry → meal suggestions → grocery list (1 day)
-2. Archive enterprise features: federation, nomad, marketplace, community portal (14 days)
-3. Simplify onboarding: pre-fill pantry, auto-generate first meal plan (7 days)
-4. Update messaging: "Pantry-first meal planning" (1 day)
-5. Rebalance features: 70% solo, 30% family (30 days)
-6. User testing: validate simplicity (7 days)
-7. Launch simplified product (30 days)
+**Evidence:**
+- Docs mention Canadian stores but no active integrations
+- No grocery API connections visible
+- Grocery list sync not functional
+- Users cannot add items to cart
 
-## Success Criteria
+---
 
-- User feedback: "easier to use"
-- Activation rate >75%
-- NPS >50
-- Core features clearly defined and accessible
+## Solution
 
-## KPI
+1. **Prioritize grocery API partnerships:**
+   - Loblaws API integration
+   - Metro API integration
+   - Sobeys API integration
+   - Add 2+ additional stores (Walmart, Real Canadian Superstore)
 
-**Target:** Activation rate: 75%+ (from 60%), NPS: 50+ (from 52)
+2. **Build grocery list sync:**
+   - Connect pantry items to grocery store inventory
+   - Enable "Add to Cart" functionality
+   - Support multiple stores per user
 
-## 30-Day Signal
+3. **Make this #1 feature:**
+   - Highlight in marketing
+   - Feature in onboarding
+   - Use as competitive differentiator
 
-User feedback: "easier to use", activation rate >75%
+---
 
-## Dependencies
+## Acceptance Criteria
 
-None
+- [ ] 2+ grocery APIs integrated (Loblaws, Metro minimum)
+- [ ] Grocery list sync functional
+- [ ] Users can add items to cart
+- [ ] Multiple stores supported per user
+- [ ] Featured in onboarding flow
 
-## Impact
+---
 
-**High** - Improves user experience, reduces complexity, increases activation
+## 30-Day Success Signal
 
-## Risk
+2+ grocery APIs integrated, grocery list sync working, users successfully adding items to cart.
 
-Medium - Requires careful feature deprecation and user communication
+---
+
+## Related
+
+- `/backlog/READY_realignment_001.md` - Revenue Activation
+- `/backlog/READY_realignment_002.md` - Product Simplification
+- `/reports/exec/unaligned_audit.md` - Full audit report

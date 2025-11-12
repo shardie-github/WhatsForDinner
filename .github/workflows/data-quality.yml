@@ -1,0 +1,29 @@
+name: Data Quality Checks
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 02:00 America/Toronto (nightly)
+  workflow_dispatch:
+jobs:
+  dq:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install deps
+        run: npm ci || true
+      - name: Recompute Metrics (Yesterday)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          TZ: America/Toronto
+        run: |
+          YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
+          tsx scripts/etl/compute_metrics.ts --start=$YESTERDAY --end=$YESTERDAY
+      - name: Run Data Quality Checks
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: tsx scripts/agents/run_data_quality.ts
+      - name: Notify
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: tsx scripts/agents/notify.ts --message="Data quality checks completed" || true
