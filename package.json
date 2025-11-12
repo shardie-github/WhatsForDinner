@@ -45,6 +45,7 @@
     "hygiene": "pnpm typecheck && pnpm lint && pnpm prune:exports && pnpm scan:usage && pnpm audit:deps",
     "db:migrate:monetization": "psql $DATABASE_URL -f apps/web/supabase/migrations/20250109_affiliate_system.sql && psql $DATABASE_URL -f apps/web/supabase/migrations/20250109_api_monetization.sql && psql $DATABASE_URL -f apps/web/supabase/migrations/20250109_marketplace_system.sql && psql $DATABASE_URL -f apps/web/supabase/migrations/20250109_data_insights_system.sql && psql $DATABASE_URL -f apps/web/supabase/migrations/20250109_monetization_settings.sql && psql $DATABASE_URL -f apps/web/supabase/migrations/20250109_missing_tables.sql",
     "monetization:enable": "./scripts/enable-monetization.sh",
+    "monetization:enable:api": "tsx scripts/enable-monetization-api.ts",
     "monetization:status": "node -e \"console.log('Monetization channels:', process.env.AFFILIATE_ENABLED ? '✅ Enabled' : '❌ Disabled')\"",
     "chaos:test": "node scripts/chaos-testing.js",
     "chaos:run": "tsx packages/testing/chaos/scenarios.ts",

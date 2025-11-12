@@ -5,17 +5,34 @@ import { z } from 'zod';
 import { withCSRFProtection } from '@/lib/csrf-middleware';
 import { NextRequest } from 'next/server';
 
+// Canadian pantry staples - optimized for solo users
 const SAMPLE_INGREDIENTS = [
+  // Proteins
   'chicken breast',
+  'eggs',
+  'ground beef',
+  'salmon fillet',
+  // Grains & Starches
   'rice',
+  'pasta',
+  'bread',
+  'potatoes',
+  // Vegetables
   'tomatoes',
   'onions',
   'garlic',
+  'bell peppers',
+  'carrots',
+  'broccoli',
+  // Pantry Staples
   'olive oil',
-  'pasta',
   'cheese',
-  'eggs',
-  'bread',
+  'butter',
+  'milk',
+  'flour',
+  'sugar',
+  'salt',
+  'black pepper',
 ];
 
 /**
@@ -89,13 +106,29 @@ async function handler(req: NextRequest) {
       .upsert({
         user_id: user.id,
         sample_data_seeded: true,
+        pantry_prefilled: true,
         updated_at: new Date().toISOString(),
+      });
+
+    // Track event for analytics
+    await supabase
+      .from('events')
+      .insert({
+        user_id: user.id,
+        event_name: 'pantry_prefilled',
+        occurred_at: new Date().toISOString(),
+        props: {
+          ingredient_count: data.length,
+          source: 'onboarding',
+        },
       });
 
     return NextResponse.json({
       success: true,
       count: data.length,
       ingredients: SAMPLE_INGREDIENTS,
+      message: 'Pantry pre-filled with Canadian staples. Ready to generate your first meal plan!',
+      next_step: 'generate_meal_plan',
     });
   } catch (error) {
     // Error handled: Error seeding sample data:
