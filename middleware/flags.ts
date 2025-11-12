@@ -1,208 +1,150 @@
 /**
- * Feature Flag Middleware
+ * Feature Flags Middleware
  * 
- * Handles feature flag evaluation and experiment assignment for growth experiments.
- * Integrates with Supabase experiments table and feature flag service.
+ * Simple feature flag handler for A/B testing and gradual rollouts.
+ * Reads flags from /featureflags/flags.json
  * 
  * Usage:
- *   import { getFeatureFlag, getExperimentVariant } from '@/middleware/flags';
+ *   import { getFlag, isEnabled } from '@/middleware/flags';
  *   
- *   const variant = await getExperimentVariant('onboarding_conversion_optimization', userId);
- *   if (variant === 'treatment') {
- *     // Show optimized onboarding flow
+ *   if (isEnabled('prefill_onboarding', userId)) {
+ *     // Show pre-filled onboarding
  *   }
  */
 
-import { createClient } from '@supabase/supabase-js';
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
 
-interface FeatureFlag {
-  key: string;
-  name: string;
+interface FlagConfig {
   enabled: boolean;
-  variants: Array<{
-    key: string;
-    name: string;
-    allocation: number;
-  }>;
-  experiment_slug?: string;
+  rollout_percentage: number;
+  description?: string;
+  owner?: string;
+  experiment?: string;
 }
 
-interface ExperimentAssignment {
-  experiment_slug: string;
-  variant: string;
-  assigned_at: Date;
+type FlagsConfig = Record<string, FlagConfig>;
+
+let flagsCache: FlagsConfig | null = null;
+let cacheTimestamp = 0;
+const CACHE_TTL = 60000; // 1 minute
+
+function loadFlags(): FlagsConfig {
+  const now = Date.now();
+  
+  // Return cached flags if still valid
+  if (flagsCache && now - cacheTimestamp < CACHE_TTL) {
+    return flagsCache;
+  }
+
+  try {
+    const flagsPath = path.join(process.cwd(), 'featureflags', 'flags.json');
+    const flagsData = fs.readFileSync(flagsPath, 'utf-8');
+    flagsCache = JSON.parse(flagsData);
+    cacheTimestamp = now;
+    return flagsCache!;
+  } catch (error) {
+    console.error('Error loading feature flags:', error);
+    return {};
+  }
 }
 
 /**
  * Get feature flag configuration
  */
-export async function getFeatureFlag(
-  flagKey: string,
-  supabaseUrl?: string,
-  supabaseKey?: string
-): Promise<FeatureFlag | null> {
-  // Option 1: Load from local flags.json (for development)
-  try {
-    const flags = require('../featureflags/flags.json');
-    const flag = flags.flags.find((f: FeatureFlag) => f.key === flagKey);
-    if (flag) {
-      return flag;
-    }
-  } catch (error) {
-    // Fallback to Supabase if local file not found
-  }
+export function getFlag(flagName: string): FlagConfig | null {
+  const flags = loadFlags();
+  return flags[flagName] || null;
+}
+
+/**
+ * Check if feature flag is enabled for a specific user
+ * Uses consistent hashing to ensure same user always gets same treatment
+ */
+export function isEnabled(flagName: string, userId?: string | null): boolean {
+  const flag = getFlag(flagName);
   
-  // Option 2: Load from Supabase experiments table (for production)
-  if (supabaseUrl && supabaseKey) {
-    try {
-      const supabase = createClient(supabaseUrl, supabaseKey);
-      const { data, error } = await supabase
-        .from('experiments')
-        .select('*')
-        .eq('slug', flagKey)
-        .single();
-      
-      if (error || !data) {
-        return null;
-      }
-      
-      // Transform Supabase experiment to feature flag format
-      return {
-        key: data.slug,
-        name: data.name,
-        enabled: data.status === 'running',
-        variants: [
-          { key: 'control', name: data.variant_a_name, allocation: 100 - data.allocation_pct },
-          { key: 'treatment', name: data.variant_b_name, allocation: data.allocation_pct },
-        ],
-        experiment_slug: data.slug,
-      };
-    } catch (error) {
-      console.error('Error fetching feature flag from Supabase:', error);
-      return null;
-    }
+  if (!flag) {
+    return false;
   }
+
+  if (!flag.enabled) {
+    return false;
+  }
+
+  // If rollout is 100%, everyone gets it
+  if (flag.rollout_percentage >= 100) {
+    return true;
+  }
+
+  // If no userId provided, use random (for anonymous users)
+  if (!userId) {
+    return Math.random() * 100 < flag.rollout_percentage;
+  }
+
+  // Use consistent hashing to ensure same user always gets same treatment
+  const hash = crypto
+    .createHash('md5')
+    .update(`${flagName}:${userId}`)
+    .digest('hex');
   
+  const hashValue = parseInt(hash.substring(0, 8), 16);
+  const bucket = hashValue % 100;
+  
+  return bucket < flag.rollout_percentage;
+}
+
+/**
+ * Get experiment assignment for a user
+ * Returns experiment name if flag is part of an experiment and user is in treatment
+ */
+export function getExperimentAssignment(
+  flagName: string,
+  userId?: string | null
+): string | null {
+  const flag = getFlag(flagName);
+  
+  if (!flag || !flag.experiment) {
+    return null;
+  }
+
+  if (isEnabled(flagName, userId)) {
+    return flag.experiment;
+  }
+
   return null;
 }
 
 /**
- * Get experiment variant assignment for a user
- * Uses consistent hashing to ensure same user gets same variant
+ * Check if user is in control or treatment group for an experiment
  */
-export async function getExperimentVariant(
-  flagKey: string,
-  userId: string | null,
-  supabaseUrl?: string,
-  supabaseKey?: string
-): Promise<string> {
-  const flag = await getFeatureFlag(flagKey, supabaseUrl, supabaseKey);
+export function getExperimentGroup(
+  flagName: string,
+  userId?: string | null
+): 'control' | 'treatment' | null {
+  const flag = getFlag(flagName);
   
-  if (!flag || !flag.enabled) {
-    return 'control'; // Default to control if flag disabled or not found
+  if (!flag || !flag.experiment) {
+    return null;
   }
-  
-  // If no user ID, use random assignment (for anonymous users)
-  if (!userId) {
-    return Math.random() < flag.variants[1].allocation / 100 ? 'treatment' : 'control';
-  }
-  
-  // Use consistent hashing based on user ID and flag key
-  const hash = simpleHash(userId + flagKey);
-  const hashValue = hash % 100;
-  
-  // Assign based on allocation percentages
-  const treatmentAllocation = flag.variants.find(v => v.key === 'treatment')?.allocation || 0;
-  
-  if (hashValue < treatmentAllocation) {
-    return 'treatment';
-  } else {
-    return 'control';
-  }
+
+  return isEnabled(flagName, userId) ? 'treatment' : 'control';
 }
 
 /**
- * Simple hash function for consistent assignment
+ * Reload flags from disk (useful for testing or manual updates)
  */
-function simpleHash(str: string): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32-bit integer
-  }
-  return Math.abs(hash);
+export function reloadFlags(): void {
+  flagsCache = null;
+  cacheTimestamp = 0;
 }
 
-/**
- * Check if feature flag is enabled
- */
-export async function isFeatureEnabled(
-  flagKey: string,
-  supabaseUrl?: string,
-  supabaseKey?: string
-): Promise<boolean> {
-  const flag = await getFeatureFlag(flagKey, supabaseUrl, supabaseKey);
-  return flag?.enabled || false;
-}
-
-/**
- * Log experiment assignment to Supabase (for analytics)
- */
-export async function logExperimentAssignment(
-  experimentSlug: string,
-  userId: string | null,
-  variant: string,
-  supabaseUrl: string,
-  supabaseKey: string
-): Promise<void> {
-  try {
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    
-    // Log as event
-    await supabase.from('events').insert({
-      event_type: 'experiment',
-      event_name: 'experiment_assignment',
-      user_id: userId,
-      properties: {
-        experiment_slug: experimentSlug,
-        variant: variant,
-      },
-      source: 'web',
-    });
-  } catch (error) {
-    console.error('Error logging experiment assignment:', error);
-    // Don't throw - logging failure shouldn't break user experience
-  }
-}
-
-/**
- * Example usage in Next.js middleware or API route
- */
-export async function exampleUsage(userId: string | null) {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  
-  // Get variant assignment
-  const variant = await getExperimentVariant(
-    'onboarding_conversion_optimization',
-    userId,
-    supabaseUrl,
-    supabaseKey
-  );
-  
-  // Log assignment
-  if (supabaseUrl && supabaseKey) {
-    await logExperimentAssignment(
-      'onboarding_conversion_optimization',
-      userId,
-      variant,
-      supabaseUrl,
-      supabaseKey
-    );
-  }
-  
-  return variant;
-}
-
-export { FeatureFlag, ExperimentAssignment };
+// Export default for convenience
+export default {
+  getFlag,
+  isEnabled,
+  getExperimentAssignment,
+  getExperimentGroup,
+  reloadFlags,
+};

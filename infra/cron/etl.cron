@@ -1,48 +1,18 @@
-# ============================================================================
-# ETL CRON SCHEDULE
-# Fallback cron entry for external schedulers (e.g., system cron, cron-job.org)
-# Timezone: America/Toronto
-# ============================================================================
+# ETL Cron Schedule
+# Runs daily at 01:10 America/Toronto time
 # 
-# Usage:
-#   1. Copy this file to your system's crontab: crontab -e
-#   2. Or use an external cron service like cron-job.org
-#   3. Ensure environment variables are set in the script or .env file
-#   4. Ensure Node.js and npm are in PATH
-#
-# Schedule: Daily at 01:10 America/Toronto
-# Cron expression: 10 6 * * * (UTC) or adjust for your timezone
-#
-# ============================================================================
+# To install:
+#   crontab -e
+#   Add this line:
+#   10 1 * * * cd /path/to/workspace && TZ=America/Toronto /usr/bin/node scripts/etl/pull_ads_meta.ts --cron
+#   15 1 * * * cd /path/to/workspace && TZ=America/Toronto /usr/bin/node scripts/etl/pull_ads_tiktok.ts --cron
+#   20 1 * * * cd /path/to/workspace && TZ=America/Toronto /usr/bin/node scripts/etl/pull_shopify_orders.ts --cron
+#   25 1 * * * cd /path/to/workspace && TZ=America/Toronto /usr/bin/node scripts/etl/compute_metrics.ts --cron
 
-# Set timezone
-TZ=America/Toronto
+# Note: This file is a reference. Actual cron jobs should be set up via:
+# 1. GitHub Actions (recommended) - see /infra/gh-actions/nightly-etl.yml
+# 2. System cron (alternative) - use the commands above
+# 3. Supabase Edge Functions (alternative) - schedule via Supabase dashboard
 
-# Change to project directory (adjust path as needed)
-cd /path/to/workspace
-
-# Load environment variables from .env file
-export $(cat infra/env/.env | grep -v '^#' | xargs)
-
-# Run ETL jobs sequentially
-# Meta Ads
-10 6 * * * /usr/bin/node scripts/etl/pull_ads_meta.ts --cron >> /var/log/etl/meta.log 2>&1
-
-# TikTok Ads
-15 6 * * * /usr/bin/node scripts/etl/pull_ads_tiktok.ts --cron >> /var/log/etl/tiktok.log 2>&1
-
-# Shopify Orders
-20 6 * * * /usr/bin/node scripts/etl/pull_shopify_orders.ts --cron >> /var/log/etl/shopify.log 2>&1
-
-# Compute Metrics (runs after data pull jobs)
-25 6 * * * /usr/bin/node scripts/etl/compute_metrics.ts --cron >> /var/log/etl/metrics.log 2>&1
-
-# ============================================================================
-# NOTES
-# ============================================================================
-# 1. Adjust paths (/usr/bin/node, /path/to/workspace) based on your system
-# 2. Create log directory: mkdir -p /var/log/etl
-# 3. For external cron services, use full URLs or webhook endpoints
-# 4. Consider using a process manager (PM2, systemd) for better reliability
-# 5. Monitor logs regularly for errors
-# 6. Set up log rotation to prevent disk space issues
+# Timezone: America/Toronto
+# Schedule: Daily at 01:10 local time

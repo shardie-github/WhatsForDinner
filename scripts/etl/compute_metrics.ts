@@ -1,430 +1,227 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 /**
  * ETL Script: Compute Daily Metrics
  * 
- * Aggregates data from orders, spend, and events tables to compute daily metrics
- * for finance model and dashboards.
+ * Aggregates events, orders, and spend data into daily metrics table.
+ * Computes: sessions, add_to_carts, orders, revenue, refunds, AOV, CAC, conversion_rate
  * 
  * Usage:
- *   node scripts/etl/compute_metrics.ts [--dry-run] [--date YYYY-MM-DD]
- * 
- * Environment Variables:
- *   SUPABASE_URL - Supabase project URL
- *   SUPABASE_SERVICE_ROLE_KEY - Supabase service role key
+ *   tsx scripts/etl/compute_metrics.ts
+ *   tsx scripts/etl/compute_metrics.ts --cron  # Run in cron mode
+ *   tsx scripts/etl/compute_metrics.ts --day 2025-01-27  # Compute for specific day
  */
 
-import { createClient } from '@supabase/supabase-js';
-import * as dotenv from 'dotenv';
+import pg from 'pg';
 
-// Load environment variables
-dotenv.config();
+const { Pool } = pg;
 
 interface DailyMetrics {
-  metric_date: string;
-  revenue: number;
+  day: string;
+  sessions: number;
+  add_to_carts: number;
   orders: number;
-  refund_rate: number;
-  cogs_pct: number;
-  cac: number;
-  ltv: number;
-  ltv_cac_ratio: number;
-  gross_margin_pct: number;
-  ebitda_margin_pct: number;
-  cash_flow: number;
-  cumulative_cash: number;
+  revenue_cents: number;
+  refunds_cents: number;
+  aov_cents: number;
+  cac_cents: number;
+  conversion_rate: number;
+  gross_margin_cents: number;
+  traffic: number;
 }
 
-interface RetryOptions {
-  maxRetries: number;
-  baseDelay: number;
-  maxDelay: number;
-}
-
-const DEFAULT_RETRY_OPTIONS: RetryOptions = {
-  maxRetries: 3,
-  baseDelay: 1000,
-  maxDelay: 30000,
-};
-
-/**
- * Exponential backoff retry wrapper
- */
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  options: RetryOptions = DEFAULT_RETRY_OPTIONS
-): Promise<T> {
-  let lastError: Error | null = null;
-  
-  for (let attempt = 0; attempt <= options.maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error as Error;
-      
-      if (attempt < options.maxRetries) {
-        const delay = Math.min(
-          options.baseDelay * Math.pow(2, attempt),
-          options.maxDelay
-        );
-        console.log(`Attempt ${attempt + 1} failed, retrying in ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-    }
-  }
-  
-  throw lastError || new Error('Retry failed');
-}
-
-/**
- * Compute daily metrics from orders, spend, and events
- */
 async function computeDailyMetrics(
-  supabase: any,
-  targetDate: string
-): Promise<DailyMetrics> {
-  console.log(`Computing metrics for ${targetDate}...`);
-  
-  // Get revenue and orders from orders table
-  const { data: ordersData, error: ordersError } = await supabase
-    .from('orders')
-    .select('total_cents, refund_amount_cents, status')
-    .eq('ordered_at::date', targetDate);
-  
-  if (ordersError) {
-    throw new Error(`Error fetching orders: ${ordersError.message}`);
-  }
-  
-  const revenue = (ordersData || [])
-    .filter((o: any) => o.status === 'paid')
-    .reduce((sum: number, o: any) => sum + (o.total_cents || 0), 0);
-  
-  const refundAmount = (ordersData || [])
-    .reduce((sum: number, o: any) => sum + (o.refund_amount_cents || 0), 0);
-  
-  const orders = (ordersData || []).filter((o: any) => o.status === 'paid').length;
-  const refundRate = revenue > 0 ? (refundAmount / revenue) * 100 : 0;
-  
-  // Get spend (CAC calculation)
-  const { data: spendData, error: spendError } = await supabase
-    .from('spend')
-    .select('spend_cents, conversions')
-    .eq('date', targetDate);
-  
-  if (spendError) {
-    throw new Error(`Error fetching spend: ${spendError.message}`);
-  }
-  
-  const totalSpend = (spendData || [])
-    .reduce((sum: number, s: any) => sum + (s.spend_cents || 0), 0);
-  
-  const totalConversions = (spendData || [])
-    .reduce((sum: number, s: any) => sum + (s.conversions || 0), 0);
-  
-  const cac = totalConversions > 0 ? Math.round(totalSpend / totalConversions) : 0;
-  
-  // Get LTV (simplified: average order value * average customer lifetime)
-  // In production, this should use cohort analysis
-  const avgOrderValue = orders > 0 ? revenue / orders : 0;
-  const avgCustomerLifetimeMonths = 12; // Placeholder - should come from cohort analysis
-  const ltv = Math.round(avgOrderValue * avgCustomerLifetimeMonths);
-  
-  const ltvCacRatio = cac > 0 ? ltv / cac : 0;
-  
-  // COGS calculation (35% of revenue as per assumptions)
-  const cogsPct = 35; // Placeholder - should be calculated from actual COGS data
-  const cogs = Math.round(revenue * (cogsPct / 100));
-  const grossMargin = revenue - cogs;
-  const grossMarginPct = revenue > 0 ? (grossMargin / revenue) * 100 : 0;
-  
-  // Operating expenses (simplified - should come from actual expense tracking)
-  const operatingExpenses = Math.round(revenue * 0.4); // Placeholder
-  const ebitda = grossMargin - operatingExpenses;
-  const ebitdaMarginPct = revenue > 0 ? (ebitda / revenue) * 100 : 0;
-  
-  // Cash flow
-  const cashFlow = revenue - cogs - operatingExpenses;
-  
-  // Cumulative cash (simplified - should track from starting cash)
-  const { data: prevCashData } = await supabase
-    .from('metrics_daily')
-    .select('metric_value')
-    .eq('metric_name', 'cumulative_cash')
-    .lt('metric_date', targetDate)
-    .order('metric_date', { ascending: false })
-    .limit(1);
-  
-  const prevCumulativeCash = prevCashData?.[0]?.metric_value || 500000; // Starting cash
-  const cumulativeCash = prevCumulativeCash + cashFlow;
-  
-  return {
-    metric_date: targetDate,
-    revenue,
-    orders,
-    refund_rate: refundRate,
-    cogs_pct: cogsPct,
-    cac,
-    ltv,
-    ltv_cac_ratio: ltvCacRatio,
-    gross_margin_pct: grossMarginPct,
-    ebitda_margin_pct: ebitdaMarginPct,
-    cash_flow: cashFlow,
-    cumulative_cash: cumulativeCash,
-  };
-}
+  dbUrl: string,
+  targetDay?: string
+): Promise<DailyMetrics[]> {
+  const pool = new Pool({ connectionString: dbUrl });
 
-/**
- * Insert metrics into Supabase
- */
-async function insertMetrics(
-  supabase: any,
-  metrics: DailyMetrics,
-  dryRun: boolean
-): Promise<{ inserted: number; failed: number }> {
-  let inserted = 0;
-  let failed = 0;
-  
-  const metricRecords = [
-    { metric_name: 'revenue', metric_value: metrics.revenue, metric_unit: 'cents' },
-    { metric_name: 'orders', metric_value: metrics.orders, metric_unit: 'count' },
-    { metric_name: 'refund_rate', metric_value: metrics.refund_rate, metric_unit: 'percentage' },
-    { metric_name: 'cogs_pct', metric_value: metrics.cogs_pct, metric_unit: 'percentage' },
-    { metric_name: 'cac', metric_value: metrics.cac, metric_unit: 'cents' },
-    { metric_name: 'ltv', metric_value: metrics.ltv, metric_unit: 'cents' },
-    { metric_name: 'ltv_cac_ratio', metric_value: metrics.ltv_cac_ratio, metric_unit: 'ratio' },
-    { metric_name: 'gross_margin_pct', metric_value: metrics.gross_margin_pct, metric_unit: 'percentage' },
-    { metric_name: 'ebitda_margin_pct', metric_value: metrics.ebitda_margin_pct, metric_unit: 'percentage' },
-    { metric_name: 'cash_flow', metric_value: metrics.cash_flow, metric_unit: 'cents' },
-    { metric_name: 'cumulative_cash', metric_value: metrics.cumulative_cash, metric_unit: 'cents' },
-  ];
-  
-  for (const record of metricRecords) {
-    try {
-      const metricRecord = {
-        metric_date: metrics.metric_date,
-        metric_name: record.metric_name,
-        metric_value: record.metric_value,
-        metric_unit: record.metric_unit,
-        breakdown: {},
-      };
-      
-      if (dryRun) {
-        console.log(`[DRY RUN] Would insert:`, metricRecord);
-        inserted++;
-      } else {
-        const { error } = await supabase
-          .from('metrics_daily')
-          .upsert(metricRecord, {
-            onConflict: 'metric_date,metric_name,breakdown',
-          });
-        
-        if (error) {
-          console.error(`Error inserting metric ${record.metric_name}:`, error);
-          failed++;
-        } else {
-          inserted++;
-        }
-      }
-    } catch (error) {
-      console.error(`Error processing metric ${record.metric_name}:`, error);
-      failed++;
-    }
-  }
-  
-  return { inserted, failed };
-}
-
-/**
- * Log ETL job execution
- */
-async function logEtlJob(
-  supabase: any,
-  jobName: string,
-  status: 'started' | 'completed' | 'failed',
-  startedAt: Date,
-  completedAt: Date | null,
-  recordsProcessed: number,
-  recordsInserted: number,
-  recordsUpdated: number,
-  recordsFailed: number,
-  errorMessage: string | null,
-  dryRun: boolean
-) {
-  if (dryRun) {
-    console.log(`[DRY RUN] Would log ETL job:`, {
-      jobName,
-      status,
-      recordsProcessed,
-      recordsInserted,
-      recordsUpdated,
-      recordsFailed,
-    });
-    return;
-  }
-  
-  const { error } = await supabase.from('etl_logs').insert({
-    job_name: jobName,
-    status,
-    started_at: startedAt.toISOString(),
-    completed_at: completedAt?.toISOString() || null,
-    records_processed: recordsProcessed,
-    records_inserted: recordsInserted,
-    records_updated: recordsUpdated,
-    records_failed: recordsFailed,
-    error_message: errorMessage,
-    dry_run: dryRun,
-  });
-  
-  if (error) {
-    console.error(`Error logging ETL job:`, error);
-  }
-}
-
-/**
- * Main execution function
- */
-async function main() {
-  const args = process.argv.slice(2);
-  const dryRun = args.includes('--dry-run');
-  const cronMode = args.includes('--cron');
-  
-  // Parse date argument
-  const dateIndex = args.indexOf('--date');
-  const targetDate = dateIndex >= 0 && args[dateIndex + 1]
-    ? args[dateIndex + 1]
-    : cronMode
-    ? new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // Yesterday
-    : new Date().toISOString().split('T')[0]; // Today
-  
-  console.log('='.repeat(60));
-  console.log('Compute Metrics ETL Job');
-  console.log('='.repeat(60));
-  console.log(`Target Date: ${targetDate}`);
-  console.log(`Dry Run: ${dryRun}`);
-  console.log(`Cron Mode: ${cronMode}`);
-  console.log('='.repeat(60));
-  
-  const startedAt = new Date();
-  
   try {
-    // Validate environment variables
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    
-    if (!supabaseUrl) {
-      throw new Error('SUPABASE_URL environment variable is required');
+    // Determine date range
+    let dateFilter = '';
+    if (targetDay) {
+      dateFilter = `WHERE day = '${targetDay}'`;
+    } else {
+      // Default to last 7 days
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - 7);
+      dateFilter = `WHERE day >= '${startDate.toISOString().split('T')[0]}' AND day <= '${endDate.toISOString().split('T')[0]}'`;
     }
-    if (!supabaseKey) {
-      throw new Error('SUPABASE_SERVICE_ROLE_KEY environment variable is required');
+
+    // Compute metrics from events, orders, and spend
+    const query = `
+      WITH daily_events AS (
+        SELECT 
+          DATE(occurred_at) as day,
+          COUNT(DISTINCT CASE WHEN event_name = 'session_start' THEN user_id END) as sessions,
+          COUNT(CASE WHEN event_name = 'add_to_cart' THEN 1 END) as add_to_carts,
+          COUNT(DISTINCT CASE WHEN event_name = 'session_start' THEN user_id END) as traffic
+        FROM public.events
+        ${dateFilter.replace('day', 'DATE(occurred_at)')}
+        GROUP BY DATE(occurred_at)
+      ),
+      daily_orders AS (
+        SELECT 
+          DATE(placed_at) as day,
+          COUNT(*) as orders,
+          SUM(total_cents) as revenue_cents,
+          SUM(CASE WHEN total_cents < 0 THEN ABS(total_cents) ELSE 0 END) as refunds_cents,
+          AVG(total_cents) as aov_cents
+        FROM public.orders
+        ${dateFilter.replace('day', 'DATE(placed_at)')}
+        GROUP BY DATE(placed_at)
+      ),
+      daily_spend AS (
+        SELECT 
+          date as day,
+          SUM(spend_cents) as spend_cents,
+          SUM(clicks) as clicks
+        FROM public.spend
+        ${dateFilter}
+        GROUP BY date
+      ),
+      combined AS (
+        SELECT 
+          COALESCE(e.day, o.day, s.day) as day,
+          COALESCE(e.sessions, 0) as sessions,
+          COALESCE(e.add_to_carts, 0) as add_to_carts,
+          COALESCE(e.traffic, 0) as traffic,
+          COALESCE(o.orders, 0) as orders,
+          COALESCE(o.revenue_cents, 0) as revenue_cents,
+          COALESCE(o.refunds_cents, 0) as refunds_cents,
+          COALESCE(o.aov_cents, 0) as aov_cents,
+          COALESCE(s.spend_cents, 0) as spend_cents,
+          COALESCE(s.clicks, 0) as clicks
+        FROM daily_events e
+        FULL OUTER JOIN daily_orders o ON e.day = o.day
+        FULL OUTER JOIN daily_spend s ON COALESCE(e.day, o.day) = s.day
+      )
+      SELECT 
+        day,
+        sessions,
+        add_to_carts,
+        traffic,
+        orders,
+        revenue_cents,
+        refunds_cents,
+        aov_cents,
+        CASE 
+          WHEN orders > 0 THEN spend_cents / orders 
+          ELSE 0 
+        END as cac_cents,
+        CASE 
+          WHEN sessions > 0 THEN (orders::numeric / sessions) * 100 
+          ELSE 0 
+        END as conversion_rate,
+        revenue_cents - (revenue_cents * 0.14) as gross_margin_cents  -- Assuming 14% COGS
+      FROM combined
+      ORDER BY day DESC
+    `;
+
+    const result = await pool.query(query);
+    return result.rows.map((row) => ({
+      day: row.day,
+      sessions: parseInt(row.sessions || '0', 10),
+      add_to_carts: parseInt(row.add_to_carts || '0', 10),
+      orders: parseInt(row.orders || '0', 10),
+      revenue_cents: parseInt(row.revenue_cents || '0', 10),
+      refunds_cents: parseInt(row.refunds_cents || '0', 10),
+      aov_cents: parseInt(row.aov_cents || '0', 10),
+      cac_cents: parseInt(row.cac_cents || '0', 10),
+      conversion_rate: parseFloat(row.conversion_rate || '0'),
+      gross_margin_cents: parseInt(row.gross_margin_cents || '0', 10),
+      traffic: parseInt(row.traffic || '0', 10),
+    }));
+  } finally {
+    await pool.end();
+  }
+}
+
+async function storeMetrics(dbUrl: string, metrics: DailyMetrics[]): Promise<void> {
+  const pool = new Pool({ connectionString: dbUrl });
+
+  try {
+    for (const metric of metrics) {
+      await pool.query(
+        `INSERT INTO public.metrics_daily (
+          day, sessions, add_to_carts, orders, revenue_cents, refunds_cents,
+          aov_cents, cac_cents, conversion_rate, gross_margin_cents, traffic
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        ON CONFLICT (day) 
+        DO UPDATE SET
+          sessions = EXCLUDED.sessions,
+          add_to_carts = EXCLUDED.add_to_carts,
+          orders = EXCLUDED.orders,
+          revenue_cents = EXCLUDED.revenue_cents,
+          refunds_cents = EXCLUDED.refunds_cents,
+          aov_cents = EXCLUDED.aov_cents,
+          cac_cents = EXCLUDED.cac_cents,
+          conversion_rate = EXCLUDED.conversion_rate,
+          gross_margin_cents = EXCLUDED.gross_margin_cents,
+          traffic = EXCLUDED.traffic`,
+        [
+          metric.day,
+          metric.sessions,
+          metric.add_to_carts,
+          metric.orders,
+          metric.revenue_cents,
+          metric.refunds_cents,
+          metric.aov_cents,
+          metric.cac_cents,
+          metric.conversion_rate,
+          metric.gross_margin_cents,
+          metric.traffic,
+        ]
+      );
     }
-    
-    // Initialize Supabase client
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    
-    // Log job start
-    await logEtlJob(
-      supabase,
-      'compute_metrics',
-      'started',
-      startedAt,
-      null,
-      0,
-      0,
-      0,
-      0,
-      null,
-      dryRun
-    );
-    
-    // Compute metrics
-    const metrics = await computeDailyMetrics(supabase, targetDate);
-    
-    console.log('Computed Metrics:');
-    console.log(`  Revenue: $${(metrics.revenue / 100).toFixed(2)}`);
-    console.log(`  Orders: ${metrics.orders}`);
-    console.log(`  Refund Rate: ${metrics.refund_rate.toFixed(2)}%`);
-    console.log(`  CAC: $${(metrics.cac / 100).toFixed(2)}`);
-    console.log(`  LTV: $${(metrics.ltv / 100).toFixed(2)}`);
-    console.log(`  LTV:CAC Ratio: ${metrics.ltv_cac_ratio.toFixed(2)}`);
-    console.log(`  Gross Margin: ${metrics.gross_margin_pct.toFixed(2)}%`);
-    console.log(`  EBITDA Margin: ${metrics.ebitda_margin_pct.toFixed(2)}%`);
-    console.log(`  Cash Flow: $${(metrics.cash_flow / 100).toFixed(2)}`);
-    console.log(`  Cumulative Cash: $${(metrics.cumulative_cash / 100).toFixed(2)}`);
-    
-    // Insert metrics
-    const { inserted, failed } = await insertMetrics(
-      supabase,
-      metrics,
-      dryRun
-    );
-    
-    const completedAt = new Date();
-    const duration = completedAt.getTime() - startedAt.getTime();
-    
-    console.log('='.repeat(60));
-    console.log('ETL Job Completed');
-    console.log(`Duration: ${duration}ms`);
-    console.log(`Metrics Computed: ${Object.keys(metrics).length}`);
-    console.log(`Records Inserted: ${inserted}`);
-    console.log(`Records Failed: ${failed}`);
-    console.log('='.repeat(60));
-    
-    // Log job completion
-    await logEtlJob(
-      supabase,
-      'compute_metrics',
-      'completed',
-      startedAt,
-      completedAt,
-      Object.keys(metrics).length,
-      inserted,
-      0,
-      failed,
-      null,
-      dryRun
-    );
-    
-    process.exit(failed > 0 ? 1 : 0);
+  } finally {
+    await pool.end();
+  }
+}
+
+async function main() {
+  const isCron = process.argv.includes('--cron');
+  const dayIndex = process.argv.indexOf('--day');
+  const targetDay = dayIndex > -1 ? process.argv[dayIndex + 1] : undefined;
+
+  const dbUrl = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
+
+  if (!dbUrl) {
+    throw new Error('Missing required env var: SUPABASE_DB_URL or DATABASE_URL');
+  }
+
+  if (!isCron) {
+    console.log(`Computing daily metrics${targetDay ? ` for ${targetDay}` : ' (last 7 days)'}...`);
+  }
+
+  try {
+    const metrics = await computeDailyMetrics(dbUrl, targetDay);
+
+    if (metrics.length === 0) {
+      if (!isCron) {
+        console.log('No metrics computed (no data found).');
+      }
+      return;
+    }
+
+    await storeMetrics(dbUrl, metrics);
+
+    if (!isCron) {
+      console.log(`✅ Stored metrics for ${metrics.length} day(s)`);
+      console.log('Sample metrics:', JSON.stringify(metrics[0], null, 2));
+    }
   } catch (error) {
-    const completedAt = new Date();
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    const errorStack = error instanceof Error ? error.stack : undefined;
-    
-    console.error('='.repeat(60));
-    console.error('ETL Job Failed');
-    console.error(`Error: ${errorMessage}`);
-    if (errorStack) {
-      console.error(`Stack: ${errorStack}`);
-    }
-    console.error('='.repeat(60));
-    
-    // Log job failure
-    if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      const supabase = createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY
-      );
-      await logEtlJob(
-        supabase,
-        'compute_metrics',
-        'failed',
-        startedAt,
-        completedAt,
-        0,
-        0,
-        0,
-        0,
-        errorMessage,
-        dryRun
-      );
-    }
-    
+    console.error('Error computing metrics:', error);
     process.exit(1);
   }
 }
 
-// Run if executed directly
 if (require.main === module) {
-  main();
+  main().catch((error) => {
+    console.error('Fatal error:', error);
+    process.exit(1);
+  });
 }
 
-export { computeDailyMetrics, insertMetrics, withRetry };
+export { computeDailyMetrics, storeMetrics };

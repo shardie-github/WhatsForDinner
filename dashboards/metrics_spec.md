@@ -1,248 +1,220 @@
 # Metrics Dashboard Specification
 
-**Purpose:** Define metrics dashboard requirements for finance model, automation monitoring, and growth experiments.
-
-**Timezone:** America/Toronto
-
----
-
-## Dashboard Overview
-
-### 1. Financial Metrics Dashboard
-
-**Purpose:** Real-time view of financial KPIs vs. forecast
-
-**Key Metrics:**
-- Revenue (actual vs. forecast by scenario)
-- Gross Margin % (actual vs. target 70%)
-- EBITDA Margin % (actual vs. target 20%)
-- CAC (actual vs. forecast)
-- LTV (actual vs. forecast)
-- LTV:CAC Ratio (actual vs. target 3.0+)
-- Refund Rate % (actual vs. threshold 6%)
-- Cash Flow (actual vs. forecast)
-- Cumulative Cash (actual vs. forecast)
-- Cash Runway (months)
-
-**Visualizations:**
-- Time series: Revenue, Cash Flow, Cumulative Cash
-- Bar chart: Actual vs. Forecast (Base/Optimistic/Conservative)
-- Gauge: LTV:CAC Ratio, Gross Margin %, EBITDA Margin %
-- Alert indicators: Refund Rate > 6%, CAC > $60, LTV:CAC < 3.0
-
-**Data Source:** `metrics_daily` table
-
-**Update Frequency:** Daily (after ETL completion)
+**Generated:** 2025-01-27  
+**Purpose:** Define metrics dashboard structure and KPIs
 
 ---
 
-### 2. Automation & ETL Dashboard
+## Overview
 
-**Purpose:** Monitor ETL job execution and data pipeline health
+This dashboard provides real-time visibility into key business metrics: revenue, users, acquisition, retention, and unit economics.
 
-**Key Metrics:**
-- ETL Job Status (last 7 days)
-- Records Processed (by job)
-- Records Inserted/Updated/Failed (by job)
-- Job Duration (by job)
-- Error Rate (by job)
-- Data Freshness (last successful pull per source)
+**Data Sources:**
+- `public.metrics_daily` - Aggregated daily metrics
+- `public.orders` - Order data
+- `public.spend` - Ad spend data
+- `public.events` - User events
 
-**Visualizations:**
-- Status timeline: Job execution over time
-- Bar chart: Records processed by job
-- Error log: Recent failures with error messages
-- Health score: Overall pipeline health (0-100)
-
-**Data Source:** `etl_logs` table
-
-**Update Frequency:** Real-time (after each ETL job)
-
-**Alerts:**
-- Job failure (status = 'failed')
-- High error rate (> 5% records failed)
-- Stale data (> 24 hours since last successful pull)
+**Update Frequency:** Daily (via ETL at 01:10 America/Toronto)
 
 ---
 
-### 3. Growth Experiments Dashboard
+## Dashboard Sections
 
-**Purpose:** Track experiment performance and impact on metrics
+### 1. Revenue Overview
 
-**Key Metrics:**
-- Active Experiments (count)
-- Experiment Status (draft/running/paused/completed)
-- Success Metric Value (by experiment)
-- Success Threshold (by experiment)
-- Sample Size Progress (by experiment)
-- Impact on Revenue/CAC/LTV (by experiment)
+**Metrics:**
+- **MRR (Monthly Recurring Revenue)** - Sum of `revenue_cents` for last 30 days / 100
+- **ARR (Annual Recurring Revenue)** - MRR × 12
+- **Revenue Growth %** - Month-over-month growth
+- **Passive Revenue** - Affiliate + API + Data Insights revenue
 
-**Visualizations:**
-- Experiment timeline: Start/end dates
-- Success metric chart: Actual vs. threshold
-- Impact analysis: Revenue/CAC/LTV before vs. after
-- Statistical significance: p-value, confidence interval
+**Visualization:** Line chart (30-day trend), big number cards
 
-**Data Source:** `experiments` table + `metrics_daily` (with experiment breakdown)
-
-**Update Frequency:** Real-time (after each experiment update)
+**Filters:** Date range (7d, 30d, 90d, 1y)
 
 ---
 
-### 4. Channel Performance Dashboard
+### 2. User Metrics
 
-**Purpose:** Compare marketing channel efficiency
+**Metrics:**
+- **Total Users** - Count of unique users from `events` table
+- **MAU (Monthly Active Users)** - Unique users active in last 30 days
+- **Activation Rate** - % of signups who generate first meal plan
+- **7-Day Retention** - % of users active after 7 days
+- **30-Day Retention** - % of users active after 30 days
 
-**Key Metrics:**
-- Spend by Channel (Meta, TikTok, Google, Organic)
-- Revenue by Channel (attributed)
-- CAC by Channel
-- ROAS (Return on Ad Spend) by Channel
-- Conversion Rate by Channel
-- Impressions, Clicks, Conversions by Channel
+**Visualization:** Bar chart (activation, retention), line chart (MAU trend)
 
-**Visualizations:**
-- Stacked bar: Spend vs. Revenue by channel
-- Line chart: CAC trend by channel
-- Table: Channel comparison (CAC, ROAS, Conversion Rate)
-- Funnel: Impressions → Clicks → Conversions by channel
-
-**Data Source:** `spend` table + `orders` table (with attribution)
-
-**Update Frequency:** Daily (after ETL completion)
+**Filters:** User segment (solo, family), date range
 
 ---
 
-## Dashboard Implementation Options
+### 3. Acquisition & CAC
 
-### Option 1: Supabase Dashboard (Built-in)
-- Use Supabase Dashboard with custom SQL queries
-- Pros: No additional setup, integrated with database
-- Cons: Limited customization, basic visualizations
+**Metrics:**
+- **New Users** - Count of new signups (last 30 days)
+- **Blended CAC** - Weighted average: (Organic × $0 + Paid × $40 + Referral × $5) / Total
+- **Paid CAC** - Ad spend / New users from paid channels
+- **Referral Rate** - % of new users from referrals
+- **Organic Rate** - % of new users from organic channels
 
-### Option 2: Metabase / Redash
-- Open-source BI tools
-- Pros: Rich visualizations, easy setup, SQL-based
-- Cons: Requires additional infrastructure
+**Visualization:** Funnel chart (acquisition channels), line chart (CAC trend)
 
-### Option 3: Custom React Dashboard
-- Build custom dashboard using React + Chart.js/Recharts
-- Pros: Full control, integrated with app
-- Cons: More development effort
-
-### Option 4: Google Data Studio / Looker Studio
-- Free BI tool from Google
-- Pros: Easy to use, good visualizations, free
-- Cons: Requires data connector setup
+**Filters:** Channel (organic, paid, referral), date range
 
 ---
 
-## SQL Queries for Dashboards
+### 4. Unit Economics
 
-### Financial Metrics Query
+**Metrics:**
+- **ARPU (Average Revenue Per User)** - MRR / Total Users
+- **LTV (Lifetime Value)** - ARPU / Monthly Churn Rate
+- **LTV/CAC Ratio** - LTV / CAC
+- **Payback Period** - Months to recover CAC
+- **Gross Margin %** - (Revenue - COGS) / Revenue × 100
+
+**Visualization:** Big number cards, trend lines
+
+**Filters:** Date range
+
+---
+
+### 5. Conversion Funnel
+
+**Metrics:**
+- **Sessions** - Count of `session_start` events
+- **Add to Carts** - Count of `add_to_cart` events
+- **Orders** - Count of orders
+- **Conversion Rate** - Orders / Sessions × 100
+- **AOV (Average Order Value)** - Average `total_cents` / 100
+
+**Visualization:** Funnel chart, conversion rate trend
+
+**Filters:** Date range, user segment
+
+---
+
+### 6. Ad Spend & Performance
+
+**Metrics:**
+- **Total Ad Spend** - Sum of `spend_cents` from `spend` table / 100
+- **Clicks** - Sum of `clicks`
+- **Impressions** - Sum of `impressions`
+- **CPC (Cost Per Click)** - Spend / Clicks
+- **CTR (Click-Through Rate)** - Clicks / Impressions × 100
+- **Conversions** - Sum of `conv`
+
+**Visualization:** Bar chart (by platform), line chart (spend trend)
+
+**Filters:** Platform (meta, tiktok), date range
+
+---
+
+### 7. Retention Cohort Analysis
+
+**Metrics:**
+- **Cohort Retention** - % of users from each cohort still active
+- **Cohort Size** - Number of users in each cohort
+- **Retention by Day** - Day 1, 7, 14, 30 retention rates
+
+**Visualization:** Heatmap (cohort × retention day), line chart (retention curves)
+
+**Filters:** Cohort (weekly, monthly), date range
+
+---
+
+## Key Performance Indicators (KPIs)
+
+### Primary KPIs
+
+1. **MRR Growth** - Target: +20% month-over-month
+2. **Activation Rate** - Target: 75%+
+3. **30-Day Retention** - Target: 46%+
+4. **LTV/CAC Ratio** - Target: 4x+
+5. **Blended CAC** - Target: <$25
+
+### Secondary KPIs
+
+1. **7-Day Retention** - Target: 55%+
+2. **Referral Rate** - Target: 20%+
+3. **Conversion Rate** - Target: 5%+
+4. **Gross Margin %** - Target: 85%+
+5. **Payback Period** - Target: <3 months
+
+---
+
+## Alert Thresholds
+
+**Critical Alerts:**
+- MRR drops >10% week-over-week
+- Activation rate drops below 50%
+- CAC exceeds $50
+- LTV/CAC drops below 2x
+
+**Warning Alerts:**
+- 30-day retention drops below 35%
+- Conversion rate drops below 3%
+- Ad spend exceeds budget by 20%
+
+---
+
+## Implementation Notes
+
+**Dashboard Tool:** Recommended: Metabase, Superset, or custom React dashboard
+
+**Data Refresh:** Daily at 01:10 America/Toronto (via ETL)
+
+**Access Control:** 
+- Admin: Full access
+- Growth Lead: Read-only
+- Product Lead: Read-only
+
+**Export:** CSV export available for all metrics
+
+---
+
+## Sample Queries
+
+### MRR Calculation
 ```sql
 SELECT 
-  metric_date,
-  metric_name,
-  metric_value,
-  metric_unit
-FROM metrics_daily
-WHERE metric_date >= CURRENT_DATE - INTERVAL '30 days'
-  AND metric_name IN ('revenue', 'cac', 'ltv', 'ltv_cac_ratio', 'gross_margin_pct', 'ebitda_margin_pct', 'refund_rate', 'cash_flow', 'cumulative_cash')
-ORDER BY metric_date DESC, metric_name;
+  SUM(revenue_cents) / 100.0 as mrr
+FROM public.metrics_daily
+WHERE day >= CURRENT_DATE - INTERVAL '30 days'
 ```
 
-### ETL Job Status Query
+### Activation Rate
 ```sql
 SELECT 
-  job_name,
-  status,
-  started_at,
-  completed_at,
-  records_processed,
-  records_inserted,
-  records_failed,
-  error_message
-FROM etl_logs
-WHERE started_at >= CURRENT_DATE - INTERVAL '7 days'
-ORDER BY started_at DESC;
+  COUNT(DISTINCT CASE WHEN event_name = 'meal_plan_generated' THEN user_id END) * 100.0 / 
+  COUNT(DISTINCT CASE WHEN event_name = 'user_signed_up' THEN user_id END) as activation_rate
+FROM public.events
+WHERE occurred_at >= CURRENT_DATE - INTERVAL '30 days'
 ```
 
-### Channel Performance Query
+### Blended CAC
 ```sql
+WITH acquisition_costs AS (
+  SELECT 
+    SUM(spend_cents) / 100.0 as paid_spend,
+    COUNT(DISTINCT user_id) FILTER (WHERE source = 'paid') as paid_users,
+    COUNT(DISTINCT user_id) FILTER (WHERE source = 'referral') as referral_users,
+    COUNT(DISTINCT user_id) FILTER (WHERE source = 'organic') as organic_users
+  FROM public.orders o
+  LEFT JOIN public.spend s ON DATE(o.placed_at) = s.date
+  WHERE o.placed_at >= CURRENT_DATE - INTERVAL '30 days'
+)
 SELECT 
-  channel,
-  date,
-  SUM(spend_cents) as total_spend,
-  SUM(conversions) as total_conversions,
-  SUM(conversion_value_cents) as total_revenue,
   CASE 
-    WHEN SUM(conversions) > 0 THEN SUM(spend_cents) / SUM(conversions)
-    ELSE 0
-  END as cac
-FROM spend
-WHERE date >= CURRENT_DATE - INTERVAL '30 days'
-GROUP BY channel, date
-ORDER BY date DESC, channel;
-```
-
-### Experiment Performance Query
-```sql
-SELECT 
-  e.slug,
-  e.name,
-  e.status,
-  e.success_metric,
-  e.success_threshold,
-  m.metric_value as actual_value,
-  m.metric_date
-FROM experiments e
-LEFT JOIN metrics_daily m ON m.metric_name = e.success_metric
-WHERE e.status = 'running'
-ORDER BY e.started_at DESC;
+    WHEN (paid_users + referral_users + organic_users) > 0 
+    THEN (paid_spend + (referral_users * 5) + (organic_users * 0)) / 
+         (paid_users + referral_users + organic_users)
+    ELSE 0 
+  END as blended_cac
+FROM acquisition_costs;
 ```
 
 ---
 
-## Alert Configuration
-
-### Financial Alerts
-- **Refund Rate > 6%:** Email/Slack notification
-- **CAC > $60:** Email/Slack notification
-- **LTV:CAC < 3.0:** Email/Slack notification
-- **Cash Runway < 3 months:** Urgent email/Slack notification
-
-### ETL Alerts
-- **Job Failure:** Immediate email/Slack notification
-- **Error Rate > 5%:** Email/Slack notification
-- **Stale Data (> 24h):** Email/Slack notification
-
-### Experiment Alerts
-- **Success Threshold Met:** Email/Slack notification
-- **Statistical Significance Achieved:** Email/Slack notification
-- **Experiment Failure:** Email/Slack notification
-
----
-
-## Access Control
-
-- **Financial Dashboard:** Finance team, executives
-- **ETL Dashboard:** Engineering team, data team
-- **Growth Experiments Dashboard:** Growth team, product team
-- **Channel Performance Dashboard:** Marketing team, growth team
-
----
-
-## Next Steps
-
-1. Choose dashboard implementation option
-2. Set up data connectors
-3. Create initial dashboards
-4. Configure alerts
-5. Set up access control
-6. Document dashboard usage
-
----
-
-**Last Updated:** 2025-01-09  
-**Owner:** Data Team
+*Dashboard implementation should query these tables and display metrics as specified above.*

@@ -1,174 +1,195 @@
 # Growth Experiment Portfolio
 
-**Purpose:** Prioritized list of growth experiments linked to financial metrics and validated through data.
-
-**Last Updated:** 2025-01-09  
-**Timezone:** America/Toronto
-
----
-
-## Portfolio Overview
-
-This portfolio contains 5 prioritized growth experiments designed to:
-1. Improve unit economics (CAC, LTV, LTV:CAC ratio)
-2. Increase revenue growth rate
-3. Reduce refund rate
-4. Optimize channel efficiency
-5. Validate product-market fit signals
+**Generated:** 2025-01-27  
+**Status:** Active  
+**Total Experiments:** 5 prioritized tests
 
 ---
 
-## Prioritization Framework
+## Overview
 
-Experiments are scored using **Impact × Confidence ÷ Effort**:
+This portfolio contains 3-5 prioritized growth experiments designed to improve key metrics: activation, retention, referral, and conversion.
 
-- **Impact:** Expected revenue/CAC/LTV improvement (1-10)
-- **Confidence:** Likelihood of success based on data/analogs (1-10)
-- **Effort:** Development/resource requirements (1-10, higher = more effort)
-
-**Priority Score = (Impact × Confidence) / Effort**
-
----
-
-## Top 5 Experiments
-
-### 1. **Channel Attribution & CAC Optimization** (Priority Score: 8.0)
-- **Impact:** 9 (High - directly improves CAC)
-- **Confidence:** 8 (High - proven optimization area)
-- **Effort:** 9 (Low effort - data analysis)
-- **Status:** Ready to start
-- **Slug:** `channel-attribution-optimization`
-- **Expected Outcome:** Reduce CAC by 15-20% through better channel allocation
-- **Financial Impact:** Improves LTV:CAC ratio, extends cash runway
-
-### 2. **Onboarding Flow Conversion Optimization** (Priority Score: 7.5)
-- **Impact:** 8 (High - improves conversion rate)
-- **Confidence:** 7 (Medium-High - A/B testing proven method)
-- **Effort:** 7.5 (Medium effort - requires dev work)
-- **Status:** Ready to start
-- **Slug:** `onboarding-conversion-optimization`
-- **Expected Outcome:** Increase signup-to-paid conversion by 20-30%
-- **Financial Impact:** Increases revenue per visitor, improves CAC efficiency
-
-### 3. **Retention Email Campaign** (Priority Score: 7.0)
-- **Impact:** 7 (Medium-High - improves LTV)
-- **Confidence:** 8 (High - email marketing proven)
-- **Effort:** 6 (Low-Medium effort - email setup)
-- **Status:** Ready to start
-- **Slug:** `retention-email-campaign`
-- **Expected Outcome:** Increase 30-day retention by 15-20%, extend LTV
-- **Financial Impact:** Increases LTV, improves LTV:CAC ratio
-
-### 4. **Pricing Page A/B Test** (Priority Score: 6.5)
-- **Impact:** 8 (High - directly affects revenue)
-- **Confidence:** 6 (Medium - pricing tests can be unpredictable)
-- **Effort:** 7 (Medium effort - requires design + dev)
-- **Status:** Ready to start
-- **Slug:** `pricing-page-ab-test`
-- **Expected Outcome:** Optimize pricing display to increase conversion by 10-15%
-- **Financial Impact:** Increases ARPU, improves revenue growth
-
-### 5. **Refund Prevention Flow** (Priority Score: 6.0)
-- **Impact:** 6 (Medium - reduces refunds)
-- **Confidence:** 7 (Medium-High - proactive support proven)
-- **Effort:** 8 (Medium-High effort - requires product changes)
-- **Status:** Ready to start
-- **Slug:** `refund-prevention-flow`
-- **Expected Outcome:** Reduce refund rate from 5% to 3-4%
-- **Financial Impact:** Improves net revenue, reduces cash flow impact
+**Portfolio Goals:**
+- Increase activation rate: 60% → 75%
+- Improve 30-day retention: 40% → 45%
+- Build referral loop: 0% → 20% of users from referrals
+- Increase conversion: Free → Paid: 5% → 10%
 
 ---
 
-## Experiment Status Summary
+## Experiment 1: Pre-fill Onboarding (Activation)
 
-| Status | Count | Experiments |
-|--------|-------|-------------|
-| Ready to Start | 5 | All experiments in portfolio |
-| Running | 0 | - |
-| Completed | 0 | - |
-| Paused | 0 | - |
+**Status:** Ready to launch  
+**Priority:** High  
+**Hypothesis:** Pre-filling pantry with sample items and auto-generating first meal plan will reduce time-to-activation from 5+ minutes to <2 minutes, increasing activation rate from 60% to 75%.
 
----
+**Metrics:**
+- Primary: Activation rate (% of signups who generate first meal plan)
+- Secondary: Time-to-activation (minutes), 7-day retention
 
-## Success Criteria
+**Sample Size:** 500 users (250 control, 250 treatment)  
+**Duration:** 30 days  
+**Rollout:** 50% A/B test
 
-### Overall Portfolio Goals (30 days)
-- **CAC Reduction:** 10-15% improvement
-- **LTV Increase:** 10-15% improvement
-- **LTV:CAC Ratio:** Improve from 6.67 to 7.5+
-- **Refund Rate:** Reduce from 5% to 4% or lower
-- **Conversion Rate:** 15-20% improvement
+**Success Criteria:**
+- Activation rate: 75%+ (treatment) vs. 60% (control)
+- Time-to-activation: <2 minutes (treatment) vs. 5+ minutes (control)
 
-### Leading Indicators (7-14 days)
-- Experiment traffic allocation reached
-- Statistical significance approaching (p < 0.1)
-- No negative signals (e.g., increased churn, decreased engagement)
+**Rollback:** If activation rate drops below 55%, revert to control.
 
----
-
-## Resource Requirements
-
-### Engineering
-- **Channel Attribution:** 2-3 days (data analysis, dashboard)
-- **Onboarding Flow:** 5-7 days (design + implementation)
-- **Retention Email:** 2-3 days (email setup, templates)
-- **Pricing Page:** 5-7 days (design + implementation)
-- **Refund Prevention:** 7-10 days (product changes, support integration)
-
-**Total:** ~21-30 engineering days
-
-### Design
-- **Onboarding Flow:** 3-5 days
-- **Pricing Page:** 3-5 days
-- **Refund Prevention:** 2-3 days
-
-**Total:** ~8-13 design days
-
-### Data/Analytics
-- **Channel Attribution:** 3-5 days (analysis, reporting)
-- **All Experiments:** Ongoing monitoring (1-2 hours/day)
-
-**Total:** ~3-5 days + ongoing monitoring
+**Guardrails:**
+- Monitor user feedback for "too pushy" sentiment
+- Ensure pre-filled items are relevant to user location
+- Don't auto-generate meal plan without user consent
 
 ---
 
-## Risk Register
+## Experiment 2: Solo-First Onboarding (Activation)
 
-### High Risk
-- **Pricing Page Test:** Could negatively impact conversion if not executed well
-- **Refund Prevention:** May require significant product changes
+**Status:** Ready to launch  
+**Priority:** Medium  
+**Hypothesis:** Solo-first onboarding flow (detecting solo users and highlighting solo features) will increase solo user activation rate by 25% and improve solo user retention.
 
-### Medium Risk
-- **Onboarding Flow:** Requires careful UX design to avoid confusion
-- **Retention Email:** Risk of email fatigue if overdone
+**Metrics:**
+- Primary: Solo user activation rate
+- Secondary: Solo user 7-day retention, Solo user LTV
 
-### Low Risk
-- **Channel Attribution:** Low risk, primarily data analysis
+**Sample Size:** 300 solo users (150 control, 150 treatment)  
+**Duration:** 60 days  
+**Rollout:** 50% A/B test (solo users only)
+
+**Success Criteria:**
+- Solo activation rate: 80%+ (treatment) vs. 60% (control)
+- Solo 7-day retention: 55%+ (treatment) vs. 45% (control)
+
+**Rollback:** If solo activation drops below 50%, revert to control.
+
+**Guardrails:**
+- Don't exclude family users from core features
+- Ensure solo detection is accurate (not false positives)
+
+---
+
+## Experiment 3: Referral Program (Acquisition)
+
+**Status:** Ready to launch  
+**Priority:** High  
+**Hypothesis:** Referral program ("Refer a friend, both get 1 month free") will drive 20% of new users from referrals, reducing blended CAC from $30 to $20.
+
+**Metrics:**
+- Primary: Referral rate (% of new users from referrals)
+- Secondary: Blended CAC, Referral conversion rate
+
+**Sample Size:** 1,000 users (all users eligible)  
+**Duration:** 90 days  
+**Rollout:** 100% (all users)
+
+**Success Criteria:**
+- Referral rate: 20%+ of new users
+- Blended CAC: $20 (from $30)
+- Referral conversion: 15%+ of referred users convert to paid
+
+**Rollback:** If referral abuse detected (>10% fake referrals), add verification.
+
+**Guardrails:**
+- Monitor for referral abuse (same IP, fake emails)
+- Cap referral rewards per user (max 5 referrals)
+- Verify referred users are real (email verification)
+
+---
+
+## Experiment 4: Grocery Integration Conversion Lift (Conversion)
+
+**Status:** Ready to launch  
+**Priority:** High  
+**Hypothesis:** Highlighting grocery integration feature ("Add to Loblaws cart") will increase free-to-paid conversion by 2x for users who use grocery integration.
+
+**Metrics:**
+- Primary: Free-to-paid conversion rate (grocery users vs. non-grocery users)
+- Secondary: Grocery integration usage rate, Grocery user LTV
+
+**Sample Size:** 500 free users (250 see grocery CTA, 250 control)  
+**Duration:** 60 days  
+**Rollout:** 50% A/B test
+
+**Success Criteria:**
+- Grocery user conversion: 10%+ (treatment) vs. 5% (control)
+- Grocery integration usage: 60%+ of users
+- Grocery user LTV: $180+ (vs. $144 baseline)
+
+**Rollback:** If conversion drops below 3%, remove grocery CTA.
+
+**Guardrails:**
+- Only show grocery CTA if user's store is integrated
+- Don't overwhelm users with grocery prompts
+- Ensure grocery integration works reliably
+
+---
+
+## Experiment 5: Retention Email Automation (Retention)
+
+**Status:** Ready to launch  
+**Priority:** Medium  
+**Hypothesis:** Weekly "pantry running low" emails and monthly "favorites" recaps will increase 30-day retention from 40% to 46%.
+
+**Metrics:**
+- Primary: 30-day retention rate
+- Secondary: Email open rate, Email click rate, Re-engagement rate
+
+**Sample Size:** 1,000 users (500 control, 500 treatment)  
+**Duration:** 90 days  
+**Rollout:** 50% A/B test
+
+**Success Criteria:**
+- 30-day retention: 46%+ (treatment) vs. 40% (control)
+- Email open rate: 30%+
+- Re-engagement rate: 15%+ (users who return after email)
+
+**Rollback:** If retention drops below 35%, pause emails.
+
+**Guardrails:**
+- Respect email preferences (unsubscribe)
+- Don't send more than 2 emails per week
+- Personalize emails (use user's pantry data)
+
+---
+
+## Experiment Prioritization
+
+**Priority Order (Impact × Confidence ÷ Time-to-Value):**
+
+1. **Pre-fill Onboarding** (Priority: 9.5) - High impact, high confidence, low effort
+2. **Referral Program** (Priority: 6.4) - High impact, high confidence, medium effort
+3. **Grocery Integration Conversion** (Priority: 4.2) - High impact, medium confidence, medium effort
+4. **Retention Email Automation** (Priority: 2.1) - Medium impact, medium confidence, medium effort
+5. **Solo-First Onboarding** (Priority: 1.8) - Medium impact, medium confidence, medium effort
+
+---
+
+## Portfolio Metrics Dashboard
+
+**Overall Portfolio Goals:**
+
+| Metric | Baseline | Target | Current | Status |
+|--------|----------|--------|---------|--------|
+| Activation Rate | 60% | 75% | 60% | 🟡 In Progress |
+| 30-Day Retention | 40% | 46% | 40% | 🟡 In Progress |
+| Referral Rate | 0% | 20% | 0% | 🔴 Not Started |
+| Free-to-Paid Conversion | 5% | 10% | 5% | 🟡 In Progress |
+| Blended CAC | $30 | $20 | $30 | 🔴 Not Started |
 
 ---
 
 ## Next Steps
 
-1. **Week 1:** Start Channel Attribution & Retention Email (low effort, high impact)
-2. **Week 2:** Begin Onboarding Flow & Pricing Page design
-3. **Week 3:** Launch Onboarding Flow & Pricing Page experiments
-4. **Week 4:** Begin Refund Prevention Flow development
-5. **Ongoing:** Monitor all experiments, analyze results, iterate
+1. **Week 1:** Launch Pre-fill Onboarding experiment
+2. **Week 2:** Launch Referral Program experiment
+3. **Week 3:** Launch Grocery Integration Conversion experiment
+4. **Week 4:** Review results, iterate on experiments
+5. **Week 5:** Launch Retention Email Automation experiment
+6. **Week 6:** Launch Solo-First Onboarding experiment
 
 ---
 
-## Experiment Details
-
-See individual experiment plans in `/growth/experiments/<slug>/plan.md` for detailed:
-- Hypothesis
-- Metrics
-- Success thresholds
-- Sample size calculations
-- Rollout plans
-- Rollback plans
-
----
-
-**Portfolio Owner:** Growth Team  
-**Review Frequency:** Weekly  
-**Next Review:** 2025-01-16
+*Individual experiment plans in `/growth/experiments/<slug>/plan.md`*

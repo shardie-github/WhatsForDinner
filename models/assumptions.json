@@ -1,84 +1,54 @@
 {
   "revenue": {
-    "base_monthly_growth_rate": 0.25,
-    "optimistic_monthly_growth_rate": 0.50,
-    "conservative_monthly_growth_rate": 0.15,
-    "confidence": "medium",
-    "notes": "Based on current traction and market size. Conservative assumes slower adoption, Optimistic assumes strong product-market fit."
+    "starter_tier_price": 9.99,
+    "pro_tier_price": 19.99,
+    "starter_tier_pct": 0.7,
+    "pro_tier_pct": 0.3,
+    "affiliate_commission_rate": 0.05,
+    "api_price_per_1000_calls": 10,
+    "data_insights_base_price": 100
   },
-  "cogs": {
-    "base_cogs_pct": 0.35,
-    "optimistic_cogs_pct": 0.30,
-    "conservative_cogs_pct": 0.40,
-    "confidence": "high",
-    "notes": "Includes payment processing, hosting, third-party API costs. Optimistic assumes scale efficiencies."
+  "costs": {
+    "payment_processing_rate": 0.029,
+    "payment_processing_fee": 0.30,
+    "infrastructure_monthly": 200,
+    "tools_monthly": 300,
+    "team_monthly": 4500
   },
-  "cac": {
-    "base_cac": 45,
-    "optimistic_cac": 35,
-    "conservative_cac": 60,
-    "confidence": "medium",
-    "notes": "Base assumes current channel mix. Optimistic assumes improved conversion and organic growth. Conservative assumes higher competition."
+  "acquisition": {
+    "organic_cac": 0,
+    "paid_cac": 40,
+    "referral_cac": 5,
+    "organic_pct": 0.5,
+    "paid_pct": 0.3,
+    "referral_pct": 0.2
   },
-  "ltv": {
-    "base_ltv": 300,
-    "optimistic_ltv": 450,
-    "conservative_ltv": 200,
-    "confidence": "low",
-    "notes": "Requires validation through cohort analysis. Optimistic assumes higher retention and upsell. Conservative assumes churn risk."
+  "retention": {
+    "base_churn_rate": 0.05,
+    "optimistic_churn_rate": 0.03,
+    "conservative_churn_rate": 0.08,
+    "activation_target": 0.75,
+    "retention_7d_target": 0.55,
+    "retention_30d_target": 0.46
   },
-  "refund_rate": {
-    "base_refund_rate_pct": 0.05,
-    "optimistic_refund_rate_pct": 0.03,
-    "conservative_refund_rate_pct": 0.08,
-    "confidence": "medium",
-    "notes": "Base assumes current refund patterns. Conservative accounts for potential quality issues."
+  "growth": {
+    "month_1_users": 50,
+    "month_2_users": 150,
+    "month_3_users": 300,
+    "month_6_users": 600,
+    "month_12_users": 1000,
+    "referral_rate_target": 0.20,
+    "grocery_integration_usage_target": 0.60
   },
-  "operating_expenses": {
-    "sales_marketing": {
-      "base_monthly": 20000,
-      "growth_rate": 0.125,
-      "confidence": "high",
-      "notes": "Scales with revenue growth. Includes ad spend, tools, team."
-    },
-    "product_development": {
-      "base_monthly": 12000,
-      "growth_rate": 0.125,
-      "confidence": "high",
-      "notes": "Fixed team costs with incremental tooling."
-    },
-    "general_admin": {
-      "base_monthly": 8000,
-      "growth_rate": 0.125,
-      "confidence": "high",
-      "notes": "Legal, accounting, office, insurance."
-    }
+  "market": {
+    "target_market_size": 1000000,
+    "penetration_rate": 0.001,
+    "solo_user_pct": 0.45,
+    "family_user_pct": 0.55
   },
-  "cash": {
-    "starting_cash": 500000,
+  "timing": {
     "timezone": "America/Toronto",
-    "confidence": "high",
-    "notes": "Current cash position. Runway calculated based on monthly burn."
-  },
-  "metrics": {
-    "ltv_cac_ratio_target": 3.0,
-    "gross_margin_target": 0.70,
-    "ebitda_margin_target": 0.20,
-    "confidence": "medium",
-    "notes": "Industry benchmarks for SaaS. Base scenario achieves these by month 6-9."
-  },
-  "sensitivity": {
-    "revenue_sensitivity": "high",
-    "cac_sensitivity": "high",
-    "ltv_sensitivity": "medium",
-    "cogs_sensitivity": "low",
-    "notes": "Revenue and CAC have highest impact on runway and profitability."
-  },
-  "validation_required": [
-    "LTV calculation from actual cohort data",
-    "CAC by channel breakdown",
-    "Refund rate by product segment",
-    "COGS allocation accuracy",
-    "Monthly growth rate validation"
-  ]
+    "etl_schedule": "01:10",
+    "system_health_schedule": "07:30 MON"
+  }
 }
