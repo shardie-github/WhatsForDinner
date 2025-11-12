@@ -1,0 +1,25 @@
+name: Nightly ETL
+on:
+  schedule:
+    - cron: '10 1 * * *'  # 01:10 America/Toronto
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install deps
+        run: npm ci || true
+      - name: Run ETL
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          GENERIC_SOURCE_A_TOKEN: ${{ secrets.GENERIC_SOURCE_A_TOKEN }}
+          GENERIC_SOURCE_B_TOKEN: ${{ secrets.GENERIC_SOURCE_B_TOKEN }}
+          TZ: America/Toronto
+        run: |
+          tsx scripts/etl/pull_events.ts --cron || true
+          tsx scripts/etl/pull_ads_source_a.ts --cron || true
+          tsx scripts/etl/pull_ads_source_b.ts --cron || true
+          tsx scripts/etl/compute_metrics.ts --cron || true
