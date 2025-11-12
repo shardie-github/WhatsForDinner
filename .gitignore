@@ -92,3 +92,6 @@ logs
 tmp/
 temp/
 *.tmp
+
+# Archive directory (historical/completed documentation and migrations)
+archive/
