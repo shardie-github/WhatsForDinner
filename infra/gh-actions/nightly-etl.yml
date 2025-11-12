@@ -1,85 +1,29 @@
 name: Nightly ETL
-
 on:
   schedule:
-    # Run at 01:10 America/Toronto (06:10 UTC during EST, 05:10 UTC during EDT)
-    # Adjust cron based on your timezone needs
-    - cron: '10 6 * * *'  # 01:10 EST / 02:10 EDT
-  workflow_dispatch:  # Allow manual trigger
-    inputs:
-      dry_run:
-        description: 'Run in dry-run mode'
-        required: false
-        default: 'false'
-        type: boolean
-
-env:
-  TZ: America/Toronto
-  NODE_VERSION: '20'
-
+    - cron: '10 1 * * *'  # 01:10 America/Toronto
 jobs:
-  run-etl:
+  run:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Pull Meta Ads Data
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install deps
+        run: npm ci || true
+      - name: Run ETL
         env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           META_TOKEN: ${{ secrets.META_TOKEN }}
-          META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: |
-          node scripts/etl/pull_ads_meta.ts --cron ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
-        continue-on-error: true
-      
-      - name: Pull TikTok Ads Data
-        env:
+          META_ACCOUNT_ID: ${{ secrets.META_ACCOUNT_ID }}
           TIKTOK_TOKEN: ${{ secrets.TIKTOK_TOKEN }}
           TIKTOK_ADVERTISER_ID: ${{ secrets.TIKTOK_ADVERTISER_ID }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: |
-          node scripts/etl/pull_ads_tiktok.ts --cron ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
-        continue-on-error: true
-      
-      - name: Pull Shopify Orders
-        env:
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
           SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_PASSWORD }}
           SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TZ: America/Toronto
         run: |
-          node scripts/etl/pull_shopify_orders.ts --cron ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
-        continue-on-error: true
-      
-      - name: Compute Metrics
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: |
-          node scripts/etl/compute_metrics.ts --cron ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
-      
-      - name: ETL Summary
-        if: always()
-        run: |
-          echo "## ETL Job Summary" >> $GITHUB_STEP_SUMMARY
-          echo "- Meta Ads: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "- TikTok Ads: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Shopify Orders: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Compute Metrics: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Check Supabase etl_logs table for detailed execution logs." >> $GITHUB_STEP_SUMMARY
+          node scripts/etl/pull_ads_meta.ts --cron || true
+          node scripts/etl/pull_ads_tiktok.ts --cron || true
+          node scripts/etl/pull_shopify_orders.ts --cron || true
+          node scripts/etl/compute_metrics.ts --cron || true

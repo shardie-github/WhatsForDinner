@@ -59,6 +59,20 @@ async function handler(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to create referral' }, { status: 500 });
     }
 
+    // Track referral creation event
+    await supabase
+      .from('events')
+      .insert({
+        user_id: user.id,
+        event_name: 'referral_code_created',
+        occurred_at: new Date().toISOString(),
+        props: {
+          referral_code: referral.referral_code,
+          reward_type: referral.reward_type,
+          reward_value: referral.reward_value,
+        },
+      });
+
     return NextResponse.json({
       referralCode: referral.referral_code,
       referralLink: `${process.env.NEXT_PUBLIC_APP_URL}/signup?ref=${referral.referral_code}`,
@@ -67,6 +81,7 @@ async function handler(request: NextRequest) {
         value: referral.reward_value,
         description: '1 month free Pro for you and your friend',
       },
+      shareText: `Join me on What's for Dinner? Use my referral code ${referral.referral_code} and we both get 1 month free Pro!`,
     });
   } catch (error) {
     console.error('Referral creation error:', error);

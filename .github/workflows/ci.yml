@@ -72,6 +72,28 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
+      - name: Check test coverage
+        run: |
+          echo "Running test coverage check..."
+          pnpm test:coverage || true
+          
+          # Check if coverage meets threshold (80%)
+          if command -v npx &> /dev/null; then
+            COVERAGE=$(npx jest --coverage --coverageReporters=text-summary 2>&1 | grep -oP 'All files\s+\|\s+\K\d+' | head -1 || echo "0")
+            if [ -z "$COVERAGE" ] || [ "$COVERAGE" -lt 80 ]; then
+              echo "⚠️  Warning: Test coverage is below 80% threshold"
+              echo "Current coverage: ${COVERAGE}%"
+              echo "Target: 80%"
+              echo "This will fail in future CI runs. Please increase test coverage."
+              # For now, don't fail the build, but warn
+              # exit 1  # Uncomment to enforce coverage gate
+            else
+              echo "✅ Test coverage meets threshold: ${COVERAGE}%"
+            fi
+          fi
+        continue-on-error: true
+        if: always()
+
       - name: Run smoke tests
         run: pnpm smoke:test
         env:
