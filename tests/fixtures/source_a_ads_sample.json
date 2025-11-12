@@ -1,26 +1,4 @@
 [
-  {
-    "platform": "source_a",
-    "date": "2025-01-27",
-    "spend": 100.50,
-    "impressions": 10000,
-    "clicks": 500,
-    "conversions": 25,
-    "metadata": {
-      "campaign_id": "camp_123",
-      "ad_set_id": "adset_456"
-    }
-  },
-  {
-    "platform": "source_a",
-    "date": "2025-01-26",
-    "spend": 95.25,
-    "impressions": 9500,
-    "clicks": 475,
-    "conversions": 23,
-    "metadata": {
-      "campaign_id": "camp_123",
-      "ad_set_id": "adset_456"
-    }
-  }
+  {"campaign_id":"C1","adset_id":"A1","date":"2025-10-01","spend_cents":2500,"clicks":120,"impressions":15000,"conv":3},
+  {"campaign_id":"C1","adset_id":"A2","date":"2025-10-02","spend_cents":3100,"clicks":140,"impressions":17000,"conv":4}
 ]

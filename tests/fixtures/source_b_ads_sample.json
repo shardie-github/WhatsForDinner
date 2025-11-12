@@ -1,26 +1,3 @@
 [
-  {
-    "platform": "source_b",
-    "date": "2025-01-27",
-    "spend": 150.75,
-    "impressions": 15000,
-    "clicks": 750,
-    "conversions": 35,
-    "metadata": {
-      "campaign_id": "camp_789",
-      "ad_set_id": "adset_012"
-    }
-  },
-  {
-    "platform": "source_b",
-    "date": "2025-01-26",
-    "spend": 145.50,
-    "impressions": 14500,
-    "clicks": 725,
-    "conversions": 33,
-    "metadata": {
-      "campaign_id": "camp_789",
-      "ad_set_id": "adset_012"
-    }
-  }
+  {"campaign_id":"X9","adset_id":"Y2","date":"2025-10-01","spend_cents":1900,"clicks":90,"impressions":12000,"conv":2}
 ]
