@@ -1,29 +1,5 @@
 [
-  {
-    "event_name": "signup",
-    "event_time": "2025-01-27T10:00:00Z",
-    "user_id": "user_001",
-    "metadata": {
-      "source": "web",
-      "campaign": "organic"
-    }
-  },
-  {
-    "event_name": "activation",
-    "event_time": "2025-01-27T10:05:00Z",
-    "user_id": "user_001",
-    "metadata": {
-      "time_to_activation_seconds": 300,
-      "pantry_items_count": 5
-    }
-  },
-  {
-    "event_name": "meal_plan_generated",
-    "event_time": "2025-01-27T10:10:00Z",
-    "user_id": "user_001",
-    "metadata": {
-      "meal_count": 7,
-      "pantry_first_ratio": 0.7
-    }
-  }
+  {"id": null, "occurred_at": "2025-10-01T12:00:00Z", "user_id": null, "event_name": "session_start", "props": {"ua":"android"}},
+  {"id": null, "occurred_at": "2025-10-01T12:05:00Z", "user_id": null, "event_name": "order_completed", "props": {"revenue_cents": 4599, "currency":"USD"}},
+  {"id": null, "occurred_at": "2025-10-02T09:10:00Z", "user_id": null, "event_name": "order_refunded", "props": {"refunds_cents": 1200}}
 ]

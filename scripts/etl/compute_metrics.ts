@@ -1,56 +1,11 @@
-#!/usr/bin/env tsx
-/**
- * ETL: Compute Metrics
- * 
- * Computes daily metrics by calling recompute_metrics_daily function.
- * Supports --dry-run mode.
- * 
- * Usage:
- *   tsx scripts/etl/compute_metrics.ts [--dry-run] [--start=YYYY-MM-DD] [--end=YYYY-MM-DD]
- * 
- * Environment:
- *   SUPABASE_DB_URL (required) - PostgreSQL connection string
- */
-
-import { query } from '../lib/db';
-import { logger } from '../lib/logger';
-
-const DRY_RUN = process.argv.includes('--dry-run');
-const START_DATE =
-  process.argv.find((arg) => arg.startsWith('--start='))?.split('=')[1] ||
-  new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // Default: 7 days ago
-const END_DATE =
-  process.argv.find((arg) => arg.startsWith('--end='))?.split('=')[1] ||
-  new Date().toISOString().split('T')[0]; // Default: today
-
-async function computeMetrics() {
-  logger.info('Starting metrics computation...');
-  logger.info(`Dry-run: ${DRY_RUN}`);
-  logger.info(`Date range: ${START_DATE} to ${END_DATE}`);
-
-  if (DRY_RUN) {
-    logger.info('[DRY-RUN] Would call recompute_metrics_daily(start, end)');
-    logger.info(`[DRY-RUN] Would compute metrics for ${START_DATE} to ${END_DATE}`);
-    logger.info('✅ Dry-run complete');
-    return;
-  }
-
-  try {
-    // Call recompute_metrics_daily function
-    const results = await query(
-      `SELECT * FROM public.recompute_metrics_daily($1::DATE, $2::DATE)`,
-      [START_DATE, END_DATE]
-    );
-
-    logger.info(`✅ Computed metrics for ${results.length} days`);
-    logger.info(`Sample: ${JSON.stringify(results[0] || {}, null, 2)}`);
-  } catch (error) {
-    logger.error('Failed to compute metrics:', error);
-    process.exit(1);
-  }
-}
-
-computeMetrics().catch((error) => {
-  logger.error('Fatal error:', error);
-  process.exit(1);
-});
+#!/usr/bin/env node
+import { withDb } from "../lib/db"; import { log, err } from "../lib/logger";
+const args=process.argv.slice(2);
+const start=args.includes("--start")?args[args.indexOf("--start")+1]:undefined;
+const end  =args.includes("--end")  ?args[args.indexOf("--end")+1]  :undefined;
+(async()=>{
+  const s=start??new Date(Date.now()-90*86400_000).toISOString().slice(0,10);
+  const e=end  ??new Date().toISOString().slice(0,10);
+  await withDb(async c=>{ await c.query("select public.recompute_metrics_daily($1::date,$2::date)",[s,e]); });
+  log(`Recomputed metrics_daily for ${s}..${e}`);
+})().catch(e=>{ err(e); process.exit(1); });

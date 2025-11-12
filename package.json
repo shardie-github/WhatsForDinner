@@ -213,7 +213,8 @@
     "agent:learning": "tsx -e \"import('./agents/unified-agent.ts').then(m => { const a = new m.UnifiedAgent(); import('./agents/learning-agent.ts').then(l => { const la = new l.LearningAgent(process.cwd(), a.getRepoContext()); la.run(); }); }); })\""
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.76.1"
+    "@supabase/supabase-js": "^2.76.1",
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -240,7 +241,8 @@
     "supabase": "^2.5.0",
     "vercel": "^39.0.0",
     "prisma": "^5.22.0",
-    "@prisma/client": "^5.22.0"
+    "@prisma/client": "^5.22.0",
+    "@types/pg": "^8.10.9"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
