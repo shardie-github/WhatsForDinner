@@ -1,47 +1,66 @@
-# READY_realignment_004: Lock Grocery Partnerships
+# READY: Test Coverage Increase
 
 **Type:** Realignment  
-**Priority:** 1.2 (Impact × Confidence ÷ Time)  
-**Owner:** Partnerships Lead  
-**Status:** Ready  
-**Estimated Effort:** 60 days
+**Priority:** HIGH  
+**Owner:** Engineering Lead  
+**KPI:** Test coverage >80%, GTM audit passes  
+**30-Day Signal:** Test coverage >80%, GTM audit score >85/100, bugFree requirement met  
+**Impact:** HIGH  
+**Effort:** MEDIUM  
+**Confidence:** 90%  
+**Priority Score:** 9.0 (Impact × Confidence ÷ Effort)
 
-## Objective
+---
 
-Secure Canadian grocery store API partnerships to strengthen moat.
+## Problem
 
-## Steps
+GTM readiness score 83.49/100 but blocked by bugFree requirement (75% test coverage). This blocks launch.
 
-1. Research grocery store API programs (Loblaws, Metro, Sobeys, FreshCo, Real Canadian Superstore) (3 days)
-2. Reach out to API teams, offer data insights value prop (7 days)
-3. Apply for API access (7 days)
-4. Build integrations for 2+ stores (30 days)
-5. Test integrations with beta users (10 days)
-6. Launch publicly (3 days)
+**Evidence:**
+- Current test coverage: ~75%
+- GTM audit blocked by bugFree requirement
+- Launch cannot proceed without test coverage increase
 
-## Success Criteria
+---
 
-- 2+ grocery stores integrated
-- 60% of users use integration feature
-- Conversion lift: 2x (free → paid)
-- Grocery integration cited as #1 differentiator in user surveys
+## Solution
 
-## KPI
+1. **Increase test coverage to 80%+:**
+   - Add unit tests for core functions
+   - Add integration tests for critical flows
+   - Add E2E tests for user journeys
 
-**Target:** Grocery integration usage: 60%+ (from 0%), conversion lift: 2x (free → paid)
+2. **Focus on critical paths:**
+   - Onboarding flow
+   - Meal planning generation
+   - Grocery list creation
+   - Payment processing
 
-## 30-Day Signal
+3. **Automate test runs:**
+   - CI/CD integration
+   - Coverage reporting
+   - Test failure alerts
 
-2+ grocery stores integrated, 60% of users use integration
+---
 
-## Dependencies
+## Acceptance Criteria
 
-API access approval from grocery stores
+- [ ] Test coverage >80%
+- [ ] GTM audit passes (score >85/100)
+- [ ] bugFree requirement met
+- [ ] Critical paths covered
+- [ ] Test automation in CI/CD
 
-## Impact
+---
 
-**High** - Creates competitive moat, drives conversion, differentiates product
+## 30-Day Success Signal
 
-## Risk
+Test coverage >80%, GTM audit score >85/100, bugFree requirement met, launch unblocked.
 
-Medium - External dependency on grocery store API access
+---
+
+## Related
+
+- `/backlog/READY_realignment_001.md` - Revenue Activation
+- `/backlog/READY_realignment_002.md` - Product Simplification
+- `/reports/exec/unaligned_audit.md` - Full audit report

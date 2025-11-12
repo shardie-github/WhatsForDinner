@@ -1,45 +1,66 @@
-# READY_realignment_005: Build Retention & Referral Loops
+# READY: Solo-Friendly Positioning Rebalance
 
 **Type:** Realignment  
-**Priority:** 0.4 (Impact × Confidence ÷ Time)  
-**Owner:** Growth Lead  
-**Status:** Ready  
-**Estimated Effort:** 90 days
+**Priority:** MEDIUM  
+**Owner:** Product Lead  
+**KPI:** Solo user activation rate +15%, solo retention >50%  
+**30-Day Signal:** Solo user activation rate increases by 15%, solo retention >50%, solo features prioritized  
+**Impact:** MEDIUM  
+**Effort:** MEDIUM  
+**Confidence:** 75%  
+**Priority Score:** 7.5 (Impact × Confidence ÷ Effort)
 
-## Objective
+---
 
-Create self-reinforcing flywheel: activation → retention → referral → acquisition.
+## Problem
 
-## Steps
+Core persona is solo users (45% of market) but code supports families (up to 6), multi-user features dominate. This dilutes core value proposition.
 
-1. **Activation Loop (30 days):** Pre-fill onboarding, auto-generate first meal plan (7 days)
-2. **Retention Loop (60 days):** Push notifications (morning meal reminders), weekly pantry emails (14 days)
-3. **Referral Loop (90 days):** Build referral API, reward: "Refer friend, both get 1 month free" (30 days)
-4. **Measure & Optimize:** Track activation, retention, referral rates (ongoing)
+**Evidence:**
+- 45% of target market is solo users
+- Code supports up to 6 users per account
+- Multi-user features dominate roadmap
+- Solo users report difficulty finding solo-friendly recipes
 
-## Success Criteria
+---
 
-- Activation >75%
-- 30-day retention >45%
-- 20% of users from referrals
-- Self-reinforcing flywheel operational
+## Solution
 
-## KPI
+1. **Rebalance features 70% solo / 30% family:**
+   - Prioritize solo recipe suggestions
+   - Make solo the hero story in marketing
+   - Archive complex family features temporarily
 
-**Target:** Activation: 75%+ (from 60%), 30-day retention: 45%+ (from 40%), Referral rate: 20%+ (from 0%)
+2. **Solo-first onboarding:**
+   - Default to solo user experience
+   - Highlight solo-friendly recipes
+   - Emphasize portion control for one
 
-## 30-Day Signal
+3. **Measure solo vs. family metrics:**
+   - Track activation rates
+   - Monitor retention
+   - Compare LTV
 
-Activation >75%, 30-day retention >45%, 20% of users from referrals
+---
 
-## Dependencies
+## Acceptance Criteria
 
-None
+- [ ] Features rebalanced 70% solo / 30% family
+- [ ] Solo-first onboarding implemented
+- [ ] Solo user activation rate +15%
+- [ ] Solo retention >50%
+- [ ] Solo LTV >$150
 
-## Impact
+---
 
-**Medium** - Improves user lifecycle, reduces CAC, increases LTV
+## 30-Day Success Signal
 
-## Risk
+Solo user activation rate increases by 15%, solo retention >50%, solo features prioritized in roadmap.
 
-Low - Incremental improvements to existing systems
+---
+
+## Related
+
+- `/backlog/READY_realignment_002.md` - Product Simplification
+- `/backlog/READY_realignment_003.md` - Grocery Integration
+- `/reports/exec/unaligned_audit.md` - Full audit report

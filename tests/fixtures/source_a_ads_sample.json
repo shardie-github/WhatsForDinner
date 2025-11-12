@@ -1,0 +1,26 @@
+[
+  {
+    "platform": "source_a",
+    "date": "2025-01-27",
+    "spend": 100.50,
+    "impressions": 10000,
+    "clicks": 500,
+    "conversions": 25,
+    "metadata": {
+      "campaign_id": "camp_123",
+      "ad_set_id": "adset_456"
+    }
+  },
+  {
+    "platform": "source_a",
+    "date": "2025-01-26",
+    "spend": 95.25,
+    "impressions": 9500,
+    "clicks": 475,
+    "conversions": 23,
+    "metadata": {
+      "campaign_id": "camp_123",
+      "ad_set_id": "adset_456"
+    }
+  }
+]

@@ -1,220 +1,133 @@
-# Metrics Dashboard Specification
+# Metrics Specification & Dashboard KPIs
 
 **Generated:** 2025-01-27  
-**Purpose:** Define metrics dashboard structure and KPIs
+**Purpose:** Define KPIs, data quality tiles, and dashboard structure
 
 ---
 
-## Overview
+## Core KPIs
 
-This dashboard provides real-time visibility into key business metrics: revenue, users, acquisition, retention, and unit economics.
+### Revenue Metrics
+- **MRR (Monthly Recurring Revenue):** Sum of all subscription revenue per month
+- **ARR (Annual Recurring Revenue):** MRR × 12
+- **Revenue by Channel:** Affiliate, API, Marketplace, Data Insights, Subscriptions
+- **Revenue Growth Rate:** MoM % change
 
-**Data Sources:**
-- `public.metrics_daily` - Aggregated daily metrics
-- `public.orders` - Order data
-- `public.spend` - Ad spend data
-- `public.events` - User events
+### User Metrics
+- **Active Users (DAU/MAU):** Daily/Monthly active users
+- **New Users:** Users who signed up in period
+- **Activation Rate:** % of signups who generate first meal plan
+- **Retention (7/30/90-day):** % of users active after N days
 
-**Update Frequency:** Daily (via ETL at 01:10 America/Toronto)
+### Unit Economics
+- **CAC (Customer Acquisition Cost):** Total marketing spend / new users
+- **LTV (Lifetime Value):** Average revenue per user × average lifetime
+- **LTV/CAC Ratio:** Target >3x
+- **Payback Period:** Time to recover CAC
 
----
+### Product Metrics
+- **Time-to-Activation:** Minutes from signup to first meal plan
+- **Pantry-First Suggestions:** % of suggestions using existing pantry items
+- **Grocery Integration Usage:** % of users using grocery sync
+- **Solo vs. Family Users:** Split and respective metrics
 
-## Dashboard Sections
-
-### 1. Revenue Overview
-
-**Metrics:**
-- **MRR (Monthly Recurring Revenue)** - Sum of `revenue_cents` for last 30 days / 100
-- **ARR (Annual Recurring Revenue)** - MRR × 12
-- **Revenue Growth %** - Month-over-month growth
-- **Passive Revenue** - Affiliate + API + Data Insights revenue
-
-**Visualization:** Line chart (30-day trend), big number cards
-
-**Filters:** Date range (7d, 30d, 90d, 1y)
-
----
-
-### 2. User Metrics
-
-**Metrics:**
-- **Total Users** - Count of unique users from `events` table
-- **MAU (Monthly Active Users)** - Unique users active in last 30 days
-- **Activation Rate** - % of signups who generate first meal plan
-- **7-Day Retention** - % of users active after 7 days
-- **30-Day Retention** - % of users active after 30 days
-
-**Visualization:** Bar chart (activation, retention), line chart (MAU trend)
-
-**Filters:** User segment (solo, family), date range
+### Data Quality Metrics
+- **Data Freshness:** Hours since last ETL run
+- **Completeness:** % of required fields populated
+- **Uniqueness:** Duplicate detection rate
+- **Validity:** % of records passing validation rules
 
 ---
 
-### 3. Acquisition & CAC
+## Dashboard Tiles
 
-**Metrics:**
-- **New Users** - Count of new signups (last 30 days)
-- **Blended CAC** - Weighted average: (Organic × $0 + Paid × $40 + Referral × $5) / Total
-- **Paid CAC** - Ad spend / New users from paid channels
-- **Referral Rate** - % of new users from referrals
-- **Organic Rate** - % of new users from organic channels
+### Revenue Dashboard
+1. **MRR Trend** (line chart, last 90 days)
+2. **Revenue by Channel** (stacked bar, current month)
+3. **ARR Projection** (number, current)
+4. **Revenue Growth Rate** (sparkline, MoM)
 
-**Visualization:** Funnel chart (acquisition channels), line chart (CAC trend)
+### User Dashboard
+1. **Active Users Trend** (line chart, DAU/MAU, last 90 days)
+2. **Activation Rate** (gauge, current)
+3. **Retention Cohort** (heatmap, 7/30/90-day)
+4. **New Users by Source** (pie chart, current month)
 
-**Filters:** Channel (organic, paid, referral), date range
+### Unit Economics Dashboard
+1. **CAC Trend** (line chart, last 90 days)
+2. **LTV Trend** (line chart, last 90 days)
+3. **LTV/CAC Ratio** (gauge, current)
+4. **Payback Period** (number, current)
 
----
+### Product Dashboard
+1. **Time-to-Activation** (histogram, last 30 days)
+2. **Pantry-First Suggestions** (gauge, current)
+3. **Grocery Integration Usage** (bar chart, last 30 days)
+4. **Solo vs. Family Split** (pie chart, current)
 
-### 4. Unit Economics
-
-**Metrics:**
-- **ARPU (Average Revenue Per User)** - MRR / Total Users
-- **LTV (Lifetime Value)** - ARPU / Monthly Churn Rate
-- **LTV/CAC Ratio** - LTV / CAC
-- **Payback Period** - Months to recover CAC
-- **Gross Margin %** - (Revenue - COGS) / Revenue × 100
-
-**Visualization:** Big number cards, trend lines
-
-**Filters:** Date range
-
----
-
-### 5. Conversion Funnel
-
-**Metrics:**
-- **Sessions** - Count of `session_start` events
-- **Add to Carts** - Count of `add_to_cart` events
-- **Orders** - Count of orders
-- **Conversion Rate** - Orders / Sessions × 100
-- **AOV (Average Order Value)** - Average `total_cents` / 100
-
-**Visualization:** Funnel chart, conversion rate trend
-
-**Filters:** Date range, user segment
+### Data Quality Dashboard
+1. **ETL Status** (status tile, last run time, success/failure)
+2. **Data Freshness** (gauge, hours since last run)
+3. **Completeness** (gauge, % complete)
+4. **Uniqueness** (gauge, duplicate rate)
+5. **Validity** (gauge, % valid)
 
 ---
 
-### 6. Ad Spend & Performance
+## Data Quality Gates
 
-**Metrics:**
-- **Total Ad Spend** - Sum of `spend_cents` from `spend` table / 100
-- **Clicks** - Sum of `clicks`
-- **Impressions** - Sum of `impressions`
-- **CPC (Cost Per Click)** - Spend / Clicks
-- **CTR (Click-Through Rate)** - Clicks / Impressions × 100
-- **Conversions** - Sum of `conv`
+### Pre-ETL Checks
+- [ ] Source APIs reachable
+- [ ] Authentication tokens valid
+- [ ] Database connection healthy
+- [ ] Required tables exist
 
-**Visualization:** Bar chart (by platform), line chart (spend trend)
+### Post-ETL Checks
+- [ ] Row counts > 0 (or expected range)
+- [ ] Required fields NOT NULL
+- [ ] No duplicate primary keys
+- [ ] Data freshness < 24 hours
+- [ ] Foreign key constraints satisfied
 
-**Filters:** Platform (meta, tiktok), date range
-
----
-
-### 7. Retention Cohort Analysis
-
-**Metrics:**
-- **Cohort Retention** - % of users from each cohort still active
-- **Cohort Size** - Number of users in each cohort
-- **Retention by Day** - Day 1, 7, 14, 30 retention rates
-
-**Visualization:** Heatmap (cohort × retention day), line chart (retention curves)
-
-**Filters:** Cohort (weekly, monthly), date range
+### Alert Thresholds
+- **Data Freshness > 24h:** Warning
+- **Data Freshness > 48h:** Critical
+- **Completeness < 90%:** Warning
+- **Completeness < 80%:** Critical
+- **Duplicate Rate > 1%:** Warning
+- **Duplicate Rate > 5%:** Critical
 
 ---
 
-## Key Performance Indicators (KPIs)
+## Data Sources
 
-### Primary KPIs
+### Events Table
+- **Source:** Application events (signups, activations, meal plans)
+- **Frequency:** Real-time (via application)
+- **Key Fields:** event_name, event_time, user_id, metadata
 
-1. **MRR Growth** - Target: +20% month-over-month
-2. **Activation Rate** - Target: 75%+
-3. **30-Day Retention** - Target: 46%+
-4. **LTV/CAC Ratio** - Target: 4x+
-5. **Blended CAC** - Target: <$25
+### Spend Table
+- **Source:** Ads platforms (Source A, Source B)
+- **Frequency:** Daily (via ETL)
+- **Key Fields:** platform, date, spend, impressions, clicks
 
-### Secondary KPIs
-
-1. **7-Day Retention** - Target: 55%+
-2. **Referral Rate** - Target: 20%+
-3. **Conversion Rate** - Target: 5%+
-4. **Gross Margin %** - Target: 85%+
-5. **Payback Period** - Target: <3 months
-
----
-
-## Alert Thresholds
-
-**Critical Alerts:**
-- MRR drops >10% week-over-week
-- Activation rate drops below 50%
-- CAC exceeds $50
-- LTV/CAC drops below 2x
-
-**Warning Alerts:**
-- 30-day retention drops below 35%
-- Conversion rate drops below 3%
-- Ad spend exceeds budget by 20%
+### Metrics Daily Table
+- **Source:** Aggregated from events + spend
+- **Frequency:** Daily (via rollup)
+- **Key Fields:** date, mrr, active_users, cac, ltv
 
 ---
 
 ## Implementation Notes
 
-**Dashboard Tool:** Recommended: Metabase, Superset, or custom React dashboard
-
-**Data Refresh:** Daily at 01:10 America/Toronto (via ETL)
-
-**Access Control:** 
-- Admin: Full access
-- Growth Lead: Read-only
-- Product Lead: Read-only
-
-**Export:** CSV export available for all metrics
+- **Dashboard Tool:** Use Supabase Dashboard, Grafana, or custom React dashboard
+- **Refresh Frequency:** Real-time for events, hourly for metrics, daily for rollups
+- **Retention:** Keep raw events 90 days, aggregated metrics 2 years
+- **Backup:** Daily backups of metrics_daily table
 
 ---
 
-## Sample Queries
-
-### MRR Calculation
-```sql
-SELECT 
-  SUM(revenue_cents) / 100.0 as mrr
-FROM public.metrics_daily
-WHERE day >= CURRENT_DATE - INTERVAL '30 days'
-```
-
-### Activation Rate
-```sql
-SELECT 
-  COUNT(DISTINCT CASE WHEN event_name = 'meal_plan_generated' THEN user_id END) * 100.0 / 
-  COUNT(DISTINCT CASE WHEN event_name = 'user_signed_up' THEN user_id END) as activation_rate
-FROM public.events
-WHERE occurred_at >= CURRENT_DATE - INTERVAL '30 days'
-```
-
-### Blended CAC
-```sql
-WITH acquisition_costs AS (
-  SELECT 
-    SUM(spend_cents) / 100.0 as paid_spend,
-    COUNT(DISTINCT user_id) FILTER (WHERE source = 'paid') as paid_users,
-    COUNT(DISTINCT user_id) FILTER (WHERE source = 'referral') as referral_users,
-    COUNT(DISTINCT user_id) FILTER (WHERE source = 'organic') as organic_users
-  FROM public.orders o
-  LEFT JOIN public.spend s ON DATE(o.placed_at) = s.date
-  WHERE o.placed_at >= CURRENT_DATE - INTERVAL '30 days'
-)
-SELECT 
-  CASE 
-    WHEN (paid_users + referral_users + organic_users) > 0 
-    THEN (paid_spend + (referral_users * 5) + (organic_users * 0)) / 
-         (paid_users + referral_users + organic_users)
-    ELSE 0 
-  END as blended_cac
-FROM acquisition_costs;
-```
-
----
-
-*Dashboard implementation should query these tables and display metrics as specified above.*
+**Related Files:**
+- `/scripts/etl/compute_metrics.ts` - Metrics computation
+- `/scripts/agents/run_data_quality.ts` - DQ checks
+- `/tests/data_quality.sql` - DQ SQL queries

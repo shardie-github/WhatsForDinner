@@ -1,275 +1,265 @@
-# Finance → Automation → Growth Execution Chain Memo
+# Finance → Automation → Growth Orchestrator Memo
 
 **Generated:** 2025-01-27  
-**Status:** Ready for execution  
-**Owner:** Growth Lead
+**Status:** Ready for Execution  
+**Owner:** Growth Lead  
+**Timeline:** 30/60/90-day plan
 
 ---
 
 ## Executive Summary
 
-This memo outlines the top 5 actions from the Finance → Automation → Growth execution chain, prioritized by Impact × Confidence ÷ Effort.
+This memo outlines the integrated Finance → Automation → Growth workflow, connecting financial modeling, automated ETL, and growth experimentation into a self-healing system.
 
 **Top 5 Actions:**
-1. Enable monetization channels (7 days, Priority: 9.5)
-2. Increase test coverage (14 days, Priority: 6.4)
-3. Optimize onboarding (30 days, Priority: 2.5)
-4. Lock grocery partnerships (60 days, Priority: 1.2)
-5. Activate referral program (60 days, Priority: 1.1)
+1. Enable monetization channels (Week 1)
+2. Activate automated ETL with DQ gates (Week 1)
+3. Launch Pre-fill Onboarding experiment (Week 2)
+4. Validate financial model with real data (Week 4)
+5. Scale successful experiments (Week 8)
 
 ---
 
-## Action 1: Enable Monetization Channels
+## Finance Model
 
-**Priority:** 9.5 (Impact × Confidence ÷ Time)  
-**Impact:** High  
-**Confidence:** 95%  
-**Time:** 7 days  
-**Effort:** Low
+### Current State
+- **Revenue:** $0 (channels built but not enabled)
+- **Users:** 0 active users
+- **CAC:** $45 (projected)
+- **LTV:** $150 (projected)
+- **LTV/CAC:** 3.33x (projected)
 
-**Objective:** Activate existing monetization infrastructure to generate $500+/month passive revenue.
+### 30-Day Target
+- **Revenue:** $5,000 MRR
+- **Users:** 100 active users
+- **CAC:** $42 (validated)
+- **LTV:** $165 (validated)
+- **LTV/CAC:** 3.93x
 
-**Steps:**
-1. Run `pnpm monetization:enable` (1 day)
-2. Set environment variables: `AFFILIATE_ENABLED=true`, `API_MONETIZATION_ENABLED=true`, `DATA_INSIGHTS_ENABLED=true` (1 day)
-3. Connect revenue dashboard to Stripe + database (5 days)
-4. Verify revenue tracking (1 day)
+### 60-Day Target
+- **Revenue:** $12,000 MRR
+- **Users:** 300 active users
+- **CAC:** $38 (optimized)
+- **LTV:** $180 (improved)
+- **LTV/CAC:** 4.74x
 
-**Success Criteria:**
-- Revenue dashboard shows non-zero revenue
-- Affiliate tracking works
-- API monetization endpoints active
+### 90-Day Target
+- **Revenue:** $45,000 MRR
+- **Users:** 2,000 active users
+- **CAC:** $38 (maintained)
+- **LTV:** $180 (maintained)
+- **LTV/CAC:** 4.74x
 
-**KPI:** $500+/month from monetization channels
-
-**30-Day Signal:** Revenue dashboard shows non-zero revenue from at least one channel
-
-**Owner:** Growth Lead
-
----
-
-## Action 2: Increase Test Coverage (Unblock GTM)
-
-**Priority:** 6.4 (Impact × Confidence ÷ Time)  
-**Impact:** High  
-**Confidence:** 90%  
-**Time:** 14 days  
-**Effort:** Medium
-
-**Objective:** Fix GTM blocker (test coverage) to enable launch readiness.
-
-**Steps:**
-1. Add test coverage tool to CI (Jest coverage, 2 days)
-2. Set coverage gate: fail builds if <80% (1 day)
-3. Increase test coverage to 80%+ (10 days)
-4. Fix critical bugs identified in GTM audit (1 day)
-5. Re-run GTM audit, verify score >90 (1 day)
-
-**Success Criteria:**
-- GTM audit score >90
-- Test coverage >80%
-- All critical bugs fixed
-
-**KPI:** GTM readiness: READY (from NOT_READY)
-
-**30-Day Signal:** GTM audit score >90, test coverage >80%
-
-**Owner:** Engineering Lead
+**Model Files:**
+- `/models/finance_model.csv` - Raw data
+- `/models/assumptions.json` - Assumptions with confidence
+- `/reports/finance/forecast.md` - Full forecast
 
 ---
 
-## Action 3: Optimize Onboarding (2-Min Activation)
+## Automation Stack
 
-**Priority:** 2.5 (Impact × Confidence ÷ Time)  
-**Impact:** Medium  
-**Confidence:** 75%  
-**Time:** 30 days  
-**Effort:** Low
+### ETL Pipeline
+- **Frequency:** Daily at 01:10 America/Toronto
+- **Sources:** Source A (ads), Source B (ads), Events (app)
+- **Destination:** Supabase (events, spend, metrics_daily tables)
+- **Features:** Dry-run support, retries, idempotent upserts
 
-**Objective:** Reduce time-to-activation from 5+ minutes to <2 minutes, increase activation rate from 60% to 75%.
+### Data Quality Gates
+- **Pre-ETL:** Source reachability, auth validation, DB health
+- **Post-ETL:** Row counts, completeness, uniqueness, freshness
+- **Alerts:** Slack notifications on failures
 
-**Steps:**
-1. Pre-fill pantry with sample items (7 days)
-2. Add one-click "Generate my first meal plan" button (7 days)
-3. A/B test: 50% rollout (7 days)
-4. Measure activation rate, time-to-activation (7 days)
-5. Roll out to 100% if success criteria met (2 days)
+### Metrics Rollup
+- **Frequency:** Daily (after ETL)
+- **Function:** `recompute_metrics_daily(start, end)`
+- **Output:** Aggregated metrics in `metrics_daily` table
 
-**Success Criteria:**
-- Activation rate: 75%+ (treatment) vs. 60% (control)
-- Time-to-activation: <2 minutes (treatment) vs. 5+ minutes (control)
-
-**KPI:** Activation rate: 75%+ (from 60%)
-
-**30-Day Signal:** Activation rate >75%, time-to-activation <2 minutes
-
-**Owner:** Growth Lead
-
----
-
-## Action 4: Lock Grocery Partnerships
-
-**Priority:** 1.2 (Impact × Confidence ÷ Time)  
-**Impact:** High  
-**Confidence:** 70%  
-**Time:** 60 days  
-**Effort:** Medium
-
-**Objective:** Secure Canadian grocery store API partnerships to strengthen moat.
-
-**Steps:**
-1. Research grocery store API programs (Loblaws, Metro, Sobeys, FreshCo, Real Canadian Superstore) (3 days)
-2. Reach out to API teams, offer data insights value prop (7 days)
-3. Apply for API access (7 days)
-4. Build integrations for 2+ stores (30 days)
-5. Test integrations with beta users (10 days)
-6. Launch publicly (3 days)
-
-**Success Criteria:**
-- 2+ grocery stores integrated
-- 60% of users use integration feature
-- Conversion lift: 2x (free → paid)
-
-**KPI:** Grocery integration usage: 60%+ (from 0%), conversion lift: 2x
-
-**30-Day Signal:** 2+ grocery stores integrated, 60% of users use integration
-
-**Owner:** Partnerships Lead
+**Automation Files:**
+- `/scripts/etl/pull_ads_source_a.ts` - Source A ETL
+- `/scripts/etl/pull_ads_source_b.ts` - Source B ETL
+- `/scripts/etl/pull_events.ts` - Events ETL
+- `/scripts/etl/compute_metrics.ts` - Metrics computation
+- `/infra/gh-actions/nightly-etl.yml` - CI/CD automation
+- `/infra/cron/etl.cron` - Cron reference
 
 ---
 
-## Action 5: Activate Referral Program
+## Growth Experiments Portfolio
 
-**Priority:** 1.1 (Impact × Confidence ÷ Time)  
-**Impact:** Medium  
-**Confidence:** 80%  
-**Time:** 60 days  
-**Effort:** Medium
+### Experiment 1: Pre-fill Onboarding (Priority: 9.5)
+- **Hypothesis:** Pre-filling pantry reduces activation time <2 min, increases activation rate to 75%
+- **Launch:** Week 2
+- **Duration:** 30 days
+- **Success Signal:** Activation rate 75%+, time <2 min
 
-**Objective:** Build referral loop to drive 20% of new users from referrals, reduce CAC from $30 to $20.
+### Experiment 2: Referral Program (Priority: 6.4)
+- **Hypothesis:** Referral program drives 20% of new users, reduces CAC to $20
+- **Launch:** Week 2
+- **Duration:** 90 days
+- **Success Signal:** Referral rate 20%+, blended CAC $20
 
-**Steps:**
-1. Build referral API (30 days)
-2. Create reward logic: "Refer friend, both get 1 month free" (7 days)
-3. Add referral UI to app (7 days)
-4. Launch referral program (7 days)
-5. Measure referral rate, CAC reduction (9 days)
+### Experiment 3: Grocery Integration Conversion (Priority: 4.2)
+- **Hypothesis:** Grocery CTA increases free-to-paid conversion 2x
+- **Launch:** Week 3
+- **Duration:** 60 days
+- **Success Signal:** Grocery user conversion 10%+
 
-**Success Criteria:**
-- Referral rate: 20%+ of new users
-- Blended CAC: $20 (from $30)
-- Referral conversion: 15%+ of referred users convert to paid
+### Experiment 4: Retention Email Automation (Priority: 2.1)
+- **Hypothesis:** Weekly emails increase 30-day retention to 46%
+- **Launch:** Week 5
+- **Duration:** 90 days
+- **Success Signal:** 30-day retention 46%+
 
-**KPI:** Referral rate: 20%+ (from 0%), Blended CAC: $20 (from $30)
+### Experiment 5: Solo-First Onboarding (Priority: 1.8)
+- **Hypothesis:** Solo-first flow increases solo activation 25%
+- **Launch:** Week 6
+- **Duration:** 60 days
+- **Success Signal:** Solo activation 80%+
 
-**30-Day Signal:** Referral rate >15%, CAC <$25
-
-**Owner:** Growth Lead
+**Growth Files:**
+- `/growth/portfolio.md` - Full portfolio
+- `/growth/experiments/<slug>/plan.md` - Individual plans
+- `/featureflags/flags.json` - Feature flags
+- `/middleware/flags.ts` - Flag middleware
 
 ---
 
-## 30/60/90 Day Plan
+## 30/60/90-Day Plan
 
-### 30 Days
-
+### 30 Days (Activation Phase)
 **Week 1:**
-- Enable monetization channels (Action 1)
-- Start test coverage increase (Action 2)
+- Enable monetization channels
+- Activate automated ETL with DQ gates
+- Set up monitoring and alerts
 
 **Week 2:**
-- Continue test coverage (Action 2)
-- Start onboarding optimization (Action 3)
+- Launch Pre-fill Onboarding experiment
+- Launch Referral Program experiment
+- Monitor baseline metrics
 
 **Week 3:**
-- Continue onboarding optimization (Action 3)
-- Research grocery partnerships (Action 4)
+- Launch Grocery Integration Conversion experiment
+- Review Week 2 experiment results
+- Optimize based on early signals
 
 **Week 4:**
-- Complete onboarding A/B test (Action 3)
-- Reach out to grocery API teams (Action 4)
+- Validate financial model with real data
+- Adjust assumptions based on actuals
+- Review experiment results, iterate
 
-**Deliverables:**
-- Revenue dashboard showing non-zero revenue
-- Test coverage >80%
-- Onboarding A/B test launched
-
----
-
-### 60 Days
-
-**Week 5-6:**
-- Build grocery integrations (Action 4)
-- Start referral program development (Action 5)
-
-**Week 7-8:**
-- Complete grocery integrations (Action 4)
-- Continue referral program (Action 5)
-
-**Deliverables:**
-- 2+ grocery stores integrated
-- Referral program API built
-- Onboarding optimization rolled out to 100%
+**Success Criteria:**
+- Revenue > $0
+- 100+ active users
+- At least one experiment showing positive signal
+- Financial model validated with real data
 
 ---
 
-### 90 Days
+### 60 Days (Optimization Phase)
+**Week 5:**
+- Launch Retention Email Automation experiment
+- Scale successful experiments from Week 2-3
+- Optimize CAC based on channel performance
 
-**Week 9-10:**
-- Launch grocery integrations publicly (Action 4)
-- Launch referral program (Action 5)
+**Week 6:**
+- Launch Solo-First Onboarding experiment
+- Review all experiment results
+- Double down on winners, kill losers
 
-**Week 11-12:**
-- Measure results, iterate
+**Week 7:**
+- Optimize unit economics (CAC, LTV)
+- Improve retention based on experiment learnings
+- Scale acquisition channels
+
+**Week 8:**
 - Scale successful experiments
+- Review financial model vs. actuals
+- Plan next quarter experiments
 
-**Deliverables:**
-- Grocery integration usage: 60%+
-- Referral rate: 20%+
-- All 5 actions complete
-
----
-
-## Risk Mitigation
-
-**Risk 1: Monetization channels don't generate revenue**
-- Mitigation: Debug revenue tracking, verify API connections
-- Owner: Growth Lead
-
-**Risk 2: Test coverage increase takes longer than 14 days**
-- Mitigation: Prioritize critical paths, use code coverage tools
-- Owner: Engineering Lead
-
-**Risk 3: Grocery partnerships stall**
-- Mitigation: Start with public APIs, build relationships, fallback to manual lists
-- Owner: Partnerships Lead
-
-**Risk 4: Referral program doesn't drive referrals**
-- Mitigation: Improve referral UI, increase reward value, test messaging
-- Owner: Growth Lead
+**Success Criteria:**
+- Revenue $12,000 MRR
+- 300+ active users
+- LTV/CAC >4x
+- At least 2 experiments showing strong positive signals
 
 ---
 
-## Success Metrics
+### 90 Days (Scale Phase)
+**Week 9-12:**
+- Scale all successful experiments
+- Optimize unit economics further
+- Build new experiments based on learnings
+- Review and update financial model
 
-### 30-Day Signals
-
-- Revenue dashboard shows non-zero revenue
-- Test coverage >80%
-- Onboarding A/B test shows activation rate >70%
-
-### 60-Day Signals
-
-- 2+ grocery stores integrated
-- Referral program active, referral rate >10%
-- Activation rate >75%
-
-### 90-Day Signals
-
-- MRR >$1,000/month
-- Grocery integration usage >60%
-- Referral rate >20%
-- Blended CAC <$25
+**Success Criteria:**
+- Revenue $45,000 MRR
+- 2,000+ active users
+- LTV/CAC >4.5x
+- Portfolio of 5+ successful experiments
+- Financial model accurate within 10%
 
 ---
 
-*See individual action plans in `/backlog/READY_*` tickets*
+## Integration Points
+
+### Finance ↔ Automation
+- **ETL feeds financial model:** Daily metrics rollup → finance model validation
+- **Financial model guides ETL:** Revenue targets → ETL source prioritization
+
+### Automation ↔ Growth
+- **ETL powers experiments:** Events data → experiment analysis
+- **Experiments drive ETL:** New metrics → ETL pipeline expansion
+
+### Finance ↔ Growth
+- **Experiments validate financial model:** Real CAC/LTV → model updates
+- **Financial model prioritizes experiments:** ROI targets → experiment selection
+
+---
+
+## Monitoring & Alerts
+
+### Daily Checks
+- ETL success/failure
+- Data quality gates
+- Revenue dashboard updates
+- Experiment metrics
+
+### Weekly Reviews
+- Financial model vs. actuals
+- Experiment results
+- Unit economics trends
+- Growth metrics
+
+### Monthly Reviews
+- Full financial forecast review
+- Experiment portfolio performance
+- Automation system health
+- Growth strategy adjustments
+
+---
+
+## Next Steps
+
+1. **Immediate (Week 1):**
+   - [ ] Enable monetization channels
+   - [ ] Activate automated ETL
+   - [ ] Set up monitoring
+
+2. **Short-term (Weeks 2-4):**
+   - [ ] Launch experiments
+   - [ ] Validate financial model
+   - [ ] Review results
+
+3. **Medium-term (Weeks 5-8):**
+   - [ ] Scale successful experiments
+   - [ ] Optimize unit economics
+   - [ ] Plan next quarter
+
+---
+
+**Related Files:**
+- `/models/finance_model.csv` - Financial data
+- `/reports/finance/forecast.md` - Forecast details
+- `/growth/portfolio.md` - Experiment portfolio
+- `/dashboards/metrics_spec.md` - Dashboard KPIs

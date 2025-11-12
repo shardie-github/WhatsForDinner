@@ -1,45 +1,60 @@
-# READY_realignment_001: Activate Revenue Systems
+# READY: Revenue Systems Activation
 
 **Type:** Realignment  
-**Priority:** 9.5 (Impact × Confidence ÷ Time)  
+**Priority:** CRITICAL  
 **Owner:** Growth Lead  
-**Status:** Ready  
-**Estimated Effort:** 7 days
+**KPI:** Revenue > $0, at least one channel active  
+**30-Day Signal:** Revenue dashboard shows non-zero values, at least one monetization channel processing transactions  
+**Impact:** HIGH  
+**Effort:** LOW  
+**Confidence:** 95%  
+**Priority Score:** 9.5 (Impact × Confidence ÷ Effort)
 
-## Objective
+---
 
-Enable existing monetization infrastructure to generate revenue immediately.
+## Problem
 
-## Steps
+5 monetization channels (affiliate, API, marketplace, data insights, subscriptions) are built but all return $0 revenue. Systems exist but are not activated.
 
-1. Run `pnpm monetization:enable` (1 day)
-2. Set environment variables: `AFFILIATE_ENABLED=true`, `API_MONETIZATION_ENABLED=true`, `DATA_INSIGHTS_ENABLED=true` (1 day)
-3. Connect revenue dashboard to Stripe + database (5 days)
-4. Verify revenue tracking (1 day)
+**Evidence:**
+- Revenue dashboard shows zeros across all channels
+- `pnpm monetization:enable` script exists but not run
+- No active transactions in any channel
 
-## Success Criteria
+---
 
-- Revenue dashboard shows non-zero revenue
-- Affiliate tracking works
-- API monetization endpoints active
-- Data insights channel enabled
+## Solution
 
-## KPI
+1. Run `pnpm monetization:enable` to activate all channels
+2. Verify each channel is processing:
+   - Affiliate: Check affiliate links generating clicks
+   - API: Verify API keys issued and usage tracked
+   - Marketplace: Confirm marketplace listings live
+   - Data Insights: Enable data export features
+   - Subscriptions: Activate subscription billing
+3. Set up monitoring alerts for revenue events
+4. Create daily revenue report
 
-**Target:** $500+/month from monetization channels
+---
 
-## 30-Day Signal
+## Acceptance Criteria
 
-Revenue dashboard shows non-zero revenue from at least one channel.
+- [ ] All 5 monetization channels enabled
+- [ ] Revenue dashboard shows non-zero values
+- [ ] At least one channel processing transactions
+- [ ] Monitoring alerts configured
+- [ ] Daily revenue report automated
 
-## Dependencies
+---
 
-None
+## 30-Day Success Signal
 
-## Impact
+Revenue > $0, at least one channel active with measurable transactions.
 
-**High** - Activates $500+/month passive revenue from existing systems
+---
 
-## Risk
+## Related
 
-Low - Systems already built, just need to enable
+- `/backlog/READY_realignment_002.md` - Product Simplification
+- `/backlog/READY_realignment_003.md` - Grocery Integration
+- `/reports/exec/unaligned_audit.md` - Full audit report

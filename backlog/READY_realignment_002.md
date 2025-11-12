@@ -1,46 +1,72 @@
-# READY_realignment_002: Unblock GTM Launch
+# READY: Product Simplification Sprint
 
 **Type:** Realignment  
-**Priority:** 6.4 (Impact × Confidence ÷ Time)  
-**Owner:** Engineering Lead  
-**Status:** Ready  
-**Estimated Effort:** 14 days
+**Priority:** HIGH  
+**Owner:** Product Lead  
+**KPI:** User feedback "easier to use", activation time <2 min  
+**30-Day Signal:** User feedback score improves, activation time reduced from 40 min → 2 min  
+**Impact:** HIGH  
+**Effort:** MEDIUM  
+**Confidence:** 85%  
+**Priority Score:** 8.5 (Impact × Confidence ÷ Effort)
 
-## Objective
+---
 
-Fix GTM blocker (test coverage) to enable launch readiness.
+## Problem
 
-## Steps
+Product vision declared "simple meal planning" but execution includes 200+ API endpoints, federation, nomad features, marketplace, community portal. This complexity slows execution and confuses users.
 
-1. Add test coverage tool to CI (Jest coverage, 2 days)
-2. Set coverage gate: fail builds if <80% (1 day)
-3. Increase test coverage to 80%+ (10 days)
-4. Fix critical bugs identified in GTM audit (1 day)
-5. Re-run GTM audit, verify score >90 (1 day)
+**Evidence:**
+- 200+ API endpoints documented
+- Enterprise features (federation, nomad) present
+- Multiple apps (web, mobile, marketplace, community)
+- User activation time: 40 minutes (target: <2 min)
 
-## Success Criteria
+---
 
-- GTM audit score >90
-- Test coverage >80%
-- All critical bugs fixed
-- CI fails builds below coverage threshold
+## Solution
 
-## KPI
+1. **Archive non-core features:**
+   - Federation features → archive
+   - Nomad features → archive
+   - Community portal → archive (keep for future)
+   - Marketplace → archive (keep for future)
 
-**Target:** GTM readiness: READY (from NOT_READY)
+2. **Simplify to core flow:**
+   - Pantry → Meal Suggestions → Grocery List
+   - Remove complexity from onboarding
+   - Focus on single-user experience first
 
-## 30-Day Signal
+3. **Reduce API surface:**
+   - Consolidate endpoints
+   - Remove unused endpoints
+   - Document core API only
 
-GTM audit score >90, test coverage >80%
+4. **Measure impact:**
+   - Track activation time
+   - Collect user feedback
+   - Monitor retention
 
-## Dependencies
+---
 
-None
+## Acceptance Criteria
 
-## Impact
+- [ ] Non-core features archived
+- [ ] Core flow simplified: Pantry → Suggestions → List
+- [ ] API endpoints reduced to <50 core endpoints
+- [ ] Activation time <2 min (from 40 min)
+- [ ] User feedback score improves
 
-**High** - Unblocks launch readiness, enables go-to-market execution
+---
 
-## Risk
+## 30-Day Success Signal
 
-Low - Straightforward technical task
+User feedback: "easier to use", activation time <2 min, retention maintained or improved.
+
+---
+
+## Related
+
+- `/backlog/READY_realignment_001.md` - Revenue Activation
+- `/backlog/READY_realignment_005.md` - Solo Positioning
+- `/reports/exec/unaligned_audit.md` - Full audit report
