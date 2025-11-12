@@ -106,10 +106,20 @@ CREATE TABLE IF NOT EXISTS recipes (
   ai_recommended BOOLEAN DEFAULT false,
   ai_match_score DECIMAL(3,2),
   is_published BOOLEAN DEFAULT false,
-  source recipe_source DEFAULT 'user',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Add source column if it doesn't exist (for recipe_source enum)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'recipes' AND column_name = 'source'
+  ) THEN
+    ALTER TABLE recipes ADD COLUMN source recipe_source DEFAULT 'user';
+  END IF;
+END $$;
 
 -- Pantry items table
 CREATE TABLE IF NOT EXISTS pantry_items (
@@ -200,9 +210,9 @@ CREATE TABLE IF NOT EXISTS user_organizations (
 CREATE TABLE IF NOT EXISTS subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id),
-  tenant_id UUID REFERENCES tenants(id),
+  tenant_id UUID, -- Will add FK constraint after tenants table exists
   stripe_customer_id TEXT,
-  stripe_subscription_id TEXT UNIQUE,
+  stripe_subscription_id TEXT,
   plan TEXT NOT NULL CHECK (plan IN ('free', 'pro', 'family', 'premium', 'partner')),
   status TEXT NOT NULL CHECK (status IN ('active', 'canceled', 'incomplete', 'incomplete_expired', 'past_due', 'trialing', 'unpaid')),
   current_period_start TIMESTAMP WITH TIME ZONE,
@@ -213,18 +223,66 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   metadata JSONB DEFAULT '{}'
 );
 
+-- Add foreign key constraint and unique constraint for subscriptions (idempotent)
+DO $$
+BEGIN
+  -- Add tenant_id FK if tenants table exists
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'subscriptions_tenant_id_fkey'
+    ) THEN
+      ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_tenant_id_fkey 
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id);
+    END IF;
+  END IF;
+
+  -- Add unique constraint for stripe_subscription_id if it doesn't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints 
+    WHERE constraint_name = 'subscriptions_stripe_subscription_id_key'
+  ) THEN
+    ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_stripe_subscription_id_key 
+    UNIQUE(stripe_subscription_id);
+  END IF;
+END $$;
+
 -- Tenant invites
 CREATE TABLE IF NOT EXISTS tenant_invites (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE,
+  tenant_id UUID, -- Will add FK constraint after tenants table exists
   email TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('editor', 'viewer', 'member')),
   invited_by UUID REFERENCES auth.users(id),
-  token TEXT UNIQUE NOT NULL,
+  token TEXT NOT NULL,
   expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
   used_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Add foreign key constraint and unique constraint for tenant_invites (idempotent)
+DO $$
+BEGIN
+  -- Add tenant_id FK if tenants table exists
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'tenant_invites_tenant_id_fkey'
+    ) THEN
+      ALTER TABLE tenant_invites ADD CONSTRAINT tenant_invites_tenant_id_fkey 
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;
+    END IF;
+  END IF;
+
+  -- Add unique constraint for token if it doesn't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints 
+    WHERE constraint_name = 'tenant_invites_token_key'
+  ) THEN
+    ALTER TABLE tenant_invites ADD CONSTRAINT tenant_invites_token_key 
+    UNIQUE(token);
+  END IF;
+END $$;
 
 -- Add foreign key constraints for tenant_id columns
 DO $$
@@ -283,7 +341,7 @@ CREATE TABLE IF NOT EXISTS analytics_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   event_type TEXT NOT NULL,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
-  tenant_id UUID REFERENCES tenants(id) ON DELETE SET NULL,
+  tenant_id UUID, -- Will add FK constraint after tenants table exists
   session_id TEXT NOT NULL,
   properties JSONB DEFAULT '{}',
   timestamp TIMESTAMPTZ DEFAULT NOW(),
@@ -291,12 +349,26 @@ CREATE TABLE IF NOT EXISTS analytics_events (
   user_agent TEXT
 );
 
+-- Add foreign key constraint for analytics_events.tenant_id (idempotent)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'analytics_events_tenant_id_fkey'
+    ) THEN
+      ALTER TABLE analytics_events ADD CONSTRAINT analytics_events_tenant_id_fkey 
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE SET NULL;
+    END IF;
+  END IF;
+END $$;
+
 -- Recipe metrics
 CREATE TABLE IF NOT EXISTS recipe_metrics (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  recipe_id UUID REFERENCES recipes(id) ON DELETE SET NULL,
+  recipe_id UUID, -- Will add FK constraint after recipes table exists
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
-  tenant_id UUID REFERENCES tenants(id) ON DELETE SET NULL,
+  tenant_id UUID, -- Will add FK constraint after tenants table exists
   generated_at TIMESTAMPTZ DEFAULT NOW(),
   ingredients_used TEXT[] NOT NULL,
   cuisine_type TEXT,
@@ -307,6 +379,32 @@ CREATE TABLE IF NOT EXISTS recipe_metrics (
   model_used TEXT NOT NULL,
   retry_count INT DEFAULT 0
 );
+
+-- Add foreign key constraints for recipe_metrics (idempotent)
+DO $$
+BEGIN
+  -- Add recipe_id FK if recipes table exists
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'recipes') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'recipe_metrics_recipe_id_fkey'
+    ) THEN
+      ALTER TABLE recipe_metrics ADD CONSTRAINT recipe_metrics_recipe_id_fkey 
+      FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE SET NULL;
+    END IF;
+  END IF;
+
+  -- Add tenant_id FK if tenants table exists
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'recipe_metrics_tenant_id_fkey'
+    ) THEN
+      ALTER TABLE recipe_metrics ADD CONSTRAINT recipe_metrics_tenant_id_fkey 
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE SET NULL;
+    END IF;
+  END IF;
+END $$;
 
 -- System metrics
 CREATE TABLE IF NOT EXISTS system_metrics (
@@ -348,14 +446,40 @@ CREATE TABLE IF NOT EXISTS error_reports (
 -- Recipe feedback
 CREATE TABLE IF NOT EXISTS recipe_feedback (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  recipe_id UUID REFERENCES recipes(id) ON DELETE CASCADE,
+  recipe_id UUID, -- Will add FK constraint after recipes table exists
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  tenant_id UUID REFERENCES tenants(id) ON DELETE SET NULL,
+  tenant_id UUID, -- Will add FK constraint after tenants table exists
   feedback_type TEXT NOT NULL CHECK (feedback_type IN ('thumbs_up', 'thumbs_down', 'rating')),
   score INT CHECK (score >= 1 AND score <= 5),
   feedback_text TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Add foreign key constraints for recipe_feedback (idempotent)
+DO $$
+BEGIN
+  -- Add recipe_id FK if recipes table exists
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'recipes') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'recipe_feedback_recipe_id_fkey'
+    ) THEN
+      ALTER TABLE recipe_feedback ADD CONSTRAINT recipe_feedback_recipe_id_fkey 
+      FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE;
+    END IF;
+  END IF;
+
+  -- Add tenant_id FK if tenants table exists
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'recipe_feedback_tenant_id_fkey'
+    ) THEN
+      ALTER TABLE recipe_feedback ADD CONSTRAINT recipe_feedback_tenant_id_fkey 
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE SET NULL;
+    END IF;
+  END IF;
+END $$;
 
 -- ============================================================================
 -- SECTION 6: AI SYSTEM TABLES
@@ -410,7 +534,7 @@ CREATE TABLE IF NOT EXISTS ai_performance_metrics (
 -- AI cache
 CREATE TABLE IF NOT EXISTS ai_cache (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE,
+  tenant_id UUID, -- Will add FK constraint after tenants table exists
   cache_key TEXT NOT NULL,
   prompt_hash TEXT NOT NULL,
   response_data JSONB NOT NULL,
@@ -419,9 +543,32 @@ CREATE TABLE IF NOT EXISTS ai_cache (
   cost_usd NUMERIC(10,4) NOT NULL,
   ttl_seconds INT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-  UNIQUE(tenant_id, cache_key)
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL
 );
+
+-- Add foreign key constraint and unique constraint for ai_cache (idempotent)
+DO $$
+BEGIN
+  -- Add tenant_id FK if tenants table exists
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'ai_cache_tenant_id_fkey'
+    ) THEN
+      ALTER TABLE ai_cache ADD CONSTRAINT ai_cache_tenant_id_fkey 
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;
+    END IF;
+  END IF;
+
+  -- Add unique constraint if it doesn't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints 
+    WHERE constraint_name = 'ai_cache_tenant_id_cache_key_key'
+  ) THEN
+    ALTER TABLE ai_cache ADD CONSTRAINT ai_cache_tenant_id_cache_key_key 
+    UNIQUE(tenant_id, cache_key);
+  END IF;
+END $$;
 
 -- ============================================================================
 -- SECTION 7: GROWTH AND FEATURE TABLES
@@ -430,7 +577,7 @@ CREATE TABLE IF NOT EXISTS ai_cache (
 -- Growth metrics
 CREATE TABLE IF NOT EXISTS growth_metrics (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE,
+  tenant_id UUID, -- Will add FK constraint after tenants table exists
   metric_type TEXT NOT NULL CHECK (metric_type IN (
     'cac', 'ltv', 'retention_d30', 'retention_d90', 'mrr', 'churn_rate', 
     'ai_cost_ratio', 'conversion_rate', 'activation_rate', 'engagement_score'
@@ -440,9 +587,32 @@ CREATE TABLE IF NOT EXISTS growth_metrics (
   period_start DATE NOT NULL,
   period_end DATE NOT NULL,
   metadata JSONB DEFAULT '{}',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(tenant_id, metric_type, cohort_date, period_start, period_end)
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Add foreign key constraint and unique constraint for growth_metrics (idempotent)
+DO $$
+BEGIN
+  -- Add tenant_id FK if tenants table exists
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'growth_metrics_tenant_id_fkey'
+    ) THEN
+      ALTER TABLE growth_metrics ADD CONSTRAINT growth_metrics_tenant_id_fkey 
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;
+    END IF;
+  END IF;
+
+  -- Add unique constraint if it doesn't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints 
+    WHERE constraint_name = 'growth_metrics_tenant_id_metric_type_key'
+  ) THEN
+    ALTER TABLE growth_metrics ADD CONSTRAINT growth_metrics_tenant_id_metric_type_key 
+    UNIQUE(tenant_id, metric_type, cohort_date, period_start, period_end);
+  END IF;
+END $$;
 
 -- Referrals
 CREATE TABLE IF NOT EXISTS referrals (
@@ -451,13 +621,25 @@ CREATE TABLE IF NOT EXISTS referrals (
   invitee_email TEXT,
   invitee_id UUID REFERENCES auth.users(id),
   reward_status TEXT DEFAULT 'pending' CHECK (reward_status IN ('pending', 'earned', 'paid', 'expired')),
-  referral_code TEXT UNIQUE NOT NULL,
+  referral_code TEXT NOT NULL,
   reward_type TEXT CHECK (reward_type IN ('pro_extension', 'credit', 'cash')),
   reward_value NUMERIC(10,2),
   conversion_date TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   expires_at TIMESTAMP WITH TIME ZONE DEFAULT (NOW() + INTERVAL '90 days')
 );
+
+-- Add unique constraint for referrals.referral_code (idempotent)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints 
+    WHERE constraint_name = 'referrals_referral_code_key'
+  ) THEN
+    ALTER TABLE referrals ADD CONSTRAINT referrals_referral_code_key 
+    UNIQUE(referral_code);
+  END IF;
+END $$;
 
 -- Feature flags
 CREATE TABLE IF NOT EXISTS config_flags (
@@ -491,7 +673,7 @@ CREATE TABLE IF NOT EXISTS flag_audit_log (
 CREATE TABLE IF NOT EXISTS usage_logs (
   id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
-  tenant_id UUID REFERENCES tenants(id) ON DELETE SET NULL,
+  tenant_id UUID, -- Will add FK constraint after tenants table exists
   action TEXT NOT NULL,
   tokens_used INT DEFAULT 0,
   cost_usd NUMERIC(10,4) DEFAULT 0,
@@ -500,15 +682,41 @@ CREATE TABLE IF NOT EXISTS usage_logs (
   metadata JSONB DEFAULT '{}'
 );
 
+-- Add foreign key constraint for usage_logs.tenant_id (idempotent)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'usage_logs_tenant_id_fkey'
+    ) THEN
+      ALTER TABLE usage_logs ADD CONSTRAINT usage_logs_tenant_id_fkey 
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE SET NULL;
+    END IF;
+  END IF;
+END $$;
+
 -- Billing events
 CREATE TABLE IF NOT EXISTS billing_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  stripe_event_id TEXT UNIQUE NOT NULL,
+  stripe_event_id TEXT NOT NULL,
   event_type TEXT NOT NULL,
   processed BOOLEAN DEFAULT false,
   data JSONB NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Add unique constraint for billing_events.stripe_event_id (idempotent)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints 
+    WHERE constraint_name = 'billing_events_stripe_event_id_key'
+  ) THEN
+    ALTER TABLE billing_events ADD CONSTRAINT billing_events_stripe_event_id_key 
+    UNIQUE(stripe_event_id);
+  END IF;
+END $$;
 
 -- ============================================================================
 -- SECTION 8: JOB QUEUE TABLES
@@ -528,9 +736,23 @@ CREATE TABLE IF NOT EXISTS jobs_queue (
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   started_at TIMESTAMPTZ,
   completed_at TIMESTAMPTZ,
-  tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE,
+  tenant_id UUID, -- Will add FK constraint after tenants table exists
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE
 );
+
+-- Add foreign key constraint for jobs_queue.tenant_id (idempotent)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tenants') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'jobs_queue_tenant_id_fkey'
+    ) THEN
+      ALTER TABLE jobs_queue ADD CONSTRAINT jobs_queue_tenant_id_fkey 
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;
+    END IF;
+  END IF;
+END $$;
 
 -- Job results
 CREATE TABLE IF NOT EXISTS job_results (
@@ -671,37 +893,35 @@ CREATE INDEX IF NOT EXISTS idx_job_logs_created_at ON job_logs(created_at);
 -- SECTION 10: ROW LEVEL SECURITY (RLS) POLICIES
 -- ============================================================================
 
--- Enable RLS on all tables
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE recipes ENABLE ROW LEVEL SECURITY;
-ALTER TABLE pantry_items ENABLE ROW LEVEL SECURITY;
-ALTER TABLE favorites ENABLE ROW LEVEL SECURITY;
-ALTER TABLE recipe_favorites ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tenants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tenant_memberships ENABLE ROW LEVEL SECURITY;
-ALTER TABLE user_organizations ENABLE ROW LEVEL SECURITY;
-ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tenant_invites ENABLE ROW LEVEL SECURITY;
-ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE recipe_metrics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE system_metrics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE error_reports ENABLE ROW LEVEL SECURITY;
-ALTER TABLE recipe_feedback ENABLE ROW LEVEL SECURITY;
-ALTER TABLE ai_health_metrics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE ai_embeddings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE ai_performance_metrics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE ai_cache ENABLE ROW LEVEL SECURITY;
-ALTER TABLE growth_metrics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE referrals ENABLE ROW LEVEL SECURITY;
-ALTER TABLE config_flags ENABLE ROW LEVEL SECURITY;
-ALTER TABLE flag_audit_log ENABLE ROW LEVEL SECURITY;
-ALTER TABLE usage_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE billing_events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE jobs_queue ENABLE ROW LEVEL SECURITY;
-ALTER TABLE job_results ENABLE ROW LEVEL SECURITY;
-ALTER TABLE job_logs ENABLE ROW LEVEL SECURITY;
+-- Enable RLS on all tables (idempotent)
+DO $$
+DECLARE
+  table_name TEXT;
+  tables_to_enable TEXT[] := ARRAY[
+    'profiles', 'recipes', 'pantry_items', 'favorites', 'recipe_favorites',
+    'tenants', 'organizations', 'tenant_memberships', 'user_organizations',
+    'subscriptions', 'tenant_invites', 'analytics_events', 'recipe_metrics',
+    'system_metrics', 'logs', 'error_reports', 'recipe_feedback',
+    'ai_health_metrics', 'ai_embeddings', 'ai_performance_metrics', 'ai_cache',
+    'growth_metrics', 'referrals', 'config_flags', 'flag_audit_log',
+    'usage_logs', 'billing_events', 'jobs_queue', 'job_results', 'job_logs'
+  ];
+BEGIN
+  FOREACH table_name IN ARRAY tables_to_enable
+  LOOP
+    IF EXISTS (
+      SELECT 1 FROM information_schema.tables 
+      WHERE table_schema = 'public' AND table_name = table_name
+    ) THEN
+      BEGIN
+        EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY', table_name);
+      EXCEPTION WHEN OTHERS THEN
+        -- RLS might already be enabled, continue
+        NULL;
+      END;
+    END IF;
+  END LOOP;
+END $$;
 
 -- Drop existing policies if they exist (idempotent)
 DO $$
@@ -719,383 +939,537 @@ BEGIN
   END LOOP;
 END $$;
 
--- Profiles policies
-CREATE POLICY "profiles_read_own" ON profiles
-  FOR SELECT TO authenticated
-  USING (id = auth.uid());
+-- Profiles policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "profiles_read_own" ON profiles;
+  CREATE POLICY "profiles_read_own" ON profiles
+    FOR SELECT TO authenticated
+    USING (id = auth.uid());
 
-CREATE POLICY "profiles_update_own" ON profiles
-  FOR UPDATE TO authenticated
-  USING (id = auth.uid())
-  WITH CHECK (id = auth.uid());
+  DROP POLICY IF EXISTS "profiles_update_own" ON profiles;
+  CREATE POLICY "profiles_update_own" ON profiles
+    FOR UPDATE TO authenticated
+    USING (id = auth.uid())
+    WITH CHECK (id = auth.uid());
 
-CREATE POLICY "profiles_insert_own" ON profiles
-  FOR INSERT TO authenticated
-  WITH CHECK (id = auth.uid());
+  DROP POLICY IF EXISTS "profiles_insert_own" ON profiles;
+  CREATE POLICY "profiles_insert_own" ON profiles
+    FOR INSERT TO authenticated
+    WITH CHECK (id = auth.uid());
 
-CREATE POLICY "profiles_read_tenant" ON profiles
-  FOR SELECT TO authenticated
-  USING (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND status = 'active'
-    )
-  );
-
--- Recipes policies
-CREATE POLICY "recipes_read_own" ON recipes
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid() OR user_id IS NULL);
-
-CREATE POLICY "recipes_insert_own" ON recipes
-  FOR INSERT TO authenticated
-  WITH CHECK (user_id = auth.uid() OR user_id IS NULL);
-
-CREATE POLICY "recipes_update_own" ON recipes
-  FOR UPDATE TO authenticated
-  USING (user_id = auth.uid() OR user_id IS NULL)
-  WITH CHECK (user_id = auth.uid() OR user_id IS NULL);
-
-CREATE POLICY "recipes_delete_own" ON recipes
-  FOR DELETE TO authenticated
-  USING (user_id = auth.uid());
-
-CREATE POLICY "recipes_read_tenant" ON recipes
-  FOR SELECT TO authenticated
-  USING (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND status = 'active'
-    ) OR tenant_id IS NULL
-  );
-
--- Pantry items policies
-CREATE POLICY "pantry_items_read_own" ON pantry_items
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid());
-
-CREATE POLICY "pantry_items_insert_own" ON pantry_items
-  FOR INSERT TO authenticated
-  WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "pantry_items_update_own" ON pantry_items
-  FOR UPDATE TO authenticated
-  USING (user_id = auth.uid())
-  WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "pantry_items_delete_own" ON pantry_items
-  FOR DELETE TO authenticated
-  USING (user_id = auth.uid());
-
--- Favorites policies
-CREATE POLICY "favorites_read_own" ON favorites
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid());
-
-CREATE POLICY "favorites_insert_own" ON favorites
-  FOR INSERT TO authenticated
-  WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "favorites_delete_own" ON favorites
-  FOR DELETE TO authenticated
-  USING (user_id = auth.uid());
-
--- Recipe favorites policies
-CREATE POLICY "recipe_favorites_read_own" ON recipe_favorites
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid());
-
-CREATE POLICY "recipe_favorites_insert_own" ON recipe_favorites
-  FOR INSERT TO authenticated
-  WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "recipe_favorites_delete_own" ON recipe_favorites
-  FOR DELETE TO authenticated
-  USING (user_id = auth.uid());
-
--- Tenants policies
-CREATE POLICY "tenants_read_member" ON tenants
-  FOR SELECT TO authenticated
-  USING (
-    id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND status = 'active'
-    )
-  );
-
-CREATE POLICY "tenants_write_owner" ON tenants
-  FOR ALL TO authenticated
-  USING (
-    id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND role = 'owner' AND status = 'active'
-    )
-  )
-  WITH CHECK (
-    id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND role = 'owner' AND status = 'active'
-    )
-  );
-
--- Tenant memberships policies
-CREATE POLICY "tenant_memberships_read_own" ON tenant_memberships
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid());
-
-CREATE POLICY "tenant_memberships_read_tenant" ON tenant_memberships
-  FOR SELECT TO authenticated
-  USING (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND status = 'active'
-    )
-  );
-
-CREATE POLICY "tenant_memberships_write_owner" ON tenant_memberships
-  FOR ALL TO authenticated
-  USING (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND role = 'owner' AND status = 'active'
-    )
-  )
-  WITH CHECK (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND role = 'owner' AND status = 'active'
-    )
-  );
-
--- Subscriptions policies
-CREATE POLICY "subscriptions_read_tenant" ON subscriptions
-  FOR SELECT TO authenticated
-  USING (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND status = 'active'
-    )
-  );
-
--- Analytics events policies
-CREATE POLICY "analytics_events_read_own" ON analytics_events
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid() OR user_id IS NULL);
-
-CREATE POLICY "analytics_events_insert" ON analytics_events
-  FOR INSERT TO authenticated, service_role
-  WITH CHECK (true);
-
--- Recipe metrics policies
-CREATE POLICY "recipe_metrics_read_own" ON recipe_metrics
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid());
-
-CREATE POLICY "recipe_metrics_insert" ON recipe_metrics
-  FOR INSERT TO authenticated, service_role
-  WITH CHECK (true);
-
--- System metrics policies (admin only)
-CREATE POLICY "system_metrics_service_role" ON system_metrics
-  FOR ALL TO service_role
-  USING (true);
-
--- Logs policies (admin only)
-CREATE POLICY "logs_service_role" ON logs
-  FOR ALL TO service_role
-  USING (true);
-
-CREATE POLICY "logs_read_own" ON logs
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid() OR user_id IS NULL);
-
--- Error reports policies
-CREATE POLICY "error_reports_read_own" ON error_reports
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid() OR user_id IS NULL);
-
-CREATE POLICY "error_reports_insert" ON error_reports
-  FOR INSERT TO authenticated, service_role
-  WITH CHECK (true);
-
--- Recipe feedback policies
-CREATE POLICY "recipe_feedback_read_own" ON recipe_feedback
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid());
-
-CREATE POLICY "recipe_feedback_insert_own" ON recipe_feedback
-  FOR INSERT TO authenticated
-  WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "recipe_feedback_update_own" ON recipe_feedback
-  FOR UPDATE TO authenticated
-  USING (user_id = auth.uid())
-  WITH CHECK (user_id = auth.uid());
-
--- AI health metrics policies
-CREATE POLICY "ai_health_metrics_read" ON ai_health_metrics
-  FOR SELECT TO authenticated
-  USING (true);
-
-CREATE POLICY "ai_health_metrics_service_role" ON ai_health_metrics
-  FOR ALL TO service_role
-  USING (true);
-
--- AI embeddings policies
-CREATE POLICY "ai_embeddings_read" ON ai_embeddings
-  FOR SELECT TO authenticated
-  USING (true);
-
-CREATE POLICY "ai_embeddings_service_role" ON ai_embeddings
-  FOR ALL TO service_role
-  USING (true);
-
--- AI performance metrics policies
-CREATE POLICY "ai_performance_metrics_read_own" ON ai_performance_metrics
-  FOR SELECT TO authenticated
-  USING (user_id = auth.uid() OR user_id IS NULL);
-
-CREATE POLICY "ai_performance_metrics_service_role" ON ai_performance_metrics
-  FOR ALL TO service_role
-  USING (true);
-
--- AI cache policies
-CREATE POLICY "ai_cache_read_tenant" ON ai_cache
-  FOR SELECT TO authenticated
-  USING (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND status = 'active'
-    )
-  );
-
-CREATE POLICY "ai_cache_service_role" ON ai_cache
-  FOR ALL TO service_role
-  USING (true);
-
--- Growth metrics policies
-CREATE POLICY "growth_metrics_read_tenant" ON growth_metrics
-  FOR SELECT TO authenticated
-  USING (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND status = 'active'
-    )
-  );
-
-CREATE POLICY "growth_metrics_service_role" ON growth_metrics
-  FOR ALL TO service_role
-  USING (true);
-
--- Referrals policies
-CREATE POLICY "referrals_read_own" ON referrals
-  FOR SELECT TO authenticated
-  USING (referrer_id = auth.uid());
-
-CREATE POLICY "referrals_insert_own" ON referrals
-  FOR INSERT TO authenticated
-  WITH CHECK (referrer_id = auth.uid());
-
--- Feature flags policies
-CREATE POLICY "config_flags_read_enabled" ON config_flags
-  FOR SELECT TO anon, authenticated
-  USING (enabled = true AND (expires_at IS NULL OR expires_at > NOW()));
-
-CREATE POLICY "config_flags_read_all" ON config_flags
-  FOR SELECT TO authenticated
-  USING (true);
-
-CREATE POLICY "config_flags_service_role" ON config_flags
-  FOR ALL TO service_role
-  USING (true);
-
--- Flag audit log policies
-CREATE POLICY "flag_audit_log_read" ON flag_audit_log
-  FOR SELECT TO authenticated
-  USING (true);
-
-CREATE POLICY "flag_audit_log_service_role" ON flag_audit_log
-  FOR INSERT TO service_role
-  WITH CHECK (true);
-
--- Usage logs policies
-CREATE POLICY "usage_logs_read_tenant" ON usage_logs
-  FOR SELECT TO authenticated
-  USING (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND status = 'active'
-    )
-  );
-
-CREATE POLICY "usage_logs_insert" ON usage_logs
-  FOR INSERT TO authenticated, service_role
-  WITH CHECK (true);
-
--- Billing events policies
-CREATE POLICY "billing_events_service_role" ON billing_events
-  FOR ALL TO service_role
-  USING (true);
-
--- Jobs queue policies
-CREATE POLICY "jobs_queue_read_tenant" ON jobs_queue
-  FOR SELECT TO authenticated
-  USING (
-    tenant_id IN (
-      SELECT tenant_id FROM tenant_memberships 
-      WHERE user_id = auth.uid() AND status = 'active'
-    )
-  );
-
-CREATE POLICY "jobs_queue_service_role" ON jobs_queue
-  FOR ALL TO service_role
-  USING (true);
-
--- Job results policies
-CREATE POLICY "job_results_read_tenant" ON job_results
-  FOR SELECT TO authenticated
-  USING (
-    job_id IN (
-      SELECT id FROM jobs_queue 
-      WHERE tenant_id IN (
+  DROP POLICY IF EXISTS "profiles_read_tenant" ON profiles;
+  CREATE POLICY "profiles_read_tenant" ON profiles
+    FOR SELECT TO authenticated
+    USING (
+      tenant_id IN (
         SELECT tenant_id FROM tenant_memberships 
         WHERE user_id = auth.uid() AND status = 'active'
       )
-    )
-  );
+    );
+END $$;
 
-CREATE POLICY "job_results_service_role" ON job_results
-  FOR ALL TO service_role
-  USING (true);
+-- Recipes policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "recipes_read_own" ON recipes;
+  CREATE POLICY "recipes_read_own" ON recipes
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid() OR user_id IS NULL);
 
--- Job logs policies
-CREATE POLICY "job_logs_read_tenant" ON job_logs
-  FOR SELECT TO authenticated
-  USING (
-    job_id IN (
-      SELECT id FROM jobs_queue 
-      WHERE tenant_id IN (
+  DROP POLICY IF EXISTS "recipes_insert_own" ON recipes;
+  CREATE POLICY "recipes_insert_own" ON recipes
+    FOR INSERT TO authenticated
+    WITH CHECK (user_id = auth.uid() OR user_id IS NULL);
+
+  DROP POLICY IF EXISTS "recipes_update_own" ON recipes;
+  CREATE POLICY "recipes_update_own" ON recipes
+    FOR UPDATE TO authenticated
+    USING (user_id = auth.uid() OR user_id IS NULL)
+    WITH CHECK (user_id = auth.uid() OR user_id IS NULL);
+
+  DROP POLICY IF EXISTS "recipes_delete_own" ON recipes;
+  CREATE POLICY "recipes_delete_own" ON recipes
+    FOR DELETE TO authenticated
+    USING (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "recipes_read_tenant" ON recipes;
+  CREATE POLICY "recipes_read_tenant" ON recipes
+    FOR SELECT TO authenticated
+    USING (
+      tenant_id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND status = 'active'
+      ) OR tenant_id IS NULL
+    );
+END $$;
+
+-- Pantry items policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "pantry_items_read_own" ON pantry_items;
+  CREATE POLICY "pantry_items_read_own" ON pantry_items
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "pantry_items_insert_own" ON pantry_items;
+  CREATE POLICY "pantry_items_insert_own" ON pantry_items
+    FOR INSERT TO authenticated
+    WITH CHECK (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "pantry_items_update_own" ON pantry_items;
+  CREATE POLICY "pantry_items_update_own" ON pantry_items
+    FOR UPDATE TO authenticated
+    USING (user_id = auth.uid())
+    WITH CHECK (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "pantry_items_delete_own" ON pantry_items;
+  CREATE POLICY "pantry_items_delete_own" ON pantry_items
+    FOR DELETE TO authenticated
+    USING (user_id = auth.uid());
+END $$;
+
+-- Favorites policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "favorites_read_own" ON favorites;
+  CREATE POLICY "favorites_read_own" ON favorites
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "favorites_insert_own" ON favorites;
+  CREATE POLICY "favorites_insert_own" ON favorites
+    FOR INSERT TO authenticated
+    WITH CHECK (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "favorites_delete_own" ON favorites;
+  CREATE POLICY "favorites_delete_own" ON favorites
+    FOR DELETE TO authenticated
+    USING (user_id = auth.uid());
+END $$;
+
+-- Recipe favorites policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "recipe_favorites_read_own" ON recipe_favorites;
+  CREATE POLICY "recipe_favorites_read_own" ON recipe_favorites
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "recipe_favorites_insert_own" ON recipe_favorites;
+  CREATE POLICY "recipe_favorites_insert_own" ON recipe_favorites
+    FOR INSERT TO authenticated
+    WITH CHECK (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "recipe_favorites_delete_own" ON recipe_favorites;
+  CREATE POLICY "recipe_favorites_delete_own" ON recipe_favorites
+    FOR DELETE TO authenticated
+    USING (user_id = auth.uid());
+END $$;
+
+-- Tenants policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "tenants_read_member" ON tenants;
+  CREATE POLICY "tenants_read_member" ON tenants
+    FOR SELECT TO authenticated
+    USING (
+      id IN (
         SELECT tenant_id FROM tenant_memberships 
         WHERE user_id = auth.uid() AND status = 'active'
       )
+    );
+
+  DROP POLICY IF EXISTS "tenants_write_owner" ON tenants;
+  CREATE POLICY "tenants_write_owner" ON tenants
+    FOR ALL TO authenticated
+    USING (
+      id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND role = 'owner' AND status = 'active'
+      )
     )
-  );
+    WITH CHECK (
+      id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND role = 'owner' AND status = 'active'
+      )
+    );
+END $$;
 
-CREATE POLICY "job_logs_service_role" ON job_logs
-  FOR ALL TO service_role
-  USING (true);
+-- Tenant memberships policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "tenant_memberships_read_own" ON tenant_memberships;
+  CREATE POLICY "tenant_memberships_read_own" ON tenant_memberships
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid());
 
--- Service role bypass policies (for all tables)
+  DROP POLICY IF EXISTS "tenant_memberships_read_tenant" ON tenant_memberships;
+  CREATE POLICY "tenant_memberships_read_tenant" ON tenant_memberships
+    FOR SELECT TO authenticated
+    USING (
+      tenant_id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND status = 'active'
+      )
+    );
+
+  DROP POLICY IF EXISTS "tenant_memberships_write_owner" ON tenant_memberships;
+  CREATE POLICY "tenant_memberships_write_owner" ON tenant_memberships
+    FOR ALL TO authenticated
+    USING (
+      tenant_id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND role = 'owner' AND status = 'active'
+      )
+    )
+    WITH CHECK (
+      tenant_id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND role = 'owner' AND status = 'active'
+      )
+    );
+END $$;
+
+-- Subscriptions policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "subscriptions_read_tenant" ON subscriptions;
+  CREATE POLICY "subscriptions_read_tenant" ON subscriptions
+    FOR SELECT TO authenticated
+    USING (
+      tenant_id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND status = 'active'
+      )
+    );
+END $$;
+
+-- Analytics events policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "analytics_events_read_own" ON analytics_events;
+  CREATE POLICY "analytics_events_read_own" ON analytics_events
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid() OR user_id IS NULL);
+
+  DROP POLICY IF EXISTS "analytics_events_insert" ON analytics_events;
+  CREATE POLICY "analytics_events_insert" ON analytics_events
+    FOR INSERT TO authenticated, service_role
+    WITH CHECK (true);
+END $$;
+
+-- Recipe metrics policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "recipe_metrics_read_own" ON recipe_metrics;
+  CREATE POLICY "recipe_metrics_read_own" ON recipe_metrics
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "recipe_metrics_insert" ON recipe_metrics;
+  CREATE POLICY "recipe_metrics_insert" ON recipe_metrics
+    FOR INSERT TO authenticated, service_role
+    WITH CHECK (true);
+END $$;
+
+-- System metrics policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "system_metrics_service_role" ON system_metrics;
+  CREATE POLICY "system_metrics_service_role" ON system_metrics
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- Logs policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "logs_service_role" ON logs;
+  CREATE POLICY "logs_service_role" ON logs
+    FOR ALL TO service_role
+    USING (true);
+
+  DROP POLICY IF EXISTS "logs_read_own" ON logs;
+  CREATE POLICY "logs_read_own" ON logs
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid() OR user_id IS NULL);
+END $$;
+
+-- Error reports policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "error_reports_read_own" ON error_reports;
+  CREATE POLICY "error_reports_read_own" ON error_reports
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid() OR user_id IS NULL);
+
+  DROP POLICY IF EXISTS "error_reports_insert" ON error_reports;
+  CREATE POLICY "error_reports_insert" ON error_reports
+    FOR INSERT TO authenticated, service_role
+    WITH CHECK (true);
+END $$;
+
+-- Recipe feedback policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "recipe_feedback_read_own" ON recipe_feedback;
+  CREATE POLICY "recipe_feedback_read_own" ON recipe_feedback
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "recipe_feedback_insert_own" ON recipe_feedback;
+  CREATE POLICY "recipe_feedback_insert_own" ON recipe_feedback
+    FOR INSERT TO authenticated
+    WITH CHECK (user_id = auth.uid());
+
+  DROP POLICY IF EXISTS "recipe_feedback_update_own" ON recipe_feedback;
+  CREATE POLICY "recipe_feedback_update_own" ON recipe_feedback
+    FOR UPDATE TO authenticated
+    USING (user_id = auth.uid())
+    WITH CHECK (user_id = auth.uid());
+END $$;
+
+-- AI health metrics policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "ai_health_metrics_read" ON ai_health_metrics;
+  CREATE POLICY "ai_health_metrics_read" ON ai_health_metrics
+    FOR SELECT TO authenticated
+    USING (true);
+
+  DROP POLICY IF EXISTS "ai_health_metrics_service_role" ON ai_health_metrics;
+  CREATE POLICY "ai_health_metrics_service_role" ON ai_health_metrics
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- AI embeddings policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "ai_embeddings_read" ON ai_embeddings;
+  CREATE POLICY "ai_embeddings_read" ON ai_embeddings
+    FOR SELECT TO authenticated
+    USING (true);
+
+  DROP POLICY IF EXISTS "ai_embeddings_service_role" ON ai_embeddings;
+  CREATE POLICY "ai_embeddings_service_role" ON ai_embeddings
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- AI performance metrics policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "ai_performance_metrics_read_own" ON ai_performance_metrics;
+  CREATE POLICY "ai_performance_metrics_read_own" ON ai_performance_metrics
+    FOR SELECT TO authenticated
+    USING (user_id = auth.uid() OR user_id IS NULL);
+
+  DROP POLICY IF EXISTS "ai_performance_metrics_service_role" ON ai_performance_metrics;
+  CREATE POLICY "ai_performance_metrics_service_role" ON ai_performance_metrics
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- AI cache policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "ai_cache_read_tenant" ON ai_cache;
+  CREATE POLICY "ai_cache_read_tenant" ON ai_cache
+    FOR SELECT TO authenticated
+    USING (
+      tenant_id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND status = 'active'
+      )
+    );
+
+  DROP POLICY IF EXISTS "ai_cache_service_role" ON ai_cache;
+  CREATE POLICY "ai_cache_service_role" ON ai_cache
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- Growth metrics policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "growth_metrics_read_tenant" ON growth_metrics;
+  CREATE POLICY "growth_metrics_read_tenant" ON growth_metrics
+    FOR SELECT TO authenticated
+    USING (
+      tenant_id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND status = 'active'
+      )
+    );
+
+  DROP POLICY IF EXISTS "growth_metrics_service_role" ON growth_metrics;
+  CREATE POLICY "growth_metrics_service_role" ON growth_metrics
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- Referrals policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "referrals_read_own" ON referrals;
+  CREATE POLICY "referrals_read_own" ON referrals
+    FOR SELECT TO authenticated
+    USING (referrer_id = auth.uid());
+
+  DROP POLICY IF EXISTS "referrals_insert_own" ON referrals;
+  CREATE POLICY "referrals_insert_own" ON referrals
+    FOR INSERT TO authenticated
+    WITH CHECK (referrer_id = auth.uid());
+END $$;
+
+-- Feature flags policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "config_flags_read_enabled" ON config_flags;
+  CREATE POLICY "config_flags_read_enabled" ON config_flags
+    FOR SELECT TO anon, authenticated
+    USING (enabled = true AND (expires_at IS NULL OR expires_at > NOW()));
+
+  DROP POLICY IF EXISTS "config_flags_read_all" ON config_flags;
+  CREATE POLICY "config_flags_read_all" ON config_flags
+    FOR SELECT TO authenticated
+    USING (true);
+
+  DROP POLICY IF EXISTS "config_flags_service_role" ON config_flags;
+  CREATE POLICY "config_flags_service_role" ON config_flags
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- Flag audit log policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "flag_audit_log_read" ON flag_audit_log;
+  CREATE POLICY "flag_audit_log_read" ON flag_audit_log
+    FOR SELECT TO authenticated
+    USING (true);
+
+  DROP POLICY IF EXISTS "flag_audit_log_service_role" ON flag_audit_log;
+  CREATE POLICY "flag_audit_log_service_role" ON flag_audit_log
+    FOR INSERT TO service_role
+    WITH CHECK (true);
+END $$;
+
+-- Usage logs policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "usage_logs_read_tenant" ON usage_logs;
+  CREATE POLICY "usage_logs_read_tenant" ON usage_logs
+    FOR SELECT TO authenticated
+    USING (
+      tenant_id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND status = 'active'
+      )
+    );
+
+  DROP POLICY IF EXISTS "usage_logs_insert" ON usage_logs;
+  CREATE POLICY "usage_logs_insert" ON usage_logs
+    FOR INSERT TO authenticated, service_role
+    WITH CHECK (true);
+END $$;
+
+-- Billing events policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "billing_events_service_role" ON billing_events;
+  CREATE POLICY "billing_events_service_role" ON billing_events
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- Jobs queue policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "jobs_queue_read_tenant" ON jobs_queue;
+  CREATE POLICY "jobs_queue_read_tenant" ON jobs_queue
+    FOR SELECT TO authenticated
+    USING (
+      tenant_id IN (
+        SELECT tenant_id FROM tenant_memberships 
+        WHERE user_id = auth.uid() AND status = 'active'
+      )
+    );
+
+  DROP POLICY IF EXISTS "jobs_queue_service_role" ON jobs_queue;
+  CREATE POLICY "jobs_queue_service_role" ON jobs_queue
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- Job results policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "job_results_read_tenant" ON job_results;
+  CREATE POLICY "job_results_read_tenant" ON job_results
+    FOR SELECT TO authenticated
+    USING (
+      job_id IN (
+        SELECT id FROM jobs_queue 
+        WHERE tenant_id IN (
+          SELECT tenant_id FROM tenant_memberships 
+          WHERE user_id = auth.uid() AND status = 'active'
+        )
+      )
+    );
+
+  DROP POLICY IF EXISTS "job_results_service_role" ON job_results;
+  CREATE POLICY "job_results_service_role" ON job_results
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- Job logs policies (idempotent)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "job_logs_read_tenant" ON job_logs;
+  CREATE POLICY "job_logs_read_tenant" ON job_logs
+    FOR SELECT TO authenticated
+    USING (
+      job_id IN (
+        SELECT id FROM jobs_queue 
+        WHERE tenant_id IN (
+          SELECT tenant_id FROM tenant_memberships 
+          WHERE user_id = auth.uid() AND status = 'active'
+        )
+      )
+    );
+
+  DROP POLICY IF EXISTS "job_logs_service_role" ON job_logs;
+  CREATE POLICY "job_logs_service_role" ON job_logs
+    FOR ALL TO service_role
+    USING (true);
+END $$;
+
+-- Service role bypass policies (for all tables) - idempotent
+-- Note: Individual service_role policies are created above, this is a fallback
 DO $$
 DECLARE
   r RECORD;
 BEGIN
   FOR r IN (SELECT schemaname, tablename FROM pg_tables WHERE schemaname = 'public') LOOP
     BEGIN
-      EXECUTE format('CREATE POLICY "%s_service_role" ON %I.%I FOR ALL TO service_role USING (true) WITH CHECK (true)', 
-        r.tablename, r.schemaname, r.tablename);
-    EXCEPTION WHEN duplicate_object THEN
-      -- Policy already exists, skip
+      -- Only create if policy doesn't exist
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE schemaname = r.schemaname 
+        AND tablename = r.tablename 
+        AND policyname = format('%s_service_role', r.tablename)
+      ) THEN
+        EXECUTE format('CREATE POLICY "%s_service_role" ON %I.%I FOR ALL TO service_role USING (true) WITH CHECK (true)', 
+          r.tablename, r.schemaname, r.tablename);
+      END IF;
+    EXCEPTION WHEN OTHERS THEN
+      -- Skip on any error
+      NULL;
     END;
   END LOOP;
 END $$;
@@ -1268,14 +1642,37 @@ BEGIN
   END IF;
 END $$;
 
--- Add tables to realtime publication
-ALTER PUBLICATION supabase_realtime ADD TABLE IF NOT EXISTS profiles;
-ALTER PUBLICATION supabase_realtime ADD TABLE IF NOT EXISTS recipes;
-ALTER PUBLICATION supabase_realtime ADD TABLE IF NOT EXISTS favorites;
-ALTER PUBLICATION supabase_realtime ADD TABLE IF NOT EXISTS recipe_favorites;
-ALTER PUBLICATION supabase_realtime ADD TABLE IF NOT EXISTS tenant_memberships;
-ALTER PUBLICATION supabase_realtime ADD TABLE IF NOT EXISTS subscriptions;
-ALTER PUBLICATION supabase_realtime ADD TABLE IF NOT EXISTS recipe_feedback;
+-- Add tables to realtime publication (idempotent)
+DO $$
+DECLARE
+  table_name TEXT;
+  tables_to_add TEXT[] := ARRAY[
+    'profiles', 'recipes', 'favorites', 'recipe_favorites',
+    'tenant_memberships', 'subscriptions', 'recipe_feedback'
+  ];
+BEGIN
+  FOREACH table_name IN ARRAY tables_to_add
+  LOOP
+    IF EXISTS (
+      SELECT 1 FROM information_schema.tables 
+      WHERE table_schema = 'public' AND table_name = table_name
+    ) THEN
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_publication_tables
+          WHERE pubname = 'supabase_realtime'
+          AND schemaname = 'public'
+          AND tablename = table_name
+        ) THEN
+          EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE %I', table_name);
+        END IF;
+      EXCEPTION WHEN OTHERS THEN
+        -- Table might not exist or already added, continue
+        NULL;
+      END;
+    END IF;
+  END LOOP;
+END $$;
 
 -- ============================================================================
 -- SECTION 14: STORAGE BUCKETS
