@@ -118,6 +118,7 @@
     "db:sync": "tsx scripts/sync-prisma-from-supabase.ts",
     "db:studio": "prisma studio",
     "smoke:test": "tsx scripts/smoke.ts",
+    "smoke:test:full-stack": "node scripts/full-stack-smoke-test.mjs",
     "doctor": "tsx scripts/reality-check.ts",
     "queue:worker": "tsx packages/server/src/queue/index.ts",
     "dev:api": "next dev -p 3000",
