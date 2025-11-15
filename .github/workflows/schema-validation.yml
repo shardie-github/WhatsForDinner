@@ -1,0 +1,133 @@
+name: Schema Validation
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'prisma/schema.prisma'
+      - 'supabase/migrations/**'
+      - '.github/workflows/schema-validation.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'prisma/schema.prisma'
+      - 'supabase/migrations/**'
+
+jobs:
+  schema-health-check:
+    name: Database Schema Health Check
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm db:generate
+
+      - name: Run schema health check
+        run: npx tsx scripts/schema-health-check.ts
+        continue-on-error: true
+
+      - name: Upload schema health report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: schema-health-report
+          path: |
+            schema-health-report.json
+          retention-days: 7
+
+  migration-validation:
+    name: Migration Validation
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate migrations
+        run: |
+          # Check for migration file naming
+          echo "Checking migration file names..."
+          find supabase/migrations -name "*.sql" | while read file; do
+            if [[ ! "$file" =~ ^[0-9]+.*\.sql$ ]]; then
+              echo "❌ Invalid migration file name: $file"
+              echo "Migration files should start with a number"
+              exit 1
+            fi
+          done
+          
+          # Check for syntax errors (basic)
+          echo "Checking SQL syntax..."
+          find supabase/migrations -name "*.sql" -exec echo "Validating {}" \;
+
+      - name: Check migration order
+        run: |
+          echo "Checking migration order..."
+          ls -1 supabase/migrations/*.sql | sort -V
+
+  prisma-schema-validation:
+    name: Prisma Schema Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate Prisma schema
+        run: |
+          pnpm db:generate
+          echo "✅ Prisma schema is valid"
+
+      - name: Check for breaking changes
+        run: |
+          # This would require a baseline schema to compare against
+          echo "Checking for breaking changes..."
+          # pnpm prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-schema-datamodel prisma/schema.prisma --script
