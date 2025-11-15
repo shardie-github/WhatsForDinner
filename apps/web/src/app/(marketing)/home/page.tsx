@@ -29,6 +29,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { TrustSignals } from '@/components/TrustSignals';
 import Link from 'next/link';
 
 interface ValueProposition {
@@ -173,6 +174,11 @@ export default function HomePage() {
                 </CardContent>
               </Card>
             </div>
+          </div>
+
+          {/* Trust Signals */}
+          <div className="mt-12 mb-8">
+            <TrustSignals variant="inline" />
           </div>
 
           {/* Social Proof */}

@@ -12,6 +12,8 @@ import NotificationsCenter from "@/components/gamification/NotificationsCenter";
 import ReferralSection from "@/components/gamification/ReferralSection";
 import ProgressChart from "@/components/gamification/ProgressChart";
 import BadgeCollection from "@/components/gamification/BadgeCollection";
+import { AIPersonality } from "@/components/AIPersonality";
+import { CTAOptimizer } from "@/components/CTAOptimizer";
 import dynamic from "next/dynamic";
 
 const LiveVisitors = dynamic(()=>import("@/components/integrations/LiveVisitors").then(m=>m.default), { ssr:false });
@@ -29,13 +31,25 @@ function HubInner(){
   ]); }, []);
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24 md:pb-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Play Hub</h1>
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Decision Games 🎮</h1>
+          <p className="text-muted-foreground">Make dinner decisions fun and easy</p>
+        </div>
         <div className="flex items-center gap-2">
           <NotificationsCenter />
           <LiveVisitors />
         </div>
+      </div>
+
+      {/* AI Personality */}
+      <AIPersonality context="suggestion" />
+
+      {/* Quick CTA */}
+      <div className="flex gap-2">
+        <CTAOptimizer variant="primary" context="dashboard" size="md" />
+        <CTAOptimizer variant="secondary" context="dashboard" size="md" />
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-2">
@@ -54,6 +68,9 @@ function HubInner(){
 
       {activeTab === "overview" && (
         <>
+          {/* Decision Games - Prominent */}
+          <DecisionGames />
+
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border p-4 flex flex-col items-center gap-2">
               <ProgressRing value={pct}/>
@@ -73,6 +90,7 @@ function HubInner(){
 
           <div className="space-y-3">
             <div className="text-sm font-semibold">Daily Quests</div>
+            <QuestCard title="Play a decision game" xp={25}/>
             <QuestCard title="Complete one journal entry" xp={20}/>
             <QuestCard title="Share a tip in community" xp={15}/>
             <QuestCard title="Invite a friend" xp={25}/>

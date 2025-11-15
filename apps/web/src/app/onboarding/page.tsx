@@ -18,6 +18,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AIPersonality } from '@/components/AIPersonality';
+import { Celebration } from '@/components/AdvancedAnimations';
 
 type Step = 'welcome' | 'pantry' | 'preferences' | 'generating' | 'complete';
 
@@ -36,6 +39,7 @@ export default function OnboardingPage() {
   const [pantryItems, setPantryItems] = useState<string[]>([]);
   const [preferences, setPreferences] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const handlePantryScan = () => {
     // Pre-fill with common pantry items for instant activation
@@ -114,6 +118,9 @@ export default function OnboardingPage() {
             event_data: { mealPlanId: data.id },
           }),
         }).catch(() => {});
+
+        // Show celebration
+        setShowCelebration(true);
       }
     } catch (error) {
       console.error('Failed to generate recipe:', error);
@@ -130,38 +137,85 @@ export default function OnboardingPage() {
 
   if (step === 'welcome') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/5 to-primary/10">
-        <Card className="max-w-2xl w-full">
-          <CardHeader className="text-center">
-            <div className="mx-auto w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <Sparkles className="w-10 h-10 text-primary" />
-            </div>
-            <CardTitle className="text-3xl mb-2">Welcome to What's for Dinner?</CardTitle>
-            <p className="text-muted-foreground text-lg">
-              Get AI-powered meal suggestions in 30 seconds based on what you already have.
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4 mb-6">
-              {[
-                { icon: '⚡', text: 'Save 5+ hours per week' },
-                { icon: '💰', text: 'Reduce food waste by 40%' },
-                { icon: '🧠', text: 'AI learns your preferences' },
-                { icon: '📱', text: 'Works offline' },
-              ].map((benefit, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="text-2xl">{benefit.icon}</span>
-                  <span className="text-sm">{benefit.text}</span>
+      <>
+        {showCelebration && <Celebration type="success" onComplete={() => setShowCelebration(false)} />}
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/5 to-primary/10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-2xl w-full"
+          >
+            <Card className="border-2 border-primary/20">
+              <CardHeader className="text-center pb-4">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 200 }}
+                  className="mx-auto w-24 h-24 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mb-6"
+                >
+                  <Sparkles className="w-12 h-12 text-white" />
+                </motion.div>
+                <CardTitle className="text-4xl mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Welcome! Let's Find You Dinner
+                </CardTitle>
+                <p className="text-muted-foreground text-lg">
+                  Get your first AI-powered meal suggestion in seconds
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* AI Personality */}
+                <AIPersonality context="greeting" />
+
+                {/* Quick benefits */}
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { icon: '⚡', text: 'Instant' },
+                    { icon: '🎯', text: 'Personalized' },
+                    { icon: '🍽️', text: 'Delicious' },
+                    { icon: '🆓', text: 'Free' },
+                  ].map((item, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="flex flex-col items-center gap-2 p-3 rounded-lg bg-muted/50"
+                    >
+                      <span className="text-3xl">{item.icon}</span>
+                      <span className="text-sm font-medium">{item.text}</span>
+                    </motion.div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <Button onClick={() => setStep('pantry')} className="w-full" size="lg">
-              Get Started
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+
+                {/* Primary CTA */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button 
+                    onClick={handleGenerateFirstRecipe} 
+                    className="w-full h-14 text-lg bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                    size="lg"
+                  >
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Surprise Me with a Recipe!
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </motion.div>
+
+                {/* Skip option */}
+                <Button 
+                  onClick={() => router.push('/dashboard')} 
+                  variant="ghost" 
+                  className="w-full"
+                >
+                  Skip and explore
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </>
     );
   }
 
@@ -232,11 +286,46 @@ export default function OnboardingPage() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="max-w-2xl w-full">
           <CardContent className="py-12 text-center">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 animate-pulse">
-              <Sparkles className="w-8 h-8 text-primary animate-spin" />
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+              className="mx-auto w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mb-6"
+            >
+              <Sparkles className="w-10 h-10 text-white" />
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-2xl font-bold mb-2"
+            >
+              Finding Something Delicious...
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-muted-foreground"
+            >
+              This will only take a moment
+            </motion.p>
+            <div className="mt-6 flex justify-center gap-1">
+              {[0, 1, 2].map((i) => (
+                <motion.div
+                  key={i}
+                  className="w-2 h-2 bg-primary rounded-full"
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [0.5, 1, 0.5],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    delay: i * 0.2,
+                  }}
+                />
+              ))}
             </div>
-            <h2 className="text-2xl font-bold mb-2">Generating your first recipe...</h2>
-            <p className="text-muted-foreground">This will only take a moment</p>
+            <AIPersonality context="encouragement" showAvatar={false} />
           </CardContent>
         </Card>
       </div>
@@ -245,35 +334,53 @@ export default function OnboardingPage() {
 
   if (step === 'complete') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-green-50 to-primary/5">
-        <Card className="max-w-2xl w-full">
-          <CardHeader className="text-center">
-            <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
-              <Check className="w-10 h-10 text-green-600" />
-            </div>
-            <CardTitle className="text-3xl mb-2">You're all set!</CardTitle>
-            <p className="text-muted-foreground text-lg">
-              Your first recipe is ready. Start exploring!
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="bg-muted/50 rounded-lg p-4 text-center">
-              <p className="text-sm text-muted-foreground mb-2">Free Plan</p>
-              <p className="text-2xl font-bold">5 recipes remaining</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Upgrade to Pro for unlimited recipes
-              </p>
-            </div>
-            <Button onClick={handleComplete} className="w-full" size="lg">
-              Go to Dashboard
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-            <Button onClick={() => router.push('/pricing')} variant="outline" className="w-full">
-              View Pro Features
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <>
+        {showCelebration && <Celebration type="recipe" onComplete={() => setShowCelebration(false)} />}
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-green-50 to-primary/5">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-2xl w-full"
+          >
+            <Card className="border-2 border-green-200">
+              <CardHeader className="text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 200 }}
+                  className="mx-auto w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6"
+                >
+                  <Check className="w-12 h-12 text-green-600" />
+                </motion.div>
+                <CardTitle className="text-3xl mb-2">Here's Your Recipe!</CardTitle>
+                <AIPersonality context="celebration" showAvatar={false} />
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Recipe preview would go here */}
+                <div className="bg-muted/50 rounded-lg p-6 text-center">
+                  <p className="text-sm text-muted-foreground mb-2">Free Plan</p>
+                  <p className="text-2xl font-bold">4 recipes remaining</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Upgrade to Pro for unlimited recipes
+                  </p>
+                </div>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button onClick={handleComplete} className="w-full h-12 text-lg" size="lg">
+                    Go to Dashboard
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </motion.div>
+                <Button onClick={() => router.push('/pricing')} variant="outline" className="w-full">
+                  View Pro Features
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </>
     );
   }
 
