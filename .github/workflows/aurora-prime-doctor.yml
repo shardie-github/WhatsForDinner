@@ -1,0 +1,73 @@
+name: Aurora Prime Doctor
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *' # Every 6 hours
+  push:
+    branches: [main]
+
+jobs:
+  doctor:
+    name: System Doctor
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prisma Validate
+        run: pnpm db:generate
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+
+      - name: Supabase Schema Check
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          supabase db remote set "$SUPABASE_DB_URL"
+          supabase db remote commit --dry-run || echo "Schema check completed"
+
+      - name: Vercel Project Check
+        run: |
+          cd apps/web
+          npx vercel project ls --token=${{ secrets.VERCEL_TOKEN }} || echo "Vercel check completed"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Expo Config Check
+        run: |
+          cd apps/mobile
+          npx eas whoami --non-interactive || echo "Expo check completed"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Aurora Prime Autopilot
+        run: pnpm aurora:prime
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}

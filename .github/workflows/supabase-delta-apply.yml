@@ -19,13 +19,26 @@ jobs:
       - name: Build Delta
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
         run: tsx scripts/agents/generate_delta_migration.ts
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v1
         with: { version: latest }
       - name: Apply via Supabase CLI
-        env: { SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }} }
-        run: supabase db push --db-url "$SUPABASE_DB_URL" --include-all
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: |
+          if [ -n "$SUPABASE_PROJECT_REF" ]; then
+            supabase link --project-ref "$SUPABASE_PROJECT_REF" || true
+            supabase db push --include-all || supabase db push --db-url "$SUPABASE_DB_URL" --include-all
+          else
+            supabase db push --db-url "$SUPABASE_DB_URL" --include-all
+          fi
       - name: Fallback psql per-file if CLI fails
         if: failure()
         env: { SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }} }
