@@ -168,6 +168,8 @@
     "guardian:audit": "tsx ops/cli/index.ts guardian:audit",
     "guardian:verify": "tsx ops/cli/index.ts guardian:verify",
     "guardian:weekly-report": "tsx packages/server/src/jobs/weeklyGuardianReport.ts",
+    "guardian:run": "tsx scripts/full-stack-guardian.ts",
+    "guardian:schema": "tsx scripts/schema-health-check.ts",
     "stack:creds": "tsx ops/cli/index.ts identify-stack-credentials",
     "stack:creds:auto": "tsx ops/cli/index.ts identify-stack-credentials --auto-share",
     "start-ci": "cd apps/web && PORT=3000 next start -p 3000",
