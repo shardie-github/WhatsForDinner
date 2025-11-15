@@ -19,6 +19,7 @@ import { ConsentProvider } from '@/app/providers/consent-provider';
 import { WebsiteStructuredData, OrganizationStructuredData } from '@/components/StructuredData';
 import dynamic from 'next/dynamic';
 import { TrustFooterLinks } from '@/components/TrustFooterLinks';
+import { MobileNav } from '@/components/MobileNav';
 
 // Lazy load integrations
 const IntegrationsLoader = dynamic(
@@ -213,20 +214,26 @@ export default function RootLayout({
             <ThemeProvider>
               <div className="min-h-screen bg-background text-foreground safe-area-inset">
               <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 safe-area-inset-top">
-                <div className="container flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xl sm:text-2xl">🥘</span>
-                    <h1 className="text-lg sm:text-xl font-display font-bold text-brand-600">
+                <div className="container flex h-16 sm:h-20 items-center justify-between px-4 sm:px-6">
+                  <a href="/" className="flex items-center space-x-2 group" aria-label="Home">
+                    <span className="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">🥘</span>
+                    <h1 className="text-xl sm:text-2xl font-display font-bold text-primary">
                       What's for Dinner?
                     </h1>
-                  </div>
+                  </a>
                   <div className="flex items-center space-x-2 sm:space-x-4">
+                    <div className="hidden md:flex items-center gap-2">
+                      <a href="/surprise-me" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        Surprise Me
+                      </a>
+                    </div>
                     <ThemeToggle />
                   </div>
                 </div>
               </header>
-              <main id="main-content" className="flex-1 pb-safe-area-inset-bottom">
+              <main id="main-content" className="flex-1 pb-safe-area-inset-bottom pb-20 md:pb-0">
                 {children}
+                <MobileNav />
               </main>
               <footer className="border-t bg-background safe-area-inset-bottom">
                 <div className="container flex flex-col items-center justify-between gap-4 py-4 sm:py-6 px-4 sm:px-6 md:h-24 md:flex-row md:py-0">

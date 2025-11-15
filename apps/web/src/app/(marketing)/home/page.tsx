@@ -29,6 +29,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { TrustSignals } from '@/components/TrustSignals';
 import Link from 'next/link';
 
 interface ValueProposition {
@@ -123,7 +124,13 @@ export default function HomePage() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" className="text-lg px-8 py-6" asChild>
+            <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" asChild>
+              <Link href="/surprise-me">
+                <Sparkles className="w-5 h-5 mr-2" />
+                Surprise Me!
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
               <Link href="/signup">
                 Start Planning Free
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -135,6 +142,43 @@ export default function HomePage() {
                 Watch Demo
               </Link>
             </Button>
+          </div>
+
+          {/* Quick Decision Section */}
+          <div className="mt-16 mb-20">
+            <div className="max-w-2xl mx-auto">
+              <Card className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 border-2 border-primary/20">
+                <CardContent className="p-8 text-center">
+                  <div className="mb-6">
+                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
+                      <Sparkles className="w-10 h-10 text-white" />
+                    </div>
+                    <h2 className="text-3xl font-bold mb-2">Don't Know What to Cook?</h2>
+                    <p className="text-muted-foreground text-lg">
+                      Get an instant AI-powered suggestion in seconds
+                    </p>
+                  </div>
+                  <Button 
+                    size="lg" 
+                    className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                    asChild
+                  >
+                    <Link href="/surprise-me">
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Surprise Me!
+                    </Link>
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-4">
+                    No signup required • Instant results • Free forever
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Trust Signals */}
+          <div className="mt-12 mb-8">
+            <TrustSignals variant="inline" />
           </div>
 
           {/* Social Proof */}
