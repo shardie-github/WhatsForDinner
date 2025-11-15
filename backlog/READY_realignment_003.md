@@ -46,11 +46,11 @@ Core differentiator (Canadian grocery integration) mentioned but only 3 stores (
 
 ## Acceptance Criteria
 
-- [ ] 2+ grocery APIs integrated (Loblaws, Metro minimum)
-- [ ] Grocery list sync functional
-- [ ] Users can add items to cart
-- [ ] Multiple stores supported per user
-- [ ] Featured in onboarding flow
+- [ ] 2+ grocery APIs integrated (Loblaws, Metro minimum) (plan created: `/docs/grocery-integration-plan.md`)
+- [ ] Grocery list sync functional (requires implementation)
+- [ ] Users can add items to cart (requires implementation)
+- [ ] Multiple stores supported per user (requires implementation)
+- [ ] Featured in onboarding flow (requires implementation)
 
 ---
 

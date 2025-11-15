@@ -24,10 +24,10 @@ Activation data not systematically analyzed, product improvements not measured f
 
 ## Acceptance Criteria
 
-- [ ] Weekly activation review process established
-- [ ] A/B testing framework for product changes
-- [ ] Activation impact dashboard created
-- [ ] Activation rate improves by 5%
+- [x] Weekly activation review process established (script: `pnpm weekly:activation:review`, API: `/api/activation/review`)
+- [x] A/B testing framework for product changes (infrastructure exists in database and codebase)
+- [x] Activation impact dashboard created (`/components/activation/ActivationDashboard.tsx`)
+- [ ] Activation rate improves by 5% (requires monitoring over time)
 
 ---
 

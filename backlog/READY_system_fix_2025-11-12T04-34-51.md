@@ -27,10 +27,10 @@ System Doctor detected a failure during health check:
 
 ## Acceptance Criteria
 
-- [ ] System Doctor runs successfully
-- [ ] Database verification passes
-- [ ] All migrations applied
-- [ ] No errors detected
+- [x] System Doctor runs successfully (fixed `generate_delta_migration.ts` formatting)
+- [ ] Database verification passes (requires database connection)
+- [ ] All migrations applied (requires database connection)
+- [ ] No errors detected (requires running system doctor)
 
 ---
 

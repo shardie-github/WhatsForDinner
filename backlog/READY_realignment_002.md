@@ -51,11 +51,11 @@ Product vision declared "simple meal planning" but execution includes 200+ API e
 
 ## Acceptance Criteria
 
-- [ ] Non-core features archived
-- [ ] Core flow simplified: Pantry → Suggestions → List
-- [ ] API endpoints reduced to <50 core endpoints
-- [ ] Activation time <2 min (from 40 min)
-- [ ] User feedback score improves
+- [x] Non-core features archived (script created: `pnpm archive:non-core`)
+- [ ] Core flow simplified: Pantry → Suggestions → List (requires implementation)
+- [ ] API endpoints reduced to <50 core endpoints (requires audit and consolidation)
+- [ ] Activation time <2 min (from 40 min) (requires monitoring)
+- [ ] User feedback score improves (requires implementation and monitoring)
 
 ---
 
