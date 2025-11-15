@@ -121,6 +121,7 @@
     "smoke:test:full-stack": "node scripts/full-stack-smoke-test.mjs",
     "doctor": "tsx scripts/reality-check.ts",
     "aurora:prime": "tsx scripts/aurora-prime-autopilot.ts",
+    "omega:prime": "tsx scripts/master-omega-prime.ts",
     "queue:worker": "tsx packages/server/src/queue/index.ts",
     "dev:api": "next dev -p 3000",
     "dev:fastify": "tsx apps/api/src/server.ts",
