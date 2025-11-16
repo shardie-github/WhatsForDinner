@@ -2,7 +2,7 @@
  * Migration Safety - Shadow migrations with snapshot/restore
  */
 
-import { execSync } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
@@ -97,11 +97,22 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
       throw new Error('SUPABASE_PROJECT_REF not set');
     }
 
-    execSync(`supabase db push --project-ref ${projectRef} < ${snapshotPath}`, {
-      stdio: 'inherit'
+    const snapshotContent = readFileSync(snapshotPath, 'utf8');
+    const child = spawn('supabase', ['db', 'push', '--project-ref', projectRef], {
+      stdio: ['pipe', 'inherit', 'inherit']
     });
-
-      } catch (error) {
+    if (child.stdin) {
+      child.stdin.write(snapshotContent);
+      child.stdin.end();
+    }
+    await new Promise<void>((resolve, reject) => {
+      child.on('close', (code: number) => {
+        if (code !== 0) reject(new Error(`Process exited with code ${code}`));
+        else resolve();
+      });
+      child.on('error', reject);
+    });
+  } catch (error) {
     console.error('Failed to restore snapshot:', error);
     throw error;
   }

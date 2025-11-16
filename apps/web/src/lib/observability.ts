@@ -767,33 +767,35 @@ export const observabilitySystem = {
 // Utility functions for common observability tasks
 export const withTrace = withErrorBoundary(
   async function withTrace<T>(
-  name: string,
-  fn: (spanId: string) => Promise<T>,
-  userId?: string,
-  sessionId?: string,
-  requestId?: string
-): Promise<T> {
-  const traceId = await observabilitySystem.startTrace(
-    name,
-    userId,
-    sessionId,
-    requestId
-  );
-  const spanId = await observabilitySystem.startSpan(traceId, name);
+    name: string,
+    fn: (spanId: string) => Promise<T>,
+    userId?: string,
+    sessionId?: string,
+    requestId?: string
+  ): Promise<T> {
+    const traceId = await observabilitySystem.startTrace(
+      name,
+      userId,
+      sessionId,
+      requestId
+    );
+    const spanId = await observabilitySystem.startSpan(traceId, name);
 
-  try {
-    const result = await fn(spanId);
-    await observabilitySystem.finishSpan(spanId, 'completed');
-    await observabilitySystem.finishTrace(traceId, 'completed');
-    return result;
-  } catch (error) {
-    await observabilitySystem.finishSpan(spanId, 'error', {
-      error: error.message,
-    });
-    await observabilitySystem.finishTrace(traceId, 'error');
-    throw error;
-  }
-}
+    try {
+      const result = await fn(spanId);
+      await observabilitySystem.finishSpan(spanId, 'completed');
+      await observabilitySystem.finishTrace(traceId, 'completed');
+      return result;
+    } catch (error) {
+      await observabilitySystem.finishSpan(spanId, 'error', {
+        error: error.message,
+      });
+      await observabilitySystem.finishTrace(traceId, 'error');
+      throw error;
+    }
+  },
+  (error) => console.error('Observability withTrace failed:', error)
+);
 
 export const withSpan = withErrorBoundary(
   async function withSpan<T>(

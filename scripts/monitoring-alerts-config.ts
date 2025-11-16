@@ -1,6 +1,5 @@
-import { secretsManager } from './secrets-manager-unified.mjs';
-
 #!/usr/bin/env tsx
+import { secretsManager } from './secrets-manager-unified.mjs';
 /**
  * Monitoring Alerts Configuration
  * 

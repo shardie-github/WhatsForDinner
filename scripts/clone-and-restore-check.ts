@@ -155,7 +155,7 @@ class DRValidator {
       }
 
       const timeSeconds = (Date.now() - startTime) / 1000;
-      } seconds`);
+      console.log(`✅ Restore simulation completed in ${timeSeconds} seconds`);
       
       return { success: true, time_seconds: timeSeconds };
       

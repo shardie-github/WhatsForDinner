@@ -24,7 +24,6 @@ function check(name: string, fn: () => boolean | string): void {
           }
   } catch (error) {
     results.push({ name, status: 'fail', message: String(error) });
-    }`);
   }
 }
 

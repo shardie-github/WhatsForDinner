@@ -145,8 +145,6 @@ class PromptInjectionTestSuite {
       low: { passed: 0, failed: 0 },
     };
 
-        );
-
     for (const testCase of this.testCases) {
       try {
         const safetyResult = await aiSafetyGuardrails.validateInput(
@@ -176,10 +174,11 @@ class PromptInjectionTestSuite {
 
         // Log test result
         const status = passed ? '✅ PASS' : '❌ FAIL';
-                        if (safetyResult.violations.length > 0) {
-          }`);
+        console.log(`${status}: ${testCase.name}`);
+        if (safetyResult.violations.length > 0) {
+          console.log(`  Violations: ${safetyResult.violations.join(', ')}`);
         }
-              } catch (error) {
+      } catch (error) {
         console.error(`❌ ERROR in test "${testCase.name}":`, error);
         failedTests++;
         summary[testCase.expectedRisk].failed++;
@@ -195,8 +194,6 @@ class PromptInjectionTestSuite {
         });
       }
     }
-
-    );
                     
     return {
       totalTests: this.testCases.length,
