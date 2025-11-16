@@ -379,7 +379,8 @@ export async function runAutomatedRedTeamTests(): Promise<void> {
       console.error(`❌ ${results.failedTests} tests failed!`);
       process.exit(1);
     } else {
-          }
+      console.log('✅ All tests passed!');
+    }
   } catch (error) {
     console.error('❌ Error running red team tests:', error);
     process.exit(1);

@@ -91,7 +91,7 @@ export function selectPartnerCreative(
     if (context.slot === 'inspire_tile' && creative.kind !== 'tile') {
       return false;
     }
-    if (context.slot.includes('banner') && creative.kind !== 'banner')) {
+    if (context.slot.includes('banner') && creative.kind !== 'banner') {
       return false;
     }
     return true;

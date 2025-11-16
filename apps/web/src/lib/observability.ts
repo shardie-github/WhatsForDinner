@@ -797,24 +797,26 @@ export const withTrace = withErrorBoundary(
 
 export const withSpan = withErrorBoundary(
   async function withSpan<T>(
-  traceId: string,
-  name: string,
-  fn: (spanId: string) => Promise<T>,
-  parentId?: string
-): Promise<T> {
-  const spanId = await observabilitySystem.startSpan(traceId, name, parentId);
+    traceId: string,
+    name: string,
+    fn: (spanId: string) => Promise<T>,
+    parentId?: string
+  ): Promise<T> {
+    const spanId = await observabilitySystem.startSpan(traceId, name, parentId);
 
-  try {
-    const result = await fn(spanId);
-    await observabilitySystem.finishSpan(spanId, 'completed');
-    return result;
-  } catch (error) {
-    await observabilitySystem.finishSpan(spanId, 'error', {
-      error: error.message,
-    });
-    throw error;
-  }
-}
+    try {
+      const result = await fn(spanId);
+      await observabilitySystem.finishSpan(spanId, 'completed');
+      return result;
+    } catch (error) {
+      await observabilitySystem.finishSpan(spanId, 'error', {
+        error: error.message,
+      });
+      throw error;
+    }
+  },
+  (error) => console.error('Observability withSpan failed:', error)
+);
 
 // Wrap trackError with error boundary (observability should never break user flows)
 export const trackError = fireAndForget(

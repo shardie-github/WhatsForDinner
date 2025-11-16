@@ -390,7 +390,9 @@ class PrivacyGuard {
 
                         
       if (auditResults.recommendations.length > 0) {
-                auditResults.recommendations.forEach(rec => );
+        auditResults.recommendations.forEach(rec => {
+          console.log('Recommendation:', rec);
+        });
       }
     } catch (error) {
       console.error('Privacy audit failed:', error);

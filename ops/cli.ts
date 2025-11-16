@@ -157,14 +157,17 @@ class OpsCLI {
     // Summary
     const passed = checks.filter(c => c.passed).length;
     const failed = checks.filter(c => !c.passed).length;
+    const duration = ((Date.now() - this.startTime) / 1000).toFixed(2);
 
-                 - this.startTime) / 1000).toFixed(2)}s\n`);
+    console.log(`\n✅ Checks completed in ${duration}s\n`);
 
     checks.forEach(check => {
       const icon = check.passed ? '✅' : '❌';
-      const duration = check.duration ? ` (${check.duration}ms)` : '';
-            if (!check.passed && check.message) {
-              }
+      const checkDuration = check.duration ? ` (${check.duration}ms)` : '';
+      console.log(`${icon} ${check.name}${checkDuration}`);
+      if (!check.passed && check.message) {
+        console.log(`   ${check.message}`);
+      }
     });
 
     const report = {
