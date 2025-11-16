@@ -134,14 +134,16 @@ async function main() {
     .limit(10);
 
   if (logEntries && logEntries.length > 0) {
-        for (const entry of logEntries) {
-      .toLocaleString()}`);
+    console.log(`Found ${logEntries.length} log entries:`);
+    for (const entry of logEntries) {
+      console.log(`  - ${entry.event_type} at ${new Date(entry.created_at).toLocaleString()}`);
     }
   } else {
-      }
+    console.log('No log entries found');
+  }
   
   // Step 9: Cleanup (optional - comment out to keep data for inspection)
-    const cleanup = process.argv.includes('--keep-data') ? false : true;
+  const cleanup = process.argv.includes('--keep-data') ? false : true;
 
   if (cleanup) {
     await supabase.from('telemetry_events').delete().eq('user_id', fakeUserId);
@@ -149,11 +151,11 @@ async function main() {
     await supabase.from('app_allowlist').delete().eq('user_id', fakeUserId);
     await supabase.from('privacy_prefs').delete().eq('user_id', fakeUserId);
     await supabase.from('privacy_transparency_log').delete().eq('user_id', fakeUserId);
-      } else {
-    \n');
+    console.log('Cleanup completed');
+  } else {
+    console.log('Data kept for inspection (use --keep-data flag to skip cleanup)');
   }
-
-            }
+}
 
 main().catch((error) => {
   console.error('❌ Demo failed:', error);

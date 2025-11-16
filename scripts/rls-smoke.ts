@@ -263,22 +263,27 @@ async function testRLS(): Promise<RLSResults> {
 }
 
 function printReport(results: RLSResults) {
-   Smoke Test Report');
+  console.log('\n=== RLS Smoke Test Report ===\n');
   
   results.results.forEach((result, index) => {
     const status = result.passed ? '✅' : '❌';
+    console.log(`${status} Test ${index + 1}: ${result.name}`);
         
     if (result.details) {
-          }
+      console.log(`  Details: ${result.details}`);
+    }
     
     if (result.error) {
-          }
-      });
+      console.log(`  Error: ${result.error}`);
+    }
+  });
 
         
   if (results.failed > 0) {
-          } else {
-      }
+    console.log(`\n❌ ${results.failed} test(s) failed`);
+  } else {
+    console.log('\n✅ All tests passed');
+  }
 }
 
 async function main() {

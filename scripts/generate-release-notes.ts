@@ -181,7 +181,7 @@ async function main() {
   const notes = generateReleaseNotes(fromTag);
   
   fs.writeFileSync(RELEASE_NOTES_FILE, notes);
-    }...`);
+  console.log(`Release notes written to ${RELEASE_NOTES_FILE}`);
 }
 
 if (require.main === module) {

@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Store evidence
-    }`);
+    console.log(`Evidence stored at ${evidenceFile}`);
     
     return NextResponse.json({
       received: true,

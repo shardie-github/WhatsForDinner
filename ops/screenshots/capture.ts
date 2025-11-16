@@ -54,8 +54,6 @@ async function captureScreenshot(
   url: string,
   config: ScreenshotConfig
 ) {
-  ...`);
-  
   const context = await browser.newContext({
     viewport: { width: config.width, height: config.height },
     deviceScaleFactor: 2, // Retina quality
@@ -81,9 +79,8 @@ async function captureScreenshot(
       path: outputFile,
       fullPage: false,
     });
-    
-      } catch (error) {
-    console.error(`? Failed to capture ${config.name}:`, error);
+  } catch (error) {
+    console.error(`❌ Failed to capture ${config.name}:`, error);
   } finally {
     await context.close();
   }

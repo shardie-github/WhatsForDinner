@@ -4,6 +4,7 @@
 
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { secretsManager } from '../scripts/secrets-manager-unified.mjs';
 
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
@@ -40,7 +41,6 @@ async function handleWebhook(event: WebhookEvent): Promise<void> {
   
   if (existsSync(webhookLog)) {
     webhooks = JSON.parse(require('fs').readFileSync(webhookLog, 'utf-8'));
-import { secretsManager } from './secrets-manager-unified.mjs';
   }
 
   webhooks.push(event);
@@ -49,18 +49,22 @@ import { secretsManager } from './secrets-manager-unified.mjs';
   // Handle event types
   switch (event.type) {
     case 'checkout.session.completed':
-            break;
+      console.log('Checkout session completed:', event.data.id);
+      break;
     case 'customer.subscription.created':
-            break;
+      console.log('Subscription created:', event.data.id);
+      break;
     case 'customer.subscription.updated':
-            break;
+      console.log('Subscription updated:', event.data.id);
+      break;
     case 'customer.subscription.deleted':
-            break;
+      console.log('Subscription deleted:', event.data.id);
+      break;
   }
 }
 
-function isBillingEnabled(): boolean {
-  return (await secretsManager.getSecret('ENABLE_BILLING')) || process.env.ENABLE_BILLING === 'true';
+async function isBillingEnabled(): Promise<boolean> {
+  return (await secretsManager.getSecret('ENABLE_BILLING')) === 'true' || process.env.ENABLE_BILLING === 'true';
 }
 
 if (require.main === module) {
@@ -74,11 +78,15 @@ if (require.main === module) {
       timestamp: new Date().toISOString()
     };
     handleWebhook(testEvent).then(() => {
-          });
+      console.log('Webhook test completed');
+    });
   } else if (command === 'check') {
-    }`);
+    isBillingEnabled().then(enabled => {
+      console.log(`Billing is ${enabled ? 'enabled' : 'disabled'}`);
+    });
   } else {
-        process.exit(1);
+    console.error('Usage: billing-stub.ts [test|check]');
+    process.exit(1);
   }
 }
 

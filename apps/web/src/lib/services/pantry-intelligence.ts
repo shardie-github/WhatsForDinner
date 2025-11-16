@@ -194,7 +194,7 @@ export function estimateExpirationDate(
     garlic: 60,
     potato: 30,
     carrot: 14,
-    bell pepper: 7,
+    'bell pepper': 7,
     mushroom: 5,
     
     // Pantry (longer)

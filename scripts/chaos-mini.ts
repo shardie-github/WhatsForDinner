@@ -396,16 +396,19 @@ import { secretsManager } from './secrets-manager-unified.mjs';
       await this.saveChaosReport(report);
       
       // Log results
-                  }`);
-      .length}/${tests.length}`);
+      console.log(`Chaos testing completed: ${report.passedTests.length}/${tests.length} tests passed`);
       
       tests.forEach(test => {
-                                        if (test.error) {
-                  }
+        const status = test.passed ? '✅' : '❌';
+        console.log(`${status} ${test.name}`);
+        if (test.error) {
+          console.log(`  Error: ${test.error}`);
+        }
       });
       
       if (report.recommendations.length > 0) {
-                report.recommendations.forEach(rec => );
+        console.log('\nRecommendations:');
+        report.recommendations.forEach(rec => console.log(`  - ${rec}`));
       }
       
       return report;

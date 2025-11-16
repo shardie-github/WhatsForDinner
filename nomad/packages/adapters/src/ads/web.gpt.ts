@@ -45,7 +45,7 @@ export class GPTManager {
           );
           window.googletag.enableServices();
         });
-      });
+      }
     };
 
     this.initialized = true;

@@ -2,7 +2,7 @@
  * Migration Safety - Shadow migrations with snapshot/restore
  */
 
-import { execSync } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
@@ -33,7 +33,7 @@ async function createSnapshot(description?: string): Promise<SnapshotMetadata> {
     
   // Use Supabase CLI to create snapshot
   try {
-    const projectRef = (await secretsManager.getSecret('SUPABASE_PROJECT_REF')) || process.env.SUPABASE_PROJECT_REF;
+    const projectRef = process.env.SUPABASE_PROJECT_REF;
     if (!projectRef) {
       throw new Error('SUPABASE_PROJECT_REF not set');
     }
@@ -60,7 +60,7 @@ async function createSnapshot(description?: string): Promise<SnapshotMetadata> {
       JSON.stringify(metadata, null, 2)
     );
 
-        return metadata;
+    return metadata;
   } catch (error) {
     console.error('Failed to create snapshot:', error);
     throw error;
@@ -79,7 +79,7 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
 
   const metadata: SnapshotMetadata = JSON.parse(readFileSync(metadataPath, 'utf-8'));
   
-  `);
+  console.log(`Restoring snapshot: ${snapshotId}`);
   
   // Check for locks
     try {
@@ -92,16 +92,27 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
 
   // Restore snapshot
   try {
-    const projectRef = (await secretsManager.getSecret('SUPABASE_PROJECT_REF')) || process.env.SUPABASE_PROJECT_REF;
+    const projectRef = process.env.SUPABASE_PROJECT_REF;
     if (!projectRef) {
       throw new Error('SUPABASE_PROJECT_REF not set');
     }
 
-    execSync(`supabase db push --project-ref ${projectRef} < ${snapshotPath}`, {
-      stdio: 'inherit'
+    const snapshotContent = readFileSync(snapshotPath, 'utf8');
+    const child = spawn('supabase', ['db', 'push', '--project-ref', projectRef], {
+      stdio: ['pipe', 'inherit', 'inherit']
     });
-
-      } catch (error) {
+    if (child.stdin) {
+      child.stdin.write(snapshotContent);
+      child.stdin.end();
+    }
+    await new Promise<void>((resolve, reject) => {
+      child.on('close', (code: number) => {
+        if (code !== 0) reject(new Error(`Process exited with code ${code}`));
+        else resolve();
+      });
+      child.on('error', reject);
+    });
+  } catch (error) {
     console.error('Failed to restore snapshot:', error);
     throw error;
   }
@@ -111,7 +122,6 @@ async function listSnapshots(): Promise<SnapshotMetadata[]> {
   ensureSnapshotsDir();
   
   const files = require('fs').readdirSync(SNAPSHOTS_DIR);
-import { secretsManager } from './secrets-manager-unified.mjs';
   const snapshots: SnapshotMetadata[] = [];
 
   for (const file of files) {
@@ -156,7 +166,7 @@ async function dryRunMigration(migrationPath: string): Promise<{ passed: boolean
   }
 
   // In a real implementation, would run against a shadow database
-    return { passed: true, errors: [] };
+  return { passed: true, errors: [] };
 }
 
 async function encryptSnapshot(snapshotId: string, encryptionKey: string): Promise<void> {
@@ -172,7 +182,7 @@ async function encryptSnapshot(snapshotId: string, encryptionKey: string): Promi
   const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
 
   writeFileSync(encryptedPath, encrypted);
-  }
+}
 
 if (require.main === module) {
   const command = process.argv[2];
@@ -181,7 +191,8 @@ if (require.main === module) {
   switch (command) {
     case 'snapshot':
       createSnapshot(args[0]).then(metadata => {
-              });
+        console.log(`Snapshot created: ${metadata.id}`);
+      });
       break;
     case 'restore':
       if (!args[0]) {
@@ -195,8 +206,9 @@ if (require.main === module) {
       break;
     case 'list':
       listSnapshots().then(snapshots => {
-                for (const snapshot of snapshots) {
-                  }
+        for (const snapshot of snapshots) {
+          console.log(`${snapshot.id} - ${snapshot.timestamp}`);
+        }
       });
       break;
     case 'dry-run':
@@ -213,7 +225,8 @@ if (require.main === module) {
       });
       break;
     default:
-            process.exit(1);
+      console.error('Usage: migration-safety.ts [snapshot|restore|list|dry-run]');
+      process.exit(1);
   }
 }
 

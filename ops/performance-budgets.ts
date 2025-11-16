@@ -143,14 +143,15 @@ if (require.main === module) {
       const failed = report.budgets.filter(b => !b.passed);
             report.budgets.forEach(budget => {
         const icon = budget.passed ? '✅' : '❌';
-        `);
+        console.log(`${icon} ${budget.name}: ${budget.actual}${budget.unit} (budget: ${budget.budget}${budget.unit})`);
       });
       
       if (failed.length > 0) {
         console.error(`\n❌ ${failed.length} budget(s) failed`);
         process.exit(1);
       } else {
-              }
+        console.log('\n✅ All budgets passed');
+      }
     });
   } else if (command === 'lighthouse') {
     runLighthouseCI().catch(error => {

@@ -62,7 +62,8 @@ async function checkCostCaps(): Promise<void> {
   }
 
   if (alerts.length > 0) {
-        alerts.forEach(alert => );
+    console.warn(`Cost cap alerts: ${alerts.length}`);
+    alerts.forEach(alert => console.warn(`  - ${alert.message}`));
     
     // Send webhook notification
     if ((await secretsManager.getSecret('SLACK_WEBHOOK_URL')) || process.env.SLACK_WEBHOOK_URL) {
@@ -131,9 +132,11 @@ if (require.main === module) {
   } else if (command === 'simulate') {
     const scenario = args[0] || 'default';
     const simulation = simulateCosts(scenario);
-                simulation.recommendations.forEach(r => );
+    console.log(`Simulation results for scenario: ${scenario}`);
+    simulation.recommendations.forEach(r => console.log(`  - ${r}`));
   } else {
-        process.exit(1);
+    console.error('Usage: cost-caps.ts [check|simulate]');
+    process.exit(1);
   }
 }
 

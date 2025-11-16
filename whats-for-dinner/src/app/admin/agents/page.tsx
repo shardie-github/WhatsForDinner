@@ -153,7 +153,10 @@ export default function AgentsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => }
+                          onClick={() => {
+                            // TODO: Implement delete agent functionality
+                            console.log('Delete agent:', agent.id);
+                          }}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

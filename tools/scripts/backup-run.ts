@@ -379,7 +379,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   runner
     .run()
     .then((result) => {
-      );
+      console.log(`Backup ${result.success ? 'completed' : 'failed'}`);
       process.exit(result.success ? 0 : 1);
     })
     .catch((error) => {

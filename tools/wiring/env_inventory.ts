@@ -234,8 +234,8 @@ ${setVars.filter(v => !v.isSet && !v.required).map(v =>
     JSON.stringify({ timestamp: new Date().toISOString(), vars: setVars }, null, 2),
   );
   
-    }`);
-  }`);
+  console.log(`\nEnvironment Variables Inventory:`);
+  console.log(`Total: ${setVars.length}, Set: ${setVars.filter(v => v.isSet).length}, Missing: ${setVars.filter(v => !v.isSet).length}`);
   
   const missingRequired = setVars.filter(v => v.required && !v.isSet);
   if (missingRequired.length > 0) {

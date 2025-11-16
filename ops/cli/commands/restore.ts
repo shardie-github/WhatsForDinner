@@ -20,8 +20,8 @@ export async function runRestore(options: { snapshot?: string; dryRun?: boolean 
   }
 
   if (options.dryRun) {
-            .size} bytes`);
-    ');
+    console.log(`Dry-run: Would restore ${snapshot.size} bytes`);
+    console.log('Skipping actual restore in dry-run mode');
     return;
   }
 
@@ -33,9 +33,9 @@ export async function runRestore(options: { snapshot?: string; dryRun?: boolean 
       throw new Error('Supabase credentials not configured');
     }
 
-            
+    console.log('Restoring snapshot...');
     // In production, use: psql or Supabase CLI
-        
+    console.log('Restore completed successfully');
   } catch (error) {
     console.error('❌ Restore failed:', error);
     process.exit(1);

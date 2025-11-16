@@ -1,10 +1,10 @@
 import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
-import code-splitting from '../code-splitting.tsx';
+import CodeSplitting from '../code-splitting';
 
 describe('code-splitting', () => {
   it('renders without crashing', () => {
-    render(<code-splitting />);
+    render(<CodeSplitting />);
     expect(screen.getByRole('main') || screen.getByTestId('code-splitting')).toBeDefined();
   });
 

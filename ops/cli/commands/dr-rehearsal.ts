@@ -11,17 +11,20 @@ export async function runDRRehearsal(options: { scenario?: string }) {
   const scenario = options.scenario || '1';
   const startTime = Date.now();
 
-    .toISOString()}\n`);
+  console.log(`Starting DR rehearsal scenario ${scenario} at ${new Date().toISOString()}\n`);
 
   try {
     // Step 1: Create test snapshot
-        execSync('npm run ops snapshot', { stdio: 'inherit' });
+    console.log('Step 1: Creating test snapshot...');
+    execSync('npm run ops snapshot', { stdio: 'inherit' });
 
     // Step 2: Restore test
-        execSync('npm run ops restore --dry-run', { stdio: 'inherit' });
+    console.log('Step 2: Testing restore (dry-run)...');
+    execSync('npm run ops restore --dry-run', { stdio: 'inherit' });
 
     // Step 3: Smoke tests
-        execSync('npm run ops test:e2e --grep="smoke"', { stdio: 'inherit' });
+    console.log('Step 3: Running smoke tests...');
+    execSync('npm run ops test:e2e --grep="smoke"', { stdio: 'inherit' });
 
     // Step 4: Calculate RTO/RPO
     const endTime = Date.now();
