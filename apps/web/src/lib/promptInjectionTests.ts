@@ -145,8 +145,6 @@ class PromptInjectionTestSuite {
       low: { passed: 0, failed: 0 },
     };
 
-        );
-
     for (const testCase of this.testCases) {
       try {
         const safetyResult = await aiSafetyGuardrails.validateInput(
@@ -176,10 +174,12 @@ class PromptInjectionTestSuite {
 
         // Log test result
         const status = passed ? '✅ PASS' : '❌ FAIL';
-                        if (safetyResult.violations.length > 0) {
-          }`);
+        if (safetyResult.violations.length > 0) {
+          console.log(`${status} ${testCase.name} - Violations: ${safetyResult.violations.join(', ')}`);
+        } else {
+          console.log(`${status} ${testCase.name}`);
         }
-              } catch (error) {
+      } catch (error) {
         console.error(`❌ ERROR in test "${testCase.name}":`, error);
         failedTests++;
         summary[testCase.expectedRisk].failed++;
@@ -196,7 +196,7 @@ class PromptInjectionTestSuite {
       }
     }
 
-    );
+    console.log(`\nTest Summary: ${passedTests}/${this.testCases.length} passed`);
                     
     return {
       totalTests: this.testCases.length,
@@ -232,7 +232,8 @@ class PromptInjectionTestSuite {
         });
 
         const status = passed ? '✅ PASS' : '❌ FAIL';
-              } catch (error) {
+        console.log(`${status} ${testCase.name}`);
+      } catch (error) {
         console.error(`❌ ERROR in critical test "${testCase.name}":`, error);
         results.push({
           testName: testCase.name,
@@ -379,7 +380,8 @@ export async function runAutomatedRedTeamTests(): Promise<void> {
       console.error(`❌ ${results.failedTests} tests failed!`);
       process.exit(1);
     } else {
-          }
+      console.log('✅ All tests passed!');
+    }
   } catch (error) {
     // Error handled: ❌ Error running red team tests:
     process.exit(1);

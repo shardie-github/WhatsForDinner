@@ -23,12 +23,14 @@ export async function runDocs(options: { rebuild?: boolean; watch?: boolean }) {
         generateRunbooks(docsDir);
 
     // Generate HTML index
-        generateHTMLIndex(docsDir);
+    generateHTMLIndex(docsDir);
 
     if (options.watch) {
-                }
+      console.log('📚 Watching for documentation changes...');
+      // TODO: Implement file watching
+    }
 
-        }`);
+    console.log('✅ Documentation generated successfully');
   } catch (error) {
     console.error('\n❌ Documentation generation failed:', error);
     process.exit(1);

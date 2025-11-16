@@ -388,7 +388,8 @@ ${trends.criticalDeploys > 0 ? '- Review deployment process for stability improv
 
   private async postPRComment(report: string) {
     // Implementation would post to the latest PR
-    ');
+    // TODO: Implement PR comment posting
+    console.log('PR Comment:', report);
   }
 }
 

@@ -222,7 +222,7 @@ export class AdEngine {
   private async selectPartnerAd(context: AdContext): Promise<AdDecision | null> {
     try {
       // Import partner source dynamically to avoid circular deps
-      const { fetchPartnerCreatives, selectPartnerCreative, shouldUsePartnerMarketplace } } = await import('./partnerSource.js');
+      const { fetchPartnerCreatives, selectPartnerCreative, shouldUsePartnerMarketplace } = await import('./partnerSource.js');
 
       if (!shouldUsePartnerMarketplace(context)) {
         return null;

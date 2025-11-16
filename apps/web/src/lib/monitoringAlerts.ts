@@ -274,7 +274,8 @@ async function sendEmailAlert(
 ): Promise<void> {
   // Email sending would be implemented using nodemailer or similar
   // This is a placeholder implementation
-  }] Alert: ${alert.metric}`,
+  console.log(`[Email Alert: ${alert.metric}]`, {
+    subject: `[${alert.severity}] Alert: ${alert.metric}`,
     body: `${message}\n\nMetadata: ${JSON.stringify(metadata, null, 2)}`,
   });
 }
