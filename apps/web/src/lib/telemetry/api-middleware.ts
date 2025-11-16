@@ -1,100 +1,68 @@
 /**
  * API Telemetry Middleware
- * Tracks p95 latency and error rates for API endpoints
  * 
- * Usage:
- * ```typescript
- * import { withTelemetry } from '@/lib/telemetry/api-middleware';
- * 
- * export const GET = withTelemetry(async (req: NextRequest) => {
- *   // Your handler
- * });
- * ```
+ * Adds OpenTelemetry tracing to API routes
+ * Tracks request duration, status codes, and errors
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-
-interface TelemetryMetrics {
-  endpoint: string;
-  method: string;
-  duration: number;
-  statusCode: number;
-  error?: Error;
-}
+import { trace, context, SpanStatusCode } from '@opentelemetry/api';
 
 /**
- * Track API endpoint metrics
- * Sends metrics to observability system (Sentry, custom, etc.)
+ * Wrap API route handler with telemetry
  */
-async function trackMetrics(metrics: TelemetryMetrics): Promise<void> {
-  // TODO: Send to observability system
-  // For now, log to console (replace with actual telemetry)
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[Telemetry]', {
-      endpoint: metrics.endpoint,
-      method: metrics.method,
-      duration: `${metrics.duration}ms`,
-      statusCode: metrics.statusCode,
-      error: metrics.error?.message,
-    });
-  }
-
-  // TODO: Send to Sentry/observability system
-  // Example:
-  // if (metrics.error) {
-  //   Sentry.captureException(metrics.error, {
-  //     tags: { endpoint: metrics.endpoint, method: metrics.method },
-  //     extra: { duration: metrics.duration },
-  //   });
-  // }
-  // 
-  // // Track p95 latency
-  // trackHistogram('api.latency', metrics.duration, {
-  //   endpoint: metrics.endpoint,
-  //   method: metrics.method,
-  //   status_code: metrics.statusCode.toString(),
-  // });
-}
-
-/**
- * Wraps an API route handler with telemetry tracking
- */
-export function withTelemetry<T extends NextRequest>(
-  handler: (req: T) => Promise<NextResponse>
-) {
-  return async (req: T): Promise<NextResponse> => {
-    const start = Date.now();
-    const url = new URL(req.url);
-    const endpoint = url.pathname;
-    const method = req.method;
+export function withTelemetry<T extends (...args: any[]) => Promise<NextResponse>>(
+  handler: T
+): T {
+  return (async (...args: Parameters<T>) => {
+    const request = args[0] as NextRequest;
+    const tracer = trace.getTracer('api-handler');
+    const span = tracer.startSpan(`HTTP ${request.method} ${request.nextUrl.pathname}`);
 
     try {
-      const response = await handler(req);
-      const duration = Date.now() - start;
-
-      // Track success metrics
-      await trackMetrics({
-        endpoint,
-        method,
-        duration,
-        statusCode: response.status,
+      span.setAttributes({
+        'http.method': request.method,
+        'http.url': request.nextUrl.pathname,
+        'http.route': request.nextUrl.pathname,
+        'user_agent': request.headers.get('user-agent') || '',
       });
 
-      return response;
-    } catch (error) {
-      const duration = Date.now() - start;
-      const err = error instanceof Error ? error : new Error(String(error));
-
-      // Track error metrics
-      await trackMetrics({
-        endpoint,
-        method,
-        duration,
-        statusCode: 500,
-        error: err,
+      const result = await context.with(trace.setSpan(context.active(), span), async () => {
+        return await handler(...args);
       });
 
+      span.setAttributes({
+        'http.status_code': result.status,
+        'http.status_text': result.statusText,
+      });
+
+      if (result.status >= 400) {
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: `HTTP ${result.status}`,
+        });
+      } else {
+        span.setStatus({ code: SpanStatusCode.OK });
+      }
+
+      return result;
+    } catch (error: any) {
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: error.message || 'Unknown error',
+      });
+
+      span.recordException(error);
       throw error;
+    } finally {
+      span.end();
     }
-  };
+  }) as T;
+}
+
+/**
+ * Create a traced API route handler
+ */
+export function tracedRoute(handler: (req: NextRequest) => Promise<NextResponse>) {
+  return withTelemetry(handler);
 }

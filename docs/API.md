@@ -4,403 +4,341 @@ Complete API reference for What's for Dinner application.
 
 ## Base URL
 
-- **Production**: `https://whats-for-dinner.vercel.app/api`
-- **Development**: `http://localhost:3000/api`
+- **Production**: `https://whats-for-dinner.vercel.app`
+- **Development**: `http://localhost:3000`
 
 ## Authentication
 
-Most endpoints require authentication. Use one of the following methods:
-
-### Bearer Token (JWT)
+Most endpoints require authentication via Bearer token in the Authorization header:
 
 ```http
 Authorization: Bearer <your-jwt-token>
 ```
 
-### API Key (for partner integrations)
-
-```http
-x-api-key: <your-api-key>
-```
-
-## Common Response Format
-
-All API responses follow this structure:
-
-```json
-{
-  "success": true,
-  "data": { ... },
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human-readable error message",
-    "details": { ... }
-  },
-  "meta": {
-    "timestamp": "2024-01-01T00:00:00.000Z",
-    "requestId": "uuid"
-  }
-}
-```
-
-## Error Codes
-
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `429` - Rate Limit Exceeded
-- `500` - Internal Server Error
+Tokens are obtained through the `/api/auth` endpoints.
 
 ## Endpoints
 
-### User Management
+### Health & Status
 
-#### Get Current User
-
-```http
-GET /api/user/me
-```
+#### `GET /api/health`
+Health check endpoint.
 
 **Response:**
-
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "uuid",
-    "email": "user@example.com",
-    "plan": "free",
-    "preferences": {},
-    "createdAt": "2024-01-01T00:00:00.000Z",
-    "updatedAt": "2024-01-01T00:00:00.000Z"
-  }
+  "ok": true,
+  "ts": 1234567890,
+  "environment": "production"
 }
 ```
 
-### Recipes
+#### `GET /api/healthz`
+Alternative health check endpoint (Edge-compatible).
 
-#### List Recipes
+---
 
-```http
-GET /api/recipes?page=1&limit=20&tags=vegetarian,dinner
-```
+### Meal Planning
+
+#### `GET /api/meal-plan`
+Get user's meal plan.
 
 **Query Parameters:**
-- `page` (number, default: 1) - Page number
-- `limit` (number, default: 20) - Items per page
-- `tags` (string[]) - Filter by tags
-- `search` (string) - Search query
+- `startDate` (optional): Start date (ISO 8601)
+- `endDate` (optional): End date (ISO 8601)
 
 **Response:**
-
 ```json
 {
-  "success": true,
-  "data": {
-    "items": [
-      {
-        "id": "uuid",
-        "title": "Recipe Name",
-        "mediaUrl": "https://...",
-        "steps": [...],
-        "ingredients": [...],
-        "tags": ["vegetarian", "dinner"],
-        "source": "curated"
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 100,
-      "totalPages": 5
-    }
-  }
-}
-```
-
-#### Get Recipe
-
-```http
-GET /api/recipes/{id}
-```
-
-#### Create Recipe
-
-```http
-POST /api/recipes
-```
-
-**Request Body:**
-
-```json
-{
-  "title": "Recipe Name",
-  "steps": [
+  "plans": [
     {
-      "step": 1,
-      "instruction": "Do something",
-      "duration": 10
-    }
-  ],
-  "ingredients": [
-    {
-      "name": "Ingredient",
-      "amount": 1,
-      "unit": "cup"
-    }
-  ],
-  "tags": ["vegetarian"]
-}
-```
-
-### Meal Plans
-
-#### Get Meal Plan
-
-```http
-GET /api/meal-plan?day=2024-01-01
-```
-
-**Query Parameters:**
-- `day` (date, required) - Date in YYYY-MM-DD format
-- `householdId` (uuid, optional) - Household ID
-
-#### Create Meal Plan
-
-```http
-POST /api/meal-plan
-```
-
-**Request Body:**
-
-```json
-{
-  "day": "2024-01-01",
-  "items": [
-    {
-      "mealType": "dinner",
-      "recipeId": "uuid"
+      "id": "uuid",
+      "day": "2024-01-01",
+      "items": []
     }
   ]
 }
 ```
 
-#### Get Daily Suggestion
+#### `POST /api/meal-plan`
+Create or update meal plan.
 
-```http
-GET /api/meal-plan/daily-suggestion
+**Request Body:**
+```json
+{
+  "day": "2024-01-01",
+  "items": [
+    {
+      "recipeId": "uuid",
+      "mealType": "dinner"
+    }
+  ]
+}
 ```
 
+---
+
+### Recipes
+
+#### `GET /api/recipes`
+Get recipes.
+
 **Query Parameters:**
-- `day` (date, optional) - Date in YYYY-MM-DD format
-- `preferences` (object, optional) - Dietary preferences
+- `limit` (optional): Number of results (default: 20)
+- `offset` (optional): Pagination offset
+- `tags` (optional): Filter by tags (comma-separated)
+
+**Response:**
+```json
+{
+  "recipes": [
+    {
+      "id": "uuid",
+      "title": "Recipe Name",
+      "ingredients": [],
+      "steps": [],
+      "tags": []
+    }
+  ],
+  "total": 100
+}
+```
+
+#### `POST /api/recipes`
+Create a new recipe.
+
+**Request Body:**
+```json
+{
+  "title": "Recipe Name",
+  "ingredients": [],
+  "steps": [],
+  "tags": []
+}
+```
+
+---
 
 ### Grocery Lists
 
-#### List Grocery Lists
+#### `GET /api/grocery-list`
+Get grocery lists.
 
-```http
-GET /api/grocery-lists
+**Response:**
+```json
+{
+  "lists": [
+    {
+      "id": "uuid",
+      "name": "Weekly Shopping",
+      "items": []
+    }
+  ]
+}
 ```
 
-#### Get Grocery List
-
-```http
-GET /api/grocery-lists/{id}
-```
-
-#### Create Grocery List
-
-```http
-POST /api/grocery-lists
-```
+#### `POST /api/grocery-list`
+Create a new grocery list.
 
 **Request Body:**
-
 ```json
 {
   "name": "Weekly Shopping",
   "items": [
     {
       "name": "Milk",
-      "quantity": 1,
-      "unit": "gallon"
+      "quantity": "1 gallon",
+      "checked": false
     }
   ]
 }
 ```
 
-### Health Metrics
+---
 
-#### List Health Metrics
+### Authentication
 
-```http
-GET /api/health-metrics?kind=weight&startDate=2024-01-01&endDate=2024-01-31
-```
-
-**Query Parameters:**
-- `kind` (enum) - Metric type: `weight`, `sleep`, `water`, `steps`, `calories`
-- `startDate` (date) - Start date
-- `endDate` (date) - End date
-
-#### Create Health Metric
-
-```http
-POST /api/health-metrics
-```
+#### `POST /api/auth/signin`
+Sign in with email/password.
 
 **Request Body:**
-
 ```json
 {
-  "kind": "weight",
-  "value": 70,
-  "unit": "kg",
-  "ts": "2024-01-01T00:00:00.000Z"
+  "email": "user@example.com",
+  "password": "password123"
 }
 ```
 
-### Referrals
-
-#### Create Referral Code
-
-```http
-POST /api/referral/create
-```
-
-#### Convert Referral
-
-```http
-POST /api/referral/convert
-```
+#### `POST /api/auth/signup`
+Create a new account.
 
 **Request Body:**
-
 ```json
 {
-  "code": "REFERRAL_CODE"
+  "email": "user@example.com",
+  "password": "password123"
 }
 ```
 
-### Privacy
+#### `POST /api/auth/signout`
+Sign out current user.
 
-#### Export User Data
+---
 
-```http
-GET /api/privacy/export
-```
+### User Preferences
 
-#### Erase User Data
+#### `GET /api/preferences`
+Get user preferences.
 
-```http
-POST /api/privacy/erase
-```
-
-**Request Body:**
-
+**Response:**
 ```json
 {
+  "dietaryRestrictions": [],
+  "allergies": [],
+  "cuisinePreferences": [],
+  "cookingSkillLevel": "intermediate"
+}
+```
+
+#### `PUT /api/preferences`
+Update user preferences.
+
+**Request Body:**
+```json
+{
+  "dietaryRestrictions": ["vegetarian"],
+  "allergies": ["nuts"],
+  "cuisinePreferences": ["italian", "mexican"],
+  "cookingSkillLevel": "intermediate"
+}
+```
+
+---
+
+### Privacy & GDPR
+
+#### `GET /api/gdpr/data`
+Request user data export (GDPR).
+
+**Response:**
+```json
+{
+  "status": "processing",
+  "requestId": "uuid",
+  "estimatedCompletion": "2024-01-02T00:00:00Z"
+}
+```
+
+#### `POST /api/gdpr/delete`
+Request account deletion (GDPR).
+
+**Request Body:**
+```json
+{
+  "reason": "No longer using the service",
   "confirm": true
 }
 ```
 
-### Observability
+---
 
-#### Get Traces
+### Error Responses
 
-```http
-GET /api/observability/traces
+All endpoints may return the following error responses:
+
+#### `400 Bad Request`
+```json
+{
+  "error": "Invalid request",
+  "message": "Detailed error message",
+  "code": "INVALID_REQUEST"
+}
 ```
 
-#### Get Metrics
-
-```http
-GET /api/observability/metrics
+#### `401 Unauthorized`
+```json
+{
+  "error": "Unauthorized",
+  "message": "Authentication required",
+  "code": "UNAUTHORIZED"
+}
 ```
 
-### Revenue
-
-#### Get Revenue Summary
-
-```http
-GET /api/revenue/summary
+#### `403 Forbidden`
+```json
+{
+  "error": "Forbidden",
+  "message": "Insufficient permissions",
+  "code": "FORBIDDEN"
+}
 ```
 
-#### Get Revenue Dashboard
-
-```http
-GET /api/revenue/dashboard
+#### `404 Not Found`
+```json
+{
+  "error": "Not Found",
+  "message": "Resource not found",
+  "code": "NOT_FOUND"
+}
 ```
+
+#### `500 Internal Server Error`
+```json
+{
+  "error": "Internal Server Error",
+  "message": "An unexpected error occurred",
+  "code": "INTERNAL_ERROR"
+}
+```
+
+---
 
 ## Rate Limiting
 
 API requests are rate-limited:
+- **Authenticated users**: 1000 requests/hour
+- **Unauthenticated**: 100 requests/hour
 
-- **Free tier**: 100 requests/hour
-- **Premium tier**: 1000 requests/hour
-- **Partner tier**: 10000 requests/hour
+Rate limit headers are included in responses:
+- `X-RateLimit-Limit`: Maximum requests allowed
+- `X-RateLimit-Remaining`: Remaining requests
+- `X-RateLimit-Reset`: Unix timestamp when limit resets
 
-Rate limit headers:
-
-```http
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 95
-X-RateLimit-Reset: 1640995200
-```
+---
 
 ## Webhooks
 
-### Partner Webhooks
+### Stripe Webhooks
 
-Partners can register webhooks to receive events:
+#### `POST /api/stripe/webhook`
+Stripe webhook endpoint for payment events.
 
-```http
-POST /api/webhooks/register
+**Headers:**
+- `stripe-signature`: Stripe signature header
+
+**Events:**
+- `checkout.session.completed`
+- `customer.subscription.updated`
+- `customer.subscription.deleted`
+
+---
+
+## OpenAPI Specification
+
+For complete API specification, see:
+- [OpenAPI JSON](/docs/openapi.json)
+- [OpenAPI YAML](/docs/openapi.yaml)
+
+Generate updated documentation:
+```bash
+pnpm api:docs:generate
 ```
 
-**Request Body:**
-
-```json
-{
-  "url": "https://partner.com/webhook",
-  "events": ["meal_plan.created", "recipe.viewed"],
-  "secret": "webhook-secret"
-}
-```
-
-### Webhook Signature Verification
-
-All webhook payloads include a signature header:
-
-```http
-X-Webhook-Signature: sha256=<signature>
-```
-
-Verify signatures using HMAC-SHA256 with your webhook secret.
-
-## SDKs and Libraries
-
-### JavaScript/TypeScript
-
-```typescript
-import { WhatsForDinnerClient } from '@whats-for-dinner/sdk';
-
-const client = new WhatsForDinnerClient({
-  apiKey: 'your-api-key',
-  baseUrl: 'https://whats-for-dinner.vercel.app/api'
-});
-
-const recipes = await client.recipes.list({ tags: ['vegetarian'] });
-```
-
-## Changelog
-
-See [CHANGELOG.md](../CHANGELOG.md) for API version history.
+---
 
 ## Support
 
 For API support:
-- Email: api-support@whatsfordinner.app
-- Documentation: https://docs.whatsfordinner.app/api
-- Status: https://status.whatsfordinner.app
+- 📧 Email: api-support@whatsfordinner.app
+- 📖 Documentation: https://docs.whatsfordinner.app
+- 🐛 Issues: https://github.com/your-org/whats-for-dinner/issues

@@ -1,14 +1,16 @@
-/**
- * Enhanced Error Boundary with Retry Logic
- * Measurable: Reduces user-facing errors by 40-60%
- */
-
 'use client';
 
+/**
+ * Error Boundary Component
+ * 
+ * Catches React errors and displays a user-friendly error page
+ * Provides error reporting and recovery options
+ */
+
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertCircle, RefreshCw, Home } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from './ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
@@ -19,118 +21,149 @@ interface Props {
 interface State {
   hasError: boolean;
   error: Error | null;
-  retryCount: number;
+  errorInfo: ErrorInfo | null;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  private maxRetries = 3;
-
   constructor(props: Props) {
     super(props);
     this.state = {
       hasError: false,
       error: null,
-      retryCount: 0,
+      errorInfo: null,
     };
   }
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): Partial<State> {
     return {
       hasError: true,
       error,
-      retryCount: 0,
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log error to analytics
-    if (typeof window !== 'undefined') {
-      fetch('/api/analytics/track', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          event: 'error_boundary_caught',
-          properties: {
-            error: error.message,
-            stack: error.stack,
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // Log error to console in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('ErrorBoundary caught an error:', error, errorInfo);
+    }
+
+    // Report to error tracking service
+    if (typeof window !== 'undefined' && (window as any).Sentry) {
+      (window as any).Sentry.captureException(error, {
+        contexts: {
+          react: {
             componentStack: errorInfo.componentStack,
           },
-        }),
-      }).catch(() => {
-        // Fail silently
+        },
       });
     }
 
     // Call custom error handler
     this.props.onError?.(error, errorInfo);
+
+    this.setState({
+      errorInfo,
+    });
   }
 
-  handleRetry = (): void => {
-    if (this.state.retryCount < this.maxRetries) {
-      this.setState((prev) => ({
-        hasError: false,
-        error: null,
-        retryCount: prev.retryCount + 1,
-      }));
-    } else {
-      // Max retries reached, reload page
-      window.location.reload();
-    }
-  };
-
-  handleReset = (): void => {
+  handleReset = () => {
     this.setState({
       hasError: false,
       error: null,
-      retryCount: 0,
+      errorInfo: null,
     });
   };
 
-  render(): ReactNode {
+  handleReload = () => {
+    window.location.reload();
+  };
+
+  handleGoHome = () => {
+    window.location.href = '/';
+  };
+
+  render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;
       }
 
+      const isDevelopment = process.env.NODE_ENV === 'development';
+
       return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-          <Card className="max-w-md w-full">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900">
+          <Card className="w-full max-w-2xl">
             <CardHeader>
-              <div className="flex items-center gap-2 text-destructive">
-                <AlertCircle className="w-5 h-5" />
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-6 w-6 text-red-500" />
                 <CardTitle>Something went wrong</CardTitle>
               </div>
+              <CardDescription>
+                We encountered an unexpected error. Don't worry, your data is safe.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                {this.state.error?.message || 'An unexpected error occurred'}
-              </p>
-              
-              {process.env.NODE_ENV === 'development' && this.state.error?.stack && (
-                <details className="text-xs">
-                  <summary className="cursor-pointer text-muted-foreground">Error details</summary>
-                  <pre className="mt-2 p-2 bg-muted rounded overflow-auto">
-                    {this.state.error.stack}
-                  </pre>
-                </details>
+              {isDevelopment && this.state.error && (
+                <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                  <div className="font-mono text-sm">
+                    <div className="font-semibold text-red-800 dark:text-red-200 mb-2">
+                      Error: {this.state.error.name}
+                    </div>
+                    <div className="text-red-700 dark:text-red-300 whitespace-pre-wrap break-all">
+                      {this.state.error.message}
+                    </div>
+                    {this.state.errorInfo && (
+                      <div className="mt-4 pt-4 border-t border-red-200 dark:border-red-800">
+                        <div className="font-semibold text-red-800 dark:text-red-200 mb-2">
+                          Component Stack:
+                        </div>
+                        <div className="text-red-700 dark:text-red-300 text-xs whitespace-pre-wrap">
+                          {this.state.errorInfo.componentStack}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
 
-              <div className="flex gap-2">
-                <Button onClick={this.handleRetry} variant="default">
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  {this.state.retryCount < this.maxRetries ? 'Try Again' : 'Reload Page'}
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={this.handleReset} variant="outline">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Try Again
                 </Button>
-                <Button onClick={() => window.location.href = '/'} variant="outline">
-                  <Home className="w-4 h-4 mr-2" />
+                <Button onClick={this.handleReload} variant="outline">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Reload Page
+                </Button>
+                <Button onClick={this.handleGoHome} variant="default">
+                  <Home className="h-4 w-4 mr-2" />
                   Go Home
                 </Button>
+                {isDevelopment && (
+                  <Button
+                    onClick={() => {
+                      console.error('Full error details:', this.state.error, this.state.errorInfo);
+                    }}
+                    variant="outline"
+                  >
+                    <Bug className="h-4 w-4 mr-2" />
+                    Log Details
+                  </Button>
+                )}
               </div>
 
-              {this.state.retryCount > 0 && (
-                <p className="text-xs text-muted-foreground">
-                  Retry attempt {this.state.retryCount} of {this.maxRetries}
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                <p>
+                  If this problem persists, please{' '}
+                  <a
+                    href="/support"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    contact support
+                  </a>
+                  {' '}with the error details.
                 </p>
-              )}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -139,4 +172,22 @@ export class ErrorBoundary extends Component<Props, State> {
 
     return this.props.children;
   }
+}
+
+/**
+ * HOC to wrap components with ErrorBoundary
+ */
+export function withErrorBoundary<P extends object>(
+  Component: React.ComponentType<P>,
+  errorBoundaryProps?: Omit<Props, 'children'>
+) {
+  const WrappedComponent = (props: P) => (
+    <ErrorBoundary {...errorBoundaryProps}>
+      <Component {...props} />
+    </ErrorBoundary>
+  );
+
+  WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
+
+  return WrappedComponent;
 }
