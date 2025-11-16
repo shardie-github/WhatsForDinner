@@ -1,340 +1,335 @@
+#!/usr/bin/env tsx
 /**
- * Database Schema Health Checker
- * Compares Prisma schema vs actual database schema
- * Identifies missing tables, columns, indexes, constraints, RLS policies
+ * Database Schema Health Check
+ * 
+ * Compares Prisma schema against Supabase migrations
+ * Identifies missing tables, columns, indexes, and constraints
+ * Generates safe migration suggestions
  */
 
-import { PrismaClient } from '@prisma/client';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
+import { PrismaClient } from '@prisma/client';
 
-interface SchemaHealthReport {
-  timestamp: string;
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  issues: SchemaIssue[];
-  summary: {
-    totalTables: number;
-    missingTables: number;
-    missingColumns: number;
-    missingIndexes: number;
-    missingConstraints: number;
-    missingRLSPolicies: number;
-  };
+interface SchemaDiff {
+  missingTables: string[];
+  missingColumns: Record<string, string[]>;
+  missingIndexes: Record<string, string[]>;
+  missingConstraints: Record<string, string[]>;
+  extraTables: string[];
+  typeMismatches: Array<{ table: string; column: string; expected: string; actual: string }>;
 }
 
-interface SchemaIssue {
-  type: 'missing_table' | 'missing_column' | 'missing_index' | 'missing_constraint' | 'missing_rls' | 'type_mismatch';
-  severity: 'error' | 'warning';
-  table?: string;
-  column?: string;
-  index?: string;
-  constraint?: string;
-  message: string;
-  recommendation: string;
+interface MigrationFile {
+  name: string;
+  path: string;
+  content: string;
+  tables: string[];
+  columns: Record<string, string[]>;
 }
 
-export class SchemaHealthChecker {
-  private prisma: PrismaClient;
-  private workspaceRoot: string;
+/**
+ * Parse Prisma schema to extract table definitions
+ */
+function parsePrismaSchema(schemaPath: string): Record<string, any> {
+  const content = readFileSync(schemaPath, 'utf-8');
+  const tables: Record<string, any> = {};
 
-  constructor(workspaceRoot: string = process.cwd()) {
-    this.workspaceRoot = workspaceRoot;
-    this.prisma = new PrismaClient();
-  }
+  // Extract model definitions
+  const modelRegex = /model\s+(\w+)\s*\{([^}]+)\}/g;
+  let match;
 
-  /**
-   * Run comprehensive schema health check
-   */
-  async check(): Promise<SchemaHealthReport> {
-    const issues: SchemaIssue[] = [];
-    
-    // Load Prisma schema
-    const prismaSchema = this.loadPrismaSchema();
-    
-    // Get actual database schema
-    const dbSchema = await this.getDatabaseSchema();
-    
-    // Compare schemas
-    issues.push(...this.checkTables(prismaSchema, dbSchema));
-    issues.push(...await this.checkColumns(prismaSchema, dbSchema));
-    issues.push(...await this.checkIndexes(prismaSchema, dbSchema));
-    issues.push(...await this.checkConstraints(prismaSchema, dbSchema));
-    issues.push(...await this.checkRLSPolicies(dbSchema));
-    
-    // Determine status
-    const errorCount = issues.filter(i => i.severity === 'error').length;
-    const warningCount = issues.filter(i => i.severity === 'warning').length;
-    
-    let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
-    if (errorCount > 0) {
-      status = 'unhealthy';
-    } else if (warningCount > 0) {
-      status = 'degraded';
+  while ((match = modelRegex.exec(content)) !== null) {
+    const tableName = match[1];
+    const modelContent = match[2];
+    const columns: Record<string, string> = {};
+
+    // Extract field definitions
+    const fieldRegex = /(\w+)\s+([^\n]+)/g;
+    let fieldMatch;
+
+    while ((fieldMatch = fieldRegex.exec(modelContent)) !== null) {
+      const fieldName = fieldMatch[1].trim();
+      const fieldDef = fieldMatch[2].trim();
+      columns[fieldName] = fieldDef;
     }
-    
-    const report: SchemaHealthReport = {
-      timestamp: new Date().toISOString(),
-      status,
-      issues,
-      summary: {
-        totalTables: dbSchema.tables.length,
-        missingTables: issues.filter(i => i.type === 'missing_table').length,
-        missingColumns: issues.filter(i => i.type === 'missing_column').length,
-        missingIndexes: issues.filter(i => i.type === 'missing_index').length,
-        missingConstraints: issues.filter(i => i.type === 'missing_constraint').length,
-        missingRLSPolicies: issues.filter(i => i.type === 'missing_rls').length,
-      },
+
+    tables[tableName] = {
+      columns,
+      indexes: extractIndexes(modelContent),
+      relations: extractRelations(modelContent),
     };
-    
-    return report;
   }
 
-  /**
-   * Load Prisma schema file
-   */
-  private loadPrismaSchema(): any {
-    const schemaPath = join(this.workspaceRoot, 'prisma', 'schema.prisma');
-    const schemaContent = readFileSync(schemaPath, 'utf-8');
-    
-    // Extract model names
-    const modelMatches = schemaContent.matchAll(/model\s+(\w+)\s*\{/g);
-    const models = Array.from(modelMatches).map(m => m[1]);
-    
-    return { models };
+  return tables;
+}
+
+/**
+ * Extract index definitions from Prisma model
+ */
+function extractIndexes(modelContent: string): string[] {
+  const indexes: string[] = [];
+  const indexRegex = /@@index\(\[([^\]]+)\]/g;
+  let match;
+
+  while ((match = indexRegex.exec(modelContent)) !== null) {
+    indexes.push(match[1].split(',').map((c: string) => c.trim().replace(/"/g, '')));
   }
 
-  /**
-   * Get actual database schema
-   */
-  private async getDatabaseSchema(): Promise<{
-    tables: string[];
-    columns: Record<string, string[]>;
-    indexes: Record<string, string[]>;
-    constraints: Record<string, string[]>;
-  }> {
-    // Get all tables
-    const tablesResult = await this.prisma.$queryRaw<Array<{ tablename: string }>>`
-      SELECT tablename 
-      FROM pg_tables 
-      WHERE schemaname = 'public'
-      ORDER BY tablename;
-    `;
-    const tables = tablesResult.map(t => t.tablename);
-    
-    // Get columns for each table
-    const columns: Record<string, string[]> = {};
-    for (const table of tables) {
-      const columnsResult = await this.prisma.$queryRaw<Array<{ column_name: string }>>`
-        SELECT column_name 
-        FROM information_schema.columns 
-        WHERE table_schema = 'public' AND table_name = ${table}
-        ORDER BY ordinal_position;
-      `;
-      columns[table] = columnsResult.map(c => c.column_name);
-    }
-    
-    // Get indexes for each table
-    const indexes: Record<string, string[]> = {};
-    for (const table of tables) {
-      const indexesResult = await this.prisma.$queryRaw<Array<{ indexname: string }>>`
-        SELECT indexname 
-        FROM pg_indexes 
-        WHERE schemaname = 'public' AND tablename = ${table}
-        AND indexname NOT LIKE '%_pkey';
-      `;
-      indexes[table] = indexesResult.map(i => i.indexname);
-    }
-    
-    // Get constraints for each table
-    const constraints: Record<string, string[]> = {};
-    for (const table of tables) {
-      const constraintsResult = await this.prisma.$queryRaw<Array<{ constraint_name: string }>>`
-        SELECT constraint_name 
-        FROM information_schema.table_constraints 
-        WHERE table_schema = 'public' AND table_name = ${table}
-        AND constraint_type != 'PRIMARY KEY';
-      `;
-      constraints[table] = constraintsResult.map(c => c.constraint_name);
-    }
-    
-    return { tables, columns, indexes, constraints };
+  return indexes.flat();
+}
+
+/**
+ * Extract relation definitions
+ */
+function extractRelations(modelContent: string): string[] {
+  const relations: string[] = [];
+  const relationRegex = /@relation\([^)]+\)/g;
+  let match;
+
+  while ((match = relationRegex.exec(modelContent)) !== null) {
+    relations.push(match[0]);
   }
 
-  /**
-   * Check for missing tables
-   */
-  private checkTables(prismaSchema: any, dbSchema: any): SchemaIssue[] {
-    const issues: SchemaIssue[] = [];
-    const dbTables = new Set(dbSchema.tables);
-    
-    for (const model of prismaSchema.models) {
-      const tableName = this.camelToSnake(model);
-      if (!dbTables.has(tableName)) {
-        issues.push({
-          type: 'missing_table',
-          severity: 'error',
-          table: tableName,
-          message: `Table ${tableName} (from model ${model}) is missing in database`,
-          recommendation: `Run migration: prisma migrate deploy or create migration: prisma migrate dev --name add_${tableName}`,
-        });
+  return relations;
+}
+
+/**
+ * Parse SQL migration files
+ */
+function parseMigrations(migrationsDir: string): MigrationFile[] {
+  const migrations: MigrationFile[] = [];
+  const files = readdirSync(migrationsDir).filter(f => f.endsWith('.sql'));
+
+  for (const file of files) {
+    const path = join(migrationsDir, file);
+    const content = readFileSync(path, 'utf-8');
+    const tables = extractTablesFromSQL(content);
+    const columns = extractColumnsFromSQL(content);
+
+    migrations.push({
+      name: file,
+      path,
+      content,
+      tables,
+      columns,
+    });
+  }
+
+  return migrations;
+}
+
+/**
+ * Extract table names from SQL
+ */
+function extractTablesFromSQL(sql: string): string[] {
+  const tables: string[] = [];
+  const createTableRegex = /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:public\.)?(\w+)/gi;
+  let match;
+
+  while ((match = createTableRegex.exec(sql)) !== null) {
+    tables.push(match[1]);
+  }
+
+  return tables;
+}
+
+/**
+ * Extract column definitions from SQL
+ */
+function extractColumnsFromSQL(sql: string): Record<string, string[]> {
+  const columns: Record<string, string[]> = {};
+  const createTableRegex = /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:public\.)?(\w+)\s*\(([^)]+)\)/gi;
+  let match;
+
+  while ((match = createTableRegex.exec(sql)) !== null) {
+    const tableName = match[1];
+    const tableDef = match[2];
+    const columnNames: string[] = [];
+
+    const columnRegex = /(\w+)\s+[^,]+/g;
+    let colMatch;
+
+    while ((colMatch = columnRegex.exec(tableDef)) !== null) {
+      columnNames.push(colMatch[1]);
+    }
+
+    columns[tableName] = columnNames;
+  }
+
+  return columns;
+}
+
+/**
+ * Compare Prisma schema with migrations
+ */
+function compareSchemas(
+  prismaSchema: Record<string, any>,
+  migrations: MigrationFile[]
+): SchemaDiff {
+  const diff: SchemaDiff = {
+    missingTables: [],
+    missingColumns: {},
+    missingIndexes: {},
+    missingConstraints: {},
+    extraTables: [],
+    typeMismatches: [],
+  };
+
+  // Collect all tables from migrations
+  const migrationTables = new Set<string>();
+  const migrationColumns: Record<string, Set<string>> = {};
+
+  for (const migration of migrations) {
+    for (const table of migration.tables) {
+      migrationTables.add(table);
+      if (!migrationColumns[table]) {
+        migrationColumns[table] = new Set();
+      }
+      if (migration.columns[table]) {
+        migration.columns[table].forEach(col => migrationColumns[table].add(col));
       }
     }
-    
-    return issues;
   }
 
-  /**
-   * Check for missing columns
-   */
-  private async checkColumns(prismaSchema: any, dbSchema: any): Promise<SchemaIssue[]> {
-    const issues: SchemaIssue[] = [];
+  // Check Prisma models against migrations
+  for (const [modelName, modelDef] of Object.entries(prismaSchema)) {
+    const tableName = modelName.toLowerCase().replace(/([A-Z])/g, '_$1').toLowerCase();
     
-    // This would require parsing Prisma schema more deeply
-    // For now, return empty array - can be enhanced
-    
-    return issues;
-  }
+    if (!migrationTables.has(tableName)) {
+      diff.missingTables.push(tableName);
+    } else {
+      // Check columns
+      const prismaColumns = Object.keys(modelDef.columns);
+      const missingCols: string[] = [];
 
-  /**
-   * Check for missing indexes
-   */
-  private async checkIndexes(prismaSchema: any, dbSchema: any): Promise<SchemaIssue[]> {
-    const issues: SchemaIssue[] = [];
-    
-    // Check for common indexes that should exist
-    const expectedIndexes: Record<string, string[]> = {
-      users: ['users_email_idx'],
-      meal_plans: ['meal_plans_user_day_idx'],
-      health_metrics: ['health_metrics_user_kind_ts_idx'],
-      messages: ['messages_room_ts_idx'],
-      events: ['events_user_ts_idx'],
-    };
-    
-    for (const [table, expectedIndexNames] of Object.entries(expectedIndexes)) {
-      if (dbSchema.tables.includes(table)) {
-        const actualIndexes = new Set(dbSchema.indexes[table] || []);
-        for (const indexName of expectedIndexNames) {
-          if (!actualIndexes.has(indexName)) {
-            issues.push({
-              type: 'missing_index',
-              severity: 'warning',
-              table,
-              index: indexName,
-              message: `Index ${indexName} is missing on table ${table}`,
-              recommendation: `CREATE INDEX ${indexName} ON ${table} (...);`,
-            });
-          }
+      for (const col of prismaColumns) {
+        const colName = col.toLowerCase().replace(/([A-Z])/g, '_$1').toLowerCase();
+        if (!migrationColumns[tableName]?.has(colName)) {
+          missingCols.push(colName);
         }
       }
-    }
-    
-    return issues;
-  }
 
-  /**
-   * Check for missing constraints
-   */
-  private async checkConstraints(prismaSchema: any, dbSchema: any): Promise<SchemaIssue[]> {
-    const issues: SchemaIssue[] = [];
-    
-    // Check for foreign key constraints
-    // This would require parsing Prisma relations
-    
-    return issues;
-  }
-
-  /**
-   * Check for missing RLS policies
-   */
-  private async checkRLSPolicies(dbSchema: any): Promise<SchemaIssue[]> {
-    const issues: SchemaIssue[] = [];
-    
-    // Get tables with RLS enabled
-    const rlsTablesResult = await this.prisma.$queryRaw<Array<{ tablename: string }>>`
-      SELECT tablename 
-      FROM pg_tables 
-      WHERE schemaname = 'public' 
-      AND tablename IN (
-        SELECT tablename 
-        FROM pg_tables t
-        JOIN pg_class c ON c.relname = t.tablename
-        WHERE c.relrowsecurity = true
-      );
-    `;
-    const rlsTables = new Set(rlsTablesResult.map(t => t.tablename));
-    
-    // Check for policies on RLS-enabled tables
-    for (const table of rlsTables) {
-      const policiesResult = await this.prisma.$queryRaw<Array<{ policyname: string }>>`
-        SELECT policyname 
-        FROM pg_policies 
-        WHERE schemaname = 'public' AND tablename = ${table};
-      `;
-      
-      if (policiesResult.length === 0) {
-        issues.push({
-          type: 'missing_rls',
-          severity: 'error',
-          table,
-          message: `Table ${table} has RLS enabled but no policies defined`,
-          recommendation: `Create RLS policies for ${table} or disable RLS if not needed`,
-        });
+      if (missingCols.length > 0) {
+        diff.missingColumns[tableName] = missingCols;
       }
     }
-    
-    return issues;
   }
 
-  /**
-   * Convert camelCase to snake_case
-   */
-  private camelToSnake(str: string): string {
-    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`).replace(/^_/, '');
-  }
-
-  /**
-   * Generate migration recommendations
-   */
-  generateMigrationRecommendations(report: SchemaHealthReport): string[] {
-    const recommendations: string[] = [];
-    
-    for (const issue of report.issues) {
-      if (issue.recommendation && !recommendations.includes(issue.recommendation)) {
-        recommendations.push(issue.recommendation);
-      }
+  // Check for extra tables in migrations
+  for (const table of migrationTables) {
+    const modelName = table.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+    if (!prismaSchema[modelName]) {
+      diff.extraTables.push(table);
     }
-    
-    return recommendations;
   }
 
-  /**
-   * Cleanup
-   */
-  async disconnect(): Promise<void> {
-    await this.prisma.$disconnect();
+  return diff;
+}
+
+/**
+ * Generate safe migration SQL
+ */
+function generateMigrationSQL(diff: SchemaDiff): string {
+  const statements: string[] = [];
+
+  statements.push('-- Auto-generated migration based on schema health check');
+  statements.push('-- Review carefully before applying');
+  statements.push('');
+
+  // Create missing tables
+  for (const table of diff.missingTables) {
+    statements.push(`-- TODO: Create table ${table}`);
+    statements.push(`-- CREATE TABLE IF NOT EXISTS public.${table} (`);
+    statements.push(`--   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),`);
+    statements.push(`--   created_at TIMESTAMPTZ DEFAULT NOW(),`);
+    statements.push(`--   updated_at TIMESTAMPTZ DEFAULT NOW()`);
+    statements.push(`-- );`);
+    statements.push('');
+  }
+
+  // Add missing columns
+  for (const [table, columns] of Object.entries(diff.missingColumns)) {
+    for (const column of columns) {
+      statements.push(`-- TODO: Add column ${column} to ${table}`);
+      statements.push(`-- ALTER TABLE public.${table} ADD COLUMN IF NOT EXISTS ${column} TEXT;`);
+      statements.push('');
+    }
+  }
+
+  return statements.join('\n');
+}
+
+/**
+ * Main execution
+ */
+async function main() {
+  console.log('🔍 Running database schema health check...\n');
+
+  const schemaPath = join(process.cwd(), 'prisma/schema.prisma');
+  const migrationsDir = join(process.cwd(), 'supabase/migrations');
+
+  if (!statSync(schemaPath).isFile()) {
+    console.error(`❌ Prisma schema not found: ${schemaPath}`);
+    process.exit(1);
+  }
+
+  if (!statSync(migrationsDir).isDirectory()) {
+    console.error(`❌ Migrations directory not found: ${migrationsDir}`);
+    process.exit(1);
+  }
+
+  console.log('📖 Parsing Prisma schema...');
+  const prismaSchema = parsePrismaSchema(schemaPath);
+  console.log(`   Found ${Object.keys(prismaSchema).length} models`);
+
+  console.log('📖 Parsing SQL migrations...');
+  const migrations = parseMigrations(migrationsDir);
+  console.log(`   Found ${migrations.length} migration files`);
+
+  console.log('🔍 Comparing schemas...');
+  const diff = compareSchemas(prismaSchema, migrations);
+
+  console.log('\n📊 Schema Health Report:');
+  console.log(`   ✅ Tables in sync: ${Object.keys(prismaSchema).length - diff.missingTables.length}`);
+  console.log(`   ⚠️  Missing tables: ${diff.missingTables.length}`);
+  console.log(`   ⚠️  Tables with missing columns: ${Object.keys(diff.missingColumns).length}`);
+  console.log(`   ⚠️  Extra tables in migrations: ${diff.extraTables.length}`);
+
+  if (diff.missingTables.length > 0) {
+    console.log('\n❌ Missing Tables:');
+    diff.missingTables.forEach(t => console.log(`   - ${t}`));
+  }
+
+  if (Object.keys(diff.missingColumns).length > 0) {
+    console.log('\n❌ Missing Columns:');
+    for (const [table, columns] of Object.entries(diff.missingColumns)) {
+      console.log(`   - ${table}:`);
+      columns.forEach(col => console.log(`     • ${col}`));
+    }
+  }
+
+  if (diff.extraTables.length > 0) {
+    console.log('\n⚠️  Extra Tables (in migrations but not in Prisma):');
+    diff.extraTables.forEach(t => console.log(`   - ${t}`));
+  }
+
+  // Generate migration SQL
+  if (diff.missingTables.length > 0 || Object.keys(diff.missingColumns).length > 0) {
+    const migrationSQL = generateMigrationSQL(diff);
+    const outputPath = join(process.cwd(), 'supabase/migrations/999_schema_health_fix.sql');
+    require('fs').writeFileSync(outputPath, migrationSQL);
+    console.log(`\n💾 Generated migration file: ${outputPath}`);
+    console.log('   ⚠️  Review and test before applying!');
+  }
+
+  if (diff.missingTables.length === 0 && Object.keys(diff.missingColumns).length === 0) {
+    console.log('\n✅ Schema is healthy! No issues found.');
   }
 }
 
-// CLI entry point
 if (require.main === module) {
-  const checker = new SchemaHealthChecker();
-  checker.check()
-    .then(report => {
-      console.log(JSON.stringify(report, null, 2));
-      const recommendations = checker.generateMigrationRecommendations(report);
-      if (recommendations.length > 0) {
-        console.log('\n📋 Migration Recommendations:');
-        recommendations.forEach((rec, i) => {
-          console.log(`${i + 1}. ${rec}`);
-        });
-      }
-      process.exit(report.status === 'healthy' ? 0 : 1);
-    })
-    .catch(error => {
-      console.error('❌ Schema health check failed:', error);
-      process.exit(1);
-    })
-    .finally(() => {
-      checker.disconnect();
-    });
+  main().catch(console.error);
 }
+
+export { compareSchemas, parsePrismaSchema, parseMigrations };

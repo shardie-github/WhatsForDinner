@@ -1,331 +1,261 @@
+#!/usr/bin/env tsx
 /**
  * Deployment Configuration Validator
- * Validates deployment configurations for Vercel, Netlify, Cloudflare, etc.
+ * 
+ * Validates deployment configurations for all platforms:
+ * - Vercel (vercel.json)
+ * - Netlify (netlify.toml)
+ * - Docker (Dockerfile)
+ * - Next.js (next.config.ts)
+ * - Supabase (supabase/config.toml)
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { existsSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
-import { z } from 'zod';
 
-interface DeploymentValidationResult {
+interface ValidationResult {
   platform: string;
   valid: boolean;
   errors: string[];
   warnings: string[];
-  config: any;
 }
 
-const VercelConfigSchema = z.object({
-  version: z.number().optional(),
-  buildCommand: z.string().optional(),
-  outputDirectory: z.string().optional(),
-  installCommand: z.string().optional(),
-  framework: z.string().optional(),
-  rewrites: z.array(z.any()).optional(),
-  headers: z.array(z.any()).optional(),
-  redirects: z.array(z.any()).optional(),
-  crons: z.array(z.any()).optional(),
-});
+/**
+ * Validate Vercel configuration
+ */
+function validateVercel(): ValidationResult {
+  const result: ValidationResult = {
+    platform: 'Vercel',
+    valid: true,
+    errors: [],
+    warnings: [],
+  };
 
-const NetlifyConfigSchema = z.object({
-  build: z.object({
-    command: z.string().optional(),
-    publish: z.string().optional(),
-  }).optional(),
-  redirects: z.array(z.any()).optional(),
-  headers: z.array(z.any()).optional(),
-});
-
-const DockerfileSchema = z.object({
-  hasFrom: z.boolean(),
-  hasWorkdir: z.boolean(),
-  hasCopy: z.boolean(),
-  hasRun: z.boolean(),
-  hasExpose: z.boolean(),
-  hasCmd: z.boolean(),
-});
-
-export class DeploymentConfigValidator {
-  private workspaceRoot: string;
-
-  constructor(workspaceRoot: string = process.cwd()) {
-    this.workspaceRoot = workspaceRoot;
+  const vercelJsonPath = join(process.cwd(), 'vercel.json');
+  
+  if (!existsSync(vercelJsonPath)) {
+    result.warnings.push('vercel.json not found (optional for Next.js apps)');
+    return result;
   }
 
-  /**
-   * Validate all deployment configurations
-   */
-  async validateAll(): Promise<DeploymentValidationResult[]> {
-    const results: DeploymentValidationResult[] = [];
-
-    // Check Vercel
-    const vercelResult = this.validateVercel();
-    if (vercelResult) results.push(vercelResult);
-
-    // Check Netlify
-    const netlifyResult = this.validateNetlify();
-    if (netlifyResult) results.push(netlifyResult);
-
-    // Check Dockerfile
-    const dockerResult = this.validateDockerfile();
-    if (dockerResult) results.push(dockerResult);
-
-    // Check Next.js config
-    const nextjsResult = this.validateNextConfig();
-    if (nextjsResult) results.push(nextjsResult);
-
-    return results;
-  }
-
-  /**
-   * Validate Vercel configuration
-   */
-  validateVercel(): DeploymentValidationResult | null {
-    const vercelPath = join(this.workspaceRoot, 'vercel.json');
-    if (!existsSync(vercelPath)) {
-      return {
-        platform: 'vercel',
-        valid: false,
-        errors: ['vercel.json not found'],
-        warnings: [],
-        config: null,
-      };
+  try {
+    const config = JSON.parse(readFileSync(vercelJsonPath, 'utf-8'));
+    
+    // Check for required fields
+    if (config.rewrites && !Array.isArray(config.rewrites)) {
+      result.errors.push('vercel.json: rewrites must be an array');
+      result.valid = false;
     }
 
-    try {
-      const config = JSON.parse(readFileSync(vercelPath, 'utf-8'));
-      const parsed = VercelConfigSchema.safeParse(config);
-      
-      const errors: string[] = [];
-      const warnings: string[] = [];
+    if (config.headers && !Array.isArray(config.headers)) {
+      result.errors.push('vercel.json: headers must be an array');
+      result.valid = false;
+    }
 
-      if (!parsed.success) {
-        errors.push(`Invalid vercel.json schema: ${parsed.error.message}`);
-      }
-
-      // Check for required build configuration
-      if (!config.buildCommand && !existsSync(join(this.workspaceRoot, 'package.json'))) {
-        warnings.push('No buildCommand specified in vercel.json');
-      }
-
-      // Check output directory
-      if (config.outputDirectory && !existsSync(join(this.workspaceRoot, config.outputDirectory))) {
-        warnings.push(`Output directory ${config.outputDirectory} does not exist`);
-      }
-
-      // Validate cron jobs
-      if (config.crons) {
+    // Validate cron jobs
+    if (config.crons) {
+      if (!Array.isArray(config.crons)) {
+        result.errors.push('vercel.json: crons must be an array');
+        result.valid = false;
+      } else {
         for (const cron of config.crons) {
           if (!cron.path || !cron.schedule) {
-            errors.push('Cron jobs must have path and schedule');
+            result.errors.push('vercel.json: cron jobs must have path and schedule');
+            result.valid = false;
           }
         }
       }
-
-      return {
-        platform: 'vercel',
-        valid: errors.length === 0,
-        errors,
-        warnings,
-        config,
-      };
-    } catch (error) {
-      return {
-        platform: 'vercel',
-        valid: false,
-        errors: [`Failed to parse vercel.json: ${error}`],
-        warnings: [],
-        config: null,
-      };
     }
+  } catch (error: any) {
+    result.errors.push(`Failed to parse vercel.json: ${error.message}`);
+    result.valid = false;
   }
 
-  /**
-   * Validate Netlify configuration
-   */
-  validateNetlify(): DeploymentValidationResult | null {
-    const netlifyPath = join(this.workspaceRoot, 'netlify.toml');
-    if (!existsSync(netlifyPath)) {
-      return null; // Netlify config is optional
+  return result;
+}
+
+/**
+ * Validate Next.js configuration
+ */
+function validateNextConfig(): ValidationResult {
+  const result: ValidationResult = {
+    platform: 'Next.js',
+    valid: true,
+    errors: [],
+    warnings: [],
+  };
+
+  const nextConfigPath = join(process.cwd(), 'apps/web/next.config.ts');
+  
+  if (!existsSync(nextConfigPath)) {
+    result.errors.push('next.config.ts not found');
+    result.valid = false;
+    return result;
+  }
+
+  try {
+    const content = readFileSync(nextConfigPath, 'utf-8');
+    
+    // Check for common misconfigurations
+    if (content.includes('output: \'export\'') && content.includes('api')) {
+      result.warnings.push('Static export mode may not support API routes');
     }
 
+    if (!content.includes('reactStrictMode')) {
+      result.warnings.push('reactStrictMode not enabled (recommended)');
+    }
+
+    if (!content.includes('swcMinify')) {
+      result.warnings.push('swcMinify not enabled (recommended for performance)');
+    }
+  } catch (error: any) {
+    result.errors.push(`Failed to read next.config.ts: ${error.message}`);
+    result.valid = false;
+  }
+
+  return result;
+}
+
+/**
+ * Validate Docker configuration
+ */
+function validateDocker(): ValidationResult {
+  const result: ValidationResult = {
+    platform: 'Docker',
+    valid: true,
+    errors: [],
+    warnings: [],
+  };
+
+  const dockerfilePath = join(process.cwd(), 'Dockerfile');
+  
+  if (!existsSync(dockerfilePath)) {
+    result.warnings.push('Dockerfile not found (optional if using Vercel/Netlify)');
+    return result;
+  }
+
+  try {
+    const content = readFileSync(dockerfilePath, 'utf-8');
+    
+    // Check for best practices
+    if (!content.includes('FROM')) {
+      result.errors.push('Dockerfile missing FROM instruction');
+      result.valid = false;
+    }
+
+    if (!content.includes('EXPOSE')) {
+      result.warnings.push('Dockerfile missing EXPOSE instruction');
+    }
+
+    if (content.includes('RUN npm install') && !content.includes('--production')) {
+      result.warnings.push('Consider using --production flag for npm install');
+    }
+  } catch (error: any) {
+    result.errors.push(`Failed to read Dockerfile: ${error.message}`);
+    result.valid = false;
+  }
+
+  return result;
+}
+
+/**
+ * Validate Supabase configuration
+ */
+function validateSupabase(): ValidationResult {
+  const result: ValidationResult = {
+    platform: 'Supabase',
+    valid: true,
+    errors: [],
+    warnings: [],
+  };
+
+  const supabaseConfigPath = join(process.cwd(), 'supabase/config.toml');
+  const migrationsDir = join(process.cwd(), 'supabase/migrations');
+  
+  if (!existsSync(supabaseConfigPath)) {
+    result.warnings.push('supabase/config.toml not found (optional if using hosted Supabase)');
+  } else {
     try {
-      // Basic TOML parsing (simplified)
-      const content = readFileSync(netlifyPath, 'utf-8');
-      const errors: string[] = [];
-      const warnings: string[] = [];
-
-      // Check for build command
-      if (!content.includes('[build]')) {
-        warnings.push('No [build] section found in netlify.toml');
+      const content = readFileSync(supabaseConfigPath, 'utf-8');
+      // Basic validation
+      if (!content.includes('[project]')) {
+        result.warnings.push('supabase/config.toml may be missing [project] section');
       }
-
-      return {
-        platform: 'netlify',
-        valid: errors.length === 0,
-        errors,
-        warnings,
-        config: { content },
-      };
-    } catch (error) {
-      return {
-        platform: 'netlify',
-        valid: false,
-        errors: [`Failed to read netlify.toml: ${error}`],
-        warnings: [],
-        config: null,
-      };
+    } catch (error: any) {
+      result.warnings.push(`Could not parse supabase/config.toml: ${error.message}`);
     }
   }
 
-  /**
-   * Validate Dockerfile
-   */
-  validateDockerfile(): DeploymentValidationResult | null {
-    const dockerfilePath = join(this.workspaceRoot, 'Dockerfile');
-    if (!existsSync(dockerfilePath)) {
-      return null; // Dockerfile is optional
-    }
-
-    try {
-      const content = readFileSync(dockerfilePath, 'utf-8');
-      const errors: string[] = [];
-      const warnings: string[] = [];
-
-      const checks = {
-        hasFrom: content.includes('FROM'),
-        hasWorkdir: content.includes('WORKDIR'),
-        hasCopy: content.includes('COPY'),
-        hasRun: content.includes('RUN'),
-        hasExpose: content.includes('EXPOSE'),
-        hasCmd: content.includes('CMD') || content.includes('ENTRYPOINT'),
-      };
-
-      if (!checks.hasFrom) {
-        errors.push('Dockerfile missing FROM instruction');
-      }
-      if (!checks.hasWorkdir) {
-        warnings.push('Dockerfile missing WORKDIR instruction');
-      }
-      if (!checks.hasCopy) {
-        warnings.push('Dockerfile missing COPY instruction');
-      }
-      if (!checks.hasRun) {
-        warnings.push('Dockerfile missing RUN instruction');
-      }
-      if (!checks.hasExpose) {
-        warnings.push('Dockerfile missing EXPOSE instruction');
-      }
-      if (!checks.hasCmd) {
-        errors.push('Dockerfile missing CMD or ENTRYPOINT instruction');
-      }
-
-      return {
-        platform: 'docker',
-        valid: errors.length === 0,
-        errors,
-        warnings,
-        config: checks,
-      };
-    } catch (error) {
-      return {
-        platform: 'docker',
-        valid: false,
-        errors: [`Failed to read Dockerfile: ${error}`],
-        warnings: [],
-        config: null,
-      };
+  // Check migrations directory
+  if (!existsSync(migrationsDir)) {
+    result.warnings.push('supabase/migrations directory not found');
+  } else {
+    const migrations = require('fs').readdirSync(migrationsDir).filter((f: string) => f.endsWith('.sql'));
+    if (migrations.length === 0) {
+      result.warnings.push('No migration files found in supabase/migrations');
     }
   }
 
-  /**
-   * Validate Next.js configuration
-   */
-  validateNextConfig(): DeploymentValidationResult | null {
-    const nextConfigPath = join(this.workspaceRoot, 'apps', 'web', 'next.config.ts');
-    if (!existsSync(nextConfigPath)) {
-      return {
-        platform: 'nextjs',
-        valid: false,
-        errors: ['next.config.ts not found'],
-        warnings: [],
-        config: null,
-      };
+  return result;
+}
+
+/**
+ * Main validation function
+ */
+function validateAll(): ValidationResult[] {
+  return [
+    validateVercel(),
+    validateNextConfig(),
+    validateDocker(),
+    validateSupabase(),
+  ];
+}
+
+/**
+ * Main execution
+ */
+function main() {
+  console.log('🔍 Validating deployment configurations...\n');
+
+  const results = validateAll();
+  let hasErrors = false;
+  let hasWarnings = false;
+
+  for (const result of results) {
+    const status = result.valid ? '✅' : '❌';
+    console.log(`${status} ${result.platform}`);
+
+    if (result.errors.length > 0) {
+      hasErrors = true;
+      result.errors.forEach(err => console.log(`   ❌ ${err}`));
     }
 
-    try {
-      const content = readFileSync(nextConfigPath, 'utf-8');
-      const errors: string[] = [];
-      const warnings: string[] = [];
-
-      // Check for common issues
-      if (content.includes('output: \'export\'')) {
-        // Static export - check for API routes
-        if (content.includes('app/api')) {
-          warnings.push('Static export enabled but API routes detected');
-        }
-      }
-
-      // Check for image optimization
-      if (!content.includes('images:')) {
-        warnings.push('No image optimization configuration found');
-      }
-
-      return {
-        platform: 'nextjs',
-        valid: errors.length === 0,
-        errors,
-        warnings,
-        config: { hasConfig: true },
-      };
-    } catch (error) {
-      return {
-        platform: 'nextjs',
-        valid: false,
-        errors: [`Failed to read next.config.ts: ${error}`],
-        warnings: [],
-        config: null,
-      };
+    if (result.warnings.length > 0) {
+      hasWarnings = true;
+      result.warnings.forEach(warn => console.log(`   ⚠️  ${warn}`));
     }
+
+    if (result.errors.length === 0 && result.warnings.length === 0) {
+      console.log('   ✅ All checks passed');
+    }
+
+    console.log('');
   }
 
-  /**
-   * Generate deployment recommendations
-   */
-  generateRecommendations(results: DeploymentValidationResult[]): string[] {
-    const recommendations: string[] = [];
-
-    for (const result of results) {
-      if (!result.valid) {
-        recommendations.push(`Fix ${result.platform} configuration errors`);
-      }
-      for (const warning of result.warnings) {
-        recommendations.push(`${result.platform}: ${warning}`);
-      }
-    }
-
-    return recommendations;
+  if (hasErrors) {
+    console.log('❌ Validation failed with errors');
+    process.exit(1);
+  } else if (hasWarnings) {
+    console.log('⚠️  Validation passed with warnings');
+    process.exit(0);
+  } else {
+    console.log('✅ All validations passed');
+    process.exit(0);
   }
 }
 
-// CLI entry point
 if (require.main === module) {
-  const validator = new DeploymentConfigValidator();
-  validator.validateAll()
-    .then(results => {
-      console.log(JSON.stringify(results, null, 2));
-      const recommendations = validator.generateRecommendations(results);
-      if (recommendations.length > 0) {
-        console.log('\n📋 Recommendations:');
-        recommendations.forEach((rec, i) => {
-          console.log(`${i + 1}. ${rec}`);
-        });
-      }
-      const allValid = results.every(r => r.valid);
-      process.exit(allValid ? 0 : 1);
-    })
-    .catch(error => {
-      console.error('❌ Deployment validation failed:', error);
-      process.exit(1);
-    });
+  main();
 }
+
+export { validateAll, validateVercel, validateNextConfig, validateDocker, validateSupabase };

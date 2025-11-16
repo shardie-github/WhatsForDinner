@@ -1,10 +1,20 @@
+#!/usr/bin/env tsx
 /**
  * OpenAPI/Swagger Documentation Generator
- * Automatically generates OpenAPI 3.0 documentation from Next.js API routes
+ * 
+ * Scans all API routes and generates OpenAPI 3.0 specification
+ * Supports Next.js App Router API routes
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
-import { join, extname, relative } from 'path';
+import { readdirSync, readFileSync, writeFileSync, statSync } from 'fs';
+import { join, relative } from 'path';
+
+interface RouteInfo {
+  path: string;
+  methods: string[];
+  filePath: string;
+  description?: string;
+}
 
 interface OpenAPISpec {
   openapi: string;
@@ -14,302 +24,273 @@ interface OpenAPISpec {
     description: string;
   };
   servers: Array<{ url: string; description: string }>;
-  paths: Record<string, any>;
+  paths: Record<string, Record<string, any>>;
   components: {
     schemas: Record<string, any>;
     securitySchemes: Record<string, any>;
   };
 }
 
-interface RouteInfo {
-  path: string;
-  methods: string[];
-  handler: string;
-  description?: string;
+const API_BASE = '/api';
+const API_DIR = join(process.cwd(), 'apps/web/src/app/api');
+const OUTPUT_FILE = join(process.cwd(), 'docs/openapi.json');
+
+/**
+ * Recursively scan API routes
+ */
+function scanRoutes(dir: string, basePath: string = ''): RouteInfo[] {
+  const routes: RouteInfo[] = [];
+  const entries = readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    const relativePath = join(basePath, entry.name);
+
+    if (entry.isDirectory()) {
+      // Skip node_modules and other non-route directories
+      if (entry.name.startsWith('.') || entry.name === 'node_modules') {
+        continue;
+      }
+      routes.push(...scanRoutes(fullPath, relativePath));
+    } else if (entry.name === 'route.ts' || entry.name === 'route.js') {
+      // Next.js App Router route handler
+      const routePath = relativePath
+        .replace(/\/route\.(ts|js)$/, '')
+        .replace(/\[([^\]]+)\]/g, '{$1}') // Convert [param] to {param}
+        .replace(/\([^)]+\)\//g, ''); // Remove route groups
+
+      const methods = extractMethods(fullPath);
+      routes.push({
+        path: `/${routePath}`,
+        methods,
+        filePath: fullPath,
+        description: extractDescription(fullPath),
+      });
+    }
+  }
+
+  return routes;
 }
 
-export class OpenAPIGenerator {
-  private workspaceRoot: string;
-  private apiRoutesPath: string;
-  private spec: OpenAPISpec;
-
-  constructor(workspaceRoot: string = process.cwd()) {
-    this.workspaceRoot = workspaceRoot;
-    this.apiRoutesPath = join(workspaceRoot, 'apps', 'web', 'src', 'app', 'api');
-    this.spec = this.initializeSpec();
-  }
-
-  /**
-   * Initialize OpenAPI spec structure
-   */
-  private initializeSpec(): OpenAPISpec {
-    return {
-      openapi: '3.0.0',
-      info: {
-        title: "What's for Dinner API",
-        version: '1.0.0',
-        description: 'API documentation for What\'s for Dinner meal planning application',
-      },
-      servers: [
-        {
-          url: 'https://whats-for-dinner.vercel.app/api',
-          description: 'Production',
-        },
-        {
-          url: 'http://localhost:3000/api',
-          description: 'Development',
-        },
-      ],
-      paths: {},
-      components: {
-        schemas: {},
-        securitySchemes: {
-          bearerAuth: {
-            type: 'http',
-            scheme: 'bearer',
-            bearerFormat: 'JWT',
-          },
-          apiKey: {
-            type: 'apiKey',
-            in: 'header',
-            name: 'x-api-key',
-          },
-        },
-      },
-    };
-  }
-
-  /**
-   * Generate OpenAPI documentation
-   */
-  async generate(): Promise<OpenAPISpec> {
-    const routes = this.discoverRoutes(this.apiRoutesPath);
-    
-    for (const route of routes) {
-      const path = this.normalizePath(route.path);
-      const routeSpec = await this.analyzeRoute(route);
-      
-      if (!this.spec.paths[path]) {
-        this.spec.paths[path] = {};
-      }
-      
-      for (const method of route.methods) {
-        this.spec.paths[path][method.toLowerCase()] = routeSpec;
-      }
-    }
-    
-    return this.spec;
-  }
-
-  /**
-   * Discover all API routes
-   */
-  private discoverRoutes(dir: string, basePath: string = ''): RouteInfo[] {
-    const routes: RouteInfo[] = [];
-    
-    if (!statSync(dir).isDirectory()) {
-      return routes;
-    }
-    
-    const entries = readdirSync(dir, { withFileTypes: true });
-    
-    for (const entry of entries) {
-      const fullPath = join(dir, entry.name);
-      const relativePath = join(basePath, entry.name);
-      
-      if (entry.isDirectory()) {
-        // Recursively discover routes in subdirectories
-        routes.push(...this.discoverRoutes(fullPath, relativePath));
-      } else if (entry.name === 'route.ts' || entry.name === 'route.tsx') {
-        // Found a route handler
-        const methods = this.extractMethods(fullPath);
-        const path = relativePath.replace(/\/route\.tsx?$/, '').replace(/\[([^\]]+)\]/g, '{$1}');
-        
-        routes.push({
-          path: path || '/',
-          methods,
-          handler: fullPath,
-        });
-      }
-    }
-    
-    return routes;
-  }
-
-  /**
-   * Extract HTTP methods from route handler
-   */
-  private extractMethods(filePath: string): string[] {
+/**
+ * Extract HTTP methods from route file
+ */
+function extractMethods(filePath: string): string[] {
+  try {
     const content = readFileSync(filePath, 'utf-8');
     const methods: string[] = [];
-    
-    // Check for exported functions
-    if (content.includes('export async function GET')) methods.push('GET');
-    if (content.includes('export async function POST')) methods.push('POST');
-    if (content.includes('export async function PUT')) methods.push('PUT');
-    if (content.includes('export async function DELETE')) methods.push('DELETE');
-    if (content.includes('export async function PATCH')) methods.push('PATCH');
-    if (content.includes('export async function OPTIONS')) methods.push('OPTIONS');
-    
-    // Default to GET if no methods found
-    if (methods.length === 0) {
-      methods.push('GET');
-    }
-    
-    return methods;
-  }
 
-  /**
-   * Analyze route handler to extract API documentation
-   */
-  private async analyzeRoute(route: RouteInfo): Promise<any> {
-    const content = readFileSync(route.handler, 'utf-8');
-    
-    // Extract JSDoc comments
-    const jsDocMatch = content.match(/\/\*\*([\s\S]*?)\*\//);
-    const description = jsDocMatch ? this.extractDescription(jsDocMatch[1]) : undefined;
-    
-    // Extract parameters from path
-    const pathParams = this.extractPathParams(route.path);
-    
-    // Extract request body schema (if using Zod)
-    const requestSchema = this.extractZodSchema(content, 'request');
-    
-    // Extract response schema
-    const responseSchema = this.extractZodSchema(content, 'response');
-    
-    // Determine authentication requirements
-    const requiresAuth = content.includes('createClient') || content.includes('getUser');
-    const requiresApiKey = content.includes('x-api-key');
-    
-    const operation: any = {
-      summary: description?.summary || `${route.methods.join(', ')} ${route.path}`,
-      description: description?.full || undefined,
-      operationId: `${route.methods[0].toLowerCase()}_${route.path.replace(/\//g, '_').replace(/[{}]/g, '')}`,
-      tags: this.extractTags(route.path),
-    };
-    
-    // Add parameters
-    if (pathParams.length > 0) {
-      operation.parameters = pathParams.map(param => ({
-        name: param,
-        in: 'path',
-        required: true,
-        schema: { type: 'string' },
-      }));
+    // Check for exported functions (Next.js App Router)
+    if (content.includes('export const GET')) methods.push('GET');
+    if (content.includes('export const POST')) methods.push('POST');
+    if (content.includes('export const PUT')) methods.push('PUT');
+    if (content.includes('export const DELETE')) methods.push('DELETE');
+    if (content.includes('export const PATCH')) methods.push('PATCH');
+    if (content.includes('export const OPTIONS')) methods.push('OPTIONS');
+    if (content.includes('export const HEAD')) methods.push('HEAD');
+
+    // If no methods found, default to GET
+    return methods.length > 0 ? methods : ['GET'];
+  } catch {
+    return ['GET'];
+  }
+}
+
+/**
+ * Extract description from JSDoc comments
+ */
+function extractDescription(filePath: string): string | undefined {
+  try {
+    const content = readFileSync(filePath, 'utf-8');
+    const match = content.match(/\/\*\*[\s\S]*?\*\s*([^\n]+)/);
+    return match ? match[1].trim() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Generate OpenAPI spec from routes
+ */
+function generateOpenAPISpec(routes: RouteInfo[]): OpenAPISpec {
+  const paths: Record<string, Record<string, any>> = {};
+
+  for (const route of routes) {
+    const openAPIPath = `${API_BASE}${route.path}`;
+
+    if (!paths[openAPIPath]) {
+      paths[openAPIPath] = {};
     }
-    
-    // Add request body for POST/PUT/PATCH
-    if (['POST', 'PUT', 'PATCH'].some(m => route.methods.includes(m))) {
-      operation.requestBody = {
-        required: true,
-        content: {
-          'application/json': {
-            schema: requestSchema || { type: 'object' },
+
+    for (const method of route.methods) {
+      const methodLower = method.toLowerCase();
+      paths[openAPIPath][methodLower] = {
+        summary: route.description || `${method} ${route.path}`,
+        description: route.description || `Endpoint at ${route.path}`,
+        operationId: `${methodLower}_${route.path.replace(/\//g, '_').replace(/[{}]/g, '')}`,
+        tags: [route.path.split('/')[1] || 'root'],
+        responses: {
+          '200': {
+            description: 'Success',
+            content: {
+              'application/json': {
+                schema: { type: 'object' },
+              },
+            },
+          },
+          '400': {
+            description: 'Bad Request',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    error: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+          '401': {
+            description: 'Unauthorized',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    error: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+          '500': {
+            description: 'Internal Server Error',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    error: { type: 'string' },
+                  },
+                },
+              },
+            },
           },
         },
       };
+
+      // Add security if path suggests auth requirement
+      if (route.path.includes('/admin') || route.path.includes('/premium')) {
+        paths[openAPIPath][methodLower].security = [{ bearerAuth: [] }];
+      }
+
+      // Add request body for POST/PUT/PATCH
+      if (['POST', 'PUT', 'PATCH'].includes(method)) {
+        paths[openAPIPath][methodLower].requestBody = {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { type: 'object' },
+            },
+          },
+        };
+      }
     }
-    
-    // Add responses
-    operation.responses = {
-      '200': {
-        description: 'Success',
-        content: {
-          'application/json': {
-            schema: responseSchema || { type: 'object' },
+  }
+
+  return {
+    openapi: '3.0.3',
+    info: {
+      title: "What's for Dinner API",
+      version: '1.0.0',
+      description: 'API documentation for What\'s for Dinner meal planning application',
+    },
+    servers: [
+      {
+        url: 'https://whats-for-dinner.vercel.app',
+        description: 'Production',
+      },
+      {
+        url: 'http://localhost:3000',
+        description: 'Local Development',
+      },
+    ],
+    paths,
+    components: {
+      schemas: {
+        Error: {
+          type: 'object',
+          properties: {
+            error: { type: 'string' },
+            message: { type: 'string' },
+            code: { type: 'string' },
+          },
+        },
+        User: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            email: { type: 'string', format: 'email' },
+            plan: { type: 'string', enum: ['free', 'premium', 'partner'] },
           },
         },
       },
-      '400': {
-        description: 'Bad Request',
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
       },
-      '401': {
-        description: 'Unauthorized',
-      },
-      '500': {
-        description: 'Internal Server Error',
-      },
-    };
-    
-    // Add security requirements
-    if (requiresAuth || requiresApiKey) {
-      operation.security = [];
-      if (requiresAuth) {
-        operation.security.push({ bearerAuth: [] });
-      }
-      if (requiresApiKey) {
-        operation.security.push({ apiKey: [] });
-      }
-    }
-    
-    return operation;
-  }
-
-  /**
-   * Extract description from JSDoc
-   */
-  private extractDescription(jsDoc: string): { summary?: string; full?: string } {
-    const lines = jsDoc.split('\n').map(l => l.trim().replace(/^\*\s*/, ''));
-    const summary = lines.find(l => l && !l.startsWith('@'));
-    return { summary, full: jsDoc };
-  }
-
-  /**
-   * Extract path parameters
-   */
-  private extractPathParams(path: string): string[] {
-    const matches = path.matchAll(/\{(\w+)\}/g);
-    return Array.from(matches).map(m => m[1]);
-  }
-
-  /**
-   * Extract Zod schema from code
-   */
-  private extractZodSchema(content: string, type: 'request' | 'response'): any {
-    // Look for Zod schema definitions
-    const schemaMatch = content.match(/z\.object\([\s\S]*?\)/);
-    if (schemaMatch) {
-      // Return a generic object schema
-      return { type: 'object', properties: {} };
-    }
-    return null;
-  }
-
-  /**
-   * Extract tags from path
-   */
-  private extractTags(path: string): string[] {
-    const segments = path.split('/').filter(s => s && !s.startsWith('{'));
-    return segments.length > 0 ? [segments[0]] : ['general'];
-  }
-
-  /**
-   * Normalize path for OpenAPI
-   */
-  private normalizePath(path: string): string {
-    return `/api${path === '/' ? '' : path}`;
-  }
-
-  /**
-   * Save OpenAPI spec to file
-   */
-  save(outputPath: string = join(this.workspaceRoot, 'docs', 'openapi.json')): void {
-    writeFileSync(outputPath, JSON.stringify(this.spec, null, 2), 'utf-8');
-    console.log(`✅ OpenAPI documentation saved to ${outputPath}`);
-  }
+    },
+  };
 }
 
-// CLI entry point
+/**
+ * Main execution
+ */
+function main() {
+  console.log('📚 Generating OpenAPI documentation...');
+  console.log(`📂 Scanning ${API_DIR}...`);
+
+  if (!statSync(API_DIR).isDirectory()) {
+    console.error(`❌ API directory not found: ${API_DIR}`);
+    process.exit(1);
+  }
+
+  const routes = scanRoutes(API_DIR);
+  console.log(`✅ Found ${routes.length} API routes`);
+
+  const spec = generateOpenAPISpec(routes);
+  
+  // Ensure docs directory exists
+  const docsDir = join(process.cwd(), 'docs');
+  if (!statSync(docsDir).isDirectory()) {
+    require('fs').mkdirSync(docsDir, { recursive: true });
+  }
+
+  writeFileSync(OUTPUT_FILE, JSON.stringify(spec, null, 2));
+  console.log(`✅ OpenAPI spec written to ${OUTPUT_FILE}`);
+
+  // Also generate YAML version if yaml package is available
+  try {
+    const yaml = require('yaml');
+    const yamlFile = OUTPUT_FILE.replace('.json', '.yaml');
+    writeFileSync(yamlFile, yaml.stringify(spec));
+    console.log(`✅ OpenAPI YAML written to ${yamlFile}`);
+  } catch {
+    // YAML generation is optional
+  }
+
+  console.log('\n📊 Summary:');
+  console.log(`   - Total routes: ${routes.length}`);
+  console.log(`   - Total paths: ${Object.keys(spec.paths).length}`);
+  console.log(`   - Documentation: ${OUTPUT_FILE}`);
+}
+
 if (require.main === module) {
-  const generator = new OpenAPIGenerator();
-  generator.generate()
-    .then(spec => {
-      generator.save();
-      console.log(`📚 Generated OpenAPI spec with ${Object.keys(spec.paths).length} paths`);
-    })
-    .catch(error => {
-      console.error('❌ Failed to generate OpenAPI documentation:', error);
-      process.exit(1);
-    });
+  main();
 }
+
+export { generateOpenAPISpec, scanRoutes };

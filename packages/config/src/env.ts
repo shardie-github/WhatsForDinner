@@ -264,8 +264,38 @@ export function validateEnv() {
 /**
  * Get validated environment variables
  * Returns typed env object
+ * Uses lazy validation - only validates when accessed
  */
-export const env = validateEnv();
+let _env: z.infer<typeof envSchema> | null = null;
+
+export function getEnv(): z.infer<typeof envSchema> {
+  if (!_env) {
+    _env = validateEnv();
+  }
+  return _env;
+}
+
+/**
+ * Lazy getter for environment variables
+ * Validates on first access, caches result
+ */
+export const env = new Proxy({} as z.infer<typeof envSchema>, {
+  get(_target, prop: string | symbol) {
+    const envObj = getEnv();
+    return envObj[prop as keyof typeof envObj];
+  },
+  ownKeys() {
+    return Object.keys(getEnv());
+  },
+  getOwnPropertyDescriptor(_target, prop: string | symbol) {
+    const envObj = getEnv();
+    return {
+      enumerable: true,
+      configurable: true,
+      value: envObj[prop as keyof typeof envObj],
+    };
+  },
+});
 
 /**
  * Type for environment variables

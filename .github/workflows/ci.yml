@@ -55,6 +55,16 @@ jobs:
         run: node scripts/pre-merge-validation.mjs || echo "Pre-merge validation skipped if script not available"
         continue-on-error: true
 
+      - name: Validate deployment config
+        run: pnpm deploy:validate
+        continue-on-error: false
+
+      - name: Schema health check
+        run: pnpm schema:health
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Build
         run: pnpm build
         continue-on-error: false
