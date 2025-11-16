@@ -97,7 +97,7 @@ export default function HomePage() {
 
     setEmail('');
     setIsLoading(false);
-    alert('Thanks! We'll send you early access and tips.');
+    alert("Thanks! We'll send you early access and tips.");
   };
 
   return (

@@ -43,10 +43,10 @@ export async function runRotateSecrets(options: { force?: boolean; dryRun?: bool
 
     if (options.force || daysSinceRotation >= rotationDays) {
       if (options.dryRun) {
-        `);
+        console.log(`Would rotate secret: ${secretKey}`);
         rotated.push(secretKey);
       } else {
-                
+        console.log(`Rotating secret: ${secretKey}`);
         // Generate new secret (in production, use proper secret generation)
         const newSecret = crypto.randomBytes(32).toString('hex');
         
@@ -65,16 +65,20 @@ export async function runRotateSecrets(options: { force?: boolean; dryRun?: bool
         }
 
         // In production, update in Supabase and Vercel via API
-                        
+        // await secretsManager.setSecret(secretKey, newSecret);
         rotated.push(secretKey);
       }
     } else if (daysSinceRotation >= rotationDays - alertDays) {
-          }
+      console.warn(`Secret ${secretKey} will expire soon (${rotationDays - daysSinceRotation} days remaining)`);
+    }
   }
 
   if (!options.dryRun && rotated.length > 0) {
     fs.writeFileSync(rotationLog, JSON.stringify(rotationHistory, null, 2));
-          } else if (options.dryRun) {
-      } else {
-      }
+    console.log(`Rotated ${rotated.length} secrets`);
+  } else if (options.dryRun) {
+    console.log(`Dry-run: Would rotate ${rotated.length} secrets`);
+  } else {
+    console.log('No secrets need rotation');
+  }
 }

@@ -45,10 +45,7 @@
     { "path": "./packages/utils" },
     { "path": "./packages/theme" },
     { "path": "./packages/config" },
-    { "path": "./packages/server" },
-    { "path": "./whats-for-dinner" },
-    { "path": "./apps/web" },
-    { "path": "./apps/mobile" }
+    { "path": "./packages/server" }
   ],
   "include": [
     "next-env.d.ts",

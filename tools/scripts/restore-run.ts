@@ -367,7 +367,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       dryRun,
     })
     .then((result) => {
-      );
+      console.log(`Restore ${result.success ? 'completed' : 'failed'}`);
       process.exit(result.success ? 0 : 1);
     })
     .catch((error) => {

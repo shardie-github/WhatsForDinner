@@ -49,9 +49,10 @@ class RevenueCatManager {
       if (Capacitor.isNativePlatform()) {
         // Native RevenueCat SDK initialization
         // await Purchases.configure({ apiKey: this.apiKey, appUserID: userId });
-        ');
+        console.log('RevenueCat configured for native platform');
       } else {
-              }
+        console.log('RevenueCat not available on web platform');
+      }
 
       if (userId) {
         await this.identifyUser(userId);

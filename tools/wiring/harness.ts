@@ -667,7 +667,7 @@ async function checkJobs(): Promise<ConnectivityCheck[]> {
 }
 
 async function main() {
-    );
+  console.log('Starting wiring harness checks...\n');
   
   const startTime = Date.now();
   
@@ -722,16 +722,15 @@ async function main() {
 
   const duration = Date.now() - startTime;
   
-    );
-                }`);
-  }`);
+  console.log(`\nWiring harness checks completed in ${duration}ms`);
+  console.log(`Summary: ${summary.pass} passed, ${summary.degraded} degraded, ${summary.fail} failed`);
   
   if (summary.fail > 0) {
-        process.exit(1);
+    process.exit(1);
   } else if (summary.degraded > 0) {
-        process.exit(0);
+    process.exit(0);
   } else {
-        process.exit(0);
+    process.exit(0);
   }
 }
 

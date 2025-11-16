@@ -254,15 +254,17 @@ import { secretsManager } from './secrets-manager-unified.mjs';
       await this.saveSLOReport(report);
       
       // Log results
-                  }`);
-                        }%`);
+      console.log(`SLO check completed`);
+      console.log(`Compliance: ${(evaluation.compliance * 100).toFixed(1)}%`);
       
       if (evaluation.violations.length > 0) {
-                evaluation.violations.forEach(violation => );
+        console.warn('Violations:');
+        evaluation.violations.forEach(violation => console.warn(`  - ${violation}`));
       }
       
       if (evaluation.recommendations.length > 0) {
-                evaluation.recommendations.forEach(rec => );
+        console.log('Recommendations:');
+        evaluation.recommendations.forEach(rec => console.log(`  - ${rec}`));
       }
       
       return report;

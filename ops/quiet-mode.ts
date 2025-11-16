@@ -73,12 +73,15 @@ if (require.main === module) {
             break;
     case 'status':
       const config = getQuietModeConfig();
-            if (config.enabled) {
-                }`);
+      if (config.enabled) {
+        console.log('Quiet mode is enabled');
+      } else {
+        console.log('Quiet mode is disabled');
       }
       break;
     default:
-            process.exit(1);
+      console.error('Usage: quiet-mode.ts [enable|disable|status]');
+      process.exit(1);
   }
 }
 

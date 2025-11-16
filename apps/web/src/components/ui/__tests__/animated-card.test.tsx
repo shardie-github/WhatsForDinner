@@ -1,10 +1,10 @@
 import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
-import animated-card from '../animated-card.tsx';
+import AnimatedCard from '../animated-card';
 
 describe('animated-card', () => {
   it('renders without crashing', () => {
-    render(<animated-card />);
+    render(<AnimatedCard />);
     expect(screen.getByRole('main') || screen.getByTestId('animated-card')).toBeDefined();
   });
 

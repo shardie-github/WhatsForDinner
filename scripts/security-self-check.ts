@@ -842,13 +842,16 @@ function generateReport(): SecurityReport {
 }
 
 function printReport(report: SecurityReport) {
-  );
-    );
+  console.log('\n=== Security Self-Check Report ===');
+  console.log(`Overall Status: ${report.overallStatus}`);
               
   if (report.criticalFailures.length > 0) {
-        report.criticalFailures.forEach((r) => {
-                  if (r.remediation) {
-              }
+    console.log('\nCritical Failures:');
+    report.criticalFailures.forEach((r) => {
+      console.log(`  ❌ ${r.name}: ${r.message}`);
+      if (r.remediation) {
+        console.log(`     Fix: ${r.remediation}`);
+      }
     });
   }
   
@@ -873,20 +876,20 @@ function printReport(report: SecurityReport) {
     });
   });
   
-  );
+  printReport(report);
   
   if (report.criticalFailures.length > 0) {
-            return false;
+    return false;
   } else if (report.failed > 0) {
-            return true;
+    return true;
   } else {
-        return true;
+    return true;
   }
 }
 
 async function main() {
-    );
-    
+  console.log('Running security self-check...\n');
+  
   // Run all checks
   checkPrivacyCompliance();
   checkAccessibility();

@@ -233,9 +233,10 @@ async function sendEmailAlert(message: any): Promise<void> {
 export async function testAlerts(): Promise<void> {
   
     DEFAULT_CONFIG.alerts.forEach((alert, index) => {
-    `);
-        }`);
-      });
+      console.log(`Alert ${index + 1}: ${alert.name}`);
+      console.log(`  Type: ${alert.type}`);
+      console.log(`  Enabled: ${alert.enabled}`);
+    });
 
         
   // Send test alert

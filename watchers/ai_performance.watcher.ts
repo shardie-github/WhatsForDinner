@@ -583,12 +583,12 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
     try {
       const report = await this.analyzePerformance();
       
-            }`);
-      }ms`);
-      .toFixed(1)}%`);
+      console.log(`Performance check completed in ${report.duration}ms`);
+      console.log(`Overall score: ${(report.score * 100).toFixed(1)}%`);
       
       if (report.alerts.length > 0) {
-              }
+        console.warn(`Found ${report.alerts.length} performance alerts`);
+      }
     } catch (error) {
       console.error('Nightly performance check failed:', error);
     }

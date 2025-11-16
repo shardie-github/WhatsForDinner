@@ -243,7 +243,6 @@ function buildShoppingList(
     // Check if we have enough in pantry (simplified: just check if ingredient exists)
     const inPantry = pantryLower.some((pantryItem) =>
       pantryItem.includes(ingredient) || ingredient.includes(pantryItem)
-      )
     );
     
     if (!inPantry || data.quantity > 2) {

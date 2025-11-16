@@ -230,7 +230,7 @@ export function ConsentGate({ onConsentComplete, store }: ConsentGateProps) {
           </View>
 
           <Text variant="small" className="text-center text-muted-foreground">
-            You can change this later in Settings > Privacy & Security > Tracking.
+            You can change this later in Settings {'>'} Privacy & Security {'>'} Tracking.
           </Text>
         </Card>
       </View>

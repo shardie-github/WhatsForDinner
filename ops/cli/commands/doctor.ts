@@ -158,13 +158,13 @@ export async function runDoctor(options: { fix?: boolean; verbose?: boolean }) {
 
   // Print results
     checks.forEach((check) => {
-    const icon = check.status === 'pass' ? '✓' : check.status === 'fail' ? '✗' : '⚠';
-    const color = check.status === 'pass' ? '\x1b[32m' : check.status === 'fail' ? '\x1b[31m' : '\x1b[33m';
-    } ${check.message}`);
-    if (options.verbose && check.status === 'fail' && check.fix) {
-      }`);
-    }
-  });
+      const icon = check.status === 'pass' ? '✓' : check.status === 'fail' ? '✗' : '⚠';
+      const color = check.status === 'pass' ? '\x1b[32m' : check.status === 'fail' ? '\x1b[31m' : '\x1b[33m';
+      console.log(`${color}${icon}\x1b[0m ${check.message}`);
+      if (options.verbose && check.status === 'fail' && check.fix) {
+        console.log(`  Fix: ${check.fix}`);
+      }
+    });
 
       
   // Auto-fix if requested

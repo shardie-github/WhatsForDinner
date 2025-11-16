@@ -138,12 +138,13 @@ if (require.main === module) {
   
   if (command === 'rotate') {
     rotateSecrets().then(rotations => {
-            .join(', '));
+      console.log(`Rotated ${rotations.length} secrets: ${rotations.map(r => r.name).join(', ')}`);
     });
   } else if (command === 'check') {
     checkSecretRotation();
   } else {
-        process.exit(1);
+    console.error('Usage: rotate-secrets.ts [rotate|check]');
+    process.exit(1);
   }
 }
 

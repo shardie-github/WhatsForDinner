@@ -10,12 +10,16 @@ async function main() {
   
   const result = await verifyAllAuditLogs();
 
+  console.log(`Verified ${result.total} audit logs`);
+  console.log(`Valid: ${result.valid}, Invalid: ${result.invalid}`);
       
   if (result.invalid > 0) {
-            result.invalidIds.slice(0, 10).forEach((id) => );
+    console.error('\nInvalid audit log IDs:');
+    result.invalidIds.slice(0, 10).forEach((id) => console.error(`  - ${id}`));
     process.exit(1);
   } else {
-        process.exit(0);
+    console.log('\n✅ All audit logs are valid');
+    process.exit(0);
   }
 }
 

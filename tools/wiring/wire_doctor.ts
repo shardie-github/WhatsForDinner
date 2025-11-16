@@ -213,7 +213,7 @@ CREATE POLICY "Household members can view household meal plans"
 }
 
 async function main() {
-    );
+  console.log('Running wire doctor...\n');
   
   const allFixes: Fix[] = [];
   

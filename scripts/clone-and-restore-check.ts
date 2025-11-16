@@ -208,9 +208,6 @@ class DRValidator {
           checksum: result.checksum,
           status: 'success'
         });
-
-        }...`);
-        
       } catch (error) {
         results.push({
           table_name: tableName,
@@ -237,8 +234,8 @@ class DRValidator {
       if (error) {
         console.warn(`Warning: Failed to cleanup shadow database: ${error.message}`);
       } else {
-              }
-      
+        console.log('Shadow database cleaned up successfully');
+      }
     } catch (error) {
       console.warn(`Warning: Cleanup failed: ${error.message}`);
     }
@@ -294,7 +291,7 @@ class DRValidator {
     execSync('mkdir -p REPORTS', { stdio: 'inherit' });
     
     writeFileSync(filepath, JSON.stringify(report, null, 2));
-        
+    console.log(`DR report saved to ${filepath}`);
     return filepath;
   }
 
@@ -326,7 +323,7 @@ class DRValidator {
       // Step 6: Cleanup
       await this.cleanupShadowDatabase();
       
-            }`);
+      console.log('✅ DR validation completed successfully');
       
       return report;
       
@@ -343,8 +340,8 @@ class DRValidator {
 
 // CLI interface
 async function main() {
-  const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     console.error('❌ Missing required environment variables:');
@@ -359,9 +356,11 @@ async function main() {
     const report = await validator.execute();
     
     if (report.overall_status === 'fail') {
-            process.exit(1);
+      console.error('❌ DR validation failed');
+      process.exit(1);
     } else {
-            process.exit(0);
+      console.log('✅ DR validation passed');
+      process.exit(0);
     }
     
   } catch (error) {

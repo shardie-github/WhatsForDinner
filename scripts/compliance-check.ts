@@ -181,20 +181,22 @@ async function main() {
   const passed = checks.filter(c => c.passed).length;
   const total = checks.length;
 
-    );
+  console.log(`\nCompliance Check Results: ${passed}/${total} passed`);
   
   for (const check of checks) {
-    const icon = check.passed ? '?' : '?';
+    const icon = check.passed ? '✅' : '❌';
     const status = check.passed ? 'PASS' : 'FAIL';
-      }
+    console.log(`${icon} ${check.name}: ${status}`);
+  }
 
-  );
+  console.log('');
   
   if (passed < total) {
     console.error('\n? Some compliance checks failed');
     process.exit(1);
   } else {
-        process.exit(0);
+    console.log('\n✅ All compliance checks passed');
+    process.exit(0);
   }
 }
 

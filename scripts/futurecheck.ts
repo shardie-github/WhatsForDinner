@@ -463,41 +463,48 @@ class FutureCheck {
    * Generate compatibility report
    */
   private generateReport(report: CompatibilityReport) {
-            
-    }% (${report.overall.status})`);
+    console.log(`\nCompatibility Score: ${(report.overall.score * 100).toFixed(1)}% (${report.overall.status})`);
     
-            if (report.edgeRuntime.issues.length > 0) {
-            report.edgeRuntime.issues.forEach(issue => );
+    if (report.edgeRuntime.issues.length > 0) {
+      console.log('\nEdge Runtime Issues:');
+      report.edgeRuntime.issues.forEach(issue => console.log(`  - ${issue}`));
     }
     if (report.edgeRuntime.recommendations.length > 0) {
-            report.edgeRuntime.recommendations.forEach(rec => );
+      console.log('\nEdge Runtime Recommendations:');
+      report.edgeRuntime.recommendations.forEach(rec => console.log(`  - ${rec}`));
     }
 
-            if (report.wasm.issues.length > 0) {
-            report.wasm.issues.forEach(issue => );
+    if (report.wasm.issues.length > 0) {
+      console.log('\nWASM Issues:');
+      report.wasm.issues.forEach(issue => console.log(`  - ${issue}`));
     }
     if (report.wasm.recommendations.length > 0) {
-            report.wasm.recommendations.forEach(rec => );
+      console.log('\nWASM Recommendations:');
+      report.wasm.recommendations.forEach(rec => console.log(`  - ${rec}`));
     }
 
-            if (report.workers.issues.length > 0) {
-            report.workers.issues.forEach(issue => );
+    if (report.workers.issues.length > 0) {
+      console.log('\nWorkers Issues:');
+      report.workers.issues.forEach(issue => console.log(`  - ${issue}`));
     }
     if (report.workers.recommendations.length > 0) {
-            report.workers.recommendations.forEach(rec => );
+      console.log('\nWorkers Recommendations:');
+      report.workers.recommendations.forEach(rec => console.log(`  - ${rec}`));
     }
 
-            if (report.hydrogenOxygen.issues.length > 0) {
-            report.hydrogenOxygen.issues.forEach(issue => );
+    if (report.hydrogenOxygen.issues.length > 0) {
+      console.log('\nHydrogen/Oxygen Issues:');
+      report.hydrogenOxygen.issues.forEach(issue => console.log(`  - ${issue}`));
     }
     if (report.hydrogenOxygen.recommendations.length > 0) {
-            report.hydrogenOxygen.recommendations.forEach(rec => );
+      console.log('\nHydrogen/Oxygen Recommendations:');
+      report.hydrogenOxygen.recommendations.forEach(rec => console.log(`  - ${rec}`));
     }
 
     // Save report to file
     const reportPath = path.join(this.projectRoot, 'REPORTS', 'future-runtime-readiness.json');
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-      }
+  }
 }
 
 // CLI execution
