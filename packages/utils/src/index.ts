@@ -4,3 +4,7 @@ export * from './validation';
 export * from './hooks';
 export * from './guardian';
 export * from './env';
+export * from './errors';
+export * from './retry';
+export * from './config';
+export * from './error-handler';
