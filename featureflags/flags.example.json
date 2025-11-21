@@ -1,0 +1,48 @@
+{
+  "flags": {
+    "new_meal_planner": {
+      "description": "New meal planning UI with improved UX",
+      "default": false,
+      "environments": {
+        "development": true,
+        "staging": true,
+        "production": false
+      },
+      "rollout": {
+        "percentage": 10,
+        "userIds": []
+      }
+    },
+    "ai_recipe_generation": {
+      "description": "AI-powered recipe generation using OpenAI",
+      "default": true,
+      "environments": {
+        "development": true,
+        "staging": true,
+        "production": true
+      }
+    },
+    "grocery_list_sync": {
+      "description": "Sync grocery lists across household members",
+      "default": false,
+      "environments": {
+        "development": true,
+        "staging": false,
+        "production": false
+      },
+      "rollout": {
+        "percentage": 0,
+        "userIds": []
+      }
+    },
+    "premium_features": {
+      "description": "Premium subscription features",
+      "default": false,
+      "environments": {
+        "development": true,
+        "staging": true,
+        "production": false
+      }
+    }
+  }
+}

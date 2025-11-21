@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Feature flags configuration for What's for Dinner",
+  "type": "object",
+  "properties": {
+    "flags": {
+      "type": "object",
+      "description": "Feature flag definitions",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of the feature"
+          },
+          "default": {
+            "type": "boolean",
+            "description": "Default value if flag not set for user"
+          },
+          "environments": {
+            "type": "object",
+            "description": "Environment-specific overrides",
+            "properties": {
+              "development": { "type": "boolean" },
+              "staging": { "type": "boolean" },
+              "production": { "type": "boolean" }
+            }
+          },
+          "rollout": {
+            "type": "object",
+            "description": "Gradual rollout configuration",
+            "properties": {
+              "percentage": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Percentage of users to enable for"
+              },
+              "userIds": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Specific user IDs to always enable"
+              }
+            }
+          }
+        },
+        "required": ["description", "default"]
+      }
+    }
+  },
+  "required": ["flags"]
+}
