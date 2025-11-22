@@ -5,11 +5,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../../../packages/server/src/db/index.js';
-import { clicks, partners } from '../../../../../packages/server/src/db/schema.js';
+import { db } from '@whats-for-dinner/server';
+import { clicks, partners } from '@whats-for-dinner/server/db/schema';
 import { eq } from 'drizzle-orm';
+import { verifySignedUrl } from '@whats-for-dinner/server/partners/links';
 import crypto from 'crypto';
-import { verifySignedUrl } from '../../../../../packages/server/src/partners/links.js';
 
 export async function GET(
   request: NextRequest,

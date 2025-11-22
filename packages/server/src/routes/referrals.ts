@@ -98,7 +98,7 @@ export async function POST_PROGRAMS(request: NextRequest) {
     res = addSecurityHeaders(res);
     return setCORSHeaders(res, request.headers.get('origin'));
   } catch (error) {
-    if (error instanceof z.ZodError) || error instanceof Error) {
+    if ((error instanceof z.ZodError) || (error instanceof Error)) {
       return NextResponse.json(
         { error: 'Invalid input', details: error instanceof z.ZodError ? error.errors : error.message },
         { status: 400 },
