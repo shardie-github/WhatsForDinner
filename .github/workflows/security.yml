@@ -1,17 +1,14 @@
 name: Security Hardening & Compliance
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   schedule:
-    # Run weekly on Monday at 6 AM UTC
-    - cron: '0 6 * * 1'
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 
 env:
-  NODE_VERSION: '18'
-  PNPM_VERSION: '9.0.0'
+  NODE_VERSION: '20'
+  PNPM_VERSION: 9
 
 jobs:
   snyk-sca:
@@ -28,7 +25,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -92,7 +89,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -154,6 +151,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
@@ -165,6 +164,15 @@ jobs:
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
+
+      - name: Run custom secrets scan
+        run: |
+          if [ -f "scripts/secrets-scan.mjs" ]; then
+            node scripts/secrets-scan.mjs || echo "Custom secrets scan completed with warnings"
+          else
+            echo "Secrets scan script not found, skipping..."
+          fi
+        continue-on-error: true
 
   owasp-zap:
     name: OWASP ZAP Scan

@@ -5,10 +5,6 @@ on:
     # Run nightly at 2 AM UTC
     - cron: '0 2 * * *'
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - master
 
 jobs:
   collect-metrics:
@@ -29,8 +25,8 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
         with:
           version: 9
 
