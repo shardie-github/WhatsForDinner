@@ -1,218 +1,219 @@
 #!/usr/bin/env node
 
+/**
+ * Secrets Scanning Script
+ * 
+ * Scans codebase for potential hardcoded secrets and dangerous patterns
+ * Run with: node scripts/secrets-scan.mjs
+ */
+
 import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join, extname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const projectRoot = join(__dirname, '..');
-
-// Secret patterns to detect
 const SECRET_PATTERNS = [
   // API Keys
-  { pattern: /(?:api[_-]?key|apikey)\s*[:=]\s*['"]?([a-zA-Z0-9_-]{20,})['"]?/gi, type: 'API Key' },
-  { pattern: /(?:secret[_-]?key|secretkey)\s*[:=]\s*['"]?([a-zA-Z0-9_-]{20,})['"]?/gi, type: 'Secret Key' },
-  { pattern: /(?:access[_-]?token|accesstoken)\s*[:=]\s*['"]?([a-zA-Z0-9_-]{20,})['"]?/gi, type: 'Access Token' },
-  { pattern: /(?:refresh[_-]?token|refreshtoken)\s*[:=]\s*['"]?([a-zA-Z0-9_-]{20,})['"]?/gi, type: 'Refresh Token' },
+  /api[_-]?key\s*[:=]\s*['"]([^'"]{20,})['"]/gi,
+  /apikey\s*[:=]\s*['"]([^'"]{20,})['"]/gi,
   
-  // Database
-  { pattern: /(?:database[_-]?url|db[_-]?url)\s*[:=]\s*['"]?([a-zA-Z0-9_:/.-]{20,})['"]?/gi, type: 'Database URL' },
-  { pattern: /(?:postgres[_-]?url|postgresql[_-]?url)\s*[:=]\s*['"]?([a-zA-Z0-9_:/.-]{20,})['"]?/gi, type: 'PostgreSQL URL' },
+  // Passwords
+  /password\s*[:=]\s*['"]([^'"]{8,})['"]/gi,
+  /passwd\s*[:=]\s*['"]([^'"]{8,})['"]/gi,
   
-  // Supabase
-  { pattern: /(?:supabase[_-]?url|supabase[_-]?project[_-]?ref)\s*[:=]\s*['"]?([a-zA-Z0-9_.-]{20,})['"]?/gi, type: 'Supabase URL/Ref' },
-  { pattern: /(?:supabase[_-]?service[_-]?role[_-]?key|supabase[_-]?anon[_-]?key)\s*[:=]\s*['"]?([a-zA-Z0-9_.-]{20,})['"]?/gi, type: 'Supabase Key' },
+  // Secrets
+  /secret\s*[:=]\s*['"]([^'"]{10,})['"]/gi,
+  /secret[_-]?key\s*[:=]\s*['"]([^'"]{20,})['"]/gi,
   
-  // AWS
-  { pattern: /(?:aws[_-]?access[_-]?key[_-]?id|aws[_-]?secret[_-]?access[_-]?key)\s*[:=]\s*['"]?([a-zA-Z0-9_+/=]{20,})['"]?/gi, type: 'AWS Credentials' },
+  // Tokens
+  /token\s*[:=]\s*['"]([^'"]{20,})['"]/gi,
+  /access[_-]?token\s*[:=]\s*['"]([^'"]{20,})['"]/gi,
+  /bearer\s+([a-zA-Z0-9_-]{20,})/gi,
   
-  // Stripe
-  { pattern: /(?:stripe[_-]?secret[_-]?key|stripe[_-]?publishable[_-]?key)\s*[:=]\s*['"]?([a-zA-Z0-9_]{20,})['"]?/gi, type: 'Stripe Key' },
+  // Private Keys
+  /private[_-]?key\s*[:=]\s*['"]-----BEGIN/gi,
+  /-----BEGIN\s+(RSA\s+)?PRIVATE\s+KEY-----/gi,
   
-  // GitHub
-  { pattern: /(?:github[_-]?token|gh[_-]?token)\s*[:=]\s*['"]?([a-zA-Z0-9_]{20,})['"]?/gi, type: 'GitHub Token' },
+  // AWS Keys
+  /aws[_-]?access[_-]?key[_-]?id\s*[:=]\s*['"]([^'"]{20,})['"]/gi,
+  /aws[_-]?secret[_-]?access[_-]?key\s*[:=]\s*['"]([^'"]{40,})['"]/gi,
   
-  // Generic tokens
-  { pattern: /(?:token|key|secret)\s*[:=]\s*['"]?([a-zA-Z0-9_+/=]{20,})['"]?/gi, type: 'Generic Token' },
+  // Stripe Keys
+  /sk_[a-zA-Z0-9]{32,}/g,
+  /pk_[a-zA-Z0-9]{32,}/g,
+  
+  // OpenAI Keys
+  /sk-[a-zA-Z0-9]{32,}/g,
+  
+  // GitHub Tokens
+  /ghp_[a-zA-Z0-9]{36,}/g,
+  /github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59,}/g,
 ];
 
-// Files to exclude from scanning
-const EXCLUDE_PATTERNS = [
+const DANGEROUS_PATTERNS = [
+  // eval() usage
+  /eval\s*\(/gi,
+  
+  // Function constructor
+  /new\s+Function\s*\(/gi,
+  
+  // Dangerous shell commands
+  /exec\s*\(/gi,
+  /spawn\s*\(/gi,
+  /execSync\s*\(/gi,
+  
+  // SQL injection risks
+  /\.query\s*\(\s*['"`]\s*SELECT.*\+.*['"`]/gi,
+  /\.query\s*\(\s*['"`]\s*INSERT.*\+.*['"`]/gi,
+];
+
+const IGNORE_PATTERNS = [
   /node_modules/,
-  /\.git/,
   /\.next/,
+  /\.git/,
   /dist/,
   /build/,
   /coverage/,
   /\.env\.example/,
-  /package-lock\.json/,
-  /pnpm-lock\.yaml/,
-  /yarn\.lock/,
-  /\.DS_Store/,
-  /\.vscode/,
-  /\.idea/,
+  /\.env\.local/,
+  /secrets-scan\.mjs/,
+  /\.test\./,
+  /\.spec\./,
 ];
 
-// File extensions to scan
-const SCAN_EXTENSIONS = ['.js', '.ts', '.tsx', '.jsx', '.json', '.env', '.md', '.yml', '.yaml'];
+const FILE_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json'];
 
-function shouldExcludeFile(filePath) {
-  return EXCLUDE_PATTERNS.some(pattern => pattern.test(filePath));
-}
+let secretsFound = [];
+let dangerousPatternsFound = [];
 
-function shouldScanFile(filePath) {
-  const ext = filePath.substring(filePath.lastIndexOf('.'));
-  return SCAN_EXTENSIONS.includes(ext);
+function shouldIgnoreFile(filePath) {
+  return IGNORE_PATTERNS.some(pattern => pattern.test(filePath));
 }
 
 function scanFile(filePath) {
-  const findings = [];
-  
+  if (shouldIgnoreFile(filePath)) {
+    return;
+  }
+
   try {
     const content = readFileSync(filePath, 'utf8');
-    
-    SECRET_PATTERNS.forEach(({ pattern, type }) => {
-      let match;
-      while ((match = pattern.exec(content)) !== null) {
-        const secret = match[1];
-        
-        // Skip if it looks like a placeholder or example
-        if (secret.includes('example') || 
-            secret.includes('placeholder') || 
-            secret.includes('your-') ||
-            secret.includes('xxx') ||
-            secret.length < 10) {
-          continue;
-        }
-        
-        findings.push({
+    const lines = content.split('\n');
+
+    // Check for secrets
+    SECRET_PATTERNS.forEach((pattern, index) => {
+      const matches = content.matchAll(pattern);
+      for (const match of matches) {
+        const lineNumber = content.substring(0, match.index).split('\n').length;
+        secretsFound.push({
           file: filePath,
-          type,
-          secret: secret.substring(0, 8) + '...', // Only show first 8 chars
-          line: content.substring(0, match.index).split('\n').length,
-          context: content.substring(Math.max(0, match.index - 50), match.index + 50)
+          line: lineNumber,
+          pattern: `Secret Pattern ${index + 1}`,
+          match: match[0].substring(0, 50) + '...',
+        });
+      }
+    });
+
+    // Check for dangerous patterns
+    DANGEROUS_PATTERNS.forEach((pattern, index) => {
+      const matches = content.matchAll(pattern);
+      for (const match of matches) {
+        const lineNumber = content.substring(0, match.index).split('\n').length;
+        dangerousPatternsFound.push({
+          file: filePath,
+          line: lineNumber,
+          pattern: `Dangerous Pattern ${index + 1}`,
+          match: match[0].substring(0, 50),
         });
       }
     });
   } catch (error) {
     // Skip files that can't be read
   }
-  
-  return findings;
 }
 
-function scanDirectory(dirPath) {
-  const findings = [];
+function scanDirectory(dir) {
+  const entries = readdirSync(dir);
   
+  for (const entry of entries) {
+    const fullPath = join(dir, entry);
+    
+    if (shouldIgnoreFile(fullPath)) {
+      continue;
+    }
+
+    try {
+      const stat = statSync(fullPath);
+      
+      if (stat.isDirectory()) {
+        scanDirectory(fullPath);
+      } else if (stat.isFile()) {
+        const ext = extname(fullPath);
+        if (FILE_EXTENSIONS.includes(ext)) {
+          scanFile(fullPath);
+        }
+      }
+    } catch (error) {
+      // Skip entries that can't be accessed
+    }
+  }
+}
+
+// Main execution
+console.log('🔍 Scanning for secrets and dangerous patterns...\n');
+
+const startDir = process.cwd();
+const scanDirs = ['apps', 'packages', 'scripts'].filter(dir => {
   try {
-    const entries = readdirSync(dirPath, { withFileTypes: true });
-    
-    for (const entry of entries) {
-      const fullPath = join(dirPath, entry.name);
-      
-      if (shouldExcludeFile(fullPath)) {
-        continue;
-      }
-      
-      if (entry.isDirectory()) {
-        findings.push(...scanDirectory(fullPath));
-      } else if (entry.isFile() && shouldScanFile(fullPath)) {
-        findings.push(...scanFile(fullPath));
-      }
-    }
-  } catch (error) {
-    // Skip directories that can't be read
+    return statSync(join(startDir, dir)).isDirectory();
+  } catch {
+    return false;
   }
-  
-  return findings;
+});
+
+if (scanDirs.length === 0) {
+  console.log('⚠️  No directories to scan found.');
+  process.exit(0);
 }
 
-function checkServiceRoleInClientBundles() {
-  const findings = [];
-  const webAppPath = join(projectRoot, 'apps/web/.next');
-  
-  if (statSync(webAppPath, { throwIfNoEntry: false })) {
-    const clientFiles = scanDirectory(join(webAppPath, 'static'));
-    
-    clientFiles.forEach(finding => {
-      if (finding.type.includes('Service Role') || finding.secret.includes('service_role')) {
-        findings.push({
-          ...finding,
-          severity: 'CRITICAL',
-          message: 'SERVICE_ROLE key detected in client bundle! This is a critical security issue.'
-        });
-      }
-    });
-  }
-  
-  return findings;
-}
+scanDirs.forEach(dir => {
+  console.log(`Scanning ${dir}/...`);
+  scanDirectory(join(startDir, dir));
+});
 
-function printReport(findings) {
-  console.log('\n🔍 Secrets Scan Report');
-  console.log('=====================\n');
-  
-  if (findings.length === 0) {
-    console.log('✅ No secrets detected!');
-    return;
-  }
-  
-  // Group findings by type
-  const grouped = findings.reduce((acc, finding) => {
-    const type = finding.type;
-    if (!acc[type]) acc[type] = [];
-    acc[type].push(finding);
-    return acc;
-  }, {});
-  
-  Object.entries(grouped).forEach(([type, typeFindings]) => {
-    console.log(`\n📋 ${type} (${typeFindings.length} found):`);
-    typeFindings.forEach(finding => {
-      const severity = finding.severity || 'WARNING';
-      const icon = severity === 'CRITICAL' ? '🚨' : '⚠️';
-      console.log(`   ${icon} ${finding.file}:${finding.line}`);
-      console.log(`      ${finding.secret}`);
-      if (finding.message) {
-        console.log(`      ${finding.message}`);
-      }
-    });
+console.log('\n📊 Scan Results:\n');
+
+if (secretsFound.length > 0) {
+  console.log(`❌ Found ${secretsFound.length} potential secrets:\n`);
+  secretsFound.slice(0, 20).forEach(secret => {
+    console.log(`  ${secret.file}:${secret.line}`);
+    console.log(`    Pattern: ${secret.pattern}`);
+    console.log(`    Match: ${secret.match}\n`);
   });
-  
-  const criticalCount = findings.filter(f => f.severity === 'CRITICAL').length;
-  const warningCount = findings.length - criticalCount;
-  
-  console.log(`\n📊 Summary:`);
-  console.log(`   🚨 Critical: ${criticalCount}`);
-  console.log(`   ⚠️  Warnings: ${warningCount}`);
-  console.log(`   📁 Total: ${findings.length}`);
-}
-
-function main() {
-  const args = process.argv.slice(2);
-  const checkOnly = args.includes('--check');
-  
-  console.log('🔍 Scanning for secrets...');
-  
-  const findings = [
-    ...scanDirectory(projectRoot),
-    ...checkServiceRoleInClientBundles()
-  ];
-  
-  printReport(findings);
-  
-  if (checkOnly) {
-    const hasCritical = findings.some(f => f.severity === 'CRITICAL');
-    if (hasCritical) {
-      console.log('\n❌ Secrets scan failed! Critical issues found.');
-      process.exit(1);
-    } else if (findings.length > 0) {
-      console.log('\n⚠️  Secrets scan completed with warnings.');
-      process.exit(1);
-    } else {
-      console.log('\n✅ Secrets scan passed!');
-    }
+  if (secretsFound.length > 20) {
+    console.log(`  ... and ${secretsFound.length - 20} more\n`);
   }
+} else {
+  console.log('✅ No secrets found!\n');
 }
 
-main();
+if (dangerousPatternsFound.length > 0) {
+  console.log(`⚠️  Found ${dangerousPatternsFound.length} dangerous patterns:\n`);
+  dangerousPatternsFound.slice(0, 10).forEach(pattern => {
+    console.log(`  ${pattern.file}:${pattern.line}`);
+    console.log(`    Pattern: ${pattern.pattern}`);
+    console.log(`    Match: ${pattern.match}\n`);
+  });
+  if (dangerousPatternsFound.length > 10) {
+    console.log(`  ... and ${dangerousPatternsFound.length - 10} more\n`);
+  }
+} else {
+  console.log('✅ No dangerous patterns found!\n');
+}
+
+// Exit with error if secrets found
+if (secretsFound.length > 0 || dangerousPatternsFound.length > 0) {
+  console.log('💡 Tip: Move secrets to environment variables (.env.local)');
+  console.log('💡 Tip: Review dangerous patterns and use safer alternatives\n');
+  process.exit(1);
+} else {
+  console.log('✅ Scan passed! No issues found.\n');
+  process.exit(0);
+}

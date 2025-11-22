@@ -130,6 +130,27 @@ export async function GET(request: NextRequest) {
     const successfulGenerations = events?.filter((e) => e.event_type === 'recipe_generation_completed').length || 0;
     const successRate = totalGenerations > 0 ? (successfulGenerations / totalGenerations) * 100 : 0;
 
+    // Calculate core metrics: DAU, activation rate, error rate
+    // DAU: Users active today
+    const dau = events?.filter((e) => {
+      const eventDate = new Date(e.timestamp);
+      return eventDate >= dayAgo;
+    }).length || 0;
+
+    // Activation rate: Users who signed up and generated at least one suggestion
+    const signups = events?.filter((e) => e.event_type === 'USER_SIGNED_UP').length || 0;
+    const activations = events?.filter((e) => e.event_type === 'MEAL_SUGGESTION_GENERATED').length || 0;
+    const activationRate = signups > 0 ? (activations / signups) * 100 : 0;
+
+    // Error rate: Error events / total events
+    const errorEvents = events?.filter((e) => 
+      e.event_type.includes('error') || 
+      e.event_type.includes('failed') ||
+      e.event_type.includes('Error')
+    ).length || 0;
+    const totalEvents = events?.length || 0;
+    const errorRate = totalEvents > 0 ? (errorEvents / totalEvents) * 100 : 0;
+
     return NextResponse.json({
       summary: {
         totalRecipes,
@@ -140,10 +161,17 @@ export async function GET(request: NextRequest) {
         avgCalories: Math.round(avgCalories),
         avgLatency: Math.round(avgLatency),
         successRate: Math.round(successRate * 100) / 100,
+        // Core metrics
+        dau,
+        activationRate: Math.round(activationRate * 100) / 100,
+        errorRate: Math.round(errorRate * 100) / 100,
+        signups,
+        activations,
       },
       popularIngredients,
       cuisinePreferences,
       timeSeriesData: daysData,
+      eventCounts,
     });
   } catch (error: any) {
     // Error handled: Error fetching analytics dashboard data:

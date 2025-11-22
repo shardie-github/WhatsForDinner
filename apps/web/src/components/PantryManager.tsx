@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface PantryItem {
   id: number;
@@ -10,9 +11,9 @@ interface PantryItem {
 
 interface PantryManagerProps {
   items: PantryItem[];
-  onAdd: (ingredient: string, quantity: number) => void;
-  onUpdate: (id: number, quantity: number) => void;
-  onDelete: (id: number) => void;
+  onAdd: (ingredient: string, quantity: number) => Promise<void>;
+  onUpdate: (id: number, quantity: number) => Promise<void>;
+  onDelete: (id: number) => Promise<void>;
 }
 
 export default function PantryManager({
@@ -23,13 +24,89 @@ export default function PantryManager({
 }: PantryManagerProps) {
   const [newIngredient, setNewIngredient] = useState('');
   const [newQuantity, setNewQuantity] = useState(1);
+  const [optimisticItems, setOptimisticItems] = useState<PantryItem[]>(items);
+  const [pendingOps, setPendingOps] = useState<Set<number>>(new Set());
+  const [isPending, startTransition] = useTransition();
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newIngredient.trim()) {
-      onAdd(newIngredient.trim(), newQuantity);
-      setNewIngredient('');
-      setNewQuantity(1);
+      const tempId = Date.now(); // Temporary ID for optimistic update
+      const newItem: PantryItem = {
+        id: tempId,
+        ingredient: newIngredient.trim(),
+        quantity: newQuantity,
+      };
+
+      // Optimistic update
+      setOptimisticItems(prev => [...prev, newItem]);
+      setPendingOps(prev => new Set(prev).add(tempId));
+
+      try {
+        await onAdd(newIngredient.trim(), newQuantity);
+        // Update with real item from server (will be in items prop)
+        setOptimisticItems(items);
+      } catch (error) {
+        // Rollback on error
+        setOptimisticItems(prev => prev.filter(item => item.id !== tempId));
+        console.error('Failed to add item:', error);
+      } finally {
+        setPendingOps(prev => {
+          const next = new Set(prev);
+          next.delete(tempId);
+          return next;
+        });
+        setNewIngredient('');
+        setNewQuantity(1);
+      }
+    }
+  };
+
+  const handleUpdate = async (id: number, quantity: number) => {
+    // Optimistic update
+    setOptimisticItems(prev =>
+      prev.map(item => (item.id === id ? { ...item, quantity } : item))
+    );
+    setPendingOps(prev => new Set(prev).add(id));
+
+    try {
+      await onUpdate(id, quantity);
+      setOptimisticItems(items);
+    } catch (error) {
+      // Rollback on error
+      setOptimisticItems(items);
+      console.error('Failed to update item:', error);
+    } finally {
+      setPendingOps(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    const itemToDelete = optimisticItems.find(item => item.id === id);
+    
+    // Optimistic update
+    setOptimisticItems(prev => prev.filter(item => item.id !== id));
+    setPendingOps(prev => new Set(prev).add(id));
+
+    try {
+      await onDelete(id);
+      setOptimisticItems(items);
+    } catch (error) {
+      // Rollback on error
+      if (itemToDelete) {
+        setOptimisticItems(prev => [...prev, itemToDelete].sort((a, b) => a.id - b.id));
+      }
+      console.error('Failed to delete item:', error);
+    } finally {
+      setPendingOps(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
     }
   };
 
@@ -84,29 +161,39 @@ export default function PantryManager({
           <h2 className="text-xl font-semibold text-gray-900">Your Pantry</h2>
         </div>
 
-        {items.length === 0 ? (
+        {optimisticItems.length === 0 ? (
           <div className="p-6 text-center text-gray-500">
             No items in your pantry yet. Add some ingredients to get started!
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
-            {items.map(item => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between px-6 py-4"
-              >
+            <AnimatePresence>
+              {optimisticItems.map(item => {
+                const isPending = pendingOps.has(item.id);
+                return (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className={`flex items-center justify-between px-6 py-4 ${
+                      isPending ? 'opacity-50' : ''
+                    }`}
+                  >
                 <div className="flex-1">
                   <h3 className="text-lg font-medium text-gray-900">
                     {item.ingredient}
                   </h3>
                 </div>
-                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() =>
-                        onUpdate(item.id, Math.max(1, item.quantity - 1))
+                        handleUpdate(item.id, Math.max(1, item.quantity - 1))
                       }
-                      className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      disabled={isPending}
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
                       -
                     </button>
@@ -114,15 +201,17 @@ export default function PantryManager({
                       {item.quantity}
                     </span>
                     <button
-                      onClick={() => onUpdate(item.id, item.quantity + 1)}
-                      className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      onClick={() => handleUpdate(item.id, item.quantity + 1)}
+                      disabled={isPending}
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
                       +
                     </button>
                   </div>
                   <button
-                    onClick={() => onDelete(item.id)}
-                    className="p-2 text-red-600 hover:text-red-800"
+                    onClick={() => handleDelete(item.id)}
+                    disabled={isPending}
+                    className="p-2 text-red-600 hover:text-red-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     <svg
                       className="h-5 w-5"
@@ -139,8 +228,10 @@ export default function PantryManager({
                     </svg>
                   </button>
                 </div>
-              </div>
-            ))}
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
         )}
       </div>

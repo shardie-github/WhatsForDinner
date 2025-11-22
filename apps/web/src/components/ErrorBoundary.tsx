@@ -11,6 +11,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react';
+import * as Sentry from '@sentry/nextjs';
 
 interface Props {
   children: ReactNode;
@@ -47,15 +48,21 @@ export class ErrorBoundary extends Component<Props, State> {
       console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
 
-    // Report to error tracking service
-    if (typeof window !== 'undefined' && (window as any).Sentry) {
-      (window as any).Sentry.captureException(error, {
+    // Report to Sentry error tracking service
+    try {
+      Sentry.captureException(error, {
         contexts: {
           react: {
             componentStack: errorInfo.componentStack,
           },
         },
+        tags: {
+          errorBoundary: true,
+        },
       });
+    } catch (sentryError) {
+      // Fallback if Sentry is not initialized
+      console.error('Failed to log to Sentry:', sentryError);
     }
 
     // Call custom error handler

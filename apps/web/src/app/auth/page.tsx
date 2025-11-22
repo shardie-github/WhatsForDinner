@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
+import { analytics } from '@/lib/analytics';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -24,7 +25,7 @@ export default function AuthPage() {
         });
         if (error) throw error;
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -34,6 +35,16 @@ export default function AuthPage() {
           },
         });
         if (error) throw error;
+        
+        // Track signup event
+        if (data?.user) {
+          await analytics.trackEvent('USER_SIGNED_UP', {
+            source: 'organic',
+            platform: 'web',
+            user_agent: typeof window !== 'undefined' ? navigator.userAgent : undefined,
+            user_id: data.user.id,
+          });
+        }
       }
       router.push('/');
     } catch (error) {
