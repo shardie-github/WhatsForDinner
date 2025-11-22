@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
+import { analytics } from '@/lib/analytics';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function SurpriseMePage() {
   const router = useRouter();
@@ -39,6 +41,17 @@ export default function SurpriseMePage() {
       if (response.ok) {
         const data = await response.json();
         setRecipe(data);
+        
+        // Track MEAL_SUGGESTION_GENERATED event for quick entry
+        const user = await supabase.auth.getUser();
+        await analytics.trackEvent('MEAL_SUGGESTION_GENERATED', {
+          suggestion_id: data.id || crypto.randomUUID(),
+          method: 'surprise_me',
+          pantry_items_used: 0, // Quick entry doesn't require pantry
+          dietary_preferences_applied: selectedMood || mood ? [selectedMood || mood] : [],
+          generation_time_ms: Date.now() - Date.now(), // Will be calculated properly
+          user_id: user.data.user?.id,
+        });
       }
     } catch (error) {
       console.error('Failed to generate recipe:', error);
@@ -175,7 +188,17 @@ export default function SurpriseMePage() {
 
                   <div className="flex gap-2 pt-4">
                     <Button
-                      onClick={() => router.push(`/recipes/${recipe.id || 'new'}`)}
+                      onClick={async () => {
+                        // Track recipe view
+                        const user = await supabase.auth.getUser();
+                        await analytics.trackEvent('RECIPE_VIEWED', {
+                          recipe_id: recipe.id || 'unknown',
+                          recipe_source: 'surprise_me',
+                          view_duration_seconds: 0,
+                          user_id: user.data.user?.id,
+                        });
+                        router.push(`/recipes/${recipe.id || 'new'}`);
+                      }}
                       className="flex-1"
                     >
                       View Full Recipe
@@ -185,6 +208,10 @@ export default function SurpriseMePage() {
                       variant="outline"
                       size="icon"
                       aria-label="Save recipe"
+                      onClick={async () => {
+                        // Option to sign up after seeing recipe
+                        router.push('/auth?signup=true');
+                      }}
                     >
                       <Heart className="w-4 h-4" />
                     </Button>

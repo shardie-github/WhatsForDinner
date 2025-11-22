@@ -1,213 +1,154 @@
 /**
- * Caching Utilities
+ * Caching Layer for Meal Suggestions
  * 
- * Provides Redis-based caching with in-memory fallback for improved performance.
+ * Reduces API costs and improves performance by caching similar pantry combinations
  */
 
-import { RedisClientType } from 'redis';
+interface CacheEntry {
+  key: string;
+  value: any;
+  timestamp: number;
+  expiresAt: number;
+}
 
-// In-memory cache fallback
-const memoryCache = new Map<string, { value: any; expires: number }>();
+class SuggestionCache {
+  private cache: Map<string, CacheEntry> = new Map();
+  private maxSize: number = 1000; // Maximum cache entries
+  private defaultTTL: number = 60 * 60 * 1000; // 1 hour default TTL
 
-// Cleanup expired entries periodically
+  /**
+   * Generate cache key from ingredients and preferences
+   */
+  private generateKey(ingredients: string[], preferences?: string): string {
+    const sortedIngredients = [...ingredients].sort().join(',');
+    const prefs = preferences ? preferences.toLowerCase().trim() : '';
+    return `suggestion:${sortedIngredients}:${prefs}`;
+  }
+
+  /**
+   * Get cached suggestion if available and not expired
+   */
+  get(ingredients: string[], preferences?: string): any | null {
+    const key = this.generateKey(ingredients, preferences);
+    const entry = this.cache.get(key);
+
+    if (!entry) {
+      return null;
+    }
+
+    // Check if expired
+    if (Date.now() > entry.expiresAt) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return entry.value;
+  }
+
+  /**
+   * Store suggestion in cache
+   */
+  set(ingredients: string[], value: any, preferences?: string, ttl?: number): void {
+    const key = this.generateKey(ingredients, preferences);
+    const now = Date.now();
+    const expiresAt = now + (ttl || this.defaultTTL);
+
+    // Evict oldest entries if cache is full
+    if (this.cache.size >= this.maxSize) {
+      this.evictOldest();
+    }
+
+    this.cache.set(key, {
+      key,
+      value,
+      timestamp: now,
+      expiresAt,
+    });
+  }
+
+  /**
+   * Check if cache has entry (without retrieving)
+   */
+  has(ingredients: string[], preferences?: string): boolean {
+    const key = this.generateKey(ingredients, preferences);
+    const entry = this.cache.get(key);
+    
+    if (!entry) {
+      return false;
+    }
+
+    if (Date.now() > entry.expiresAt) {
+      this.cache.delete(key);
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Clear cache
+   */
+  clear(): void {
+    this.cache.clear();
+  }
+
+  /**
+   * Remove expired entries
+   */
+  cleanup(): void {
+    const now = Date.now();
+    for (const [key, entry] of this.cache.entries()) {
+      if (now > entry.expiresAt) {
+        this.cache.delete(key);
+      }
+    }
+  }
+
+  /**
+   * Evict oldest entries
+   */
+  private evictOldest(): void {
+    const entries = Array.from(this.cache.entries());
+    entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
+    
+    // Remove oldest 10% of entries
+    const toRemove = Math.max(1, Math.floor(entries.length * 0.1));
+    for (let i = 0; i < toRemove; i++) {
+      this.cache.delete(entries[i][0]);
+    }
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getStats() {
+    const now = Date.now();
+    let expired = 0;
+    let active = 0;
+
+    for (const entry of this.cache.values()) {
+      if (now > entry.expiresAt) {
+        expired++;
+      } else {
+        active++;
+      }
+    }
+
+    return {
+      total: this.cache.size,
+      active,
+      expired,
+      hitRate: 0, // Would need to track hits/misses separately
+    };
+  }
+}
+
+// Singleton instance
+export const suggestionCache = new SuggestionCache();
+
+// Cleanup expired entries every 5 minutes
 if (typeof setInterval !== 'undefined') {
   setInterval(() => {
-    const now = Date.now();
-    for (const [key, entry] of memoryCache.entries()) {
-      if (entry.expires < now) {
-        memoryCache.delete(key);
-      }
-    }
-  }, 60000); // Clean up every minute
-}
-
-let redisClient: RedisClientType | null = null;
-
-/**
- * Get Redis client (lazy initialization)
- */
-async function getRedisClient(): Promise<RedisClientType | null> {
-  if (redisClient) {
-    return redisClient;
-  }
-  
-  try {
-    const redisUrl = process.env.REDIS_URL;
-    if (!redisUrl) {
-      return null;
-    }
-
-    const { createClient } = await import('redis');
-    redisClient = createClient({ url: redisUrl }) as RedisClientType;
-    
-    if (!redisClient.isOpen) {
-      await redisClient.connect();
-    }
-    
-    redisClient.on('error', (err) => {
-      console.error('Redis client error:', err);
-      redisClient = null;
-    });
-    
-    return redisClient;
-  } catch (error) {
-    console.warn('Redis not available, using in-memory cache:', error);
-    return null;
-  }
-}
-
-export interface CacheOptions {
-  ttl?: number; // Time to live in seconds
-  tags?: string[]; // Cache tags for invalidation
-}
-
-/**
- * Get value from cache
- */
-export async function get<T>(key: string): Promise<T | null> {
-  const redis = await getRedisClient();
-  
-  if (redis) {
-    try {
-      const value = await redis.get(key);
-      if (value) {
-        return JSON.parse(value) as T;
-      }
-      return null;
-    } catch (error) {
-      console.error('Redis get error:', error);
-      // Fall through to memory cache
-    }
-  }
-  
-  // Fallback to memory cache
-  const entry = memoryCache.get(key);
-  if (entry && entry.expires > Date.now()) {
-    return entry.value as T;
-  }
-  
-  if (entry) {
-    memoryCache.delete(key);
-  }
-  
-  return null;
-}
-
-/**
- * Set value in cache
- */
-export async function set<T>(key: string, value: T, options: CacheOptions = {}): Promise<void> {
-  const redis = await getRedisClient();
-  const ttl = options.ttl || 3600; // Default 1 hour
-  
-  if (redis) {
-    try {
-      const serialized = JSON.stringify(value);
-      await redis.setEx(key, ttl, serialized);
-      
-      // Store tags if provided
-      if (options.tags && options.tags.length > 0) {
-        for (const tag of options.tags) {
-          await redis.sAdd(`cache:tag:${tag}`, key);
-          await redis.expire(`cache:tag:${tag}`, ttl);
-        }
-      }
-      
-      return;
-    } catch (error) {
-      console.error('Redis set error:', error);
-      // Fall through to memory cache
-    }
-  }
-  
-  // Fallback to memory cache
-  memoryCache.set(key, {
-    value,
-    expires: Date.now() + (ttl * 1000),
-  });
-}
-
-/**
- * Delete value from cache
- */
-export async function del(key: string): Promise<void> {
-  const redis = await getRedisClient();
-  
-  if (redis) {
-    try {
-      await redis.del(key);
-      return;
-    } catch (error) {
-      console.error('Redis del error:', error);
-      // Fall through to memory cache
-    }
-  }
-  
-  // Fallback to memory cache
-  memoryCache.delete(key);
-}
-
-/**
- * Invalidate cache by tag
- */
-export async function invalidateTag(tag: string): Promise<void> {
-  const redis = await getRedisClient();
-  
-  if (redis) {
-    try {
-      const keys = await redis.sMembers(`cache:tag:${tag}`);
-      if (keys.length > 0) {
-        await redis.del(...keys);
-      }
-      await redis.del(`cache:tag:${tag}`);
-      return;
-    } catch (error) {
-      console.error('Redis tag invalidation error:', error);
-    }
-  }
-  
-  // Memory cache doesn't support tags, so we can't invalidate by tag
-  // This is a limitation of the fallback
-}
-
-/**
- * Clear all cache
- */
-export async function clear(): Promise<void> {
-  const redis = await getRedisClient();
-  
-  if (redis) {
-    try {
-      await redis.flushAll();
-      return;
-    } catch (error) {
-      console.error('Redis clear error:', error);
-    }
-  }
-  
-  // Fallback to memory cache
-  memoryCache.clear();
-}
-
-/**
- * Cache decorator for async functions
- */
-export function cached<T extends (...args: any[]) => Promise<any>>(
-  fn: T,
-  keyGenerator: (...args: Parameters<T>) => string,
-  options: CacheOptions = {}
-): T {
-  return (async (...args: Parameters<T>): Promise<ReturnType<T>> => {
-    const key = keyGenerator(...args);
-    const cached = await get<ReturnType<T>>(key);
-    
-    if (cached !== null) {
-      return cached;
-    }
-    
-    const result = await fn(...args);
-    await set(key, result, options);
-    
-    return result;
-  }) as T;
+    suggestionCache.cleanup();
+  }, 5 * 60 * 1000);
 }

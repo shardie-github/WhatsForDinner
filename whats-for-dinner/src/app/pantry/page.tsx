@@ -61,6 +61,7 @@ export default function PantryPage() {
       });
     } catch (error) {
       console.error('Error adding item:', error);
+      throw error; // Re-throw for error handling
     }
   };
 
@@ -78,6 +79,7 @@ export default function PantryPage() {
       );
     } catch (error) {
       console.error('Error updating item:', error);
+      throw error; // Re-throw for error handling
     }
   };
 
@@ -93,6 +95,7 @@ export default function PantryPage() {
       setPantryItems(pantryItems.filter(item => item.id !== id));
     } catch (error) {
       console.error('Error deleting item:', error);
+      throw error; // Re-throw for error handling
     }
   };
 
