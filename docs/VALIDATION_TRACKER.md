@@ -1,129 +1,156 @@
 # Validation Tracker
 
-**Last Updated:** [Date]  
-**Status:** [Active / Complete]
+**Sprint:** Validation & Execution Sprint  
+**Start Date:** 2025-01-28  
+**End Date:** 2025-02-27
 
 ---
 
 ## Beta Users
 
-| Name | Contact | Status | Onboarded | Feedback Collected | Notes |
-|------|---------|-------|-----------|-------------------|-------|
-| [Name] | [Email] | [Active/Inactive] | [Date] | [Yes/No] | [Notes] |
-| [Name] | [Email] | [Active/Inactive] | [Date] | [Yes/No] | [Notes] |
+| Name | Contact | Status | Onboarding Date | Activation Date | Feedback Date | Notes |
+|------|---------|--------|-----------------|-----------------|--------------|-------|
+| | | Pending | | | | |
+| | | Pending | | | | |
+| | | Pending | | | | |
+| | | Pending | | | | |
+| | | Pending | | | | |
+| | | Pending | | | | |
+| | | Pending | | | | |
+| | | Pending | | | | |
+| | | Pending | | | | |
+| | | Pending | | | | |
 
-**Total Beta Users:** [Number]  
-**Active Users:** [Number]  
-**Feedback Collected:** [Number]
+**Status Legend:**
+- Pending: Not yet recruited
+- Recruited: User signed up, not yet onboarded
+- Onboarded: User completed onboarding
+- Active: User has generated at least one suggestion
+- Inactive: User signed up but hasn't used product
 
 ---
 
 ## Feedback Collected
 
-### Week [X] Feedback
+### Week 2 Feedback (First 5 Users)
 
 **Date:** [Date]  
-**Users Responded:** [Number]  
-**Response Rate:** [Percentage]
+**Users:** [Names]
 
-#### Themes
+**Positive Feedback:**
+- "[Quote]"
+- "[Quote]"
 
-**Theme 1: [Theme Name]**
-- "[Quote from user]"
-- "[Quote from user]"
-- **Frequency:** [Number of mentions]
-- **Priority:** [Critical/High/Medium/Low]
+**Critical Issues:**
+- "[Issue]" - Priority: Critical/High/Medium/Low
+- "[Issue]" - Priority: Critical/High/Medium/Low
 
-**Theme 2: [Theme Name]**
-- "[Quote from user]"
-- "[Quote from user]"
-- **Frequency:** [Number of mentions]
-- **Priority:** [Critical/High/Medium/Low]
+**Feature Requests:**
+- "[Request]" - Priority: Critical/High/Medium/Low
+- "[Request]" - Priority: Critical/High/Medium/Low
 
-#### Individual Feedback
+**Themes:**
+- [Theme 1]: [Description]
+- [Theme 2]: [Description]
 
-**User: [Name]**
-- **Date:** [Date]
-- **Feedback:** "[Quote]"
-- **Rating:** [1-5 stars]
-- **Category:** [Bug/UX/Feature Request/Performance]
-- **Status:** [Addressed/In Progress/Backlog]
+---
+
+### Week 3 Feedback (All 10 Users)
+
+**Date:** [Date]  
+**Users:** [Names]
+
+**Positive Feedback:**
+- "[Quote]"
+- "[Quote]"
+
+**Critical Issues:**
+- "[Issue]" - Priority: Critical/High/Medium/Low
+- "[Issue]" - Priority: Critical/High/Medium/Low
+
+**Feature Requests:**
+- "[Request]" - Priority: Critical/High/Medium/Low
+- "[Request]" - Priority: Critical/High/Medium/Low
+
+**Themes:**
+- [Theme 1]: [Description]
+- [Theme 2]: [Description]
 
 ---
 
 ## Validation Experiments
 
-### Experiment 1: [Experiment Name]
-- **Date:** [Start Date] - [End Date]
-- **Hypothesis:** [What we're testing]
-- **Method:** [How we're testing]
-- **Participants:** [Number/users]
-- **Results:** [What happened]
-- **Conclusion:** [What we learned]
-- **Decision:** [What we'll do based on this]
+### Experiment 1: Internal Dogfooding
+- **When:** Week 2 (Day 8-10)
+- **What we tested:** Complete user journey (signup → pantry → suggestion → recipe)
+- **Results:**
+  - Time to complete: [X] minutes
+  - Error rate: [X]%
+  - User satisfaction: [X]/5
+- **Decisions:** [What we decided based on results]
 
-### Experiment 2: [Experiment Name]
-- **Date:** [Start Date] - [End Date]
-- **Hypothesis:** [What we're testing]
-- **Method:** [How we're testing]
-- **Participants:** [Number/users]
-- **Results:** [What happened]
-- **Conclusion:** [What we learned]
-- **Decision:** [What we'll do based on this]
+### Experiment 2: Beta User Pilot (First 5)
+- **When:** Week 3 (Day 15-17)
+- **What we tested:** Full product access, onboarding guide
+- **Results:**
+  - Activation rate: [X]%
+  - Average rating: [X] stars
+  - Feedback sentiment: Positive/Negative/Neutral
+- **Decisions:** [What we decided based on results]
+
+### Experiment 3: Beta User Expansion (10 Total)
+- **When:** Week 4 (Day 22-24)
+- **What we tested:** Full product with improvements
+- **Results:**
+  - Activation rate: [X]%
+  - D3 retention: [X]%
+  - Average rating: [X] stars
+- **Decisions:** [What we decided based on results]
 
 ---
 
 ## Decisions Informed by Validation
 
 ### Decision 1: [Decision Title]
-- **Validation Source:** [Which experiment/feedback]
 - **Context:** [Why decision was needed]
+- **Validation Data:** [What data informed this]
 - **Decision:** [What we chose]
-- **Rationale:** [Why, based on validation]
 - **Outcome:** [What happened]
 
 ### Decision 2: [Decision Title]
-- **Validation Source:** [Which experiment/feedback]
 - **Context:** [Why decision was needed]
+- **Validation Data:** [What data informed this]
 - **Decision:** [What we chose]
-- **Rationale:** [Why, based on validation]
 - **Outcome:** [What happened]
 
 ---
 
 ## Next Validation Activities
 
-### Planned
-- [ ] [Activity 1] - Date: [Date] - Owner: [Name]
-- [ ] [Activity 2] - Date: [Date] - Owner: [Name]
+### Planned Activities
+1. **Activity:** [Description]
+   - **When:** [Date]
+   - **What we'll test:** [Description]
+   - **Success criteria:** [Criteria]
 
-### In Progress
-- [ ] [Activity 1] - Started: [Date] - Owner: [Name]
-
-### Completed
-- [x] [Activity 1] - Completed: [Date] - Results: [Link]
+2. **Activity:** [Description]
+   - **When:** [Date]
+   - **What we'll test:** [Description]
+   - **Success criteria:** [Criteria]
 
 ---
 
-## Metrics from Validation
+## Success Metrics
 
-### Activation Metrics
-- **Activation Rate:** [Percentage] - Target: 70%+
-- **Time to Activation:** [Minutes] - Target: <5 minutes
-- **Onboarding Completion:** [Percentage] - Target: 70%+
-
-### Engagement Metrics
-- **Daily Active Users:** [Number]
-- **Weekly Active Users:** [Number]
-- **Meal Suggestions per User:** [Number] - Target: 3+ per week
-
-### Quality Metrics
-- **Suggestion Rating:** [Average] - Target: 4+ stars
-- **Error Rate:** [Percentage] - Target: <1%
-- **User Satisfaction:** [NPS/Score] - Target: [Target]
+| Metric | Target | Week 2 | Week 3 | Week 4 | Status |
+|--------|--------|--------|--------|--------|--------|
+| Beta Users Recruited | 10 | | | | |
+| Activation Rate | 70%+ | | | | |
+| Average Rating | 4+ stars | | | | |
+| D3 Retention | 30%+ | | | | |
+| Critical Issues Fixed | Top 3 | | | | |
 
 ---
 
 **Last Updated:** [Date]  
-**Next Review:** [Date]  
-**Owner:** [Name]
+**Next Review:** [Date]
