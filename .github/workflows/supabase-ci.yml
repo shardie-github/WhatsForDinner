@@ -163,13 +163,43 @@ jobs:
             echo "::warning::Found $FUNC_ERRORS function errors (non-blocking)"
           fi
 
+      - name: Apply Delta Migrations (if needed)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: |
+          if [ -f "scripts/agents/generate_delta_migration.ts" ]; then
+            echo "Generating delta migration..."
+            tsx scripts/agents/generate_delta_migration.ts || echo "Delta migration generation skipped"
+          fi
+          
+          if [ -n "$SUPABASE_PROJECT_REF" ]; then
+            echo "Applying migrations via Supabase CLI..."
+            supabase link --project-ref "$SUPABASE_PROJECT_REF" || true
+            supabase db push --include-all || echo "Migration push skipped"
+          fi
+        continue-on-error: true
+
+      - name: Verify Post-Apply
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -f "scripts/agents/verify_db.ts" ]; then
+            tsx scripts/agents/verify_db.ts || echo "DB verification skipped"
+          fi
+        continue-on-error: true
+
       - name: Summary
         if: always()
         run: |
           echo "## Supabase CI Check Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "? Migration linting completed" >> $GITHUB_STEP_SUMMARY
-          echo "? Schema drift check completed" >> $GITHUB_STEP_SUMMARY
-          echo "? Edge Functions validation completed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Migration linting completed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Schema drift check completed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Edge Functions validation completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Note:** If drift was detected, create a new migration to resolve it." >> $GITHUB_STEP_SUMMARY

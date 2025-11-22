@@ -71,6 +71,7 @@ jobs:
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+        continue-on-error: true
 
       - name: Submit Android
         if: startsWith(github.ref, 'refs/tags/v') && (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' || github.event.inputs.platform == '')
@@ -78,3 +79,13 @@ jobs:
         run: eas submit -p android --latest --non-interactive
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        continue-on-error: true
+
+      - name: Capture Store Screenshots (if requested)
+        if: github.event.inputs.capture_screenshots == 'true'
+        working-directory: apps/mobile
+        run: |
+          if [ -f "ops/screenshots/capture.ts" ]; then
+            npx tsx ops/screenshots/capture.ts || echo "Screenshot capture skipped"
+          fi
+        continue-on-error: true
