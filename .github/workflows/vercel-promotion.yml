@@ -18,8 +18,8 @@ on:
         type: boolean
 
 env:
-  NODE_VERSION: '18'
-  PNPM_VERSION: '9.0.0'
+  NODE_VERSION: '20'
+  PNPM_VERSION: 9
   PRISMA_CLIENT_ENGINE_TYPE: 'wasm'
 
 jobs:

@@ -1,9 +1,15 @@
 name: Expo EAS Build & Submit
 
 on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'apps/mobile/**'
+      - '.github/workflows/mobile.yml'
   push:
-    tags:
-      - 'v*.*.*'
+    branches: [main]
+    paths:
+      - 'apps/mobile/**'
   workflow_dispatch:
     inputs:
       platform:

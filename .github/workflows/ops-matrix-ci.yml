@@ -10,8 +10,8 @@ on:
     - cron: '0 * * * *'
 
 env:
-  NODE_VERSION: '18'
-  PNPM_VERSION: '9.0.0'
+  NODE_VERSION: '20'
+  PNPM_VERSION: 9
 
 jobs:
   matrix:
@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         workspace: [web, mobile]
-        node-version: [18, 20]
+        node-version: [20]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

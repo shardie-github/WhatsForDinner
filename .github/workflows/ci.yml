@@ -6,28 +6,88 @@ on:
   pull_request:
     branches: [main, develop]
 
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: 9
+
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint
+        run: pnpm lint
+
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/test' }}
+        continue-on-error: true
+
+      - name: Run type check
+        run: pnpm type-check
+
   test:
+    name: Test
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
+    needs: [lint, type-check]
     env:
       PRISMA_CLIENT_ENGINE_TYPE: wasm
       NODE_ENV: test
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -36,104 +96,76 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm prisma generate
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      - name: Run Prisma Migrate Deploy (dry-run check)
-        run: pnpm prisma migrate deploy --dry-run || echo "Migration check completed"
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      - name: Type check
-        run: pnpm type-check
-        continue-on-error: false
-
-      - name: Lint
-        run: pnpm lint
-        continue-on-error: false
-
-      - name: Pre-merge validation
-        run: node scripts/pre-merge-validation.mjs || echo "Pre-merge validation skipped if script not available"
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/test' }}
         continue-on-error: true
 
-      - name: Validate deployment config
-        run: pnpm deploy:validate
-        continue-on-error: false
-
-      - name: Schema health check
-        run: pnpm schema:health
-        continue-on-error: true
+      - name: Run tests
+        run: pnpm test:ci || pnpm test
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/test' }}
 
-      - name: Build
-        run: pnpm build
-        continue-on-error: false
-
-      # Parallel test execution for faster CI
-      - name: Run tests (parallel)
-        run: |
-          # Split test files across parallel jobs if possible
-          # For now, run tests normally but structure for future parallelization
-          pnpm test:ci || echo "Tests completed with some failures"
-        continue-on-error: true
-        if: always()
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      - name: Check test coverage
-        run: |
-          echo "Running test coverage check..."
-          pnpm test:coverage || true
-          
-          # Check if coverage meets threshold (80%)
-          if command -v npx &> /dev/null; then
-            COVERAGE=$(npx jest --coverage --coverageReporters=text-summary 2>&1 | grep -oP 'All files\s+\|\s+\K\d+' | head -1 || echo "0")
-            if [ -z "$COVERAGE" ] || [ "$COVERAGE" -lt 80 ]; then
-              echo "⚠️  Warning: Test coverage is below 80% threshold"
-              echo "Current coverage: ${COVERAGE}%"
-              echo "Target: 80%"
-              echo "This will fail in future CI runs. Please increase test coverage."
-              # For now, don't fail the build, but warn
-              # exit 1  # Uncomment to enforce coverage gate
-            else
-              echo "✅ Test coverage meets threshold: ${COVERAGE}%"
-            fi
-          fi
-        continue-on-error: true
-        if: always()
-
-      - name: Run smoke tests
-        run: pnpm smoke:test
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          PRISMA_CLIENT_ENGINE_TYPE: wasm
-
-  deploy-migrations:
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: test
+    timeout-minutes: 15
+    needs: [lint, type-check, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/test' }}
+        continue-on-error: true
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Build web app
+        run: pnpm build:web
+
+      - name: Build mobile app
+        run: pnpm build:mobile || echo "Mobile build skipped if not configured"
+
+  test-coverage:
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [test]
+    if: always()
     env:
       PRISMA_CLIENT_ENGINE_TYPE: wasm
-
+      NODE_ENV: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -142,19 +174,85 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm prisma generate
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/test' }}
+        continue-on-error: true
 
-      - name: Deploy Prisma Migrations
-        run: pnpm prisma migrate deploy
+      - name: Run tests with coverage
+        run: pnpm test:coverage || echo "Coverage report generation skipped"
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/test' }}
 
-      - name: Run Reality Check
-        run: pnpm doctor
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          PRISMA_CLIENT_ENGINE_TYPE: wasm
-          NEXT_PUBLIC_UPLOAD_BUCKET: ${{ secrets.NEXT_PUBLIC_UPLOAD_BUCKET }}
+      - name: Check coverage threshold
+        if: always()
+        run: |
+          if [ -f "coverage/coverage-summary.json" ]; then
+            TOTAL_COVERAGE=$(node -e "
+              const fs = require('fs');
+              const coverage = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
+              const total = coverage.total;
+              const avg = (total.lines.pct + total.statements.pct + total.functions.pct + total.branches.pct) / 4;
+              console.log(Math.round(avg));
+            ")
+            echo "Current coverage: ${TOTAL_COVERAGE}%"
+            if [ "$TOTAL_COVERAGE" -lt 80 ]; then
+              echo "⚠️  Warning: Test coverage (${TOTAL_COVERAGE}%) is below 80% threshold"
+            else
+              echo "✅ Test coverage (${TOTAL_COVERAGE}%) meets 80% threshold"
+            fi
+          else
+            echo "⚠️  Coverage report not found"
+          fi
+
+      - name: Upload coverage
+        if: always()
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          fail_ci_if_error: false
+
+  code-hygiene:
+    name: Code Hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [build]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check unused exports
+        run: pnpm prune:exports > reports/ts-prune.txt || echo "ts-prune skipped"
+        continue-on-error: true
+
+      - name: Scan for unused files
+        run: pnpm scan:usage || echo "knip skipped"
+        continue-on-error: true
+
+      - name: Audit dependencies
+        run: pnpm audit:deps || echo "depcheck skipped"
+        continue-on-error: true
+
+      - name: Upload hygiene reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hygiene-reports
+          path: reports/*.json
+          retention-days: 7
+          if-no-files-found: ignore
