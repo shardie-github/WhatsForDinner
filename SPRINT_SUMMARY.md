@@ -14,6 +14,13 @@
 - ❌ Limited feature delivery or user validation
 - ❌ Critical gaps: No beta users, event tracking not implemented, E2E tests missing
 
+**Health Scores:**
+- Product Clarity: 3/5
+- Architecture & Code Quality: 4/5
+- Execution Velocity: 2/5
+- Reliability & Observability: 3/5
+- Learning & Validation: 1/5
+
 ---
 
 ## Next Sprint Goal
@@ -39,15 +46,19 @@
 
 ### Week 1: Foundation & Validation Setup
 - E2E tests, event tracking, security fixes, beta recruitment
+- **Key Deliverables:** Smoke test, event tracking, error boundaries, security fixes, beta recruitment
 
 ### Week 2: Core Functionality & Happy Paths
 - Quick entry ("Surprise Me"), simplified onboarding, UX polish
+- **Key Deliverables:** Quick entry page, simplified onboarding, pantry UX polish, API improvements
 
 ### Week 3: Hardening & Early Validation
 - Edge cases, performance optimization, beta feedback collection
+- **Key Deliverables:** Edge case handling, caching, performance optimization, feedback analysis
 
 ### Week 4: Polish & Learning
 - Final polish, accessibility, documentation, learnings capture
+- **Key Deliverables:** UX polish, accessibility, mobile testing, sprint retrospective
 
 ---
 
@@ -57,47 +68,85 @@
 - Set up E2E test infrastructure
 - Implement event tracking calls
 - Start security remediation
-- Create first PR
+- Create first PR: `feature/w1-e2e-tests`
 
 ### Day 2
 - Complete smoke test
 - Verify analytics tracking
 - Continue security fixes
-- Create second PR
+- Create second PR: `feature/w1-analytics`
 
 ### Day 3
 - Integration testing
 - Complete security fixes
 - Create beta recruitment plan
-- Create third PR
+- Create third PR: `fix/w1-security`
 
 ---
 
 ## Critical Actions (7 Days)
 
 ### Quick Wins (≤1 hour)
-1. Add error boundaries
-2. Add event tracking calls
-3. Create `.env.example`
-4. Add secrets scanning to CI/CD
-5. Create smoke test skeleton
+1. Add error boundaries (`apps/web/src/components/ErrorBoundary.tsx`)
+2. Add event tracking calls (signup, pantry, suggestion, recipe)
+3. Create `.env.example` with all required vars
+4. Add secrets scanning to CI/CD (`.github/workflows/secrets-scan.yml`)
+5. Create smoke test skeleton (`tests/e2e/smoke.test.ts`)
 
 ### Deep Work (≥3 hours)
-1. Migrate secrets to env vars
-2. Fix dangerous code patterns
-3. Create "Surprise Me" page
-4. Simplify onboarding
-5. Implement caching layer
+1. Migrate secrets to env vars (2,988 potential secrets)
+2. Fix dangerous code patterns (131 patterns)
+3. Create "Surprise Me" page (`apps/web/src/app/surprise-me/page.tsx`)
+4. Simplify onboarding (`apps/web/src/app/onboarding/page.tsx`)
+5. Implement caching layer (`apps/web/src/lib/cache.ts`)
+
+---
+
+## Key Metrics to Track
+
+### Activation Metrics
+- Signup → First Pantry Item: Target 70%+
+- First Pantry Item → First Suggestion: Target 80%+
+- Time to Activation: Target <5 minutes
+
+### Quality Metrics
+- Error Rate: Target <1%
+- Suggestion Generation Time: Target <30s (p95)
+- User Rating: Target 4+ stars average
+
+### Engagement Metrics
+- DAU: Target 20%+ of MAU
+- Activation Rate: Target 70%+
+- Beta User Feedback: Target 50%+ response rate
 
 ---
 
 ## Key Documents
 
-- **Full Sprint Review & Plan:** `/docs/SPRINT_REVIEW_AND_PLAN.md`
+- **Full Sprint Review & Plan:** `/docs/SPRINT_REVIEW_AND_PLAN_NEXT.md`
 - **Sprint Learnings Template:** `/docs/SPRINT_LEARNINGS.md`
 - **Validation Tracker:** `/docs/VALIDATION_TRACKER.md`
-- **Sprint Tasks:** `/SPRINT_TASKS.md`
+- **Beta Recruitment Plan:** `/docs/beta-recruitment-plan.md`
+- **Sprint Tasks:** See backlog in full plan document
 
 ---
 
-**Last Updated:** 2025-01-27
+## Current State
+
+### What Exists
+- ✅ Analytics service (`apps/web/src/lib/analytics.ts`)
+- ✅ PRD, Roadmap, Metrics framework
+- ✅ 43 test files (9% coverage)
+- ✅ Monitoring infrastructure (Prometheus, Grafana, Sentry)
+
+### What's Missing
+- ❌ Event tracking implementation in user flows
+- ❌ E2E tests
+- ❌ Error boundaries
+- ❌ Beta users
+- ❌ Security fixes (2,988 secrets, 131 dangerous patterns)
+
+---
+
+**Last Updated:** 2025-01-27  
+**Next Review:** Daily during sprint
