@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { analytics } from '@/lib/analytics';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -222,7 +223,17 @@ export default function MealPlannerPage() {
                     <CardContent>
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         {day.breakfast && (
-                          <div className="p-4 rounded-lg bg-muted/50">
+                          <div 
+                            className="p-4 rounded-lg bg-muted/50 cursor-pointer hover:bg-muted transition-colors"
+                            onClick={async () => {
+                              await analytics.trackEvent('RECIPE_VIEWED', {
+                                recipe_id: day.breakfast.id || 'unknown',
+                                recipe_source: 'curated',
+                                view_duration_seconds: 0,
+                                user_id: user?.id,
+                              });
+                            }}
+                          >
                             <Badge variant="secondary" className="mb-2">Breakfast</Badge>
                             <h3 className="font-semibold mb-1">{day.breakfast.title}</h3>
                             {day.breakfast.cookTime && (
@@ -245,7 +256,17 @@ export default function MealPlannerPage() {
                             )}
                           </div>
                         )}
-                        <div className="p-4 rounded-lg bg-primary/5 border-2 border-primary/20">
+                        <div 
+                          className="p-4 rounded-lg bg-primary/5 border-2 border-primary/20 cursor-pointer hover:bg-primary/10 transition-colors"
+                          onClick={async () => {
+                            await analytics.trackEvent('RECIPE_VIEWED', {
+                              recipe_id: day.dinner.id || 'unknown',
+                              recipe_source: 'curated',
+                              view_duration_seconds: 0,
+                              user_id: user?.id,
+                            });
+                          }}
+                        >
                           <Badge className="mb-2">Dinner</Badge>
                           <h3 className="font-semibold mb-1">{day.dinner.title}</h3>
                           {day.dinner.cookTime && (

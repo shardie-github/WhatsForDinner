@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import PantryManager from '@/components/PantryManager';
 import Navbar from '@/components/Navbar';
+import { analytics } from '@/lib/analytics';
 
 export default function PantryPage() {
   const [user, setUser] = useState<any>(null);
@@ -50,6 +51,14 @@ export default function PantryPage() {
 
       if (error) throw error;
       setPantryItems([...pantryItems, data]);
+      
+      // Track pantry item added event
+      await analytics.trackEvent('PANTRY_ITEM_ADDED', {
+        item_name: ingredient,
+        add_method: 'manual',
+        expiration_date: null,
+        user_id: user.id,
+      });
     } catch (error) {
       console.error('Error adding item:', error);
     }
