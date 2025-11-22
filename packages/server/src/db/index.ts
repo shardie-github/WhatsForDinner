@@ -342,3 +342,7 @@ export async function closeDb() {
     await redisClient.quit();
   }
 }
+
+// Re-export schema for convenience
+export * as schema from './schema.js';
+export { clicks, partners, users, households, recipes, mealPlans, groceryLists } from './schema.js';

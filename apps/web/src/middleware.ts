@@ -123,8 +123,12 @@ export async function middleware(request: NextRequest) {
     if (apiKey) {
       try {
         const supabase = createClient();
-        const crypto = await import('crypto');
-        const keyHash = crypto.createHash('sha256').update(apiKey).digest('hex');
+        // Use Web Crypto API for Edge runtime compatibility
+        const encoder = new TextEncoder();
+        const data = encoder.encode(apiKey);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const keyHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         
         const { data: key } = await supabase
           .from('api_keys')

@@ -109,7 +109,6 @@ export async function logAction(
             action,
             signature,
           }),
-          }),
         }).catch((err) => {
           logger.warn({ error: err }, 'Failed to send SIEM event');
         });
