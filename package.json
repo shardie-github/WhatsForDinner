@@ -33,6 +33,7 @@
     "health:check": "node scripts/comprehensive-health-check.mjs",
     "cost:guard": "node scripts/cost-guard.mjs --check",
     "smoke:test": "tsx scripts/smoke.ts",
+    "smoke:test:elevation": "tsx scripts/smoke-tests.ts",
     "check:all": "node scripts/run-all-checks.mjs",
     "browser:compat": "npx tsx scripts/browser-compatibility-test.ts",
     "alerts:test": "npx tsx scripts/monitoring-alerts-config.ts",

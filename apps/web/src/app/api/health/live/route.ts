@@ -1,34 +1,27 @@
 /**
- * Phase 1 Guardrail: Health Endpoint - Liveness
- * Kubernetes-style liveness check - indicates the service is alive
+ * Liveness Probe Endpoint
+ * 
+ * Simple check to verify the service is running.
+ * Used by Kubernetes/Docker health checks.
+ * 
+ * GET /api/health/live
  */
 
 import { NextResponse } from 'next/server';
+import { createLivenessHandler } from '@whats-for-dinner/utils';
+
+const livenessHandler = createLivenessHandler();
 
 export async function GET() {
-  const start = Date.now();
-  
-  try {
-    // Simple liveness check - just verify the process is running
-    const responseTime = Date.now() - start;
-    
-    return NextResponse.json({
-      status: 'alive',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      responseTime,
-    }, {
-      status: 200,
+  const response = livenessHandler();
+  return NextResponse.json(
+    JSON.parse(await response.text()),
+    {
+      status: response.status,
       headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
       },
-    });
-  } catch (error) {
-    return NextResponse.json({
-      status: 'dead',
-      timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error',
-      responseTime: Date.now() - start,
-    }, { status: 503 });
-  }
+    }
+  );
 }
