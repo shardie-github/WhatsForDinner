@@ -6,7 +6,9 @@ import { createClient } from '@supabase/supabase-js';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('offers-paywalls-ts');
 const SUPABASE_URL = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_ROLE_KEY = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
@@ -34,7 +36,7 @@ async function syncPricingFromSupabase(): Promise<PricingOffer[]> {
     .eq('enabled', true);
 
   if (error) {
-    console.warn('Pricing offers table not found, using defaults');
+    logger.warn('Pricing offers table not found', { using defaults' });
     return getDefaultOffers();
   }
 

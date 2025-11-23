@@ -63,7 +63,7 @@ export default function DSARPortalPage() {
       }
       setLoading(false);
     } catch (err) {
-      console.error(err);
+      logger.error('err');
       setLoading(false);
     }
   };

@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { supabase } from '@/lib/supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 export async function GET(req: NextRequest) {
   try {
     // Get user context
@@ -100,7 +102,7 @@ export async function GET(req: NextRequest) {
       usage,
     });
   } catch (error) {
-    console.error('Error fetching usage data:', error);
+    logger.error('Error fetching usage data:', { error });
     return NextResponse.json(
       { error: 'Failed to fetch usage data' },
       { status: 500 }

@@ -7,11 +7,13 @@ import { createGuardianMiddleware } from '@whats-for-dinner/utils/guardian';
 import { PrivacyInsurance } from '@whats-for-dinner/utils/guardian';
 import { TrustFabricAI } from '@whats-for-dinner/utils/guardian';
 import type { DataScope, DataClass, ResponseAction } from '@whats-for-dinner/utils/guardian';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 /**
  * Pattern 1: API Route Integration
  * Wrap API handlers with Guardian monitoring
  */
+const logger = createComponentLogger('integration-patterns-ts');
 export function withGuardian<T extends any[]>(
   handler: (...args: T) => Promise<Response>,
   options: {
@@ -215,7 +217,7 @@ export class GuardianBatchProcessor {
           type: 'batch_event',
           ...event,
         }).catch(err => {
-          console.error('Batch event processing failed:', err);
+          logger.error('Batch event processing failed:', { err });
         })
       )
     );

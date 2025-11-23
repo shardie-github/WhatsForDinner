@@ -22,7 +22,9 @@ import {
   DollarSign
 } from 'lucide-react';
 import { agentOrchestrator, AIAgent, AgentPackage } from '@/lib/ai-agents/agentOrchestrator';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('page-tsx');
 const AGENT_ICONS = {
   'dietary-coach': Brain,
   'chef': ChefHat,
@@ -54,7 +56,7 @@ export default function AgentsPage() {
       setAgents(allAgents);
       setPackages(allPackages);
     } catch (error) {
-      console.error('Error loading agents:', error);
+      logger.error('Error loading agents:', { error });
     } finally {
       setLoading(false);
     }
@@ -155,7 +157,7 @@ export default function AgentsPage() {
                           size="sm"
                           onClick={() => {
                             // TODO: Implement delete agent functionality
-                            console.log('Delete agent:', agent.id);
+                            logger.info('Delete agent:', { agent.id });
                           }}
                         >
                           <Trash2 className="h-4 w-4" />

@@ -21,7 +21,9 @@
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('cli-ts');
 const OPS_DIR = join(process.cwd(), 'ops');
 const REPORTS_DIR = join(OPS_DIR, 'reports');
 const RUNBOOKS_DIR = join(OPS_DIR, 'runbooks');
@@ -84,7 +86,7 @@ class OpsCLI {
         await this.changelog(args);
         break;
       default:
-        console.error(`Unknown command: ${command}`);
+        logger.error('Unknown command: ${command}');
         this.printUsage();
         process.exit(1);
     }
@@ -159,14 +161,14 @@ class OpsCLI {
     const failed = checks.filter(c => !c.passed).length;
     const duration = ((Date.now() - this.startTime) / 1000).toFixed(2);
 
-    console.log(`\n✅ Checks completed in ${duration}s\n`);
+    logger.info('\n✅ Checks completed in ${duration}s\n');
 
     checks.forEach(check => {
       const icon = check.passed ? '✅' : '❌';
       const checkDuration = check.duration ? ` (${check.duration}ms)` : '';
-      console.log(`${icon} ${check.name}${checkDuration}`);
+      logger.info('${icon} ${check.name}${checkDuration}');
       if (!check.passed && check.message) {
-        console.log(`   ${check.message}`);
+        logger.info('   ${check.message}');
       }
     });
 
@@ -280,7 +282,7 @@ ENABLE_QUIET_MODE=false
     const dryRun = args.includes('--dry-run');
     
     if (!type || !['patch', 'minor', 'major'].includes(type)) {
-      console.error('Usage: ops release [patch|minor|major] [--dry-run]');
+      logger.error('Usage: ops release [patch|minor|major] [--dry-run]');
       process.exit(1);
     }
 
@@ -294,7 +296,7 @@ ENABLE_QUIET_MODE=false
 
   async restore(args: string[]): Promise<void> {
         if (!args[0]) {
-      console.error('Usage: ops restore <snapshot-id>');
+      logger.error('Usage: ops restore <snapshot-id>');
       process.exit(1);
     }
     const { restoreSnapshot } = await import('./migration-safety');
@@ -315,7 +317,7 @@ ENABLE_QUIET_MODE=false
         try {
       execSync('cd apps/web && npx playwright test tests/reality/e2e.spec.ts', { stdio: 'inherit' });
           } catch (error) {
-      console.error('❌ E2E tests failed');
+      logger.error('❌ E2E tests failed');
       process.exit(1);
     }
   }
@@ -324,7 +326,7 @@ ENABLE_QUIET_MODE=false
         try {
       execSync('pnpm perf:compare', { stdio: 'inherit' });
           } catch (error) {
-      console.error('❌ Benchmarks failed');
+      logger.error('❌ Benchmarks failed');
       process.exit(1);
     }
   }
@@ -334,7 +336,7 @@ ENABLE_QUIET_MODE=false
       execSync('pnpm lint:fix', { stdio: 'inherit' });
       execSync('pnpm format', { stdio: 'inherit' });
           } catch (error) {
-      console.error('❌ Failed to fix linting issues');
+      logger.error('❌ Failed to fix linting issues');
       process.exit(1);
     }
   }
@@ -352,6 +354,6 @@ ENABLE_QUIET_MODE=false
 
 // Run CLI
 new OpsCLI().run().catch(error => {
-  console.error('Fatal error:', error);
+  logger.error('Fatal error:', { error });
   process.exit(1);
 });

@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
         acc[name] = { count: data.length, average, min, max, latest };
         return acc;
       },
-      {} as Record<string, any>
+      {} as Record<string, unknown>
     );
 
     return new Response(

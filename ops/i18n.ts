@@ -5,7 +5,9 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { glob } from 'glob';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('i18n-ts');
 const I18N_DIR = join(process.cwd(), 'i18n');
 const LOCALES_DIR = join(I18N_DIR, 'locales');
 
@@ -118,14 +120,14 @@ if (require.main === module) {
 
   if (command === 'extract') {
     generateLanguagePacks().catch(error => {
-      console.error('Failed to extract messages:', error);
+      logger.error('Failed to extract messages:', { error });
       process.exit(1);
     });
   } else if (command === 'validate') {
     validateTranslations().then(result => {
       if (!result.passed) {
-        console.error('❌ Translation validation failed:');
-        result.missing.forEach(m => console.error(`  - ${m}`));
+        logger.error('❌ Translation validation failed:');
+        result.missing.forEach(m => logger.error('  - ${m}'));
         process.exit(1);
       }
           });

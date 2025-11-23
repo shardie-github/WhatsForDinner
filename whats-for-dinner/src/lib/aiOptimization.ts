@@ -1,7 +1,9 @@
 import { supabase } from './supabaseClient';
 import { StripeService } from './stripe';
 import crypto from 'crypto';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('aioptimization-ts');
 interface CacheEntry {
   id: string;
   tenant_id: string;
@@ -109,7 +111,7 @@ export class AIOptimizationService {
 
       return data;
     } catch (error) {
-      console.error('Error fetching cached response:', error);
+      logger.error('Error fetching cached response:', { error });
       return null;
     }
   }
@@ -148,7 +150,7 @@ export class AIOptimizationService {
       });
 
           } catch (error) {
-      console.error('Error caching response:', error);
+      logger.error('Error caching response:', { error });
     }
   }
 
@@ -241,7 +243,7 @@ export class AIOptimizationService {
     try {
       await supabase.rpc('cleanup_expired_cache');
           } catch (error) {
-      console.error('Error cleaning up cache:', error);
+      logger.error('Error cleaning up cache:', { error });
     }
   }
 
@@ -282,7 +284,7 @@ export class AIOptimizationService {
         averageResponseTime,
       };
     } catch (error) {
-      console.error('Error getting cache stats:', error);
+      logger.error('Error getting cache stats:', { error });
       return {
         totalEntries: 0,
         hitRate: 0,

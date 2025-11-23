@@ -106,7 +106,7 @@ export function handleApiError(
 /**
  * Wrapper for API route handlers with standardized error handling
  */
-export function withApiErrorHandler<T extends (...args: any[]) => Promise<Response>>(
+export function withApiErrorHandler<T extends (...args: unknown[]) => Promise<Response>>(
   handler: T,
   options: ApiErrorHandlerOptions = {}
 ): T {

@@ -50,7 +50,7 @@ export interface DecisionAction {
   confidence: number;
   riskLevel: 'low' | 'medium' | 'high';
   description: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   estimatedImpact: {
     performance: number; // -100 to 100
     reliability: number; // -100 to 100
@@ -78,7 +78,7 @@ export interface LearningInsight {
   pattern: string;
   confidence: number;
   recommendation: string;
-  evidence: any[];
+  evidence: unknown[];
   timestamp: string;
 }
 
@@ -553,7 +553,7 @@ export class AIDecisionEngine {
     actionType: string,
     anomaly: AnomalyDetectionResult | null,
     context: DecisionContext,
-    customParams: Record<string, any> = {}
+    customParams: Record<string, unknown> = {}
   ): Promise<DecisionAction | null> {
     try {
       const template = this.actionTemplates.get(actionType);

@@ -15,7 +15,7 @@ export type FunnelStage =
 export interface FunnelEvent {
   stage: FunnelStage;
   action: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   timestamp?: Date;
 }
 
@@ -27,7 +27,7 @@ class FunnelTracker {
   /**
    * Track funnel stage progression
    */
-  async trackStage(stage: FunnelStage, properties?: Record<string, any>) {
+  async trackStage(stage: FunnelStage, properties?: Record<string, unknown>) {
     const previousStage = this.currentStage;
     this.currentStage = stage;
     
@@ -59,7 +59,7 @@ class FunnelTracker {
   /**
    * Track stage-specific events
    */
-  private async trackStageSpecificEvent(stage: FunnelStage, properties?: Record<string, any>) {
+  private async trackStageSpecificEvent(stage: FunnelStage, properties?: Record<string, unknown>) {
     switch (stage) {
       case 'awareness':
         await analytics.trackEvent('funnel_awareness', {
@@ -106,7 +106,7 @@ class FunnelTracker {
   /**
    * Track conversion (purchase completion)
    */
-  async trackConversion(plan: string, price: number, metadata?: Record<string, any>) {
+  async trackConversion(plan: string, price: number, metadata?: Record<string, unknown>) {
     await this.trackStage('purchase', {
       plan,
       price,

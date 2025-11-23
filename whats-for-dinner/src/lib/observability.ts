@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import { logger } from './logger';
 import { monitoringSystem } from './monitoring';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('observability-ts');
 interface LogEntry {
   id: string;
   level: 'debug' | 'info' | 'warn' | 'error' | 'fatal';
@@ -95,7 +97,7 @@ class ObservabilitySystem {
 
       return traceId;
     } catch (error) {
-      console.error('Failed to start trace:', error);
+      logger.error('Failed to start trace:', { error });
       return '';
     }
   }
@@ -142,7 +144,7 @@ class ObservabilitySystem {
 
       return spanId;
     } catch (error) {
-      console.error('Failed to start span:', error);
+      logger.error('Failed to start span:', { error });
       return '';
     }
   }
@@ -155,7 +157,7 @@ class ObservabilitySystem {
     try {
       const span = this.activeSpans.get(spanId);
       if (!span) {
-        console.warn(`Span ${spanId} not found`);
+        logger.warn('Span ${spanId} not found');
         return;
       }
 
@@ -195,7 +197,7 @@ class ObservabilitySystem {
       // Remove from active spans
       this.activeSpans.delete(spanId);
     } catch (error) {
-      console.error('Failed to finish span:', error);
+      logger.error('Failed to finish span:', { error });
     }
   }
 
@@ -206,7 +208,7 @@ class ObservabilitySystem {
     try {
       const trace = this.activeTraces.get(traceId);
       if (!trace) {
-        console.warn(`Trace ${traceId} not found`);
+        logger.warn('Trace ${traceId} not found');
         return;
       }
 
@@ -236,7 +238,7 @@ class ObservabilitySystem {
       // Remove from active traces
       this.activeTraces.delete(traceId);
     } catch (error) {
-      console.error('Failed to finish trace:', error);
+      logger.error('Failed to finish trace:', { error });
     }
   }
 
@@ -249,7 +251,7 @@ class ObservabilitySystem {
     try {
       const span = this.activeSpans.get(spanId);
       if (!span) {
-        console.warn(`Span ${spanId} not found`);
+        logger.warn('Span ${spanId} not found');
         return;
       }
 
@@ -278,7 +280,7 @@ class ObservabilitySystem {
         'tracing'
       );
     } catch (error) {
-      console.error('Failed to add span log:', error);
+      logger.error('Failed to add span log:', { error });
     }
   }
 
@@ -286,7 +288,7 @@ class ObservabilitySystem {
     try {
       const span = this.activeSpans.get(spanId);
       if (!span) {
-        console.warn(`Span ${spanId} not found`);
+        logger.warn('Span ${spanId} not found');
         return;
       }
 
@@ -304,7 +306,7 @@ class ObservabilitySystem {
         'tracing'
       );
     } catch (error) {
-      console.error('Failed to add span tag:', error);
+      logger.error('Failed to add span tag:', { error });
     }
   }
 
@@ -324,7 +326,7 @@ class ObservabilitySystem {
         metadata: span.metadata,
       });
     } catch (error) {
-      console.error('Failed to store span:', error);
+      logger.error('Failed to store span:', { error });
     }
   }
 
@@ -343,7 +345,7 @@ class ObservabilitySystem {
         metadata: trace.metadata,
       });
     } catch (error) {
-      console.error('Failed to store trace:', error);
+      logger.error('Failed to store trace:', { error });
     }
   }
 
@@ -386,7 +388,7 @@ class ObservabilitySystem {
         'logging'
       );
     } catch (error) {
-      console.error('Failed to log:', error);
+      logger.error('Failed to log:', { error });
     }
   }
 
@@ -407,7 +409,7 @@ class ObservabilitySystem {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('Failed to record performance metric:', error);
+      logger.error('Failed to record performance metric:', { error });
     }
   }
 
@@ -438,7 +440,7 @@ class ObservabilitySystem {
         context,
       });
     } catch (err) {
-      console.error('Failed to track error:', err);
+      logger.error('Failed to track error:', { err });
     }
   }
 
@@ -499,7 +501,7 @@ class ObservabilitySystem {
 
       return data || [];
     } catch (error) {
-      console.error('Failed to get traces:', error);
+      logger.error('Failed to get traces:', { error });
       return [];
     }
   }
@@ -518,7 +520,7 @@ class ObservabilitySystem {
 
       return data || [];
     } catch (error) {
-      console.error('Failed to get spans:', error);
+      logger.error('Failed to get spans:', { error });
       return [];
     }
   }
@@ -566,7 +568,7 @@ class ObservabilitySystem {
 
       return data || [];
     } catch (error) {
-      console.error('Failed to get logs:', error);
+      logger.error('Failed to get logs:', { error });
       return [];
     }
   }
@@ -606,7 +608,7 @@ class ObservabilitySystem {
 
       return data || [];
     } catch (error) {
-      console.error('Failed to get errors:', error);
+      logger.error('Failed to get errors:', { error });
       return [];
     }
   }
@@ -614,7 +616,7 @@ class ObservabilitySystem {
   // Health Checks
   async getSystemHealth(): Promise<{
     status: 'healthy' | 'degraded' | 'unhealthy';
-    components: Record<string, any>;
+    components: Record<string, unknown>;
     metrics: any;
   }> {
     try {
@@ -642,7 +644,7 @@ class ObservabilitySystem {
         metrics: health.metrics,
       };
     } catch (error) {
-      console.error('Failed to get system health:', error);
+      logger.error('Failed to get system health:', { error });
       return {
         status: 'unhealthy',
         components: {},

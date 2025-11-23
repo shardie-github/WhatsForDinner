@@ -323,9 +323,7 @@ class SecretsManager {
         if (policy && policy.autoRotate) {
                     await this.rotateSecret(secret.key, secret.environment);
         } else {
-          if (process.env.NODE_ENV === 'development') { console.warn(
-            `Secret ${secret.key} is due for rotation but auto-rotation is disabled`
-          ); }
+          if (process.env.NODE_ENV === 'development') { logger.warn('Secret ${secret.key} is due for rotation but auto-rotation is disabled'); }
         }
       }
     } catch (error) {
@@ -387,7 +385,7 @@ export function validateEnvironmentVariables(): {
 }
 
 // Redact sensitive information from logs
-export function redactSensitiveData(data: any): any {
+export function redactSensitiveData(data: any): unknown {
   const sensitiveKeys = [
     'password',
     'secret',

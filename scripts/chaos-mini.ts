@@ -13,6 +13,7 @@ import { createClient } from '@supabase/supabase-js';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 
+const logger = createComponentLogger('chaos-mini-ts');
 interface ChaosConfig {
   max_duration_seconds: number;
   failure_rate: number; // 0.0 to 1.0
@@ -362,6 +363,7 @@ class ChaosMini {
     // Ensure REPORTS directory exists
     const { execSync } = await import('child_process');
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
     execSync('mkdir -p REPORTS', { stdio: 'inherit' });
     
     writeFileSync(filepath, JSON.stringify(report, null, 2));
@@ -396,25 +398,25 @@ import { secretsManager } from './secrets-manager-unified.mjs';
       await this.saveChaosReport(report);
       
       // Log results
-      console.log(`Chaos testing completed: ${report.passedTests.length}/${tests.length} tests passed`);
+      logger.info('Chaos testing completed: ${report.passedTests.length}/${tests.length} tests passed');
       
       tests.forEach(test => {
         const status = test.passed ? '✅' : '❌';
-        console.log(`${status} ${test.name}`);
+        logger.info('${status} ${test.name}');
         if (test.error) {
-          console.log(`  Error: ${test.error}`);
+          logger.info('  Error: ${test.error}');
         }
       });
       
       if (report.recommendations.length > 0) {
-        console.log('\nRecommendations:');
-        report.recommendations.forEach(rec => console.log(`  - ${rec}`));
+        logger.info('\nRecommendations:');
+        report.recommendations.forEach(rec => logger.info('  - ${rec}'));
       }
       
       return report;
       
     } catch (error) {
-      console.error('❌ Chaos testing failed:', error);
+      logger.error('❌ Chaos testing failed:', { error });
       throw error;
     }
   }
@@ -430,9 +432,9 @@ async function main() {
   const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('❌ Missing required environment variables:');
-    console.error('  - NEXT_PUBLIC_SUPABASE_URL');
-    console.error('  - SUPABASE_SERVICE_ROLE_KEY');
+    logger.error('❌ Missing required environment variables:');
+    logger.error('  - NEXT_PUBLIC_SUPABASE_URL');
+    logger.error('  - SUPABASE_SERVICE_ROLE_KEY');
     process.exit(1);
   }
 
@@ -452,7 +454,7 @@ async function main() {
     }
     
   } catch (error) {
-    console.error('Fatal error during chaos testing:', error);
+    logger.error('Fatal error during chaos testing:', { error });
     process.exit(1);
   }
 }
@@ -460,7 +462,7 @@ async function main() {
 // Run if called directly
 if (require.main === module) {
   main().catch(error => {
-    console.error('Fatal error:', error);
+    logger.error('Fatal error:', { error });
     process.exit(1);
   });
 }

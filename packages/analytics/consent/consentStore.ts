@@ -5,7 +5,9 @@
 
 import { ConsentModel, ConsentState } from './consentModel';
 import { Platform } from 'react-native';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('consentstore-ts');
 export type ConsentEvent = 
   | { type: 'consent_state_changed'; state: ConsentState }
   | { type: 'age_gate_completed'; isMinor: boolean }
@@ -216,7 +218,7 @@ export class ConsentStore {
         }
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { console.warn('Failed to load consent state:', error); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('Failed to load consent state:', { error }); }
     }
   }
   
@@ -280,7 +282,7 @@ class WebConsentStorage implements ConsentStorage {
       
       return null;
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { console.warn('Failed to read from storage:', error); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('Failed to read from storage:', { error }); }
       return null;
     }
   }
@@ -328,7 +330,7 @@ class MobileConsentStorage implements ConsentStorage {
     try {
       this.SecureStore = require('expo-secure-store');
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { console.warn('expo-secure-store not available, using fallback'); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('expo-secure-store not available', { using fallback' }); }
     }
   }
   
@@ -342,7 +344,7 @@ class MobileConsentStorage implements ConsentStorage {
       const AsyncStorage = require('@react-native-async-storage/async-storage');
       return await AsyncStorage.getItem(key);
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { console.warn('Failed to read from secure storage:', error); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('Failed to read from secure storage:', { error }); }
       return null;
     }
   }

@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabaseClient';
 import { openai } from '@/lib/openaiClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -102,7 +104,7 @@ Respond to the user's message and provide 3-5 relevant quick reply options.`;
     });
 
   } catch (error) {
-    console.error('Chat API error:', error);
+    logger.error('Chat API error:', { error });
     return NextResponse.json(
       { error: 'Failed to process message' },
       { status: 500 }
@@ -197,6 +199,6 @@ async function logConversation(data: {
         },
       ]);
   } catch (error) {
-    console.error('Failed to log conversation:', error);
+    logger.error('Failed to log conversation:', { error });
   }
 }

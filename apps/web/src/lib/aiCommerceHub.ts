@@ -183,7 +183,7 @@ export class AICommerceHub {
   /**
    * Reconcile invoices and payments
    */
-  async reconcileInvoices(tenantId: string, period: string): Promise<any> {
+  async reconcileInvoices(tenantId: string, period: string): Promise<unknown> {
     try {
       const periodDays = this.parsePeriod(period);
       const startDate = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000);
@@ -453,7 +453,7 @@ export class AICommerceHub {
   /**
    * Calculate subscription revenue
    */
-  private calculateSubscriptionRevenue(subscriptions: any[]): number {
+  private calculateSubscriptionRevenue(subscriptions: unknown[]): number {
     return subscriptions.reduce((sum, sub) => {
       const planPrices = { pro: 9.99, family: 19.99 };
       return sum + (planPrices[sub.plan as keyof typeof planPrices] || 0);
@@ -463,7 +463,7 @@ export class AICommerceHub {
   /**
    * Calculate cost breakdown by AI provider
    */
-  private calculateCostBreakdown(apiUsage: any[]): {
+  private calculateCostBreakdown(apiUsage: unknown[]): {
     openai: number;
     anthropic: number;
     google: number;
@@ -487,7 +487,7 @@ export class AICommerceHub {
   private async calculateTrends(
     tenantId: string,
     periodDays: number
-  ): Promise<any> {
+  ): Promise<unknown> {
     // This would calculate actual trends from historical data
     return {
       revenueGrowth: 0.15,
@@ -563,7 +563,7 @@ export class AICommerceHub {
     tenantId: string,
     startDate: Date,
     endDate: Date
-  ): Promise<any> {
+  ): Promise<unknown> {
     // This would integrate with actual Stripe API
     return {
       totalRevenue: 1000,

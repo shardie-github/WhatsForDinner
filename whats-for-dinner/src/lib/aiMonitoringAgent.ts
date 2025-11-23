@@ -299,7 +299,7 @@ export class AIMonitoringAgent {
   /**
    * Collect comprehensive system metrics
    */
-  private async collectSystemMetrics(): Promise<Record<string, any>> {
+  private async collectSystemMetrics(): Promise<Record<string, unknown>> {
     const traceId = await observabilitySystem.startTrace('collect_system_metrics');
     
     try {
@@ -330,7 +330,7 @@ export class AIMonitoringAgent {
   /**
    * Detect anomalies in system metrics
    */
-  private async detectAnomalies(metrics: Record<string, any>): Promise<AnomalyDetection[]> {
+  private async detectAnomalies(metrics: Record<string, unknown>): Promise<AnomalyDetection[]> {
     const anomalies: AnomalyDetection[] = [];
 
     // Check error rate

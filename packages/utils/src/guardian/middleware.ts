@@ -5,7 +5,9 @@
 
 import { Guardian } from './core';
 import type { DataScope, DataClass } from './types';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('middleware-ts');
 export interface TelemetryEvent {
   userId: string;
   type: string;
@@ -94,7 +96,7 @@ export class GuardianMiddleware {
       // Mask or redact data if needed
       if (event.guardianAction === 'mask' || event.guardianAction === 'redact') {
         // Data masking would happen here
-        if (process.env.NODE_ENV === 'development') { console.warn('Guardian masked/redacted data:', event.explanation); }
+        if (process.env.NODE_ENV === 'development') { logger.warn('Guardian masked/redacted data:', { event.explanation }); }
       }
 
       return apiCall();

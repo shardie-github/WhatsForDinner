@@ -452,7 +452,7 @@ class ObservabilitySystem {
         context,
       });
     } catch (err) {
-      console.error('Failed to track error:', err);
+      logger.error('Failed to track error:', { err });
     }
   }
 
@@ -628,7 +628,7 @@ class ObservabilitySystem {
   // Health Checks
   async getSystemHealth(): Promise<{
     status: 'healthy' | 'degraded' | 'unhealthy';
-    components: Record<string, any>;
+    components: Record<string, unknown>;
     metrics: any;
   }> {
     try {

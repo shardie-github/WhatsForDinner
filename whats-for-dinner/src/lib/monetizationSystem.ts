@@ -176,7 +176,7 @@ export interface RevenueTransaction {
   partnerId?: string;
   userId: string;
   description: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   timestamp: string;
   status: 'pending' | 'completed' | 'failed' | 'refunded';
 }

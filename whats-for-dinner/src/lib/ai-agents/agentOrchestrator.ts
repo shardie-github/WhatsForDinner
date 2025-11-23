@@ -5,7 +5,9 @@
 
 import { openai } from '../openaiClient';
 import { createClient } from '../supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('agentorchestrator-ts');
 export interface AIAgent {
   id: string;
   name: string;
@@ -36,14 +38,14 @@ export type AgentType =
 export interface AgentTool {
   name: string;
   description: string;
-  parameters: Record<string, any>;
-  function: (params: any) => Promise<any>;
+  parameters: Record<string, unknown>;
+  function: (params: any) => Promise<unknown>;
 }
 
 export interface AgentMemory {
   userId: string;
-  context: Record<string, any>;
-  preferences: Record<string, any>;
+  context: Record<string, unknown>;
+  preferences: Record<string, unknown>;
   history: AgentInteraction[];
   lastUpdated: string;
 }
@@ -55,7 +57,7 @@ export interface AgentInteraction {
   input: string;
   output: string;
   timestamp: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface AgentPackage {
@@ -324,7 +326,7 @@ class AgentOrchestrator {
         .filter(Boolean) as AIAgent[];
 
     } catch (error) {
-      console.error('Error getting user agents:', error);
+      logger.error('Error getting user agents:', { error });
       return this.getAgentsByPackage('basic');
     }
   }
@@ -348,7 +350,7 @@ class AgentOrchestrator {
     agentId: string, 
     userId: string, 
     input: string, 
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): Promise<string> {
     const agent = this.getAgent(agentId);
     if (!agent) {
@@ -385,7 +387,7 @@ class AgentOrchestrator {
   /**
    * Execute agent with tools
    */
-  private async executeAgentWithTools(agent: AIAgent, context: Record<string, any>): Promise<string> {
+  private async executeAgentWithTools(agent: AIAgent, context: Record<string, unknown>): Promise<string> {
     const messages = [
       { role: 'system', content: agent.systemPrompt },
       { role: 'user', content: context.user_input }
@@ -466,7 +468,7 @@ class AgentOrchestrator {
   private async updateUserMemory(
     agentId: string, 
     userId: string, 
-    context: Record<string, any>, 
+    context: Record<string, unknown>, 
     response: string
   ): Promise<void> {
     try {
@@ -487,7 +489,7 @@ class AgentOrchestrator {
           last_updated: memory.lastUpdated
         });
     } catch (error) {
-      console.error('Error updating user memory:', error);
+      logger.error('Error updating user memory:', { error });
     }
   }
 
@@ -499,7 +501,7 @@ class AgentOrchestrator {
     userId: string,
     input: string,
     output: string,
-    metadata: Record<string, any>
+    metadata: Record<string, unknown>
   ): Promise<void> {
     try {
       await this.supabase
@@ -513,7 +515,7 @@ class AgentOrchestrator {
           created_at: new Date().toISOString()
         });
     } catch (error) {
-      console.error('Error saving interaction:', error);
+      logger.error('Error saving interaction:', { error });
     }
   }
 
@@ -592,7 +594,7 @@ class AgentOrchestrator {
 
       return true;
     } catch (error) {
-      console.error('Error purchasing agent package:', error);
+      logger.error('Error purchasing agent package:', { error });
       return false;
     }
   }

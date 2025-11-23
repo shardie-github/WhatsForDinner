@@ -20,7 +20,9 @@ import { join, dirname } from 'path';
 import { promisify } from 'util';
 import { gzip } from 'zlib';
 import { logger } from '../../packages/server/src/observability/index.js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('backup-run-ts');
 const gzipAsync = promisify(gzip);
 
 interface BackupConfig {
@@ -379,11 +381,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   runner
     .run()
     .then((result) => {
-      console.log(`Backup ${result.success ? 'completed' : 'failed'}`);
+      logger.info('Backup ${result.success ? 'completed' : 'failed'}');
       process.exit(result.success ? 0 : 1);
     })
     .catch((error) => {
-      console.error('Backup failed:', error);
+      logger.error('Backup failed:', { error });
       process.exit(1);
     });
 }

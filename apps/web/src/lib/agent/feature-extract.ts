@@ -12,7 +12,7 @@ export async function computeSignalsForUser(userId: string, window: "1d"|"7d"|"3
     .eq("user_id", userId)
     .gte("ts", new Date(Date.now() - windowMs(window)).toISOString());
 
-  const signals: { k: string; v: number; meta?: any }[] = [];
+  const signals: { k: string; v: number; meta?: unknown }[] = [];
   if (!events || !events.length) return signals;
 
   const clicks = events.filter(e => e.type === "click");
@@ -44,7 +44,7 @@ export async function computeSignalsForUser(userId: string, window: "1d"|"7d"|"3
 
 const windowMs = (w: "1d"|"7d"|"30d") => ({ "1d": 86400000, "7d": 604800000, "30d": 2592000000 }[w]);
 
-function countRageClicks(clicks: any[]) {
+function countRageClicks(clicks: unknown[]) {
   // naive heuristic: ≥4 clicks on same path within 2s
   const byPath: Record<string, number[]> = {};
   clicks.forEach(c => {

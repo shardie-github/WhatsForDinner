@@ -1,9 +1,11 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 /**
  * Feature Flags Service
  * Centralized feature flag management for release engineering
  */
 
+const logger = createComponentLogger('feature-flags-ts');
 export interface FeatureFlag {
   description: string;
   environments: Record<string, boolean>;
@@ -60,7 +62,7 @@ class FeatureFlagsService {
       const config = await response.json();
       this.loadFlags(config.flags);
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { console.warn('Failed to refresh feature flags:', error); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('Failed to refresh feature flags:', { error }); }
     }
   }
 

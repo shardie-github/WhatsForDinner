@@ -253,7 +253,7 @@ Variant 3: [post content]`;
         .single();
 
       if (fetchError) {
-        console.error('Error fetching current metrics:', fetchError);
+        logger.error('Error fetching current metrics:', { fetchError });
         return;
       }
 
@@ -286,7 +286,7 @@ Variant 3: [post content]`;
         .eq('id', variantId);
 
       if (updateError) {
-        console.error('Error updating copy metrics:', updateError);
+        logger.error('Error updating copy metrics:', { updateError });
         throw updateError;
       }
     } catch (error) {
@@ -528,7 +528,7 @@ Variant 3: [post content]`;
   static async generateCopyForUseCase(
     useCase: string,
     contentType: CopyVariant['content_type'],
-    context: Record<string, any>
+    context: Record<string, unknown>
   ): Promise<string> {
     try {
       const prompt = `Generate ${contentType} for the following use case:

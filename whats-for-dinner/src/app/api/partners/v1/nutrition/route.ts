@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { partnerAPIGateway } from '@/lib/partner-api/apiGateway';
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 const NutritionAnalysisSchema = z.object({
   ingredients: z.array(z.object({
     name: z.string(),
@@ -72,7 +74,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('API error:', error);
+    logger.error('API error:', { error });
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -187,7 +189,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('API error:', error);
+    logger.error('API error:', { error });
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -228,7 +230,7 @@ async function analyzeNutrition(ingredients: Array<{name: string, amount: number
   };
 
   // Mock nutrition data for common ingredients
-  const nutritionDatabase: Record<string, any> = {
+  const nutritionDatabase: Record<string, unknown> = {
     'chicken breast': { calories: 165, protein: 31, carbs: 0, fat: 3.6, fiber: 0, sugar: 0, sodium: 74, cholesterol: 85, saturated_fat: 1, trans_fat: 0, vitamin_a: 0, vitamin_c: 0, calcium: 15, iron: 1 },
     'brown rice': { calories: 111, protein: 2.6, carbs: 23, fat: 0.9, fiber: 1.8, sugar: 0.4, sodium: 5, cholesterol: 0, saturated_fat: 0.2, trans_fat: 0, vitamin_a: 0, vitamin_c: 0, calcium: 20, iron: 0.8 },
     'broccoli': { calories: 34, protein: 2.8, carbs: 7, fat: 0.4, fiber: 2.6, sugar: 1.5, sodium: 33, cholesterol: 0, saturated_fat: 0.1, trans_fat: 0, vitamin_a: 567, vitamin_c: 89, calcium: 47, iron: 0.7 },

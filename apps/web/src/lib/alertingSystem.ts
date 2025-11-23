@@ -193,7 +193,7 @@ class AlertingSystem {
     // Email notifications
     if (this.alertChannels.email && this.alertChannels.email.length > 0) {
       // Implement email sending
-      console.log(`Sending email alert to ${this.alertChannels.email.join(', ')}`);
+      logger.info('Sending email alert to ${this.alertChannels.email.join(', { ' })}`);
     }
 
     // Slack notifications

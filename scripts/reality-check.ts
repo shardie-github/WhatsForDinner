@@ -15,7 +15,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { PrismaClient } from '@prisma/client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('reality-check-ts');
 interface CheckResult {
   name: string;
   passed: boolean;
@@ -28,9 +30,9 @@ const results: CheckResult[] = [];
 function addResult(result: CheckResult) {
   results.push(result);
   const icon = result.passed ? '✅' : '❌';
-  console.log(`${icon} ${result.name}${result.error ? `: ${result.error}` : ''}`);
+  logger.info('${icon} ${result.name}${result.error ? `: ${result.error}` : ''}');
   if (result.details) {
-    console.log(`   Details:`, result.details);
+    logger.info('   Details:', { result.details });
   }
 }
 
@@ -285,7 +287,7 @@ async function checkStorage(): Promise<boolean> {
 }
 
 async function main() {
-  console.log('🔍 Running Reality Check...\n');
+  logger.info('🔍 Running Reality Check...\n');
 
   const checks = [
     checkEnvVars(),
@@ -302,14 +304,14 @@ async function main() {
   const results = await Promise.all(checks);
   const allPassed = results.every((r) => r);
 
-  console.log('\n' + '='.repeat(50));
-  console.log(allPassed ? '✅ ALL CHECKS PASSED' : '❌ SOME CHECKS FAILED');
-  console.log('='.repeat(50));
+  logger.info('\n' + '='.repeat(50'));
+  logger.info('allPassed ? '✅ ALL CHECKS PASSED' : '❌ SOME CHECKS FAILED');
+  logger.info('='.repeat(50'));
 
   process.exit(allPassed ? 0 : 1);
 }
 
 main().catch((error) => {
-  console.error('Fatal error:', error);
+  logger.error('Fatal error:', { error });
   process.exit(1);
 });

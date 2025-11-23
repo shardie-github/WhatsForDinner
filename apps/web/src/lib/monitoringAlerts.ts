@@ -213,7 +213,7 @@ export function shouldTriggerAlert(
 export async function sendAlert(
   alert: AlertThreshold,
   metricValue: number,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): Promise<void> {
   const config = loadMonitoringConfig();
   const message = `?? ${alert.severity.toUpperCase()}: ${alert.metric} = ${metricValue} (threshold: ${alert.threshold})`;
@@ -244,7 +244,7 @@ async function sendSlackAlert(
   config: NonNullable<MonitoringConfig['notificationChannels']['slack']>,
   alert: AlertThreshold,
   message: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): Promise<void> {
   const channel = config.channels[alert.severity];
   
@@ -274,13 +274,13 @@ async function sendEmailAlert(
   config: NonNullable<MonitoringConfig['notificationChannels']['email']>,
   alert: AlertThreshold,
   message: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): Promise<void> {
   // Email sending would be implemented using nodemailer or similar
   // This is a placeholder implementation
-  console.log(`[Email Alert: ${alert.metric}]`, {
+  logger.info('[Email Alert: ${alert.metric}]', { {
     subject: `[${alert.severity}] Alert: ${alert.metric}`,
-    body: `${message}\n\nMetadata: ${JSON.stringify(metadata, null, 2)}`,
+    body: `${message}\n\nMetadata: ${JSON.stringify(metadata, null, 2 })}`,
   });
 }
 
@@ -288,7 +288,7 @@ async function sendPagerDutyAlert(
   config: NonNullable<MonitoringConfig['notificationChannels']['pagerduty']>,
   alert: AlertThreshold,
   message: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): Promise<void> {
   try {
     await fetch('https://events.pagerduty.com/v2/enqueue', {

@@ -3,7 +3,9 @@
  */
 
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('lintfix-ts');
 export async function runLintFix(options: { check?: boolean }) {
   
   try {
@@ -16,7 +18,7 @@ export async function runLintFix(options: { check?: boolean }) {
 
         process.exit(0);
   } catch (error) {
-    console.error('\n❌ Linting failed');
+    logger.error('\n❌ Linting failed');
     process.exit(1);
   }
 }

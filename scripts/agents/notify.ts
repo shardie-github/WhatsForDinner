@@ -12,7 +12,9 @@
  */
 
 import { logger } from '../lib/logger';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('notify-ts');
 const WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 const MESSAGE = process.argv.find((arg) => arg.startsWith('--message='))?.split('=')[1] || 'System notification';
 
@@ -35,15 +37,15 @@ async function notify() {
         logger.info('✅ Notification sent to Slack');
       } else {
         logger.warn(`⚠️  Slack notification failed: ${response.statusText}`);
-        console.log(`[NOTIFICATION] ${MESSAGE}`);
+        logger.info('[NOTIFICATION] ${MESSAGE}');
       }
     } catch (error) {
       logger.warn(`⚠️  Slack notification error: ${(error as Error).message}`);
-      console.log(`[NOTIFICATION] ${MESSAGE}`);
+      logger.info('[NOTIFICATION] ${MESSAGE}');
     }
   } else {
     // Print to console
-    console.log(`[NOTIFICATION] ${MESSAGE}`);
+    logger.info('[NOTIFICATION] ${MESSAGE}');
     logger.info('Notification printed to console (SLACK_WEBHOOK_URL not set)');
   }
 }

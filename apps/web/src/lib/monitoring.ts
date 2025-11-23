@@ -531,7 +531,7 @@ class MonitoringSystem {
 
   async getHealthStatus(): Promise<{
     status: 'healthy' | 'degraded' | 'unhealthy';
-    metrics: Record<string, any>;
+    metrics: Record<string, unknown>;
     alerts: Alert[];
   }> {
     try {

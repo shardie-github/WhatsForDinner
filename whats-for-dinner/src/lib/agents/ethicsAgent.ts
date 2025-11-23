@@ -40,7 +40,7 @@ export class EthicsAgent extends BaseAgent {
   private safetyViolations: SafetyViolation[] = [];
   private complianceChecks: ComplianceCheck[] = [];
   private ethicalGuidelines: EthicalGuideline[] = [];
-  private threatSimulationResults: any[] = [];
+  private threatSimulationResults: unknown[] = [];
 
   constructor() {
     const config: AgentConfig = {
@@ -558,7 +558,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Analyze bias in specific output
    */
-  private async analyzeBias(output: any): Promise<any> {
+  private async analyzeBias(output: any): Promise<unknown> {
     // In a real implementation, this would use bias detection algorithms
     return {
       detected: false,
@@ -571,7 +571,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Mitigate detected bias
    */
-  private async mitigateBias(biasDetections: any[]): Promise<void> {
+  private async mitigateBias(biasDetections: unknown[]): Promise<void> {
     logger.info('Mitigating detected bias', { count: biasDetections.length });
     // In a real implementation, this would implement bias mitigation strategies
   }
@@ -579,7 +579,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Validate user inputs for safety
    */
-  private async validateUserInputs(inputs: any[]): Promise<any> {
+  private async validateUserInputs(inputs: unknown[]): Promise<unknown> {
     // In a real implementation, this would validate actual inputs
     return {
       validated: inputs.length,
@@ -591,7 +591,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Detect harmful patterns in content
    */
-  private async detectHarmfulPatterns(content: any): Promise<any> {
+  private async detectHarmfulPatterns(content: any): Promise<unknown> {
     // In a real implementation, this would use pattern matching and ML
     return {
       detected: false,
@@ -603,7 +603,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Implement safety measures
    */
-  private async implementSafetyMeasures(): Promise<any> {
+  private async implementSafetyMeasures(): Promise<unknown> {
     // In a real implementation, this would implement actual safety measures
     return {
       inputSanitization: true,
@@ -616,7 +616,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Perform behavior audit
    */
-  private async performBehaviorAudit(behaviorLog: any[]): Promise<any[]> {
+  private async performBehaviorAudit(behaviorLog: unknown[]): Promise<any[]> {
     // In a real implementation, this would audit actual behavior logs
     return behaviorLog.map(entry => ({
       ...entry,
@@ -628,7 +628,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Address ethical violations
    */
-  private async addressEthicalViolations(violations: any[]): Promise<void> {
+  private async addressEthicalViolations(violations: unknown[]): Promise<void> {
     logger.warn('Addressing ethical violations', { count: violations.length });
     // In a real implementation, this would implement corrective measures
   }
@@ -636,7 +636,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Simulate specific threat scenario
    */
-  private async simulateThreat(scenario: string): Promise<any> {
+  private async simulateThreat(scenario: string): Promise<unknown> {
     // In a real implementation, this would simulate actual threats
     return {
       scenario,
@@ -650,7 +650,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Analyze threat simulation results
    */
-  private async analyzeThreatSimulationResults(results: any[]): Promise<void> {
+  private async analyzeThreatSimulationResults(results: unknown[]): Promise<void> {
     logger.info('Analyzing threat simulation results', { results });
     // In a real implementation, this would analyze results and improve defenses
   }
@@ -661,7 +661,7 @@ export class EthicsAgent extends BaseAgent {
   private async checkGuidelineViolation(
     guideline: EthicalGuideline,
     action: any
-  ): Promise<any> {
+  ): Promise<unknown> {
     // In a real implementation, this would check actual violations
     return null;
   }
@@ -712,7 +712,7 @@ export class EthicsAgent extends BaseAgent {
   /**
    * Validate single AI output
    */
-  private async validateSingleOutput(output: any): Promise<any> {
+  private async validateSingleOutput(output: any): Promise<unknown> {
     // In a real implementation, this would validate actual outputs
     return {
       safe: true,

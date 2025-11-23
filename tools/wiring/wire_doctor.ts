@@ -14,6 +14,7 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { readFile } from 'fs/promises';
 
+const logger = createComponentLogger('wire-doctor-ts');
 interface Fix {
   id: string;
   description: string;
@@ -38,6 +39,7 @@ async function checkCSRFHeaders(): Promise<Fix | null> {
       fix: async () => {
         const content = `import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
@@ -213,7 +215,7 @@ CREATE POLICY "Household members can view household meal plans"
 }
 
 async function main() {
-  console.log('Running wire doctor...\n');
+  logger.info('Running wire doctor...\n');
   
   const allFixes: Fix[] = [];
   
@@ -243,7 +245,7 @@ async function main() {
     try {
       await fix.fix();
           } catch (error) {
-      console.error(`? Failed to fix ${fix.id}:`, error);
+      logger.error('? Failed to fix ${fix.id}:', { error });
     }
   }
   
@@ -251,7 +253,7 @@ async function main() {
 
 if (import.meta.url === `file://${process.argv[1]}` || require.main === module) {
   main().catch((error) => {
-    console.error('Fatal error:', error);
+    logger.error('Fatal error:', { error });
     process.exit(1);
   });
 }

@@ -6,7 +6,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import type { GuardianEvent, TrustReport } from './types';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('inspector-ts');
 export class GuardianInspector {
   private logsDir: string;
 
@@ -150,7 +152,7 @@ export class GuardianInspector {
           events.push(event);
         }
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') { console.warn('Failed to parse ledger entry:', error); }
+        if (process.env.NODE_ENV === 'development') { logger.warn('Failed to parse ledger entry:', { error }); }
       }
     }
 

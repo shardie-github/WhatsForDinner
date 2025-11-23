@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
           refundId = refund.id;
         }
       } catch (stripeError) {
-        console.error('Stripe refund error:', stripeError);
+        logger.error('Stripe refund error:', { stripeError });
         return NextResponse.json(
           { error: 'Failed to process refund through payment processor' },
           { status: 500 }

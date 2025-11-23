@@ -7,10 +7,12 @@ import { Guardian } from './core';
 import type { GuardianEvent, TrustReport } from './types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 /**
  * Optimized Guardian with caching
  */
+const logger = createComponentLogger('optimization-ts');
 export class OptimizedGuardian extends Guardian {
   private riskCache: Map<string, { assessment: any; timestamp: number }> = new Map();
   private cacheTTL = 5 * 60 * 1000; // 5 minutes
@@ -110,7 +112,7 @@ export class BatchLedgerWriter {
   private startTimer(): void {
     this.timer = setInterval(() => {
       this.flush().catch(err => {
-        console.error('Batch ledger flush failed:', err);
+        logger.error('Batch ledger flush failed:', { err });
       });
     }, this.flushInterval);
   }

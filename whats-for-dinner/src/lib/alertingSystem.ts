@@ -24,7 +24,7 @@ export interface AlertChannel {
   type: 'slack' | 'email' | 'sms' | 'webhook' | 'pagerduty';
   name: string;
   enabled: boolean;
-  configuration: Record<string, any>;
+  configuration: Record<string, unknown>;
   routingRules: AlertRoutingRule[];
   escalationPolicy?: EscalationPolicy;
 }
@@ -64,7 +64,7 @@ export interface Alert {
   severity: 'low' | 'medium' | 'high' | 'critical';
   category: 'system' | 'performance' | 'security' | 'anomaly' | 'decision' | 'compliance';
   source: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   timestamp: string;
   status: 'pending' | 'sent' | 'failed' | 'acknowledged' | 'resolved';
   channels: string[];
@@ -386,7 +386,7 @@ export class AlertingSystem {
     severity: 'low' | 'medium' | 'high' | 'critical',
     category: 'system' | 'performance' | 'security' | 'anomaly' | 'decision' | 'compliance',
     source: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, unknown> = {},
     suggestedActions: string[] = []
   ): Promise<string> {
     try {
@@ -653,8 +653,8 @@ export class AlertingSystem {
   /**
    * Get field value from alert
    */
-  private getFieldValue(alert: Alert, field: string): any {
-    const fieldMap: Record<string, any> = {
+  private getFieldValue(alert: Alert, field: string): unknown {
+    const fieldMap: Record<string, unknown> = {
       severity: alert.severity,
       category: alert.category,
       source: alert.source,
@@ -960,7 +960,7 @@ export class AlertingSystem {
   /**
    * Render template with data
    */
-  private renderTemplate(template: string, data: Record<string, any>): string {
+  private renderTemplate(template: string, data: Record<string, unknown>): string {
     let rendered = template;
 
     // Simple template rendering

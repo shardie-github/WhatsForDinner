@@ -14,7 +14,7 @@ export interface AIConfig {
   is_active: boolean;
   created_at: string;
   performance_score?: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface PromptTemplate {
@@ -30,7 +30,7 @@ export interface ModelEvaluation {
   response_time_ms: number;
   cost_per_request: number;
   user_satisfaction: number;
-  test_results: Record<string, any>;
+  test_results: Record<string, unknown>;
   evaluated_at: string;
 }
 
@@ -228,13 +228,13 @@ Include detailed nutritional information and health benefits.`,
 
   async evaluateModel(
     modelName: string,
-    testPrompts: Array<{ prompt: string; expectedOutput: any }>
+    testPrompts: Array<{ prompt: string; expectedOutput: unknown }>
   ): Promise<ModelEvaluation | null> {
     try {
       const startTime = Date.now();
       let totalAccuracy = 0;
       let totalCost = 0;
-      const testResults: Record<string, any> = {};
+      const testResults: Record<string, unknown> = {};
 
       // Run test prompts (simplified evaluation)
       for (let i = 0; i < testPrompts.length; i++) {
@@ -284,7 +284,7 @@ Include detailed nutritional information and health benefits.`,
     return evaluations.sort((a, b) => b.accuracy_score - a.accuracy_score);
   }
 
-  private getTestPrompts(): Array<{ prompt: string; expectedOutput: any }> {
+  private getTestPrompts(): Array<{ prompt: string; expectedOutput: unknown }> {
     return [
       {
         prompt: 'Generate a recipe using chicken, rice, and vegetables',
@@ -376,7 +376,7 @@ Include detailed nutritional information and health benefits.`,
     }
   }
 
-  async getPerformanceMetrics(): Promise<Record<string, any>> {
+  async getPerformanceMetrics(): Promise<Record<string, unknown>> {
     try {
       const { data, error } = await supabase
         .from('ai_config')

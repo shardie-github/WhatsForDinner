@@ -8,22 +8,24 @@ import { spawnSync } from 'child_process';
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('enable-all-monetization-ts');
 async function enableAllMonetization() {
-  console.log('🚀 Enabling All Monetization Channels...\n');
+  logger.info('🚀 Enabling All Monetization Channels...\n');
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('❌ Error: Missing SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
+    logger.error('❌ Error: Missing SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
     process.exit(1);
   }
 
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   // Step 1: Run database migrations
-  console.log('📊 Step 1: Running database migrations...');
+  logger.info('📊 Step 1: Running database migrations...');
   const migrationFiles = [
     'apps/web/supabase/migrations/20250109_affiliate_system.sql',
     'apps/web/supabase/migrations/20250109_api_monetization.sql',
@@ -38,23 +40,23 @@ async function enableAllMonetization() {
     for (const file of migrationFiles) {
       const filePath = path.join(process.cwd(), file);
       if (fs.existsSync(filePath)) {
-        console.log(`  → Applying ${file}...`);
+        logger.info('  → Applying ${file}...');
         const result = spawnSync('psql', [dbUrl, '-f', filePath], {
           stdio: 'inherit',
         });
         if (result.status !== 0) {
-          console.log(`  ⚠️  Warning: Migration ${file} failed or already applied`);
+          logger.info('  ⚠️  Warning: Migration ${file} failed or already applied');
         }
       } else {
-        console.log(`  ⚠️  Skipping ${file} (not found)`);
+        logger.info('  ⚠️  Skipping ${file} (not found')`);
       }
     }
   } else {
-    console.log('  ⚠️  DATABASE_URL not set, skipping migrations');
+    logger.info('  ⚠️  DATABASE_URL not set', { skipping migrations' });
   }
 
   // Step 2: Enable monetization settings
-  console.log('\n💰 Step 2: Enabling monetization settings...');
+  logger.info('\n💰 Step 2: Enabling monetization settings...');
   const settings = {
     id: 'default',
     affiliate_enabled: true,
@@ -73,28 +75,28 @@ async function enableAllMonetization() {
 
   if (error) {
     if (error.code === '42P01') {
-      console.log('  ⚠️  monetization_settings table does not exist. Run migrations first.');
-      console.log('  💡 Run: pnpm db:migrate:monetization');
+      logger.info('  ⚠️  monetization_settings table does not exist. Run migrations first.');
+      logger.info('  💡 Run: pnpm db:migrate:monetization');
     } else {
-      console.error('  ❌ Error:', error.message);
+      logger.error('  ❌ Error:', { error.message });
       throw error;
     }
   } else {
-    console.log('  ✅ Monetization settings updated');
+    logger.info('  ✅ Monetization settings updated');
   }
 
   // Step 3: Set environment variables (for reference)
-  console.log('\n🔧 Step 3: Environment variables to set:');
-  console.log('  export AFFILIATE_ENABLED=true');
-  console.log('  export AFFILIATE_COMMISSION_RATE=10');
-  console.log('  export API_MONETIZATION_ENABLED=true');
-  console.log('  export DATA_INSIGHTS_ENABLED=true');
-  console.log('  export MARKETPLACE_ENABLED=true');
-  console.log('  export MARKETPLACE_COMMISSION_RATE=10');
-  console.log('  export AUTOMATED_UPSELLS_ENABLED=true');
+  logger.info('\n🔧 Step 3: Environment variables to set:');
+  logger.info('  export AFFILIATE_ENABLED=true');
+  logger.info('  export AFFILIATE_COMMISSION_RATE=10');
+  logger.info('  export API_MONETIZATION_ENABLED=true');
+  logger.info('  export DATA_INSIGHTS_ENABLED=true');
+  logger.info('  export MARKETPLACE_ENABLED=true');
+  logger.info('  export MARKETPLACE_COMMISSION_RATE=10');
+  logger.info('  export AUTOMATED_UPSELLS_ENABLED=true');
 
   // Step 4: Verify channels
-  console.log('\n✅ Step 4: Verification');
+  logger.info('\n✅ Step 4: Verification');
   const { data: verifySettings } = await supabase
     .from('monetization_settings')
     .select('*')
@@ -102,30 +104,30 @@ async function enableAllMonetization() {
     .single();
 
   if (verifySettings) {
-    console.log('  ✅ Affiliate Program:', verifySettings.affiliate_enabled ? 'Enabled' : 'Disabled');
-    console.log('  ✅ API Monetization:', verifySettings.api_monetization_enabled ? 'Enabled' : 'Disabled');
-    console.log('  ✅ Data Insights:', verifySettings.data_insights_enabled ? 'Enabled' : 'Disabled');
-    console.log('  ✅ Marketplace:', verifySettings.marketplace_enabled ? 'Enabled' : 'Disabled');
-    console.log('  ✅ Automated Upsells:', verifySettings.automated_upsells_enabled ? 'Enabled' : 'Disabled');
+    logger.info('  ✅ Affiliate Program:', { verifySettings.affiliate_enabled ? 'Enabled' : 'Disabled' });
+    logger.info('  ✅ API Monetization:', { verifySettings.api_monetization_enabled ? 'Enabled' : 'Disabled' });
+    logger.info('  ✅ Data Insights:', { verifySettings.data_insights_enabled ? 'Enabled' : 'Disabled' });
+    logger.info('  ✅ Marketplace:', { verifySettings.marketplace_enabled ? 'Enabled' : 'Disabled' });
+    logger.info('  ✅ Automated Upsells:', { verifySettings.automated_upsells_enabled ? 'Enabled' : 'Disabled' });
   }
 
-  console.log('\n🎉 All monetization channels enabled!');
-  console.log('💰 Revenue tracking available at /api/revenue/dashboard');
-  console.log('\n📋 Next steps:');
-  console.log('   1. Verify channels: Check /api/revenue/dashboard');
-  console.log('   2. Set up affiliate links in grocery integrations');
-  console.log('   3. Configure API pricing tiers');
-  console.log('   4. Enable data insights collection');
+  logger.info('\n🎉 All monetization channels enabled!');
+  logger.info('💰 Revenue tracking available at /api/revenue/dashboard');
+  logger.info('\n📋 Next steps:');
+  logger.info('   1. Verify channels: Check /api/revenue/dashboard');
+  logger.info('   2. Set up affiliate links in grocery integrations');
+  logger.info('   3. Configure API pricing tiers');
+  logger.info('   4. Enable data insights collection');
 }
 
 if (require.main === module) {
   enableAllMonetization()
     .then(() => {
-      console.log('\n✅ Monetization enabled successfully');
+      logger.info('\n✅ Monetization enabled successfully');
       process.exit(0);
     })
     .catch((error) => {
-      console.error('\n❌ Failed to enable monetization:', error);
+      logger.error('\n❌ Failed to enable monetization:', { error });
       process.exit(1);
     });
 }

@@ -49,7 +49,7 @@ export class GrowthAnalytics {
     userId: string | null,
     sessionId: string,
     stage: FunnelEvent['funnel_stage'],
-    eventData: Record<string, any> = {},
+    eventData: Record<string, unknown> = {},
     pageUrl?: string,
     utmSource?: string,
     utmMedium?: string,
@@ -133,7 +133,7 @@ export class GrowthAnalytics {
     periodStart: string,
     periodEnd: string,
     cohortDate?: string,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ): Promise<void> {
     try {
       const metricData: GrowthMetricInsert = {
@@ -323,7 +323,7 @@ export class GrowthAnalytics {
         .insert(referralData);
 
       if (insertError) {
-        console.error('Error storing referral:', insertError);
+        logger.error('Error storing referral:', { insertError });
         throw insertError;
       }
 
@@ -428,7 +428,7 @@ export class GrowthAnalytics {
         .lte('timestamp', periodEnd);
 
       if (funnelError) {
-        console.error('Error fetching funnel events:', funnelError);
+        logger.error('Error fetching funnel events:', { funnelError });
         return;
       }
 

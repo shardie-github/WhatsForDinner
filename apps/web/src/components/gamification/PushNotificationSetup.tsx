@@ -58,7 +58,7 @@ export function usePushNotifications() {
         hapticTap();
       }
     } catch (err) {
-      console.error("Push subscription failed:", err);
+      logger.error('Push subscription failed:', { err });
     }
   }
 
@@ -80,7 +80,7 @@ export function usePushNotifications() {
       setIsSubscribed(false);
       setSubscription(null);
     } catch (err) {
-      console.error("Push unsubscription failed:", err);
+      logger.error('Push unsubscription failed:', { err });
     }
   }
 

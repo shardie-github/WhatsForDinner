@@ -1,6 +1,8 @@
 import { supabase } from './supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('aiconfig-ts');
 export interface AIConfig {
   id: string;
   model_name: string;
@@ -10,7 +12,7 @@ export interface AIConfig {
   is_active: boolean;
   created_at: string;
   performance_score?: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface PromptTemplate {
@@ -26,7 +28,7 @@ export interface ModelEvaluation {
   response_time_ms: number;
   cost_per_request: number;
   user_satisfaction: number;
-  test_results: Record<string, any>;
+  test_results: Record<string, unknown>;
   evaluated_at: string;
 }
 
@@ -146,14 +148,14 @@ Include detailed nutritional information and health benefits.`,
         .single();
 
       if (error) {
-        console.error('Failed to fetch current AI config:', error);
+        logger.error('Failed to fetch current AI config:', { error });
         return null;
       }
 
       this.currentConfig = data;
       return data;
     } catch (error) {
-      console.error('Error fetching AI config:', error);
+      logger.error('Error fetching AI config:', { error });
       return null;
     }
   }
@@ -182,14 +184,14 @@ Include detailed nutritional information and health benefits.`,
         .single();
 
       if (error) {
-        console.error('Failed to create AI config:', error);
+        logger.error('Failed to create AI config:', { error });
         return null;
       }
 
       this.currentConfig = data;
       return data;
     } catch (error) {
-      console.error('Error creating AI config:', error);
+      logger.error('Error creating AI config:', { error });
       return null;
     }
   }
@@ -205,7 +207,7 @@ Include detailed nutritional information and health benefits.`,
         .eq('id', configId);
 
       if (error) {
-        console.error('Failed to update AI config:', error);
+        logger.error('Failed to update AI config:', { error });
         return false;
       }
 
@@ -217,20 +219,20 @@ Include detailed nutritional information and health benefits.`,
 
       return true;
     } catch (error) {
-      console.error('Error updating AI config:', error);
+      logger.error('Error updating AI config:', { error });
       return false;
     }
   }
 
   async evaluateModel(
     modelName: string,
-    testPrompts: Array<{ prompt: string; expectedOutput: any }>
+    testPrompts: Array<{ prompt: string; expectedOutput: unknown }>
   ): Promise<ModelEvaluation | null> {
     try {
       const startTime = Date.now();
       let totalAccuracy = 0;
       let totalCost = 0;
-      const testResults: Record<string, any> = {};
+      const testResults: Record<string, unknown> = {};
 
       // Run test prompts (simplified evaluation)
       for (let i = 0; i < testPrompts.length; i++) {
@@ -261,7 +263,7 @@ Include detailed nutritional information and health benefits.`,
 
       return evaluation;
     } catch (error) {
-      console.error('Error evaluating model:', error);
+      logger.error('Error evaluating model:', { error });
       return null;
     }
   }
@@ -280,7 +282,7 @@ Include detailed nutritional information and health benefits.`,
     return evaluations.sort((a, b) => b.accuracy_score - a.accuracy_score);
   }
 
-  private getTestPrompts(): Array<{ prompt: string; expectedOutput: any }> {
+  private getTestPrompts(): Array<{ prompt: string; expectedOutput: unknown }> {
     return [
       {
         prompt: 'Generate a recipe using chicken, rice, and vegetables',
@@ -341,7 +343,7 @@ Include detailed nutritional information and health benefits.`,
   ): Promise<string | null> {
     const template = this.getPromptTemplate(templateName);
     if (!template) {
-      console.error(`Template ${templateName} not found`);
+      logger.error('Template ${templateName} not found');
       return null;
     }
 
@@ -361,18 +363,18 @@ Include detailed nutritional information and health benefits.`,
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Failed to fetch config history:', error);
+        logger.error('Failed to fetch config history:', { error });
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Error fetching config history:', error);
+      logger.error('Error fetching config history:', { error });
       return [];
     }
   }
 
-  async getPerformanceMetrics(): Promise<Record<string, any>> {
+  async getPerformanceMetrics(): Promise<Record<string, unknown>> {
     try {
       const { data, error } = await supabase
         .from('ai_config')
@@ -381,7 +383,7 @@ Include detailed nutritional information and health benefits.`,
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Failed to fetch performance metrics:', error);
+        logger.error('Failed to fetch performance metrics:', { error });
         return {};
       }
 
@@ -395,7 +397,7 @@ Include detailed nutritional information and health benefits.`,
         totalConfigs: data?.length || 0,
       };
     } catch (error) {
-      console.error('Error fetching performance metrics:', error);
+      logger.error('Error fetching performance metrics:', { error });
       return {};
     }
   }

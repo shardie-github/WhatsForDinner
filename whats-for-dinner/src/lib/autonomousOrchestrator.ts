@@ -208,7 +208,7 @@ export class AutonomousOrchestrator {
   /**
    * Execute action by type
    */
-  private async executeActionByType(action: AutonomousAction): Promise<any> {
+  private async executeActionByType(action: AutonomousAction): Promise<unknown> {
     switch (action.type) {
       case 'build':
         return await this.executeBuildAction(action);
@@ -230,7 +230,7 @@ export class AutonomousOrchestrator {
   /**
    * Execute build action
    */
-  private async executeBuildAction(action: AutonomousAction): Promise<any> {
+  private async executeBuildAction(action: AutonomousAction): Promise<unknown> {
     const buildAgent = this.agents.get('buildAgent');
     if (!buildAgent) throw new Error('BuildAgent not available');
 
@@ -273,7 +273,7 @@ export class AutonomousOrchestrator {
   /**
    * Execute optimize action
    */
-  private async executeOptimizeAction(action: AutonomousAction): Promise<any> {
+  private async executeOptimizeAction(action: AutonomousAction): Promise<unknown> {
     const insightAgent = this.agents.get('insightAgent');
     if (!insightAgent) throw new Error('InsightAgent not available');
 
@@ -309,7 +309,7 @@ export class AutonomousOrchestrator {
   /**
    * Execute heal action
    */
-  private async executeHealAction(action: AutonomousAction): Promise<any> {
+  private async executeHealAction(action: AutonomousAction): Promise<unknown> {
     const healAgent = this.agents.get('healAgent');
     if (!healAgent) throw new Error('HealAgent not available');
 
@@ -352,7 +352,7 @@ export class AutonomousOrchestrator {
   /**
    * Execute analyze action
    */
-  private async executeAnalyzeAction(action: AutonomousAction): Promise<any> {
+  private async executeAnalyzeAction(action: AutonomousAction): Promise<unknown> {
     const insightAgent = this.agents.get('insightAgent');
     if (!insightAgent) throw new Error('InsightAgent not available');
 
@@ -388,7 +388,7 @@ export class AutonomousOrchestrator {
   /**
    * Execute learn action
    */
-  private async executeLearnAction(action: AutonomousAction): Promise<any> {
+  private async executeLearnAction(action: AutonomousAction): Promise<unknown> {
     const { learningType } = action.parameters;
 
     switch (learningType) {
@@ -406,7 +406,7 @@ export class AutonomousOrchestrator {
   /**
    * Execute audit action
    */
-  private async executeAuditAction(action: AutonomousAction): Promise<any> {
+  private async executeAuditAction(action: AutonomousAction): Promise<unknown> {
     const { auditType } = action.parameters;
 
     switch (auditType) {
@@ -551,7 +551,7 @@ export class AutonomousOrchestrator {
   /**
    * Get agent status
    */
-  getAgentStatus(agentName: string): any {
+  getAgentStatus(agentName: string): unknown {
     const agent = this.agents.get(agentName);
     return agent ? agent.getStatus() : null;
   }
@@ -559,8 +559,8 @@ export class AutonomousOrchestrator {
   /**
    * Get all agent statuses
    */
-  getAllAgentStatuses(): Record<string, any> {
-    const statuses: Record<string, any> = {};
+  getAllAgentStatuses(): Record<string, unknown> {
+    const statuses: Record<string, unknown> = {};
 
     for (const [name, agent] of this.agents) {
       statuses[name] = agent.getStatus();

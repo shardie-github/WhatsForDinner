@@ -7,12 +7,14 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Guardian } from '@whats-for-dinner/utils/guardian';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('guardian-verify-ts');
 export async function runGuardianVerify(options: { userId?: string }): Promise<void> {
   const logsDir = './guardian/logs';
 
   if (!fs.existsSync(logsDir)) {
-    console.error('❌ Guardian logs directory not found');
+    logger.error('❌ Guardian logs directory not found');
     process.exit(1);
   }
 
@@ -23,9 +25,9 @@ export async function runGuardianVerify(options: { userId?: string }): Promise<v
 
     if (integrity.valid) {
           } else {
-      console.error(`❌ Ledger integrity failed for user ${options.userId}:`);
+      logger.error('❌ Ledger integrity failed for user ${options.userId}:');
       for (const error of integrity.errors) {
-        console.error(`  - ${error}`);
+        logger.error('  - ${error}');
       }
       process.exit(1);
     }
@@ -41,9 +43,9 @@ export async function runGuardianVerify(options: { userId?: string }): Promise<v
 
       if (integrity.valid) {
               } else {
-        console.error(`❌ ${userId}: Failed`);
+        logger.error('❌ ${userId}: Failed');
         for (const error of integrity.errors) {
-          console.error(`  - ${error}`);
+          logger.error('  - ${error}');
         }
         allValid = false;
       }

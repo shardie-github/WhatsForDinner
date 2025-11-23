@@ -8,7 +8,7 @@ type Reco = {
   kind: string; 
   score: number; 
   rationale?: any; 
-  cta?: any 
+  cta?: unknown 
 };
 
 export default function SuggestionsDrawer() {

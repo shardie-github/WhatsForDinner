@@ -120,15 +120,15 @@ async function runSmokeTests() {
   });
   
   // Print results
-  console.log('\n=== Smoke Test Results ===');
+  logger.info('\n=== Smoke Test Results ===');
   results.forEach(result => {
     const status = result.passed ? '✅ PASS' : '❌ FAIL';
-    console.log(`${status} ${result.name} (${result.duration}ms)`);
+    logger.info('${status} ${result.name} (${result.duration}ms')`);
     if (result.error) {
-      console.log(`   Error: ${result.error}`);
+      logger.info('   Error: ${result.error}');
     }
   });
-  console.log(`\nTotal: ${passed}/${results.length} passed in ${totalDuration}ms\n`);
+  logger.info('\nTotal: ${passed}/${results.length} passed in ${totalDuration}ms\n');
   
   // Exit with error code if any tests failed
   if (failed > 0) {

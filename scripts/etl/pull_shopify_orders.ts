@@ -10,7 +10,9 @@
  */
 
 import pg from 'pg';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('pull-shopify-orders-ts');
 const { Pool } = pg;
 
 interface ShopifyOrder {
@@ -153,7 +155,7 @@ async function main() {
   const createdAtMinStr = createdAtMin.toISOString();
 
   if (!isCron) {
-    console.log(`Fetching Shopify orders since ${createdAtMinStr}...`);
+    logger.info('Fetching Shopify orders since ${createdAtMinStr}...');
   }
 
   try {
@@ -166,7 +168,7 @@ async function main() {
 
     if (orders.length === 0) {
       if (!isCron) {
-        console.log('No Shopify orders found for date range.');
+        logger.info('No Shopify orders found for date range.');
       }
       return;
     }
@@ -174,17 +176,17 @@ async function main() {
     await storeOrders(dbUrl, orders);
 
     if (!isCron) {
-      console.log(`✅ Stored ${orders.length} Shopify orders`);
+      logger.info('✅ Stored ${orders.length} Shopify orders');
     }
   } catch (error) {
-    console.error('Error fetching Shopify orders:', error);
+    logger.error('Error fetching Shopify orders:', { error });
     process.exit(1);
   }
 }
 
 if (require.main === module) {
   main().catch((error) => {
-    console.error('Fatal error:', error);
+    logger.error('Fatal error:', { error });
     process.exit(1);
   });
 }

@@ -144,7 +144,7 @@ export class RetentionAutomation {
    */
   private async sendPushNotification(
     userId: string,
-    notification: { title: string; body: string; data?: Record<string, any> }
+    notification: { title: string; body: string; data?: Record<string, unknown> }
   ): Promise<void> {
     const supabase = createClient();
     
@@ -176,7 +176,7 @@ export class RetentionAutomation {
    */
   private async sendEmail(
     userId: string,
-    email: { subject: string; template: string; data?: Record<string, any> }
+    email: { subject: string; template: string; data?: Record<string, unknown> }
   ): Promise<void> {
     const supabase = createClient();
     

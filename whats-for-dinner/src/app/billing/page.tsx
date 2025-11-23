@@ -14,7 +14,9 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, Crown, Users, Zap } from 'lucide-react';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('page-tsx');
 interface TenantData {
   id: string;
   name: string;
@@ -73,7 +75,7 @@ export default function BillingPage() {
         }
       }
     } catch (error) {
-      console.error('Error fetching tenant data:', error);
+      logger.error('Error fetching tenant data:', { error });
     } finally {
       setLoading(false);
     }
@@ -102,7 +104,7 @@ export default function BillingPage() {
         window.location.href = url;
       }
     } catch (error) {
-      console.error('Error creating checkout session:', error);
+      logger.error('Error creating checkout session:', { error });
     } finally {
       setProcessing(null);
     }
@@ -129,7 +131,7 @@ export default function BillingPage() {
         window.location.href = url;
       }
     } catch (error) {
-      console.error('Error creating portal session:', error);
+      logger.error('Error creating portal session:', { error });
     } finally {
       setProcessing(null);
     }

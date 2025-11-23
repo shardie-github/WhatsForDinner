@@ -5,25 +5,27 @@
  */
 
 import { verifyAllAuditLogs } from '../packages/server/src/audit/index.js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('verify-audit-ts');
 async function main() {
   
   const result = await verifyAllAuditLogs();
 
-  console.log(`Verified ${result.total} audit logs`);
-  console.log(`Valid: ${result.valid}, Invalid: ${result.invalid}`);
+  logger.info('Verified ${result.total} audit logs');
+  logger.info('Valid: ${result.valid}', { Invalid: ${result.invalid}` });
       
   if (result.invalid > 0) {
-    console.error('\nInvalid audit log IDs:');
-    result.invalidIds.slice(0, 10).forEach((id) => console.error(`  - ${id}`));
+    logger.error('\nInvalid audit log IDs:');
+    result.invalidIds.slice(0, 10).forEach((id) => logger.error('  - ${id}'));
     process.exit(1);
   } else {
-    console.log('\n✅ All audit logs are valid');
+    logger.info('\n✅ All audit logs are valid');
     process.exit(0);
   }
 }
 
 main().catch((error) => {
-  console.error('Error verifying audit logs:', error);
+  logger.error('Error verifying audit logs:', { error });
   process.exit(1);
 });

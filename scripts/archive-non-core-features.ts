@@ -6,7 +6,9 @@
 
 import fs from 'fs';
 import path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('archive-non-core-features-ts');
 const ARCHIVE_DIR = path.join(process.cwd(), 'archive', 'non-core-features');
 const FEATURES_TO_ARCHIVE = [
   {
@@ -42,7 +44,7 @@ const FEATURES_TO_ARCHIVE = [
 ];
 
 function archiveFeature(feature: { name: string; paths: string[] }) {
-  console.log(`\n📦 Archiving ${feature.name}...`);
+  logger.info('\n📦 Archiving ${feature.name}...');
   
   const featureArchiveDir = path.join(ARCHIVE_DIR, feature.name.toLowerCase().replace(/\s+/g, '-'));
   fs.mkdirSync(featureArchiveDir, { recursive: true });
@@ -87,8 +89,8 @@ These features may be re-enabled in the future when:
     JSON.stringify(manifest, null, 2)
   );
 
-  console.log(`  ✅ Created archive manifest at ${featureArchiveDir}`);
-  console.log(`  📝 Note: Actual files remain in place. Review and manually move if needed.`);
+  logger.info('  ✅ Created archive manifest at ${featureArchiveDir}');
+  logger.info('  📝 Note: Actual files remain in place. Review and manually move if needed.');
 }
 
 function createSimplificationPlan() {
@@ -114,11 +116,11 @@ function createSimplificationPlan() {
 
   const planPath = path.join(ARCHIVE_DIR, 'simplification-plan.json');
   fs.writeFileSync(planPath, JSON.stringify(plan, null, 2));
-  console.log(`\n📋 Simplification plan saved to ${planPath}`);
+  logger.info('\n📋 Simplification plan saved to ${planPath}');
 }
 
 async function main() {
-  console.log('🚀 Starting Product Simplification - Archiving Non-Core Features\n');
+  logger.info('🚀 Starting Product Simplification - Archiving Non-Core Features\n');
 
   // Create archive directory
   fs.mkdirSync(ARCHIVE_DIR, { recursive: true });
@@ -131,23 +133,23 @@ async function main() {
   // Create simplification plan
   createSimplificationPlan();
 
-  console.log('\n✅ Archiving complete!');
-  console.log('\n📋 Next steps:');
-  console.log('   1. Review archived features manifest');
-  console.log('   2. Manually move files if needed (or disable in code)');
-  console.log('   3. Update API documentation');
-  console.log('   4. Simplify onboarding flow');
-  console.log('   5. Focus on core flow: Pantry → Suggestions → List');
+  logger.info('\n✅ Archiving complete!');
+  logger.info('\n📋 Next steps:');
+  logger.info('   1. Review archived features manifest');
+  logger.info('   2. Manually move files if needed (or disable in code')');
+  logger.info('   3. Update API documentation');
+  logger.info('   4. Simplify onboarding flow');
+  logger.info('   5. Focus on core flow: Pantry → Suggestions → List');
 }
 
 if (require.main === module) {
   main()
     .then(() => {
-      console.log('\n✅ Product simplification archiving completed');
+      logger.info('\n✅ Product simplification archiving completed');
       process.exit(0);
     })
     .catch((error) => {
-      console.error('\n❌ Failed to archive features:', error);
+      logger.error('\n❌ Failed to archive features:', { error });
       process.exit(1);
     });
 }

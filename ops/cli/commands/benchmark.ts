@@ -5,7 +5,9 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('benchmark-ts');
 export async function runBenchmark(options: { save?: boolean; compare?: boolean }) {
   
   const resultsDir = path.join(process.cwd(), 'ops', 'reports');
@@ -40,7 +42,7 @@ export async function runBenchmark(options: { save?: boolean; compare?: boolean 
 
         process.exit(0);
   } catch (error) {
-    console.error('\n❌ Benchmarks failed');
+    logger.error('\n❌ Benchmarks failed');
     process.exit(1);
   }
 }

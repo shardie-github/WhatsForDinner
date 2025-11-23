@@ -11,7 +11,7 @@ import { trace, context, SpanStatusCode } from '@opentelemetry/api';
 /**
  * Wrap API route handler with telemetry
  */
-export function withTelemetry<T extends (...args: any[]) => Promise<NextResponse>>(
+export function withTelemetry<T extends (...args: unknown[]) => Promise<NextResponse>>(
   handler: T
 ): T {
   return (async (...args: Parameters<T>) => {

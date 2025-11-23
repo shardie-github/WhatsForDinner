@@ -12,6 +12,7 @@ import { usePantryItems } from '../src/hooks/usePantry';
 import { Recipe } from '@whats-for-dinner/utils';
 import type { Profile, PantryItem } from '../src/types/supabase';
 
+const logger = createComponentLogger('index-tsx');
 export default function HomeScreen() {
   const [user, setUser] = useState<Profile | null>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -39,7 +40,7 @@ export default function HomeScreen() {
       });
       setRecipes(result.recipes);
     } catch (error) {
-      console.error('Error generating recipes:', error);
+      logger.error('Error generating recipes:', { error });
     }
   };
 
@@ -48,7 +49,7 @@ export default function HomeScreen() {
     try {
       await saveRecipeMutation.mutateAsync(recipe);
     } catch (error) {
-      console.error('Error saving recipe:', error);
+      logger.error('Error saving recipe:', { error });
     }
   };
 

@@ -37,7 +37,7 @@ export interface AnomalyDetectionResult {
   severity: 'low' | 'medium' | 'high' | 'critical';
   type: 'point' | 'contextual' | 'collective' | 'pattern';
   algorithm: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   explanation: string;
   suggestedActions: string[];
 }
@@ -45,7 +45,7 @@ export interface AnomalyDetectionResult {
 export interface TimeSeriesData {
   timestamp: string;
   value: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface AnomalyPattern {
@@ -55,7 +55,7 @@ export interface AnomalyPattern {
   pattern: string;
   frequency: number;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  examples: any[];
+  examples: unknown[];
   detectionRules: string[];
 }
 

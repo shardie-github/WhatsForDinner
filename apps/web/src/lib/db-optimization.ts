@@ -62,7 +62,7 @@ export interface PaginatedResult<T> {
  * Execute paginated query with cursor-based pagination
  */
 export async function paginatedQuery<T>(
-  queryFn: (options: PaginationOptions) => Promise<{ data: T[] | null; error: any }>,
+  queryFn: (options: PaginationOptions) => Promise<{ data: T[] | null; error: unknown }>,
   options: PaginationOptions = {}
 ): Promise<PaginatedResult<T>> {
   const limit = Math.min(options.limit || 20, 100); // Max 100 items per page
@@ -156,7 +156,7 @@ export function getAverageQueryTime(): number {
 /**
  * Optimize Supabase query with select only needed columns
  */
-export function selectColumns<T extends Record<string, any>>(
+export function selectColumns<T extends Record<string, unknown>>(
   columns: (keyof T)[]
 ): string {
   return columns.join(', ');
@@ -167,7 +167,7 @@ export function selectColumns<T extends Record<string, any>>(
  */
 export const queryOptimizations = {
   // Use select() to limit columns
-  selectOnly: <T extends Record<string, any>>(columns: (keyof T)[]) => 
+  selectOnly: <T extends Record<string, unknown>>(columns: (keyof T)[]) => 
     columns.join(', '),
   
   // Use limit() to restrict results

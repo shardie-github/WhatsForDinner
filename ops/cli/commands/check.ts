@@ -3,7 +3,9 @@
  */
 
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('check-ts');
 export async function runCheck(options: { type?: string }) {
   const type = options.type || 'all';
   
@@ -32,7 +34,7 @@ export async function runCheck(options: { type?: string }) {
     checks[type]();
         process.exit(0);
   } catch (error) {
-    console.error('\n❌ Some checks failed');
+    logger.error('\n❌ Some checks failed');
     process.exit(1);
   }
 }

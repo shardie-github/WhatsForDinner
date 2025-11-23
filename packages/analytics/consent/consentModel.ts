@@ -1,9 +1,11 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
 /**
  * Consent Model - Finite State Machine
  * Manages user consent states for analytics, ads, and tracking
  * Includes age gating (COPPA compliance) and ATT/TCF integration
  */
 
+const logger = createComponentLogger('consentmodel-ts');
 export type ConsentPurpose = 
   | 'necessary'
   | 'analytics'
@@ -138,7 +140,7 @@ export class ConsentModel {
       const purposes = this.parseTCFString(tcfString);
       this.state.purposes = { ...this.state.purposes, ...purposes };
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { console.warn('Failed to parse TCF string:', error); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('Failed to parse TCF string:', { error }); }
     }
   }
   

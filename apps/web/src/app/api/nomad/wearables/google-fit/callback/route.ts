@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
       });
 
     if (syncError) {
-      console.error('Error saving Google Fit sync:', syncError);
+      logger.error('Error saving Google Fit sync:', { syncError });
       return NextResponse.redirect(
         new URL('/nomad/settings?error=sync_failed', request.url)
       );

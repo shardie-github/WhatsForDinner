@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { supabase } from '@/lib/supabaseClient';
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 const CreateAPIKeySchema = z.object({
   name: z.string().min(1).max(100),
 });
@@ -42,7 +44,7 @@ export async function GET(req: NextRequest) {
       keys: keys || [],
     });
   } catch (error) {
-    console.error('Error fetching API keys:', error);
+    logger.error('Error fetching API keys:', { error });
     return NextResponse.json(
       { error: 'Failed to fetch API keys' },
       { status: 500 }
@@ -98,7 +100,7 @@ export async function POST(req: NextRequest) {
       key: key,
     });
   } catch (error) {
-    console.error('Error creating API key:', error);
+    logger.error('Error creating API key:', { error });
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(

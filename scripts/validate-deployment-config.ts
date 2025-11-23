@@ -12,7 +12,9 @@
 
 import { existsSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('validate-deployment-config-ts');
 interface ValidationResult {
   platform: string;
   valid: boolean;
@@ -215,7 +217,7 @@ function validateAll(): ValidationResult[] {
  * Main execution
  */
 function main() {
-  console.log('🔍 Validating deployment configurations...\n');
+  logger.info('🔍 Validating deployment configurations...\n');
 
   const results = validateAll();
   let hasErrors = false;
@@ -223,33 +225,33 @@ function main() {
 
   for (const result of results) {
     const status = result.valid ? '✅' : '❌';
-    console.log(`${status} ${result.platform}`);
+    logger.info('${status} ${result.platform}');
 
     if (result.errors.length > 0) {
       hasErrors = true;
-      result.errors.forEach(err => console.log(`   ❌ ${err}`));
+      result.errors.forEach(err => logger.info('   ❌ ${err}'));
     }
 
     if (result.warnings.length > 0) {
       hasWarnings = true;
-      result.warnings.forEach(warn => console.log(`   ⚠️  ${warn}`));
+      result.warnings.forEach(warn => logger.info('   ⚠️  ${warn}'));
     }
 
     if (result.errors.length === 0 && result.warnings.length === 0) {
-      console.log('   ✅ All checks passed');
+      logger.info('   ✅ All checks passed');
     }
 
-    console.log('');
+    logger.info('');
   }
 
   if (hasErrors) {
-    console.log('❌ Validation failed with errors');
+    logger.info('❌ Validation failed with errors');
     process.exit(1);
   } else if (hasWarnings) {
-    console.log('⚠️  Validation passed with warnings');
+    logger.info('⚠️  Validation passed with warnings');
     process.exit(0);
   } else {
-    console.log('✅ All validations passed');
+    logger.info('✅ All validations passed');
     process.exit(0);
   }
 }

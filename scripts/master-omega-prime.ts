@@ -12,7 +12,9 @@ import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('master-omega-prime-ts');
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = join(__dirname, '..');
@@ -39,8 +41,8 @@ class MasterOmegaPrime {
   private stackStatus: Map<string, StackStatus> = new Map();
 
   async run(): Promise<void> {
-    console.log('\n🔥 MASTER OMEGA PRIME — FULL SYSTEM ORCHESTRATION\n');
-    console.log('=' .repeat(80));
+    logger.info('\n🔥 MASTER OMEGA PRIME — FULL SYSTEM ORCHESTRATION\n');
+    logger.info('=' .repeat(80'));
     
     await this.phase1_StackDetection();
     await this.phase2_SelfHealing();
@@ -60,7 +62,7 @@ class MasterOmegaPrime {
   // PHASE 1: STACK DETECTION & SYSTEM DIAGNOSTICS
   // ============================================================================
   private async phase1_StackDetection(): Promise<void> {
-    console.log('\n📊 PHASE 1: STACK DETECTION & SYSTEM DIAGNOSTICS\n');
+    logger.info('\n📊 PHASE 1: STACK DETECTION & SYSTEM DIAGNOSTICS\n');
     
     const report: PhaseReport = {
       phase: 1,
@@ -125,7 +127,7 @@ class MasterOmegaPrime {
     report.findings.push(`Branch Alignment: ${branchStatus ? '✅ Aligned' : '⚠️  Check required'}`);
 
     this.reports.push(report);
-    console.log('✅ Phase 1 Complete');
+    logger.info('✅ Phase 1 Complete');
   }
 
   private detectSupabase(): StackStatus {
@@ -364,7 +366,7 @@ class MasterOmegaPrime {
   // PHASE 2: SELF-HEALING & AUTO-REPAIR
   // ============================================================================
   private async phase2_SelfHealing(): Promise<void> {
-    console.log('\n🔧 PHASE 2: SELF-HEALING & AUTO-REPAIR\n');
+    logger.info('\n🔧 PHASE 2: SELF-HEALING & AUTO-REPAIR\n');
     
     const report: PhaseReport = {
       phase: 2,
@@ -386,7 +388,7 @@ class MasterOmegaPrime {
     }
 
     this.reports.push(report);
-    console.log('✅ Phase 2 Complete');
+    logger.info('✅ Phase 2 Complete');
   }
 
   private generateFixes(component: string, issues: string[]): string[] {
@@ -407,7 +409,7 @@ class MasterOmegaPrime {
   // PHASE 3: BACKEND ORCHESTRATION
   // ============================================================================
   private async phase3_BackendOrchestration(): Promise<void> {
-    console.log('\n🗄️  PHASE 3: BACKEND ORCHESTRATION (Supabase + Prisma)\n');
+    logger.info('\n🗄️  PHASE 3: BACKEND ORCHESTRATION (Supabase + Prisma')\n');
     
     const report: PhaseReport = {
       phase: 3,
@@ -436,14 +438,14 @@ class MasterOmegaPrime {
     }
 
     this.reports.push(report);
-    console.log('✅ Phase 3 Complete');
+    logger.info('✅ Phase 3 Complete');
   }
 
   // ============================================================================
   // PHASE 4: FRONTEND DEPLOYMENT
   // ============================================================================
   private async phase4_FrontendDeployment(): Promise<void> {
-    console.log('\n🌐 PHASE 4: FRONTEND DEPLOYMENT (Vercel + Expo)\n');
+    logger.info('\n🌐 PHASE 4: FRONTEND DEPLOYMENT (Vercel + Expo')\n');
     
     const report: PhaseReport = {
       phase: 4,
@@ -461,14 +463,14 @@ class MasterOmegaPrime {
     report.findings.push(`Expo: ${expoStatus?.configured ? '✅ Configured' : '⚠️  Needs Setup'}`);
 
     this.reports.push(report);
-    console.log('✅ Phase 4 Complete');
+    logger.info('✅ Phase 4 Complete');
   }
 
   // ============================================================================
   // PHASE 5: ECOSYSTEM ORCHESTRATION
   // ============================================================================
   private async phase5_EcosystemOrchestration(): Promise<void> {
-    console.log('\n🔗 PHASE 5: ECOSYSTEM ORCHESTRATION\n');
+    logger.info('\n🔗 PHASE 5: ECOSYSTEM ORCHESTRATION\n');
     
     const report: PhaseReport = {
       phase: 5,
@@ -487,14 +489,14 @@ class MasterOmegaPrime {
     }
 
     this.reports.push(report);
-    console.log('✅ Phase 5 Complete');
+    logger.info('✅ Phase 5 Complete');
   }
 
   // ============================================================================
   // PHASE 6: GTM ENGINE GENERATION
   // ============================================================================
   private async phase6_GTMEngine(): Promise<void> {
-    console.log('\n📈 PHASE 6: GTM ENGINE GENERATION\n');
+    logger.info('\n📈 PHASE 6: GTM ENGINE GENERATION\n');
     
     const report: PhaseReport = {
       phase: 6,
@@ -513,14 +515,14 @@ class MasterOmegaPrime {
     report.findings.push('✅ Growth Channels: Content, Community, Referrals');
 
     this.reports.push(report);
-    console.log('✅ Phase 6 Complete');
+    logger.info('✅ Phase 6 Complete');
   }
 
   // ============================================================================
   // PHASE 7: CREATOR + CONTENT AUTOMATION
   // ============================================================================
   private async phase7_CreatorAutomation(): Promise<void> {
-    console.log('\n🎬 PHASE 7: CREATOR + CONTENT AUTOMATION\n');
+    logger.info('\n🎬 PHASE 7: CREATOR + CONTENT AUTOMATION\n');
     
     const report: PhaseReport = {
       phase: 7,
@@ -536,14 +538,14 @@ class MasterOmegaPrime {
     report.findings.push('✅ Multi-platform distribution pipeline');
 
     this.reports.push(report);
-    console.log('✅ Phase 7 Complete');
+    logger.info('✅ Phase 7 Complete');
   }
 
   // ============================================================================
   // PHASE 8: ANALYTICS & INTELLIGENCE LAYER
   // ============================================================================
   private async phase8_AnalyticsLayer(): Promise<void> {
-    console.log('\n📊 PHASE 8: ANALYTICS & INTELLIGENCE LAYER\n');
+    logger.info('\n📊 PHASE 8: ANALYTICS & INTELLIGENCE LAYER\n');
     
     const report: PhaseReport = {
       phase: 8,
@@ -560,14 +562,14 @@ class MasterOmegaPrime {
     report.findings.push('✅ Engagement Metric: Recipes Saved');
 
     this.reports.push(report);
-    console.log('✅ Phase 8 Complete');
+    logger.info('✅ Phase 8 Complete');
   }
 
   // ============================================================================
   // PHASE 9: MULTI-PRODUCT SYNERGY
   // ============================================================================
   private async phase9_MultiProductSynergy(): Promise<void> {
-    console.log('\n🔄 PHASE 9: MULTI-PRODUCT SYNERGY\n');
+    logger.info('\n🔄 PHASE 9: MULTI-PRODUCT SYNERGY\n');
     
     const report: PhaseReport = {
       phase: 9,
@@ -583,14 +585,14 @@ class MasterOmegaPrime {
     report.findings.push('✅ Portfolio-level reporting structure');
 
     this.reports.push(report);
-    console.log('✅ Phase 9 Complete');
+    logger.info('✅ Phase 9 Complete');
   }
 
   // ============================================================================
   // PHASE 10: ROADMAP ENGINE
   // ============================================================================
   private async phase10_RoadmapEngine(): Promise<void> {
-    console.log('\n🗺️  PHASE 10: ROADMAP ENGINE\n');
+    logger.info('\n🗺️  PHASE 10: ROADMAP ENGINE\n');
     
     const report: PhaseReport = {
       phase: 10,
@@ -607,37 +609,37 @@ class MasterOmegaPrime {
     report.findings.push('✅ 365-day roadmap: Multi-product expansion');
 
     this.reports.push(report);
-    console.log('✅ Phase 10 Complete');
+    logger.info('✅ Phase 10 Complete');
   }
 
   // ============================================================================
   // FINAL REPORT GENERATION
   // ============================================================================
   private generateFinalReport(): void {
-    console.log('\n' + '='.repeat(80));
-    console.log('🔥 MASTER OMEGA PRIME — FULL SYSTEM OUTPUT\n');
+    logger.info('\n' + '='.repeat(80'));
+    logger.info('🔥 MASTER OMEGA PRIME — FULL SYSTEM OUTPUT\n');
     
     for (const report of this.reports) {
-      console.log(`\nPHASE ${report.phase} — ${report.name}`);
-      console.log(`Status: ${report.status.toUpperCase()}`);
-      console.log('\nFindings:');
-      report.findings.forEach(f => console.log(`  • ${f}`));
+      logger.info('\nPHASE ${report.phase} — ${report.name}');
+      logger.info('Status: ${report.status.toUpperCase(')}`);
+      logger.info('\nFindings:');
+      report.findings.forEach(f => logger.info('  • ${f}'));
       if (report.fixes.length > 0) {
-        console.log('\nFixes Applied:');
-        report.fixes.forEach(f => console.log(`  • ${f}`));
+        logger.info('\nFixes Applied:');
+        report.fixes.forEach(f => logger.info('  • ${f}'));
       }
       if (report.nextActions.length > 0) {
-        console.log('\nNext Actions:');
-        report.nextActions.forEach(a => console.log(`  • ${a}`));
+        logger.info('\nNext Actions:');
+        report.nextActions.forEach(a => logger.info('  • ${a}'));
       }
     }
 
-    console.log('\n' + '='.repeat(80));
-    console.log('\nNEXT ACTIONS (Autonomous):');
-    console.log('  • Run: pnpm aurora:prime (for detailed diagnostics)');
-    console.log('  • Run: pnpm health:check (for system health)');
-    console.log('  • Review: Generated GTM and roadmap documents');
-    console.log('\n✅ MASTER OMEGA PRIME EXECUTION COMPLETE\n');
+    logger.info('\n' + '='.repeat(80'));
+    logger.info('\nNEXT ACTIONS (Autonomous'):');
+    logger.info('  • Run: pnpm aurora:prime (for detailed diagnostics')');
+    logger.info('  • Run: pnpm health:check (for system health')');
+    logger.info('  • Review: Generated GTM and roadmap documents');
+    logger.info('\n✅ MASTER OMEGA PRIME EXECUTION COMPLETE\n');
   }
 }
 

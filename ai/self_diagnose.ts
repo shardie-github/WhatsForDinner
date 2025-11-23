@@ -6,7 +6,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { Octokit } from '@octokit/rest';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('self-diagnose-ts');
 interface HealthMetrics {
   id?: string;
   timestamp: string;
@@ -256,12 +258,12 @@ class AISelfDiagnose {
         .select();
 
       if (error) {
-        console.error('Error storing metrics:', error);
+        logger.error('Error storing metrics:', { error });
         return;
       }
 
           } catch (error) {
-      console.error('Failed to store metrics:', error);
+      logger.error('Failed to store metrics:', { error });
     }
   }
 
@@ -285,7 +287,7 @@ class AISelfDiagnose {
       });
 
           } catch (error) {
-      console.error('Failed to create GitHub issue:', error);
+      logger.error('Failed to create GitHub issue:', { error });
     }
   }
 
@@ -351,7 +353,7 @@ ${metrics.recommendations.infrastructure.length > 0 ? `**Infrastructure:**\n${me
       await this.postPRComment(report);
 
           } catch (error) {
-      console.error('Weekly audit failed:', error);
+      logger.error('Weekly audit failed:', { error });
     }
   }
 
@@ -389,7 +391,7 @@ ${trends.criticalDeploys > 0 ? '- Review deployment process for stability improv
   private async postPRComment(report: string) {
     // Implementation would post to the latest PR
     // TODO: Implement PR comment posting
-    console.log('PR Comment:', report);
+    logger.info('PR Comment:', { report });
   }
 }
 

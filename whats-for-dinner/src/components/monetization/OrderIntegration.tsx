@@ -18,7 +18,9 @@ import {
   Users
 } from 'lucide-react';
 import { affiliateSystem, AffiliatePartner, ChefPartnership } from '@/lib/monetization/affiliateSystem';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('orderintegration-tsx');
 interface OrderIntegrationProps {
   recipeId?: string;
   ingredients?: Array<{
@@ -62,7 +64,7 @@ export function OrderIntegration({ recipeId, ingredients, userLocation }: OrderI
       setChefPartnerships(chefs);
       
     } catch (error) {
-      console.error('Error loading partners:', error);
+      logger.error('Error loading partners:', { error });
     } finally {
       setLoading(false);
     }
@@ -98,7 +100,7 @@ export function OrderIntegration({ recipeId, ingredients, userLocation }: OrderI
 
       setOrderStatus('created');
           } catch (error) {
-      console.error('Error creating delivery order:', error);
+      logger.error('Error creating delivery order:', { error });
       setOrderStatus('error');
     }
   };
@@ -133,7 +135,7 @@ export function OrderIntegration({ recipeId, ingredients, userLocation }: OrderI
 
       setOrderStatus('created');
           } catch (error) {
-      console.error('Error creating grocery order:', error);
+      logger.error('Error creating grocery order:', { error });
       setOrderStatus('error');
     }
   };
@@ -153,7 +155,7 @@ export function OrderIntegration({ recipeId, ingredients, userLocation }: OrderI
         setOrderStatus('created');
               }
     } catch (error) {
-      console.error('Error purchasing chef package:', error);
+      logger.error('Error purchasing chef package:', { error });
       setOrderStatus('error');
     }
   };

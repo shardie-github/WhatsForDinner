@@ -19,8 +19,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChefHat, Clock, Users, Zap } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 // Lazy load heavy components
+const logger = createComponentLogger('page-tsx');
 const RecipeCard = lazy(() => import('@/components/RecipeCard'));
 const InputPrompt = lazy(() => import('@/components/InputPrompt'));
 
@@ -113,7 +115,7 @@ function HomeContent() {
       });
 
       // Error already logged above
-      // console.error('Error generating recipes:', error);
+      // logger.error('Error generating recipes:', { error });
     }
   };
 
@@ -152,7 +154,7 @@ function HomeContent() {
       );
 
       // Error already logged above
-      // console.error('Error saving recipe:', error);
+      // logger.error('Error saving recipe:', { error });
     }
   };
 

@@ -350,7 +350,7 @@ Format as JSON.`;
         .single();
 
       if (fetchError) {
-        console.error('Error fetching current metrics:', fetchError);
+        logger.error('Error fetching current metrics:', { fetchError });
         return;
       }
 
@@ -379,7 +379,7 @@ Format as JSON.`;
         .eq('id', postId);
 
       if (updateError) {
-        console.error('Error updating post metrics:', updateError);
+        logger.error('Error updating post metrics:', { updateError });
         throw updateError;
       }
     } catch (error) {

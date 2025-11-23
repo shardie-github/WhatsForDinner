@@ -6,7 +6,9 @@
 import type { TrustFabricModel, DataClass, ResponseAction } from './types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('trust-fabric-ts');
 export interface UserBehavior {
   dataClass: DataClass;
   action: ResponseAction;
@@ -32,7 +34,7 @@ export class TrustFabricAI {
         this.model = this.createDefaultModel();
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { console.warn('Failed to load Trust Fabric model:', error); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('Failed to load Trust Fabric model:', { error }); }
       this.model = this.createDefaultModel();
     }
   }

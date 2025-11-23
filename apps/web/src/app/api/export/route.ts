@@ -10,7 +10,7 @@ interface ExportData {
     id: string;
     email: string;
     created_at: string;
-    preferences: Record<string, any>;
+    preferences: Record<string, unknown>;
   };
   pantry: Array<{
     id: string;
@@ -33,7 +33,7 @@ interface ExportData {
     id: number;
     action: string;
     ts: string;
-    meta: Record<string, any>;
+    meta: Record<string, unknown>;
   }>;
 }
 

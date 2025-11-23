@@ -15,7 +15,9 @@ import { execSync } from 'child_process';
 import { writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('clone-and-restore-check-ts');
 interface DRConfig {
   shadow_db_name: string;
   checksum_tables: string[];
@@ -115,7 +117,7 @@ class DRValidator {
 
             
     } catch (error) {
-      console.error('❌ Failed to create shadow database:', error);
+      logger.error('❌ Failed to create shadow database:', { error });
       throw error;
     }
   }
@@ -155,13 +157,13 @@ class DRValidator {
       }
 
       const timeSeconds = (Date.now() - startTime) / 1000;
-      console.log(`✅ Restore simulation completed in ${timeSeconds} seconds`);
+      logger.info('✅ Restore simulation completed in ${timeSeconds} seconds');
       
       return { success: true, time_seconds: timeSeconds };
       
     } catch (error) {
       const timeSeconds = (Date.now() - startTime) / 1000;
-      console.error('❌ Restore simulation failed:', error);
+      logger.error('❌ Restore simulation failed:', { error });
       return { success: false, time_seconds: timeSeconds };
     }
   }
@@ -232,12 +234,12 @@ class DRValidator {
       
       const { error } = await this.supabase.rpc('exec_sql', { sql: cleanupSQL });
       if (error) {
-        console.warn(`Warning: Failed to cleanup shadow database: ${error.message}`);
+        logger.warn('Warning: Failed to cleanup shadow database: ${error.message}');
       } else {
-        console.log('Shadow database cleaned up successfully');
+        logger.info('Shadow database cleaned up successfully');
       }
     } catch (error) {
-      console.warn(`Warning: Cleanup failed: ${error.message}`);
+      logger.warn('Warning: Cleanup failed: ${error.message}');
     }
   }
 
@@ -291,7 +293,7 @@ class DRValidator {
     execSync('mkdir -p REPORTS', { stdio: 'inherit' });
     
     writeFileSync(filepath, JSON.stringify(report, null, 2));
-    console.log(`DR report saved to ${filepath}`);
+    logger.info('DR report saved to ${filepath}');
     return filepath;
   }
 
@@ -323,12 +325,12 @@ class DRValidator {
       // Step 6: Cleanup
       await this.cleanupShadowDatabase();
       
-      console.log('✅ DR validation completed successfully');
+      logger.info('✅ DR validation completed successfully');
       
       return report;
       
     } catch (error) {
-      console.error('❌ DR validation failed:', error);
+      logger.error('❌ DR validation failed:', { error });
       
       // Attempt cleanup even on failure
       await this.cleanupShadowDatabase();
@@ -344,9 +346,9 @@ async function main() {
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('❌ Missing required environment variables:');
-    console.error('  - NEXT_PUBLIC_SUPABASE_URL');
-    console.error('  - SUPABASE_SERVICE_ROLE_KEY');
+    logger.error('❌ Missing required environment variables:');
+    logger.error('  - NEXT_PUBLIC_SUPABASE_URL');
+    logger.error('  - SUPABASE_SERVICE_ROLE_KEY');
     process.exit(1);
   }
 
@@ -356,15 +358,15 @@ async function main() {
     const report = await validator.execute();
     
     if (report.overall_status === 'fail') {
-      console.error('❌ DR validation failed');
+      logger.error('❌ DR validation failed');
       process.exit(1);
     } else {
-      console.log('✅ DR validation passed');
+      logger.info('✅ DR validation passed');
       process.exit(0);
     }
     
   } catch (error) {
-    console.error('Fatal error during DR validation:', error);
+    logger.error('Fatal error during DR validation:', { error });
     process.exit(1);
   }
 }
@@ -372,7 +374,7 @@ async function main() {
 // Run if called directly
 if (require.main === module) {
   main().catch(error => {
-    console.error('Fatal error:', error);
+    logger.error('Fatal error:', { error });
     process.exit(1);
   });
 }

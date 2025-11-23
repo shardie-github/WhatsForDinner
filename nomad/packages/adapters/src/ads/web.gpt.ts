@@ -1,5 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
 // Google Publisher Tag (GPT) adapter for web
 
+const logger = createComponentLogger('web-gpt-ts');
 export interface GPTSlot {
   adUnitPath: string;
   size: [number, number] | Array<[number, number]>;
@@ -77,7 +79,7 @@ export class GPTManager {
 
     const slot = this.slots.get(divId);
     if (!slot) {
-      console.warn(`Slot ${divId} not defined`);
+      logger.warn('Slot ${divId} not defined');
       return;
     }
 

@@ -109,7 +109,7 @@ class ExperimentationService {
     if (!experiment) return null;
 
     const experimentResults = this.results.filter(r => r.experimentId === experimentId);
-    const stats: Record<string, any> = {};
+    const stats: Record<string, unknown> = {};
 
     for (const variant of experiment.variants) {
       const variantResults = experimentResults.filter(r => r.variant === variant);
@@ -124,7 +124,7 @@ class ExperimentationService {
   }
 
   private calculateMetrics(results: ExperimentResult[], metricNames: string[]) {
-    const metrics: Record<string, any> = {};
+    const metrics: Record<string, unknown> = {};
 
     for (const metricName of metricNames) {
       const values = results.map(r => r.metrics[metricName]).filter(v => v !== undefined);

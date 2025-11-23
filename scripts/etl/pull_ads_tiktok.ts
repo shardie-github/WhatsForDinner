@@ -12,7 +12,9 @@
 
 import pg from 'pg';
 import { createClient } from '@supabase/supabase-js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('pull-ads-tiktok-ts');
 const { Pool } = pg;
 
 interface TikTokAdData {
@@ -128,7 +130,7 @@ async function main() {
   const endDateStr = endDate.toISOString().split('T')[0];
 
   if (!isCron) {
-    console.log(`Fetching TikTok ads data from ${startDateStr} to ${endDateStr}...`);
+    logger.info('Fetching TikTok ads data from ${startDateStr} to ${endDateStr}...');
   }
 
   try {
@@ -136,7 +138,7 @@ async function main() {
     
     if (data.length === 0) {
       if (!isCron) {
-        console.log('No TikTok ads data found for date range.');
+        logger.info('No TikTok ads data found for date range.');
       }
       return;
     }
@@ -144,17 +146,17 @@ async function main() {
     await storeSpendData(dbUrl, 'tiktok', data);
     
     if (!isCron) {
-      console.log(`✅ Stored ${data.length} TikTok ads records`);
+      logger.info('✅ Stored ${data.length} TikTok ads records');
     }
   } catch (error) {
-    console.error('Error fetching TikTok ads data:', error);
+    logger.error('Error fetching TikTok ads data:', { error });
     process.exit(1);
   }
 }
 
 if (require.main === module) {
   main().catch((error) => {
-    console.error('Fatal error:', error);
+    logger.error('Fatal error:', { error });
     process.exit(1);
   });
 }

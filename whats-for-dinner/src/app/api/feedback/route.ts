@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabaseClient';
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 const FeedbackSchema = z.object({
   type: z.enum(['bug', 'feature', 'general', 'praise', 'complaint']),
   priority: z.enum(['low', 'medium', 'high', 'urgent']),
@@ -51,7 +53,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Database error:', error);
+      logger.error('Database error:', { error });
       return NextResponse.json(
         { error: 'Failed to save feedback' },
         { status: 500 }
@@ -84,7 +86,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Feedback submission error:', error);
+    logger.error('Feedback submission error:', { error });
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -129,7 +131,7 @@ async function sendUrgentNotification(feedbackId: string, feedback: any) {
         }),
       });
     } catch (error) {
-      console.error('Failed to send Slack notification:', error);
+      logger.error('Failed to send Slack notification:', { error });
     }
   }
 }
@@ -217,10 +219,10 @@ async function sendConfirmationEmail(email: string, feedbackId: string) {
       });
 
       if (!response.ok) {
-        console.error('Failed to send confirmation email');
+        logger.error('Failed to send confirmation email');
       }
     } catch (error) {
-      console.error('Email sending error:', error);
+      logger.error('Email sending error:', { error });
     }
   }
 }
@@ -254,7 +256,7 @@ export async function GET(request: NextRequest) {
     const { data: feedback, error } = await query;
 
     if (error) {
-      console.error('Database error:', error);
+      logger.error('Database error:', { error });
       return NextResponse.json(
         { error: 'Failed to fetch feedback' },
         { status: 500 }
@@ -271,7 +273,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Fetch feedback error:', error);
+    logger.error('Fetch feedback error:', { error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

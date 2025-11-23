@@ -1,7 +1,9 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('index-ts');
 interface MealGenerationRequest {
   pantry_items: string[];
   dietary_preferences?: string[];
@@ -175,7 +177,7 @@ serve(async req => {
 
     if (!openaiResponse.ok) {
       const errorData = await openaiResponse.json();
-      console.error('OpenAI API Error:', errorData);
+      logger.error('OpenAI API Error:', { errorData });
       return new Response(
         JSON.stringify({ error: 'Failed to generate meal' }),
         {
@@ -237,7 +239,7 @@ serve(async req => {
       .single();
 
     if (recipeError) {
-      console.error('Error saving recipe:', recipeError);
+      logger.error('Error saving recipe:', { recipeError });
     }
 
     // Log recipe metrics
@@ -268,7 +270,7 @@ serve(async req => {
       }
     );
   } catch (error) {
-    console.error('Meal generation error:', error);
+    logger.error('Meal generation error:', { error });
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

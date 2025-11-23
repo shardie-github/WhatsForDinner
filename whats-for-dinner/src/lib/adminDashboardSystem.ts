@@ -40,7 +40,7 @@ export interface UserActivity {
   userId: string;
   action: string;
   category: 'auth' | 'recipe' | 'pantry' | 'shopping' | 'admin';
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface JobQueueMetrics {
@@ -118,7 +118,7 @@ export interface AuditLog {
   result: 'success' | 'failure' | 'error';
   ipAddress: string;
   userAgent: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface RBACPermission {
@@ -127,7 +127,7 @@ export interface RBACPermission {
   description: string;
   resource: string;
   action: string;
-  conditions?: Record<string, any>;
+  conditions?: Record<string, unknown>;
 }
 
 export interface RBACRole {

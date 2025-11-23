@@ -1,3 +1,4 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
 /**
  * Microbenchmark Runner
  * 
@@ -5,6 +6,7 @@
  * Runs benchmarks and tracks trends over time.
  */
 
+const logger = createComponentLogger('runner-ts');
 export interface BenchmarkResult {
   name: string;
   iterations: number;
@@ -79,20 +81,20 @@ export async function runBenchmark(benchmark: Benchmark): Promise<BenchmarkResul
 export async function runSuite(suite: BenchmarkSuite): Promise<BenchmarkResult[]> {
   const results: BenchmarkResult[] = [];
 
-  console.log(`\nRunning benchmark suite: ${suite.name}`);
-  console.log('─'.repeat(50));
+  logger.info('\nRunning benchmark suite: ${suite.name}');
+  logger.info('─'.repeat(50'));
 
   for (const benchmark of suite.benchmarks) {
     const result = await runBenchmark(benchmark);
     results.push(result);
 
-    console.log(`${result.name}:`);
-    console.log(`  Iterations: ${result.iterations}`);
-    console.log(`  Average: ${result.averageTime.toFixed(4)}ms`);
-    console.log(`  Min: ${result.minTime.toFixed(4)}ms`);
-    console.log(`  Max: ${result.maxTime.toFixed(4)}ms`);
-    console.log(`  Ops/sec: ${result.opsPerSecond.toFixed(2)}`);
-    console.log('');
+    logger.info('${result.name}:');
+    logger.info('  Iterations: ${result.iterations}');
+    logger.info('  Average: ${result.averageTime.toFixed(4')}ms`);
+    logger.info('  Min: ${result.minTime.toFixed(4')}ms`);
+    logger.info('  Max: ${result.maxTime.toFixed(4')}ms`);
+    logger.info('  Ops/sec: ${result.opsPerSecond.toFixed(2')}`);
+    logger.info('');
   }
 
   return results;

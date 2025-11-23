@@ -6,7 +6,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { Octokit } from '@octokit/rest';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('ai-performance-watcher-ts');
 interface AIPerformanceMetric {
   timestamp: string;
   model: string;
@@ -132,7 +134,7 @@ class AIPerformanceWatcher {
 
       return report;
     } catch (error) {
-      console.error('AI performance analysis failed:', error);
+      logger.error('AI performance analysis failed:', { error });
       throw error;
     }
   }
@@ -152,7 +154,7 @@ class AIPerformanceWatcher {
         .order('timestamp', { ascending: false });
 
       if (error) {
-        console.error('Failed to query performance metrics:', error);
+        logger.error('Failed to query performance metrics:', { error });
         return metrics;
       }
 
@@ -187,7 +189,7 @@ class AIPerformanceWatcher {
       }
 
     } catch (error) {
-      console.error('Failed to collect performance metrics:', error);
+      logger.error('Failed to collect performance metrics:', { error });
     }
 
     return metrics;
@@ -486,11 +488,11 @@ class AIPerformanceWatcher {
         .insert([report]);
 
       if (error) {
-        console.error('Error storing performance report:', error);
+        logger.error('Error storing performance report:', { error });
       } else {
               }
     } catch (error) {
-      console.error('Failed to store performance report:', error);
+      logger.error('Failed to store performance report:', { error });
     }
   }
 
@@ -516,7 +518,7 @@ class AIPerformanceWatcher {
       });
 
           } catch (error) {
-      console.error('Failed to create performance issue:', error);
+      logger.error('Failed to create performance issue:', { error });
     }
   }
 
@@ -583,14 +585,14 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
     try {
       const report = await this.analyzePerformance();
       
-      console.log(`Performance check completed in ${report.duration}ms`);
-      console.log(`Overall score: ${(report.score * 100).toFixed(1)}%`);
+      logger.info('Performance check completed in ${report.duration}ms');
+      logger.info('Overall score: ${(report.score * 100').toFixed(1)}%`);
       
       if (report.alerts.length > 0) {
-        console.warn(`Found ${report.alerts.length} performance alerts`);
+        logger.warn('Found ${report.alerts.length} performance alerts');
       }
     } catch (error) {
-      console.error('Nightly performance check failed:', error);
+      logger.error('Nightly performance check failed:', { error });
     }
   }
 }

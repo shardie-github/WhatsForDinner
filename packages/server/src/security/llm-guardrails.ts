@@ -3,7 +3,9 @@
  */
 
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('llm-guardrails-ts');
 export interface LLMCallOptions {
   timeout?: number;
   maxRetries?: number;
@@ -94,7 +96,7 @@ export class LLMGuardrails {
     try {
       return await this.callLLM(llmFunction, options);
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { console.warn('LLM failed, using fallback:', error); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('LLM failed', { using fallback:', error }); }
       return fallbackFunction();
     }
   }

@@ -136,7 +136,7 @@ export class FederatedAPIGateway {
   /**
    * Get partner configuration with caching
    */
-  private async getPartnerConfig(partnerName: string): Promise<any> {
+  private async getPartnerConfig(partnerName: string): Promise<unknown> {
     const cacheKey = `partner_${partnerName}`;
     const now = Date.now();
 
@@ -174,7 +174,7 @@ export class FederatedAPIGateway {
     partnerId: string,
     endpoint: string,
     method: string
-  ): Promise<any> {
+  ): Promise<unknown> {
     const { data, error } = await supabase
       .from('federated_api_endpoints')
       .select('*')
@@ -245,7 +245,7 @@ export class FederatedAPIGateway {
     partner: any,
     endpointConfig: any,
     request: FederatedRequest
-  ): Promise<any> {
+  ): Promise<unknown> {
     const { type } = partner;
 
     switch (type) {
@@ -291,7 +291,7 @@ export class FederatedAPIGateway {
     partner: any,
     endpointConfig: any,
     request: FederatedRequest
-  ): Promise<any> {
+  ): Promise<unknown> {
     const { api_base, api_key } = partner;
     const targetUrl = `${api_base}${endpointConfig.target_url}`;
 
@@ -323,7 +323,7 @@ export class FederatedAPIGateway {
     partner: any,
     endpointConfig: any,
     request: FederatedRequest
-  ): Promise<any> {
+  ): Promise<unknown> {
     const { webhook_url } = partner;
 
     const response = await fetch(webhook_url, {
@@ -356,7 +356,7 @@ export class FederatedAPIGateway {
     partner: any,
     endpointConfig: any,
     request: FederatedRequest
-  ): Promise<any> {
+  ): Promise<unknown> {
     // Generate AI-powered voice response
     const prompt = `Generate a voice response for Alexa skill: ${JSON.stringify(request.data)}`;
 
@@ -397,7 +397,7 @@ export class FederatedAPIGateway {
     partner: any,
     endpointConfig: any,
     request: FederatedRequest
-  ): Promise<any> {
+  ): Promise<unknown> {
     // Similar to Alexa but with Google Home format
     const prompt = `Generate a response for Google Home: ${JSON.stringify(request.data)}`;
 
@@ -440,7 +440,7 @@ export class FederatedAPIGateway {
     partner: any,
     endpointConfig: any,
     request: FederatedRequest
-  ): Promise<any> {
+  ): Promise<unknown> {
     const prompt = `Generate TikTok content for recipe: ${JSON.stringify(request.data)}`;
 
     const aiResult = await aiOptimization.getOptimizedResponse(
@@ -485,7 +485,7 @@ export class FederatedAPIGateway {
     partner: any,
     endpointConfig: any,
     request: FederatedRequest
-  ): Promise<any> {
+  ): Promise<unknown> {
     const prompt = `Generate Instagram content for recipe: ${JSON.stringify(request.data)}`;
 
     const aiResult = await aiOptimization.getOptimizedResponse(
@@ -528,7 +528,7 @@ export class FederatedAPIGateway {
     partner: any,
     endpointConfig: any,
     request: FederatedRequest
-  ): Promise<any> {
+  ): Promise<unknown> {
     const { api_base, api_key } = partner;
     const targetUrl = `${api_base}${endpointConfig.target_url}`;
 
@@ -600,7 +600,7 @@ export class FederatedAPIGateway {
     responseTime: number;
     tokensUsed: number;
     costUsd: number;
-    metadata: Record<string, any>;
+    metadata: Record<string, unknown>;
   }): Promise<void> {
     try {
       await supabase.rpc('track_api_usage', {
@@ -628,7 +628,7 @@ export class FederatedAPIGateway {
   async getPartnerStats(
     partnerId: string,
     period: string = '24h'
-  ): Promise<any> {
+  ): Promise<unknown> {
     const { data, error } = await supabase
       .from('api_usage_tracking')
       .select('*')

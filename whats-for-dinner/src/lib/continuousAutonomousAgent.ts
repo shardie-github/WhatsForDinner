@@ -80,7 +80,7 @@ export interface LearningInsight {
   type: 'pattern' | 'optimization' | 'anomaly' | 'user_behavior';
   description: string;
   confidence: number;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   actionTaken: string;
   outcome: 'success' | 'failure' | 'partial';
   lessonsLearned: string[];

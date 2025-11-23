@@ -14,7 +14,9 @@ import {
   type Entitlement 
 } from '@whats-for-dinner/adapters-purchases';
 import { getPlanDisplayName, type SubscriptionPlan } from '@whats-for-dinner/config/subscriptions';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('settingssubscription-tsx');
 export function SettingsSubscription() {
   const [entitlements, setEntitlements] = useState<Entitlement[]>([]);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
@@ -31,7 +33,7 @@ export function SettingsSubscription() {
       setEntitlements(currentEntitlements);
       setIsPremiumUser(await isPremium());
     } catch (error) {
-      console.error('Failed to load entitlements:', error);
+      logger.error('Failed to load entitlements:', { error });
     }
   };
 

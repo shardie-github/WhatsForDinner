@@ -28,7 +28,7 @@ import { AppError, InternalError, isAppError } from './errors';
  * );
  * ```
  */
-export function withErrorBoundary<T extends (...args: any[]) => Promise<any>>(
+export function withErrorBoundary<T extends (...args: unknown[]) => Promise<unknown>>(
   fn: T,
   errorHandler?: (error: unknown, ...args: Parameters<T>) => void,
   fallback?: Awaited<ReturnType<T>>
@@ -63,7 +63,7 @@ export function withErrorBoundary<T extends (...args: any[]) => Promise<any>>(
 /**
  * Wrap a synchronous function with error boundary handling
  */
-export function withErrorBoundarySync<T extends (...args: any[]) => any>(
+export function withErrorBoundarySync<T extends (...args: unknown[]) => any>(
   fn: T,
   errorHandler?: (error: unknown, ...args: Parameters<T>) => void,
   fallback?: ReturnType<T>

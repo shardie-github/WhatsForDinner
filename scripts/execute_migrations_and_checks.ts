@@ -12,21 +12,23 @@
 import { execSync } from 'child_process';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('execute-migrations-and-checks-ts');
 const DB_URL = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
 
 if (!DB_URL) {
-  console.error('❌ SUPABASE_DB_URL or DATABASE_URL required');
-  console.error('   Set it as: export SUPABASE_DB_URL="postgresql://..."');
+  logger.error('❌ SUPABASE_DB_URL or DATABASE_URL required');
+  logger.error('   Set it as: export SUPABASE_DB_URL="postgresql://..."');
   process.exit(1);
 }
 
-console.log('🚀 Starting migration and check execution...');
-console.log(`Database: ${DB_URL.substring(0, 30)}...`);
-console.log('');
+logger.info('🚀 Starting migration and check execution...');
+logger.info('Database: ${DB_URL.substring(0', { 30 })}...`);
+logger.info('');
 
 // Step 1: Apply migrations using psql (if available) or Supabase CLI
-console.log('📦 Step 1: Applying migrations...');
+logger.info('📦 Step 1: Applying migrations...');
 const migrationsDir = join(process.cwd(), 'supabase', 'migrations');
 const migrations = readdirSync(migrationsDir)
   .filter((f) => f.endsWith('.sql'))
@@ -37,89 +39,89 @@ const migrations = readdirSync(migrationsDir)
     return a.localeCompare(b);
   });
 
-console.log(`Found ${migrations.length} migration files`);
+logger.info('Found ${migrations.length} migration files');
 
 // Try Supabase CLI first
 let appliedVia = '';
 try {
-  console.log('  Trying Supabase CLI...');
+  logger.info('  Trying Supabase CLI...');
   execSync(`supabase db push --db-url "${DB_URL}" --include-all`, {
     stdio: 'inherit',
     env: { ...process.env, SUPABASE_DB_URL: DB_URL },
   });
   appliedVia = 'Supabase CLI';
-  console.log('✅ Migrations applied via Supabase CLI');
+  logger.info('✅ Migrations applied via Supabase CLI');
 } catch (error) {
-  console.log('  Supabase CLI not available or failed, trying psql...');
+  logger.info('  Supabase CLI not available or failed', { trying psql...' });
   
   // Fallback to psql
   try {
     for (const migration of migrations) {
       const filepath = join(migrationsDir, migration);
-      console.log(`  Applying ${migration}...`);
+      logger.info('  Applying ${migration}...');
       try {
         execSync(`psql "${DB_URL}" -v ON_ERROR_STOP=0 -f "${filepath}"`, {
           stdio: 'inherit',
           env: { ...process.env },
         });
-        console.log(`  ✅ ${migration}`);
+        logger.info('  ✅ ${migration}');
       } catch (err) {
-        console.log(`  ⚠️  ${migration} (may already be applied)`);
+        logger.info('  ⚠️  ${migration} (may already be applied')`);
       }
     }
     appliedVia = 'psql';
-    console.log('✅ Migrations applied via psql');
+    logger.info('✅ Migrations applied via psql');
   } catch (psqlError) {
-    console.error('❌ Both Supabase CLI and psql failed');
-    console.error('   Please install psql or Supabase CLI');
+    logger.error('❌ Both Supabase CLI and psql failed');
+    logger.error('   Please install psql or Supabase CLI');
     process.exit(1);
   }
 }
 
-console.log('');
+logger.info('');
 
 // Step 2: Run preflight checks
-console.log('🔍 Step 2: Running preflight checks...');
+logger.info('🔍 Step 2: Running preflight checks...');
 try {
   execSync('tsx scripts/agents/preflight.ts', {
     stdio: 'inherit',
     env: { ...process.env, SUPABASE_DB_URL: DB_URL, DATABASE_URL: DB_URL },
   });
-  console.log('✅ Preflight checks passed');
+  logger.info('✅ Preflight checks passed');
 } catch (error) {
-  console.log('⚠️  Preflight checks had warnings (continuing...)');
+  logger.info('⚠️  Preflight checks had warnings (continuing...')');
 }
-console.log('');
+logger.info('');
 
 // Step 3: Generate delta migration
-console.log('📝 Step 3: Generating delta migration...');
+logger.info('📝 Step 3: Generating delta migration...');
 try {
   execSync('tsx scripts/agents/generate_delta_migration.ts', {
     stdio: 'inherit',
     env: { ...process.env, SUPABASE_DB_URL: DB_URL, DATABASE_URL: DB_URL },
   });
-  console.log('✅ Delta migration generated');
+  logger.info('✅ Delta migration generated');
 } catch (error) {
-  console.log('⚠️  Delta migration generation had warnings (continuing...)');
+  logger.info('⚠️  Delta migration generation had warnings (continuing...')');
 }
-console.log('');
+logger.info('');
 
 // Step 4: Verify database
-console.log('✅ Step 4: Verifying database...');
+logger.info('✅ Step 4: Verifying database...');
 try {
   execSync('tsx scripts/agents/verify_db.ts', {
     stdio: 'inherit',
     env: { ...process.env, SUPABASE_DB_URL: DB_URL, DATABASE_URL: DB_URL },
   });
-  console.log('✅ Database verification passed');
+  logger.info('✅ Database verification passed');
 } catch (error) {
-  console.log('❌ Database verification failed');
+  logger.info('❌ Database verification failed');
   process.exit(1);
 }
-console.log('');
+logger.info('');
 
 // Step 5: Run ETL smoke tests (dry-run)
-console.log('🧪 Step 5: Running ETL smoke tests (dry-run)...');
+logger.info('🧪 Step 5: Running ETL smoke tests (dry-run')...');
 try {
   execSync('tsx scripts/etl/pull_events.ts --dry-run', {
     stdio: 'inherit',
@@ -137,45 +139,45 @@ try {
     stdio: 'inherit',
     env: { ...process.env, SUPABASE_DB_URL: DB_URL },
   });
-  console.log('✅ ETL smoke tests passed');
+  logger.info('✅ ETL smoke tests passed');
 } catch (error) {
-  console.log('⚠️  ETL smoke tests had warnings (continuing...)');
+  logger.info('⚠️  ETL smoke tests had warnings (continuing...')');
 }
-console.log('');
+logger.info('');
 
 // Step 6: Run data quality checks
-console.log('📊 Step 6: Running data quality checks...');
+logger.info('📊 Step 6: Running data quality checks...');
 try {
   execSync('tsx scripts/agents/run_data_quality.ts', {
     stdio: 'inherit',
     env: { ...process.env, SUPABASE_DB_URL: DB_URL, DATABASE_URL: DB_URL },
   });
-  console.log('✅ Data quality checks passed');
+  logger.info('✅ Data quality checks passed');
 } catch (error) {
-  console.log('⚠️  Data quality checks had warnings (continuing...)');
+  logger.info('⚠️  Data quality checks had warnings (continuing...')');
 }
-console.log('');
+logger.info('');
 
 // Step 7: Run system doctor
-console.log('🏥 Step 7: Running system doctor...');
+logger.info('🏥 Step 7: Running system doctor...');
 try {
   execSync('tsx scripts/agents/system_doctor.ts', {
     stdio: 'inherit',
     env: { ...process.env, SUPABASE_DB_URL: DB_URL, DATABASE_URL: DB_URL },
   });
-  console.log('✅ System doctor passed');
+  logger.info('✅ System doctor passed');
 } catch (error) {
-  console.log('⚠️  System doctor found issues (check backlog for tickets)');
+  logger.info('⚠️  System doctor found issues (check backlog for tickets')');
 }
-console.log('');
+logger.info('');
 
-console.log('🎉 Execution complete!');
-console.log('');
-console.log('📝 Summary:');
-console.log(`  Migrations applied via: ${appliedVia}`);
-console.log('  All checks completed');
-console.log('');
-console.log('📋 Next steps:');
-console.log('  1. Review reports in /reports/exec/');
-console.log('  2. Check backlog for any tickets created');
-console.log('  3. Enable monetization per /backlog/READY_realignment_001.md');
+logger.info('🎉 Execution complete!');
+logger.info('');
+logger.info('📝 Summary:');
+logger.info('  Migrations applied via: ${appliedVia}');
+logger.info('  All checks completed');
+logger.info('');
+logger.info('📋 Next steps:');
+logger.info('  1. Review reports in /reports/exec/');
+logger.info('  2. Check backlog for any tickets created');
+logger.info('  3. Enable monetization per /backlog/READY_realignment_001.md');

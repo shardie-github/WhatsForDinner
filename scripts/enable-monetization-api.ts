@@ -5,7 +5,9 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('enable-monetization-api-ts');
 async function enableMonetization() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -16,7 +18,7 @@ async function enableMonetization() {
 
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  console.log('🚀 Enabling All Monetization Channels...');
+  logger.info('🚀 Enabling All Monetization Channels...');
 
   // Enable all channels
   const settings = {
@@ -36,29 +38,29 @@ async function enableMonetization() {
     .upsert(settings, { onConflict: 'id' });
 
   if (error) {
-    console.error('❌ Error enabling monetization:', error);
+    logger.error('❌ Error enabling monetization:', { error });
     throw error;
   }
 
-  console.log('✅ All monetization channels enabled!');
-  console.log('💰 Revenue tracking available at /api/revenue/dashboard');
-  console.log('');
-  console.log('📋 Enabled channels:');
-  console.log('   ✓ Affiliate Program (10% commission)');
-  console.log('   ✓ API Monetization');
-  console.log('   ✓ Data Insights');
-  console.log('   ✓ Marketplace (10% commission)');
-  console.log('   ✓ Automated Upsells');
+  logger.info('✅ All monetization channels enabled!');
+  logger.info('💰 Revenue tracking available at /api/revenue/dashboard');
+  logger.info('');
+  logger.info('📋 Enabled channels:');
+  logger.info('   ✓ Affiliate Program (10% commission')');
+  logger.info('   ✓ API Monetization');
+  logger.info('   ✓ Data Insights');
+  logger.info('   ✓ Marketplace (10% commission')');
+  logger.info('   ✓ Automated Upsells');
 }
 
 if (require.main === module) {
   enableMonetization()
     .then(() => {
-      console.log('✅ Monetization enabled successfully');
+      logger.info('✅ Monetization enabled successfully');
       process.exit(0);
     })
     .catch((error) => {
-      console.error('❌ Failed to enable monetization:', error);
+      logger.error('❌ Failed to enable monetization:', { error });
       process.exit(1);
     });
 }

@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import {
+import { createComponentLogger } from '@whats-for-dinner/utils';
   SocialAutomator,
   SocialPost,
   TrendingTheme,
   ContentStrategy,
 } from '@/lib/socialAutomator';
 
+const logger = createComponentLogger('page-tsx');
 export default function SocialAutomatorPage() {
   const [platform, setPlatform] = useState<SocialPost['platform']>('twitter');
   const [trendingThemes, setTrendingThemes] = useState<TrendingTheme[]>([]);
@@ -35,7 +37,7 @@ export default function SocialAutomatorPage() {
       const themes = await SocialAutomator.generateTrendingThemes();
       setTrendingThemes(themes);
     } catch (error) {
-      console.error('Error loading trending themes:', error);
+      logger.error('Error loading trending themes:', { error });
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +48,7 @@ export default function SocialAutomatorPage() {
       const strategy = await SocialAutomator.generateContentStrategy(platform);
       setContentStrategy(strategy);
     } catch (error) {
-      console.error('Error loading content strategy:', error);
+      logger.error('Error loading content strategy:', { error });
     }
   };
 
@@ -55,7 +57,7 @@ export default function SocialAutomatorPage() {
       const posts = await SocialAutomator.getTopPerformingPosts(platform, 5);
       setTopPosts(posts);
     } catch (error) {
-      console.error('Error loading top posts:', error);
+      logger.error('Error loading top posts:', { error });
     }
   };
 
@@ -64,7 +66,7 @@ export default function SocialAutomatorPage() {
       const ideas = await SocialAutomator.generateViralContentIdeas(platform);
       setViralIdeas(ideas);
     } catch (error) {
-      console.error('Error loading viral ideas:', error);
+      logger.error('Error loading viral ideas:', { error });
     }
   };
 
@@ -76,7 +78,7 @@ export default function SocialAutomatorPage() {
       );
       setContentCalendar(calendar);
     } catch (error) {
-      console.error('Error loading content calendar:', error);
+      logger.error('Error loading content calendar:', { error });
     }
   };
 
@@ -95,7 +97,7 @@ export default function SocialAutomatorPage() {
       );
       setGeneratedContent(content);
     } catch (error) {
-      console.error('Error generating content:', error);
+      logger.error('Error generating content:', { error });
       alert('Failed to generate content');
     } finally {
       setIsLoading(false);
@@ -114,7 +116,7 @@ export default function SocialAutomatorPage() {
       );
       alert('Post scheduled successfully!');
     } catch (error) {
-      console.error('Error scheduling post:', error);
+      logger.error('Error scheduling post:', { error });
       alert('Failed to schedule post');
     }
   };

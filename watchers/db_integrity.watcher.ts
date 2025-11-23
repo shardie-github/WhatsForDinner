@@ -6,7 +6,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { Octokit } from '@octokit/rest';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('db-integrity-watcher-ts');
 interface IntegrityCheck {
   table: string;
   check_type: 'foreign_key' | 'constraint' | 'data_type' | 'null_constraint';
@@ -94,7 +96,7 @@ class DatabaseIntegrityWatcher {
 
       return report;
     } catch (error) {
-      console.error('Database integrity check failed:', error);
+      logger.error('Database integrity check failed:', { error });
       throw error;
     }
   }
@@ -110,7 +112,7 @@ class DatabaseIntegrityWatcher {
       const { data: fkRelations, error } = await this.supabase.rpc('get_foreign_keys');
       
       if (error) {
-        console.error('Failed to get foreign key relations:', error);
+        logger.error('Failed to get foreign key relations:', { error });
         return checks;
       }
 
@@ -151,7 +153,7 @@ class DatabaseIntegrityWatcher {
         }
       }
     } catch (error) {
-      console.error('Foreign key check failed:', error);
+      logger.error('Foreign key check failed:', { error });
       checks.push({
         table: 'unknown',
         check_type: 'foreign_key',
@@ -228,7 +230,7 @@ class DatabaseIntegrityWatcher {
         }
       }
     } catch (error) {
-      console.error('Data type consistency check failed:', error);
+      logger.error('Data type consistency check failed:', { error });
       checks.push({
         table: 'unknown',
         check_type: 'data_type',
@@ -302,7 +304,7 @@ class DatabaseIntegrityWatcher {
         }
       }
     } catch (error) {
-      console.error('NULL constraint check failed:', error);
+      logger.error('NULL constraint check failed:', { error });
       checks.push({
         table: 'unknown',
         check_type: 'null_constraint',
@@ -381,7 +383,7 @@ class DatabaseIntegrityWatcher {
         }
       }
     } catch (error) {
-      console.error('Unique constraint check failed:', error);
+      logger.error('Unique constraint check failed:', { error });
       checks.push({
         table: 'unknown',
         check_type: 'constraint',
@@ -459,7 +461,7 @@ class DatabaseIntegrityWatcher {
         }
       }
     } catch (error) {
-      console.error('Check constraint check failed:', error);
+      logger.error('Check constraint check failed:', { error });
       checks.push({
         table: 'unknown',
         check_type: 'constraint',
@@ -519,11 +521,11 @@ class DatabaseIntegrityWatcher {
         .insert([report]);
 
       if (error) {
-        console.error('Error storing integrity report:', error);
+        logger.error('Error storing integrity report:', { error });
       } else {
               }
     } catch (error) {
-      console.error('Failed to store integrity report:', error);
+      logger.error('Failed to store integrity report:', { error });
     }
   }
 
@@ -547,7 +549,7 @@ class DatabaseIntegrityWatcher {
       });
 
           } catch (error) {
-      console.error('Failed to create integrity issue:', error);
+      logger.error('Failed to create integrity issue:', { error });
     }
   }
 
@@ -607,7 +609,7 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
       if (report.warnings > 0) {
               }
     } catch (error) {
-      console.error('Nightly integrity check failed:', error);
+      logger.error('Nightly integrity check failed:', { error });
     }
   }
 }

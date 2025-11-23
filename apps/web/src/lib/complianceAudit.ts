@@ -25,7 +25,7 @@ export interface AnomalyDetection {
   detected_at: string;
   resolved_at?: string;
   auto_resolved: boolean;
-  resolution_actions: any[];
+  resolution_actions: unknown[];
   metadata: any;
 }
 
@@ -236,7 +236,7 @@ export class ComplianceAudit {
    */
   async resolveAnomaly(
     anomalyId: string,
-    resolutionActions: any[],
+    resolutionActions: unknown[],
     autoResolved: boolean = false
   ): Promise<void> {
     try {
@@ -317,7 +317,7 @@ export class ComplianceAudit {
   /**
    * Get real-time compliance dashboard data
    */
-  async getComplianceDashboard(tenantId: string): Promise<any> {
+  async getComplianceDashboard(tenantId: string): Promise<unknown> {
     try {
       const now = new Date();
       const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -666,7 +666,7 @@ export class ComplianceAudit {
   /**
    * Calculate risk distribution
    */
-  private calculateRiskDistribution(auditLogs: AuditLog[]): any {
+  private calculateRiskDistribution(auditLogs: AuditLog[]): unknown {
     const distribution = {
       low: 0,
       medium: 0,
@@ -692,7 +692,7 @@ export class ComplianceAudit {
   /**
    * Get top actions
    */
-  private getTopActions(auditLogs: AuditLog[]): any[] {
+  private getTopActions(auditLogs: AuditLog[]): unknown[] {
     const actionCounts = new Map();
 
     auditLogs.forEach(log => {

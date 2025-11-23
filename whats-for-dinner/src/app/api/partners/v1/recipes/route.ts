@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { partnerAPIGateway } from '@/lib/partner-api/apiGateway';
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 const RecipeQuerySchema = z.object({
   query: z.string().optional(),
   cuisine: z.string().optional(),
@@ -119,7 +121,7 @@ export async function GET(request: NextRequest) {
     const { data: recipes, error } = await query;
 
     if (error) {
-      console.error('Database error:', error);
+      logger.error('Database error:', { error });
       return NextResponse.json(
         { error: 'Failed to fetch recipes' },
         { status: 500 }
@@ -154,7 +156,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('API error:', error);
+    logger.error('API error:', { error });
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -215,7 +217,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Database error:', error);
+      logger.error('Database error:', { error });
       return NextResponse.json(
         { error: 'Failed to create recipe' },
         { status: 500 }
@@ -251,7 +253,7 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('API error:', error);
+    logger.error('API error:', { error });
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(

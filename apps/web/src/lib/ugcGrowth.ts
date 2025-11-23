@@ -175,7 +175,7 @@ export class UGCGrowth {
         .single();
 
       if (fetchError) {
-        console.error('Error fetching share data:', fetchError);
+        logger.error('Error fetching share data:', { fetchError });
         throw fetchError;
       }
 
@@ -190,7 +190,7 @@ export class UGCGrowth {
         .eq('id', shareId);
 
       if (updateError) {
-        console.error('Error updating social platforms:', updateError);
+        logger.error('Error updating social platforms:', { updateError });
         throw updateError;
       }
 
@@ -274,7 +274,7 @@ export class UGCGrowth {
         .single();
 
       if (fetchError) {
-        console.error('Error fetching current metrics:', fetchError);
+        logger.error('Error fetching current metrics:', { fetchError });
         return;
       }
 
@@ -319,7 +319,7 @@ export class UGCGrowth {
         .eq('id', shareId);
 
       if (updateError) {
-        console.error('Error updating engagement metrics:', updateError);
+        logger.error('Error updating engagement metrics:', { updateError });
         throw updateError;
       }
 

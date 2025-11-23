@@ -12,7 +12,9 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('aurora-prime-autopilot-ts');
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = join(__dirname, '..');
@@ -54,7 +56,7 @@ class AuroraPrime {
   };
 
   async run(): Promise<void> {
-    console.log('🚀 AURORA PRIME AUTOPILOT — INITIATING FULL SYSTEM SCAN\n');
+    logger.info('🚀 AURORA PRIME AUTOPILOT — INITIATING FULL SYSTEM SCAN\n');
     
     try {
       await this.verifyEnvironment();
@@ -67,7 +69,7 @@ class AuroraPrime {
       
       this.printStatus();
     } catch (error) {
-      console.error('❌ Critical error during autopilot execution:', error);
+      logger.error('❌ Critical error during autopilot execution:', { error });
       this.status.issues.push(`Critical error: ${error instanceof Error ? error.message : String(error)}`);
       this.printStatus();
       process.exit(1);
@@ -75,8 +77,8 @@ class AuroraPrime {
   }
 
   private async verifyEnvironment(): Promise<void> {
-    console.log('📋 MISSION 1: ENVIRONMENT VERIFICATION');
-    console.log('─'.repeat(60));
+    logger.info('📋 MISSION 1: ENVIRONMENT VERIFICATION');
+    logger.info('─'.repeat(60'));
     
     const workflowsDir = join(ROOT, '.github', 'workflows');
     if (!existsSync(workflowsDir)) {
@@ -108,8 +110,8 @@ class AuroraPrime {
       secretsConsistent = false;
     }
 
-    console.log(`✅ Found ${workflowFiles.length} workflow files`);
-    console.log(`✅ Verified ${Object.keys(secretUsage).length} secret references`);
+    logger.info('✅ Found ${workflowFiles.length} workflow files');
+    logger.info('✅ Verified ${Object.keys(secretUsage').length} secret references`);
     
     if (secretsConsistent) {
       this.status.secretsAlignment = 'Healthy';
@@ -117,8 +119,8 @@ class AuroraPrime {
   }
 
   private async validateSupabase(): Promise<void> {
-    console.log('\n🗄️  MISSION 2: SUPABASE — MIGRATION & SCHEMA HEALTH');
-    console.log('─'.repeat(60));
+    logger.info('\n🗄️  MISSION 2: SUPABASE — MIGRATION & SCHEMA HEALTH');
+    logger.info('─'.repeat(60'));
 
     try {
       // Check Supabase config
@@ -138,14 +140,14 @@ class AuroraPrime {
       }
 
       const migrations = readdirSync(migrationsDir).filter(f => f.endsWith('.sql'));
-      console.log(`✅ Found ${migrations.length} migration files`);
+      logger.info('✅ Found ${migrations.length} migration files');
 
       // Check Prisma schema alignment
       const prismaSchemaPath = join(ROOT, 'prisma', 'schema.prisma');
       if (existsSync(prismaSchemaPath)) {
         const prismaSchema = readFileSync(prismaSchemaPath, 'utf-8');
         if (prismaSchema.includes('engineType = "wasm"')) {
-          console.log('✅ Prisma configured with WASM engine');
+          logger.info('✅ Prisma configured with WASM engine');
         } else {
           this.status.issues.push('Prisma not configured with WASM engine');
         }
@@ -158,16 +160,16 @@ class AuroraPrime {
           const funcPath = join(functionsDir, f);
           return existsSync(funcPath) && readdirSync(funcPath).some(f2 => f2 === 'index.ts' || f2 === 'deno.json');
         });
-        console.log(`✅ Found ${functions.length} Edge Functions`);
+        logger.info('✅ Found ${functions.length} Edge Functions');
       }
 
       // Try to validate schema (dry-run if possible)
       try {
         execSync('which supabase', { stdio: 'ignore' });
-        console.log('✅ Supabase CLI available');
+        logger.info('✅ Supabase CLI available');
         this.status.supabase = 'Healthy';
       } catch {
-        console.log('⚠️  Supabase CLI not available (non-blocking)');
+        logger.info('⚠️  Supabase CLI not available (non-blocking')');
         this.status.supabase = 'Healthy'; // Non-blocking
       }
     } catch (error) {
@@ -177,8 +179,8 @@ class AuroraPrime {
   }
 
   private async validateVercel(): Promise<void> {
-    console.log('\n🌐 MISSION 3: VERCEL — FRONTEND DEPLOYMENT CHECK');
-    console.log('─'.repeat(60));
+    logger.info('\n🌐 MISSION 3: VERCEL — FRONTEND DEPLOYMENT CHECK');
+    logger.info('─'.repeat(60'));
 
     try {
       // Check vercel.json
@@ -190,7 +192,7 @@ class AuroraPrime {
       }
 
       const vercelConfig = JSON.parse(readFileSync(vercelConfigPath, 'utf-8'));
-      console.log('✅ Vercel configuration found');
+      logger.info('✅ Vercel configuration found');
 
       // Check deployment workflow
       const deployWorkflowPath = join(ROOT, '.github', 'workflows', 'deploy-web.yml');
@@ -198,7 +200,7 @@ class AuroraPrime {
         const workflow = readFileSync(deployWorkflowPath, 'utf-8');
         
         if (workflow.includes('VERCEL_TOKEN') && workflow.includes('VERCEL_ORG_ID') && workflow.includes('VERCEL_PROJECT_ID')) {
-          console.log('✅ Vercel deployment workflow configured with secrets');
+          logger.info('✅ Vercel deployment workflow configured with secrets');
           this.status.vercel = 'Healthy';
         } else {
           this.status.issues.push('Vercel deployment workflow missing required secrets');
@@ -212,7 +214,7 @@ class AuroraPrime {
       // Check Next.js app
       const webAppPath = join(ROOT, 'apps', 'web');
       if (existsSync(webAppPath)) {
-        console.log('✅ Web app directory found');
+        logger.info('✅ Web app directory found');
       } else {
         this.status.issues.push('Web app directory not found');
       }
@@ -223,8 +225,8 @@ class AuroraPrime {
   }
 
   private async validateExpo(): Promise<void> {
-    console.log('\n📱 MISSION 4: EXPO — MOBILE APP DEPLOYMENT');
-    console.log('─'.repeat(60));
+    logger.info('\n📱 MISSION 4: EXPO — MOBILE APP DEPLOYMENT');
+    logger.info('─'.repeat(60'));
 
     try {
       const mobileAppPath = join(ROOT, 'apps', 'mobile');
@@ -238,7 +240,7 @@ class AuroraPrime {
       const appJsonPath = join(mobileAppPath, 'app.json');
       if (existsSync(appJsonPath)) {
         const appJson = JSON.parse(readFileSync(appJsonPath, 'utf-8'));
-        console.log(`✅ Expo app.json found: ${appJson.expo?.name || 'Unknown'}`);
+        logger.info('✅ Expo app.json found: ${appJson.expo?.name || 'Unknown'}');
       } else {
         this.status.issues.push('Expo app.json not found');
       }
@@ -247,11 +249,11 @@ class AuroraPrime {
       const easJsonPath = join(mobileAppPath, 'eas.json');
       if (existsSync(easJsonPath)) {
         const easJson = JSON.parse(readFileSync(easJsonPath, 'utf-8'));
-        console.log('✅ EAS configuration found');
+        logger.info('✅ EAS configuration found');
         
         // Check OTA updates
         if (easJson.updates?.enabled) {
-          console.log('✅ OTA updates enabled');
+          logger.info('✅ OTA updates enabled');
         } else {
           this.status.issues.push('OTA updates not enabled in EAS config');
         }
@@ -265,7 +267,7 @@ class AuroraPrime {
         const workflow = readFileSync(mobileWorkflowPath, 'utf-8');
         
         if (workflow.includes('EXPO_TOKEN')) {
-          console.log('✅ Mobile deployment workflow configured with EXPO_TOKEN');
+          logger.info('✅ Mobile deployment workflow configured with EXPO_TOKEN');
           this.status.expo = 'Healthy';
         } else {
           this.status.issues.push('Mobile workflow missing EXPO_TOKEN');
@@ -278,7 +280,7 @@ class AuroraPrime {
 
       // Check for Supabase URL in mobile config (should use EXPO_PUBLIC_SUPABASE_URL)
       // This would typically be in app.json or a config file
-      console.log('✅ Mobile app structure validated');
+      logger.info('✅ Mobile app structure validated');
     } catch (error) {
       this.status.issues.push(`Expo validation error: ${error instanceof Error ? error.message : String(error)}`);
       this.status.expo = 'Needs Attention';
@@ -286,8 +288,8 @@ class AuroraPrime {
   }
 
   private async validateCICD(): Promise<void> {
-    console.log('\n🔄 MISSION 5: CI/CD PIPELINE AUTOPILOT');
-    console.log('─'.repeat(60));
+    logger.info('\n🔄 MISSION 5: CI/CD PIPELINE AUTOPILOT');
+    logger.info('─'.repeat(60'));
 
     try {
       const workflowsDir = join(ROOT, '.github', 'workflows');
@@ -311,15 +313,15 @@ class AuroraPrime {
         }
       }
 
-      console.log(`✅ Found ${workflowFiles.length} workflow files`);
+      logger.info('✅ Found ${workflowFiles.length} workflow files');
 
       if (!hasDoctorJob) {
-        console.log('⚠️  No Doctor job found in workflows');
+        logger.info('⚠️  No Doctor job found in workflows');
         this.status.fixes.push('Creating Doctor job workflow');
         await this.createDoctorJob();
         hasDoctorJob = true;
       } else {
-        console.log('✅ Doctor job found');
+        logger.info('✅ Doctor job found');
       }
 
       if (brokenWorkflows.length > 0) {
@@ -417,8 +419,8 @@ jobs:
   }
 
   private async checkSecretsAlignment(): Promise<void> {
-    console.log('\n🔐 MISSION 6: SECRETS ALIGNMENT CHECK');
-    console.log('─'.repeat(60));
+    logger.info('\n🔐 MISSION 6: SECRETS ALIGNMENT CHECK');
+    logger.info('─'.repeat(60'));
 
     try {
       // Check if workflows use consistent secret names
@@ -447,10 +449,10 @@ jobs:
       // Check if SUPABASE_URL and NEXT_PUBLIC_SUPABASE_URL are both used
       if (secretPatterns['SUPABASE_URL'] && secretPatterns['NEXT_PUBLIC_SUPABASE_URL']) {
         // Both exist, which is fine
-        console.log('✅ Both SUPABASE_URL and NEXT_PUBLIC_SUPABASE_URL found');
+        logger.info('✅ Both SUPABASE_URL and NEXT_PUBLIC_SUPABASE_URL found');
       }
 
-      console.log(`✅ Found ${Object.keys(secretPatterns).length} unique secrets in workflows`);
+      logger.info('✅ Found ${Object.keys(secretPatterns').length} unique secrets in workflows`);
       
       // Check for common inconsistencies
       if (secretPatterns['SUPABASE_ANON_KEY'] && !secretPatterns['NEXT_PUBLIC_SUPABASE_ANON_KEY']) {
@@ -470,8 +472,8 @@ jobs:
   }
 
   private async checkSchemaDrift(): Promise<void> {
-    console.log('\n📊 MISSION 7: SCHEMA DRIFT DETECTION');
-    console.log('─'.repeat(60));
+    logger.info('\n📊 MISSION 7: SCHEMA DRIFT DETECTION');
+    logger.info('─'.repeat(60'));
 
     try {
       // Check if Supabase CI workflow exists and has drift detection
@@ -479,14 +481,14 @@ jobs:
       if (existsSync(supabaseCIPath)) {
         const content = readFileSync(supabaseCIPath, 'utf-8');
         if (content.includes('drift') || content.includes('Drift')) {
-          console.log('✅ Schema drift detection configured');
+          logger.info('✅ Schema drift detection configured');
           this.status.schemaDrift = 'None';
         } else {
-          console.log('⚠️  Schema drift detection not found in Supabase CI');
+          logger.info('⚠️  Schema drift detection not found in Supabase CI');
           this.status.schemaDrift = 'Needs Manual Review';
         }
       } else {
-        console.log('⚠️  Supabase CI workflow not found');
+        logger.info('⚠️  Supabase CI workflow not found');
         this.status.schemaDrift = 'Needs Manual Review';
       }
 
@@ -494,7 +496,7 @@ jobs:
       const migrationsDir = join(ROOT, 'supabase', 'migrations');
       if (existsSync(migrationsDir)) {
         const migrations = readdirSync(migrationsDir).filter(f => f.endsWith('.sql'));
-        console.log(`✅ Found ${migrations.length} migration files`);
+        logger.info('✅ Found ${migrations.length} migration files');
       }
     } catch (error) {
       this.status.issues.push(`Schema drift check error: ${error instanceof Error ? error.message : String(error)}`);
@@ -503,64 +505,64 @@ jobs:
   }
 
   private printStatus(): void {
-    console.log('\n' + '═'.repeat(60));
-    console.log('🌟 AURORA PRIME — FULL SYSTEM STATUS');
-    console.log('═'.repeat(60));
-    console.log(`Supabase:              [${this.status.supabase}]`);
-    console.log(`Vercel Deployment:     [${this.status.vercel}]`);
-    console.log(`Expo (iOS/Android):    [${this.status.expo}]`);
-    console.log(`GitHub Actions:        [${this.status.githubActions}]`);
-    console.log(`Secrets Alignment:     [${this.status.secretsAlignment}]`);
-    console.log(`Schema Drift:          [${this.status.schemaDrift}]`);
-    console.log('═'.repeat(60));
+    logger.info('\n' + '═'.repeat(60'));
+    logger.info('🌟 AURORA PRIME — FULL SYSTEM STATUS');
+    logger.info('═'.repeat(60'));
+    logger.info('Supabase:              [${this.status.supabase}]');
+    logger.info('Vercel Deployment:     [${this.status.vercel}]');
+    logger.info('Expo (iOS/Android'):    [${this.status.expo}]`);
+    logger.info('GitHub Actions:        [${this.status.githubActions}]');
+    logger.info('Secrets Alignment:     [${this.status.secretsAlignment}]');
+    logger.info('Schema Drift:          [${this.status.schemaDrift}]');
+    logger.info('═'.repeat(60'));
 
     if (this.status.fixes.length > 0) {
-      console.log('\n🔧 AUTO-REPAIRS APPLIED:');
-      this.status.fixes.forEach(fix => console.log(`  ✅ ${fix}`));
+      logger.info('\n🔧 AUTO-REPAIRS APPLIED:');
+      this.status.fixes.forEach(fix => logger.info('  ✅ ${fix}'));
     }
 
     if (this.status.issues.length > 0) {
-      console.log('\n⚠️  ISSUES DETECTED:');
-      this.status.issues.forEach(issue => console.log(`  • ${issue}`));
+      logger.info('\n⚠️  ISSUES DETECTED:');
+      this.status.issues.forEach(issue => logger.info('  • ${issue}'));
     }
 
-    console.log('\n📋 RECOMMENDED NEXT ACTIONS:');
+    logger.info('\n📋 RECOMMENDED NEXT ACTIONS:');
     
     if (this.status.supabase !== 'Healthy') {
-      console.log('  • Run: supabase db push --project-ref $SUPABASE_PROJECT_REF');
-      console.log('  • Verify: supabase status');
+      logger.info('  • Run: supabase db push --project-ref $SUPABASE_PROJECT_REF');
+      logger.info('  • Verify: supabase status');
     }
     
     if (this.status.vercel !== 'Healthy') {
-      console.log('  • Verify Vercel project linking');
-      console.log('  • Check environment variables in Vercel dashboard');
+      logger.info('  • Verify Vercel project linking');
+      logger.info('  • Check environment variables in Vercel dashboard');
     }
     
     if (this.status.expo !== 'Healthy') {
-      console.log('  • Verify EAS configuration');
-      console.log('  • Check EXPO_TOKEN in GitHub secrets');
+      logger.info('  • Verify EAS configuration');
+      logger.info('  • Check EXPO_TOKEN in GitHub secrets');
     }
     
     if (this.status.githubActions !== 'Healthy') {
-      console.log('  • Review workflow files for errors');
-      console.log('  • Ensure all required secrets are set in GitHub');
+      logger.info('  • Review workflow files for errors');
+      logger.info('  • Ensure all required secrets are set in GitHub');
     }
     
     if (this.status.secretsAlignment !== 'Healthy') {
-      console.log('  • Standardize secret names across workflows');
-      console.log('  • Ensure all environments use same secret names');
+      logger.info('  • Standardize secret names across workflows');
+      logger.info('  • Ensure all environments use same secret names');
     }
     
     if (this.status.schemaDrift !== 'None') {
-      console.log('  • Run schema drift detection');
-      console.log('  • Generate migration if drift detected');
+      logger.info('  • Run schema drift detection');
+      logger.info('  • Generate migration if drift detected');
     }
 
     if (this.status.issues.length === 0 && this.status.fixes.length === 0) {
-      console.log('  ✅ System is healthy — no actions required');
+      logger.info('  ✅ System is healthy — no actions required');
     }
 
-    console.log('\n' + '═'.repeat(60));
+    logger.info('\n' + '═'.repeat(60'));
   }
 }
 

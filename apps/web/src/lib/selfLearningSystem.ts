@@ -142,7 +142,7 @@ export class SelfLearningSystem {
   /**
    * Collect data from various sources
    */
-  private async collectLearningData(): Promise<Record<string, any>> {
+  private async collectLearningData(): Promise<Record<string, unknown>> {
     try {
       // Get data from multiple sources
       const [
@@ -176,7 +176,7 @@ export class SelfLearningSystem {
   /**
    * Get conversion data
    */
-  private async getConversionData(): Promise<any> {
+  private async getConversionData(): Promise<unknown> {
     try {
       const { data: funnelEvents } = await supabase
         .from('funnel_events')
@@ -201,7 +201,7 @@ export class SelfLearningSystem {
   /**
    * Get performance data
    */
-  private async getPerformanceData(): Promise<any> {
+  private async getPerformanceData(): Promise<unknown> {
     try {
       const { data: perfLogs } = await supabase
         .from('performance_logs')
@@ -224,7 +224,7 @@ export class SelfLearningSystem {
   /**
    * Get monetization data
    */
-  private async getMonetizationData(): Promise<any> {
+  private async getMonetizationData(): Promise<unknown> {
     try {
       const { data: revenue } = await supabase
         .from('revenue_records')
@@ -250,7 +250,7 @@ export class SelfLearningSystem {
   /**
    * Get user behavior data
    */
-  private async getUserBehaviorData(): Promise<any> {
+  private async getUserBehaviorData(): Promise<unknown> {
     try {
       const { data: analytics } = await supabase
         .from('analytics_events')
@@ -271,7 +271,7 @@ export class SelfLearningSystem {
   /**
    * Get error data
    */
-  private async getErrorData(): Promise<any> {
+  private async getErrorData(): Promise<unknown> {
     try {
       const { data: errors } = await supabase
         .from('error_logs')
@@ -292,7 +292,7 @@ export class SelfLearningSystem {
   /**
    * Generate insights from collected data
    */
-  private async generateInsights(data: Record<string, any>): Promise<LearningInsight[]> {
+  private async generateInsights(data: Record<string, unknown>): Promise<LearningInsight[]> {
     const insights: LearningInsight[] = [];
 
     // Conversion insights
@@ -594,20 +594,20 @@ export class SelfLearningSystem {
   }
 
   // Helper methods
-  private calculateAverage(data: any[], field: string): number {
+  private calculateAverage(data: unknown[], field: string): number {
     if (data.length === 0) return 0;
     const sum = data.reduce((acc, item) => acc + (item[field] || 0), 0);
     return sum / data.length;
   }
 
-  private calculatePercentile(data: any[], field: string, percentile: number): number {
+  private calculatePercentile(data: unknown[], field: string, percentile: number): number {
     if (data.length === 0) return 0;
     const values = data.map(item => item[field] || 0).sort((a, b) => a - b);
     const index = Math.ceil((percentile / 100) * values.length) - 1;
     return values[Math.max(0, index)];
   }
 
-  private analyzePopularActions(events: any[]): string[] {
+  private analyzePopularActions(events: unknown[]): string[] {
     const actionCounts: Record<string, number> = {};
     events.forEach(e => {
       const action = e.event_name || 'unknown';
@@ -619,12 +619,12 @@ export class SelfLearningSystem {
       .map(([action]) => action);
   }
 
-  private analyzeDropOffs(events: any[]): Array<{ location: string; count: number }> {
+  private analyzeDropOffs(events: unknown[]): Array<{ location: string; count: number }> {
     // Simplified drop-off analysis
     return [];
   }
 
-  private calculateErrorFrequency(errors: any[]): Record<string, number> {
+  private calculateErrorFrequency(errors: unknown[]): Record<string, number> {
     const frequency: Record<string, number> = {};
     errors.forEach(e => {
       const type = e.error_type || 'unknown';
@@ -633,7 +633,7 @@ export class SelfLearningSystem {
     return frequency;
   }
 
-  private getTopErrors(errors: any[]): Array<{ type: string; count: number }> {
+  private getTopErrors(errors: unknown[]): Array<{ type: string; count: number }> {
     const frequency = this.calculateErrorFrequency(errors);
     return Object.entries(frequency)
       .sort(([, a], [, b]) => b - a)

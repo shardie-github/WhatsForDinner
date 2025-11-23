@@ -1,8 +1,10 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
 /**
  * Hydrogen/Oxygen Bridge
  * This file enables compatibility with Shopify's Hydrogen/Oxygen platform
  */
 
+const logger = createComponentLogger('bridge-ts');
 export interface HydrogenRequest {
   url: string;
   method: string;
@@ -51,7 +53,7 @@ export function handleHydrogenRequest(request: HydrogenRequest): HydrogenRespons
         return handleDefault(request);
     }
   } catch (error) {
-    console.error('Hydrogen request handling error:', error);
+    logger.error('Hydrogen request handling error:', { error });
     return {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
@@ -168,7 +170,7 @@ export function hydrogenMiddleware(handler: (context: HydrogenContext) => Promis
       
       return response;
     } catch (error) {
-      console.error('Hydrogen middleware error:', error);
+      logger.error('Hydrogen middleware error:', { error });
       return {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
@@ -188,7 +190,7 @@ export const hydrogenUtils = {
   /**
    * Parse request body
    */
-  parseBody(request: HydrogenRequest): any {
+  parseBody(request: HydrogenRequest): unknown {
     try {
       return request.body ? JSON.parse(request.body) : {};
     } catch (error) {

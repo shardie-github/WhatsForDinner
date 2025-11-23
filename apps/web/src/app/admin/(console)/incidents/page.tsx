@@ -54,7 +54,7 @@ export default function IncidentsPage() {
       setIncidents(data);
       setLoading(false);
     } catch (err) {
-      console.error(err);
+      logger.error('err');
       setLoading(false);
     }
   };

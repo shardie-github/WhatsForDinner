@@ -58,7 +58,7 @@ export class AISafetyGuardrails {
   private safetyMetrics: SafetyMetrics;
   private promptInjectionPatterns: RegExp[];
   private harmfulContentPatterns: RegExp[];
-  private biasDetectionRules: any[];
+  private biasDetectionRules: unknown[];
   private isMonitoring: boolean = false;
 
   constructor() {

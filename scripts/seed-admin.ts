@@ -9,7 +9,9 @@ import { db } from '../packages/server/src/db/index.js';
 import { adminUsers } from '../packages/server/src/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { mintAdminToken } from '../packages/server/src/auth/admin.js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('seed-admin-ts');
 const { values } = parseArgs({
   args: Bun.argv.slice(2),
   options: {
@@ -20,7 +22,7 @@ const { values } = parseArgs({
 
 async function seedAdmin() {
   if (!values.email) {
-    console.error('Error: --email is required');
+    logger.error('Error: --email is required');
     process.exit(1);
   }
 
@@ -28,7 +30,7 @@ async function seedAdmin() {
   const validRoles = ['superadmin', 'finance', 'reviewer', 'support'];
   
   if (!validRoles.includes(role)) {
-    console.error(`Error: Invalid role. Must be one of: ${validRoles.join(', ')}`);
+    logger.error('Error: Invalid role. Must be one of: ${validRoles.join(', { ' })}`);
     process.exit(1);
   }
 
@@ -62,6 +64,6 @@ async function seedAdmin() {
               }
 
 seedAdmin().catch((error) => {
-  console.error('Error seeding admin:', error);
+  logger.error('Error seeding admin:', { error });
   process.exit(1);
 });

@@ -4,7 +4,9 @@
 
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('store-pack-ts');
 const STORE_DIR = join(process.cwd(), 'ops', 'store');
 
 function generateGooglePlayManifest(): string {
@@ -110,7 +112,7 @@ async function generateStorePack(): Promise<void> {
 
 if (require.main === module) {
   generateStorePack().catch(error => {
-    console.error('Failed to generate store pack:', error);
+    logger.error('Failed to generate store pack:', { error });
     process.exit(1);
   });
 }

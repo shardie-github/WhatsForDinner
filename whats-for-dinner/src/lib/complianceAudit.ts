@@ -1,5 +1,7 @@
 import { supabase } from './supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('complianceaudit-ts');
 export interface AuditLog {
   id: string;
   tenant_id: string;
@@ -25,7 +27,7 @@ export interface AnomalyDetection {
   detected_at: string;
   resolved_at?: string;
   auto_resolved: boolean;
-  resolution_actions: any[];
+  resolution_actions: unknown[];
   metadata: any;
 }
 
@@ -87,7 +89,7 @@ export class ComplianceAudit {
       // Trigger anomaly detection
       await this.detectAnomalies(tenantId, actionType, resourceType);
     } catch (error) {
-      console.error('Error logging audit event:', error);
+      logger.error('Error logging audit event:', { error });
       throw error;
     }
   }
@@ -140,7 +142,7 @@ export class ComplianceAudit {
 
       return data || [];
     } catch (error) {
-      console.error('Error getting audit logs:', error);
+      logger.error('Error getting audit logs:', { error });
       return [];
     }
   }
@@ -170,7 +172,7 @@ export class ComplianceAudit {
       // Detect performance degradation
       await this.detectPerformanceAnomalies(tenantId);
     } catch (error) {
-      console.error('Error detecting anomalies:', error);
+      logger.error('Error detecting anomalies:', { error });
     }
   }
 
@@ -226,7 +228,7 @@ export class ComplianceAudit {
 
       return data || [];
     } catch (error) {
-      console.error('Error getting anomalies:', error);
+      logger.error('Error getting anomalies:', { error });
       return [];
     }
   }
@@ -236,7 +238,7 @@ export class ComplianceAudit {
    */
   async resolveAnomaly(
     anomalyId: string,
-    resolutionActions: any[],
+    resolutionActions: unknown[],
     autoResolved: boolean = false
   ): Promise<void> {
     try {
@@ -249,7 +251,7 @@ export class ComplianceAudit {
         })
         .eq('id', anomalyId);
     } catch (error) {
-      console.error('Error resolving anomaly:', error);
+      logger.error('Error resolving anomaly:', { error });
       throw error;
     }
   }
@@ -309,7 +311,7 @@ export class ComplianceAudit {
         violations,
       };
     } catch (error) {
-      console.error('Error generating compliance report:', error);
+      logger.error('Error generating compliance report:', { error });
       throw error;
     }
   }
@@ -317,7 +319,7 @@ export class ComplianceAudit {
   /**
    * Get real-time compliance dashboard data
    */
-  async getComplianceDashboard(tenantId: string): Promise<any> {
+  async getComplianceDashboard(tenantId: string): Promise<unknown> {
     try {
       const now = new Date();
       const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -355,7 +357,7 @@ export class ComplianceAudit {
         last_updated: now.toISOString(),
       };
     } catch (error) {
-      console.error('Error getting compliance dashboard:', error);
+      logger.error('Error getting compliance dashboard:', { error });
       throw error;
     }
   }
@@ -406,7 +408,7 @@ export class ComplianceAudit {
         });
       }
     } catch (error) {
-      console.error('Error detecting billing anomalies:', error);
+      logger.error('Error detecting billing anomalies:', { error });
     }
   }
 
@@ -440,7 +442,7 @@ export class ComplianceAudit {
         });
       }
     } catch (error) {
-      console.error('Error detecting data privacy risks:', error);
+      logger.error('Error detecting data privacy risks:', { error });
     }
   }
 
@@ -479,7 +481,7 @@ export class ComplianceAudit {
         });
       }
     } catch (error) {
-      console.error('Error detecting performance anomalies:', error);
+      logger.error('Error detecting performance anomalies:', { error });
     }
   }
 
@@ -658,7 +660,7 @@ export class ComplianceAudit {
 
       return Array.from(dailyData.values());
     } catch (error) {
-      console.error('Error getting audit trends:', error);
+      logger.error('Error getting audit trends:', { error });
       return [];
     }
   }
@@ -666,7 +668,7 @@ export class ComplianceAudit {
   /**
    * Calculate risk distribution
    */
-  private calculateRiskDistribution(auditLogs: AuditLog[]): any {
+  private calculateRiskDistribution(auditLogs: AuditLog[]): unknown {
     const distribution = {
       low: 0,
       medium: 0,
@@ -692,7 +694,7 @@ export class ComplianceAudit {
   /**
    * Get top actions
    */
-  private getTopActions(auditLogs: AuditLog[]): any[] {
+  private getTopActions(auditLogs: AuditLog[]): unknown[] {
     const actionCounts = new Map();
 
     auditLogs.forEach(log => {

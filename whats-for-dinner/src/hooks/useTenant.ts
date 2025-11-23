@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/lib/supabaseClient';
 import type { Database } from '@/lib/supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('usetenant-ts');
 type Tenant = Database['public']['Tables']['tenants']['Row'];
 type TenantMembership =
   Database['public']['Tables']['tenant_memberships']['Row'];
@@ -86,12 +88,12 @@ export function useTenant() {
       );
 
       if (usageError) {
-        console.error('Error fetching usage data:', usageError);
+        logger.error('Error fetching usage data:', { usageError });
       } else if (usageData && usageData.length > 0) {
         setUsage(usageData[0]);
       }
     } catch (err) {
-      console.error('Error fetching tenant data:', err);
+      logger.error('Error fetching tenant data:', { err });
       setError(
         err instanceof Error ? err.message : 'Failed to fetch tenant data'
       );
@@ -117,7 +119,7 @@ export function useTenant() {
       // Refresh tenant data
       await fetchTenantData();
     } catch (err) {
-      console.error('Error creating tenant:', err);
+      logger.error('Error creating tenant:', { err });
       setError(err instanceof Error ? err.message : 'Failed to create tenant');
     }
   };
@@ -137,7 +139,7 @@ export function useTenant() {
 
       return data || false;
     } catch (err) {
-      console.error('Error checking quota:', err);
+      logger.error('Error checking quota:', { err });
       return false;
     }
   };
@@ -161,7 +163,7 @@ export function useTenant() {
         metadata_param: metadata,
       });
     } catch (err) {
-      console.error('Error logging usage:', err);
+      logger.error('Error logging usage:', { err });
     }
   };
 
@@ -186,7 +188,7 @@ export function useTenant() {
 
       return data;
     } catch (err) {
-      console.error('Error inviting user:', err);
+      logger.error('Error inviting user:', { err });
       throw err;
     }
   };
@@ -207,7 +209,7 @@ export function useTenant() {
         setUsage(data[0]);
       }
     } catch (err) {
-      console.error('Error refreshing usage:', err);
+      logger.error('Error refreshing usage:', { err });
     }
   };
 

@@ -6,7 +6,9 @@
 import { parse } from 'csv-parse/sync';
 import type { catalogItems } from '../../db/schema.js';
 import type { catalogAvailabilityEnum } from '../../db/schema.js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('csv-ts');
 export interface CSVRow {
   [key: string]: string;
 }
@@ -44,7 +46,7 @@ export function parseCSVFeed(
       try {
         return parseCSVRow(row);
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') { console.warn('Failed to parse CSV row', error, row); }
+        if (process.env.NODE_ENV === 'development') { logger.warn('Failed to parse CSV row', { error, row }); }
         return null;
       }
     })

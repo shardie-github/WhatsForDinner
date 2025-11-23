@@ -4,7 +4,9 @@
 
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('partner-hooks-ts');
 const PARTNERS_DIR = join(process.cwd(), 'partners');
 
 interface WebhookContract {
@@ -171,7 +173,7 @@ async function generatePartnerPack(): Promise<void> {
 
 if (require.main === module) {
   generatePartnerPack().catch(error => {
-    console.error('Failed to generate partner pack:', error);
+    logger.error('Failed to generate partner pack:', { error });
     process.exit(1);
   });
 }

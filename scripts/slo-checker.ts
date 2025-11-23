@@ -13,6 +13,7 @@ import { createClient } from '@supabase/supabase-js';
 import { writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
+const logger = createComponentLogger('slo-checker-ts');
 interface SLOConfig {
   api_success_rate_threshold: number; // 99.9%
   api_latency_p95_threshold_preview: number; // 400ms
@@ -103,7 +104,7 @@ class SLOChecker {
       };
       
     } catch (error) {
-      console.error('❌ Failed to collect API metrics:', error);
+      logger.error('❌ Failed to collect API metrics:', { error });
       throw error;
     }
   }
@@ -136,7 +137,7 @@ class SLOChecker {
       };
       
     } catch (error) {
-      console.error('❌ Failed to collect DB metrics:', error);
+      logger.error('❌ Failed to collect DB metrics:', { error });
       // Return safe defaults if DB query fails
       return {
         total_requests: 0,
@@ -216,6 +217,7 @@ class SLOChecker {
     // Ensure REPORTS directory exists
     const { execSync } = await import('child_process');
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
     execSync('mkdir -p REPORTS', { stdio: 'inherit' });
     
     writeFileSync(filepath, JSON.stringify(report, null, 2));
@@ -254,23 +256,23 @@ import { secretsManager } from './secrets-manager-unified.mjs';
       await this.saveSLOReport(report);
       
       // Log results
-      console.log(`SLO check completed`);
-      console.log(`Compliance: ${(evaluation.compliance * 100).toFixed(1)}%`);
+      logger.info('SLO check completed');
+      logger.info('Compliance: ${(evaluation.compliance * 100').toFixed(1)}%`);
       
       if (evaluation.violations.length > 0) {
-        console.warn('Violations:');
-        evaluation.violations.forEach(violation => console.warn(`  - ${violation}`));
+        logger.warn('Violations:');
+        evaluation.violations.forEach(violation => logger.warn('  - ${violation}'));
       }
       
       if (evaluation.recommendations.length > 0) {
-        console.log('Recommendations:');
-        evaluation.recommendations.forEach(rec => console.log(`  - ${rec}`));
+        logger.info('Recommendations:');
+        evaluation.recommendations.forEach(rec => logger.info('  - ${rec}'));
       }
       
       return report;
       
     } catch (error) {
-      console.error('❌ SLO check failed:', error);
+      logger.error('❌ SLO check failed:', { error });
       throw error;
     }
   }
@@ -286,9 +288,9 @@ async function main() {
   const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('❌ Missing required environment variables:');
-    console.error('  - NEXT_PUBLIC_SUPABASE_URL');
-    console.error('  - SUPABASE_SERVICE_ROLE_KEY');
+    logger.error('❌ Missing required environment variables:');
+    logger.error('  - NEXT_PUBLIC_SUPABASE_URL');
+    logger.error('  - SUPABASE_SERVICE_ROLE_KEY');
     process.exit(1);
   }
 
@@ -308,7 +310,7 @@ async function main() {
     }
     
   } catch (error) {
-    console.error('Fatal error during SLO check:', error);
+    logger.error('Fatal error during SLO check:', { error });
     process.exit(1);
   }
 }
@@ -316,7 +318,7 @@ async function main() {
 // Run if called directly
 if (require.main === module) {
   main().catch(error => {
-    console.error('Fatal error:', error);
+    logger.error('Fatal error:', { error });
     process.exit(1);
   });
 }

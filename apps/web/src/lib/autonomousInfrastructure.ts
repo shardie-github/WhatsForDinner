@@ -594,7 +594,7 @@ export class AutonomousInfrastructure {
         critical_issues: health.issues.filter(i => i.severity === 'critical').length,
       });
 
-      console.error('?? CRITICAL INFRASTRUCTURE ALERT:', health);
+      logger.error('?? CRITICAL INFRASTRUCTURE ALERT:', { health });
     } catch (error) {
       // Error handled: Error sending alert:
     }

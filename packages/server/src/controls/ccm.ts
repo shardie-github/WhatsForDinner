@@ -418,7 +418,7 @@ export async function runControlsCheck(frequency?: 'continuous' | 'daily' | 'wee
   failed: number;
   errors: number;
 }> {
-  const filters: any[] = [];
+  const filters: unknown[] = [];
   if (frequency) {
     filters.push(eq(controls.frequency, frequency));
   }
@@ -506,7 +506,7 @@ async function sendAlert(control: typeof controls.$inferSelect, message: string)
  * Get controls dashboard data
  */
 export async function getControlsDashboard(framework?: 'soc2' | 'iso27001' | 'custom') {
-  const filters: any[] = [];
+  const filters: unknown[] = [];
   if (framework) {
     filters.push(eq(controls.framework, framework));
   }

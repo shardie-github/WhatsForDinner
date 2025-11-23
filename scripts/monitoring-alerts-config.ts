@@ -1,5 +1,6 @@
 #!/usr/bin/env tsx
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 /**
  * Monitoring Alerts Configuration
  * 
@@ -9,6 +10,7 @@ import { secretsManager } from './secrets-manager-unified.mjs';
  * In production, configure actual webhooks and alert channels.
  */
 
+const logger = createComponentLogger('monitoring-alerts-config-ts');
 interface AlertConfig {
   name: string;
   severity: 'critical' | 'warning' | 'info';
@@ -107,7 +109,7 @@ const DEFAULT_CONFIG: MonitoringConfig = {
 };
 
 // Send alert to configured channels
-async function sendAlert(alert: AlertConfig, message: string, details?: Record<string, any>): Promise<void> {
+async function sendAlert(alert: AlertConfig, message: string, details?: Record<string, unknown>): Promise<void> {
   if (!alert.enabled) {
     return;
   }
@@ -186,10 +188,10 @@ async function sendSlackAlert(message: any): Promise<void> {
     });
 
     if (!response.ok) {
-      console.error('Failed to send Slack alert:', response.statusText);
+      logger.error('Failed to send Slack alert:', { response.statusText });
     }
   } catch (error) {
-    console.error('Error sending Slack alert:', error);
+    logger.error('Error sending Slack alert:', { error });
   }
 }
 
@@ -218,10 +220,10 @@ async function sendPagerDutyAlert(message: any): Promise<void> {
     });
 
     if (!response.ok) {
-      console.error('Failed to send PagerDuty alert:', response.statusText);
+      logger.error('Failed to send PagerDuty alert:', { response.statusText });
     }
   } catch (error) {
-    console.error('Error sending PagerDuty alert:', error);
+    logger.error('Error sending PagerDuty alert:', { error });
   }
 }
 
@@ -233,9 +235,9 @@ async function sendEmailAlert(message: any): Promise<void> {
 export async function testAlerts(): Promise<void> {
   
     DEFAULT_CONFIG.alerts.forEach((alert, index) => {
-      console.log(`Alert ${index + 1}: ${alert.name}`);
-      console.log(`  Type: ${alert.type}`);
-      console.log(`  Enabled: ${alert.enabled}`);
+      logger.info('Alert ${index + 1}: ${alert.name}');
+      logger.info('  Type: ${alert.type}');
+      logger.info('  Enabled: ${alert.enabled}');
     });
 
         

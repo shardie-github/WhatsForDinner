@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { StripeService } from '@/lib/stripe';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 export async function POST(request: NextRequest) {
   try {
     const supabase = createRouteHandlerClient({ cookies });
@@ -43,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    console.error('Portal error:', error);
+    logger.error('Portal error:', { error });
     return NextResponse.json(
       { error: 'Failed to create portal session' },
       { status: 500 }

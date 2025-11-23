@@ -12,7 +12,9 @@ import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('observability-ts');
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
 interface Metric {
@@ -192,7 +194,7 @@ if (require.main === module) {
     initializeObservability();
   } else if (command === 'report') {
     generateMetricsReport().catch(error => {
-      console.error('Failed to generate report:', error);
+      logger.error('Failed to generate report:', { error });
       process.exit(1);
     });
   } else {

@@ -5,7 +5,9 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { glob } from 'glob';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('docs-generator-ts');
 const DOCS_DIR = join(process.cwd(), 'ops', 'docs');
 
 function generateMermaidDiagram(): string {
@@ -134,7 +136,7 @@ async function generateDocs(): Promise<void> {
 
 if (require.main === module) {
   generateDocs().catch(error => {
-    console.error('Failed to generate docs:', error);
+    logger.error('Failed to generate docs:', { error });
     process.exit(1);
   });
 }

@@ -110,7 +110,7 @@ export async function paginatedQuery<T>(
  */
 export function logSlowQuery(query: string, duration: number, threshold: number = 1000): void {
   if (duration > threshold) {
-    console.warn(`Slow query detected (${duration}ms):`, query.substring(0, 200));
+    logger.warn('Slow query detected (${duration}ms'):`, query.substring(0, 200));
     // In production, send to monitoring service
   }
 }

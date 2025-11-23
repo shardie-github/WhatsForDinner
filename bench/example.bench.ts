@@ -5,8 +5,10 @@
  */
 
 import { runSuite, type BenchmarkSuite } from './runner';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 // Example function to benchmark
+const logger = createComponentLogger('example-bench-ts');
 function fibonacci(n: number): number {
   if (n <= 1) return n;
   return fibonacci(n - 1) + fibonacci(n - 2);
@@ -45,11 +47,11 @@ const suite: BenchmarkSuite = {
 if (require.main === module) {
   runSuite(suite)
     .then((results) => {
-      console.log('\nBenchmark complete!');
-      console.log(JSON.stringify(results, null, 2));
+      logger.info('\nBenchmark complete!');
+      logger.info('JSON.stringify(results', { null, 2 }));
     })
     .catch((error) => {
-      console.error('Benchmark failed:', error);
+      logger.error('Benchmark failed:', { error });
       process.exit(1);
     });
 }

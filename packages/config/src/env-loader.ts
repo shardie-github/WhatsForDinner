@@ -8,7 +8,9 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { validateEnv, type Env } from './env';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('env-loader-ts');
 interface EnvLoadOptions {
   /**
    * Path to .env file (default: .env.local)
@@ -40,14 +42,14 @@ export function loadEnv(options: EnvLoadOptions = {}): Env {
     return validateEnv();
   } catch (error: any) {
     if (showHelp) {
-      console.error('\n❌ Environment validation failed!\n');
-      console.error('💡 Tips:');
-      console.error('   1. Copy .env.example to .env.local');
-      console.error('   2. Fill in required values');
-      console.error('   3. See .env.example for all available options\n');
+      logger.error('\n❌ Environment validation failed!\n');
+      logger.error('💡 Tips:');
+      logger.error('   1. Copy .env.example to .env.local');
+      logger.error('   2. Fill in required values');
+      logger.error('   3. See .env.example for all available options\n');
       
       if (existsSync(join(process.cwd(), '.env.example'))) {
-        console.error('📄 Example file: .env.example');
+        logger.error('📄 Example file: .env.example');
       }
     }
 
@@ -56,7 +58,7 @@ export function loadEnv(options: EnvLoadOptions = {}): Env {
     }
 
     // In non-strict mode, return partial env
-    console.warn('⚠️  Continuing with partial environment configuration');
+    logger.warn('⚠️  Continuing with partial environment configuration');
     return {} as Env;
   }
 }
@@ -138,7 +140,7 @@ export function validateEnvOnLoad(): void {
     try {
       validateEnv();
     } catch (error) {
-      console.error('❌ Environment validation failed in production!');
+      logger.error('❌ Environment validation failed in production!');
       throw error;
     }
   }

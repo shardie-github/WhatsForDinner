@@ -5,14 +5,16 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('release-ts');
 export async function runRelease(options: { dryRun?: boolean; skipTests?: boolean }) {
   
   if (!options.skipTests) {
         try {
       execSync('pnpm test', { stdio: 'inherit' });
     } catch (error) {
-      console.error('❌ Tests failed. Aborting release.');
+      logger.error('❌ Tests failed. Aborting release.');
       process.exit(1);
     }
   }
@@ -20,14 +22,14 @@ export async function runRelease(options: { dryRun?: boolean; skipTests?: boolea
     try {
     execSync('npm run ops check', { stdio: 'inherit' });
   } catch (error) {
-    console.error('❌ Checks failed. Aborting release.');
+    logger.error('❌ Checks failed. Aborting release.');
     process.exit(1);
   }
 
     try {
     execSync('pnpm build', { stdio: 'inherit' });
   } catch (error) {
-    console.error('❌ Build failed. Aborting release.');
+    logger.error('❌ Build failed. Aborting release.');
     process.exit(1);
   }
 
@@ -52,7 +54,7 @@ export async function runRelease(options: { dryRun?: boolean; skipTests?: boolea
     }
     
       } catch (error) {
-    console.error('\n❌ Release failed:', error);
+    logger.error('\n❌ Release failed:', { error });
     process.exit(1);
   }
 }

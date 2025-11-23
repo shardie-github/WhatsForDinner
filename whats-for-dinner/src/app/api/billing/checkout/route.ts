@@ -3,7 +3,9 @@ import { StripeService } from '@/lib/stripe';
 import { supabase } from '@/lib/supabaseClient';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 export async function POST(request: NextRequest) {
   try {
     const supabase = createRouteHandlerClient({ cookies });
@@ -49,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ sessionId: session.id, url: session.url });
   } catch (error) {
-    console.error('Checkout error:', error);
+    logger.error('Checkout error:', { error });
     return NextResponse.json(
       { error: 'Failed to create checkout session' },
       { status: 500 }

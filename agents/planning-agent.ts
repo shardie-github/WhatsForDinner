@@ -10,7 +10,9 @@ import { writeFileSync, existsSync, readFileSync } from 'fs';
 import { readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('planning-agent-ts');
 interface TodoItem {
   file: string;
   line: number;
@@ -41,7 +43,7 @@ export class PlanningAgent {
   ) {}
 
   async run(): Promise<void> {
-    console.log('📋 Analyzing roadmap and planning...');
+    logger.info('📋 Analyzing roadmap and planning...');
 
     const todos = await this.extractTodos();
     const epics = await this.clusterIntoTodos(todos);
@@ -259,7 +261,7 @@ ${epic.todos
       .filter((todo) => todo.priority === 'high');
 
     if (highPriorityTodos.length > 0) {
-      console.log(`📌 Found ${highPriorityTodos.length} high-priority TODOs that should be converted to GitHub issues`);
+      logger.info('📌 Found ${highPriorityTodos.length} high-priority TODOs that should be converted to GitHub issues');
       // In production, would use GitHub API to create issues
     }
   }

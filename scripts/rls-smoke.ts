@@ -2,13 +2,15 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('rls-smoke-ts');
 const SUPABASE_URL = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_ANON_KEY')) || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const SUPABASE_SERVICE_ROLE_KEY = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
-  console.error('❌ Missing required environment variables');
+  logger.error('❌ Missing required environment variables');
   process.exit(1);
 }
 
@@ -263,26 +265,26 @@ async function testRLS(): Promise<RLSResults> {
 }
 
 function printReport(results: RLSResults) {
-  console.log('\n=== RLS Smoke Test Report ===\n');
+  logger.info('\n=== RLS Smoke Test Report ===\n');
   
   results.results.forEach((result, index) => {
     const status = result.passed ? '✅' : '❌';
-    console.log(`${status} Test ${index + 1}: ${result.name}`);
+    logger.info('${status} Test ${index + 1}: ${result.name}');
         
     if (result.details) {
-      console.log(`  Details: ${result.details}`);
+      logger.info('  Details: ${result.details}');
     }
     
     if (result.error) {
-      console.log(`  Error: ${result.error}`);
+      logger.info('  Error: ${result.error}');
     }
   });
 
         
   if (results.failed > 0) {
-    console.log(`\n❌ ${results.failed} test(s) failed`);
+    logger.info('\n❌ ${results.failed} test(s') failed`);
   } else {
-    console.log('\n✅ All tests passed');
+    logger.info('\n✅ All tests passed');
   }
 }
 
@@ -302,7 +304,7 @@ async function main() {
               }
     }
   } catch (error) {
-    console.error('❌ Error running RLS smoke test:', error);
+    logger.error('❌ Error running RLS smoke test:', { error });
     process.exit(1);
   }
 }

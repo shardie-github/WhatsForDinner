@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import { logger } from './logger';
 import { analytics } from './analytics';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('monitoring-ts');
 interface MetricData {
   name: string;
   value: number;
@@ -184,7 +186,7 @@ class MonitoringSystem {
         'metrics'
       );
     } catch (error) {
-      console.error(`Failed to record metric ${name}:`, error);
+      logger.error('Failed to record metric ${name}:', { error });
     }
   }
 
@@ -219,7 +221,7 @@ class MonitoringSystem {
       // Record as metric
       await this.recordMetric(name, newValue, tags);
     } catch (error) {
-      console.error(`Failed to record counter ${name}:`, error);
+      logger.error('Failed to record counter ${name}:', { error });
     }
   }
 
@@ -248,7 +250,7 @@ class MonitoringSystem {
         await this.recordMetric(`${name}_avg`, avg, tags);
       }
     } catch (error) {
-      console.error(`Failed to record timer ${name}:`, error);
+      logger.error('Failed to record timer ${name}:', { error });
     }
   }
 
@@ -260,7 +262,7 @@ class MonitoringSystem {
     try {
       await this.recordMetric(name, value, tags);
     } catch (error) {
-      console.error(`Failed to record gauge ${name}:`, error);
+      logger.error('Failed to record gauge ${name}:', { error });
     }
   }
 
@@ -327,7 +329,7 @@ class MonitoringSystem {
         }
       }
     } catch (error) {
-      console.error('Failed to check alerts:', error);
+      logger.error('Failed to check alerts:', { error });
     }
   }
 
@@ -388,7 +390,7 @@ class MonitoringSystem {
         threshold: alert.threshold,
       });
     } catch (error) {
-      console.error('Failed to send alert notification:', error);
+      logger.error('Failed to send alert notification:', { error });
     }
   }
 
@@ -424,7 +426,7 @@ class MonitoringSystem {
           break;
       }
     } catch (error) {
-      console.error(`Failed to send ${channel} alert:`, error);
+      logger.error('Failed to send ${channel} alert:', { error });
     }
   }
 
@@ -471,7 +473,7 @@ class MonitoringSystem {
 
       return data || [];
     } catch (error) {
-      console.error(`Failed to get metrics ${name}:`, error);
+      logger.error('Failed to get metrics ${name}:', { error });
       return [];
     }
   }
@@ -490,7 +492,7 @@ class MonitoringSystem {
 
       return data || [];
     } catch (error) {
-      console.error('Failed to get alerts:', error);
+      logger.error('Failed to get alerts:', { error });
       return [];
     }
   }
@@ -521,13 +523,13 @@ class MonitoringSystem {
         'alerts'
       );
     } catch (error) {
-      console.error(`Failed to resolve alert ${alertId}:`, error);
+      logger.error('Failed to resolve alert ${alertId}:', { error });
     }
   }
 
   async getHealthStatus(): Promise<{
     status: 'healthy' | 'degraded' | 'unhealthy';
-    metrics: Record<string, any>;
+    metrics: Record<string, unknown>;
     alerts: Alert[];
   }> {
     try {
@@ -561,7 +563,7 @@ class MonitoringSystem {
         alerts: activeAlerts,
       };
     } catch (error) {
-      console.error('Failed to get health status:', error);
+      logger.error('Failed to get health status:', { error });
       return {
         status: 'unhealthy',
         metrics: {},
@@ -659,7 +661,7 @@ class MonitoringSystem {
         recommendations,
       };
     } catch (error) {
-      console.error('Failed to generate report:', error);
+      logger.error('Failed to generate report:', { error });
       return {
         summary: {},
         metrics: {},

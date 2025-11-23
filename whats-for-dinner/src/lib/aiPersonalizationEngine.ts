@@ -107,7 +107,7 @@ export interface RecipeInteraction {
   recipeId: string;
   action: 'view' | 'like' | 'dislike' | 'save' | 'cook' | 'rate' | 'share';
   timestamp: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   rating?: number;
   comments?: string;
 }
@@ -117,12 +117,12 @@ export interface FeedbackHistory {
   content: string;
   sentiment: 'positive' | 'negative' | 'neutral';
   timestamp: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
 }
 
 export interface SearchHistory {
   query: string;
-  filters: Record<string, any>;
+  filters: Record<string, unknown>;
   results: string[];
   clickedResult: string | null;
   timestamp: string;
@@ -263,7 +263,7 @@ export interface RecipeEBook {
   personalization: {
     userId: string;
     customizations: string[];
-    preferences: Record<string, any>;
+    preferences: Record<string, unknown>;
   };
   generatedAt: string;
   downloadCount: number;
@@ -865,7 +865,7 @@ export class AIPersonalizationEngine {
   /**
    * Extract preferences
    */
-  private extractPreferences(profile: UserProfile): Record<string, any> {
+  private extractPreferences(profile: UserProfile): Record<string, unknown> {
     return {
       cuisines: profile.tastePreferences.cuisines,
       dietaryChoices: profile.dietaryRestrictions.dietaryChoices,

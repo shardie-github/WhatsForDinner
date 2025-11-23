@@ -156,7 +156,7 @@ export const performanceMonitor = new PerformanceMonitor();
  * Performance decorator for async functions
  */
 export function trackPerformance(name: string) {
-  return function <T extends (...args: any[]) => Promise<any>>(
+  return function <T extends (...args: unknown[]) => Promise<unknown>>(
     target: any,
     propertyKey: string,
     descriptor: TypedPropertyDescriptor<T>

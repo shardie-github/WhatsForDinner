@@ -168,16 +168,16 @@ export default function RootLayout({
                   // Try enhanced SW first, fallback to default
                   navigator.serviceWorker.register('/sw-enhanced.js')
                     .then(function(registration) {
-                      console.log('Enhanced SW registered: ', registration);
+                      logger.info('Enhanced SW registered: ', { registration });
                     })
                     .catch(function() {
                       // Fallback to default SW if enhanced doesn't exist
                       navigator.serviceWorker.register('/sw.js')
                         .then(function(registration) {
-                          console.log('SW registered: ', registration);
+                          logger.info('SW registered: ', { registration });
                         })
                         .catch(function(registrationError) {
-                          console.log('SW registration failed: ', registrationError);
+                          logger.info('SW registration failed: ', { registrationError });
                         });
                     });
                 });

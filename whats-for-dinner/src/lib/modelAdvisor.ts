@@ -1,6 +1,8 @@
 import { supabase } from './supabaseClient';
 import { StripeService } from './stripe';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('modeladvisor-ts');
 export interface ModelRecommendation {
   model_name: string;
   provider: string;
@@ -112,7 +114,7 @@ export class ModelAdvisor {
         reasoning,
       };
     } catch (error) {
-      console.error('Error getting optimal model:', error);
+      logger.error('Error getting optimal model:', { error });
       throw error;
     }
   }
@@ -225,7 +227,7 @@ export class ModelAdvisor {
 
       return performance;
     } catch (error) {
-      console.error('Error getting model performance:', error);
+      logger.error('Error getting model performance:', { error });
       throw error;
     }
   }
@@ -294,7 +296,7 @@ export class ModelAdvisor {
         },
       });
     } catch (error) {
-      console.error('Error updating model performance:', error);
+      logger.error('Error updating model performance:', { error });
     }
   }
 
@@ -333,7 +335,7 @@ export class ModelAdvisor {
         })) || []
       );
     } catch (error) {
-      console.error('Error getting cost comparison:', error);
+      logger.error('Error getting cost comparison:', { error });
       throw error;
     }
   }
@@ -341,7 +343,7 @@ export class ModelAdvisor {
   /**
    * Select model based on use case
    */
-  private selectModelForUseCase(models: any[], useCase: string): any {
+  private selectModelForUseCase(models: unknown[], useCase: string): unknown {
     switch (useCase) {
       case 'cost_optimized':
         return models.reduce((min, model) =>
@@ -478,7 +480,7 @@ export class ModelAdvisor {
       this.performanceCache.clear();
 
           } catch (error) {
-      console.error('Error refreshing model data:', error);
+      logger.error('Error refreshing model data:', { error });
     }
   }
 }

@@ -601,7 +601,7 @@ export class HealAgent extends BaseAgent {
   /**
    * Create refactoring plan
    */
-  private async createRefactoringPlan(targets: string[]): Promise<any> {
+  private async createRefactoringPlan(targets: string[]): Promise<unknown> {
     // In a real implementation, this would create a detailed refactoring plan
     return {
       targets,

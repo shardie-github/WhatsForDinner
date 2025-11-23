@@ -8,7 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('recipecard-tsx');
 interface RecipeCardProps {
   recipe: Recipe;
   onSave?: () => void;
@@ -131,7 +133,7 @@ export default function RecipeCard({
               userId={userId}
               onFeedbackSubmitted={feedback => {
                 // Feedback submitted - could be logged or sent to analytics
-                console.log('Feedback submitted:', feedback);
+                logger.info('Feedback submitted:', { feedback });
               }}
             />
           </div>

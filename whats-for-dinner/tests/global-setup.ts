@@ -1,8 +1,10 @@
 import type { FullConfig } from '@playwright/test';
 import { chromium } from '@playwright/test';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('global-setup-ts');
 async function globalSetup(config: FullConfig) {
-  console.log('🔧 Setting up global test environment...');
+  logger.info('🔧 Setting up global test environment...');
 
   // Start a browser instance for setup
   const browser = await chromium.launch();
@@ -10,7 +12,7 @@ async function globalSetup(config: FullConfig) {
 
   try {
     // Wait for the application to be ready
-    console.log('⏳ Waiting for application to start...');
+    logger.info('⏳ Waiting for application to start...');
     await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
 
     // Verify the application is running
@@ -19,12 +21,12 @@ async function globalSetup(config: FullConfig) {
       throw new Error('Application not ready or incorrect title');
     }
 
-    console.log('✅ Application is ready for testing');
+    logger.info('✅ Application is ready for testing');
 
     // Set up test data if needed
     await setupTestData(page);
   } catch (error) {
-    console.error('❌ Global setup failed:', error);
+    logger.error('❌ Global setup failed:', { error });
     throw error;
   } finally {
     await browser.close();
@@ -32,7 +34,7 @@ async function globalSetup(config: FullConfig) {
 }
 
 async function setupTestData(page: any) {
-  console.log('📝 Setting up test data...');
+  logger.info('📝 Setting up test data...');
 
   // Create test user session if needed
   // This would typically involve:
@@ -50,9 +52,9 @@ async function setupTestData(page: any) {
       );
     });
 
-    console.log('✅ Test data setup complete');
+    logger.info('✅ Test data setup complete');
   } catch (error) {
-    console.warn('⚠️ Test data setup failed:', error);
+    logger.warn('⚠️ Test data setup failed:', { error });
     // Don't fail the entire setup for test data issues
   }
 }

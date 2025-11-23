@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     const status = url.searchParams.get('status');
     const riskLevel = url.searchParams.get('risk_level');
 
-    const filters: any[] = [];
+    const filters: unknown[] = [];
     if (category) {
       filters.push(eq(vendorCatalog.category, category as any));
     }

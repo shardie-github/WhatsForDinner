@@ -7,12 +7,14 @@
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('demo-privacy-ts');
 const supabaseUrl = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321';
 const supabaseServiceKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 if (!supabaseServiceKey) {
-  console.error('❌ SUPABASE_SERVICE_ROLE_KEY is required');
+  logger.error('❌ SUPABASE_SERVICE_ROLE_KEY is required');
   process.exit(1);
 }
 
@@ -41,7 +43,7 @@ async function main() {
     .single();
 
   if (prefsError) {
-    console.error('   ❌ Failed to set preferences:', prefsError.message);
+    logger.error('   ❌ Failed to set preferences:', { prefsError.message });
     process.exit(1);
   }
   
@@ -59,7 +61,7 @@ async function main() {
     .single();
 
   if (appError) {
-    console.error('   ❌ Failed to add app:', appError.message);
+    logger.error('   ❌ Failed to add app:', { appError.message });
     process.exit(1);
   }
   
@@ -76,7 +78,7 @@ async function main() {
     .single();
 
   if (signalError) {
-    console.error('   ❌ Failed to set signal:', signalError.message);
+    logger.error('   ❌ Failed to set signal:', { signalError.message });
     process.exit(1);
   }
   
@@ -134,12 +136,12 @@ async function main() {
     .limit(10);
 
   if (logEntries && logEntries.length > 0) {
-    console.log(`Found ${logEntries.length} log entries:`);
+    logger.info('Found ${logEntries.length} log entries:');
     for (const entry of logEntries) {
-      console.log(`  - ${entry.event_type} at ${new Date(entry.created_at).toLocaleString()}`);
+      logger.info('  - ${entry.event_type} at ${new Date(entry.created_at').toLocaleString()}`);
     }
   } else {
-    console.log('No log entries found');
+    logger.info('No log entries found');
   }
   
   // Step 9: Cleanup (optional - comment out to keep data for inspection)
@@ -151,13 +153,13 @@ async function main() {
     await supabase.from('app_allowlist').delete().eq('user_id', fakeUserId);
     await supabase.from('privacy_prefs').delete().eq('user_id', fakeUserId);
     await supabase.from('privacy_transparency_log').delete().eq('user_id', fakeUserId);
-    console.log('Cleanup completed');
+    logger.info('Cleanup completed');
   } else {
-    console.log('Data kept for inspection (use --keep-data flag to skip cleanup)');
+    logger.info('Data kept for inspection (use --keep-data flag to skip cleanup')');
   }
 }
 
 main().catch((error) => {
-  console.error('❌ Demo failed:', error);
+  logger.error('❌ Demo failed:', { error });
   process.exit(1);
 });

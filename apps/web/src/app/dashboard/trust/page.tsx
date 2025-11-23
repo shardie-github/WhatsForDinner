@@ -37,7 +37,7 @@ export default function TrustDashboard() {
         setLoading(false);
       })
       .catch(err => {
-        console.error('Failed to load trust report:', err);
+        logger.error('Failed to load trust report:', { err });
         setLoading(false);
       });
   }, [user, period]);

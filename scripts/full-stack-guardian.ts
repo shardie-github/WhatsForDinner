@@ -13,7 +13,9 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
 import { join, dirname, basename } from 'path';
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('full-stack-guardian-ts');
 interface DriftReport {
   domain: string;
   issues: Array<{
@@ -363,32 +365,32 @@ class FullStackGuardian {
    * Run full audit
    */
   async runFullAudit(): Promise<HealthReport> {
-    console.log('🔍 Starting Full-Stack Guardian Audit...\n');
+    logger.info('🔍 Starting Full-Stack Guardian Audit...\n');
 
-    console.log('📋 Domain 1: Environment & Secret Drift');
+    logger.info('📋 Domain 1: Environment & Secret Drift');
     const envReport = await this.auditEnvironmentDrift();
     this.reports.drift.push(envReport);
-    console.log(`   Found ${envReport.summary.total} issues (${envReport.summary.critical} critical)\n`);
+    logger.info('   Found ${envReport.summary.total} issues (${envReport.summary.critical} critical')\n`);
 
-    console.log('🗄️  Domain 2: Supabase Schema Alignment');
+    logger.info('🗄️  Domain 2: Supabase Schema Alignment');
     await this.auditSchemaAlignment();
-    console.log(`   Prisma tables: ${this.reports.schema.prismaTables.length}`);
-    console.log(`   Migration files: ${this.reports.schema.migrationFiles.length}`);
-    console.log(`   Mismatches: ${this.reports.schema.mismatches.length}\n`);
+    logger.info('   Prisma tables: ${this.reports.schema.prismaTables.length}');
+    logger.info('   Migration files: ${this.reports.schema.migrationFiles.length}');
+    logger.info('   Mismatches: ${this.reports.schema.mismatches.length}\n');
 
-    console.log('🚀 Domain 3: Vercel Deployment Config');
+    logger.info('🚀 Domain 3: Vercel Deployment Config');
     await this.auditVercelConfig();
-    console.log(`   Config valid: ${this.reports.vercel.configValid}`);
-    console.log(`   Issues: ${this.reports.vercel.issues.length}\n`);
+    logger.info('   Config valid: ${this.reports.vercel.configValid}');
+    logger.info('   Issues: ${this.reports.vercel.issues.length}\n');
 
-    console.log('📁 Domain 4: Repo Integrity');
+    logger.info('📁 Domain 4: Repo Integrity');
     await this.auditRepoIntegrity();
-    console.log(`   Broken imports: ${this.reports.repo.brokenImports.length}\n`);
+    logger.info('   Broken imports: ${this.reports.repo.brokenImports.length}\n');
 
-    console.log('🤖 Domain 5: AI Agent Mesh');
+    logger.info('🤖 Domain 5: AI Agent Mesh');
     await this.auditAgentMesh();
-    console.log(`   Zapier configured: ${this.reports.agents.zapier}`);
-    console.log(`   Integrations: ${Object.keys(this.reports.agents.integrations).length}\n`);
+    logger.info('   Zapier configured: ${this.reports.agents.zapier}');
+    logger.info('   Integrations: ${Object.keys(this.reports.agents.integrations').length}\n`);
 
     return this.reports;
   }
@@ -557,11 +559,11 @@ if (require.main === module) {
     .runFullAudit()
     .then(() => {
       const reportPath = guardian.generateReport();
-      console.log(`\n✅ Audit complete! Report saved to: ${reportPath}`);
+      logger.info('\n✅ Audit complete! Report saved to: ${reportPath}');
       process.exit(0);
     })
     .catch((error) => {
-      console.error('❌ Audit failed:', error);
+      logger.error('❌ Audit failed:', { error });
       process.exit(1);
     });
 }

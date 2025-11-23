@@ -6,7 +6,9 @@ import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('release-train-ts');
 const CHANGELOG_PATH = join(process.cwd(), 'CHANGELOG.md');
 
 interface ReleaseConfig {
@@ -65,7 +67,7 @@ async function generateChangelog(): Promise<void> {
 
     writeFileSync(CHANGELOG_PATH, changelog);
       } catch (error) {
-    console.error('Failed to generate changelog:', error);
+    logger.error('Failed to generate changelog:', { error });
     throw error;
   }
 }
@@ -136,7 +138,7 @@ async function release(config: ReleaseConfig): Promise<void> {
         cwd: 'apps/web'
       });
     } catch (error) {
-      console.error('Vercel deployment failed:', error);
+      logger.error('Vercel deployment failed:', { error });
       throw error;
     }
   }
@@ -151,12 +153,12 @@ if (require.main === module) {
   const dryRun = process.argv.includes('--dry-run');
 
   if (!type || !['patch', 'minor', 'major'].includes(type)) {
-    console.error('Usage: release-train.ts [patch|minor|major] [--dry-run]');
+    logger.error('Usage: release-train.ts [patch|minor|major] [--dry-run]');
     process.exit(1);
   }
 
   release({ type, dryRun }).catch(error => {
-    console.error('Release failed:', error);
+    logger.error('Release failed:', { error });
     process.exit(1);
   });
 }

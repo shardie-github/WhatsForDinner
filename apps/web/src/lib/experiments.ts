@@ -27,7 +27,7 @@ export interface ConversionEvent {
   variant: string;
   eventName: string;
   userId?: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
 }
 
 // In-memory store (in production, use Redis/DB)
@@ -109,7 +109,7 @@ export async function trackConversion(
   experimentId: string,
   eventName: string,
   userId?: string,
-  properties?: Record<string, any>
+  properties?: Record<string, unknown>
 ): Promise<void> {
   const key = userId || `anonymous_${getSessionId()}`;
   const assignment = experimentAssignments.get(`${experimentId}_${key}`);

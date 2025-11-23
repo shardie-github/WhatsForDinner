@@ -25,7 +25,7 @@ export interface EmailTemplate {
   text: string;
   trigger: 'signup' | 'first_recipe' | 'milestone' | 'churn_risk' | 'winback';
   delay_hours?: number;
-  conditions?: Record<string, any>;
+  conditions?: Record<string, unknown>;
 }
 
 export interface EmailCampaign {
@@ -36,7 +36,7 @@ export interface EmailCampaign {
   target_audience: {
     user_segments: string[];
     tenant_ids: string[];
-    conditions: Record<string, any>;
+    conditions: Record<string, unknown>;
   };
   schedule: {
     start_date: string;
@@ -393,7 +393,7 @@ export class MarketingAutomation {
         .eq('created_at', new Date().toISOString().split('T')[0]); // Today's signups
 
       if (newUsersError) {
-        console.error('Error fetching new users:', newUsersError);
+        logger.error('Error fetching new users:', { newUsersError });
         return;
       }
 
@@ -411,7 +411,7 @@ export class MarketingAutomation {
         .eq('created_at', new Date().toISOString().split('T')[0]);
 
       if (firstRecipeError) {
-        console.error('Error fetching first recipe users:', firstRecipeError);
+        logger.error('Error fetching first recipe users:', { firstRecipeError });
         return;
       }
 
@@ -434,7 +434,7 @@ export class MarketingAutomation {
         .eq('count', 10); // 10th recipe milestone
 
       if (milestoneError) {
-        console.error('Error fetching milestone users:', milestoneError);
+        logger.error('Error fetching milestone users:', { milestoneError });
         return;
       }
 
@@ -504,7 +504,7 @@ export class MarketingAutomation {
         .single();
 
       if (campaignError) {
-        console.error('Error fetching campaign:', campaignError);
+        logger.error('Error fetching campaign:', { campaignError });
         return;
       }
 
@@ -520,7 +520,7 @@ export class MarketingAutomation {
         .in('tenant_id', campaign.target_audience.tenant_ids);
 
       if (usersError) {
-        console.error('Error fetching target users:', usersError);
+        logger.error('Error fetching target users:', { usersError });
         return;
       }
 

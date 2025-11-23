@@ -5,7 +5,9 @@
 
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useState, useEffect, useCallback } from 'react';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('experiments-ts');
 export interface ExperimentAssignment {
   experimentKey: string;
   variantKey: string;
@@ -116,7 +118,7 @@ async function trackExposure(
       }),
     });
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') { console.warn('Failed to track experiment exposure:', error); }
+    if (process.env.NODE_ENV === 'development') { logger.warn('Failed to track experiment exposure:', { error }); }
   }
 }
 

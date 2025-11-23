@@ -1,7 +1,9 @@
 import type { FullConfig } from '@playwright/test';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('global-teardown-ts');
 async function globalTeardown(config: FullConfig) {
-  console.log('🧹 Cleaning up global test environment...');
+  logger.info('🧹 Cleaning up global test environment...');
 
   try {
     // Clean up test data
@@ -10,15 +12,15 @@ async function globalTeardown(config: FullConfig) {
     // Clean up any test files
     await cleanupTestFiles();
 
-    console.log('✅ Global teardown complete');
+    logger.info('✅ Global teardown complete');
   } catch (error) {
-    console.error('❌ Global teardown failed:', error);
+    logger.error('❌ Global teardown failed:', { error });
     // Don't throw error to avoid masking test failures
   }
 }
 
 async function cleanupTestData() {
-  console.log('🗑️ Cleaning up test data...');
+  logger.info('🗑️ Cleaning up test data...');
 
   // This would typically involve:
   // 1. Deleting test user accounts
@@ -28,14 +30,14 @@ async function cleanupTestData() {
   try {
     // Example: Clear localStorage
     // This would be done in a browser context if needed
-    console.log('✅ Test data cleanup complete');
+    logger.info('✅ Test data cleanup complete');
   } catch (error) {
-    console.warn('⚠️ Test data cleanup failed:', error);
+    logger.warn('⚠️ Test data cleanup failed:', { error });
   }
 }
 
 async function cleanupTestFiles() {
-  console.log('📁 Cleaning up test files...');
+  logger.info('📁 Cleaning up test files...');
 
   const fs = require('fs');
   const path = require('path');
@@ -48,13 +50,13 @@ async function cleanupTestFiles() {
       const dirPath = path.join(process.cwd(), dir);
       if (fs.existsSync(dirPath)) {
         fs.rmSync(dirPath, { recursive: true, force: true });
-        console.log(`✅ Cleaned up ${dir}`);
+        logger.info('✅ Cleaned up ${dir}');
       }
     }
 
-    console.log('✅ Test files cleanup complete');
+    logger.info('✅ Test files cleanup complete');
   } catch (error) {
-    console.warn('⚠️ Test files cleanup failed:', error);
+    logger.warn('⚠️ Test files cleanup failed:', { error });
   }
 }
 

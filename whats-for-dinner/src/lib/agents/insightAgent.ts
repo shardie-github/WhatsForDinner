@@ -325,7 +325,7 @@ export class InsightAgent extends BaseAgent {
   /**
    * Perform KPI analysis
    */
-  private performKPIAnalysis(metrics: KPIMetrics): any {
+  private performKPIAnalysis(metrics: KPIMetrics): unknown {
     const analysis = {
       overallScore: this.calculateOverallScore(metrics),
       trends: this.calculateTrends(),
@@ -360,7 +360,7 @@ export class InsightAgent extends BaseAgent {
   /**
    * Calculate trends from historical data
    */
-  private calculateTrends(): any {
+  private calculateTrends(): unknown {
     if (this.kpiHistory.length < 2) return {};
 
     const recent = this.kpiHistory[this.kpiHistory.length - 1];
@@ -502,7 +502,7 @@ export class InsightAgent extends BaseAgent {
   /**
    * Perform trend prediction
    */
-  private performTrendPrediction(timeframe: number): any {
+  private performTrendPrediction(timeframe: number): unknown {
     // Simple linear regression for trend prediction
     if (this.kpiHistory.length < 3) return {};
 
@@ -542,7 +542,7 @@ export class InsightAgent extends BaseAgent {
   /**
    * Perform behavior analysis
    */
-  private async performBehaviorAnalysis(payload: any): Promise<any> {
+  private async performBehaviorAnalysis(payload: any): Promise<unknown> {
     // In a real implementation, this would analyze actual user behavior data
     return {
       topPages: ['/recipes', '/pantry', '/favorites'],
@@ -556,7 +556,7 @@ export class InsightAgent extends BaseAgent {
   /**
    * Perform cost analysis
    */
-  private async performCostAnalysis(): Promise<any> {
+  private async performCostAnalysis(): Promise<unknown> {
     // In a real implementation, this would analyze actual costs
     return {
       totalCost: 1250.5,
@@ -580,7 +580,7 @@ export class InsightAgent extends BaseAgent {
   /**
    * Perform performance analysis
    */
-  private async performPerformanceAnalysis(): Promise<any> {
+  private async performPerformanceAnalysis(): Promise<unknown> {
     // In a real implementation, this would analyze actual performance data
     return {
       averageResponseTime: 1.2,
@@ -595,7 +595,7 @@ export class InsightAgent extends BaseAgent {
   /**
    * Perform security analysis
    */
-  private async performSecurityAnalysis(): Promise<any> {
+  private async performSecurityAnalysis(): Promise<unknown> {
     // In a real implementation, this would analyze actual security data
     return {
       vulnerabilityCount: 2,
@@ -611,7 +611,7 @@ export class InsightAgent extends BaseAgent {
   /**
    * Perform comprehensive analysis
    */
-  private async performComprehensiveAnalysis(): Promise<any> {
+  private async performComprehensiveAnalysis(): Promise<unknown> {
     const kpiAnalysis = this.performKPIAnalysis(
       this.kpiHistory[this.kpiHistory.length - 1] ||
         (await this.collectCurrentMetrics())

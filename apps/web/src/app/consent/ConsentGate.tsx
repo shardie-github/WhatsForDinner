@@ -74,7 +74,7 @@ export function ConsentGate({ onConsentComplete, store }: ConsentGateProps) {
         await consentStore.requestConsent();
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { console.warn('CMP initialization failed:', error); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('CMP initialization failed:', { error }); }
       await consentStore.requestConsent();
     }
   };
@@ -146,7 +146,7 @@ export function ConsentGate({ onConsentComplete, store }: ConsentGateProps) {
 /**
  * Load IAB TCF CMP
  */
-async function loadCMP(): Promise<any> {
+async function loadCMP(): Promise<unknown> {
   try {
     // In production, use @iabtcf/cmpapi or load from CMP provider
     // For now, return null to use our own UI

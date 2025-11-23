@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     try {
       event = StripeService.verifyWebhookSignature(body, signature);
     } catch (err) {
-      console.error('Webhook signature verification failed:', err);
+      logger.error('Webhook signature verification failed:', { err });
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
@@ -106,7 +106,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
   const { tenantId, userId, plan } = session.metadata;
 
   if (!tenantId || !userId || !plan) {
-    console.error('Missing metadata in checkout session:', session.metadata);
+    logger.error('Missing metadata in checkout session:', { session.metadata });
     return;
   }
 
@@ -124,7 +124,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription): Pro
   const { tenantId, userId, plan } = subscription.metadata;
 
   if (!tenantId || !userId || !plan) {
-    console.error('Missing metadata in subscription:', subscription.metadata);
+    logger.error('Missing metadata in subscription:', { subscription.metadata });
     return;
   }
 

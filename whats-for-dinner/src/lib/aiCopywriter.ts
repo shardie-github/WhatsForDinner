@@ -1,6 +1,8 @@
 import { supabase } from './supabaseClient';
 import { openai } from './openaiClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('aicopywriter-ts');
 export interface CopyVariant {
   id: string;
   content_type:
@@ -100,7 +102,7 @@ export class AICopywriter {
 
       return storedVariants;
     } catch (error) {
-      console.error('Error generating copy variants:', error);
+      logger.error('Error generating copy variants:', { error });
       throw error;
     }
   }
@@ -249,7 +251,7 @@ Variant 3: [post content]`;
         .single();
 
       if (fetchError) {
-        console.error('Error fetching current metrics:', fetchError);
+        logger.error('Error fetching current metrics:', { fetchError });
         return;
       }
 
@@ -282,11 +284,11 @@ Variant 3: [post content]`;
         .eq('id', variantId);
 
       if (updateError) {
-        console.error('Error updating copy metrics:', updateError);
+        logger.error('Error updating copy metrics:', { updateError });
         throw updateError;
       }
     } catch (error) {
-      console.error('Failed to update copy metrics:', error);
+      logger.error('Failed to update copy metrics:', { error });
       throw error;
     }
   }
@@ -302,7 +304,7 @@ Variant 3: [post content]`;
         .eq('test_id', testId);
 
       if (error) {
-        console.error('Error fetching test variants:', error);
+        logger.error('Error fetching test variants:', { error });
         throw error;
       }
 
@@ -349,7 +351,7 @@ Variant 3: [post content]`;
         recommended_action: recommendedAction,
       };
     } catch (error) {
-      console.error('Failed to analyze test results:', error);
+      logger.error('Failed to analyze test results:', { error });
       throw error;
     }
   }
@@ -424,7 +426,7 @@ Variant 3: [post content]`;
         .order('performance_metrics->conversion_rate', { ascending: false });
 
       if (error) {
-        console.error('Error fetching copy insights:', error);
+        logger.error('Error fetching copy insights:', { error });
         throw error;
       }
 
@@ -467,7 +469,7 @@ Variant 3: [post content]`;
         recommendations,
       };
     } catch (error) {
-      console.error('Failed to get copy insights:', error);
+      logger.error('Failed to get copy insights:', { error });
       throw error;
     }
   }
@@ -524,7 +526,7 @@ Variant 3: [post content]`;
   static async generateCopyForUseCase(
     useCase: string,
     contentType: CopyVariant['content_type'],
-    context: Record<string, any>
+    context: Record<string, unknown>
   ): Promise<string> {
     try {
       const prompt = `Generate ${contentType} for the following use case:
@@ -559,7 +561,7 @@ Generate the copy:`;
 
       return response.choices[0]?.message?.content || '';
     } catch (error) {
-      console.error('Failed to generate copy for use case:', error);
+      logger.error('Failed to generate copy for use case:', { error });
       throw error;
     }
   }

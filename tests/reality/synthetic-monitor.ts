@@ -6,7 +6,9 @@
 
 import { chromium } from 'playwright';
 import { createClient } from '@supabase/supabase-js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('synthetic-monitor-ts');
 const PROD_URL = process.env.PROD_URL || 'https://whats-for-dinner.vercel.app';
 const DISCORD_WEBHOOK = process.env.DISCORD_WEBHOOK_URL;
 const SLACK_WEBHOOK = process.env.SLACK_WEBHOOK_URL;
@@ -26,7 +28,7 @@ async function sendAlert(webhookUrl: string, message: string) {
       body: JSON.stringify({ content: message })
     });
   } catch (error) {
-    console.error('Failed to send alert:', error);
+    logger.error('Failed to send alert:', { error });
   }
 }
 
@@ -94,7 +96,7 @@ if (require.main === module) {
   monitor().then(results => {
     const passed = results.filter(r => r.passed).length;
     const failed = results.filter(r => !r.passed).length;
-    console.log(`✅ Passed: ${passed}, ❌ Failed: ${failed}`);
+    logger.info('✅ Passed: ${passed}', { ❌ Failed: ${failed}` });
     process.exit(failed > 0 ? 1 : 0);
   });
 }

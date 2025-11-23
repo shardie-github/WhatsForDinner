@@ -5,7 +5,9 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('verify-monetization-enabled-ts');
 async function verifyMonetization() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -16,7 +18,7 @@ async function verifyMonetization() {
 
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  console.log('🔍 Verifying monetization channels...');
+  logger.info('🔍 Verifying monetization channels...');
 
   // Check monetization settings
   const { data: settings, error } = await supabase
@@ -26,8 +28,8 @@ async function verifyMonetization() {
     .single();
 
   if (error || !settings) {
-    console.log('❌ Monetization settings not found');
-    console.log('   Run: pnpm monetization:enable');
+    logger.info('❌ Monetization settings not found');
+    logger.info('   Run: pnpm monetization:enable');
     return false;
   }
 
@@ -47,27 +49,27 @@ async function verifyMonetization() {
     .filter(([_, enabled]) => !enabled)
     .map(([name]) => name);
 
-  console.log('');
-  console.log('📊 Monetization Status:');
-  console.log('');
+  logger.info('');
+  logger.info('📊 Monetization Status:');
+  logger.info('');
 
   if (enabledChannels.length > 0) {
-    console.log('✅ Enabled channels:');
+    logger.info('✅ Enabled channels:');
     enabledChannels.forEach((channel) => {
-      console.log(`   ✓ ${channel}`);
+      logger.info('   ✓ ${channel}');
     });
   }
 
   if (disabledChannels.length > 0) {
-    console.log('');
-    console.log('❌ Disabled channels:');
+    logger.info('');
+    logger.info('❌ Disabled channels:');
     disabledChannels.forEach((channel) => {
-      console.log(`   ✗ ${channel}`);
+      logger.info('   ✗ ${channel}');
     });
   }
 
-  console.log('');
-  console.log('💰 Revenue Dashboard: /api/revenue/dashboard');
+  logger.info('');
+  logger.info('💰 Revenue Dashboard: /api/revenue/dashboard');
 
   return enabledChannels.length > 0;
 }
@@ -76,15 +78,15 @@ if (require.main === module) {
   verifyMonetization()
     .then((enabled) => {
       if (enabled) {
-        console.log('✅ Monetization verification complete');
+        logger.info('✅ Monetization verification complete');
         process.exit(0);
       } else {
-        console.log('⚠️  No monetization channels enabled');
+        logger.info('⚠️  No monetization channels enabled');
         process.exit(1);
       }
     })
     .catch((error) => {
-      console.error('❌ Verification failed:', error);
+      logger.error('❌ Verification failed:', { error });
       process.exit(1);
     });
 }

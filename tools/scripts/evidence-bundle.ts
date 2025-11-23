@@ -17,7 +17,9 @@ import { createReadStream, readdirSync, statSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { create } from 'archiver';
 import { logger } from '../../packages/server/src/observability/index.js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('evidence-bundle-ts');
 interface EvidenceBundleConfig {
   outputDir: string;
   includeLogs: boolean;
@@ -220,7 +222,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
             process.exit(0);
     })
     .catch((error) => {
-      console.error('? Failed to generate evidence bundle:', error);
+      logger.error('? Failed to generate evidence bundle:', { error });
       process.exit(1);
     });
 }

@@ -8,7 +8,9 @@ import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('generate-release-notes-ts');
 interface Commit {
   type: string;
   scope?: string;
@@ -181,7 +183,7 @@ async function main() {
   const notes = generateReleaseNotes(fromTag);
   
   fs.writeFileSync(RELEASE_NOTES_FILE, notes);
-  console.log(`Release notes written to ${RELEASE_NOTES_FILE}`);
+  logger.info('Release notes written to ${RELEASE_NOTES_FILE}');
 }
 
 if (require.main === module) {

@@ -134,7 +134,7 @@ export function createLogger(source = 'app'): Logger {
       const formatted = formatMessage(message, context, sourceOverride || source, component);
       
       if (isDevelopment) {
-        console.debug(formatted);
+        logger.debug('formatted');
       }
     },
     
@@ -144,13 +144,12 @@ export function createLogger(source = 'app'): Logger {
       const formatted = formatMessage(message, context, sourceOverride || source, component);
       
       if (isDevelopment) {
-        console.info(formatted);
+        logger.info('formatted');
       } else {
         // In production, use structured logging
-        console.log(JSON.stringify({
-          level: 'info',
-          message,
-          context: context ? redactSensitiveData(context) : undefined,
+        logger.info('JSON.stringify({
+          level: 'info', { message,
+          context: context ? redactSensitiveData(context }) : undefined,
           source: sourceOverride || source,
           component,
           timestamp: new Date().toISOString(),
@@ -163,7 +162,7 @@ export function createLogger(source = 'app'): Logger {
       
       const formatted = formatMessage(message, context, sourceOverride || source, component);
       
-      console.warn(formatted);
+      logger.warn('formatted');
       
       // Report warnings to Sentry in production
       if (!isDevelopment && Sentry) {
@@ -183,7 +182,7 @@ export function createLogger(source = 'app'): Logger {
       
       const formatted = formatMessage(message, context, sourceOverride || source, component);
       
-      console.error(formatted);
+      logger.error('formatted');
       
       // Always report errors to Sentry
       if (Sentry) {

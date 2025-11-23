@@ -21,7 +21,7 @@ export interface WorkflowStep {
   started_at?: string;
   completed_at?: string;
   error_message?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface Workflow {
@@ -31,7 +31,7 @@ export interface Workflow {
   current_step: string | null;
   progress_percentage: number;
   steps: WorkflowStep[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   started_at: string;
   completed_at?: string;
   error_message?: string;
@@ -43,7 +43,7 @@ class WorkflowManager {
   async createWorkflow(
     name: string,
     steps: Omit<WorkflowStep, 'status' | 'started_at' | 'completed_at'>[],
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ): Promise<string> {
     // Validate input
     const validated = validateInput(

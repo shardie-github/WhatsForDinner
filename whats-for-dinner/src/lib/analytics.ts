@@ -1,12 +1,14 @@
 import { supabase } from './supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('analytics-ts');
 export interface AnalyticsEvent {
   id: string;
   event_type: string;
   user_id?: string;
   session_id: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   timestamp: string;
   page_url?: string;
   user_agent?: string;
@@ -34,7 +36,7 @@ export interface SystemMetrics {
     | 'error_rate'
     | 'cost_analysis';
   value: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -61,7 +63,7 @@ class AnalyticsService {
     this.userId = userId;
   }
 
-  async trackEvent(eventType: string, properties: Record<string, any> = {}) {
+  async trackEvent(eventType: string, properties: Record<string, unknown> = {}) {
     const event: AnalyticsEvent = {
       id: uuidv4(),
       event_type: eventType,
@@ -93,10 +95,10 @@ class AnalyticsService {
       const { error } = await supabase.from('analytics_events').insert(event);
 
       if (error) {
-        console.error('Analytics tracking error:', error);
+        logger.error('Analytics tracking error:', { error });
       }
     } catch (error) {
-      console.error('Failed to track analytics event:', error);
+      logger.error('Failed to track analytics event:', { error });
     }
   }
 
@@ -109,13 +111,13 @@ class AnalyticsService {
         .single();
 
       if (error) {
-        console.error('Recipe metrics tracking error:', error);
+        logger.error('Recipe metrics tracking error:', { error });
         return null;
       }
 
       return data.id;
     } catch (error) {
-      console.error('Failed to track recipe metrics:', error);
+      logger.error('Failed to track recipe metrics:', { error });
       return null;
     }
   }
@@ -123,7 +125,7 @@ class AnalyticsService {
   async trackSystemMetric(
     metricType: SystemMetrics['metric_type'],
     value: number,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ) {
     const metric: SystemMetrics = {
       id: uuidv4(),
@@ -137,10 +139,10 @@ class AnalyticsService {
       const { error } = await supabase.from('system_metrics').insert(metric);
 
       if (error) {
-        console.error('System metrics tracking error:', error);
+        logger.error('System metrics tracking error:', { error });
       }
     } catch (error) {
-      console.error('Failed to track system metric:', error);
+      logger.error('Failed to track system metric:', { error });
     }
   }
 
@@ -162,13 +164,13 @@ class AnalyticsService {
         .gte('generated_at', startDate.toISOString());
 
       if (error) {
-        console.error('Failed to fetch recipe analytics:', error);
+        logger.error('Failed to fetch recipe analytics:', { error });
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Failed to fetch recipe analytics:', error);
+      logger.error('Failed to fetch recipe analytics:', { error });
       return null;
     }
   }
@@ -180,13 +182,13 @@ class AnalyticsService {
       });
 
       if (error) {
-        console.error('Failed to fetch popular ingredients:', error);
+        logger.error('Failed to fetch popular ingredients:', { error });
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to fetch popular ingredients:', error);
+      logger.error('Failed to fetch popular ingredients:', { error });
       return [];
     }
   }
@@ -196,13 +198,13 @@ class AnalyticsService {
       const { data, error } = await supabase.rpc('get_cuisine_preferences');
 
       if (error) {
-        console.error('Failed to fetch cuisine preferences:', error);
+        logger.error('Failed to fetch cuisine preferences:', { error });
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to fetch cuisine preferences:', error);
+      logger.error('Failed to fetch cuisine preferences:', { error });
       return [];
     }
   }
@@ -217,13 +219,13 @@ class AnalyticsService {
         .limit(100);
 
       if (error) {
-        console.error('Failed to fetch API performance metrics:', error);
+        logger.error('Failed to fetch API performance metrics:', { error });
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to fetch API performance metrics:', error);
+      logger.error('Failed to fetch API performance metrics:', { error });
       return [];
     }
   }

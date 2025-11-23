@@ -24,6 +24,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 
+const logger = createComponentLogger('page-tsx');
 interface SDKInfo {
   language: string;
   version: string;
@@ -128,7 +129,7 @@ export default function DevelopersPage() {
       const data = await response.json();
       setApiKeys(data.keys || []);
     } catch (error) {
-      console.error('Error loading API keys:', error);
+      logger.error('Error loading API keys:', { error });
     }
   };
 
@@ -138,7 +139,7 @@ export default function DevelopersPage() {
       const data = await response.json();
       setUsage(data.usage || null);
     } catch (error) {
-      console.error('Error loading usage:', error);
+      logger.error('Error loading usage:', { error });
     }
   };
 
@@ -159,7 +160,7 @@ export default function DevelopersPage() {
         setNewKeyName('');
       }
     } catch (error) {
-      console.error('Error creating API key:', error);
+      logger.error('Error creating API key:', { error });
     } finally {
       setIsCreatingKey(false);
     }
@@ -171,7 +172,7 @@ export default function DevelopersPage() {
       setCopiedKey(keyId);
       setTimeout(() => setCopiedKey(null), 2000);
     } catch (error) {
-      console.error('Error copying to clipboard:', error);
+      logger.error('Error copying to clipboard:', { error });
     }
   };
 
@@ -191,7 +192,7 @@ export default function DevelopersPage() {
         );
       }
     } catch (error) {
-      console.error('Error toggling API key:', error);
+      logger.error('Error toggling API key:', { error });
     }
   };
 
@@ -284,6 +285,7 @@ npm install @whats-for-dinner/api
 
 # Initialize the client
 import { WhatsForDinnerAPI } from '@whats-for-dinner/api'
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const api = new WhatsForDinnerAPI({
   apiKey: 'your-api-key',

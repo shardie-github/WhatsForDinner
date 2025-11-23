@@ -4,7 +4,9 @@
  */
 
 import { createClient } from '../supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('affiliatesystem-ts');
 export interface AffiliatePartner {
   id: string;
   name: string;
@@ -319,7 +321,7 @@ class AffiliateMonetizationSystem {
       return order;
 
     } catch (error) {
-      console.error('Error creating delivery order:', error);
+      logger.error('Error creating delivery order:', { error });
       throw error;
     }
   }
@@ -377,7 +379,7 @@ class AffiliateMonetizationSystem {
       return order;
 
     } catch (error) {
-      console.error('Error creating grocery order:', error);
+      logger.error('Error creating grocery order:', { error });
       throw error;
     }
   }
@@ -428,7 +430,7 @@ class AffiliateMonetizationSystem {
       };
 
     } catch (error) {
-      console.error('Error purchasing chef package:', error);
+      logger.error('Error purchasing chef package:', { error });
       throw error;
     }
   }
@@ -511,7 +513,7 @@ class AffiliateMonetizationSystem {
       };
 
     } catch (error) {
-      console.error('Error getting affiliate analytics:', error);
+      logger.error('Error getting affiliate analytics:', { error });
       return {
         totalOrders: 0,
         totalRevenue: 0,
@@ -527,7 +529,7 @@ class AffiliateMonetizationSystem {
   /**
    * Call delivery partner API
    */
-  private async callDeliveryAPI(partner: AffiliatePartner, orderData: any): Promise<any> {
+  private async callDeliveryAPI(partner: AffiliatePartner, orderData: any): Promise<unknown> {
     // Mock API call - in real implementation, this would call the actual partner API
     return {
       orderId: `order_${Date.now()}`,
@@ -539,7 +541,7 @@ class AffiliateMonetizationSystem {
   /**
    * Call grocery partner API
    */
-  private async callGroceryAPI(partner: AffiliatePartner, orderData: any): Promise<any> {
+  private async callGroceryAPI(partner: AffiliatePartner, orderData: any): Promise<unknown> {
     // Mock API call - in real implementation, this would call the actual partner API
     return {
       orderId: `grocery_${Date.now()}`,

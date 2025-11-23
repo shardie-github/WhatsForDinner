@@ -6,7 +6,9 @@ import { createClient } from '@supabase/supabase-js';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('compliance-guard-ts');
 const SUPABASE_URL = (await secretsManager.getSecret('NEXT_PUBLIC_SUPABASE_URL')) || process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_ROLE_KEY = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
@@ -54,7 +56,7 @@ async function exportDSAR(userId: string): Promise<string> {
   
   
   // Collect all user data
-  const data: Record<string, any> = {};
+  const data: Record<string, unknown> = {};
 
   // Users table
   const { data: user } = await supabase
@@ -182,7 +184,7 @@ if (require.main === module) {
   switch (command) {
     case 'export':
       if (!args[0]) {
-        console.error('Usage: compliance-guard.ts export <user-id>');
+        logger.error('Usage: compliance-guard.ts export <user-id>');
         process.exit(1);
       }
       exportDSAR(args[0]).then(path => {
@@ -190,17 +192,17 @@ if (require.main === module) {
       break;
     case 'delete':
       if (!args[0]) {
-        console.error('Usage: compliance-guard.ts delete <user-id>');
+        logger.error('Usage: compliance-guard.ts delete <user-id>');
         process.exit(1);
       }
       deleteDSAR(args[0]).catch(error => {
-        console.error('Failed to delete:', error);
+        logger.error('Failed to delete:', { error });
         process.exit(1);
       });
       break;
     case 'report':
       generateComplianceReport().catch(error => {
-        console.error('Failed to generate report:', error);
+        logger.error('Failed to generate report:', { error });
         process.exit(1);
       });
       break;

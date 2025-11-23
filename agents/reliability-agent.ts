@@ -9,7 +9,9 @@
 import { writeFileSync, existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('reliability-agent-ts');
 interface ReliabilityMetrics {
   timestamp: string;
   latency: {
@@ -64,7 +66,7 @@ export class ReliabilityAgent {
   ) {}
 
   async run(): Promise<void> {
-    console.log('📊 Collecting reliability metrics...');
+    logger.info('📊 Collecting reliability metrics...');
 
     const metrics = await this.collectMetrics();
     await this.saveMetrics(metrics);
@@ -153,7 +155,7 @@ export class ReliabilityAgent {
         }
       }
     } catch (error) {
-      console.warn('Could not collect build metrics:', error);
+      logger.warn('Could not collect build metrics:', { error });
     }
 
     return buildMetrics;
@@ -317,7 +319,7 @@ ${this.generateRecommendations(metrics)}
     }
 
     if (regressions.length > 0) {
-      console.warn('⚠️ Performance regressions detected:', regressions);
+      logger.warn('⚠️ Performance regressions detected:', { regressions });
       // In production, would create GitHub issue or PR
     }
   }
