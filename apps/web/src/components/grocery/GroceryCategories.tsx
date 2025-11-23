@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('grocerycategories');
+
+
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,7 +41,7 @@ export function GroceryCategories({
       const cats = await groceryManager.getCategories();
       setCategories(cats);
     } catch (error) {
-      console.error('Failed to load categories:', error);
+      logger.error('Failed to load categories:', { error: error instanceof Error ? error.message : String(error) });
     } finally {
       setLoading(false);
     }

@@ -4,7 +4,12 @@
  * Measurable: 30-50% reduction in query time
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('optimization');
+
+supabase/server';
 
 /**
  * Optimized query helper with caching

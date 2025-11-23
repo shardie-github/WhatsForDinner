@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       default:
         return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
     }
-  } catch (error: any) {
+  } catch (error) {
     // Error handled: Cost calculation error:
     return NextResponse.json(
       { error: error.message || 'Failed to calculate cost' },

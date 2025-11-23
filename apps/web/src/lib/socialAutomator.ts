@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('socialautomator');
+
 import { supabase } from './supabaseClient';
 import { openai } from './openaiClient';
 

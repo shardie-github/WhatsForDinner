@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('analytics');
+
 /**
  * Analytics and Engagement Tracking
  * Provides event tracking and user engagement metrics
@@ -82,7 +86,7 @@ class Analytics {
         body: JSON.stringify(event),
       });
     } catch (error) {
-      console.error('Failed to send analytics event:', error);
+      logger.error('Failed to send analytics event:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 

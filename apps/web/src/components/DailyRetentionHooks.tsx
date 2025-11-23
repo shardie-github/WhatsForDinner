@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('dailyretentionhooks');
+
+
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,7 +26,7 @@ interface DailyRetentionHooksProps {
 
 export function DailyRetentionHooks({ userId, compact = false }: DailyRetentionHooksProps) {
   const [streak, setStreak] = useState(7);
-  const [dailySuggestion, setDailySuggestion] = useState<any>(null);
+  const [dailySuggestion, setDailySuggestion] = useState<unknown>(null);
   const [checkedIn, setCheckedIn] = useState(false);
   const [showCheckIn, setShowCheckIn] = useState(false);
 
@@ -49,7 +54,7 @@ export function DailyRetentionHooks({ userId, compact = false }: DailyRetentionH
         setDailySuggestion(data);
       }
     } catch (error) {
-      console.error('Failed to load daily suggestion:', error);
+      logger.error('Failed to load daily suggestion:', { error: error instanceof Error ? error.message : String(error) });
     }
   };
 

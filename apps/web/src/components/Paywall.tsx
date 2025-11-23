@@ -1,4 +1,9 @@
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('paywall');
+
+
 
 import { useState, useEffect } from 'react';
 import { monetization, Product } from '@/lib/monetization';

@@ -3,7 +3,12 @@
  * Pre-built dashboard data - zero effort
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
@@ -68,7 +73,7 @@ export async function GET(request: NextRequest) {
       recentConversions: conversionsResult.data?.slice(0, 10) || [],
     });
   } catch (error) {
-    console.error('Affiliate dashboard error:', error);
+    logger.error('Affiliate dashboard error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to load dashboard' },
       { status: 500 }

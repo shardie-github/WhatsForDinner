@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('avatardisplay');
+
+
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -40,7 +45,7 @@ export function AvatarDisplay({ userId, showCustomize = false, size = 'md' }: Av
       setPoints(userPoints.points);
       setLevel(userPoints.level);
     } catch (error) {
-      console.error('Failed to load avatar:', error);
+      logger.error('Failed to load avatar:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 

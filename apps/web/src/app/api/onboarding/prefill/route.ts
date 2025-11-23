@@ -3,7 +3,12 @@
  * Pre-fills pantry and optionally generates first meal plan
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
@@ -100,7 +105,7 @@ async function handler(request: NextRequest) {
       next_step: mealPlanGenerated ? 'explore_app' : 'generate_meal_plan',
     });
   } catch (error) {
-    console.error('Pre-fill onboarding error:', error);
+    logger.error('Pre-fill onboarding error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to pre-fill onboarding' },
       { status: 500 }

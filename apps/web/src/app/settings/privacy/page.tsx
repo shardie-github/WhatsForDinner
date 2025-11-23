@@ -24,7 +24,7 @@ export default function PrivacySettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [prefs, setPrefs] = useState<any>(null);
+  const [prefs, setPrefs] = useState<unknown>(null);
   const [apps, setApps] = useState<any[]>([]);
   const [signals, setSignals] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);

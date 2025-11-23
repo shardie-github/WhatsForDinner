@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('growthanalytics');
+
 import { supabase } from './supabaseClient';
 import { Database } from './supabaseClient';
 

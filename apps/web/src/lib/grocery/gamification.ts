@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('gamification');
+
 /**
  * Grocery Gamification System
  * Points, rewards, and achievements for grocery activities

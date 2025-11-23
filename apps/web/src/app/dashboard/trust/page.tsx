@@ -4,13 +4,18 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { TrustReport } from '@whats-for-dinner/utils/guardian';
 
 export default function TrustDashboard() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
   const supabase = createClientComponentClient();
 
   useEffect(() => {

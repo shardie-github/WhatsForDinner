@@ -25,7 +25,7 @@ interface AdminAnalytics {
 }
 
 export default function AdminAnalyticsPage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
   const [data, setData] = useState<AdminAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -11,3 +11,4 @@ export * from './error-handler';
 export * from './logger';
 export * from './api-error-handler';
 export * from './correlation-id';
+export * from './types/common';

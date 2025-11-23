@@ -3,7 +3,12 @@
  * Handles program code attribution and cookie tracking
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
@@ -64,7 +69,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ success: true, attributed: true });
   } catch (error) {
-    console.error('Attribution error:', error);
+    logger.error('Attribution error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -133,7 +138,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Attribution processing error:', error);
+    logger.error('Attribution processing error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

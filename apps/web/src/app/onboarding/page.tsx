@@ -11,6 +11,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useState } from 'react';
 import { ArrowRight, Check, Sparkles, Camera, UtensilsCrossed } from 'lucide-react';
@@ -123,7 +128,7 @@ export default function OnboardingPage() {
         setShowCelebration(true);
       }
     } catch (error) {
-      console.error('Failed to generate recipe:', error);
+      logger.error('Failed to generate recipe:', { error: error instanceof Error ? error.message : String(error) });
       // Continue anyway - don't block onboarding
     }
 

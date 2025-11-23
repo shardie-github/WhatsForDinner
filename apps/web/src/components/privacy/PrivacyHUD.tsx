@@ -1,4 +1,9 @@
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('privacyhud');
+
+
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';

@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('alertingsystem');
+
 /**
  * Alerting System
  * 
@@ -195,7 +199,7 @@ class AlertingSystem {
     // Slack notifications
     if (this.alertChannels.slack) {
       // Implement Slack webhook
-      console.log(`Sending Slack alert to ${this.alertChannels.slack}`);
+      logger.info('Sending Slack alert to ${this.alertChannels.slack}');
     }
 
     // Webhook notifications
@@ -207,7 +211,7 @@ class AlertingSystem {
           body: JSON.stringify(alert),
         });
       } catch (error) {
-        console.error('Failed to send webhook alert:', error);
+        logger.error('Failed to send webhook alert:', { error: error instanceof Error ? error.message : String(error) });
       }
     }
   }

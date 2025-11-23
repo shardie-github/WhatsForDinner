@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('onboardingflow');
+
+
 
 import { useState } from 'react';
 import { Button } from '@whats-for-dinner/ui';
@@ -50,7 +55,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         onComplete();
       }
     } catch (error) {
-      console.error('Failed to save onboarding data:', error);
+      logger.error('Failed to save onboarding data:', { error: error instanceof Error ? error.message : String(error) });
     }
   };
 

@@ -1,4 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('usetenant');
+
+;
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/lib/supabaseClient';
 import { Database } from '@/lib/supabaseClient';

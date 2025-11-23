@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('ab-testing');
+
 /**
  * A/B Testing Utilities
  * For testing different variations of program pages and CTAs
@@ -63,7 +67,7 @@ export async function trackConversion(
       }),
     });
   } catch (error) {
-    console.error('Failed to track A/B test conversion:', error);
+    logger.error('Failed to track A/B test conversion:', { error: error instanceof Error ? error.message : String(error) });
   }
 }
 

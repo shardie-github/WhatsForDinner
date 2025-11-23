@@ -3,7 +3,12 @@
  * Zero-effort GDPR/CCPA compliant anonymization
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 import crypto from 'crypto';
 
@@ -27,7 +32,7 @@ export async function POST(request: NextRequest) {
       anonymized,
     });
   } catch (error) {
-    console.error('Anonymization error:', error);
+    logger.error('Anonymization error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to anonymize data' },
       { status: 500 }

@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('programstats');
+
+
 
 import { useState, useEffect } from 'react';
 import { TrendingUp, Users, DollarSign, Target } from 'lucide-react';
@@ -42,7 +47,7 @@ export function ProgramStats({ programType, programId, period = 30 }: ProgramSta
         const data = await response.json();
         setStats(data);
       } catch (error) {
-        console.error('Failed to load stats:', error);
+        logger.error('Failed to load stats:', { error: error instanceof Error ? error.message : String(error) });
       } finally {
         setLoading(false);
       }

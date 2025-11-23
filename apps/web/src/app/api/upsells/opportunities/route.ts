@@ -3,7 +3,12 @@
  * Zero-effort upsell identification using engagement scoring
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 import { revenueOptimizer } from '@/lib/revenue/optimization';
 import { engagementScorer } from '@/lib/revenue/engagement-scoring';
@@ -73,7 +78,7 @@ export async function GET(request: NextRequest) {
       monetizationPotential: engagementScore.monetizationPotential,
     });
   } catch (error) {
-    console.error('Upsell opportunities error:', error);
+    logger.error('Upsell opportunities error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to find opportunities' },
       { status: 500 }

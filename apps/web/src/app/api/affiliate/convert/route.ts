@@ -3,7 +3,12 @@
  * Automatically called on purchase - zero effort
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
@@ -116,7 +121,7 @@ export async function POST(request: NextRequest) {
       commission,
     });
   } catch (error) {
-    console.error('Affiliate conversion error:', error);
+    logger.error('Affiliate conversion error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to process conversion' },
       { status: 500 }

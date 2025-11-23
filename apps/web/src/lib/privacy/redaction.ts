@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('redaction');
+
 /**
  * Local-First Privacy Redaction
  * Strips sensitive data on-device before sending to server

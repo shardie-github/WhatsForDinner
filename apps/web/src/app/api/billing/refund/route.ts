@@ -3,7 +3,12 @@
  * Handles refund requests and processing
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Stripe from 'stripe';
@@ -130,7 +135,7 @@ export async function POST(request: NextRequest) {
       message: 'Refund processed successfully',
     });
   } catch (error) {
-    console.error('Refund processing error:', error);
+    logger.error('Refund processing error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -160,7 +165,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ refunds: refunds || [] });
   } catch (error) {
-    console.error('Refund fetch error:', error);
+    logger.error('Refund fetch error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

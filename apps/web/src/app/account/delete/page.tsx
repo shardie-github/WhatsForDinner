@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -42,7 +47,7 @@ export default function DeleteAccountPage() {
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Export error:', error);
+      logger.error('Export error:', { error: error instanceof Error ? error.message : String(error) });
       alert('Failed to export data. Please try again.');
     } finally {
       setIsExporting(false);
@@ -71,7 +76,7 @@ export default function DeleteAccountPage() {
       // Redirect to home
       window.location.href = '/';
     } catch (error) {
-      console.error('Account deletion error:', error);
+      logger.error('Account deletion error:', { error: error instanceof Error ? error.message : String(error) });
       alert('Failed to delete account. Please contact support.');
     } finally {
       setIsDeleting(false);

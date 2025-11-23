@@ -1,4 +1,9 @@
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('chatbot');
+
+
 
 import { useState, useRef, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -130,7 +135,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
         sources: data.sources || []
       });
     } catch (error) {
-      console.error('Chat error:', error);
+      logger.error('Chat error:', { error: error instanceof Error ? error.message : String(error) });
       const errorMessage: Message = {
         id: `msg-${Date.now() + 1}`,
         role: 'assistant',

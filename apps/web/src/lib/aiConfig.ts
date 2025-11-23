@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('aiconfig');
+
 import { supabase } from './supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -341,7 +345,7 @@ Include detailed nutritional information and health benefits.`,
   ): Promise<string | null> {
     const template = this.getPromptTemplate(templateName);
     if (!template) {
-      console.error(`Template ${templateName} not found`);
+      logger.error('Template ${templateName} not found');
       return null;
     }
 

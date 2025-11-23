@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('optimization');
+
 /**
  * Performance optimization utilities
  * Provides helpers for code splitting, lazy loading, and performance monitoring
@@ -81,7 +85,7 @@ export function measurePerformance(name: string): () => void {
       performance.mark(`${name}-end`);
       performance.measure(name, `${name}-start`, `${name}-end`);
       const measure = performance.getEntriesByName(name)[0];
-      console.log(`[Performance] ${name}: ${measure.duration.toFixed(2)}ms`);
+      logger.info('[Performance] ${name}: ${measure.duration.toFixed(2)}ms');
     };
   }
   return () => {};

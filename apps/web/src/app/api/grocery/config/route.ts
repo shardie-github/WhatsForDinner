@@ -3,7 +3,12 @@
  * Get and update grocery integration configuration
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { groceryManager } from '@/lib/grocery/grocery-manager';
 import { createClient } from '@/lib/supabase/server';
 
@@ -47,7 +52,7 @@ export async function GET(req: NextRequest) {
       data: configWithStatus,
     });
   } catch (error) {
-    console.error('Grocery config API error:', error);
+    logger.error('Grocery config API error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { success: false, error: 'Failed to load config' },
       { status: 500 }
@@ -83,7 +88,7 @@ export async function PUT(req: NextRequest) {
       message: 'Configuration updated',
     });
   } catch (error) {
-    console.error('Grocery config update error:', error);
+    logger.error('Grocery config update error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { success: false, error: 'Failed to update config' },
       { status: 500 }

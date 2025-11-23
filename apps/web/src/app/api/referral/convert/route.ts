@@ -3,7 +3,12 @@
  * Process referral conversion and award rewards
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
@@ -117,7 +122,7 @@ async function handler(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Referral conversion error:', error);
+    logger.error('Referral conversion error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to process referral' },
       { status: 500 }

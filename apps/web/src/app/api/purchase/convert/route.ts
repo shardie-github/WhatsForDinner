@@ -4,7 +4,12 @@
  * Pre-wired to work with existing purchase flow
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
@@ -41,7 +46,7 @@ export async function POST(request: NextRequest) {
       } : { converted: false },
     });
   } catch (error) {
-    console.error('Purchase conversion error:', error);
+    logger.error('Purchase conversion error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to process conversion' },
       { status: 500 }

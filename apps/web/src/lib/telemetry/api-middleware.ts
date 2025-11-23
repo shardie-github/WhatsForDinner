@@ -46,7 +46,7 @@ export function withTelemetry<T extends (...args: any[]) => Promise<NextResponse
       }
 
       return result;
-    } catch (error: any) {
+    } catch (error) {
       span.setStatus({
         code: SpanStatusCode.ERROR,
         message: error.message || 'Unknown error',

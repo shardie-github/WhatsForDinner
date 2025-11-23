@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('index');
+
 /**
  * Monetization Abstraction Layer
  * Provides unified interface for in-app purchases across platforms

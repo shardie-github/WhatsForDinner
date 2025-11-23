@@ -3,7 +3,12 @@
  * Returns aggregated analytics for programs
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
@@ -73,7 +78,7 @@ export async function GET(request: NextRequest) {
       period_days: parseInt(period),
     });
   } catch (error) {
-    console.error('Analytics error:', error);
+    logger.error('Analytics error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

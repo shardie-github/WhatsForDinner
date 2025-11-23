@@ -3,7 +3,12 @@
  * Creates and manages support tickets
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
@@ -39,7 +44,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Ticket creation error:', error);
+      logger.error('Ticket creation error:', { error: error instanceof Error ? error.message : String(error) });
       return NextResponse.json(
         { error: 'Failed to create ticket' },
         { status: 500 }
@@ -55,7 +60,7 @@ export async function POST(request: NextRequest) {
       message: 'Ticket created successfully',
     });
   } catch (error) {
-    console.error('Support ticket error:', error);
+    logger.error('Support ticket error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -87,7 +92,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ tickets: tickets || [] });
   } catch (error) {
-    console.error('Ticket fetch error:', error);
+    logger.error('Ticket fetch error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -1,4 +1,9 @@
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 /**
  * Simplified Onboarding Flow - 2 Steps Max
@@ -106,7 +111,7 @@ export default function SimpleOnboardingPage() {
         router.push('/dashboard');
       }
     } catch (error) {
-      console.error('Onboarding error:', error);
+      logger.error('Onboarding error:', { error: error instanceof Error ? error.message : String(error) });
       // Continue anyway
       router.push('/dashboard');
     } finally {

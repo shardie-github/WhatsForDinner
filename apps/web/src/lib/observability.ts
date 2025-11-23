@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('observability');
+
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { logger } from './logger';
 import { monitoringSystem } from './monitoring';
@@ -165,7 +169,7 @@ class ObservabilitySystem {
     try {
       const span = this.activeSpans.get(spanId);
       if (!span) {
-        if (process.env.NODE_ENV === 'development') { console.warn(`Span ${spanId} not found`); }
+        if (process.env.NODE_ENV === 'development') { logger.warn('Span ${spanId} not found'); }
         return;
       }
 
@@ -216,7 +220,7 @@ class ObservabilitySystem {
     try {
       const trace = this.activeTraces.get(traceId);
       if (!trace) {
-        if (process.env.NODE_ENV === 'development') { console.warn(`Trace ${traceId} not found`); }
+        if (process.env.NODE_ENV === 'development') { logger.warn('Trace ${traceId} not found'); }
         return;
       }
 
@@ -259,7 +263,7 @@ class ObservabilitySystem {
     try {
       const span = this.activeSpans.get(spanId);
       if (!span) {
-        if (process.env.NODE_ENV === 'development') { console.warn(`Span ${spanId} not found`); }
+        if (process.env.NODE_ENV === 'development') { logger.warn('Span ${spanId} not found'); }
         return;
       }
 
@@ -296,7 +300,7 @@ class ObservabilitySystem {
     try {
       const span = this.activeSpans.get(spanId);
       if (!span) {
-        if (process.env.NODE_ENV === 'development') { console.warn(`Span ${spanId} not found`); }
+        if (process.env.NODE_ENV === 'development') { logger.warn('Span ${spanId} not found'); }
         return;
       }
 
@@ -737,30 +741,30 @@ export const observabilitySystem = {
     baseObservabilitySystem.startTrace.bind(baseObservabilitySystem),
     (error) => {
       // Log but don't throw - observability failures shouldn't break user flows
-      console.error('Observability trace start failed:', error);
+      logger.error('Observability trace start failed:', { error: error instanceof Error ? error.message : String(error) });
     },
     '' // fallback: return empty string on error
   ),
   finishTrace: withErrorBoundary(
     baseObservabilitySystem.finishTrace.bind(baseObservabilitySystem),
-    (error) => console.error('Observability trace finish failed:', error)
+    (error) => logger.error('Observability trace finish failed:', { error: error instanceof Error ? error.message : String(error) })
   ),
   startSpan: withErrorBoundary(
     baseObservabilitySystem.startSpan.bind(baseObservabilitySystem),
-    (error) => console.error('Observability span start failed:', error),
+    (error) => logger.error('Observability span start failed:', { error: error instanceof Error ? error.message : String(error) }),
     '' // fallback
   ),
   finishSpan: withErrorBoundary(
     baseObservabilitySystem.finishSpan.bind(baseObservabilitySystem),
-    (error) => console.error('Observability span finish failed:', error)
+    (error) => logger.error('Observability span finish failed:', { error: error instanceof Error ? error.message : String(error) })
   ),
   log: fireAndForget(
     (level, message, metadata) => baseObservabilitySystem.log(level, message, metadata),
-    (error) => console.error('Observability log failed:', error)
+    (error) => logger.error('Observability log failed:', { error: error instanceof Error ? error.message : String(error) })
   ),
   trackMetric: fireAndForget(
     (name, value, tags) => baseObservabilitySystem.trackMetric(name, value, tags),
-    (error) => console.error('Observability metric tracking failed:', error)
+    (error) => logger.error('Observability metric tracking failed:', { error: error instanceof Error ? error.message : String(error) })
   ),
 };
 
@@ -794,7 +798,7 @@ export const withTrace = withErrorBoundary(
       throw error;
     }
   },
-  (error) => console.error('Observability withTrace failed:', error)
+  (error) => logger.error('Observability withTrace failed:', { error: error instanceof Error ? error.message : String(error) })
 );
 
 export const withSpan = withErrorBoundary(
@@ -817,7 +821,7 @@ export const withSpan = withErrorBoundary(
       throw error;
     }
   },
-  (error) => console.error('Observability withSpan failed:', error)
+  (error) => logger.error('Observability withSpan failed:', { error: error instanceof Error ? error.message : String(error) })
 );
 
 // Wrap trackError with error boundary (observability should never break user flows)
@@ -825,5 +829,5 @@ export const trackError = fireAndForget(
   async (error: Error, context: any = {}) => {
     await baseObservabilitySystem.trackError(error, context);
   },
-  (error) => console.error('Observability trackError failed:', error)
+  (error) => logger.error('Observability trackError failed:', { error: error instanceof Error ? error.message : String(error) })
 );

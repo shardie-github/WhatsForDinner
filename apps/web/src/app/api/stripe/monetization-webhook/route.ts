@@ -3,7 +3,12 @@
  * Handles affiliate payouts, API subscriptions, marketplace payouts
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 
@@ -47,12 +52,12 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        logger.info('Unhandled event type: ${event.type}');
     }
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error('Webhook handler error:', error);
+    logger.error('Webhook handler error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Webhook handler failed' },
       { status: 500 }

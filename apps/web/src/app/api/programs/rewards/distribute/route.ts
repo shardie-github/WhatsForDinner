@@ -3,7 +3,12 @@
  * Processes pending rewards and distributes them
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
@@ -34,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, message: 'Rewards distributed' });
   } catch (error) {
-    console.error('Reward distribution error:', error);
+    logger.error('Reward distribution error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

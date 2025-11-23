@@ -3,7 +3,12 @@
  * Automatically tracks clicks via middleware - zero effort
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
@@ -58,7 +63,7 @@ async function handler(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error('Affiliate tracking error:', error);
+    logger.error('Affiliate tracking error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to track click' },
       { status: 500 }

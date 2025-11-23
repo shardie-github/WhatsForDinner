@@ -5,6 +5,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useEffect, useState } from 'react';
 
@@ -20,7 +25,7 @@ export default function GovernancePage() {
   const [policies, setPolicies] = useState<RetentionPolicy[]>([]);
   const [loading, setLoading] = useState(true);
   const [dryRun, setDryRun] = useState(true);
-  const [preview, setPreview] = useState<any>(null);
+  const [preview, setPreview] = useState<unknown>(null);
 
   useEffect(() => {
     loadPolicies();

@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('marketingautomation');
+
 import { Resend } from 'resend';
 import { supabase } from './supabaseClient';
 import { GrowthAnalytics } from './growthAnalytics';
@@ -67,7 +71,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('welcome');
       if (!template) {
-        console.error('Welcome email template not found');
+        logger.error('Welcome email template not found');
         return;
       }
 
@@ -95,7 +99,7 @@ export class MarketingAutomation {
       // Track email sent event (fire-and-forget for non-critical operation)
       fireAndForget(
         () => this.trackEmailEvent('welcome', validated.userEmail, 'sent'),
-        (error) => console.error('Failed to track email event:', error)
+        (error) => logger.error('Failed to track email event:', { error: error instanceof Error ? error.message : String(error) })
       );
     } catch (error) {
       // Error handled: Failed to send welcome email:
@@ -121,7 +125,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('first_recipe');
       if (!template) {
-        console.error('First recipe email template not found');
+        logger.error('First recipe email template not found');
         return;
       }
 
@@ -167,7 +171,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('milestone');
       if (!template) {
-        console.error('Milestone email template not found');
+        logger.error('Milestone email template not found');
         return;
       }
 
@@ -214,7 +218,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('churn_risk');
       if (!template) {
-        console.error('Churn risk email template not found');
+        logger.error('Churn risk email template not found');
         return;
       }
 
@@ -260,7 +264,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('winback');
       if (!template) {
-        console.error('Winback email template not found');
+        logger.error('Winback email template not found');
         return;
       }
 
@@ -505,7 +509,7 @@ export class MarketingAutomation {
       }
 
       if (campaign.status !== 'scheduled') {
-        console.error('Campaign is not in scheduled status');
+        logger.error('Campaign is not in scheduled status');
         return;
       }
 
@@ -523,7 +527,7 @@ export class MarketingAutomation {
       // Get email template
       const template = await this.getEmailTemplate(campaign.template_id);
       if (!template) {
-        console.error('Email template not found');
+        logger.error('Email template not found');
         return;
       }
 

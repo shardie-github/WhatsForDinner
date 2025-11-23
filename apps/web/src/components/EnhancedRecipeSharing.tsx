@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('enhancedrecipesharing');
+
+
 
 import { useState } from 'react';
 import { Share2, Copy, Check, Facebook, Twitter, Instagram, MessageCircle, Mail } from 'lucide-react';
@@ -111,7 +116,7 @@ export function EnhancedRecipeSharing({ recipe, onShare }: EnhancedRecipeSharing
         onShare?.('native');
       } catch (error) {
         // User cancelled or error
-        console.log('Share cancelled');
+        logger.info('Share cancelled');
       }
     } else {
       setShowShareMenu(true);

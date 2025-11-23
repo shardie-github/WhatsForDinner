@@ -4,7 +4,12 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 
 export const runtime = 'edge';
 export const revalidate = 60;
@@ -41,7 +46,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Metrics JSON error:', error);
+    logger.error('Metrics JSON error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       {
         error: 'Failed to generate metrics JSON',

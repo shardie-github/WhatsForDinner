@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('rate-limiter');
+
 /**
  * Rate Limiting Utilities
  * In-memory and Redis-backed rate limiting
@@ -20,7 +24,7 @@ class RateLimiter {
         import('ioredis').then((Redis) => {
           this.redisClient = new Redis.default(process.env.REDIS_URL);
         }).catch(() => {
-          console.warn('Redis not available for rate limiting, using memory store');
+          logger.warn('Redis not available for rate limiting, using memory store');
         });
       } catch {
         // Redis not available
@@ -56,7 +60,7 @@ class RateLimiter {
 
         return { allowed, remaining, resetTime, retryAfter };
       } catch (error) {
-        console.error('Redis rate limit error:', error);
+        logger.error('Redis rate limit error:', { error: error instanceof Error ? error.message : String(error) });
         // Fall through to memory store
       }
     }

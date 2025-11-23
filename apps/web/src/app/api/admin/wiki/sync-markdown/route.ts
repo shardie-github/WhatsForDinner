@@ -1,4 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { wikiAutoUpdate } from '@/lib/wiki/auto-update';
@@ -91,7 +96,7 @@ export async function POST(request: NextRequest) {
       results
     });
   } catch (error) {
-    console.error('Sync markdown error:', error);
+    logger.error('Sync markdown error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to sync markdown files' },
       { status: 500 }

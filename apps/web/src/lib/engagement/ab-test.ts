@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('ab-test');
+
 /**
  * A/B Testing Utilities
  * Provides A/B test management and variant assignment

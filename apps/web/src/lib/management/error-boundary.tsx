@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('error-boundary');
+
+
 
 import React, { Component, type ReactNode } from 'react';
 

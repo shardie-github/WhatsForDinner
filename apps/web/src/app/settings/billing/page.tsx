@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -129,7 +134,7 @@ export default function BillingSettingsPage() {
       await loadData();
       alert('Subscription will be cancelled at the end of your billing period.');
     } catch (error) {
-      console.error('Failed to cancel subscription:', error);
+      logger.error('Failed to cancel subscription:', { error: error instanceof Error ? error.message : String(error) });
       alert('Failed to cancel subscription. Please try again.');
     }
   };
@@ -158,7 +163,7 @@ export default function BillingSettingsPage() {
         alert(data.error || 'Failed to request refund. Please try again.');
       }
     } catch (error) {
-      console.error('Refund request error:', error);
+      logger.error('Refund request error:', { error: error instanceof Error ? error.message : String(error) });
       alert('An error occurred. Please contact support.');
     }
   };
@@ -173,7 +178,7 @@ export default function BillingSettingsPage() {
       a.download = `invoice-${invoiceId}.pdf`;
       a.click();
     } catch (error) {
-      console.error('Failed to download invoice:', error);
+      logger.error('Failed to download invoice:', { error: error instanceof Error ? error.message : String(error) });
       alert('Failed to download invoice. Please try again.');
     }
   };

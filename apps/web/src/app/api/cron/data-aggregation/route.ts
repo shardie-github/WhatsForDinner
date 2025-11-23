@@ -4,7 +4,12 @@
  * Runs daily
  */
 
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
@@ -43,7 +48,7 @@ export async function GET(request: NextRequest) {
       sampleSize: userData?.length || 0,
     });
   } catch (error) {
-    console.error('Data aggregation error:', error);
+    logger.error('Data aggregation error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to aggregate data' },
       { status: 500 }
