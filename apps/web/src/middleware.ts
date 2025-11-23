@@ -9,7 +9,10 @@ import type { NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
 const ADMIN_PATHS = [/^\/admin(\/.*)?$/];
-const CSP_MODE: 'strict' | 'balanced' | 'loose' = (process.env.CSP_MODE as any) || 'balanced';
+const CSP_MODE: 'strict' | 'balanced' | 'loose' = 
+  (process.env.CSP_MODE === 'strict' || process.env.CSP_MODE === 'balanced' || process.env.CSP_MODE === 'loose')
+    ? process.env.CSP_MODE
+    : 'balanced';
 const IMAGE_DOMAINS = (process.env.NEXT_PUBLIC_IMAGE_DOMAINS || 'images.unsplash.com,cdn.shopify.com').split(',').map(d => d.trim());
 const PREVIEW_REQUIRE_AUTH = process.env.PREVIEW_REQUIRE_AUTH !== 'false';
 
