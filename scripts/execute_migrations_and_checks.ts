@@ -24,7 +24,7 @@ if (!DB_URL) {
 }
 
 logger.info('🚀 Starting migration and check execution...');
-logger.info('Database: ${DB_URL.substring(0', { 30 })}...`);
+logger.info(`Database: ${DB_URL.substring(0, 30)}...`);
 logger.info('');
 
 // Step 1: Apply migrations using psql (if available) or Supabase CLI
@@ -39,7 +39,7 @@ const migrations = readdirSync(migrationsDir)
     return a.localeCompare(b);
   });
 
-logger.info('Found ${migrations.length} migration files');
+logger.info(`Found ${migrations.length} migration files`);
 
 // Try Supabase CLI first
 let appliedVia = '';
@@ -52,21 +52,21 @@ try {
   appliedVia = 'Supabase CLI';
   logger.info('✅ Migrations applied via Supabase CLI');
 } catch (error) {
-  logger.info('  Supabase CLI not available or failed', { trying psql...' });
+  logger.info('  Supabase CLI not available or failed, trying psql...');
   
   // Fallback to psql
   try {
     for (const migration of migrations) {
       const filepath = join(migrationsDir, migration);
-      logger.info('  Applying ${migration}...');
+      logger.info(`  Applying ${migration}...`);
       try {
         execSync(`psql "${DB_URL}" -v ON_ERROR_STOP=0 -f "${filepath}"`, {
           stdio: 'inherit',
           env: { ...process.env },
         });
-        logger.info('  ✅ ${migration}');
+        logger.info(`  ✅ ${migration}`);
       } catch (err) {
-        logger.info('  ⚠️  ${migration} (may already be applied')`);
+        logger.info(`  ⚠️  ${migration} (may already be applied)`);
       }
     }
     appliedVia = 'psql';
@@ -89,7 +89,7 @@ try {
   });
   logger.info('✅ Preflight checks passed');
 } catch (error) {
-  logger.info('⚠️  Preflight checks had warnings (continuing...')');
+  logger.info('⚠️  Preflight checks had warnings (continuing...)');
 }
 logger.info('');
 
@@ -102,7 +102,7 @@ try {
   });
   logger.info('✅ Delta migration generated');
 } catch (error) {
-  logger.info('⚠️  Delta migration generation had warnings (continuing...')');
+  logger.info('⚠️  Delta migration generation had warnings (continuing...)');
 }
 logger.info('');
 
@@ -121,7 +121,7 @@ try {
 logger.info('');
 
 // Step 5: Run ETL smoke tests (dry-run)
-logger.info('🧪 Step 5: Running ETL smoke tests (dry-run')...');
+logger.info('🧪 Step 5: Running ETL smoke tests (dry-run)...');
 try {
   execSync('tsx scripts/etl/pull_events.ts --dry-run', {
     stdio: 'inherit',
@@ -141,7 +141,7 @@ try {
   });
   logger.info('✅ ETL smoke tests passed');
 } catch (error) {
-  logger.info('⚠️  ETL smoke tests had warnings (continuing...')');
+  logger.info('⚠️  ETL smoke tests had warnings (continuing...)');
 }
 logger.info('');
 
@@ -154,7 +154,7 @@ try {
   });
   logger.info('✅ Data quality checks passed');
 } catch (error) {
-  logger.info('⚠️  Data quality checks had warnings (continuing...')');
+  logger.info('⚠️  Data quality checks had warnings (continuing...)');
 }
 logger.info('');
 
@@ -167,14 +167,14 @@ try {
   });
   logger.info('✅ System doctor passed');
 } catch (error) {
-  logger.info('⚠️  System doctor found issues (check backlog for tickets')');
+  logger.info('⚠️  System doctor found issues (check backlog for tickets)');
 }
 logger.info('');
 
 logger.info('🎉 Execution complete!');
 logger.info('');
 logger.info('📝 Summary:');
-logger.info('  Migrations applied via: ${appliedVia}');
+logger.info(`  Migrations applied via: ${appliedVia}`);
 logger.info('  All checks completed');
 logger.info('');
 logger.info('📋 Next steps:');

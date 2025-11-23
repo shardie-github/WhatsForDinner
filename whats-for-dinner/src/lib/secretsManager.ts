@@ -181,7 +181,7 @@ class SecretsManager {
     this.setSecret(name, newValue, config.encrypted);
 
     // Log rotation
-    logger.info(`Secret rotated: ${name}`, {
+    logger.info('Secret rotated: ' + name, {
       secret_name: name,
       old_last_rotated: oldSecret?.lastRotated,
       new_last_rotated: new Date(),
@@ -235,7 +235,7 @@ class SecretsManager {
       const secretsToRotate = this.getSecretsNeedingRotation();
       
       if (secretsToRotate.length > 0) {
-        logger.warn(`Secrets need rotation: ${secretsToRotate.join(', ')}`, {
+        logger.warn('Secrets need rotation: ' + secretsToRotate.join(', '), {
           secrets_needing_rotation: secretsToRotate,
         }, 'security', 'secrets_management');
         
@@ -253,7 +253,7 @@ class SecretsManager {
   private notifyRotationNeeded(secrets: string[]): void {
     // In a real implementation, this would send notifications
     // to administrators or trigger automated rotation workflows
-    logger.warn('⚠️  Secrets need rotation: ${secrets.join(', { ' })}`);
+    logger.warn('⚠️  Secrets need rotation: ' + secrets.join(', '));
   }
 
   /**
@@ -414,7 +414,7 @@ export function validateEnvironmentVariables(): { valid: boolean; errors: string
   // Check required variables
   for (const varName of requiredVars) {
     if (!process.env[varName]) {
-      errors.push(`Missing required environment variable: ${varName}`);
+      errors.push('Missing required environment variable: ' + varName);
     }
   }
   
@@ -431,7 +431,7 @@ export function validateEnvironmentVariables(): { valid: boolean; errors: string
         // If SUPABASE_PROJECT_REF is set, validate it matches the URL
         if (process.env.SUPABASE_PROJECT_REF) {
           if (process.env.SUPABASE_PROJECT_REF !== extractedProjectRef) {
-            errors.push(`SUPABASE_PROJECT_REF (${process.env.SUPABASE_PROJECT_REF}) does not match project ref in NEXT_PUBLIC_SUPABASE_URL (${extractedProjectRef})`);
+            errors.push('SUPABASE_PROJECT_REF (' + process.env.SUPABASE_PROJECT_REF + ') does not match project ref in NEXT_PUBLIC_SUPABASE_URL (' + extractedProjectRef + ')');
           }
         } else {
           // Set SUPABASE_PROJECT_REF from URL if not already set
@@ -457,7 +457,7 @@ export function validateEnvironmentVariables(): { valid: boolean; errors: string
   const nodeVersion = process.version;
   const majorVersion = parseInt(nodeVersion.slice(1).split('.')[0]);
   if (majorVersion < 18) {
-    errors.push(`Node.js version ${nodeVersion} is not supported. Minimum version is 18.x`);
+    errors.push('Node.js version ' + nodeVersion + ' is not supported. Minimum version is 18.x');
   }
   
   return {

@@ -169,7 +169,7 @@ class AuroraPrime {
         logger.info('✅ Supabase CLI available');
         this.status.supabase = 'Healthy';
       } catch {
-        logger.info('⚠️  Supabase CLI not available (non-blocking')');
+        logger.info('⚠️  Supabase CLI not available (non-blocking)');
         this.status.supabase = 'Healthy'; // Non-blocking
       }
     } catch (error) {
@@ -240,7 +240,7 @@ class AuroraPrime {
       const appJsonPath = join(mobileAppPath, 'app.json');
       if (existsSync(appJsonPath)) {
         const appJson = JSON.parse(readFileSync(appJsonPath, 'utf-8'));
-        logger.info('✅ Expo app.json found: ${appJson.expo?.name || 'Unknown'}');
+        logger.info(`✅ Expo app.json found: ${appJson.expo?.name || 'Unknown'}`);
       } else {
         this.status.issues.push('Expo app.json not found');
       }
@@ -505,25 +505,25 @@ jobs:
   }
 
   private printStatus(): void {
-    logger.info('\n' + '═'.repeat(60'));
+    logger.info('\n' + '═'.repeat(60));
     logger.info('🌟 AURORA PRIME — FULL SYSTEM STATUS');
-    logger.info('═'.repeat(60'));
-    logger.info('Supabase:              [${this.status.supabase}]');
-    logger.info('Vercel Deployment:     [${this.status.vercel}]');
-    logger.info('Expo (iOS/Android'):    [${this.status.expo}]`);
-    logger.info('GitHub Actions:        [${this.status.githubActions}]');
-    logger.info('Secrets Alignment:     [${this.status.secretsAlignment}]');
-    logger.info('Schema Drift:          [${this.status.schemaDrift}]');
-    logger.info('═'.repeat(60'));
+    logger.info('═'.repeat(60));
+    logger.info(`Supabase:              [${this.status.supabase}]`);
+    logger.info(`Vercel Deployment:     [${this.status.vercel}]`);
+    logger.info(`Expo (iOS/Android):    [${this.status.expo}]`);
+    logger.info(`GitHub Actions:        [${this.status.githubActions}]`);
+    logger.info(`Secrets Alignment:     [${this.status.secretsAlignment}]`);
+    logger.info(`Schema Drift:          [${this.status.schemaDrift}]`);
+    logger.info('═'.repeat(60));
 
     if (this.status.fixes.length > 0) {
       logger.info('\n🔧 AUTO-REPAIRS APPLIED:');
-      this.status.fixes.forEach(fix => logger.info('  ✅ ${fix}'));
+      this.status.fixes.forEach(fix => logger.info(`  ✅ ${fix}`));
     }
 
     if (this.status.issues.length > 0) {
       logger.info('\n⚠️  ISSUES DETECTED:');
-      this.status.issues.forEach(issue => logger.info('  • ${issue}'));
+      this.status.issues.forEach(issue => logger.info(`  • ${issue}`));
     }
 
     logger.info('\n📋 RECOMMENDED NEXT ACTIONS:');
@@ -562,7 +562,7 @@ jobs:
       logger.info('  ✅ System is healthy — no actions required');
     }
 
-    logger.info('\n' + '═'.repeat(60'));
+    logger.info('\n' + '═'.repeat(60));
   }
 }
 

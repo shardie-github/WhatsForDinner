@@ -176,9 +176,9 @@ class PromptInjectionTestSuite {
 
         // Log test result
         const status = passed ? '✅ PASS' : '❌ FAIL';
-        logger.info('${status}: ${testCase.name}');
+        logger.info(`${status}: ${testCase.name}`);
         if (safetyResult.violations.length > 0) {
-          logger.info('  Violations: ${safetyResult.violations.join(', { ' })}`);
+          logger.info('  Violations: ' + safetyResult.violations.join(', '));
         }
       } catch (error) {
         logger.error('❌ ERROR in test "${testCase.name}":', { error });
@@ -231,8 +231,9 @@ class PromptInjectionTestSuite {
         });
 
         const status = passed ? '✅ PASS' : '❌ FAIL';
-              } catch (error) {
-        logger.error('❌ ERROR in critical test "${testCase.name}":', { error });
+        logger.info(`${status} - ${testCase.name}`);
+      } catch (error) {
+        logger.error('❌ ERROR in critical test "' + testCase.name + '":', { error });
         results.push({
           testName: testCase.name,
           input: testCase.input,

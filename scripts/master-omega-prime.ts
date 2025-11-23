@@ -42,7 +42,7 @@ class MasterOmegaPrime {
 
   async run(): Promise<void> {
     logger.info('\n🔥 MASTER OMEGA PRIME — FULL SYSTEM ORCHESTRATION\n');
-    logger.info('=' .repeat(80'));
+    logger.info('='.repeat(80));
     
     await this.phase1_StackDetection();
     await this.phase2_SelfHealing();
@@ -76,7 +76,7 @@ class MasterOmegaPrime {
     // Detect Supabase
     const supabaseStatus = this.detectSupabase();
     this.stackStatus.set('supabase', supabaseStatus);
-    report.findings.push(`Supabase: ${supabaseStatus.detected ? '✅ Detected' : '❌ Not Found'}`);
+    report.findings.push('Supabase: ' + (supabaseStatus.detected ? '✅ Detected' : '❌ Not Found'));
     if (!supabaseStatus.configured) {
       report.findings.push('⚠️  Supabase config incomplete');
     }
@@ -84,47 +84,47 @@ class MasterOmegaPrime {
     // Detect Prisma
     const prismaStatus = this.detectPrisma();
     this.stackStatus.set('prisma', prismaStatus);
-    report.findings.push(`Prisma: ${prismaStatus.detected ? '✅ Detected (WASM)' : '❌ Not Found'}`);
+    report.findings.push('Prisma: ' + (prismaStatus.detected ? '✅ Detected (WASM)' : '❌ Not Found'));
 
     // Detect Vercel
     const vercelStatus = this.detectVercel();
     this.stackStatus.set('vercel', vercelStatus);
-    report.findings.push(`Vercel: ${vercelStatus.detected ? '✅ Detected' : '❌ Not Found'}`);
+    report.findings.push('Vercel: ' + (vercelStatus.detected ? '✅ Detected' : '❌ Not Found'));
 
     // Detect Expo
     const expoStatus = this.detectExpo();
     this.stackStatus.set('expo', expoStatus);
-    report.findings.push(`Expo: ${expoStatus.detected ? '✅ Detected' : '❌ Not Found'}`);
+    report.findings.push('Expo: ' + (expoStatus.detected ? '✅ Detected' : '❌ Not Found'));
 
     // Detect GitHub Actions
     const githubStatus = this.detectGitHubActions();
     this.stackStatus.set('github', githubStatus);
-    report.findings.push(`GitHub Actions: ${githubStatus.detected ? '✅ Detected' : '❌ Not Found'}`);
+    report.findings.push('GitHub Actions: ' + (githubStatus.detected ? '✅ Detected' : '❌ Not Found'));
 
     // Detect Ecosystem Integrations
     const shopifyStatus = this.detectShopify();
     this.stackStatus.set('shopify', shopifyStatus);
-    report.findings.push(`Shopify: ${shopifyStatus.detected ? '✅ Detected' : '❌ Not Found'}`);
+    report.findings.push('Shopify: ' + (shopifyStatus.detected ? '✅ Detected' : '❌ Not Found'));
 
     const tiktokStatus = this.detectTikTok();
     this.stackStatus.set('tiktok', tiktokStatus);
-    report.findings.push(`TikTok Ads API: ${tiktokStatus.detected ? '✅ Detected' : '❌ Not Found'}`);
+    report.findings.push('TikTok Ads API: ' + (tiktokStatus.detected ? '✅ Detected' : '❌ Not Found'));
 
     const zapierStatus = this.detectZapier();
     this.stackStatus.set('zapier', zapierStatus);
-    report.findings.push(`Zapier: ${zapierStatus.detected ? '✅ Detected' : '❌ Not Found'}`);
+    report.findings.push('Zapier: ' + (zapierStatus.detected ? '✅ Detected' : '❌ Not Found'));
 
     const googleSheetsStatus = this.detectGoogleSheets();
     this.stackStatus.set('googleSheets', googleSheetsStatus);
-    report.findings.push(`Google Sheets: ${googleSheetsStatus.detected ? '✅ Detected' : '❌ Not Found'}`);
+    report.findings.push('Google Sheets: ' + (googleSheetsStatus.detected ? '✅ Detected' : '❌ Not Found'));
 
     // Check Environment Variables
     const envStatus = this.checkEnvironmentVariables();
-    report.findings.push(`Environment Variables: ${envStatus.configured ? '✅ Configured' : '⚠️  Missing some'}`);
+    report.findings.push('Environment Variables: ' + (envStatus.configured ? '✅ Configured' : '⚠️  Missing some'));
 
     // Check Branch Alignment
     const branchStatus = this.checkBranchAlignment();
-    report.findings.push(`Branch Alignment: ${branchStatus ? '✅ Aligned' : '⚠️  Check required'}`);
+    report.findings.push('Branch Alignment: ' + (branchStatus ? '✅ Aligned' : '⚠️  Check required'));
 
     this.reports.push(report);
     logger.info('✅ Phase 1 Complete');
@@ -409,7 +409,7 @@ class MasterOmegaPrime {
   // PHASE 3: BACKEND ORCHESTRATION
   // ============================================================================
   private async phase3_BackendOrchestration(): Promise<void> {
-    logger.info('\n🗄️  PHASE 3: BACKEND ORCHESTRATION (Supabase + Prisma')\n');
+    logger.info('\n🗄️  PHASE 3: BACKEND ORCHESTRATION (Supabase + Prisma)\n');
     
     const report: PhaseReport = {
       phase: 3,
@@ -445,7 +445,7 @@ class MasterOmegaPrime {
   // PHASE 4: FRONTEND DEPLOYMENT
   // ============================================================================
   private async phase4_FrontendDeployment(): Promise<void> {
-    logger.info('\n🌐 PHASE 4: FRONTEND DEPLOYMENT (Vercel + Expo')\n');
+    logger.info('\n🌐 PHASE 4: FRONTEND DEPLOYMENT (Vercel + Expo)\n');
     
     const report: PhaseReport = {
       phase: 4,
@@ -459,8 +459,8 @@ class MasterOmegaPrime {
     const vercelStatus = this.stackStatus.get('vercel');
     const expoStatus = this.stackStatus.get('expo');
 
-    report.findings.push(`Vercel: ${vercelStatus?.configured ? '✅ Configured' : '⚠️  Needs Setup'}`);
-    report.findings.push(`Expo: ${expoStatus?.configured ? '✅ Configured' : '⚠️  Needs Setup'}`);
+    report.findings.push('Vercel: ' + (vercelStatus.detected ? '✅ Detected' : '❌ Not Found'));
+    report.findings.push('Expo: ' + (expoStatus.detected ? '✅ Detected' : '❌ Not Found'));
 
     this.reports.push(report);
     logger.info('✅ Phase 4 Complete');
@@ -482,7 +482,7 @@ class MasterOmegaPrime {
     };
 
     const shopifyStatus = this.stackStatus.get('shopify');
-    report.findings.push(`Shopify: ${shopifyStatus?.detected ? '✅ Detected' : '❌ Not Found'}`);
+    report.findings.push('Shopify: ' + (shopifyStatus.detected ? '✅ Detected' : '❌ Not Found'));
     
     if (!shopifyStatus?.detected) {
       report.nextActions.push('Set up Shopify integration for chef marketplace');
@@ -616,28 +616,28 @@ class MasterOmegaPrime {
   // FINAL REPORT GENERATION
   // ============================================================================
   private generateFinalReport(): void {
-    logger.info('\n' + '='.repeat(80'));
+    logger.info('\n' + '='.repeat(80));
     logger.info('🔥 MASTER OMEGA PRIME — FULL SYSTEM OUTPUT\n');
     
     for (const report of this.reports) {
-      logger.info('\nPHASE ${report.phase} — ${report.name}');
-      logger.info('Status: ${report.status.toUpperCase(')}`);
+      logger.info(`\nPHASE ${report.phase} — ${report.name}`);
+      logger.info(`Status: ${report.status.toUpperCase()}`);
       logger.info('\nFindings:');
-      report.findings.forEach(f => logger.info('  • ${f}'));
+      report.findings.forEach(f => logger.info(`  • ${f}`));
       if (report.fixes.length > 0) {
         logger.info('\nFixes Applied:');
-        report.fixes.forEach(f => logger.info('  • ${f}'));
+        report.fixes.forEach(f => logger.info(`  • ${f}`));
       }
       if (report.nextActions.length > 0) {
         logger.info('\nNext Actions:');
-        report.nextActions.forEach(a => logger.info('  • ${a}'));
+        report.nextActions.forEach(a => logger.info(`  • ${a}`));
       }
     }
 
-    logger.info('\n' + '='.repeat(80'));
-    logger.info('\nNEXT ACTIONS (Autonomous'):');
-    logger.info('  • Run: pnpm aurora:prime (for detailed diagnostics')');
-    logger.info('  • Run: pnpm health:check (for system health')');
+    logger.info('\n' + '='.repeat(80));
+    logger.info('\nNEXT ACTIONS (Autonomous):');
+    logger.info('  • Run: pnpm aurora:prime (for detailed diagnostics)');
+    logger.info('  • Run: pnpm health:check (for system health)');
     logger.info('  • Review: Generated GTM and roadmap documents');
     logger.info('\n✅ MASTER OMEGA PRIME EXECUTION COMPLETE\n');
   }

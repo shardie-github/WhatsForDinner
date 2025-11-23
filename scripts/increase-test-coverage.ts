@@ -190,7 +190,7 @@ async function main() {
   logger.info('\n📋 Next steps:');
   logger.info('   1. Run: pnpm test:coverage');
   logger.info('   2. Implement tests for critical paths');
-  logger.info('   3. Focus on onboarding', { meal planning, grocery list, payment' });
+  logger.info('   3. Focus on onboarding: meal planning, grocery list, payment');
   logger.info('   4. Add integration tests for API endpoints');
   logger.info('   5. Add E2E tests for user journeys');
   logger.info('   6. Target: 80%+ coverage');

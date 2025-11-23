@@ -188,7 +188,7 @@ async function sendSlackAlert(message: any): Promise<void> {
     });
 
     if (!response.ok) {
-      logger.error('Failed to send Slack alert:', { response.statusText });
+      logger.error('Failed to send Slack alert: ' + response.statusText);
     }
   } catch (error) {
     logger.error('Error sending Slack alert:', { error });
@@ -220,7 +220,7 @@ async function sendPagerDutyAlert(message: any): Promise<void> {
     });
 
     if (!response.ok) {
-      logger.error('Failed to send PagerDuty alert:', { response.statusText });
+      logger.error('Failed to send PagerDuty alert: ' + response.statusText);
     }
   } catch (error) {
     logger.error('Error sending PagerDuty alert:', { error });

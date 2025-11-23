@@ -43,7 +43,7 @@ async function main() {
     .single();
 
   if (prefsError) {
-    logger.error('   ❌ Failed to set preferences:', { prefsError.message });
+    logger.error('   ❌ Failed to set preferences:', { error: prefsError.message });
     process.exit(1);
   }
   
@@ -61,7 +61,7 @@ async function main() {
     .single();
 
   if (appError) {
-    logger.error('   ❌ Failed to add app:', { appError.message });
+    logger.error('   ❌ Failed to add app:', { error: appError.message });
     process.exit(1);
   }
   
@@ -78,7 +78,7 @@ async function main() {
     .single();
 
   if (signalError) {
-    logger.error('   ❌ Failed to set signal:', { signalError.message });
+    logger.error('   ❌ Failed to set signal:', { error: signalError.message });
     process.exit(1);
   }
   
@@ -136,9 +136,9 @@ async function main() {
     .limit(10);
 
   if (logEntries && logEntries.length > 0) {
-    logger.info('Found ${logEntries.length} log entries:');
+    logger.info(`Found ${logEntries.length} log entries:`);
     for (const entry of logEntries) {
-      logger.info('  - ${entry.event_type} at ${new Date(entry.created_at').toLocaleString()}`);
+      logger.info(`  - ${entry.event_type} at ${new Date(entry.created_at).toLocaleString()}`);
     }
   } else {
     logger.info('No log entries found');
@@ -155,7 +155,7 @@ async function main() {
     await supabase.from('privacy_transparency_log').delete().eq('user_id', fakeUserId);
     logger.info('Cleanup completed');
   } else {
-    logger.info('Data kept for inspection (use --keep-data flag to skip cleanup')');
+    logger.info('Data kept for inspection (use --keep-data flag to skip cleanup)');
   }
 }
 

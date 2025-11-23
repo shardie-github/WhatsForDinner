@@ -40,19 +40,19 @@ async function enableAllMonetization() {
     for (const file of migrationFiles) {
       const filePath = path.join(process.cwd(), file);
       if (fs.existsSync(filePath)) {
-        logger.info('  → Applying ${file}...');
+        logger.info(`  → Applying ${file}...`);
         const result = spawnSync('psql', [dbUrl, '-f', filePath], {
           stdio: 'inherit',
         });
         if (result.status !== 0) {
-          logger.info('  ⚠️  Warning: Migration ${file} failed or already applied');
+          logger.info(`  ⚠️  Warning: Migration ${file} failed or already applied`);
         }
       } else {
-        logger.info('  ⚠️  Skipping ${file} (not found')`);
+        logger.info(`  ⚠️  Skipping ${file} (not found)`);
       }
     }
   } else {
-    logger.info('  ⚠️  DATABASE_URL not set', { skipping migrations' });
+    logger.info('  ⚠️  DATABASE_URL not set, skipping migrations');
   }
 
   // Step 2: Enable monetization settings
@@ -78,7 +78,7 @@ async function enableAllMonetization() {
       logger.info('  ⚠️  monetization_settings table does not exist. Run migrations first.');
       logger.info('  💡 Run: pnpm db:migrate:monetization');
     } else {
-      logger.error('  ❌ Error:', { error.message });
+      logger.error('  ❌ Error:', { error: error.message });
       throw error;
     }
   } else {
@@ -104,11 +104,11 @@ async function enableAllMonetization() {
     .single();
 
   if (verifySettings) {
-    logger.info('  ✅ Affiliate Program:', { verifySettings.affiliate_enabled ? 'Enabled' : 'Disabled' });
-    logger.info('  ✅ API Monetization:', { verifySettings.api_monetization_enabled ? 'Enabled' : 'Disabled' });
-    logger.info('  ✅ Data Insights:', { verifySettings.data_insights_enabled ? 'Enabled' : 'Disabled' });
-    logger.info('  ✅ Marketplace:', { verifySettings.marketplace_enabled ? 'Enabled' : 'Disabled' });
-    logger.info('  ✅ Automated Upsells:', { verifySettings.automated_upsells_enabled ? 'Enabled' : 'Disabled' });
+    logger.info(`  ✅ Affiliate Program: ${verifySettings.affiliate_enabled ? 'Enabled' : 'Disabled'}`);
+    logger.info(`  ✅ API Monetization: ${verifySettings.api_monetization_enabled ? 'Enabled' : 'Disabled'}`);
+    logger.info(`  ✅ Data Insights: ${verifySettings.data_insights_enabled ? 'Enabled' : 'Disabled'}`);
+    logger.info(`  ✅ Marketplace: ${verifySettings.marketplace_enabled ? 'Enabled' : 'Disabled'}`);
+    logger.info(`  ✅ Automated Upsells: ${verifySettings.automated_upsells_enabled ? 'Enabled' : 'Disabled'}`);
   }
 
   logger.info('\n🎉 All monetization channels enabled!');

@@ -140,7 +140,7 @@ if (require.main === module) {
   
   if (command === 'rotate') {
     rotateSecrets().then(rotations => {
-      logger.info('Rotated ${rotations.length} secrets: ${rotations.map(r => r.name').join(', ')}`);
+      logger.info(`Rotated ${rotations.length} secrets: ${rotations.map(r => r.name).join(', ')}`);
     });
   } else if (command === 'check') {
     checkSecretRotation();

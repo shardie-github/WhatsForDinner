@@ -465,7 +465,7 @@ class FutureCheck {
    * Generate compatibility report
    */
   private generateReport(report: CompatibilityReport) {
-    logger.info('\nCompatibility Score: ${(report.overall.score * 100').toFixed(1)}% (${report.overall.status})`);
+    logger.info(`\nCompatibility Score: ${(report.overall.score * 100).toFixed(1)}% (${report.overall.status})`);
     
     if (report.edgeRuntime.issues.length > 0) {
       logger.info('\nEdge Runtime Issues:');
