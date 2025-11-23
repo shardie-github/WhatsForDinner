@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { logger } from '@/lib/logger';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+import { handleApiError } from '@whats-for-dinner/utils';
+import { monitorQuery } from '@/lib/performance/query-optimizer';
 import Stripe from 'stripe';
 import { withTelemetry } from '@/lib/telemetry/api-middleware';
+
+const logger = createComponentLogger('subscriptions-me-api');
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-12-18.acacia',
@@ -20,12 +24,18 @@ async function handler(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get user's Stripe customer ID
-    const { data: user } = await supabase
-      .from('users')
-      .select('stripe_customer_id')
-      .eq('id', userId)
-      .single();
+    // Optimize: Get user's Stripe customer ID with query monitoring
+    const userResult = await monitorQuery('get-user-stripe-id', async () => {
+      const { data, error } = await supabase
+        .from('users')
+        .select('stripe_customer_id')
+        .eq('id', userId)
+        .single();
+      if (error) throw error;
+      return data;
+    });
+    
+    const user = userResult.result;
 
     if (!user?.stripe_customer_id) {
       return NextResponse.json({ subscription: null });
@@ -56,11 +66,13 @@ async function handler(request: NextRequest) {
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
     });
   } catch (error) {
-    logger.error('Failed to get subscription', { error });
-    return NextResponse.json(
-      { error: 'Failed to load subscription' },
-      { status: 500 }
-    );
+    logger.error('Failed to get subscription', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return handleApiError(error, {
+      component: 'subscriptions-me-api',
+      context: { endpoint: '/api/subscriptions/me' },
+    });
   }
 }
 

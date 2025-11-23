@@ -23,7 +23,7 @@ if (!DATABASE_URL) {
   logger.error('❌ Error: DATABASE_URL environment variable is not set');
   logger.error('');
   logger.error('Set it in .env.local or export it:');
-  logger.error('export DATABASE_URL='postgresql://postgres:PASSWORD@db.ghqyxhbyyirveptgwoqm.supabase.co:5432/postgres?sslmode=require'');
+  logger.error('export DATABASE_URL="postgresql://user:password@host:5432/database?sslmode=require"');
   process.exit(1);
 }
 

@@ -191,26 +191,31 @@ export class GamificationSystem {
       .gte('expires_at', new Date().toISOString())
       .order('created_at', { ascending: false });
 
-    // Get user progress for each challenge
-    const challenges = await Promise.all((data || []).map(async (challenge: any) => {
-      const { data: progress } = await supabase
-        .from('challenge_progress')
-        .select('progress')
-        .eq('user_id', userId)
-        .eq('challenge_id', challenge.id)
-        .single();
+    // Optimize: Get user progress for all challenges in one query (batch)
+    const challengeIds = (data || []).map((c: any) => c.id);
+    const { data: allProgress } = challengeIds.length > 0 ? await supabase
+      .from('challenge_progress')
+      .select('challenge_id, progress')
+      .eq('user_id', userId)
+      .in('challenge_id', challengeIds) : { data: [] };
+    
+    const progressMap = new Map((allProgress || []).map((p: any) => [p.challenge_id, p.progress]));
+    
+    // Map challenges with progress
+    const challenges = (data || []).map((challenge: any) => {
+      const progress = progressMap.get(challenge.id);
 
       return {
         id: challenge.id,
         name: challenge.name,
         description: challenge.description,
         type: challenge.type,
-        progress: progress?.progress || 0,
+        progress: progress || 0,
         target: challenge.target,
         reward: challenge.reward,
         expiresAt: challenge.expires_at,
       };
-    }));
+    });
 
     return challenges;
   }
@@ -293,14 +298,17 @@ export class GamificationSystem {
    * Calculate user score
    */
   async calculateUserScore(userId: string): Promise<number> {
-    const streak = await this.getUserStreak(userId);
-    const badges = await this.getUserBadges(userId);
+    // Optimize: Fetch streak, badges, and recipe count in parallel
+    const [streak, badges, recipeCountResult] = await Promise.all([
+      this.getUserStreak(userId),
+      this.getUserBadges(userId),
+      supabase
+        .from('recipes')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId),
+    ]);
     
-    // Get recipe count
-    const { count: recipeCount } = await supabase
-      .from('recipes')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', userId);
+    const recipeCount = recipeCountResult.count || 0;
 
     // Score calculation
     const streakScore = streak.current * 10;
