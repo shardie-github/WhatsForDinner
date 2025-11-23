@@ -7,6 +7,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getCorrelationIdFromHeaders, generateCorrelationId } from '@whats-for-dinner/utils';
 
 const ADMIN_PATHS = [/^\/admin(\/.*)?$/];
 const CSP_MODE: 'strict' | 'balanced' | 'loose' = 
@@ -19,6 +20,11 @@ const PREVIEW_REQUIRE_AUTH = process.env.PREVIEW_REQUIRE_AUTH !== 'false';
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const response = NextResponse.next();
+
+  // Add correlation ID for request tracing
+  const correlationId = getCorrelationIdFromHeaders(request.headers) || generateCorrelationId();
+  response.headers.set('X-Correlation-ID', correlationId);
+  request.headers.set('X-Correlation-ID', correlationId);
 
   // Detect preview environment
   const isPreview = url.host.includes('-git-') || url.host.includes('-vercel.app') || process.env.VERCEL_ENV === 'preview';

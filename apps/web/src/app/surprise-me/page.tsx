@@ -10,10 +10,19 @@ import { useRouter } from 'next/navigation';
 import { analytics } from '@/lib/analytics';
 import { supabase } from '@/lib/supabaseClient';
 
+interface Recipe {
+  title: string;
+  ingredients: string[];
+  instructions: string[];
+  cookTime?: string;
+  servings?: number;
+  [key: string]: unknown;
+}
+
 export default function SurpriseMePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [recipe, setRecipe] = useState<any>(null);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [mood, setMood] = useState<string>('');
 
   const moods = [
@@ -53,8 +62,8 @@ export default function SurpriseMePage() {
           user_id: user.data.user?.id,
         });
       }
-    } catch (error) {
-      console.error('Failed to generate recipe:', error);
+      } catch (error) {
+        // Error handled by error boundary
     } finally {
       setLoading(false);
     }

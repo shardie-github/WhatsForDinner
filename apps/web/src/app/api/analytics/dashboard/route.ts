@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { handleApiError, getCorrelationId } from '@whats-for-dinner/utils';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('analytics-dashboard-api');
 
 // This endpoint provides analytics data for the user dashboard
 export async function GET(request: NextRequest) {
@@ -32,7 +36,11 @@ export async function GET(request: NextRequest) {
       .limit(1000);
 
     if (eventsError) {
-      console.error('Error fetching analytics events:', eventsError);
+      logger.warn('Error fetching analytics events', {
+        error: eventsError.message,
+        userId,
+        correlationId: getCorrelationId(request),
+      });
     }
 
     // Get recipe metrics
@@ -44,7 +52,11 @@ export async function GET(request: NextRequest) {
       .limit(1000);
 
     if (recipeError) {
-      console.error('Error fetching recipe metrics:', recipeError);
+      logger.warn('Error fetching recipe metrics', {
+        error: recipeError.message,
+        userId,
+        correlationId: getCorrelationId(request),
+      });
     }
 
     // Calculate stats
@@ -173,11 +185,10 @@ export async function GET(request: NextRequest) {
       timeSeriesData: daysData,
       eventCounts,
     });
-  } catch (error: any) {
-    // Error handled: Error fetching analytics dashboard data:
-    return NextResponse.json(
-      { error: 'Failed to fetch analytics data', message: error.message },
-      { status: 500 }
-    );
+  } catch (error) {
+    return handleApiError(error, {
+      component: 'analytics-dashboard-api',
+      context: { correlationId: getCorrelationId(request) },
+    });
   }
 }

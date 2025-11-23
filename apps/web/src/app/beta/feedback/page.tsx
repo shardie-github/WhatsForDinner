@@ -15,6 +15,9 @@ import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { analytics } from '@/lib/analytics';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('beta-feedback');
 
 interface FeedbackForm {
   rating: number;
@@ -82,7 +85,9 @@ export default function BetaFeedbackPage() {
         setSubmitted(false);
       }, 2000);
     } catch (error) {
-      console.error('Failed to submit feedback:', error);
+      logger.error('Failed to submit feedback', {
+        error: error instanceof Error ? error.message : String(error),
+      });
       alert('Failed to submit feedback. Please try again.');
     } finally {
       setSubmitting(false);
@@ -162,7 +167,7 @@ export default function BetaFeedbackPage() {
                     <button
                       key={cat.id}
                       type="button"
-                      onClick={() => setForm(prev => ({ ...prev, category: cat.id as any }))}
+                      onClick={() => setForm(prev => ({ ...prev, category: cat.id as FeedbackForm['category'] }))}
                       className={`px-4 py-2 rounded-lg border-2 transition-colors ${
                         form.category === cat.id
                           ? 'border-primary bg-primary/5'
@@ -190,7 +195,7 @@ export default function BetaFeedbackPage() {
                     <button
                       key={pri.id}
                       type="button"
-                      onClick={() => setForm(prev => ({ ...prev, priority: pri.id as any }))}
+                      onClick={() => setForm(prev => ({ ...prev, priority: pri.id as FeedbackForm['priority'] }))}
                       className={`px-4 py-2 rounded-lg border-2 transition-colors ${
                         form.priority === pri.id
                           ? 'border-primary bg-primary/5'

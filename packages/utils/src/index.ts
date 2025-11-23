@@ -9,3 +9,5 @@ export * from './retry';
 export * from './config';
 export * from './error-handler';
 export * from './logger';
+export * from './api-error-handler';
+export * from './correlation-id';
