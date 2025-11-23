@@ -13,6 +13,7 @@ import { TrustSignals } from '@/components/TrustSignals';
 import { CTAOptimizer } from '@/components/CTAOptimizer';
 import { AIPersonality } from '@/components/AIPersonality';
 import { SocialProofWidget } from '@/components/SocialProofWidget';
+import SmartUpsell from '@/components/monetization/SmartUpsell';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Play, ShoppingCart, UtensilsCrossed } from 'lucide-react';
@@ -21,13 +22,25 @@ import Link from 'next/link';
 export default function DashboardPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
-  const [user, setUser] = useState<unknown>(null);
+  const [user, setUser] = useState<{ id: string } | null>(null);
+  const [tenantId, setTenantId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      if (user) {
+        setUser(user as { id: string });
+        // Get tenant_id from profile
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('tenant_id')
+          .eq('id', user.id)
+          .single();
+        if (profile?.tenant_id) {
+          setTenantId(profile.tenant_id);
+        }
+      }
       setLoading(false);
     };
     loadUser();
@@ -68,6 +81,11 @@ export default function DashboardPage() {
 
           {/* Daily Retention Hooks */}
           <DailyRetentionHooks userId={user.id} />
+
+          {/* Smart Upsell Opportunities */}
+          {user && tenantId && (
+            <SmartUpsell userId={user.id} tenantId={tenantId} />
+          )}
         </div>
 
         {/* Quick Actions */}

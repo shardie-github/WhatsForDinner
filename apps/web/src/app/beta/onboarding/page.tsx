@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { analytics } from '@/lib/analytics';
+import { referralTracker } from '@/lib/monetization/referral-tracker';
 
 interface OnboardingStep {
   id: string;
@@ -58,6 +59,9 @@ export default function BetaOnboardingPage() {
       setUser(user);
 
       if (user) {
+        // Track referral if present
+        await referralTracker.initializeOnSignup(user.id);
+        
         // Check progress
         checkProgress(user.id);
       }
