@@ -10,7 +10,9 @@ import { Text, Button, Card } from '@whats-for-dinner/ui';
 import { ConsentStore } from '@whats-for-dinner/analytics-consent/store';
 import type { ConsentState } from '@whats-for-dinner/analytics-consent/model';
 import * as Linking from 'expo-linking';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('consentgate-tsx');
 interface ConsentGateProps {
   onConsentComplete: (state: ConsentState) => void;
   store?: ConsentStore;
@@ -91,7 +93,7 @@ export function ConsentGate({ onConsentComplete, store }: ConsentGateProps) {
       setStep('consent');
       await consentStore.requestConsent();
     } catch (error) {
-      console.error('ATT request failed:', error);
+      logger.error('ATT request failed:', { error });
       // On error, proceed anyway with denied permission
       await consentStore.setTrackingPermission('denied');
       setStep('consent');
@@ -426,7 +428,7 @@ async function requestTrackingPermission(): Promise<'authorized' | 'denied' | 'r
     return result.status === 'granted' ? 'authorized' : result.status;
   } catch (error) {
     // Fallback if module not available
-    console.warn('expo-tracking-transparency not available:', error);
+    logger.warn('expo-tracking-transparency not available:', { error });
     return 'not_determined';
   }
 }

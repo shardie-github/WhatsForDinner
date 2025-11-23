@@ -10,6 +10,7 @@
 import { writeFileSync, existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 
+const logger = createComponentLogger('observability-agent-ts');
 interface TelemetryData {
   timestamp: string;
   metrics: {
@@ -47,7 +48,7 @@ export class ObservabilityAgent {
   ) {}
 
   async run(): Promise<void> {
-    console.log('📊 Collecting observability metrics...');
+    logger.info('📊 Collecting observability metrics...');
 
     await this.ensureMetricsEndpoint();
     await this.updateMetricsDashboard();
@@ -76,6 +77,7 @@ export class ObservabilityAgent {
  */
 
 import { NextResponse } from 'next/server';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 60; // Revalidate every minute
@@ -123,7 +125,7 @@ export async function GET() {
       }
 
       writeFileSync(metricsApiPath, metricsRoute);
-      console.log('✅ Created metrics API endpoint');
+      logger.info('✅ Created metrics API endpoint');
     }
   }
 
@@ -145,9 +147,9 @@ export async function GET() {
 
     if (existsSync(dashboardPath)) {
       // Dashboard exists, agent just needs to ensure it's being used
-      console.log('✅ Metrics dashboard exists');
+      logger.info('✅ Metrics dashboard exists');
     } else {
-      console.warn('⚠️ Metrics dashboard not found at expected location');
+      logger.warn('⚠️ Metrics dashboard not found at expected location');
     }
   }
 
@@ -159,7 +161,7 @@ export async function GET() {
     }
 
     try {
-      const historical: Array<{ timestamp: string; latency: any; errors: any }> = JSON.parse(
+      const historical: Array<{ timestamp: string; latency: any; errors: unknown }> = JSON.parse(
         readFileSync(reliabilityPath, 'utf-8')
       );
 
@@ -189,12 +191,12 @@ export async function GET() {
       }
 
       if (regressions.length > 0) {
-        console.warn('🚨 Performance regression detected:', regressions);
+        logger.warn('🚨 Performance regression detected:', { regressions });
         // In production, would send alert (Slack, email, etc.)
         await this.createRegressionAlert(regressions);
       }
     } catch (error) {
-      console.warn('Could not check for regressions:', error);
+      logger.warn('Could not check for regressions:', { error });
     }
   }
 

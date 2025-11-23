@@ -6,7 +6,7 @@ export interface AnalyticsEvent {
   event_type: string;
   user_id?: string;
   session_id: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   timestamp: string;
   page_url?: string;
   user_agent?: string;
@@ -34,7 +34,7 @@ export interface SystemMetrics {
     | 'error_rate'
     | 'cost_analysis';
   value: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -61,7 +61,7 @@ class AnalyticsService {
     this.userId = userId;
   }
 
-  async trackEvent(eventType: string, properties: Record<string, any> = {}) {
+  async trackEvent(eventType: string, properties: Record<string, unknown> = {}) {
     const event: AnalyticsEvent = {
       id: uuidv4(),
       event_type: eventType,
@@ -109,7 +109,7 @@ class AnalyticsService {
   async trackSystemMetric(
     metricType: SystemMetrics['metric_type'],
     value: number,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ) {
     const metric: SystemMetrics = {
       id: uuidv4(),

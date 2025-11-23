@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { withDb } from "../lib/db"; import { log, err } from "../lib/logger";
+import { createComponentLogger } from '@whats-for-dinner/utils';
+const logger = createComponentLogger('preflight-ts');
 const MUST=["SUPABASE_DB_URL","TZ"];
 (async()=>{
   const missing=MUST.filter(k=>!process.env[k]); if(missing.length){ err("Missing env:",missing.join(", ")); process.exit(2); }
@@ -8,5 +10,5 @@ const MUST=["SUPABASE_DB_URL","TZ"];
     const t=await c.query("select to_regclass('public.events') e, to_regclass('public.spend') s, to_regclass('public.metrics_daily') m");
     log("Tables:", t.rows[0]);
   });
-  console.log("# Preflight OK");
+  logger.info('# Preflight OK');
 })().catch(e=>{ err(e); process.exit(1); });

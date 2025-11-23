@@ -5,11 +5,13 @@
  */
 
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 /**
  * Environment variable schema
  * All required and optional env vars are defined here
  */
+const logger = createComponentLogger('env-ts');
 const envSchema = z.object({
   // Node environment
   NODE_ENV: z.enum(['development', 'production', 'test', 'staging']).default('development'),
@@ -247,12 +249,12 @@ export function validateEnv() {
         .filter(e => e.code !== 'invalid_type' || e.received !== 'undefined')
         .map(e => `${e.path.join('.')}: ${e.message}`);
       
-      console.error('❌ Environment variable validation failed:');
+      logger.error('❌ Environment variable validation failed:');
       if (missing.length > 0) {
-        console.error('   Missing required variables:', missing.join(', '));
+        logger.error('   Missing required variables:', { missing.join(', ' }));
       }
       if (invalid.length > 0) {
-        console.error('   Invalid variables:', invalid.join(', '));
+        logger.error('   Invalid variables:', { invalid.join(', ' }));
       }
       
       throw new Error(`Environment validation failed: ${error.errors.map(e => e.message).join(', ')}`);

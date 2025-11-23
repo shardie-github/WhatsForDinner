@@ -230,7 +230,7 @@ function calculateCostEstimate(usage: any, model: string): number {
 }
 
 function calculateConfidenceScore(
-  recipes: any[],
+  recipes: unknown[],
   ingredients: string[]
 ): number {
   let score = 0.5; // Base score
@@ -264,7 +264,7 @@ function calculateConfidenceScore(
   return Math.min(1.0, Math.max(0.0, score));
 }
 
-function detectCuisineType(recipes: any[]): string | null {
+function detectCuisineType(recipes: unknown[]): string | null {
   const cuisineKeywords = {
     Italian: ['pasta', 'pizza', 'risotto', 'parmesan', 'basil', 'oregano'],
     Mexican: ['taco', 'burrito', 'salsa', 'cilantro', 'lime', 'jalapeño'],

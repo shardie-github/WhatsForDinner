@@ -1,7 +1,9 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('index-ts');
 interface Database {
   public: {
     Tables: {
@@ -147,7 +149,7 @@ serve(async req => {
       });
     }
   } catch (error) {
-    console.error('API Error:', error);
+    logger.error('API Error:', { error });
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

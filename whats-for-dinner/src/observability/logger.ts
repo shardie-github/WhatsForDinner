@@ -69,7 +69,7 @@ class Logger {
   /**
    * Redact PII from data
    */
-  private redactPII(data: any): any {
+  private redactPII(data: any): unknown {
     if (typeof data !== 'object' || data === null) {
       return data;
     }
@@ -143,17 +143,17 @@ class Logger {
     
     switch (entry.level) {
       case 'debug':
-        console.debug(output);
+        logger.debug('output');
         break;
       case 'info':
-        console.info(output);
+        logger.info('output');
         break;
       case 'warn':
-        console.warn(output);
+        logger.warn('output');
         break;
       case 'error':
       case 'fatal':
-        console.error(output);
+        logger.error('output');
         break;
     }
   }

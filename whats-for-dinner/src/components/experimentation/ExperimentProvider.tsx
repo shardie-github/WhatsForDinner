@@ -2,11 +2,13 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { featureFlags, UserContext } from '@/lib/featureFlags';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('experimentprovider-tsx');
 interface ExperimentContextType {
   userContext: UserContext;
-  getFlag: (flagName: string) => Promise<any>;
-  trackEvent: (experimentId: string, eventName: string, properties?: Record<string, any>) => void;
+  getFlag: (flagName: string) => Promise<unknown>;
+  trackEvent: (experimentId: string, eventName: string, properties?: Record<string, unknown>) => void;
   isExperimentActive: (experimentId: string) => boolean;
 }
 
@@ -45,7 +47,7 @@ export function ExperimentProvider({ children, userContext }: ExperimentProvider
       
       setActiveExperiments(active);
     } catch (error) {
-      console.error('Error loading active experiments:', error);
+      logger.error('Error loading active experiments:', { error });
     }
   };
 
@@ -53,7 +55,7 @@ export function ExperimentProvider({ children, userContext }: ExperimentProvider
     return await featureFlags.getFlag(flagName, userContext);
   };
 
-  const trackEvent = (experimentId: string, eventName: string, properties?: Record<string, any>) => {
+  const trackEvent = (experimentId: string, eventName: string, properties?: Record<string, unknown>) => {
     featureFlags.trackEvent(experimentId, eventName, userContext, properties);
   };
 
@@ -116,7 +118,7 @@ export function useABTest(testName: string, variants: string[]) {
     });
   }, [testName, getFlag, trackEvent]);
 
-  const trackConversion = (eventName: string, properties?: Record<string, any>) => {
+  const trackConversion = (eventName: string, properties?: Record<string, unknown>) => {
     trackEvent(testName, eventName, { 
       variant, 
       ...properties 

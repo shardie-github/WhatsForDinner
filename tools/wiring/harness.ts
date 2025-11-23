@@ -11,7 +11,9 @@ import { join } from 'path';
 import { db } from '../../packages/server/src/db/index.js';
 import Redis from 'ioredis';
 import { createClient } from '@supabase/supabase-js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('harness-ts');
 interface CheckResult {
   status: 'pass' | 'fail' | 'degraded' | 'skip';
   latency?: number;
@@ -667,7 +669,7 @@ async function checkJobs(): Promise<ConnectivityCheck[]> {
 }
 
 async function main() {
-  console.log('Starting wiring harness checks...\n');
+  logger.info('Starting wiring harness checks...\n');
   
   const startTime = Date.now();
   
@@ -722,8 +724,8 @@ async function main() {
 
   const duration = Date.now() - startTime;
   
-  console.log(`\nWiring harness checks completed in ${duration}ms`);
-  console.log(`Summary: ${summary.pass} passed, ${summary.degraded} degraded, ${summary.fail} failed`);
+  logger.info('\nWiring harness checks completed in ${duration}ms');
+  logger.info('Summary: ${summary.pass} passed', { ${summary.degraded} degraded, ${summary.fail} failed` });
   
   if (summary.fail > 0) {
     process.exit(1);
@@ -788,7 +790,7 @@ See \`evidence/\` directory for detailed logs.
 
 if (import.meta.url === `file://${process.argv[1]}` || require.main === module) {
   main().catch((error) => {
-    console.error('Fatal error:', error);
+    logger.error('Fatal error:', { error });
     process.exit(1);
   });
 }

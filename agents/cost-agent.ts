@@ -8,7 +8,9 @@
 
 import { writeFileSync, existsSync, readFileSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('cost-agent-ts');
 interface CostMetrics {
   timestamp: string;
   providers: {
@@ -60,7 +62,7 @@ export class CostAgent {
   ) {}
 
   async run(): Promise<void> {
-    console.log('💰 Analyzing cost metrics...');
+    logger.info('💰 Analyzing cost metrics...');
 
     const metrics = await this.collectCostMetrics();
     await this.saveMetrics(metrics);
@@ -293,8 +295,7 @@ ${this.generateTrendAnalysis(metrics)}
 
   private async checkOverruns(metrics: CostMetrics): Promise<void> {
     if (metrics.total.overrun) {
-      console.warn(
-        `⚠️ Cost overrun detected: Forecast ($${metrics.total.forecast.toFixed(2)}) exceeds budget ($${metrics.total.budget.toFixed(2)}) by ${metrics.total.overrunPercent.toFixed(1)}%`
+      logger.warn('⚠️ Cost overrun detected: Forecast ($${metrics.total.forecast.toFixed(2')}) exceeds budget ($${metrics.total.budget.toFixed(2)}) by ${metrics.total.overrunPercent.toFixed(1)}%`
       );
       // In production, would send alert or create GitHub issue
     }
@@ -302,7 +303,7 @@ ${this.generateTrendAnalysis(metrics)}
     // Check individual provider overruns
     for (const [provider, data] of Object.entries(metrics.providers)) {
       if (data?.overrun) {
-        console.warn(`⚠️ ${provider} cost overrun detected`);
+        logger.warn('⚠️ ${provider} cost overrun detected');
       }
     }
   }

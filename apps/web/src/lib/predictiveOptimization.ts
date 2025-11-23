@@ -389,7 +389,7 @@ export class PredictiveOptimization {
   /**
    * Analyze commit patterns
    */
-  private analyzeCommitPatterns(commitData: any): any {
+  private analyzeCommitPatterns(commitData: any): unknown {
     // In a real implementation, this would analyze actual commit data
     return {
       fileCount: commitData.files?.length || 0,
@@ -552,7 +552,7 @@ export class PredictiveOptimization {
   /**
    * Get current resource metrics
    */
-  private getCurrentResourceMetrics(): any {
+  private getCurrentResourceMetrics(): unknown {
     if (this.resourceMetrics.length === 0) {
       return { load: 0.5, cpuUsage: 50, memoryUsage: 50 };
     }
@@ -697,7 +697,7 @@ export class PredictiveOptimization {
   /**
    * Collect user engagement data
    */
-  private async collectUserEngagementData(): Promise<any> {
+  private async collectUserEngagementData(): Promise<unknown> {
     // In a real implementation, this would collect actual user data
     return {
       averageSessionDuration: 8.5,
@@ -710,7 +710,7 @@ export class PredictiveOptimization {
   /**
    * Collect performance metrics
    */
-  private async collectPerformanceMetrics(): Promise<any> {
+  private async collectPerformanceMetrics(): Promise<unknown> {
     if (this.resourceMetrics.length === 0) {
       return {
         averageResponseTime: 1000,
@@ -738,7 +738,7 @@ export class PredictiveOptimization {
   /**
    * Analyze release impact
    */
-  private async analyzeReleaseImpact(): Promise<any> {
+  private async analyzeReleaseImpact(): Promise<unknown> {
     // In a real implementation, this would analyze actual release data
     return {
       releaseFrequency: 2.5, // releases per week
@@ -751,7 +751,7 @@ export class PredictiveOptimization {
   /**
    * Calculate trends
    */
-  private calculateTrends(): any {
+  private calculateTrends(): unknown {
     // In a real implementation, this would calculate actual trends
     return {
       engagementTrend: 'increasing' as const,

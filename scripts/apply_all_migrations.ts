@@ -16,12 +16,14 @@ import { Client } from 'pg';
 import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { logger } from './lib/logger';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('apply-all-migrations-ts');
 const DB_URL = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
 const DRY_RUN = process.argv.includes('--dry-run');
 
 if (!DB_URL && !DRY_RUN) {
-  console.error('❌ SUPABASE_DB_URL or DATABASE_URL required (or use --dry-run)');
+  logger.error('❌ SUPABASE_DB_URL or DATABASE_URL required (or use --dry-run')');
   process.exit(1);
 }
 

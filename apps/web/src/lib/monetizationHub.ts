@@ -26,7 +26,7 @@ export interface UpsellOpportunity {
   trigger: 'usage_limit' | 'feature_request' | 'engagement_high' | 'seasonal';
   urgency: 'low' | 'medium' | 'high';
   estimated_value: number;
-  personalization_data: Record<string, any>;
+  personalization_data: Record<string, unknown>;
 }
 
 export interface RevenueForecast {

@@ -3,7 +3,9 @@ import { headers } from 'next/headers';
 import { supabase } from '@/lib/supabaseClient';
 import { FederatedAPIGateway } from '@/lib/federatedGateway';
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 const FederationRequestSchema = z.object({
   partner: z.string(),
   endpoint: z.string(),
@@ -56,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Federation API error:', error);
+    logger.error('Federation API error:', { error });
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -113,7 +115,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Federation GET error:', error);
+    logger.error('Federation GET error:', { error });
     return NextResponse.json(
       { error: 'Federation request failed' },
       { status: 500 }

@@ -30,7 +30,7 @@ export default function Paywall({ onPurchase, onDismiss }: PaywallProps) {
       const prods = await monetization.getProducts();
       setProducts(prods);
     } catch (err) {
-      console.error('Failed to load products:', err);
+      logger.error('Failed to load products:', { err });
       setError('Failed to load subscription options');
     } finally {
       setLoading(false);

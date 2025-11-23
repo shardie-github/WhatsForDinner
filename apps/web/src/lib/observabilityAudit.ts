@@ -686,7 +686,7 @@ export class ObservabilityAudit {
   /**
    * Get audit statistics
    */
-  getAuditStatistics(): any {
+  getAuditStatistics(): unknown {
     const totalEvents = this.auditEvents.length;
     const eventsByType = this.auditEvents.reduce(
       (acc, event) => {

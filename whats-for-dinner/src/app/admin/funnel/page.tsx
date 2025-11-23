@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { GrowthAnalytics, FunnelConversionRates } from '@/lib/growthAnalytics';
 import {
+import { createComponentLogger } from '@whats-for-dinner/utils';
   Card,
   CardContent,
   CardDescription,
@@ -10,6 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
+const logger = createComponentLogger('page-tsx');
 interface FunnelStage {
   name: string;
   users: number;
@@ -88,7 +90,7 @@ export default function FunnelOptimizationPage() {
 
       setFunnelData(stages);
     } catch (error) {
-      console.error('Error loading funnel data:', error);
+      logger.error('Error loading funnel data:', { error });
     } finally {
       setLoading(false);
     }

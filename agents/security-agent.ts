@@ -9,7 +9,9 @@
 
 import { writeFileSync, existsSync, readFileSync, execSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('security-agent-ts');
 interface SecurityMetrics {
   timestamp: string;
   sbom: {
@@ -54,7 +56,7 @@ export class SecurityAgent {
   ) {}
 
   async run(): Promise<void> {
-    console.log('🔐 Running security audit...');
+    logger.info('🔐 Running security audit...');
 
     const metrics = await this.collectSecurityMetrics();
     await this.generateSBOM();
@@ -121,7 +123,7 @@ export class SecurityAgent {
         };
       }
     } catch (error) {
-      console.warn('Could not run security audit:', error);
+      logger.warn('Could not run security audit:', { error });
     }
 
     // Analyze licenses (simplified - would need to check each package)

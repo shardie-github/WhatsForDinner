@@ -46,7 +46,7 @@ export default function ModerationPage() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        logger.error('err');
         setLoading(false);
       });
   }, []);

@@ -1,26 +1,74 @@
+/**
+ * Production Health Check Endpoint
+ * 
+ * Provides comprehensive health checking for production monitoring:
+ * - GET /api/health - Full health check with all checks
+ * - GET /api/health/live - Liveness probe (simple alive check)
+ * - GET /api/health/ready - Readiness probe (ready to accept traffic)
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
-import { withTelemetry } from '@/lib/telemetry/api-middleware';
+import {
+  runHealthCheck,
+  createLivenessHandler,
+  createReadinessHandler,
+  HealthCheckOptions,
+} from '@whats-for-dinner/utils';
 
 /**
- * Simple health check endpoint (Edge-compatible)
- * Used by Vercel validation and monitoring
+ * Full health check endpoint
+ * Returns comprehensive health status with all checks
  */
-export const runtime = 'edge';
+export async function GET(req: NextRequest) {
+  try {
+    // Parse query parameters
+    const { searchParams } = new URL(req.url);
+    const includeDetails = searchParams.get('details') === 'true';
+    const checkTimeout = parseInt(searchParams.get('timeout') || '5000', 10);
 
-async function handler(_req: NextRequest) {
-  return NextResponse.json(
-    {
-      ok: true,
-      ts: Date.now(),
-      environment: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-    },
-    {
+    const options: HealthCheckOptions = {
+      includeDetails,
+      checkTimeout,
+    };
+
+    // Add custom checks if needed
+    // options.customChecks = {
+    //   customCheck: async () => {
+    //     // Your custom check logic
+    //     return { status: 'pass', message: 'Custom check passed' };
+    //   },
+    // };
+
+    const health = await runHealthCheck(options);
+
+    const statusCode = health.status === 'healthy' ? 200 :
+                      health.status === 'degraded' ? 200 :
+                      503;
+
+    return NextResponse.json(health, {
+      status: statusCode,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-store',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'X-Health-Check-Timestamp': health.timestamp,
       },
-    }
-  );
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        error: 'Health check execution failed',
+        details: process.env.NODE_ENV === 'development'
+          ? { error: error instanceof Error ? error.message : String(error) }
+          : undefined,
+      },
+      {
+        status: 503,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+  }
 }
-
-export const GET = withTelemetry(handler);

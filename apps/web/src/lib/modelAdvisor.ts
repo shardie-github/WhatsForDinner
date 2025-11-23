@@ -341,7 +341,7 @@ export class ModelAdvisor {
   /**
    * Select model based on use case
    */
-  private selectModelForUseCase(models: any[], useCase: string): any {
+  private selectModelForUseCase(models: unknown[], useCase: string): unknown {
     switch (useCase) {
       case 'cost_optimized':
         return models.reduce((min, model) =>

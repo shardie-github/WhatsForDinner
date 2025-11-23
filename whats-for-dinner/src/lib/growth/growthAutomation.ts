@@ -5,7 +5,9 @@
 
 import { createClient } from '../supabaseClient';
 import { featureFlags } from '../featureFlags';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('growthautomation-ts');
 export interface GrowthExperiment {
   id: string;
   name: string;
@@ -24,7 +26,7 @@ export interface ExperimentVariant {
   id: string;
   name: string;
   weight: number; // 0-100
-  config: Record<string, any>;
+  config: Record<string, unknown>;
   isControl: boolean;
 }
 
@@ -43,7 +45,7 @@ export interface TargetAudience {
     start: string;
     end: string;
   };
-  customRules?: Record<string, any>;
+  customRules?: Record<string, unknown>;
 }
 
 export interface SuccessCriteria {
@@ -87,7 +89,7 @@ export interface JourneyStep {
   name: string;
   type: 'page_view' | 'action' | 'purchase' | 'signup' | 'feature_use';
   timestamp: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ReferralProgram {
@@ -296,7 +298,7 @@ class GrowthAutomationSystem {
       return variant.id;
 
     } catch (error) {
-      console.error('Error getting experiment variant:', error);
+      logger.error('Error getting experiment variant:', { error });
       return 'control';
     }
   }
@@ -327,7 +329,7 @@ class GrowthAutomationSystem {
     userId: string,
     eventName: string,
     value?: number,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<void> {
     try {
       await this.supabase
@@ -341,7 +343,7 @@ class GrowthAutomationSystem {
           created_at: new Date().toISOString()
         });
     } catch (error) {
-      console.error('Error tracking experiment event:', error);
+      logger.error('Error tracking experiment event:', { error });
     }
   }
 
@@ -381,7 +383,7 @@ class GrowthAutomationSystem {
       return results;
 
     } catch (error) {
-      console.error('Error getting experiment results:', error);
+      logger.error('Error getting experiment results:', { error });
       return null;
     }
   }
@@ -391,8 +393,8 @@ class GrowthAutomationSystem {
    */
   private calculateExperimentResults(
     experiment: GrowthExperiment,
-    events: any[],
-    assignments: any[]
+    events: unknown[],
+    assignments: unknown[]
   ): ExperimentResults {
     const variantResults = new Map<string, any>();
 
@@ -466,7 +468,7 @@ class GrowthAutomationSystem {
   /**
    * Calculate statistical significance
    */
-  private calculateStatisticalSignificance(experiment: GrowthExperiment, results: any[]): number {
+  private calculateStatisticalSignificance(experiment: GrowthExperiment, results: unknown[]): number {
     // Simplified calculation - in real implementation, use proper statistical tests
     const controlResult = results.find(r => r.variantId === 'control');
     const testResults = results.filter(r => r.variantId !== 'control');
@@ -493,7 +495,7 @@ class GrowthAutomationSystem {
     userId: string,
     stepName: string,
     stepType: JourneyStep['type'],
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<void> {
     try {
       const step: JourneyStep = {
@@ -532,7 +534,7 @@ class GrowthAutomationSystem {
       await this.checkJourneyCompletion(userId, journey);
 
     } catch (error) {
-      console.error('Error tracking journey step:', error);
+      logger.error('Error tracking journey step:', { error });
     }
   }
 
@@ -580,7 +582,7 @@ class GrowthAutomationSystem {
 
       return programId;
     } catch (error) {
-      console.error('Error creating referral program:', error);
+      logger.error('Error creating referral program:', { error });
       throw error;
     }
   }
@@ -592,7 +594,7 @@ class GrowthAutomationSystem {
     referrerId: string,
     refereeId: string,
     programId: string
-  ): Promise<{ success: boolean; reward?: any }> {
+  ): Promise<{ success: boolean; reward?: unknown }> {
     try {
       const { data: program } = await this.supabase
         .from('referral_programs')
@@ -634,7 +636,7 @@ class GrowthAutomationSystem {
       return { success: true, reward };
 
     } catch (error) {
-      console.error('Error processing referral:', error);
+      logger.error('Error processing referral:', { error });
       return { success: false };
     }
   }
@@ -642,7 +644,7 @@ class GrowthAutomationSystem {
   /**
    * Grant referral reward
    */
-  private async grantReferralReward(userId: string, program: any): Promise<any> {
+  private async grantReferralReward(userId: string, program: any): Promise<unknown> {
     const reward = {
       type: program.reward_type,
       value: program.reward_value,
@@ -738,7 +740,7 @@ class GrowthAutomationSystem {
       };
 
     } catch (error) {
-      console.error('Error getting growth analytics:', error);
+      logger.error('Error getting growth analytics:', { error });
       return {
         totalUsers: 0,
         newUsers: 0,

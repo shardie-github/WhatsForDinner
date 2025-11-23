@@ -4,7 +4,9 @@
 
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('quiet-mode-ts');
 const QUIET_MODE_CONFIG = join(process.cwd(), 'ops', 'quiet-mode.json');
 
 interface QuietModeConfig {
@@ -74,13 +76,13 @@ if (require.main === module) {
     case 'status':
       const config = getQuietModeConfig();
       if (config.enabled) {
-        console.log('Quiet mode is enabled');
+        logger.info('Quiet mode is enabled');
       } else {
-        console.log('Quiet mode is disabled');
+        logger.info('Quiet mode is disabled');
       }
       break;
     default:
-      console.error('Usage: quiet-mode.ts [enable|disable|status]');
+      logger.error('Usage: quiet-mode.ts [enable|disable|status]');
       process.exit(1);
   }
 }

@@ -8,7 +8,9 @@
 
 import { readdirSync, readFileSync, writeFileSync, statSync } from 'fs';
 import { join, relative } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('generate-openapi-docs-ts');
 interface RouteInfo {
   path: string;
   methods: string[];
@@ -24,10 +26,10 @@ interface OpenAPISpec {
     description: string;
   };
   servers: Array<{ url: string; description: string }>;
-  paths: Record<string, Record<string, any>>;
+  paths: Record<string, Record<string, unknown>>;
   components: {
-    schemas: Record<string, any>;
-    securitySchemes: Record<string, any>;
+    schemas: Record<string, unknown>;
+    securitySchemes: Record<string, unknown>;
   };
 }
 
@@ -113,7 +115,7 @@ function extractDescription(filePath: string): string | undefined {
  * Generate OpenAPI spec from routes
  */
 function generateOpenAPISpec(routes: RouteInfo[]): OpenAPISpec {
-  const paths: Record<string, Record<string, any>> = {};
+  const paths: Record<string, Record<string, unknown>> = {};
 
   for (const route of routes) {
     const openAPIPath = `${API_BASE}${route.path}`;
@@ -251,16 +253,16 @@ function generateOpenAPISpec(routes: RouteInfo[]): OpenAPISpec {
  * Main execution
  */
 function main() {
-  console.log('📚 Generating OpenAPI documentation...');
-  console.log(`📂 Scanning ${API_DIR}...`);
+  logger.info('📚 Generating OpenAPI documentation...');
+  logger.info('📂 Scanning ${API_DIR}...');
 
   if (!statSync(API_DIR).isDirectory()) {
-    console.error(`❌ API directory not found: ${API_DIR}`);
+    logger.error('❌ API directory not found: ${API_DIR}');
     process.exit(1);
   }
 
   const routes = scanRoutes(API_DIR);
-  console.log(`✅ Found ${routes.length} API routes`);
+  logger.info('✅ Found ${routes.length} API routes');
 
   const spec = generateOpenAPISpec(routes);
   
@@ -271,22 +273,22 @@ function main() {
   }
 
   writeFileSync(OUTPUT_FILE, JSON.stringify(spec, null, 2));
-  console.log(`✅ OpenAPI spec written to ${OUTPUT_FILE}`);
+  logger.info('✅ OpenAPI spec written to ${OUTPUT_FILE}');
 
   // Also generate YAML version if yaml package is available
   try {
     const yaml = require('yaml');
     const yamlFile = OUTPUT_FILE.replace('.json', '.yaml');
     writeFileSync(yamlFile, yaml.stringify(spec));
-    console.log(`✅ OpenAPI YAML written to ${yamlFile}`);
+    logger.info('✅ OpenAPI YAML written to ${yamlFile}');
   } catch {
     // YAML generation is optional
   }
 
-  console.log('\n📊 Summary:');
-  console.log(`   - Total routes: ${routes.length}`);
-  console.log(`   - Total paths: ${Object.keys(spec.paths).length}`);
-  console.log(`   - Documentation: ${OUTPUT_FILE}`);
+  logger.info('\n📊 Summary:');
+  logger.info('   - Total routes: ${routes.length}');
+  logger.info('   - Total paths: ${Object.keys(spec.paths').length}`);
+  logger.info('   - Documentation: ${OUTPUT_FILE}');
 }
 
 if (require.main === module) {

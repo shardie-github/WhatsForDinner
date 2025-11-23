@@ -17,7 +17,7 @@ export interface AnalyticsEvent {
   userId?: string;
   sessionId: string;
   event: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   timestamp: Date;
   page: string;
   userAgent: string;
@@ -91,7 +91,7 @@ class RealTimeAnalytics {
    */
   public trackEvent(
     event: string,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
     userId?: string
   ): void {
     const sessionId = this.getCurrentSessionId();
@@ -125,7 +125,7 @@ class RealTimeAnalytics {
    */
   public trackPageView(
     page: string,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
     userId?: string
   ): void {
     this.trackEvent('page_view', {
@@ -143,7 +143,7 @@ class RealTimeAnalytics {
   public trackAction(
     action: string,
     element: string,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
     userId?: string
   ): void {
     this.trackEvent('user_action', {
@@ -159,7 +159,7 @@ class RealTimeAnalytics {
   public trackConversion(
     conversionType: string,
     value: number,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
     userId?: string
   ): void {
     this.trackEvent('conversion', {
@@ -177,7 +177,7 @@ class RealTimeAnalytics {
    */
   public trackError(
     error: Error,
-    context: Record<string, any> = {},
+    context: Record<string, unknown> = {},
     userId?: string
   ): void {
     this.trackEvent('error', {
@@ -194,7 +194,7 @@ class RealTimeAnalytics {
   public trackPerformance(
     metric: string,
     value: number,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
     userId?: string
   ): void {
     this.trackEvent('performance', {

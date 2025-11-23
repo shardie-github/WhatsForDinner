@@ -4,6 +4,11 @@ import { headers } from 'next/headers';
 import { z } from 'zod';
 import { withCSRFProtection } from '@/lib/csrf-middleware';
 import { NextRequest } from 'next/server';
+import { handleApiError } from '@whats-for-dinner/utils';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+import { monitorQuery } from '@/lib/performance/query-optimizer';
+
+const logger = createComponentLogger('pantry-seed-api');
 
 // Canadian pantry staples - optimized for solo users
 const SAMPLE_INGREDIENTS = [
@@ -53,13 +58,31 @@ async function handler(req: NextRequest) {
       );
     }
 
-    // Check if sample data already seeded
-    const { data: existing } = await supabase
-      .from('pantry_items')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('is_sample', true)
-      .limit(1);
+    // Optimize: Check if sample data already seeded and get tenant_id in parallel
+    const [existingResult, profileResult] = await Promise.all([
+      monitorQuery('check-existing-sample', async () => {
+        const { data, error } = await supabase
+          .from('pantry_items')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('is_sample', true)
+          .limit(1);
+        if (error) throw error;
+        return data;
+      }),
+      monitorQuery('get-user-profile', async () => {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('tenant_id')
+          .eq('id', user.id)
+          .single();
+        if (error) throw error;
+        return data;
+      }),
+    ]);
+
+    const existing = existingResult.result;
+    const profile = profileResult.result;
 
     if (existing && existing.length > 0) {
       return NextResponse.json({
@@ -67,13 +90,6 @@ async function handler(req: NextRequest) {
         count: existing.length,
       });
     }
-
-    // Get user's tenant_id
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('tenant_id')
-      .eq('id', user.id)
-      .single();
 
     if (!profile?.tenant_id) {
       return NextResponse.json(
@@ -91,37 +107,39 @@ async function handler(req: NextRequest) {
       created_at: new Date().toISOString(),
     }));
 
-    const { data, error } = await supabase
-      .from('pantry_items')
-      .insert(itemsToInsert)
-      .select();
+    const insertResult = await monitorQuery('insert-sample-ingredients', async () => {
+      const { data, error } = await supabase
+        .from('pantry_items')
+        .insert(itemsToInsert)
+        .select();
+      if (error) throw error;
+      return data;
+    });
 
-    if (error) {
-      throw error;
-    }
+    const data = insertResult.result;
 
-    // Update onboarding state
-    await supabase
-      .from('onboarding_state')
-      .upsert({
-        user_id: user.id,
-        sample_data_seeded: true,
-        pantry_prefilled: true,
-        updated_at: new Date().toISOString(),
-      });
-
-    // Track event for analytics
-    await supabase
-      .from('events')
-      .insert({
-        user_id: user.id,
-        event_name: 'pantry_prefilled',
-        occurred_at: new Date().toISOString(),
-        props: {
-          ingredient_count: data.length,
-          source: 'onboarding',
-        },
-      });
+    // Optimize: Update onboarding state and track event in parallel
+    await Promise.all([
+      supabase
+        .from('onboarding_state')
+        .upsert({
+          user_id: user.id,
+          sample_data_seeded: true,
+          pantry_prefilled: true,
+          updated_at: new Date().toISOString(),
+        }),
+      supabase
+        .from('events')
+        .insert({
+          user_id: user.id,
+          event_name: 'pantry_prefilled',
+          occurred_at: new Date().toISOString(),
+          props: {
+            ingredient_count: data.length,
+            source: 'onboarding',
+          },
+        }),
+    ]);
 
     return NextResponse.json({
       success: true,
@@ -131,11 +149,13 @@ async function handler(req: NextRequest) {
       next_step: 'generate_meal_plan',
     });
   } catch (error) {
-    // Error handled: Error seeding sample data:
-    return NextResponse.json(
-      { error: 'Failed to seed sample data' },
-      { status: 500 }
-    );
+    logger.error('Error seeding sample data', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return handleApiError(error, {
+      component: 'pantry-seed-api',
+      context: { endpoint: '/api/pantry/seed-sample' },
+    });
   }
 }
 

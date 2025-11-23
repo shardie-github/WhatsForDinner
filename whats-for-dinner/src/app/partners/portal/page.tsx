@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
+import { createComponentLogger } from '@whats-for-dinner/utils';
   TrendingUp,
   DollarSign,
   Users,
@@ -23,6 +24,7 @@ import {
   Download,
 } from 'lucide-react';
 
+const logger = createComponentLogger('page-tsx');
 interface PartnerStats {
   totalRevenue: number;
   totalRequests: number;
@@ -77,7 +79,7 @@ export default function PartnerPortalPage() {
       const partnersData = await partnersResponse.json();
       setTopPartners(partnersData.partners || []);
     } catch (error) {
-      console.error('Error loading partner data:', error);
+      logger.error('Error loading partner data:', { error });
     } finally {
       setLoading(false);
     }

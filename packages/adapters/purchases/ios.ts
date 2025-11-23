@@ -7,7 +7,9 @@ import type { PurchaseAdapter, Entitlement, PurchaseResult } from './index';
 import type { SubscriptionPlan } from '@whats-for-dinner/config/subscriptions';
 import { getSKU, isPremiumPlan } from '@whats-for-dinner/config/subscriptions';
 import { Platform } from 'react-native';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('ios-ts');
 export class IOSPurchaseAdapter implements PurchaseAdapter {
   private initialized = false;
   private currentEntitlements: Entitlement[] = [];
@@ -135,7 +137,7 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
       
       // Fallback: StoreKit 2 via native module
       // This would require a custom native module
-      if (process.env.NODE_ENV === 'development') { console.warn('IAP module not available, using fallback'); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('IAP module not available', { using fallback' }); }
     } catch (error) {
       // Error handled: StoreKit initialization error:
       throw error;
@@ -222,7 +224,7 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
   /**
    * Get IAP module (expo-in-app-purchases or react-native-iap)
    */
-  private async getIAPModule(): Promise<any> {
+  private async getIAPModule(): Promise<unknown> {
     try {
       // Try expo-in-app-purchases first
       const expoIAP = await import('expo-in-app-purchases');

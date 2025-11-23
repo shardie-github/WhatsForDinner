@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-type Reco = { title:string; body?:string; kind:string; score:number; cta?:{label:string;href?:string;action?:string}; rationale?:any };
+type Reco = { title:string; body?:string; kind:string; score:number; cta?:{label:string;href?:string;action?:string}; rationale?: unknown };
 export default function RecoDrawer({ userId }:{ userId:string }){
   const [open,setOpen]=useState(false); const [recs,setRecs]=useState<Reco[]>([]);
   useEffect(()=>{

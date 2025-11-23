@@ -5,7 +5,9 @@ import { supabase } from '@/lib/supabaseClient';
 import PantryManager from '@/components/PantryManager';
 import Navbar from '@/components/Navbar';
 import { analytics } from '@/lib/analytics';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('page-tsx');
 export default function PantryPage() {
   const [user, setUser] = useState<any>(null);
   const [pantryItems, setPantryItems] = useState<
@@ -60,7 +62,7 @@ export default function PantryPage() {
         user_id: user.id,
       });
     } catch (error) {
-      console.error('Error adding item:', error);
+      logger.error('Error adding item:', { error });
       throw error; // Re-throw for error handling
     }
   };
@@ -78,7 +80,7 @@ export default function PantryPage() {
         pantryItems.map(item => (item.id === id ? { ...item, quantity } : item))
       );
     } catch (error) {
-      console.error('Error updating item:', error);
+      logger.error('Error updating item:', { error });
       throw error; // Re-throw for error handling
     }
   };
@@ -94,7 +96,7 @@ export default function PantryPage() {
 
       setPantryItems(pantryItems.filter(item => item.id !== id));
     } catch (error) {
-      console.error('Error deleting item:', error);
+      logger.error('Error deleting item:', { error });
       throw error; // Re-throw for error handling
     }
   };

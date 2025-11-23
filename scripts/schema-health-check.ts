@@ -10,7 +10,9 @@
 import { readFileSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import { PrismaClient } from '@prisma/client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('schema-health-check-ts');
 interface SchemaDiff {
   missingTables: string[];
   missingColumns: Record<string, string[]>;
@@ -31,9 +33,9 @@ interface MigrationFile {
 /**
  * Parse Prisma schema to extract table definitions
  */
-function parsePrismaSchema(schemaPath: string): Record<string, any> {
+function parsePrismaSchema(schemaPath: string): Record<string, unknown> {
   const content = readFileSync(schemaPath, 'utf-8');
-  const tables: Record<string, any> = {};
+  const tables: Record<string, unknown> = {};
 
   // Extract model definitions
   const modelRegex = /model\s+(\w+)\s*\{([^}]+)\}/g;
@@ -164,7 +166,7 @@ function extractColumnsFromSQL(sql: string): Record<string, string[]> {
  * Compare Prisma schema with migrations
  */
 function compareSchemas(
-  prismaSchema: Record<string, any>,
+  prismaSchema: Record<string, unknown>,
   migrations: MigrationFile[]
 ): SchemaDiff {
   const diff: SchemaDiff = {
@@ -264,54 +266,54 @@ function generateMigrationSQL(diff: SchemaDiff): string {
  * Main execution
  */
 async function main() {
-  console.log('🔍 Running database schema health check...\n');
+  logger.info('🔍 Running database schema health check...\n');
 
   const schemaPath = join(process.cwd(), 'prisma/schema.prisma');
   const migrationsDir = join(process.cwd(), 'supabase/migrations');
 
   if (!statSync(schemaPath).isFile()) {
-    console.error(`❌ Prisma schema not found: ${schemaPath}`);
+    logger.error('❌ Prisma schema not found: ${schemaPath}');
     process.exit(1);
   }
 
   if (!statSync(migrationsDir).isDirectory()) {
-    console.error(`❌ Migrations directory not found: ${migrationsDir}`);
+    logger.error('❌ Migrations directory not found: ${migrationsDir}');
     process.exit(1);
   }
 
-  console.log('📖 Parsing Prisma schema...');
+  logger.info('📖 Parsing Prisma schema...');
   const prismaSchema = parsePrismaSchema(schemaPath);
-  console.log(`   Found ${Object.keys(prismaSchema).length} models`);
+  logger.info('   Found ${Object.keys(prismaSchema').length} models`);
 
-  console.log('📖 Parsing SQL migrations...');
+  logger.info('📖 Parsing SQL migrations...');
   const migrations = parseMigrations(migrationsDir);
-  console.log(`   Found ${migrations.length} migration files`);
+  logger.info('   Found ${migrations.length} migration files');
 
-  console.log('🔍 Comparing schemas...');
+  logger.info('🔍 Comparing schemas...');
   const diff = compareSchemas(prismaSchema, migrations);
 
-  console.log('\n📊 Schema Health Report:');
-  console.log(`   ✅ Tables in sync: ${Object.keys(prismaSchema).length - diff.missingTables.length}`);
-  console.log(`   ⚠️  Missing tables: ${diff.missingTables.length}`);
-  console.log(`   ⚠️  Tables with missing columns: ${Object.keys(diff.missingColumns).length}`);
-  console.log(`   ⚠️  Extra tables in migrations: ${diff.extraTables.length}`);
+  logger.info('\n📊 Schema Health Report:');
+  logger.info('   ✅ Tables in sync: ${Object.keys(prismaSchema').length - diff.missingTables.length}`);
+  logger.info('   ⚠️  Missing tables: ${diff.missingTables.length}');
+  logger.info('   ⚠️  Tables with missing columns: ${Object.keys(diff.missingColumns').length}`);
+  logger.info('   ⚠️  Extra tables in migrations: ${diff.extraTables.length}');
 
   if (diff.missingTables.length > 0) {
-    console.log('\n❌ Missing Tables:');
-    diff.missingTables.forEach(t => console.log(`   - ${t}`));
+    logger.info('\n❌ Missing Tables:');
+    diff.missingTables.forEach(t => logger.info('   - ${t}'));
   }
 
   if (Object.keys(diff.missingColumns).length > 0) {
-    console.log('\n❌ Missing Columns:');
+    logger.info('\n❌ Missing Columns:');
     for (const [table, columns] of Object.entries(diff.missingColumns)) {
-      console.log(`   - ${table}:`);
-      columns.forEach(col => console.log(`     • ${col}`));
+      logger.info('   - ${table}:');
+      columns.forEach(col => logger.info('     • ${col}'));
     }
   }
 
   if (diff.extraTables.length > 0) {
-    console.log('\n⚠️  Extra Tables (in migrations but not in Prisma):');
-    diff.extraTables.forEach(t => console.log(`   - ${t}`));
+    logger.info('\n⚠️  Extra Tables (in migrations but not in Prisma'):');
+    diff.extraTables.forEach(t => logger.info('   - ${t}'));
   }
 
   // Generate migration SQL
@@ -319,12 +321,12 @@ async function main() {
     const migrationSQL = generateMigrationSQL(diff);
     const outputPath = join(process.cwd(), 'supabase/migrations/999_schema_health_fix.sql');
     require('fs').writeFileSync(outputPath, migrationSQL);
-    console.log(`\n💾 Generated migration file: ${outputPath}`);
-    console.log('   ⚠️  Review and test before applying!');
+    logger.info('\n💾 Generated migration file: ${outputPath}');
+    logger.info('   ⚠️  Review and test before applying!');
   }
 
   if (diff.missingTables.length === 0 && Object.keys(diff.missingColumns).length === 0) {
-    console.log('\n✅ Schema is healthy! No issues found.');
+    logger.info('\n✅ Schema is healthy! No issues found.');
   }
 }
 

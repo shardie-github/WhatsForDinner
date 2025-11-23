@@ -8,7 +8,9 @@ import { Octokit } from '@octokit/rest';
 import fs from 'fs';
 import path from 'path';
 import { glob } from 'glob';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('api-contract-watcher-ts');
 interface APIContract {
   path: string;
   method: string;
@@ -37,7 +39,7 @@ interface APIResponse {
   description: string;
   schema?: {
     type: string;
-    properties?: Record<string, any>;
+    properties?: Record<string, unknown>;
   };
 }
 
@@ -118,7 +120,7 @@ class APIContractWatcher {
 
       return report;
     } catch (error) {
-      console.error('API contract validation failed:', error);
+      logger.error('API contract validation failed:', { error });
       throw error;
     }
   }
@@ -147,7 +149,7 @@ class APIContractWatcher {
           const fileContracts = this.extractContractsFromSpec(spec);
           contracts.push(...fileContracts);
         } catch (error) {
-          console.warn(`Failed to load spec file ${specFile}:`, error.message);
+          logger.warn('Failed to load spec file ${specFile}:', { error.message });
         }
       }
 
@@ -158,7 +160,7 @@ class APIContractWatcher {
       }
 
     } catch (error) {
-      console.error('Failed to load OpenAPI spec:', error);
+      logger.error('Failed to load OpenAPI spec:', { error });
     }
 
     return contracts;
@@ -199,7 +201,7 @@ class APIContractWatcher {
   /**
    * Extract parameters from OpenAPI operation
    */
-  private extractParameters(parameters: any[]): APIParameter[] {
+  private extractParameters(parameters: unknown[]): APIParameter[] {
     return parameters.map(param => ({
       name: param.name,
       in: param.in,
@@ -242,11 +244,11 @@ class APIContractWatcher {
           const fileContracts = this.parseAPIFile(apiFile, content);
           contracts.push(...fileContracts);
         } catch (error) {
-          console.warn(`Failed to parse API file ${apiFile}:`, error.message);
+          logger.warn('Failed to parse API file ${apiFile}:', { error.message });
         }
       }
     } catch (error) {
-      console.error('Failed to generate contracts from code:', error);
+      logger.error('Failed to generate contracts from code:', { error });
     }
 
     return contracts;
@@ -676,7 +678,7 @@ class APIContractWatcher {
       });
 
           } catch (error) {
-      console.error('Failed to create contract issue:', error);
+      logger.error('Failed to create contract issue:', { error });
     }
   }
 
@@ -734,7 +736,7 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
       if (report.modified_endpoints > 0) {
               }
     } catch (error) {
-      console.error('Nightly contract check failed:', error);
+      logger.error('Nightly contract check failed:', { error });
     }
   }
 }

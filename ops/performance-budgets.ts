@@ -7,7 +7,9 @@
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('performance-budgets-ts');
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
 interface PerformanceBudget {
@@ -80,7 +82,7 @@ async function checkBudgets(): Promise<BudgetReport> {
       }
     }
   } catch (error) {
-    console.warn('Could not read Lighthouse report:', error);
+    logger.warn('Could not read Lighthouse report:', { error });
   }
 
   // Check bundle size
@@ -99,7 +101,7 @@ async function checkBudgets(): Promise<BudgetReport> {
       });
     }
   } catch (error) {
-    console.warn('Could not read bundle report:', error);
+    logger.warn('Could not read bundle report:', { error });
   }
 
   // Save report
@@ -120,7 +122,7 @@ async function runLighthouseCI(): Promise<void> {
   try {
     execSync('lhci autorun', { stdio: 'inherit' });
       } catch (error) {
-    console.error('❌ Lighthouse CI failed');
+    logger.error('❌ Lighthouse CI failed');
     throw error;
   }
 }
@@ -130,7 +132,7 @@ async function runBundleAnalyzer(): Promise<void> {
   try {
     execSync('pnpm analyze:bundle', { stdio: 'inherit' });
       } catch (error) {
-    console.error('❌ Bundle analysis failed');
+    logger.error('❌ Bundle analysis failed');
     throw error;
   }
 }
@@ -143,14 +145,14 @@ if (require.main === module) {
       const failed = report.budgets.filter(b => !b.passed);
             report.budgets.forEach(budget => {
         const icon = budget.passed ? '✅' : '❌';
-        console.log(`${icon} ${budget.name}: ${budget.actual}${budget.unit} (budget: ${budget.budget}${budget.unit})`);
+        logger.info('${icon} ${budget.name}: ${budget.actual}${budget.unit} (budget: ${budget.budget}${budget.unit}')`);
       });
       
       if (failed.length > 0) {
-        console.error(`\n❌ ${failed.length} budget(s) failed`);
+        logger.error('\n❌ ${failed.length} budget(s') failed`);
         process.exit(1);
       } else {
-        console.log('\n✅ All budgets passed');
+        logger.info('\n✅ All budgets passed');
       }
     });
   } else if (command === 'lighthouse') {

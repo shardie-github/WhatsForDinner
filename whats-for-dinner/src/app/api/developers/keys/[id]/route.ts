@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { supabase } from '@/lib/supabaseClient';
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 const UpdateAPIKeySchema = z.object({
   isActive: z.boolean().optional(),
   permissions: z.array(z.string()).optional(),
@@ -51,7 +53,7 @@ export async function PATCH(
       key: key,
     });
   } catch (error) {
-    console.error('Error updating API key:', error);
+    logger.error('Error updating API key:', { error });
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -100,7 +102,7 @@ export async function DELETE(
       message: 'API key deleted successfully',
     });
   } catch (error) {
-    console.error('Error deleting API key:', error);
+    logger.error('Error deleting API key:', { error });
     return NextResponse.json(
       { error: 'Failed to delete API key' },
       { status: 500 }

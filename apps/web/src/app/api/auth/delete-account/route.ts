@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     const { error: deleteError } = await supabase.auth.admin.deleteUser(userId);
     
     if (deleteError) {
-      console.error('Error deleting user:', deleteError);
+      logger.error('Error deleting user:', { deleteError });
       return NextResponse.json(
         { error: 'Failed to delete account', details: deleteError.message },
         { status: 500 }

@@ -9,7 +9,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 const EVIDENCE_DIR = join(process.cwd(), 'reports', 'connectivity', 'evidence', 'webhooks');
 
 mkdirSync(EVIDENCE_DIR, { recursive: true });
@@ -58,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Store evidence
-    console.log(`Evidence stored at ${evidenceFile}`);
+    logger.info('Evidence stored at ${evidenceFile}');
     
     return NextResponse.json({
       received: true,

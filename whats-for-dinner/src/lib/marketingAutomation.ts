@@ -1,7 +1,9 @@
 import { Resend } from 'resend';
 import { supabase } from './supabaseClient';
 import { GrowthAnalytics } from './growthAnalytics';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('marketingautomation-ts');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export interface EmailTemplate {
@@ -12,7 +14,7 @@ export interface EmailTemplate {
   text: string;
   trigger: 'signup' | 'first_recipe' | 'milestone' | 'churn_risk' | 'winback';
   delay_hours?: number;
-  conditions?: Record<string, any>;
+  conditions?: Record<string, unknown>;
 }
 
 export interface EmailCampaign {
@@ -23,7 +25,7 @@ export interface EmailCampaign {
   target_audience: {
     user_segments: string[];
     tenant_ids: string[];
-    conditions: Record<string, any>;
+    conditions: Record<string, unknown>;
   };
   schedule: {
     start_date: string;
@@ -51,7 +53,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('welcome');
       if (!template) {
-        console.error('Welcome email template not found');
+        logger.error('Welcome email template not found');
         return;
       }
 
@@ -72,14 +74,14 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending welcome email:', error);
+        logger.error('Error sending welcome email:', { error });
         throw error;
       }
 
       // Track email sent event
       await this.trackEmailEvent('welcome', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send welcome email:', error);
+      logger.error('Failed to send welcome email:', { error });
       throw error;
     }
   }
@@ -95,7 +97,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('first_recipe');
       if (!template) {
-        console.error('First recipe email template not found');
+        logger.error('First recipe email template not found');
         return;
       }
 
@@ -118,13 +120,13 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending first recipe email:', error);
+        logger.error('Error sending first recipe email:', { error });
         throw error;
       }
 
       await this.trackEmailEvent('first_recipe', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send first recipe email:', error);
+      logger.error('Failed to send first recipe email:', { error });
       throw error;
     }
   }
@@ -141,7 +143,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('milestone');
       if (!template) {
-        console.error('Milestone email template not found');
+        logger.error('Milestone email template not found');
         return;
       }
 
@@ -166,13 +168,13 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending milestone email:', error);
+        logger.error('Error sending milestone email:', { error });
         throw error;
       }
 
       await this.trackEmailEvent('milestone', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send milestone email:', error);
+      logger.error('Failed to send milestone email:', { error });
       throw error;
     }
   }
@@ -188,7 +190,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('churn_risk');
       if (!template) {
-        console.error('Churn risk email template not found');
+        logger.error('Churn risk email template not found');
         return;
       }
 
@@ -211,13 +213,13 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending churn risk email:', error);
+        logger.error('Error sending churn risk email:', { error });
         throw error;
       }
 
       await this.trackEmailEvent('churn_risk', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send churn risk email:', error);
+      logger.error('Failed to send churn risk email:', { error });
       throw error;
     }
   }
@@ -234,7 +236,7 @@ export class MarketingAutomation {
     try {
       const template = await this.getEmailTemplate('winback');
       if (!template) {
-        console.error('Winback email template not found');
+        logger.error('Winback email template not found');
         return;
       }
 
@@ -264,13 +266,13 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error sending winback email:', error);
+        logger.error('Error sending winback email:', { error });
         throw error;
       }
 
       await this.trackEmailEvent('winback', userEmail, 'sent');
     } catch (error) {
-      console.error('Failed to send winback email:', error);
+      logger.error('Failed to send winback email:', { error });
       throw error;
     }
   }
@@ -289,13 +291,13 @@ export class MarketingAutomation {
         .single();
 
       if (error) {
-        console.error('Error fetching email template:', error);
+        logger.error('Error fetching email template:', { error });
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Failed to get email template:', error);
+      logger.error('Failed to get email template:', { error });
       return null;
     }
   }
@@ -314,13 +316,13 @@ export class MarketingAutomation {
         .single();
 
       if (error) {
-        console.error('Error creating email template:', error);
+        logger.error('Error creating email template:', { error });
         throw error;
       }
 
       return data.id;
     } catch (error) {
-      console.error('Failed to create email template:', error);
+      logger.error('Failed to create email template:', { error });
       throw error;
     }
   }
@@ -342,11 +344,11 @@ export class MarketingAutomation {
       });
 
       if (error) {
-        console.error('Error tracking email event:', error);
+        logger.error('Error tracking email event:', { error });
         throw error;
       }
     } catch (error) {
-      console.error('Failed to track email event:', error);
+      logger.error('Failed to track email event:', { error });
       throw error;
     }
   }
@@ -363,7 +365,7 @@ export class MarketingAutomation {
         .eq('created_at', new Date().toISOString().split('T')[0]); // Today's signups
 
       if (newUsersError) {
-        console.error('Error fetching new users:', newUsersError);
+        logger.error('Error fetching new users:', { newUsersError });
         return;
       }
 
@@ -381,7 +383,7 @@ export class MarketingAutomation {
         .eq('created_at', new Date().toISOString().split('T')[0]);
 
       if (firstRecipeError) {
-        console.error('Error fetching first recipe users:', firstRecipeError);
+        logger.error('Error fetching first recipe users:', { firstRecipeError });
         return;
       }
 
@@ -404,7 +406,7 @@ export class MarketingAutomation {
         .eq('count', 10); // 10th recipe milestone
 
       if (milestoneError) {
-        console.error('Error fetching milestone users:', milestoneError);
+        logger.error('Error fetching milestone users:', { milestoneError });
         return;
       }
 
@@ -421,7 +423,7 @@ export class MarketingAutomation {
         }
       }
     } catch (error) {
-      console.error('Failed to process email triggers:', error);
+      logger.error('Failed to process email triggers:', { error });
       throw error;
     }
   }
@@ -451,13 +453,13 @@ export class MarketingAutomation {
         .single();
 
       if (error) {
-        console.error('Error creating email campaign:', error);
+        logger.error('Error creating email campaign:', { error });
         throw error;
       }
 
       return data.id;
     } catch (error) {
-      console.error('Failed to create email campaign:', error);
+      logger.error('Failed to create email campaign:', { error });
       throw error;
     }
   }
@@ -474,12 +476,12 @@ export class MarketingAutomation {
         .single();
 
       if (campaignError) {
-        console.error('Error fetching campaign:', campaignError);
+        logger.error('Error fetching campaign:', { campaignError });
         return;
       }
 
       if (campaign.status !== 'scheduled') {
-        console.error('Campaign is not in scheduled status');
+        logger.error('Campaign is not in scheduled status');
         return;
       }
 
@@ -490,14 +492,14 @@ export class MarketingAutomation {
         .in('tenant_id', campaign.target_audience.tenant_ids);
 
       if (usersError) {
-        console.error('Error fetching target users:', usersError);
+        logger.error('Error fetching target users:', { usersError });
         return;
       }
 
       // Get email template
       const template = await this.getEmailTemplate(campaign.template_id);
       if (!template) {
-        console.error('Email template not found');
+        logger.error('Email template not found');
         return;
       }
 
@@ -528,7 +530,7 @@ export class MarketingAutomation {
               await this.trackEmailEvent('campaign', user.email, 'sent');
             }
           } catch (error) {
-            console.error('Error sending campaign email:', error);
+            logger.error('Error sending campaign email:', { error });
           }
         }
       }
@@ -545,7 +547,7 @@ export class MarketingAutomation {
         })
         .eq('id', campaignId);
     } catch (error) {
-      console.error('Failed to execute email campaign:', error);
+      logger.error('Failed to execute email campaign:', { error });
       throw error;
     }
   }
@@ -564,13 +566,13 @@ export class MarketingAutomation {
         .single();
 
       if (error) {
-        console.error('Error fetching campaign metrics:', error);
+        logger.error('Error fetching campaign metrics:', { error });
         return null;
       }
 
       return data.metrics;
     } catch (error) {
-      console.error('Failed to get campaign metrics:', error);
+      logger.error('Failed to get campaign metrics:', { error });
       return null;
     }
   }

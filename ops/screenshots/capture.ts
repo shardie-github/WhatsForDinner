@@ -8,7 +8,9 @@ import { chromium, devices } from 'playwright';
 import * as fs from 'fs';
 import * as path from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('capture-ts');
 interface ScreenshotConfig {
   name: string;
   width: number;
@@ -80,7 +82,7 @@ async function captureScreenshot(
       fullPage: false,
     });
   } catch (error) {
-    console.error(`❌ Failed to capture ${config.name}:`, error);
+    logger.error('❌ Failed to capture ${config.name}:', { error });
   } finally {
     await context.close();
   }
@@ -134,7 +136,7 @@ async function captureScreenshots() {
     }
     
       } catch (error) {
-    console.error('Error capturing screenshots:', error);
+    logger.error('Error capturing screenshots:', { error });
     process.exit(1);
   } finally {
     await browser.close();

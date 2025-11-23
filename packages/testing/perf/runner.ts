@@ -11,6 +11,7 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { logger } from '../../server/src/observability/index.js';
 import {
+import { createComponentLogger } from '@whats-for-dinner/utils';
   generateK6Script,
   generateBaseline,
   compareBaseline,
@@ -20,6 +21,7 @@ import {
   webScenarios,
 } from './scenarios.js';
 
+const logger = createComponentLogger('runner-ts');
 interface PerfTestOptions {
   generateBaseline?: boolean;
   compare?: boolean;
@@ -129,7 +131,7 @@ class PerfTestRunner {
       // Create placeholder baseline (would be populated from actual metrics)
       const baseline = {
         timestamp: new Date().toISOString(),
-        scenarios: {} as Record<string, any>,
+        scenarios: {} as Record<string, unknown>,
       };
 
       // Populate with scenario targets as placeholders
@@ -244,10 +246,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       .compare(undefined, parseInt(process.env.PERF_THRESHOLD_PCT || '10', 10))
       .then((result) => {
         if (!result.passed) {
-          console.error('Performance regressions detected:');
+          logger.error('Performance regressions detected:');
           for (const regression of result.regressions) {
-            console.error(
-              `  ${regression.scenario} - ${regression.metric}: ${regression.deltaPercent.toFixed(2)}% regression`,
+            logger.error('  ${regression.scenario} - ${regression.metric}: ${regression.deltaPercent.toFixed(2')}% regression`,
             );
           }
         }
@@ -258,9 +259,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         process.exit(1);
       });
   } else {
-    if (process.env.NODE_ENV === 'development') { console.log('Usage:'); }
-    if (process.env.NODE_ENV === 'development') { console.log('  --generate-baseline  Generate performance baseline'); }
-    if (process.env.NODE_ENV === 'development') { console.log('  --compare            Compare with baseline'); }
+    if (process.env.NODE_ENV === 'development') { logger.info('Usage:'); }
+    if (process.env.NODE_ENV === 'development') { logger.info('  --generate-baseline  Generate performance baseline'); }
+    if (process.env.NODE_ENV === 'development') { logger.info('  --compare            Compare with baseline'); }
     process.exit(1);
   }
 }

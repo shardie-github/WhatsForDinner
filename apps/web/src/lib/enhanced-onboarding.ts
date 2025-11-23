@@ -257,7 +257,7 @@ function calculateProgress(completedSteps: string[]): number {
 async function trackOnboardingEvent(
   userId: string,
   event: string,
-  properties?: Record<string, any>
+  properties?: Record<string, unknown>
 ): Promise<void> {
   try {
     await supabase.from('analytics_events').insert({

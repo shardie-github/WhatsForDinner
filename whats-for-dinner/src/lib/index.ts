@@ -1,9 +1,11 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
 /**
  * Autonomous System Entry Point
  * Exports all autonomous system components for easy integration
  */
 
 // Core autonomous system
+const logger = createComponentLogger('index-ts');
 export { autonomousSystem } from './autonomousSystem';
 export { autonomousOrchestrator } from './autonomousOrchestrator';
 export { continuousAutonomousAgent } from './continuousAutonomousAgent';
@@ -77,7 +79,7 @@ export async function initializeAutonomousSystem(): Promise<void> {
     
     // The orchestrator will handle all initialization
                       } catch (error) {
-    console.error('❌ Failed to initialize autonomous system:', error);
+    logger.error('❌ Failed to initialize autonomous system:', { error });
     throw error;
   }
 }
@@ -119,7 +121,7 @@ export async function shutdownAutonomousSystem(): Promise<void> {
   try {
         await autonomousOrchestrator.shutdown();
       } catch (error) {
-    console.error('❌ Error during system shutdown:', error);
+    logger.error('❌ Error during system shutdown:', { error });
     throw error;
   }
 }

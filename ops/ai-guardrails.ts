@@ -3,7 +3,9 @@
  */
 
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('ai-guardrails-ts');
 interface LLMCallOptions {
   timeout?: number;
   maxRetries?: number;
@@ -117,13 +119,13 @@ class AIAgentGuardrails {
 
   offlineFallback<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
     return fn().catch(() => {
-      console.warn('LLM call failed, using offline fallback');
+      logger.warn('LLM call failed', { using offline fallback' });
       return Promise.resolve(fallback);
     });
   }
 }
 
-async function dryRunAgent(fixtures: Record<string, any>): Promise<void> {
+async function dryRunAgent(fixtures: Record<string, unknown>): Promise<void> {
     
   const guardrails = new AIAgentGuardrails();
   const schema = z.object({
@@ -157,7 +159,7 @@ if (require.main === module) {
       }
     };
     dryRunAgent(fixtures).catch(error => {
-      console.error('Dry-run failed:', error);
+      logger.error('Dry-run failed:', { error });
       process.exit(1);
     });
   } else {

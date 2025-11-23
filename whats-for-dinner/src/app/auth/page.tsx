@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('page-tsx');
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -37,7 +39,7 @@ export default function AuthPage() {
       }
       router.push('/');
     } catch (error) {
-      console.error('Auth error:', error);
+      logger.error('Auth error:', { error });
     } finally {
       setLoading(false);
     }

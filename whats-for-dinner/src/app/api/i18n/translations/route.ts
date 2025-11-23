@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabaseClient';
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 const TranslationSchema = z.object({
   key: z.string().min(1),
   value: z.string(),
@@ -40,7 +42,7 @@ export async function GET(request: NextRequest) {
     const { data: translations, error } = await query;
 
     if (error) {
-      console.error('Database error:', error);
+      logger.error('Database error:', { error });
       return NextResponse.json(
         { error: 'Failed to fetch translations' },
         { status: 500 }
@@ -50,7 +52,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ translations });
 
   } catch (error) {
-    console.error('Fetch translations error:', error);
+    logger.error('Fetch translations error:', { error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -117,7 +119,7 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Translation save error:', error);
+    logger.error('Translation save error:', { error });
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -164,7 +166,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ translation: data });
 
   } catch (error) {
-    console.error('Translation update error:', error);
+    logger.error('Translation update error:', { error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -198,7 +200,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: true });
 
   } catch (error) {
-    console.error('Translation delete error:', error);
+    logger.error('Translation delete error:', { error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

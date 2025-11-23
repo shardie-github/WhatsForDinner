@@ -10,7 +10,9 @@
 
 import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
 import { join, dirname } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('check-credentials-ts');
 interface Credential {
   name: string;
   description: string;
@@ -181,7 +183,7 @@ function isRequired(name: string): boolean {
 }
 
 async function main() {
-  console.log('🔍 Analyzing credentials...\n');
+  logger.info('🔍 Analyzing credentials...\n');
   
   // Get all env vars from example files
   const envFiles = [
@@ -200,7 +202,7 @@ async function main() {
     }
   }
   
-  console.log(`Found ${allVars.size} environment variables in .env.example files\n`);
+  logger.info('Found ${allVars.size} environment variables in .env.example files\n');
   
   // Analyze each credential
   for (const varName of Array.from(allVars).sort()) {
@@ -240,8 +242,8 @@ async function main() {
   }
   
   // Generate report
-  console.log('📋 CREDENTIALS AUDIT REPORT\n');
-  console.log('='.repeat(80));
+  logger.info('📋 CREDENTIALS AUDIT REPORT\n');
+  logger.info('='.repeat(80'));
   
   // Summary
   const required = credentials.filter(c => c.required);
@@ -250,69 +252,69 @@ async function main() {
   const vercelNeeded = credentials.filter(c => c.platforms.vercel);
   const supabaseNeeded = credentials.filter(c => c.platforms.supabase);
   
-  console.log('\n📊 SUMMARY');
-  console.log('-'.repeat(80));
-  console.log(`Total credentials: ${credentials.length}`);
-  console.log(`Required: ${required.length}`);
-  console.log(`Used in code: ${credentials.filter(c => c.foundInCode).length}`);
-  console.log(`Used in workflows: ${credentials.filter(c => c.foundInWorkflows).length}`);
-  console.log(`\nNeed GitHub Secrets: ${githubNeeded.length}`);
-  console.log(`Need Vercel Env Vars: ${vercelNeeded.length}`);
-  console.log(`Need Supabase Secrets: ${supabaseNeeded.length}`);
+  logger.info('\n📊 SUMMARY');
+  logger.info('-'.repeat(80'));
+  logger.info('Total credentials: ${credentials.length}');
+  logger.info('Required: ${required.length}');
+  logger.info('Used in code: ${credentials.filter(c => c.foundInCode').length}`);
+  logger.info('Used in workflows: ${credentials.filter(c => c.foundInWorkflows').length}`);
+  logger.info('\nNeed GitHub Secrets: ${githubNeeded.length}');
+  logger.info('Need Vercel Env Vars: ${vercelNeeded.length}');
+  logger.info('Need Supabase Secrets: ${supabaseNeeded.length}');
   
   // Missing Required
   if (missingRequired.length > 0) {
-    console.log('\n⚠️  MISSING REQUIRED CREDENTIALS');
-    console.log('-'.repeat(80));
+    logger.info('\n⚠️  MISSING REQUIRED CREDENTIALS');
+    logger.info('-'.repeat(80'));
     missingRequired.forEach(c => {
-      console.log(`\n❌ ${c.name}`);
-      console.log(`   Category: ${c.category}`);
-      console.log(`   Description: ${c.description}`);
-      console.log(`   Platforms needed:`);
-      if (c.platforms.github) console.log(`     - GitHub Secrets`);
-      if (c.platforms.vercel) console.log(`     - Vercel Environment Variables`);
-      if (c.platforms.supabase) console.log(`     - Supabase Secrets`);
+      logger.info('\n❌ ${c.name}');
+      logger.info('   Category: ${c.category}');
+      logger.info('   Description: ${c.description}');
+      logger.info('   Platforms needed:');
+      if (c.platforms.github) logger.info('     - GitHub Secrets');
+      if (c.platforms.vercel) logger.info('     - Vercel Environment Variables');
+      if (c.platforms.supabase) logger.info('     - Supabase Secrets');
     });
   }
   
   // GitHub Secrets needed
-  console.log('\n\n🔐 GITHUB SECRETS NEEDED');
-  console.log('-'.repeat(80));
+  logger.info('\n\n🔐 GITHUB SECRETS NEEDED');
+  logger.info('-'.repeat(80'));
   githubNeeded.forEach(c => {
     const status = c.foundInWorkflows ? '✅' : '⚠️ ';
-    console.log(`${status} ${c.name}`);
-    if (c.description) console.log(`   ${c.description}`);
+    logger.info('${status} ${c.name}');
+    if (c.description) logger.info('   ${c.description}');
   });
   
   // Vercel Env Vars needed
-  console.log('\n\n🌐 VERCEL ENVIRONMENT VARIABLES NEEDED');
-  console.log('-'.repeat(80));
+  logger.info('\n\n🌐 VERCEL ENVIRONMENT VARIABLES NEEDED');
+  logger.info('-'.repeat(80'));
   vercelNeeded.forEach(c => {
     const status = c.foundInCode ? '✅' : '⚠️ ';
-    console.log(`${status} ${c.name}`);
-    if (c.description) console.log(`   ${c.description}`);
+    logger.info('${status} ${c.name}');
+    if (c.description) logger.info('   ${c.description}');
   });
   
   // Supabase Secrets needed
   if (supabaseNeeded.length > 0) {
-    console.log('\n\n🗄️  SUPABASE SECRETS NEEDED');
-    console.log('-'.repeat(80));
+    logger.info('\n\n🗄️  SUPABASE SECRETS NEEDED');
+    logger.info('-'.repeat(80'));
     supabaseNeeded.forEach(c => {
-      console.log(`✅ ${c.name}`);
-      if (c.description) console.log(`   ${c.description}`);
+      logger.info('✅ ${c.name}');
+      if (c.description) logger.info('   ${c.description}');
     });
   }
   
   // Grouped by category
-  console.log('\n\n📁 CREDENTIALS BY CATEGORY');
-  console.log('='.repeat(80));
+  logger.info('\n\n📁 CREDENTIALS BY CATEGORY');
+  logger.info('='.repeat(80'));
   
   const categories = Array.from(new Set(credentials.map(c => c.category))).sort();
   
   for (const category of categories) {
     const categoryCreds = credentials.filter(c => c.category === category);
-    console.log(`\n### ${category} (${categoryCreds.length})`);
-    console.log('-'.repeat(80));
+    logger.info('\n### ${category} (${categoryCreds.length}')`);
+    logger.info('-'.repeat(80'));
     
     for (const cred of categoryCreds) {
       const platforms = [];
@@ -323,9 +325,9 @@ async function main() {
       const req = cred.required ? ' [REQUIRED]' : '';
       const status = cred.foundInCode || cred.foundInWorkflows ? '✅' : '❌';
       
-      console.log(`${status} ${cred.name}${req}`);
-      console.log(`   Platforms: ${platforms.join(', ') || 'None'}`);
-      if (cred.description) console.log(`   ${cred.description}`);
+      logger.info('${status} ${cred.name}${req}');
+      logger.info('   Platforms: ${platforms.join(', { ' }) || 'None'}`);
+      if (cred.description) logger.info('   ${cred.description}');
     }
   }
   
@@ -389,15 +391,15 @@ ${creds.map(c => {
 `;
   
   require('fs').writeFileSync('CREDENTIALS_AUDIT.md', markdown);
-  console.log('\n\n✅ Report saved to CREDENTIALS_AUDIT.md');
+  logger.info('\n\n✅ Report saved to CREDENTIALS_AUDIT.md');
   
   if (missingRequired.length > 0) {
-    console.log(`\n⚠️  Warning: ${missingRequired.length} required credentials are missing!`);
+    logger.info('\n⚠️  Warning: ${missingRequired.length} required credentials are missing!');
     process.exit(1);
   }
 }
 
 main().catch((error) => {
-  console.error('Fatal error:', error);
+  logger.error('Fatal error:', { error });
   process.exit(1);
 });

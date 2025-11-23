@@ -5,7 +5,9 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('index-ts');
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -81,7 +83,7 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Search error:', error);
+    logger.error('Search error:', { error });
     
     return new Response(
       JSON.stringify({ 
@@ -137,7 +139,7 @@ async function performHybridSearch(
     const { data: semanticResults, error: semanticError } = await searchQuery;
 
     if (semanticError) {
-      console.error('Semantic search error:', semanticError);
+      logger.error('Semantic search error:', { semanticError });
       throw semanticError;
     }
 
@@ -165,7 +167,7 @@ async function performHybridSearch(
     return filteredResults;
 
   } catch (error) {
-    console.error('Hybrid search failed:', error);
+    logger.error('Hybrid search failed:', { error });
     throw error;
   }
 }
@@ -196,7 +198,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
     return data.data[0].embedding;
 
   } catch (error) {
-    console.error('Failed to generate embedding:', error);
+    logger.error('Failed to generate embedding:', { error });
     throw error;
   }
 }
@@ -232,7 +234,7 @@ async function performKeywordSearch(
     const { data: keywordResults, error: keywordError } = await keywordQuery;
 
     if (keywordError) {
-      console.error('Keyword search error:', keywordError);
+      logger.error('Keyword search error:', { keywordError });
       return [];
     }
 
@@ -243,7 +245,7 @@ async function performKeywordSearch(
     }));
 
   } catch (error) {
-    console.error('Keyword search failed:', error);
+    logger.error('Keyword search failed:', { error });
     return [];
   }
 }
@@ -252,7 +254,7 @@ async function performKeywordSearch(
  * Combine semantic and keyword search results
  */
 function combineSearchResults(
-  semanticResults: any[],
+  semanticResults: unknown[],
   keywordResults: SearchResult[],
   query: string,
   threshold: number

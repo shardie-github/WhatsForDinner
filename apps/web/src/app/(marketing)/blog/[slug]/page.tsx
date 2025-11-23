@@ -7,6 +7,7 @@ import { Calendar, Clock, ArrowLeft, Share2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import SocialShare from '@/components/SocialShare';
 import EmailCapture from '@/components/EmailCapture';
+import { sanitizeForReact } from '@/lib/sanitize';
 
 // In production, this would fetch from a CMS or database
 const POSTS: Record<string, {
@@ -155,7 +156,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         {/* Article Content */}
         <Card className="border-2 mb-8">
           <CardContent className="pt-6 prose prose-slate dark:prose-invert max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: post.content.split('\n').map(para => {
+            <div dangerouslySetInnerHTML={sanitizeForReact(post.content.split('\n').map(para => {
               if (para.startsWith('# ')) {
                 return `<h1>${para.slice(2)}</h1>`;
               } else if (para.startsWith('## ')) {
@@ -166,7 +167,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                 return `<p>${para}</p>`;
               }
               return '';
-            }).join('') }} />
+            }).join(''))} />
           </CardContent>
         </Card>
 

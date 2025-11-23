@@ -5,25 +5,27 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('dr-rehearsal-ts');
 export async function runDRRehearsal(options: { scenario?: string }) {
   
   const scenario = options.scenario || '1';
   const startTime = Date.now();
 
-  console.log(`Starting DR rehearsal scenario ${scenario} at ${new Date().toISOString()}\n`);
+  logger.info('Starting DR rehearsal scenario ${scenario} at ${new Date(').toISOString()}\n`);
 
   try {
     // Step 1: Create test snapshot
-    console.log('Step 1: Creating test snapshot...');
+    logger.info('Step 1: Creating test snapshot...');
     execSync('npm run ops snapshot', { stdio: 'inherit' });
 
     // Step 2: Restore test
-    console.log('Step 2: Testing restore (dry-run)...');
+    logger.info('Step 2: Testing restore (dry-run')...');
     execSync('npm run ops restore --dry-run', { stdio: 'inherit' });
 
     // Step 3: Smoke tests
-    console.log('Step 3: Running smoke tests...');
+    logger.info('Step 3: Running smoke tests...');
     execSync('npm run ops test:e2e --grep="smoke"', { stdio: 'inherit' });
 
     // Step 4: Calculate RTO/RPO
@@ -59,7 +61,7 @@ export async function runDRRehearsal(options: { scenario?: string }) {
 
     process.exit(0);
   } catch (error) {
-    console.error('\n❌ DR Rehearsal failed:', error);
+    logger.error('\n❌ DR Rehearsal failed:', { error });
     process.exit(1);
   }
 }

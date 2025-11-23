@@ -1,5 +1,7 @@
 import { supabase } from './supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('ugcgrowth-ts');
 export interface UGCShare {
   id: string;
   user_id: string;
@@ -139,7 +141,7 @@ export class UGCGrowth {
         .single();
 
       if (error) {
-        console.error('Error creating meal card:', error);
+        logger.error('Error creating meal card:', { error });
         throw error;
       }
 
@@ -149,7 +151,7 @@ export class UGCGrowth {
         created_at: data.created_at,
       } as MealCard;
     } catch (error) {
-      console.error('Failed to create meal card:', error);
+      logger.error('Failed to create meal card:', { error });
       throw error;
     }
   }
@@ -171,7 +173,7 @@ export class UGCGrowth {
         .single();
 
       if (fetchError) {
-        console.error('Error fetching share data:', fetchError);
+        logger.error('Error fetching share data:', { fetchError });
         throw fetchError;
       }
 
@@ -186,7 +188,7 @@ export class UGCGrowth {
         .eq('id', shareId);
 
       if (updateError) {
-        console.error('Error updating social platforms:', updateError);
+        logger.error('Error updating social platforms:', { updateError });
         throw updateError;
       }
 
@@ -203,7 +205,7 @@ export class UGCGrowth {
       // 3. Set up webhooks to track engagement
 
           } catch (error) {
-      console.error('Failed to share to social:', error);
+      logger.error('Failed to share to social:', { error });
       throw error;
     }
   }
@@ -270,7 +272,7 @@ export class UGCGrowth {
         .single();
 
       if (fetchError) {
-        console.error('Error fetching current metrics:', fetchError);
+        logger.error('Error fetching current metrics:', { fetchError });
         return;
       }
 
@@ -315,7 +317,7 @@ export class UGCGrowth {
         .eq('id', shareId);
 
       if (updateError) {
-        console.error('Error updating engagement metrics:', updateError);
+        logger.error('Error updating engagement metrics:', { updateError });
         throw updateError;
       }
 
@@ -332,7 +334,7 @@ export class UGCGrowth {
         },
       });
     } catch (error) {
-      console.error('Failed to track engagement:', error);
+      logger.error('Failed to track engagement:', { error });
       throw error;
     }
   }
@@ -365,7 +367,7 @@ export class UGCGrowth {
         .eq('status', 'published');
 
       if (error) {
-        console.error('Error fetching user UGC analytics:', error);
+        logger.error('Error fetching user UGC analytics:', { error });
         throw error;
       }
 
@@ -422,7 +424,7 @@ export class UGCGrowth {
         viral_coefficient: viralCoefficient,
       };
     } catch (error) {
-      console.error('Failed to get user UGC analytics:', error);
+      logger.error('Failed to get user UGC analytics:', { error });
       throw error;
     }
   }
@@ -440,13 +442,13 @@ export class UGCGrowth {
         .limit(limit);
 
       if (error) {
-        console.error('Error fetching trending UGC:', error);
+        logger.error('Error fetching trending UGC:', { error });
         throw error;
       }
 
       return data as UGCShare[];
     } catch (error) {
-      console.error('Failed to get trending UGC:', error);
+      logger.error('Failed to get trending UGC:', { error });
       throw error;
     }
   }
@@ -519,7 +521,7 @@ export class UGCGrowth {
         optimal_platforms: optimalPlatforms,
       };
     } catch (error) {
-      console.error('Failed to generate share suggestions:', error);
+      logger.error('Failed to generate share suggestions:', { error });
       throw error;
     }
   }
@@ -597,7 +599,7 @@ export class UGCGrowth {
         share_urls: shareUrls,
       };
     } catch (error) {
-      console.error('Failed to create shareable meal card data:', error);
+      logger.error('Failed to create shareable meal card data:', { error });
       throw error;
     }
   }

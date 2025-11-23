@@ -473,7 +473,7 @@ export class CognitiveContinuity {
   /**
    * Analyze system behavior
    */
-  private async analyzeSystemBehavior(): Promise<any> {
+  private async analyzeSystemBehavior(): Promise<unknown> {
     // In a real implementation, this would analyze actual system behavior
     return {
       recentActions: 150,
@@ -575,7 +575,7 @@ export class CognitiveContinuity {
   /**
    * Calculate learning performance
    */
-  private async calculateLearningPerformance(): Promise<any> {
+  private async calculateLearningPerformance(): Promise<unknown> {
     // In a real implementation, this would calculate actual performance metrics
     return {
       accuracy: 0.85,
@@ -634,7 +634,7 @@ export class CognitiveContinuity {
   /**
    * Analyze prompt performance
    */
-  private async analyzePromptPerformance(prompt: MetaPrompt): Promise<any> {
+  private async analyzePromptPerformance(prompt: MetaPrompt): Promise<unknown> {
     // In a real implementation, this would analyze actual prompt performance
     return {
       successRate: prompt.performance.successRate,
@@ -750,7 +750,7 @@ export class CognitiveContinuity {
   /**
    * Analyze performance trends
    */
-  private async analyzePerformanceTrends(): Promise<any> {
+  private async analyzePerformanceTrends(): Promise<unknown> {
     // In a real implementation, this would analyze actual performance trends
     return {
       accuracy: 'improving',
@@ -798,7 +798,7 @@ export class CognitiveContinuity {
   /**
    * Perform self-assessment
    */
-  private async performSelfAssessment(): Promise<any> {
+  private async performSelfAssessment(): Promise<unknown> {
     // In a real implementation, this would perform actual self-assessment
     return {
       strengths: [
@@ -884,7 +884,7 @@ export class CognitiveContinuity {
   /**
    * Get knowledge base statistics
    */
-  getKnowledgeBaseStats(): any {
+  getKnowledgeBaseStats(): unknown {
     const totalEntries = this.knowledgeBase.size;
     const entriesByType = Array.from(this.knowledgeBase.values()).reduce(
       (acc, entry) => {

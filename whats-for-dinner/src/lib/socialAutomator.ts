@@ -1,6 +1,8 @@
 import { supabase } from './supabaseClient';
 import { openai } from './openaiClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('socialautomator-ts');
 export interface SocialPost {
   id: string;
   platform: 'twitter' | 'tiktok' | 'threads' | 'instagram' | 'linkedin';
@@ -100,7 +102,7 @@ Format as JSON array.`;
 
       return themes;
     } catch (error) {
-      console.error('Error generating trending themes:', error);
+      logger.error('Error generating trending themes:', { error });
       throw error;
     }
   }
@@ -200,13 +202,13 @@ Generate the content:`;
         .single();
 
       if (error) {
-        console.error('Error storing social content:', error);
+        logger.error('Error storing social content:', { error });
         throw error;
       }
 
       return data as SocialPost;
     } catch (error) {
-      console.error('Error generating social content:', error);
+      logger.error('Error generating social content:', { error });
       throw error;
     }
   }
@@ -248,7 +250,7 @@ Generate the content:`;
         .eq('id', postId);
 
       if (error) {
-        console.error('Error scheduling post:', error);
+        logger.error('Error scheduling post:', { error });
         throw error;
       }
 
@@ -260,7 +262,7 @@ Generate the content:`;
       // - LinkedIn API
 
           } catch (error) {
-      console.error('Failed to schedule post:', error);
+      logger.error('Failed to schedule post:', { error });
       throw error;
     }
   }
@@ -320,7 +322,7 @@ Format as JSON.`;
       const content = response.choices[0]?.message?.content || '';
       return JSON.parse(content) as ContentStrategy;
     } catch (error) {
-      console.error('Error generating content strategy:', error);
+      logger.error('Error generating content strategy:', { error });
       throw error;
     }
   }
@@ -346,7 +348,7 @@ Format as JSON.`;
         .single();
 
       if (fetchError) {
-        console.error('Error fetching current metrics:', fetchError);
+        logger.error('Error fetching current metrics:', { fetchError });
         return;
       }
 
@@ -375,11 +377,11 @@ Format as JSON.`;
         .eq('id', postId);
 
       if (updateError) {
-        console.error('Error updating post metrics:', updateError);
+        logger.error('Error updating post metrics:', { updateError });
         throw updateError;
       }
     } catch (error) {
-      console.error('Failed to update post metrics:', error);
+      logger.error('Failed to update post metrics:', { error });
       throw error;
     }
   }
@@ -420,13 +422,13 @@ Format as JSON.`;
       const { data, error } = await query;
 
       if (error) {
-        console.error('Error fetching top performing posts:', error);
+        logger.error('Error fetching top performing posts:', { error });
         throw error;
       }
 
       return data as SocialPost[];
     } catch (error) {
-      console.error('Failed to get top performing posts:', error);
+      logger.error('Failed to get top performing posts:', { error });
       throw error;
     }
   }
@@ -475,7 +477,7 @@ Make them specific, actionable, and platform-appropriate.`;
         .filter(line => line.trim())
         .map(line => line.replace(/^\d+\.\s*/, ''));
     } catch (error) {
-      console.error('Error generating viral content ideas:', error);
+      logger.error('Error generating viral content ideas:', { error });
       throw error;
     }
   }
@@ -524,7 +526,7 @@ Format as JSON with arrays for each category.`;
       const content = response.choices[0]?.message?.content || '';
       return JSON.parse(content);
     } catch (error) {
-      console.error('Error analyzing competitor content:', error);
+      logger.error('Error analyzing competitor content:', { error });
       throw error;
     }
   }
@@ -580,7 +582,7 @@ Format as JSON array.`;
       const content = response.choices[0]?.message?.content || '';
       return JSON.parse(content);
     } catch (error) {
-      console.error('Error generating content calendar:', error);
+      logger.error('Error generating content calendar:', { error });
       throw error;
     }
   }

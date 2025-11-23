@@ -6,10 +6,12 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 // Note: This script requires a tool like sharp or jimp to convert SVG to PNG
 // For now, this is a placeholder structure
 
+const logger = createComponentLogger('generate-icons-ts');
 const ICON_SOURCE = path.join(__dirname, '../ops/branding/appicon.svg');
 const OUTPUT_DIR = path.join(__dirname, '../apps/web/public/icons');
 
@@ -46,7 +48,7 @@ async function generateIcons() {
       
   // Check if source exists
   if (!fs.existsSync(ICON_SOURCE)) {
-    console.error(`Source SVG not found: ${ICON_SOURCE}`);
+    logger.error('Source SVG not found: ${ICON_SOURCE}');
     process.exit(1);
   }
 

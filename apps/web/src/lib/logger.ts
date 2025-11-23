@@ -9,7 +9,7 @@ export interface LogEntry {
   id: string;
   level: 'error' | 'warn' | 'info' | 'debug';
   message: string;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   user_id?: string;
   session_id?: string;
   stack_trace?: string;
@@ -25,7 +25,7 @@ export interface ErrorReport {
   stack_trace?: string;
   user_id?: string;
   session_id?: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   resolved: boolean;
   created_at: string;
   resolved_at?: string;
@@ -69,7 +69,7 @@ class Logger {
   private createLogEntry(
     level: LogEntry['level'],
     message: string,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     source: LogEntry['source'] = 'frontend',
     component?: string
   ): LogEntry {
@@ -88,7 +88,7 @@ class Logger {
 
   async error(
     message: string,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     source: LogEntry['source'] = 'frontend',
     component?: string,
     error?: Error
@@ -107,20 +107,20 @@ class Logger {
     }
 
     // Always log to console for immediate debugging
-    console.error(`[${source}] ${message}`, context, error);
+    logger.error(`[${source}] ${message}`, { context, error });
 
     // Write to database
     await this.writeLog(entry);
 
     // If it's an error, also create an error report
-    if (error || level === 'error') {
+    if (error) {
       await this.reportError(message, error, context, source, component);
     }
   }
 
   async warn(
     message: string,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     source: LogEntry['source'] = 'frontend',
     component?: string
   ) {
@@ -132,13 +132,13 @@ class Logger {
       component
     );
 
-    if (process.env.NODE_ENV === 'development') { console.warn(`[${source}] ${message}`, context); }
+    if (process.env.NODE_ENV === 'development') { logger.warn(`[${source}] ${message}`, { context }); }
     await this.writeLog(entry);
   }
 
   async info(
     message: string,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     source: LogEntry['source'] = 'frontend',
     component?: string
   ) {
@@ -150,13 +150,13 @@ class Logger {
       component
     );
 
-    console.info(`[${source}] ${message}`, context);
+    logger.info(`[${source}] ${message}`, { context });
     await this.writeLog(entry);
   }
 
   async debug(
     message: string,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     source: LogEntry['source'] = 'frontend',
     component?: string
   ) {
@@ -169,7 +169,7 @@ class Logger {
     );
 
     if (process.env.NODE_ENV === 'development') {
-      console.debug(`[${source}] ${message}`, context);
+      logger.debug(`[${source}] ${message}`, { context });
     }
     await this.writeLog(entry);
   }
@@ -177,7 +177,7 @@ class Logger {
   private async reportError(
     message: string,
     error?: Error,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     source: LogEntry['source'] = 'frontend',
     component?: string
   ) {
@@ -206,10 +206,10 @@ class Logger {
         .insert(errorReport);
 
       if (dbError) {
-        console.error('Failed to create error report:', dbError);
+        logger.error('Failed to create error report', { dbError });
       }
     } catch (err) {
-      console.error('Error report creation failed:', err);
+      logger.error('Error report creation failed', { err });
     }
   }
 
@@ -265,7 +265,7 @@ class Logger {
   async trackPerformance(
     operation: string,
     duration: number,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) {
     await this.info(
       `Performance: ${operation}`,
@@ -284,7 +284,7 @@ class Logger {
     method: string,
     statusCode: number,
     duration: number,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) {
     const level = statusCode >= 400 ? 'error' : 'info';
     await this[level](

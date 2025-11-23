@@ -6,7 +6,9 @@
 import { trace, context, SpanStatusCode } from '@opentelemetry/api';
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('telemetry-ts');
 interface TelemetryConfig {
   serviceName: string;
   serviceVersion: string;
@@ -39,14 +41,14 @@ class TelemetryService {
       // Tracer will be initialized by OpenTelemetry SDK
       this.tracer = trace.getTracer(this.config.serviceName, this.config.serviceVersion);
     } catch (error) {
-      console.warn('Failed to initialize OpenTelemetry tracer:', error);
+      logger.warn('Failed to initialize OpenTelemetry tracer:', { error });
     }
   }
 
   /**
    * Create a span for tracing
    */
-  startSpan(name: string, attributes?: Record<string, any>): any {
+  startSpan(name: string, attributes?: Record<string, unknown>): unknown {
     if (!this.config.enabled || !this.tracer) {
       return { end: () => {}, setStatus: () => {}, setAttributes: () => {} };
     }
@@ -65,7 +67,7 @@ class TelemetryService {
       setStatus: (status: { code: SpanStatusCode; message?: string }) => {
         span.setStatus(status);
       },
-      setAttributes: (attrs: Record<string, any>) => {
+      setAttributes: (attrs: Record<string, unknown>) => {
         span.setAttributes(attrs);
       },
       recordException: (error: Error) => {
@@ -78,7 +80,7 @@ class TelemetryService {
   /**
    * Log an event with structured data
    */
-  log(level: 'debug' | 'info' | 'warn' | 'error', message: string, metadata?: Record<string, any>): void {
+  log(level: 'debug' | 'info' | 'warn' | 'error', message: string, metadata?: Record<string, unknown>): void {
     const logEntry = {
       timestamp: new Date().toISOString(),
       level,
@@ -91,16 +93,16 @@ class TelemetryService {
     // Use console for now, can be extended to send to logging service
     switch (level) {
       case 'debug':
-        console.debug(JSON.stringify(logEntry));
+        logger.debug('JSON.stringify(logEntry'));
         break;
       case 'info':
-        console.info(JSON.stringify(logEntry));
+        logger.info('JSON.stringify(logEntry'));
         break;
       case 'warn':
-        console.warn(JSON.stringify(logEntry));
+        logger.warn('JSON.stringify(logEntry'));
         break;
       case 'error':
-        console.error(JSON.stringify(logEntry));
+        logger.error('JSON.stringify(logEntry'));
         break;
     }
   }
@@ -108,7 +110,7 @@ class TelemetryService {
   /**
    * Record a metric
    */
-  recordMetric(name: string, value: number, unit: string = '', attributes?: Record<string, any>): void {
+  recordMetric(name: string, value: number, unit: string = '', attributes?: Record<string, unknown>): void {
     if (!this.config.enabled) return;
 
     // Metric recording would be implemented with OpenTelemetry metrics API
@@ -123,7 +125,7 @@ class TelemetryService {
   /**
    * Track an error
    */
-  trackError(error: Error, context?: Record<string, any>): void {
+  trackError(error: Error, context?: Record<string, unknown>): void {
     const span = this.startSpan('error', {
       'error.name': error.name,
       'error.message': error.message,
@@ -153,7 +155,7 @@ class TelemetryService {
     path: string,
     statusCode: number,
     duration: number,
-    attributes?: Record<string, any>
+    attributes?: Record<string, unknown>
   ): void {
     const span = this.startSpan(`${method} ${path}`, {
       'http.method': method,
@@ -187,17 +189,17 @@ export const telemetry = new TelemetryService();
 
 // Export convenience functions
 export const log = {
-  debug: (message: string, metadata?: Record<string, any>) => telemetry.log('debug', message, metadata),
-  info: (message: string, metadata?: Record<string, any>) => telemetry.log('info', message, metadata),
-  warn: (message: string, metadata?: Record<string, any>) => telemetry.log('warn', message, metadata),
-  error: (message: string, metadata?: Record<string, any>) => telemetry.log('error', message, metadata),
+  debug: (message: string, metadata?: Record<string, unknown>) => telemetry.log('debug', message, metadata),
+  info: (message: string, metadata?: Record<string, unknown>) => telemetry.log('info', message, metadata),
+  warn: (message: string, metadata?: Record<string, unknown>) => telemetry.log('warn', message, metadata),
+  error: (message: string, metadata?: Record<string, unknown>) => telemetry.log('error', message, metadata),
 };
 
-export const trackError = (error: Error, context?: Record<string, any>) => telemetry.trackError(error, context);
+export const trackError = (error: Error, context?: Record<string, unknown>) => telemetry.trackError(error, context);
 export const trackApiRequest = (
   method: string,
   path: string,
   statusCode: number,
   duration: number,
-  attributes?: Record<string, any>
+  attributes?: Record<string, unknown>
 ) => telemetry.trackApiRequest(method, path, statusCode, duration, attributes);

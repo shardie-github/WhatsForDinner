@@ -4,7 +4,9 @@
  */
 
 import { createClient } from './supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('featureflags-ts');
 export interface FeatureFlag {
   id: string;
   name: string;
@@ -23,7 +25,7 @@ export interface FeatureFlagVariant {
   name: string;
   value: any;
   weight: number; // 0-100, percentage of users who get this variant
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 }
 
 export interface FeatureFlagTargeting {
@@ -66,7 +68,7 @@ export interface UserContext {
   platform?: string;
   subscriptionPlan?: string;
   userSegments?: string[];
-  customAttributes?: Record<string, any>;
+  customAttributes?: Record<string, unknown>;
 }
 
 class FeatureFlagManager {
@@ -77,7 +79,7 @@ class FeatureFlagManager {
   /**
    * Get feature flag value for a user
    */
-  async getFlag(flagName: string, userContext: UserContext): Promise<any> {
+  async getFlag(flagName: string, userContext: UserContext): Promise<unknown> {
     try {
       const flag = await this.getFlagConfig(flagName);
       if (!flag) {
@@ -104,7 +106,7 @@ class FeatureFlagManager {
       return variant?.value || true;
 
     } catch (error) {
-      console.error('Error getting feature flag:', error);
+      logger.error('Error getting feature flag:', { error });
       return null;
     }
   }
@@ -226,7 +228,7 @@ class FeatureFlagManager {
   /**
    * Get nested value from object using dot notation
    */
-  private getNestedValue(obj: any, path: string): any {
+  private getNestedValue(obj: any, path: string): unknown {
     return path.split('.').reduce((current, key) => current?.[key], obj);
   }
 
@@ -286,7 +288,7 @@ class FeatureFlagManager {
   /**
    * Track experiment event
    */
-  async trackEvent(experimentId: string, eventName: string, userContext: UserContext, properties?: Record<string, any>) {
+  async trackEvent(experimentId: string, eventName: string, userContext: UserContext, properties?: Record<string, unknown>) {
     try {
       const supabase = createClient();
       
@@ -303,14 +305,14 @@ class FeatureFlagManager {
           },
         ]);
     } catch (error) {
-      console.error('Error tracking experiment event:', error);
+      logger.error('Error tracking experiment event:', { error });
     }
   }
 
   /**
    * Get experiment results
    */
-  async getExperimentResults(experimentId: string): Promise<any> {
+  async getExperimentResults(experimentId: string): Promise<unknown> {
     try {
       const supabase = createClient();
       
@@ -328,7 +330,7 @@ class FeatureFlagManager {
       return results;
 
     } catch (error) {
-      console.error('Error getting experiment results:', error);
+      logger.error('Error getting experiment results:', { error });
       return null;
     }
   }
@@ -336,7 +338,7 @@ class FeatureFlagManager {
   /**
    * Calculate experiment results from events
    */
-  private calculateExperimentResults(events: any[]): any {
+  private calculateExperimentResults(events: unknown[]): unknown {
     const variants = new Map<string, any>();
     
     for (const event of events) {
@@ -398,7 +400,7 @@ class FeatureFlagManager {
       return data.id;
 
     } catch (error) {
-      console.error('Error creating feature flag:', error);
+      logger.error('Error creating feature flag:', { error });
       throw error;
     }
   }
@@ -423,7 +425,7 @@ class FeatureFlagManager {
       this.cacheExpiry.clear();
 
     } catch (error) {
-      console.error('Error updating feature flag:', error);
+      logger.error('Error updating feature flag:', { error });
       throw error;
     }
   }
@@ -445,7 +447,7 @@ class FeatureFlagManager {
       this.cacheExpiry.clear();
 
     } catch (error) {
-      console.error('Error deleting feature flag:', error);
+      logger.error('Error deleting feature flag:', { error });
       throw error;
     }
   }
@@ -469,7 +471,7 @@ class FeatureFlagManager {
       return flags || [];
 
     } catch (error) {
-      console.error('Error getting feature flags:', error);
+      logger.error('Error getting feature flags:', { error });
       return [];
     }
   }

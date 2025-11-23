@@ -44,7 +44,7 @@ export function PrivacyHUD({ className }: PrivacyHUDProps) {
         );
       }
     } catch (err) {
-      console.error('Failed to fetch privacy status', err);
+      logger.error('Failed to fetch privacy status', { err });
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,7 @@ export function PrivacyHUD({ className }: PrivacyHUDProps) {
         setPausedUntil(pauseUntil);
       }
     } catch (err) {
-      console.error('Failed to pause monitoring', err);
+      logger.error('Failed to pause monitoring', { err });
     }
   };
 
@@ -95,7 +95,7 @@ export function PrivacyHUD({ className }: PrivacyHUDProps) {
         setPausedUntil(null);
       }
     } catch (err) {
-      console.error('Failed to resume monitoring', err);
+      logger.error('Failed to resume monitoring', { err });
     }
   };
 

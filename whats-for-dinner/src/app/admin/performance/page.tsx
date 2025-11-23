@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
+import { createComponentLogger } from '@whats-for-dinner/utils';
   Activity, 
   Database, 
   Globe, 
@@ -18,6 +19,7 @@ import {
   Server
 } from 'lucide-react';
 
+const logger = createComponentLogger('page-tsx');
 interface PerformanceMetrics {
   overallScore: number;
   coreWebVitals: {
@@ -77,7 +79,7 @@ export default function PerformanceDashboard() {
       setMetrics(data.metrics);
       setAlerts(data.alerts);
     } catch (error) {
-      console.error('Failed to fetch performance data:', error);
+      logger.error('Failed to fetch performance data:', { error });
     } finally {
       setLoading(false);
       setRefreshing(false);

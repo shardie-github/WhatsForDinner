@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { supabase } from '@/lib/supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 export async function GET(req: NextRequest) {
   try {
     // Get tenant context
@@ -112,7 +114,7 @@ export async function GET(req: NextRequest) {
       stats,
     });
   } catch (error) {
-    console.error('Error fetching partner stats:', error);
+    logger.error('Error fetching partner stats:', { error });
     return NextResponse.json(
       { error: 'Failed to fetch partner statistics' },
       { status: 500 }

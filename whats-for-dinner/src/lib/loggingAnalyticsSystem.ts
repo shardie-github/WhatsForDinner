@@ -18,7 +18,7 @@ export interface ErrorEvent {
   level: 'error' | 'warning' | 'info' | 'debug';
   message: string;
   stack?: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   userId?: string;
   sessionId: string;
   url: string;
@@ -33,7 +33,7 @@ export interface UserEvent {
   userId: string;
   sessionId: string;
   event: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   context: {
     url: string;
     referrer?: string;
@@ -57,7 +57,7 @@ export interface PerformanceEvent {
   metric: string;
   value: number;
   unit: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   tags: string[];
 }
 
@@ -269,7 +269,7 @@ export class LoggingAnalyticsSystem {
   /**
    * Capture error event
    */
-  async captureError(error: Error, context: Record<string, any> = {}): Promise<void> {
+  async captureError(error: Error, context: Record<string, unknown> = {}): Promise<void> {
     const errorEvent: ErrorEvent = {
       id: `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),
@@ -306,7 +306,7 @@ export class LoggingAnalyticsSystem {
   /**
    * Capture user event
    */
-  async captureUserEvent(event: string, properties: Record<string, any> = {}): Promise<void> {
+  async captureUserEvent(event: string, properties: Record<string, unknown> = {}): Promise<void> {
     const userEvent: UserEvent = {
       id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),
@@ -347,7 +347,7 @@ export class LoggingAnalyticsSystem {
   /**
    * Capture performance event
    */
-  async capturePerformanceEvent(metric: string, value: number, unit: string, context: Record<string, any> = {}): Promise<void> {
+  async capturePerformanceEvent(metric: string, value: number, unit: string, context: Record<string, unknown> = {}): Promise<void> {
     const performanceEvent: PerformanceEvent = {
       id: `perf_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),
@@ -584,7 +584,7 @@ export class LoggingAnalyticsSystem {
   /**
    * Extract tags from error and context
    */
-  private extractTags(error: Error, context: Record<string, any>): string[] {
+  private extractTags(error: Error, context: Record<string, unknown>): string[] {
     const tags: string[] = [];
     
     if (error.name) tags.push(`error:${error.name}`);
@@ -597,7 +597,7 @@ export class LoggingAnalyticsSystem {
   /**
    * Generate fingerprint for error
    */
-  private generateFingerprint(error: Error, context: Record<string, any>): string {
+  private generateFingerprint(error: Error, context: Record<string, unknown>): string {
     const key = `${error.name}:${error.message}:${context.component || 'unknown'}`;
     return btoa(key).substr(0, 16);
   }
@@ -605,7 +605,7 @@ export class LoggingAnalyticsSystem {
   /**
    * Extract performance tags
    */
-  private extractPerformanceTags(metric: string, context: Record<string, any>): string[] {
+  private extractPerformanceTags(metric: string, context: Record<string, unknown>): string[] {
     const tags: string[] = [`metric:${metric}`];
     
     if (context.component) tags.push(`component:${context.component}`);

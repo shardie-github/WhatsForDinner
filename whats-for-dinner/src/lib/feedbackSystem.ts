@@ -25,7 +25,7 @@ export interface TrainingData {
   feedback_score: number;
   user_id: string;
   timestamp: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 class FeedbackSystem {

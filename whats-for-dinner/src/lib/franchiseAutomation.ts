@@ -1,6 +1,8 @@
 import { supabase } from './supabaseClient';
 import { StripeService } from './stripe';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('franchiseautomation-ts');
 export interface FranchiseDeployment {
   id: string;
   franchise_name: string;
@@ -142,7 +144,7 @@ export class FranchiseAutomation {
         created_at: new Date().toISOString(),
       };
     } catch (error) {
-      console.error('Error creating franchise:', error);
+      logger.error('Error creating franchise:', { error });
       throw error;
     }
   }
@@ -215,7 +217,7 @@ export class FranchiseAutomation {
         );
       }
     } catch (error) {
-      console.error('Error deploying franchise:', error);
+      logger.error('Error deploying franchise:', { error });
 
       // Update status to failed
       await supabase
@@ -246,7 +248,7 @@ export class FranchiseAutomation {
 
       return data;
     } catch (error) {
-      console.error('Error getting franchise status:', error);
+      logger.error('Error getting franchise status:', { error });
       return null;
     }
   }
@@ -280,7 +282,7 @@ export class FranchiseAutomation {
 
       return data || [];
     } catch (error) {
-      console.error('Error listing franchises:', error);
+      logger.error('Error listing franchises:', { error });
       return [];
     }
   }
@@ -326,7 +328,7 @@ export class FranchiseAutomation {
         await this.redeployFranchise(franchiseId);
       }
     } catch (error) {
-      console.error('Error updating franchise:', error);
+      logger.error('Error updating franchise:', { error });
       throw error;
     }
   }
@@ -358,7 +360,7 @@ export class FranchiseAutomation {
         await this.sendDeploymentNotification(franchise, 'suspended', [reason]);
       }
     } catch (error) {
-      console.error('Error suspending franchise:', error);
+      logger.error('Error suspending franchise:', { error });
       throw error;
     }
   }
@@ -431,7 +433,7 @@ export class FranchiseAutomation {
 
       return mockAccountId;
     } catch (error) {
-      console.error('Error creating Stripe account:', error);
+      logger.error('Error creating Stripe account:', { error });
       throw error;
     }
   }
@@ -485,7 +487,7 @@ export class FranchiseAutomation {
       try {
         await this.deployFranchise(franchiseId);
       } catch (error) {
-        console.error('Deployment failed:', error);
+        logger.error('Deployment failed:', { error });
       }
     }, 5000); // Simulate 5-second deployment
   }

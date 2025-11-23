@@ -1,5 +1,7 @@
 import type { MealPlan, GroceryList, HealthMetric } from './types';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('sync-ts');
 export interface OfflineQueueItem {
   id: string;
   type: 'create' | 'update' | 'delete';
@@ -44,7 +46,7 @@ export class OfflineSyncManager {
         this.queue = JSON.parse(stored);
       }
     } catch (error) {
-      console.error('Failed to load offline queue:', error);
+      logger.error('Failed to load offline queue:', { error });
     }
   }
 
@@ -54,7 +56,7 @@ export class OfflineSyncManager {
     try {
       this.storage.setItem('nomad_offline_queue', JSON.stringify(this.queue));
     } catch (error) {
-      console.error('Failed to save offline queue:', error);
+      logger.error('Failed to save offline queue:', { error });
     }
   }
 

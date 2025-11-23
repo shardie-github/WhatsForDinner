@@ -107,7 +107,7 @@ export function preloadComponent<T extends ComponentType<any>>(
  * Batch preload multiple components
  */
 export async function preloadComponents(
-  importFns: Array<() => Promise<any>>
+  importFns: Array<() => Promise<unknown>>
 ): Promise<void> {
   const promises = importFns.map((fn) => preloadComponent(fn));
   await Promise.allSettled(promises);

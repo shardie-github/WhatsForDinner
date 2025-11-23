@@ -6,7 +6,9 @@ import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('snapshot-ts');
 export async function runSnapshot(options: { encrypt?: boolean; subset?: string }) {
   
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -53,7 +55,7 @@ export async function runSnapshot(options: { encrypt?: boolean; subset?: string 
     fs.symlinkSync(path.basename(snapshotFile), latestLink);
     
   } catch (error) {
-    console.error('❌ Snapshot failed:', error);
+    logger.error('❌ Snapshot failed:', { error });
     process.exit(1);
   }
 }

@@ -3,9 +3,11 @@
  */
 
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('test-e2e-ts');
 export async function runE2E(options: { ui?: boolean; headed?: boolean; grep?: string }) {
-  console.log('🧪 Running E2E tests...\n');
+  logger.info('🧪 Running E2E tests...\n');
 
   const args: string[] = [];
 
@@ -27,10 +29,10 @@ export async function runE2E(options: { ui?: boolean; headed?: boolean; grep?: s
       stdio: 'inherit',
       cwd: process.cwd(),
     });
-    console.log('\n✅ E2E tests passed!');
+    logger.info('\n✅ E2E tests passed!');
     process.exit(0);
   } catch (error) {
-    console.error('\n❌ E2E tests failed');
+    logger.error('\n❌ E2E tests failed');
     process.exit(1);
   }
 }

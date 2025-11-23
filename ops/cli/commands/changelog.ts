@@ -5,7 +5,9 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('changelog-ts');
 export async function runChangelog(options: { version?: string; unreleased?: boolean }) {
   
   const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
@@ -67,7 +69,7 @@ ${other.length > 0 ? `### Other\n${other.join('\n')}\n` : ''}
     }
 
       } catch (error) {
-    console.error('❌ Changelog generation failed:', error);
+    logger.error('❌ Changelog generation failed:', { error });
     process.exit(1);
   }
 }

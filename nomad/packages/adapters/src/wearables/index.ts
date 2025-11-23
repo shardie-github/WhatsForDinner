@@ -1,3 +1,5 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+const logger = createComponentLogger('index-ts');
 export interface WearableSyncConfig {
   googleFit?: {
     clientId: string;
@@ -140,7 +142,7 @@ export class WearableManager {
         const data = await adapter.readData(type, startDate, endDate);
         allData.push(...data);
       } catch (error) {
-        console.error('Failed to sync from adapter:', error);
+        logger.error('Failed to sync from adapter:', { error });
       }
     }
 

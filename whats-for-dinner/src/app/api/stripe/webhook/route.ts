@@ -2,14 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe, StripeService } from '@/lib/stripe';
 import { supabase } from '@/lib/supabaseClient';
 import { headers } from 'next/headers';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text();
     const signature = headers().get('stripe-signature');
 
     if (!signature) {
-      console.error('No Stripe signature found');
+      logger.error('No Stripe signature found');
       return NextResponse.json({ error: 'No signature' }, { status: 400 });
     }
 
@@ -18,7 +20,7 @@ export async function POST(request: NextRequest) {
     try {
       event = StripeService.verifyWebhookSignature(body, signature);
     } catch (err) {
-      console.error('Webhook signature verification failed:', err);
+      logger.error('Webhook signature verification failed:', { err });
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
@@ -77,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error('Webhook error:', error);
+    logger.error('Webhook error:', { error });
     return NextResponse.json(
       { error: 'Webhook handler failed' },
       { status: 500 }
@@ -89,7 +91,7 @@ async function handleCheckoutSessionCompleted(session: any) {
   const { tenantId, userId, plan } = session.metadata;
 
   if (!tenantId || !userId || !plan) {
-    console.error('Missing metadata in checkout session:', session.metadata);
+    logger.error('Missing metadata in checkout session:', { session.metadata });
     return;
   }
 
@@ -107,7 +109,7 @@ async function handleSubscriptionCreated(subscription: any) {
   const { tenantId, userId, plan } = subscription.metadata;
 
   if (!tenantId || !userId || !plan) {
-    console.error('Missing metadata in subscription:', subscription.metadata);
+    logger.error('Missing metadata in subscription:', { subscription.metadata });
     return;
   }
 
@@ -145,7 +147,7 @@ async function handleSubscriptionUpdated(subscription: any) {
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
-    console.error('Missing tenantId in subscription metadata');
+    logger.error('Missing tenantId in subscription metadata');
     return;
   }
 
@@ -182,7 +184,7 @@ async function handleSubscriptionDeleted(subscription: any) {
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
-    console.error('Missing tenantId in subscription metadata');
+    logger.error('Missing tenantId in subscription metadata');
     return;
   }
 
@@ -212,7 +214,7 @@ async function handleInvoicePaymentSucceeded(invoice: any) {
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
-    console.error('Missing tenantId in subscription metadata');
+    logger.error('Missing tenantId in subscription metadata');
     return;
   }
 
@@ -233,7 +235,7 @@ async function handleInvoicePaymentFailed(invoice: any) {
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
-    console.error('Missing tenantId in subscription metadata');
+    logger.error('Missing tenantId in subscription metadata');
     return;
   }
 

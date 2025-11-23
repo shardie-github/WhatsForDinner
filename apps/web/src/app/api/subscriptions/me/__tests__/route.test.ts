@@ -1,46 +1,61 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NextRequest } from 'next/server';
-import { POST, GET } from '../route';
+import { GET } from '../route';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
-describe('API Route: apps/web/src/app/api/subscriptions/me/route.ts', () => {
+const logger = createComponentLogger('test-subscriptions-me-api');
+
+describe('Subscriptions Me API Route', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('should handle GET request', async () => {
-    const req = new NextRequest('http://localhostapps/web/src/app/api/subscriptions/me');
-    try {
-      const response = await GET(req);
+  describe('GET /api/subscriptions/me', () => {
+    it('should return subscription for authenticated user with Stripe customer', async () => {
+      const request = new NextRequest('http://localhost:3000/api/subscriptions/me', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': 'test-user-id',
+        },
+      });
+
+      const response = await GET(request);
       expect(response).toBeDefined();
-    } catch (error) {
-      // API might require authentication or other setup
-      expect(error).toBeDefined();
-    }
-  });
-
-  it('should handle POST request', async () => {
-    const req = new NextRequest('http://localhostapps/web/src/app/api/subscriptions/me', {
-      method: 'POST',
-      body: JSON.stringify({}),
     });
-    try {
-      const response = await POST(req);
+
+    it('should return 401 for unauthenticated user', async () => {
+      const request = new NextRequest('http://localhost:3000/api/subscriptions/me', {
+        method: 'GET',
+      });
+
+      const response = await GET(request);
+      expect(response.status).toBe(401);
+    });
+
+    it('should return null subscription for user without Stripe customer', async () => {
+      const request = new NextRequest('http://localhost:3000/api/subscriptions/me', {
+        method: 'GET',
+        headers: {
+          'x-user-id': 'test-user-id',
+        },
+      });
+
+      const response = await GET(request);
+      const data = await response.json();
+      expect(data.subscription).toBeNull();
+    });
+
+    it('should handle errors gracefully', async () => {
+      const request = new NextRequest('http://localhost:3000/api/subscriptions/me', {
+        method: 'GET',
+        headers: {
+          'x-user-id': 'test-user-id',
+        },
+      });
+
+      const response = await GET(request);
       expect(response).toBeDefined();
-    } catch (error) {
-      expect(error).toBeDefined();
-    }
-  });
-
-  it('should validate request body', async () => {
-    const req = new NextRequest('http://localhostapps/web/src/app/api/subscriptions/me', {
-      method: 'POST',
-      body: 'invalid json',
     });
-    try {
-      const response = await POST(req);
-      expect(response.status).toBeGreaterThanOrEqual(400);
-    } catch (error) {
-      expect(error).toBeDefined();
-    }
   });
 });

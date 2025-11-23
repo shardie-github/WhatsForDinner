@@ -103,7 +103,7 @@ export default function GroceryPage() {
                 quizId="dietary-preferences"
                 userId={userId}
                 onComplete={(result) => {
-                  console.log('Quiz completed:', result);
+                  logger.info('Quiz completed:', { result });
                 }}
               />
             </div>

@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
 
+const logger = createComponentLogger('ingest-external-ui-ts');
 const args = process.argv.slice(2);
 const getArg = (k: string, d?: string) => {
   const i = args.findIndex((a) => a === k);
@@ -12,7 +13,7 @@ const SRC = getArg("--src", "./external-dump");
 const DEST = getArg("--dest", "./components/external");
 
 if (!fs.existsSync(SRC)) {
-  console.error("❌ Source path missing:", SRC);
+  logger.error('❌ Source path missing:', { SRC });
   process.exit(1);
 }
 fs.mkdirSync(DEST, { recursive: true });
@@ -39,6 +40,7 @@ function convertHtmlToComponent(filePath: string) {
   const out = `/* Auto-imported from external builder */
 "use client";
 import React from "react";
+import { createComponentLogger } from '@whats-for-dinner/utils';
 export default function ${name}(){ 
   return (<div suppressHydrationWarning>${jsx}</div>);
 }
@@ -63,7 +65,7 @@ function processDir(dir: string) {
         execSync(`npx svgo -i "${p}" -o "${out}"`, { stdio: "inherit" });
         execSync(`npx @svgr/cli "${out}" --out-dir "${DEST}" --ext tsx`, { stdio: "inherit" });
       } catch (e) {
-        console.warn(`SVG processing skipped for ${f}:`, e);
+        logger.warn('SVG processing skipped for ${f}:', { e });
         fs.copyFileSync(p, out);
       }
     } else if (/\.css$/i.test(f)) {
@@ -80,4 +82,4 @@ function processDir(dir: string) {
 
 const report = processDir(SRC);
 fs.writeFileSync(path.join(DEST, "_import-report.txt"), report.join("\n"), "utf8");
-console.log(`Import report written to ${path.join(DEST, "_import-report.txt")}`);
+logger.info('Import report written to ${path.join(DEST', { "_import-report.txt" })}`);

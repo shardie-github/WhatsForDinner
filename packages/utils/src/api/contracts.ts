@@ -209,7 +209,7 @@ export function validateRequest<T extends z.ZodTypeAny>(
 export function buildApiResponse<T>(
   success: boolean,
   data?: T,
-  error?: { code: string; message: string; details?: any }
+  error?: { code: string; message: string; details?: unknown }
 ) {
   return {
     success,

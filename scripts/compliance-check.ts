@@ -6,7 +6,9 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('compliance-check-ts');
 interface ComplianceCheck {
   name: string;
   passed: boolean;
@@ -181,26 +183,26 @@ async function main() {
   const passed = checks.filter(c => c.passed).length;
   const total = checks.length;
 
-  console.log(`\nCompliance Check Results: ${passed}/${total} passed`);
+  logger.info('\nCompliance Check Results: ${passed}/${total} passed');
   
   for (const check of checks) {
     const icon = check.passed ? '✅' : '❌';
     const status = check.passed ? 'PASS' : 'FAIL';
-    console.log(`${icon} ${check.name}: ${status}`);
+    logger.info('${icon} ${check.name}: ${status}');
   }
 
-  console.log('');
+  logger.info('');
   
   if (passed < total) {
-    console.error('\n? Some compliance checks failed');
+    logger.error('\n? Some compliance checks failed');
     process.exit(1);
   } else {
-    console.log('\n✅ All compliance checks passed');
+    logger.info('\n✅ All compliance checks passed');
     process.exit(0);
   }
 }
 
 main().catch(error => {
-  console.error('Error running compliance checks:', error);
+  logger.error('Error running compliance checks:', { error });
   process.exit(1);
 });

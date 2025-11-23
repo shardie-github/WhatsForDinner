@@ -4,7 +4,9 @@ import { z } from 'zod';
 import { analytics } from './analytics';
 import { logger } from './logger';
 import { aiConfigManager } from './aiConfig';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('openaiservice-ts');
 interface GenerateRecipesOptions {
   ingredients: string[];
   preferences: string;
@@ -230,7 +232,7 @@ function calculateCostEstimate(usage: any, model: string): number {
 }
 
 function calculateConfidenceScore(
-  recipes: any[],
+  recipes: unknown[],
   ingredients: string[]
 ): number {
   let score = 0.5; // Base score
@@ -264,7 +266,7 @@ function calculateConfidenceScore(
   return Math.min(1.0, Math.max(0.0, score));
 }
 
-function detectCuisineType(recipes: any[]): string | null {
+function detectCuisineType(recipes: unknown[]): string | null {
   const cuisineKeywords = {
     Italian: ['pasta', 'pizza', 'risotto', 'parmesan', 'basil', 'oregano'],
     Mexican: ['taco', 'burrito', 'salsa', 'cilantro', 'lime', 'jalapeño'],
@@ -293,7 +295,7 @@ export async function generateRecipesWithFallback(
   try {
     return await generateRecipes(options);
   } catch (error) {
-    console.error('Primary recipe generation failed, using fallback:', error);
+    logger.error('Primary recipe generation failed', { using fallback:', error });
 
     // Fallback: return a simple recipe based on ingredients
     const fallbackRecipes = [

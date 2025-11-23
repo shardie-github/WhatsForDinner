@@ -62,7 +62,7 @@ export class CROOptimizer {
     ctaId: string,
     event: 'impression' | 'click' | 'conversion',
     userId?: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<void> {
     try {
       const sessionId = this.getSessionId();
@@ -75,7 +75,7 @@ export class CROOptimizer {
         .single();
 
       if (fetchError || !cta) {
-        console.error('Error fetching CTA:', fetchError);
+        logger.error('Error fetching CTA:', { fetchError });
         return;
       }
 
@@ -287,7 +287,7 @@ export class CROOptimizer {
         .order('performance->conversion_rate', { ascending: false });
 
       if (ctaError) {
-        console.error('Error fetching CTAs:', ctaError);
+        logger.error('Error fetching CTAs:', { ctaError });
       }
 
       const allCTAs = (ctas || []) as CTAPlacement[];

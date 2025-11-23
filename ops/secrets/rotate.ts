@@ -9,7 +9,9 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('rotate-ts');
 const SECRETS_DIR = join(process.cwd(), 'ops', 'secrets');
 
 interface SecretRotation {
@@ -81,7 +83,7 @@ async function rotateSecrets(): Promise<SecretRotation[]> {
         stdio: 'inherit'
       });
     } catch (error) {
-      console.error(`Failed to update ${rotation.name} in Supabase:`, error);
+      logger.error('Failed to update ${rotation.name} in Supabase:', { error });
     }
   }
 
@@ -98,7 +100,7 @@ async function rotateSecrets(): Promise<SecretRotation[]> {
           { stdio: 'inherit' }
         );
       } catch (error) {
-        console.error(`Failed to update ${rotation.name} in Vercel:`, error);
+        logger.error('Failed to update ${rotation.name} in Vercel:', { error });
       }
     }
   }
@@ -128,7 +130,7 @@ function checkSecretRotation(): void {
     const daysUntilExpiry = Math.floor((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     
     if (daysUntilExpiry <= 20) {
-      console.warn(`⚠️  ${rotation.name} expires in ${daysUntilExpiry} days`);
+      logger.warn('⚠️  ${rotation.name} expires in ${daysUntilExpiry} days');
     }
   }
 }
@@ -138,12 +140,12 @@ if (require.main === module) {
   
   if (command === 'rotate') {
     rotateSecrets().then(rotations => {
-      console.log(`Rotated ${rotations.length} secrets: ${rotations.map(r => r.name).join(', ')}`);
+      logger.info('Rotated ${rotations.length} secrets: ${rotations.map(r => r.name').join(', ')}`);
     });
   } else if (command === 'check') {
     checkSecretRotation();
   } else {
-    console.error('Usage: rotate-secrets.ts [rotate|check]');
+    logger.error('Usage: rotate-secrets.ts [rotate|check]');
     process.exit(1);
   }
 }

@@ -1,7 +1,9 @@
 import type { AnalyticsAdapter } from '@nomad/adapters';
 import type { AnalyticsEvent, EventName, SamplingConfig } from './events';
 import { sanitizeEvent, shouldSample, validateEvent } from './events';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('governance-ts');
 export interface ConsentState {
   analytics: boolean;
   ads: boolean;
@@ -43,7 +45,7 @@ export class AnalyticsGovernance {
 
     // Validate event
     if (!validateEvent(event)) {
-      console.warn('Invalid analytics event:', event);
+      logger.warn('Invalid analytics event:', { event });
       return;
     }
 

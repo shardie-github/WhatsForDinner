@@ -28,7 +28,7 @@ export interface AgentMemory {
     timestamp: string;
     learning: any;
   }>;
-  knowledge: Record<string, any>;
+  knowledge: Record<string, unknown>;
   patterns: Record<string, number>;
 }
 
@@ -186,7 +186,7 @@ export abstract class BaseAgent {
   /**
    * Extract learning from experience
    */
-  protected extractLearning(action: AgentAction, outcome: string): any {
+  protected extractLearning(action: AgentAction, outcome: string): unknown {
     return {
       actionType: action.type,
       confidence: action.confidence,
@@ -239,8 +239,8 @@ export abstract class BaseAgent {
   /**
    * Analyze patterns in experiences
    */
-  protected analyzePatterns(): Record<string, any> {
-    const patterns: Record<string, any> = {};
+  protected analyzePatterns(): Record<string, unknown> {
+    const patterns: Record<string, unknown> = {};
 
     // Analyze success patterns
     const successActions = this.memory.experiences.filter(
@@ -260,7 +260,7 @@ export abstract class BaseAgent {
   /**
    * Group experiences by action type
    */
-  protected groupByActionType(experiences: any[]): Record<string, any[]> {
+  protected groupByActionType(experiences: unknown[]): Record<string, any[]> {
     return experiences.reduce((groups, exp) => {
       const actionType = exp.action.type;
       if (!groups[actionType]) groups[actionType] = [];
@@ -272,7 +272,7 @@ export abstract class BaseAgent {
   /**
    * Update knowledge base
    */
-  protected updateKnowledge(patterns: Record<string, any>): void {
+  protected updateKnowledge(patterns: Record<string, unknown>): void {
     this.memory.knowledge = {
       ...this.memory.knowledge,
       ...patterns,

@@ -25,7 +25,7 @@ interface GroceryQuizProps {
 export function GroceryQuiz({ quizId, onComplete, userId }: GroceryQuizProps) {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [completed, setCompleted] = useState(false);
   const [result, setResult] = useState<QuizResult | null>(null);
   const [pointsEarned, setPointsEarned] = useState(0);

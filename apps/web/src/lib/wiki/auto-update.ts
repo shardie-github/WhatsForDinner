@@ -246,7 +246,7 @@ export class WikiAutoUpdate {
     return filename.replace(/\.(md|markdown)$/, '').toLowerCase();
   }
 
-  private parseFrontmatter(content: string): any {
+  private parseFrontmatter(content: string): unknown {
     const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
     if (!match) return {};
 

@@ -1,6 +1,8 @@
 import { supabase } from './supabaseClient';
 import { Database } from './supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('growthanalytics-ts');
 type GrowthMetric = Database['public']['Tables']['growth_metrics']['Row'];
 type GrowthMetricInsert =
   Database['public']['Tables']['growth_metrics']['Insert'];
@@ -45,7 +47,7 @@ export class GrowthAnalytics {
     userId: string | null,
     sessionId: string,
     stage: FunnelEvent['funnel_stage'],
-    eventData: Record<string, any> = {},
+    eventData: Record<string, unknown> = {},
     pageUrl?: string,
     utmSource?: string,
     utmMedium?: string,
@@ -64,11 +66,11 @@ export class GrowthAnalytics {
       });
 
       if (error) {
-        console.error('Error tracking funnel event:', error);
+        logger.error('Error tracking funnel event:', { error });
         throw error;
       }
     } catch (error) {
-      console.error('Failed to track funnel event:', error);
+      logger.error('Failed to track funnel event:', { error });
       throw error;
     }
   }
@@ -87,13 +89,13 @@ export class GrowthAnalytics {
       });
 
       if (error) {
-        console.error('Error calculating cohort retention:', error);
+        logger.error('Error calculating cohort retention:', { error });
         throw error;
       }
 
       return data || [];
     } catch (error) {
-      console.error('Failed to get cohort retention:', error);
+      logger.error('Failed to get cohort retention:', { error });
       throw error;
     }
   }
@@ -108,13 +110,13 @@ export class GrowthAnalytics {
       });
 
       if (error) {
-        console.error('Error calculating user LTV:', error);
+        logger.error('Error calculating user LTV:', { error });
         throw error;
       }
 
       return data || 0;
     } catch (error) {
-      console.error('Failed to calculate user LTV:', error);
+      logger.error('Failed to calculate user LTV:', { error });
       throw error;
     }
   }
@@ -129,7 +131,7 @@ export class GrowthAnalytics {
     periodStart: string,
     periodEnd: string,
     cohortDate?: string,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ): Promise<void> {
     try {
       const metricData: GrowthMetricInsert = {
@@ -147,11 +149,11 @@ export class GrowthAnalytics {
         .insert(metricData);
 
       if (error) {
-        console.error('Error storing growth metric:', error);
+        logger.error('Error storing growth metric:', { error });
         throw error;
       }
     } catch (error) {
-      console.error('Failed to store growth metric:', error);
+      logger.error('Failed to store growth metric:', { error });
       throw error;
     }
   }
@@ -173,7 +175,7 @@ export class GrowthAnalytics {
         .eq('period_end', periodEnd);
 
       if (error) {
-        console.error('Error fetching growth metrics:', error);
+        logger.error('Error fetching growth metrics:', { error });
         throw error;
       }
 
@@ -220,7 +222,7 @@ export class GrowthAnalytics {
 
       return summary;
     } catch (error) {
-      console.error('Failed to get growth metrics summary:', error);
+      logger.error('Failed to get growth metrics summary:', { error });
       throw error;
     }
   }
@@ -242,7 +244,7 @@ export class GrowthAnalytics {
         .lte('timestamp', periodEnd);
 
       if (error) {
-        console.error('Error fetching funnel events:', error);
+        logger.error('Error fetching funnel events:', { error });
         throw error;
       }
 
@@ -287,7 +289,7 @@ export class GrowthAnalytics {
 
       return rates;
     } catch (error) {
-      console.error('Failed to get funnel conversion rates:', error);
+      logger.error('Failed to get funnel conversion rates:', { error });
       throw error;
     }
   }
@@ -300,7 +302,7 @@ export class GrowthAnalytics {
       const { data, error } = await supabase.rpc('generate_referral_code');
 
       if (error) {
-        console.error('Error generating referral code:', error);
+        logger.error('Error generating referral code:', { error });
         throw error;
       }
 
@@ -319,13 +321,13 @@ export class GrowthAnalytics {
         .insert(referralData);
 
       if (insertError) {
-        console.error('Error storing referral:', insertError);
+        logger.error('Error storing referral:', { insertError });
         throw insertError;
       }
 
       return referralCode;
     } catch (error) {
-      console.error('Failed to generate referral code:', error);
+      logger.error('Failed to generate referral code:', { error });
       throw error;
     }
   }
@@ -347,13 +349,13 @@ export class GrowthAnalytics {
       );
 
       if (error) {
-        console.error('Error processing referral conversion:', error);
+        logger.error('Error processing referral conversion:', { error });
         throw error;
       }
 
       return data || false;
     } catch (error) {
-      console.error('Failed to process referral conversion:', error);
+      logger.error('Failed to process referral conversion:', { error });
       throw error;
     }
   }
@@ -374,7 +376,7 @@ export class GrowthAnalytics {
         .eq('referrer_id', userId);
 
       if (error) {
-        console.error('Error fetching referral stats:', error);
+        logger.error('Error fetching referral stats:', { error });
         throw error;
       }
 
@@ -395,7 +397,7 @@ export class GrowthAnalytics {
 
       return stats;
     } catch (error) {
-      console.error('Failed to get user referral stats:', error);
+      logger.error('Failed to get user referral stats:', { error });
       throw error;
     }
   }
@@ -424,7 +426,7 @@ export class GrowthAnalytics {
         .lte('timestamp', periodEnd);
 
       if (funnelError) {
-        console.error('Error fetching funnel events:', funnelError);
+        logger.error('Error fetching funnel events:', { funnelError });
         return;
       }
 
@@ -475,7 +477,7 @@ export class GrowthAnalytics {
         ),
       ]);
     } catch (error) {
-      console.error('Failed to calculate daily growth metrics:', error);
+      logger.error('Failed to calculate daily growth metrics:', { error });
       throw error;
     }
   }
@@ -504,7 +506,7 @@ export class GrowthAnalytics {
         .order('period_start', { ascending: true });
 
       if (error) {
-        console.error('Error fetching growth trends:', error);
+        logger.error('Error fetching growth trends:', { error });
         throw error;
       }
 
@@ -537,7 +539,7 @@ export class GrowthAnalytics {
 
       return { dates, metrics: trends };
     } catch (error) {
-      console.error('Failed to get growth trends:', error);
+      logger.error('Failed to get growth trends:', { error });
       throw error;
     }
   }

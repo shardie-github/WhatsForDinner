@@ -23,7 +23,7 @@ export interface AgentState {
   status: 'active' | 'idle' | 'error' | 'learning';
   lastAction: string;
   successRate: number;
-  learningData: Record<string, any>;
+  learningData: Record<string, unknown>;
 }
 
 export interface DiagnosticResult {

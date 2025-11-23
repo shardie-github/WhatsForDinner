@@ -101,7 +101,7 @@ export default function AnalyticsDashboard() {
         setData(dashboardData);
       } catch (err: any) {
         setError(err.message || 'Failed to load analytics');
-        console.error('Error fetching analytics:', err);
+        logger.error('Error fetching analytics:', { err });
       } finally {
         setLoading(false);
       }

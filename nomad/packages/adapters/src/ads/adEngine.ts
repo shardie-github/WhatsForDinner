@@ -1,6 +1,8 @@
 import type { FeatureFlags } from '@nomad/config';
 import houseAds from '@nomad/config/house-ads';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('adengine-ts');
 export type AdSlot = 
   | 'dash_bottom'
   | 'dash_top'
@@ -248,7 +250,7 @@ export class AdEngine {
         },
       };
     } catch (error) {
-      console.warn('Partner ad selection failed', error);
+      logger.warn('Partner ad selection failed', { error });
       return null;
     }
   }

@@ -6,7 +6,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { Octokit } from '@octokit/rest';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('ai-autoscale-ts');
 interface UsageMetrics {
   timestamp: string;
   environment: 'staging' | 'production' | 'preview';
@@ -94,7 +96,7 @@ class AIAutoScale {
 
       return { metrics, prediction, recommendations };
     } catch (error) {
-      console.error('Usage analysis failed:', error);
+      logger.error('Usage analysis failed:', { error });
       throw error;
     }
   }
@@ -339,7 +341,7 @@ class AIAutoScale {
       });
 
           } catch (error) {
-      console.error('Failed to create budget alert:', error);
+      logger.error('Failed to create budget alert:', { error });
     }
   }
 
@@ -413,11 +415,11 @@ ${prediction.recommendations.map(rec => `- ${rec}`).join('\n')}
         .insert([analysis]);
 
       if (error) {
-        console.error('Error storing cost analysis:', error);
+        logger.error('Error storing cost analysis:', { error });
       } else {
               }
     } catch (error) {
-      console.error('Failed to store cost analysis:', error);
+      logger.error('Failed to store cost analysis:', { error });
     }
   }
 
@@ -433,7 +435,7 @@ ${prediction.recommendations.map(rec => `- ${rec}`).join('\n')}
       const report = this.generateDailyReport(analysis);
             
           } catch (error) {
-      console.error('Daily cost analysis failed:', error);
+      logger.error('Daily cost analysis failed:', { error });
     }
   }
 

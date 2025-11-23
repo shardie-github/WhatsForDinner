@@ -8,7 +8,9 @@
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('weekly-activation-review-ts');
 interface ActivationMetrics {
   signups: number;
   activations: number;
@@ -28,7 +30,7 @@ async function runWeeklyActivationReview() {
 
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  console.log('📊 Running Weekly Activation Review...\n');
+  logger.info('📊 Running Weekly Activation Review...\n');
 
   // Get date range (last 7 days)
   const sevenDaysAgo = new Date();
@@ -199,19 +201,19 @@ async function runWeeklyActivationReview() {
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
 
   // Print summary
-  console.log('📈 Activation Metrics:');
-  console.log(`   Signups: ${metrics.signups}`);
-  console.log(`   Activations: ${metrics.activations}`);
-  console.log(`   Activation Rate: ${metrics.activationRate.toFixed(2)}%`);
-  console.log(`   Avg Time to Activation: ${metrics.avgTimeToActivation.toFixed(1)} minutes`);
-  console.log(`   Trend: ${report.comparison.trend} (${activationRateChange > 0 ? '+' : ''}${activationRateChange.toFixed(2)}%)`);
-  console.log('\n📉 Top Dropoff Points:');
+  logger.info('📈 Activation Metrics:');
+  logger.info('   Signups: ${metrics.signups}');
+  logger.info('   Activations: ${metrics.activations}');
+  logger.info('   Activation Rate: ${metrics.activationRate.toFixed(2')}%`);
+  logger.info('   Avg Time to Activation: ${metrics.avgTimeToActivation.toFixed(1')} minutes`);
+  logger.info('   Trend: ${report.comparison.trend} (${activationRateChange > 0 ? '+' : ''}${activationRateChange.toFixed(2')}%)`);
+  logger.info('\n📉 Top Dropoff Points:');
   dropoffPoints.slice(0, 5).forEach(point => {
-    console.log(`   ${point.stage}: ${point.percentage.toFixed(1)}% (${point.count} users)`);
+    logger.info('   ${point.stage}: ${point.percentage.toFixed(1')}% (${point.count} users)`);
   });
-  console.log('\n💡 Recommendations:');
-  recommendations.forEach(rec => console.log(`   ${rec}`));
-  console.log(`\n📄 Full report saved to: ${reportPath}`);
+  logger.info('\n💡 Recommendations:');
+  recommendations.forEach(rec => logger.info('   ${rec}'));
+  logger.info('\n📄 Full report saved to: ${reportPath}');
 
   return report;
 }
@@ -219,11 +221,11 @@ async function runWeeklyActivationReview() {
 if (require.main === module) {
   runWeeklyActivationReview()
     .then(() => {
-      console.log('\n✅ Weekly activation review completed');
+      logger.info('\n✅ Weekly activation review completed');
       process.exit(0);
     })
     .catch((error) => {
-      console.error('❌ Failed to run activation review:', error);
+      logger.error('❌ Failed to run activation review:', { error });
       process.exit(1);
     });
 }

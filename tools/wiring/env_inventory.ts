@@ -9,7 +9,9 @@
 import { writeFileSync, mkdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { glob } from 'glob';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('env-inventory-ts');
 interface EnvVar {
   name: string;
   required: boolean;
@@ -234,8 +236,8 @@ ${setVars.filter(v => !v.isSet && !v.required).map(v =>
     JSON.stringify({ timestamp: new Date().toISOString(), vars: setVars }, null, 2),
   );
   
-  console.log(`\nEnvironment Variables Inventory:`);
-  console.log(`Total: ${setVars.length}, Set: ${setVars.filter(v => v.isSet).length}, Missing: ${setVars.filter(v => !v.isSet).length}`);
+  logger.info('\nEnvironment Variables Inventory:');
+  logger.info('Total: ${setVars.length}', { Set: ${setVars.filter(v => v.isSet }).length}, Missing: ${setVars.filter(v => !v.isSet).length}`);
   
   const missingRequired = setVars.filter(v => v.required && !v.isSet);
   if (missingRequired.length > 0) {
@@ -245,7 +247,7 @@ ${setVars.filter(v => !v.isSet && !v.required).map(v =>
 
 if (import.meta.url === `file://${process.argv[1]}` || require.main === module) {
   main().catch((error) => {
-    console.error('Fatal error:', error);
+    logger.error('Fatal error:', { error });
     process.exit(1);
   });
 }

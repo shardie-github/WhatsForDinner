@@ -14,7 +14,7 @@ interface AuditLogEntry {
   id: number;
   user_id: string;
   action: string;
-  meta: Record<string, any>;
+  meta: Record<string, unknown>;
   ts: string;
 }
 

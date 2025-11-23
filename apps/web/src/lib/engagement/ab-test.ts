@@ -30,7 +30,7 @@ class ABTestManager {
   getVariant(testName: string, userId?: string, sessionId?: string): string {
     const test = this.tests.get(testName);
     if (!test) {
-      console.warn(`A/B test "${testName}" not found`);
+      logger.warn('A/B test "${testName}" not found');
       return test?.variants[0] || 'control';
     }
 

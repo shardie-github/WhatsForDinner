@@ -7,7 +7,9 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('futurecheck-ts');
 interface CompatibilityReport {
   edgeRuntime: {
     compatible: boolean;
@@ -433,12 +435,12 @@ class FutureCheck {
   /**
    * Load package.json
    */
-  private loadPackageJson(): any {
+  private loadPackageJson(): unknown {
     try {
       const content = fs.readFileSync(path.join(this.projectRoot, 'package.json'), 'utf8');
       return JSON.parse(content);
     } catch (error) {
-      console.error('Failed to load package.json:', error);
+      logger.error('Failed to load package.json:', { error });
       return {};
     }
   }
@@ -446,7 +448,7 @@ class FutureCheck {
   /**
    * Load Next.js configuration
    */
-  private loadNextConfig(): any {
+  private loadNextConfig(): unknown {
     try {
       const configPath = path.join(this.projectRoot, 'next.config.js');
       if (fs.existsSync(configPath)) {
@@ -454,7 +456,7 @@ class FutureCheck {
         return require(configPath);
       }
     } catch (error) {
-      console.error('Failed to load next.config.js:', error);
+      logger.error('Failed to load next.config.js:', { error });
     }
     return {};
   }
@@ -463,42 +465,42 @@ class FutureCheck {
    * Generate compatibility report
    */
   private generateReport(report: CompatibilityReport) {
-    console.log(`\nCompatibility Score: ${(report.overall.score * 100).toFixed(1)}% (${report.overall.status})`);
+    logger.info('\nCompatibility Score: ${(report.overall.score * 100').toFixed(1)}% (${report.overall.status})`);
     
     if (report.edgeRuntime.issues.length > 0) {
-      console.log('\nEdge Runtime Issues:');
-      report.edgeRuntime.issues.forEach(issue => console.log(`  - ${issue}`));
+      logger.info('\nEdge Runtime Issues:');
+      report.edgeRuntime.issues.forEach(issue => logger.info('  - ${issue}'));
     }
     if (report.edgeRuntime.recommendations.length > 0) {
-      console.log('\nEdge Runtime Recommendations:');
-      report.edgeRuntime.recommendations.forEach(rec => console.log(`  - ${rec}`));
+      logger.info('\nEdge Runtime Recommendations:');
+      report.edgeRuntime.recommendations.forEach(rec => logger.info('  - ${rec}'));
     }
 
     if (report.wasm.issues.length > 0) {
-      console.log('\nWASM Issues:');
-      report.wasm.issues.forEach(issue => console.log(`  - ${issue}`));
+      logger.info('\nWASM Issues:');
+      report.wasm.issues.forEach(issue => logger.info('  - ${issue}'));
     }
     if (report.wasm.recommendations.length > 0) {
-      console.log('\nWASM Recommendations:');
-      report.wasm.recommendations.forEach(rec => console.log(`  - ${rec}`));
+      logger.info('\nWASM Recommendations:');
+      report.wasm.recommendations.forEach(rec => logger.info('  - ${rec}'));
     }
 
     if (report.workers.issues.length > 0) {
-      console.log('\nWorkers Issues:');
-      report.workers.issues.forEach(issue => console.log(`  - ${issue}`));
+      logger.info('\nWorkers Issues:');
+      report.workers.issues.forEach(issue => logger.info('  - ${issue}'));
     }
     if (report.workers.recommendations.length > 0) {
-      console.log('\nWorkers Recommendations:');
-      report.workers.recommendations.forEach(rec => console.log(`  - ${rec}`));
+      logger.info('\nWorkers Recommendations:');
+      report.workers.recommendations.forEach(rec => logger.info('  - ${rec}'));
     }
 
     if (report.hydrogenOxygen.issues.length > 0) {
-      console.log('\nHydrogen/Oxygen Issues:');
-      report.hydrogenOxygen.issues.forEach(issue => console.log(`  - ${issue}`));
+      logger.info('\nHydrogen/Oxygen Issues:');
+      report.hydrogenOxygen.issues.forEach(issue => logger.info('  - ${issue}'));
     }
     if (report.hydrogenOxygen.recommendations.length > 0) {
-      console.log('\nHydrogen/Oxygen Recommendations:');
-      report.hydrogenOxygen.recommendations.forEach(rec => console.log(`  - ${rec}`));
+      logger.info('\nHydrogen/Oxygen Recommendations:');
+      report.hydrogenOxygen.recommendations.forEach(rec => logger.info('  - ${rec}'));
     }
 
     // Save report to file

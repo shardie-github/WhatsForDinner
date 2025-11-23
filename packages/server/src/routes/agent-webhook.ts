@@ -5,7 +5,9 @@
 
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { createHash, createHmac } from 'crypto';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('agent-webhook-ts');
 interface WebhookPayload {
   source: string;
   event: string;
@@ -119,7 +121,7 @@ export class AgentWebhookRouter {
       await this.routeEvent(agent.name, request.body);
       reply.code(200).send({ success: true });
     } catch (error) {
-      console.error(`Webhook processing failed for ${agent.name}:`, error);
+      logger.error('Webhook processing failed for ${agent.name}:', { error });
       reply.code(500).send({ error: 'Webhook processing failed' });
     }
   }
@@ -145,7 +147,7 @@ export class AgentWebhookRouter {
         await this.handleGroceryListUpdated(agentName, data);
         break;
       default:
-        console.log(`Unhandled event: ${event} from ${agentName}`);
+        logger.info('Unhandled event: ${event} from ${agentName}');
     }
   }
 
@@ -153,7 +155,7 @@ export class AgentWebhookRouter {
    * Handle meal suggestion from agent
    */
   private async handleMealSuggestion(agentName: string, data: any): Promise<void> {
-    console.log(`Meal suggestion from ${agentName}:`, data);
+    logger.info('Meal suggestion from ${agentName}:', { data });
     // Implement meal suggestion handling
   }
 
@@ -161,7 +163,7 @@ export class AgentWebhookRouter {
    * Handle recipe generation from agent
    */
   private async handleRecipeGeneration(agentName: string, data: any): Promise<void> {
-    console.log(`Recipe generation from ${agentName}:`, data);
+    logger.info('Recipe generation from ${agentName}:', { data });
     // Implement recipe generation handling
   }
 
@@ -169,7 +171,7 @@ export class AgentWebhookRouter {
    * Handle meal plan created event
    */
   private async handleMealPlanCreated(agentName: string, data: any): Promise<void> {
-    console.log(`Meal plan created event from ${agentName}:`, data);
+    logger.info('Meal plan created event from ${agentName}:', { data });
     // Implement meal plan handling
   }
 
@@ -177,7 +179,7 @@ export class AgentWebhookRouter {
    * Handle grocery list updated event
    */
   private async handleGroceryListUpdated(agentName: string, data: any): Promise<void> {
-    console.log(`Grocery list updated event from ${agentName}:`, data);
+    logger.info('Grocery list updated event from ${agentName}:', { data });
     // Implement grocery list handling
   }
 

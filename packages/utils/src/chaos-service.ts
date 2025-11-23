@@ -157,7 +157,7 @@ class ChaosService {
   private async simulateMemoryLeak(duration: number, observations: string[]) {
     observations.push('Starting memory leak simulation');
     
-    const memoryChunks: any[] = [];
+    const memoryChunks: unknown[] = [];
     const start = Date.now();
     
     while (Date.now() - start < duration * 1000) {

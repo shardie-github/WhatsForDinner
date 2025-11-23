@@ -10,7 +10,9 @@
 
 import { readFileSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('browser-compatibility-test-ts');
 interface CompatibilityIssue {
   file: string;
   line: number;
@@ -87,7 +89,7 @@ function checkFile(filePath: string): void {
       });
     }
   } catch (error) {
-    console.error(`Error reading file ${filePath}:`, error);
+    logger.error('Error reading file ${filePath}:', { error });
   }
 }
 
@@ -114,11 +116,11 @@ function findSourceFiles(dir: string, fileList: string[] = []): string[] {
 
 // Main execution
 function main() {
-  console.log('?? Running Browser Compatibility Tests...\n');
+  logger.info('?? Running Browser Compatibility Tests...\n');
 
   const sourceFiles = findSourceFiles(join(process.cwd(), 'apps/web/src'));
   
-  console.log(`Checking ${sourceFiles.length} files...\n`);
+  logger.info('Checking ${sourceFiles.length} files...\n');
 
   sourceFiles.forEach(checkFile);
 
@@ -126,40 +128,40 @@ function main() {
   const errors = ISSUES.filter(i => i.severity === 'error');
   const warnings = ISSUES.filter(i => i.severity === 'warning');
 
-  console.log('\n?? Results:');
-  console.log(`  ? Files checked: ${sourceFiles.length}`);
-  console.log(`  ??  Warnings: ${warnings.length}`);
-  console.log(`  ? Errors: ${errors.length}\n`);
+  logger.info('\n?? Results:');
+  logger.info('  ? Files checked: ${sourceFiles.length}');
+  logger.info('  ??  Warnings: ${warnings.length}');
+  logger.info('  ? Errors: ${errors.length}\n');
 
   if (ISSUES.length > 0) {
-    console.log('?? Issues Found:\n');
+    logger.info('?? Issues Found:\n');
     
     ISSUES.forEach((issue, index) => {
       const icon = issue.severity === 'error' ? '?' : '??';
-      console.log(`${icon} [${issue.severity.toUpperCase()}] ${issue.file}:${issue.line}`);
-      console.log(`   ${issue.issue}`);
+      logger.info('${icon} [${issue.severity.toUpperCase(')}] ${issue.file}:${issue.line}`);
+      logger.info('   ${issue.issue}');
       if (issue.browser) {
-        console.log(`   Affected browsers: ${issue.browser}`);
+        logger.info('   Affected browsers: ${issue.browser}');
       }
-      console.log('');
+      logger.info('');
     });
   }
 
   // Browser support summary
-  console.log('\n?? Target Browser Support:');
-  console.log('  ? Chrome 90+');
-  console.log('  ? Firefox 88+');
-  console.log('  ? Safari 14+');
-  console.log('  ? Edge 90+');
-  console.log('  ??  Older browsers may require polyfills\n');
+  logger.info('\n?? Target Browser Support:');
+  logger.info('  ? Chrome 90+');
+  logger.info('  ? Firefox 88+');
+  logger.info('  ? Safari 14+');
+  logger.info('  ? Edge 90+');
+  logger.info('  ??  Older browsers may require polyfills\n');
 
   // Recommendations
   if (warnings.length > 0) {
-    console.log('?? Recommendations:');
-    console.log('  1. Test the application on target browsers');
-    console.log('  2. Add polyfills for older browser support if needed');
-    console.log('  3. Use @babel/preset-env with appropriate targets');
-    console.log('  4. Consider using feature detection instead of direct API calls\n');
+    logger.info('?? Recommendations:');
+    logger.info('  1. Test the application on target browsers');
+    logger.info('  2. Add polyfills for older browser support if needed');
+    logger.info('  3. Use @babel/preset-env with appropriate targets');
+    logger.info('  4. Consider using feature detection instead of direct API calls\n');
   }
 
   // Exit with error code if there are critical issues
@@ -167,7 +169,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log('? Browser compatibility check complete!');
+  logger.info('? Browser compatibility check complete!');
 }
 
 if (require.main === module) {

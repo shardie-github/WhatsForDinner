@@ -42,7 +42,7 @@ export function ActivationDashboard() {
         setLoading(false);
       })
       .catch(err => {
-        console.error('Failed to load activation metrics:', err);
+        logger.error('Failed to load activation metrics:', { err });
         setLoading(false);
       });
   }, [days]);

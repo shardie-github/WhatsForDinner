@@ -1,6 +1,8 @@
 import { monitoringSystem } from './monitoring';
 import { logger } from './logger';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('performanceoptimizer-ts');
 interface PerformanceMetrics {
   bundleSize: number;
   loadTime: number;
@@ -166,7 +168,7 @@ class PerformanceOptimizer {
         'metrics'
       );
     } catch (error) {
-      console.error('Failed to record performance metrics:', error);
+      logger.error('Failed to record performance metrics:', { error });
     }
   }
 
@@ -336,7 +338,7 @@ class PerformanceOptimizer {
         score,
       };
     } catch (error) {
-      console.error('Failed to generate performance report:', error);
+      logger.error('Failed to generate performance report:', { error });
       return {
         summary: { error: error.message },
         metrics: [],
@@ -493,7 +495,7 @@ class PerformanceOptimizer {
         'optimization'
       );
     } catch (error) {
-      console.error('Bundle optimization failed:', error);
+      logger.error('Bundle optimization failed:', { error });
     }
   }
 
@@ -517,7 +519,7 @@ class PerformanceOptimizer {
         'optimization'
       );
     } catch (error) {
-      console.error('Image optimization failed:', error);
+      logger.error('Image optimization failed:', { error });
     }
   }
 
@@ -541,7 +543,7 @@ class PerformanceOptimizer {
         'optimization'
       );
     } catch (error) {
-      console.error('Caching optimization failed:', error);
+      logger.error('Caching optimization failed:', { error });
     }
   }
 }
@@ -581,7 +583,7 @@ export async function measureBundleSize(): Promise<number> {
     // For now, return a simulated value
     return Math.random() * 500 + 100;
   } catch (error) {
-    console.error('Failed to measure bundle size:', error);
+    logger.error('Failed to measure bundle size:', { error });
     return 0;
   }
 }

@@ -5,7 +5,9 @@
 
 import { openai } from '../openaiClient';
 import { createClient } from '../supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('legalautomation-ts');
 export interface LegalDocument {
   id: string;
   type: 'terms_of_service' | 'privacy_policy' | 'data_processing_agreement' | 'cookie_policy' | 'refund_policy';
@@ -169,7 +171,7 @@ Last updated: [DATE]
     type: LegalDocument['type'],
     jurisdiction: string,
     language: string = 'en',
-    customizations?: Record<string, any>
+    customizations?: Record<string, unknown>
   ): Promise<LegalDocument> {
     try {
       const template = this.documentTemplates.get(type);
@@ -227,7 +229,7 @@ Last updated: [DATE]
       return document;
 
     } catch (error) {
-      console.error('Error generating legal document:', error);
+      logger.error('Error generating legal document:', { error });
       throw error;
     }
   }
@@ -254,7 +256,7 @@ Last updated: [DATE]
           created_at: new Date().toISOString(),
         });
     } catch (error) {
-      console.error('Error saving legal document:', error);
+      logger.error('Error saving legal document:', { error });
       throw error;
     }
   }
@@ -311,7 +313,7 @@ Last updated: [DATE]
       return complianceCheck;
 
     } catch (error) {
-      console.error('Error running compliance check:', error);
+      logger.error('Error running compliance check:', { error });
       throw error;
     }
   }
@@ -522,7 +524,7 @@ Last updated: [DATE]
           created_at: new Date().toISOString(),
         });
     } catch (error) {
-      console.error('Error saving compliance check:', error);
+      logger.error('Error saving compliance check:', { error });
       throw error;
     }
   }
@@ -577,7 +579,7 @@ Last updated: [DATE]
       return request;
 
     } catch (error) {
-      console.error('Error processing data subject request:', error);
+      logger.error('Error processing data subject request:', { error });
       throw error;
     }
   }
@@ -622,7 +624,7 @@ Last updated: [DATE]
         .eq('id', request.id);
 
     } catch (error) {
-      console.error('Error processing access request:', error);
+      logger.error('Error processing access request:', { error });
     }
   }
 
@@ -667,7 +669,7 @@ Last updated: [DATE]
         .eq('id', request.id);
 
     } catch (error) {
-      console.error('Error processing erasure request:', error);
+      logger.error('Error processing erasure request:', { error });
     }
   }
 
@@ -732,7 +734,7 @@ Last updated: [DATE]
         .eq('id', request.id);
 
     } catch (error) {
-      console.error('Error processing portability request:', error);
+      logger.error('Error processing portability request:', { error });
     }
   }
 
@@ -765,7 +767,7 @@ Last updated: [DATE]
       })) || [];
 
     } catch (error) {
-      console.error('Error getting legal documents:', error);
+      logger.error('Error getting legal documents:', { error });
       return [];
     }
   }
@@ -795,7 +797,7 @@ Last updated: [DATE]
       })) || [];
 
     } catch (error) {
-      console.error('Error getting compliance status:', error);
+      logger.error('Error getting compliance status:', { error });
       return [];
     }
   }

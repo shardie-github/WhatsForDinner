@@ -23,11 +23,11 @@ interface OnboardingFlowProps {
 
 export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Record<string, unknown>>({});
 
   const totalSteps = 4;
 
-  const handleNext = (stepData: Record<string, any>) => {
+  const handleNext = (stepData: Record<string, unknown>) => {
     setFormData(prev => ({ ...prev, ...stepData }));
     if (currentStep < totalSteps) {
       setCurrentStep(prev => prev + 1);

@@ -19,12 +19,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = await usersRepo.findById(ctx.user.id);
+    // Optimize: Fetch user and flags in parallel
+    const [user, flags] = await Promise.all([
+      usersRepo.findById(ctx.user.id),
+      featureFlagsRepo.findByUser(ctx.user.id),
+    ]);
+
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
-
-    const flags = await featureFlagsRepo.findByUser(ctx.user.id);
 
     let res = NextResponse.json({
       user: {
@@ -38,8 +41,11 @@ export async function GET(request: NextRequest) {
     res = addSecurityHeaders(res);
     return setCORSHeaders(res, request.headers.get('origin'));
   } catch (error) {
-    // Error handled: Error fetching user:
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const { handleApiError } = await import('@whats-for-dinner/utils');
+    return handleApiError(error, {
+      component: 'user-me-api',
+      context: { endpoint: '/api/user/me' },
+    });
   }
 }
 
@@ -88,8 +94,11 @@ async function patchHandler(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid input', details: error.errors }, { status: 400 });
     }
-    // Error handled: Error updating user:
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const { handleApiError } = await import('@whats-for-dinner/utils');
+    return handleApiError(error, {
+      component: 'user-me-api',
+      context: { endpoint: '/api/user/me', method: 'PATCH' },
+    });
   }
 }
 

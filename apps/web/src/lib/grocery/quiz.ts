@@ -29,8 +29,8 @@ export interface QuizResult {
   quizId: string;
   score: number;
   maxScore: number;
-  answers: Record<string, any>;
-  preferences: Record<string, any>;
+  answers: Record<string, unknown>;
+  preferences: Record<string, unknown>;
   pointsEarned: number;
   completedAt: string;
 }
@@ -159,7 +159,7 @@ export class GroceryQuizSystem {
     return this.quizzes.find(q => q.id === quizId);
   }
 
-  calculateScore(quiz: Quiz, answers: Record<string, any>): number {
+  calculateScore(quiz: Quiz, answers: Record<string, unknown>): number {
     let score = 0;
     quiz.questions.forEach(question => {
       if (answers[question.id] !== undefined) {
@@ -169,8 +169,8 @@ export class GroceryQuizSystem {
     return score;
   }
 
-  extractPreferences(quiz: Quiz, answers: Record<string, any>): Record<string, any> {
-    const preferences: Record<string, any> = {};
+  extractPreferences(quiz: Quiz, answers: Record<string, unknown>): Record<string, unknown> {
+    const preferences: Record<string, unknown> = {};
     
     quiz.questions.forEach(question => {
       if (answers[question.id] !== undefined) {
@@ -181,7 +181,7 @@ export class GroceryQuizSystem {
     return preferences;
   }
 
-  async submitQuiz(userId: string, quizId: string, answers: Record<string, any>): Promise<QuizResult> {
+  async submitQuiz(userId: string, quizId: string, answers: Record<string, unknown>): Promise<QuizResult> {
     const quiz = this.getQuiz(quizId);
     if (!quiz) {
       throw new Error(`Quiz ${quizId} not found`);

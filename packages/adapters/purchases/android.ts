@@ -268,7 +268,7 @@ export class AndroidPurchaseAdapter implements PurchaseAdapter {
   /**
    * Get IAP module (react-native-iap)
    */
-  private async getIAPModule(): Promise<any> {
+  private async getIAPModule(): Promise<unknown> {
     try {
       const rnIAP = require('react-native-iap');
       return rnIAP;

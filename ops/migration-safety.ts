@@ -6,7 +6,9 @@ import { execSync, spawn } from 'child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('migration-safety-ts');
 const SNAPSHOTS_DIR = join(process.cwd(), 'ops', 'snapshots');
 
 interface SnapshotMetadata {
@@ -62,7 +64,7 @@ async function createSnapshot(description?: string): Promise<SnapshotMetadata> {
 
     return metadata;
   } catch (error) {
-    console.error('Failed to create snapshot:', error);
+    logger.error('Failed to create snapshot:', { error });
     throw error;
   }
 }
@@ -79,7 +81,7 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
 
   const metadata: SnapshotMetadata = JSON.parse(readFileSync(metadataPath, 'utf-8'));
   
-  console.log(`Restoring snapshot: ${snapshotId}`);
+  logger.info('Restoring snapshot: ${snapshotId}');
   
   // Check for locks
     try {
@@ -87,7 +89,7 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
       stdio: 'pipe'
     });
   } catch (error) {
-    console.warn('Could not check for locks');
+    logger.warn('Could not check for locks');
   }
 
   // Restore snapshot
@@ -113,7 +115,7 @@ async function restoreSnapshot(snapshotId: string): Promise<void> {
       child.on('error', reject);
     });
   } catch (error) {
-    console.error('Failed to restore snapshot:', error);
+    logger.error('Failed to restore snapshot:', { error });
     throw error;
   }
 }
@@ -191,41 +193,41 @@ if (require.main === module) {
   switch (command) {
     case 'snapshot':
       createSnapshot(args[0]).then(metadata => {
-        console.log(`Snapshot created: ${metadata.id}`);
+        logger.info('Snapshot created: ${metadata.id}');
       });
       break;
     case 'restore':
       if (!args[0]) {
-        console.error('Usage: migration-safety.ts restore <snapshot-id>');
+        logger.error('Usage: migration-safety.ts restore <snapshot-id>');
         process.exit(1);
       }
       restoreSnapshot(args[0]).catch(error => {
-        console.error(error);
+        logger.error('error');
         process.exit(1);
       });
       break;
     case 'list':
       listSnapshots().then(snapshots => {
         for (const snapshot of snapshots) {
-          console.log(`${snapshot.id} - ${snapshot.timestamp}`);
+          logger.info('${snapshot.id} - ${snapshot.timestamp}');
         }
       });
       break;
     case 'dry-run':
       if (!args[0]) {
-        console.error('Usage: migration-safety.ts dry-run <migration-path>');
+        logger.error('Usage: migration-safety.ts dry-run <migration-path>');
         process.exit(1);
       }
       dryRunMigration(args[0]).then(result => {
         if (!result.passed) {
-          console.error('Dry-run failed:');
-          result.errors.forEach(e => console.error(`  - ${e}`));
+          logger.error('Dry-run failed:');
+          result.errors.forEach(e => logger.error('  - ${e}'));
           process.exit(1);
         }
       });
       break;
     default:
-      console.error('Usage: migration-safety.ts [snapshot|restore|list|dry-run]');
+      logger.error('Usage: migration-safety.ts [snapshot|restore|list|dry-run]');
       process.exit(1);
   }
 }

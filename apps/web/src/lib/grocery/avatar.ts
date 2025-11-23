@@ -22,7 +22,7 @@ export interface Avatar {
   background: string;
   level: number;
   points: number;
-  customizations: Record<string, any>;
+  customizations: Record<string, unknown>;
 }
 
 export class AvatarSystem {

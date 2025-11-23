@@ -18,7 +18,9 @@ import { join, dirname } from 'path';
 import { promisify } from 'util';
 import { gunzip } from 'zlib';
 import { logger } from '../../packages/server/src/observability/index.js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('restore-run-ts');
 const gunzipAsync = promisify(gunzip);
 
 interface RestoreConfig {
@@ -367,11 +369,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       dryRun,
     })
     .then((result) => {
-      console.log(`Restore ${result.success ? 'completed' : 'failed'}`);
+      logger.info('Restore ${result.success ? 'completed' : 'failed'}');
       process.exit(result.success ? 0 : 1);
     })
     .catch((error) => {
-      console.error('Restore failed:', error);
+      logger.error('Restore failed:', { error });
       process.exit(1);
     });
 }

@@ -6,7 +6,9 @@ import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('sb-guard-ts');
 export async function runSbGuard(options: { fix?: boolean; auditOnly?: boolean }) {
   
   const reportsDir = path.join(process.cwd(), 'ops', 'reports');
@@ -21,7 +23,7 @@ export async function runSbGuard(options: { fix?: boolean; auditOnly?: boolean }
   const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('❌ Supabase credentials not configured');
+    logger.error('❌ Supabase credentials not configured');
     process.exit(1);
   }
 
@@ -29,7 +31,7 @@ export async function runSbGuard(options: { fix?: boolean; auditOnly?: boolean }
   try {
         execSync('pnpm rls:test', { stdio: 'inherit' });
   } catch (error) {
-    console.error('❌ RLS smoke test failed');
+    logger.error('❌ RLS smoke test failed');
     process.exit(1);
   }
 
@@ -188,7 +190,7 @@ CREATE POLICY "${table}_user_delete"
     try {
     execSync('pnpm privacy:compliance', { stdio: 'inherit' });
   } catch (error) {
-    console.error('❌ Privacy compliance checks failed');
+    logger.error('❌ Privacy compliance checks failed');
     findings.push({
       file: 'privacy-compliance',
       issue: 'Privacy compliance checks failed',

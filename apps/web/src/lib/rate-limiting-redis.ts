@@ -53,7 +53,7 @@ async function getRedisClient() {
     
     return client;
   } catch (error) {
-    console.warn('Redis not available, falling back to in-memory rate limiting:', error);
+    logger.warn('Redis not available', { falling back to in-memory rate limiting:', error });
     return null;
   }
 }

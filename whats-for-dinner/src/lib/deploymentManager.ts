@@ -27,7 +27,7 @@ export interface DeploymentConfig {
 export interface HealthCheckResult {
   status: 'healthy' | 'degraded' | 'unhealthy';
   checks: Record<string, boolean>;
-  metrics: Record<string, any>;
+  metrics: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -40,7 +40,7 @@ export interface DeploymentStatus {
   endTime?: string;
   healthChecks: HealthCheckResult[];
   rollbackReason?: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 class DeploymentManager {

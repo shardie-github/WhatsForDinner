@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import type { MealCard } from '@/lib/ugcGrowth';
 import { UGCGrowth } from '@/lib/ugcGrowth';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('shareablemealcard-tsx');
 interface ShareableMealCardProps {
   recipeData: {
     recipe_name: string;
@@ -45,7 +47,7 @@ export default function ShareableMealCard({
       const card = await UGCGrowth.createMealCard(userId, recipeData);
       setMealCard(card);
     } catch (error) {
-      console.error('Error creating meal card:', error);
+      logger.error('Error creating meal card:', { error });
     }
   };
 
@@ -58,7 +60,7 @@ export default function ShareableMealCard({
       setShareSuggestions(suggestions);
       setSelectedPlatforms(suggestions.optimal_platforms);
     } catch (error) {
-      console.error('Error loading share suggestions:', error);
+      logger.error('Error loading share suggestions:', { error });
     }
   };
 
@@ -92,7 +94,7 @@ export default function ShareableMealCard({
 
       alert('Content shared successfully!');
     } catch (error) {
-      console.error('Error sharing content:', error);
+      logger.error('Error sharing content:', { error });
       alert('Failed to share content');
     } finally {
       setIsSharing(false);

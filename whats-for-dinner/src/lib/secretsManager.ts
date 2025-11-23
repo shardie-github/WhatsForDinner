@@ -10,7 +10,9 @@
 
 import crypto from 'crypto';
 import { logger } from './logger';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('secretsmanager-ts');
 export interface SecretConfig {
   name: string;
   required: boolean;
@@ -251,7 +253,7 @@ class SecretsManager {
   private notifyRotationNeeded(secrets: string[]): void {
     // In a real implementation, this would send notifications
     // to administrators or trigger automated rotation workflows
-    console.warn(`⚠️  Secrets need rotation: ${secrets.join(', ')}`);
+    logger.warn('⚠️  Secrets need rotation: ${secrets.join(', { ' })}`);
   }
 
   /**

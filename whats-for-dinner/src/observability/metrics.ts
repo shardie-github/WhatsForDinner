@@ -217,7 +217,7 @@ export function recordMetric(
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]) {
       try {
         const result = await method.apply(this, args);
         counters[counter].add(1, labels || {});
@@ -244,7 +244,7 @@ export function recordPerformance(
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
     
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]) {
       const start = Date.now();
       try {
         const result = await method.apply(this, args);

@@ -6,7 +6,9 @@ import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('doctor-ts');
 interface CheckResult {
   name: string;
   status: 'pass' | 'fail' | 'warn';
@@ -160,9 +162,9 @@ export async function runDoctor(options: { fix?: boolean; verbose?: boolean }) {
     checks.forEach((check) => {
       const icon = check.status === 'pass' ? '✓' : check.status === 'fail' ? '✗' : '⚠';
       const color = check.status === 'pass' ? '\x1b[32m' : check.status === 'fail' ? '\x1b[31m' : '\x1b[33m';
-      console.log(`${color}${icon}\x1b[0m ${check.message}`);
+      logger.info('${color}${icon}\x1b[0m ${check.message}');
       if (options.verbose && check.status === 'fail' && check.fix) {
-        console.log(`  Fix: ${check.fix}`);
+        logger.info('  Fix: ${check.fix}');
       }
     });
 
@@ -174,7 +176,7 @@ export async function runDoctor(options: { fix?: boolean; verbose?: boolean }) {
         try {
           check.fix();
         } catch (error) {
-          console.error(`   Failed to fix ${check.name}:`, error);
+          logger.error('   Failed to fix ${check.name}:', { error });
         }
       }
     });

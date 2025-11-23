@@ -10,6 +10,7 @@
  * Generates baseline.json for regression detection
  */
 
+const logger = createComponentLogger('scenarios-ts');
 export interface PerfScenario {
   name: string;
   description: string;
@@ -169,6 +170,7 @@ export function generateK6Script(scenarios: PerfScenario[]): string {
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Rate } from 'k6/metrics';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const errorRate = new Rate('errors');
 `;
@@ -372,7 +374,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
     saveBaseline(baseline, 'perf-baseline.json')
       .then(() => {
-        if (process.env.NODE_ENV === 'development') { console.log('? Baseline generated: perf-baseline.json'); }
+        if (process.env.NODE_ENV === 'development') { logger.info('? Baseline generated: perf-baseline.json'); }
         process.exit(0);
       })
       .catch((error) => {
@@ -383,8 +385,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     loadBaseline('perf-baseline.json')
       .then((baseline) => {
         // Placeholder comparison - in production would compare against actual test results
-        if (process.env.NODE_ENV === 'development') { console.log('Baseline loaded:', baseline.timestamp); }
-        if (process.env.NODE_ENV === 'development') { console.log('Run k6 tests and compare results'); }
+        if (process.env.NODE_ENV === 'development') { logger.info('Baseline loaded:', { baseline.timestamp }); }
+        if (process.env.NODE_ENV === 'development') { logger.info('Run k6 tests and compare results'); }
         process.exit(0);
       })
       .catch((error) => {
@@ -392,9 +394,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         process.exit(1);
       });
   } else {
-    if (process.env.NODE_ENV === 'development') { console.log('Available commands:'); }
-    if (process.env.NODE_ENV === 'development') { console.log('  --generate-baseline  Generate performance baseline'); }
-    if (process.env.NODE_ENV === 'development') { console.log('  --compare            Compare with baseline'); }
+    if (process.env.NODE_ENV === 'development') { logger.info('Available commands:'); }
+    if (process.env.NODE_ENV === 'development') { logger.info('  --generate-baseline  Generate performance baseline'); }
+    if (process.env.NODE_ENV === 'development') { logger.info('  --compare            Compare with baseline'); }
     process.exit(1);
   }
 }

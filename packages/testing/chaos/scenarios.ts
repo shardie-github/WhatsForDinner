@@ -147,7 +147,7 @@ export const memoryLeak: ChaosScenario = {
   description: 'Simulate memory pressure',
   inject: async () => {
     logger.warn('Chaos: Injecting memory pressure');
-    const leak: any[] = [];
+    const leak: unknown[] = [];
     // Allocate ~100MB
     for (let i = 0; i < 100; i++) {
       leak.push(new Array(1024 * 1024).fill(0));

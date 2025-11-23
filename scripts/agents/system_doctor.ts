@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process"; import fs from "fs";
+import { createComponentLogger } from '@whats-for-dinner/utils';
+const logger = createComponentLogger('system-doctor-ts');
 function run(cmd:string,args:string[]){ const r=spawnSync(cmd,args,{stdio:"inherit"}); return r.status??1; }
 let status=run("node",["scripts/agents/generate_delta_migration.ts"]);
 status=status||run("supabase",["db","push","--db-url",process.env.SUPABASE_DB_URL||""]);
@@ -14,4 +16,4 @@ if(status!==0){
   fs.mkdirSync("backlog",{recursive:true});
   fs.writeFileSync(path,`# System Doctor: Auto Ticket\nIssue: Migration/verification failure\nWhen: ${new Date().toISOString()}\nOwner: Data Eng\nKPI: DQ SLOs green\n`);
   process.exit(1);
-}else{ console.log("✅ System Doctor OK"); }
+}else{ logger.info('✅ System Doctor OK'); }

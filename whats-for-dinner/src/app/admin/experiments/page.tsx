@@ -23,7 +23,9 @@ import {
   Target
 } from 'lucide-react';
 import { featureFlags, FeatureFlag, ExperimentConfig } from '@/lib/featureFlags';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('page-tsx');
 export default function ExperimentsPage() {
   const [flags, setFlags] = useState<FeatureFlag[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +42,7 @@ export default function ExperimentsPage() {
       const allFlags = await featureFlags.getAllFlags();
       setFlags(allFlags);
     } catch (error) {
-      console.error('Error loading flags:', error);
+      logger.error('Error loading flags:', { error });
     } finally {
       setLoading(false);
     }
@@ -52,7 +54,7 @@ export default function ExperimentsPage() {
       await loadFlags();
       setShowCreateForm(false);
     } catch (error) {
-      console.error('Error creating flag:', error);
+      logger.error('Error creating flag:', { error });
     }
   };
 
@@ -62,7 +64,7 @@ export default function ExperimentsPage() {
       await loadFlags();
       setEditingFlag(null);
     } catch (error) {
-      console.error('Error updating flag:', error);
+      logger.error('Error updating flag:', { error });
     }
   };
 
@@ -72,7 +74,7 @@ export default function ExperimentsPage() {
         await featureFlags.deleteFlag(flagId);
         await loadFlags();
       } catch (error) {
-        console.error('Error deleting flag:', error);
+        logger.error('Error deleting flag:', { error });
       }
     }
   };

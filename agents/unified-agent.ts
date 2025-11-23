@@ -9,7 +9,9 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('unified-agent-ts');
 interface AgentConfig {
   agentMode: string;
   autoRun: boolean;
@@ -154,8 +156,8 @@ export class UnifiedAgent {
    * Run all enabled agents
    */
   async runAll(): Promise<void> {
-    console.log('🤖 Unified Agent: Starting agent cycle...');
-    console.log(`📦 Repository Context: ${this.repoContext.type} (${this.repoContext.framework})`);
+    logger.info('🤖 Unified Agent: Starting agent cycle...');
+    logger.info('📦 Repository Context: ${this.repoContext.type} (${this.repoContext.framework}')`);
 
     await this.initializeArtifacts();
 
@@ -174,16 +176,16 @@ export class UnifiedAgent {
       const settings = this.config.agents[agent.name];
       if (settings?.enabled !== false) {
         try {
-          console.log(`\n🔄 Running ${agent.name} agent...`);
+          logger.info('\n🔄 Running ${agent.name} agent...');
           await agent.runner();
-          console.log(`✅ ${agent.name} agent completed`);
+          logger.info('✅ ${agent.name} agent completed');
         } catch (error) {
-          console.error(`❌ ${agent.name} agent failed:`, error);
+          logger.error('❌ ${agent.name} agent failed:', { error });
         }
       }
     }
 
-    console.log('\n✨ Unified Agent cycle complete!');
+    logger.info('\n✨ Unified Agent cycle complete!');
   }
 
   /**

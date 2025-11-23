@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { UGCGrowth, ShareAnalytics, UGCShare } from '@/lib/ugcGrowth';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('page-tsx');
 export default function UGCAnalyticsPage() {
   const [analytics, setAnalytics] = useState<ShareAnalytics | null>(null);
   const [trendingContent, setTrendingContent] = useState<UGCShare[]>([]);
@@ -19,7 +21,7 @@ export default function UGCAnalyticsPage() {
       const data = await UGCGrowth.getUserUGCAnalytics(userId);
       setAnalytics(data);
     } catch (error) {
-      console.error('Error loading UGC analytics:', error);
+      logger.error('Error loading UGC analytics:', { error });
     } finally {
       setIsLoading(false);
     }
@@ -30,7 +32,7 @@ export default function UGCAnalyticsPage() {
       const content = await UGCGrowth.getTrendingUGC(10);
       setTrendingContent(content);
     } catch (error) {
-      console.error('Error loading trending content:', error);
+      logger.error('Error loading trending content:', { error });
     }
   };
 

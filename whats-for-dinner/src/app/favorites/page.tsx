@@ -5,7 +5,9 @@ import { supabase } from '@/lib/supabaseClient';
 import { Recipe } from '@/lib/validation';
 import RecipeCard from '@/components/RecipeCard';
 import Navbar from '@/components/Navbar';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('page-tsx');
 export default function FavoritesPage() {
   const [user, setUser] = useState<any>(null);
   const [favorites, setFavorites] = useState<
@@ -61,7 +63,7 @@ export default function FavoritesPage() {
 
       setFavorites(favorites.filter(fav => fav.id !== favoriteId));
     } catch (error) {
-      console.error('Error removing favorite:', error);
+      logger.error('Error removing favorite:', { error });
     }
   };
 

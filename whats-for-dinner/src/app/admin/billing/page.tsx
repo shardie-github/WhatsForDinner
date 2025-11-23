@@ -21,7 +21,9 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useState } from 'react';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('page-tsx');
 interface SubscriptionData {
   id: string;
   plan: 'free' | 'pro' | 'family';
@@ -131,7 +133,7 @@ export default function AdminBillingPage() {
         window.open(url, '_blank');
       }
     } catch (error) {
-      console.error('Error opening billing portal:', error);
+      logger.error('Error opening billing portal:', { error });
     }
   };
 
@@ -155,7 +157,7 @@ export default function AdminBillingPage() {
         window.location.href = url;
       }
     } catch (error) {
-      console.error('Error creating checkout session:', error);
+      logger.error('Error creating checkout session:', { error });
     }
   };
 

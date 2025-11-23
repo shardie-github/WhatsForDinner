@@ -6,7 +6,9 @@ import { aiOptimization } from '@/lib/aiOptimization';
 import { supabase } from '@/lib/supabaseClient';
 import { StripeService } from '@/lib/stripe';
 import { headers } from 'next/headers';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 export async function POST(req: Request) {
   try {
     // Validate request body
@@ -82,7 +84,7 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
-    console.error('Error generating recipes:', error);
+    logger.error('Error generating recipes:', { error });
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(

@@ -4,7 +4,9 @@
  */
 
 import { createClient } from './supabaseClient';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('i18n-ts');
 export interface Locale {
   code: string;
   name: string;
@@ -27,7 +29,7 @@ export interface Translation {
   namespace: string;
   context?: string;
   plural?: string;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
   lastUpdated: string;
   translator?: string;
 }
@@ -175,7 +177,7 @@ class I18nManager {
       const { data: translations, error } = await query;
 
       if (error) {
-        console.error('Error loading translations:', error);
+        logger.error('Error loading translations:', { error });
         return;
       }
 
@@ -196,14 +198,14 @@ class I18nManager {
       }
 
     } catch (error) {
-      console.error('Error loading translations:', error);
+      logger.error('Error loading translations:', { error });
     }
   }
 
   /**
    * Translate a key
    */
-  t(key: string, variables?: Record<string, any>, options?: { 
+  t(key: string, variables?: Record<string, unknown>, options?: { 
     locale?: string; 
     namespace?: string;
     fallback?: string;
@@ -264,7 +266,7 @@ class I18nManager {
   /**
    * Replace variables in translation
    */
-  private replaceVariables(text: string, variables: Record<string, any>): string {
+  private replaceVariables(text: string, variables: Record<string, unknown>): string {
     return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
       return variables[key] !== undefined ? String(variables[key]) : match;
     });
@@ -368,7 +370,7 @@ class I18nManager {
       }
 
     } catch (error) {
-      console.error('Error generating translation files:', error);
+      logger.error('Error generating translation files:', { error });
     }
   }
 
@@ -427,7 +429,7 @@ class I18nManager {
       return result;
 
     } catch (error) {
-      console.error('Error getting translation stats:', error);
+      logger.error('Error getting translation stats:', { error });
       return {
         totalKeys: 0,
         translatedKeys: 0,
@@ -446,7 +448,7 @@ export function useTranslation(namespace: string = 'common') {
   const [locale, setLocale] = React.useState(i18n.getCurrentLocale());
   const [loading, setLoading] = React.useState(false);
 
-  const t = React.useCallback((key: string, variables?: Record<string, any>, options?: any) => {
+  const t = React.useCallback((key: string, variables?: Record<string, unknown>, options?: any) => {
     return i18n.t(key, variables, { ...options, namespace });
   }, [namespace]);
 
@@ -456,7 +458,7 @@ export function useTranslation(namespace: string = 'common') {
       await i18n.setLocale(newLocale);
       setLocale(newLocale);
     } catch (error) {
-      console.error('Error changing locale:', error);
+      logger.error('Error changing locale:', { error });
     } finally {
       setLoading(false);
     }

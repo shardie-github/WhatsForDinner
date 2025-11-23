@@ -7,7 +7,9 @@
 
 import fs from 'fs';
 import path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('flags-ts');
 export interface FeatureFlag {
   enabled: boolean;
   env?: string | string[];
@@ -50,7 +52,7 @@ function loadFlags(): FlagsConfig {
     
     return flagsCache;
   } catch (error) {
-    console.warn(`Failed to load flags from ${flagsPath}:`, error);
+    logger.warn('Failed to load flags from ${flagsPath}:', { error });
     return {};
   }
 }

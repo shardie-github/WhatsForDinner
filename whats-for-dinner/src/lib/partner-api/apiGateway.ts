@@ -5,7 +5,9 @@
 
 import { createClient } from '../supabaseClient';
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('apigateway-ts');
 export interface APIKey {
   id: string;
   key: string;
@@ -97,7 +99,7 @@ class PartnerAPIGateway {
         apiKey: keyData
       };
     } catch (error) {
-      console.error('API authentication error:', error);
+      logger.error('API authentication error:', { error });
       return null;
     }
   }
@@ -155,7 +157,7 @@ class PartnerAPIGateway {
           created_at: new Date().toISOString()
         });
     } catch (error) {
-      console.error('Error logging API request:', error);
+      logger.error('Error logging API request:', { error });
     }
   }
 
@@ -187,7 +189,7 @@ class PartnerAPIGateway {
 
       return data;
     } catch (error) {
-      console.error('Error creating partner:', error);
+      logger.error('Error creating partner:', { error });
       throw error;
     }
   }
@@ -224,7 +226,7 @@ class PartnerAPIGateway {
 
       return data;
     } catch (error) {
-      console.error('Error generating API key:', error);
+      logger.error('Error generating API key:', { error });
       throw error;
     }
   }
@@ -258,7 +260,7 @@ class PartnerAPIGateway {
 
       return data || [];
     } catch (error) {
-      console.error('Error getting API keys:', error);
+      logger.error('Error getting API keys:', { error });
       return [];
     }
   }
@@ -273,7 +275,7 @@ class PartnerAPIGateway {
         .update({ is_active: false })
         .eq('id', apiKeyId);
     } catch (error) {
-      console.error('Error revoking API key:', error);
+      logger.error('Error revoking API key:', { error });
       throw error;
     }
   }
@@ -345,7 +347,7 @@ class PartnerAPIGateway {
         errors
       };
     } catch (error) {
-      console.error('Error getting API usage stats:', error);
+      logger.error('Error getting API usage stats:', { error });
       return {
         totalRequests: 0,
         successRate: 0,
@@ -391,11 +393,11 @@ class PartnerAPIGateway {
             })
           });
         } catch (error) {
-          console.error(`Error sending webhook to ${webhook.url}:`, error);
+          logger.error('Error sending webhook to ${webhook.url}:', { error });
         }
       }
     } catch (error) {
-      console.error('Error sending webhook:', error);
+      logger.error('Error sending webhook:', { error });
     }
   }
 
@@ -436,7 +438,7 @@ class PartnerAPIGateway {
 
       return data;
     } catch (error) {
-      console.error('Error creating webhook:', error);
+      logger.error('Error creating webhook:', { error });
       throw error;
     }
   }

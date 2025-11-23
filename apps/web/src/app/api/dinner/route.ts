@@ -11,6 +11,8 @@ import { withCSRFProtection } from '@/lib/csrf-middleware';
 import { analytics } from '@/lib/analytics';
 import { suggestionCache } from '@/lib/cache';
 import { createComponentLogger } from '@whats-for-dinner/utils';
+import { handleApiError } from '@whats-for-dinner/utils';
+import { monitorQuery } from '@/lib/performance/query-optimizer';
 
 const logger = createComponentLogger('dinner-api');
 
@@ -71,12 +73,18 @@ async function handler(req: NextRequest) {
     const { ingredients, preferences } =
       GenerateRecipesRequestSchema.parse(body);
 
-    // Get tenant plan
-    const { data: tenant } = await supabase
-      .from('tenants')
-      .select('plan')
-      .eq('id', tenantId)
-      .single();
+    // Optimize: Get tenant plan with query monitoring
+    const tenantResult_query = await monitorQuery('get-tenant-plan', async () => {
+      const { data, error } = await supabase
+        .from('tenants')
+        .select('plan')
+        .eq('id', tenantId)
+        .single();
+      if (error) throw error;
+      return data;
+    });
+    
+    const tenant = tenantResult_query.result;
 
     if (!tenant) {
       return NextResponse.json({ error: 'Tenant not found' }, { status: 404 });
@@ -223,19 +231,11 @@ async function handler(req: NextRequest) {
       );
     }
 
-    // Generic error
-    logger.error('Error generating recipes', {
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
+    // Generic error - use unified error handler
+    return handleApiError(error, {
+      component: 'dinner-api',
+      context: { endpoint: '/api/dinner' },
     });
-    return NextResponse.json(
-      {
-        error: 'Failed to generate recipes',
-        message: 'An unexpected error occurred. Please try again.',
-        retryable: true,
-      },
-      { status: 500 }
-    );
   }
 }
 

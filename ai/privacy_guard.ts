@@ -1,9 +1,11 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
 /**
  * Privacy Guard System
  * Redacts PII before any prompt or telemetry export
  * Enforces privacy compliance in CI
  */
 
+const logger = createComponentLogger('privacy-guard-ts');
 interface PrivacyConfig {
   redactPII: boolean;
   anonymizeData: boolean;
@@ -231,7 +233,7 @@ class PrivacyGuard {
   /**
    * Anonymize data while preserving structure
    */
-  anonymizeData(data: any): any {
+  anonymizeData(data: any): unknown {
     if (!this.config.anonymizeData) {
       return data;
     }
@@ -335,7 +337,7 @@ class PrivacyGuard {
   /**
    * Generate privacy compliance report
    */
-  generatePrivacyReport(data: any[]): {
+  generatePrivacyReport(data: unknown[]): {
     totalItems: number;
     piiDetected: number;
     sensitiveData: number;
@@ -391,11 +393,11 @@ class PrivacyGuard {
                         
       if (auditResults.recommendations.length > 0) {
         auditResults.recommendations.forEach(rec => {
-          console.log('Recommendation:', rec);
+          logger.info('Recommendation:', { rec });
         });
       }
     } catch (error) {
-      console.error('Privacy audit failed:', error);
+      logger.error('Privacy audit failed:', { error });
       throw error;
     }
   }

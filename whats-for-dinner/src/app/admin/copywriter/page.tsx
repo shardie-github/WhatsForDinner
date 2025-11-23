@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { AICopywriter, CopyVariant } from '@/lib/aiCopywriter';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('page-tsx');
 export default function AICopywriterPage() {
   const [contentType, setContentType] =
     useState<CopyVariant['content_type']>('landing_headline');
@@ -35,7 +37,7 @@ export default function AICopywriterPage() {
       );
       setGeneratedVariants(variants);
     } catch (error) {
-      console.error('Error generating variants:', error);
+      logger.error('Error generating variants:', { error });
       alert('Failed to generate variants');
     } finally {
       setIsGenerating(false);
@@ -47,7 +49,7 @@ export default function AICopywriterPage() {
       const data = await AICopywriter.getCopyInsights(contentType);
       setInsights(data);
     } catch (error) {
-      console.error('Error loading insights:', error);
+      logger.error('Error loading insights:', { error });
     }
   };
 
@@ -61,7 +63,7 @@ export default function AICopywriterPage() {
       const results = await AICopywriter.analyzeTestResults(selectedTestId);
       setTestResults(results);
     } catch (error) {
-      console.error('Error analyzing test:', error);
+      logger.error('Error analyzing test:', { error });
       alert('Failed to analyze test results');
     }
   };
@@ -76,7 +78,7 @@ export default function AICopywriterPage() {
       // Reload variants to show updated metrics
       loadInsights();
     } catch (error) {
-      console.error('Error updating metrics:', error);
+      logger.error('Error updating metrics:', { error });
     }
   };
 

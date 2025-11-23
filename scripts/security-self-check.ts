@@ -19,7 +19,9 @@ import fs from "fs";
 import path from "path";
 import { globSync } from "glob";
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('security-self-check-ts');
 interface CheckResult {
   lens: string;
   category: string;
@@ -87,7 +89,7 @@ function fileContains(filePath: string, pattern: string | RegExp): boolean {
   return pattern.test(content);
 }
 
-function readJsonFile(filePath: string): any {
+function readJsonFile(filePath: string): unknown {
   try {
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
   } catch {
@@ -842,15 +844,15 @@ function generateReport(): SecurityReport {
 }
 
 function printReport(report: SecurityReport) {
-  console.log('\n=== Security Self-Check Report ===');
-  console.log(`Overall Status: ${report.overallStatus}`);
+  logger.info('\n=== Security Self-Check Report ===');
+  logger.info('Overall Status: ${report.overallStatus}');
               
   if (report.criticalFailures.length > 0) {
-    console.log('\nCritical Failures:');
+    logger.info('\nCritical Failures:');
     report.criticalFailures.forEach((r) => {
-      console.log(`  ❌ ${r.name}: ${r.message}`);
+      logger.info('  ❌ ${r.name}: ${r.message}');
       if (r.remediation) {
-        console.log(`     Fix: ${r.remediation}`);
+        logger.info('     Fix: ${r.remediation}');
       }
     });
   }
@@ -888,7 +890,7 @@ function printReport(report: SecurityReport) {
 }
 
 async function main() {
-  console.log('Running security self-check...\n');
+  logger.info('Running security self-check...\n');
   
   // Run all checks
   checkPrivacyCompliance();
@@ -913,6 +915,6 @@ async function main() {
 
 // Run main function
 main().catch((error) => {
-  console.error("❌ Fatal error:", error);
+  logger.error('❌ Fatal error:', { error });
   process.exit(1);
 });

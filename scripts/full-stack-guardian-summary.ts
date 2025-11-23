@@ -5,7 +5,9 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('full-stack-guardian-summary-ts');
 interface GuardianReport {
   timestamp: string;
   status: 'healthy' | 'degraded' | 'unhealthy';
@@ -300,23 +302,23 @@ if (require.main === module) {
   const guardian = new FullStackGuardianSummary();
   guardian.generateReport()
     .then(report => {
-      console.log(JSON.stringify(report, null, 2));
+      logger.info('JSON.stringify(report', { null, 2 }));
       
-      console.log('\n📊 Summary:');
-      console.log(`Status: ${report.status.toUpperCase()}`);
-      console.log(`Overall Score: ${(Object.values(report.categories).reduce((sum, c) => sum + c.score, 0) / Object.keys(report.categories).length * 100).toFixed(1)}%`);
+      logger.info('\n📊 Summary:');
+      logger.info('Status: ${report.status.toUpperCase(')}`);
+      logger.info('Overall Score: ${(Object.values(report.categories').reduce((sum, c) => sum + c.score, 0) / Object.keys(report.categories).length * 100).toFixed(1)}%`);
       
       if (report.recommendations.length > 0) {
-        console.log('\n📋 Recommendations:');
+        logger.info('\n📋 Recommendations:');
         report.recommendations.forEach((rec, i) => {
-          console.log(`${i + 1}. ${rec}`);
+          logger.info('${i + 1}. ${rec}');
         });
       }
       
       process.exit(report.status === 'healthy' ? 0 : 1);
     })
     .catch(error => {
-      console.error('❌ Failed to generate guardian report:', error);
+      logger.error('❌ Failed to generate guardian report:', { error });
       process.exit(1);
     });
 }

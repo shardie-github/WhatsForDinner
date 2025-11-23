@@ -5,7 +5,9 @@
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { secretsManager } from '../scripts/secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('billing-stub-ts');
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
 interface WebhookEvent {
@@ -49,16 +51,16 @@ async function handleWebhook(event: WebhookEvent): Promise<void> {
   // Handle event types
   switch (event.type) {
     case 'checkout.session.completed':
-      console.log('Checkout session completed:', event.data.id);
+      logger.info('Checkout session completed:', { event.data.id });
       break;
     case 'customer.subscription.created':
-      console.log('Subscription created:', event.data.id);
+      logger.info('Subscription created:', { event.data.id });
       break;
     case 'customer.subscription.updated':
-      console.log('Subscription updated:', event.data.id);
+      logger.info('Subscription updated:', { event.data.id });
       break;
     case 'customer.subscription.deleted':
-      console.log('Subscription deleted:', event.data.id);
+      logger.info('Subscription deleted:', { event.data.id });
       break;
   }
 }
@@ -78,14 +80,14 @@ if (require.main === module) {
       timestamp: new Date().toISOString()
     };
     handleWebhook(testEvent).then(() => {
-      console.log('Webhook test completed');
+      logger.info('Webhook test completed');
     });
   } else if (command === 'check') {
     isBillingEnabled().then(enabled => {
-      console.log(`Billing is ${enabled ? 'enabled' : 'disabled'}`);
+      logger.info('Billing is ${enabled ? 'enabled' : 'disabled'}');
     });
   } else {
-    console.error('Usage: billing-stub.ts [test|check]');
+    logger.error('Usage: billing-stub.ts [test|check]');
     process.exit(1);
   }
 }

@@ -1,7 +1,9 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('index-ts');
 interface JobData {
   job_id: number;
   job_type: string;
@@ -38,7 +40,7 @@ serve(async req => {
       await supabaseClient.rpc('get_next_job');
 
     if (jobError) {
-      console.error('Error getting next job:', jobError);
+      logger.error('Error getting next job:', { jobError });
       return new Response(JSON.stringify({ error: 'Failed to get next job' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -101,7 +103,7 @@ serve(async req => {
 
           } catch (error) {
       errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error(`Job ${job.job_id} failed:`, errorMessage);
+      logger.error('Job ${job.job_id} failed:', { errorMessage });
 
       // Log the error
       await supabaseClient.rpc('log_job_activity', {
@@ -131,7 +133,7 @@ serve(async req => {
       }
     );
   } catch (error) {
-    console.error('Job processor error:', error);
+    logger.error('Job processor error:', { error });
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -142,7 +144,7 @@ serve(async req => {
 async function processMealGenerationJob(
   supabaseClient: any,
   job: JobData
-): Promise<any> {
+): Promise<unknown> {
   const {
     pantry_items,
     dietary_preferences,
@@ -173,7 +175,7 @@ async function processMealGenerationJob(
 async function processEmailNotificationJob(
   supabaseClient: any,
   job: JobData
-): Promise<any> {
+): Promise<unknown> {
   const { to, subject, template, data } = job.job_payload;
 
   await supabaseClient.rpc('log_job_activity', {
@@ -197,7 +199,7 @@ async function processEmailNotificationJob(
 async function processDataCleanupJob(
   supabaseClient: any,
   job: JobData
-): Promise<any> {
+): Promise<unknown> {
   const { cleanup_type, days_to_keep } = job.job_payload;
 
   await supabaseClient.rpc('log_job_activity', {
@@ -254,7 +256,7 @@ async function processDataCleanupJob(
 async function processAnalyticsJob(
   supabaseClient: any,
   job: JobData
-): Promise<any> {
+): Promise<unknown> {
   const { analysis_type, date_range } = job.job_payload;
 
   await supabaseClient.rpc('log_job_activity', {

@@ -6,7 +6,9 @@
 
 import fs from 'fs';
 import path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('increase-test-coverage-ts');
 interface TestGap {
   file: string;
   type: 'unit' | 'integration' | 'e2e';
@@ -123,7 +125,7 @@ async function createTestFiles(gaps: Array<TestGap & { testPath: string; testCon
     if (!fs.existsSync(gap.testPath)) {
       fs.writeFileSync(gap.testPath, gap.testContent);
       created.push(gap.testPath);
-      console.log(`  ✅ Created: ${gap.testPath}`);
+      logger.info('  ✅ Created: ${gap.testPath}');
     }
   }
 
@@ -157,51 +159,51 @@ async function generateCoverageReport() {
 }
 
 async function main() {
-  console.log('🧪 Test Coverage Increase - Generating Test Scaffolding\n');
+  logger.info('🧪 Test Coverage Increase - Generating Test Scaffolding\n');
 
   // Find missing tests
-  console.log('📊 Analyzing test coverage gaps...');
+  logger.info('📊 Analyzing test coverage gaps...');
   const gaps = await findMissingTests();
 
   if (gaps.length === 0) {
-    console.log('  ✅ All critical paths have tests!');
+    logger.info('  ✅ All critical paths have tests!');
   } else {
-    console.log(`  ⚠️  Found ${gaps.length} critical paths without tests`);
+    logger.info('  ⚠️  Found ${gaps.length} critical paths without tests');
     
     // Group by priority
     const critical = gaps.filter(g => g.priority === 'critical');
     const high = gaps.filter(g => g.priority === 'high');
     
-    console.log(`\n  Critical: ${critical.length}`);
-    console.log(`  High: ${high.length}`);
+    logger.info('\n  Critical: ${critical.length}');
+    logger.info('  High: ${high.length}');
 
     // Create test files
-    console.log('\n📝 Creating test scaffolding...');
+    logger.info('\n📝 Creating test scaffolding...');
     const created = await createTestFiles(gaps);
-    console.log(`\n  ✅ Created ${created.length} test files`);
+    logger.info('\n  ✅ Created ${created.length} test files');
   }
 
   // Generate coverage report
   const reportPath = await generateCoverageReport();
-  console.log(`\n📄 Coverage plan saved to ${reportPath}`);
+  logger.info('\n📄 Coverage plan saved to ${reportPath}');
 
-  console.log('\n📋 Next steps:');
-  console.log('   1. Run: pnpm test:coverage');
-  console.log('   2. Implement tests for critical paths');
-  console.log('   3. Focus on onboarding, meal planning, grocery list, payment');
-  console.log('   4. Add integration tests for API endpoints');
-  console.log('   5. Add E2E tests for user journeys');
-  console.log('   6. Target: 80%+ coverage');
+  logger.info('\n📋 Next steps:');
+  logger.info('   1. Run: pnpm test:coverage');
+  logger.info('   2. Implement tests for critical paths');
+  logger.info('   3. Focus on onboarding', { meal planning, grocery list, payment' });
+  logger.info('   4. Add integration tests for API endpoints');
+  logger.info('   5. Add E2E tests for user journeys');
+  logger.info('   6. Target: 80%+ coverage');
 }
 
 if (require.main === module) {
   main()
     .then(() => {
-      console.log('\n✅ Test coverage scaffolding completed');
+      logger.info('\n✅ Test coverage scaffolding completed');
       process.exit(0);
     })
     .catch((error) => {
-      console.error('\n❌ Failed to generate test scaffolding:', error);
+      logger.error('\n❌ Failed to generate test scaffolding:', { error });
       process.exit(1);
     });
 }

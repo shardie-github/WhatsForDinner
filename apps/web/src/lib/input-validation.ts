@@ -36,7 +36,7 @@ export function sanitizeString(input: string): string {
 /**
  * Sanitize object recursively
  */
-export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
+export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
   const sanitized = { ...obj };
   
   for (const key in sanitized) {
@@ -157,7 +157,7 @@ export async function validateRequestBody<T extends z.ZodTypeAny>(
     }
     
     // Sanitize the validated data
-    const sanitized = sanitizeObject(result.data as Record<string, any>);
+    const sanitized = sanitizeObject(result.data as Record<string, unknown>);
     
     return {
       success: true,
@@ -198,7 +198,7 @@ export function validateQueryParams<T extends z.ZodTypeAny>(
     }
     
     // Sanitize
-    const sanitized = sanitizeObject(result.data as Record<string, any>);
+    const sanitized = sanitizeObject(result.data as Record<string, unknown>);
     
     return {
       success: true,

@@ -5,7 +5,9 @@
  */
 
 import type { AdContext, AdDecision } from './adEngine.js';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('partnersource-ts');
 export interface PartnerCreative {
   id: string;
   campaign_id: string;
@@ -69,7 +71,7 @@ export async function fetchPartnerCreatives(
     const data = await response.json();
     return data.creatives || [];
   } catch (error) {
-    console.error('Failed to fetch partner creatives', error);
+    logger.error('Failed to fetch partner creatives', { error });
     return [];
   }
 }

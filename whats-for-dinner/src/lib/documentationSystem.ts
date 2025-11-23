@@ -12,7 +12,9 @@
 
 import { logger } from './logger';
 import { monitoringSystem } from './monitoring';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('documentationsystem-ts');
 export interface DocumentationConfig {
   outputDir: string;
   templatesDir: string;
@@ -70,7 +72,7 @@ export interface APIResponse {
   statusCode: number;
   description: string;
   schema: any;
-  examples: any[];
+  examples: unknown[];
 }
 
 export interface APIExample {
@@ -712,7 +714,7 @@ async function getRecipes() {
       cuisine: 'italian'
     });
       } catch (error) {
-    console.error('Error:', error.message);
+    logger.error('Error:', { error.message });
   }
 }
 

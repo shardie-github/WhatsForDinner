@@ -66,7 +66,7 @@ async function handler(request: NextRequest) {
           mealPlanGenerated = true;
         }
       } catch (error) {
-        console.warn('Failed to generate meal plan:', error);
+        logger.warn('Failed to generate meal plan:', { error });
         // Don't fail if meal plan generation fails
       }
     }

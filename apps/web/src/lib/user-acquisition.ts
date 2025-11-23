@@ -364,7 +364,7 @@ async function applyReferralRewards(referrerId: string, refereeId: string): Prom
 async function trackConversionEvent(
   userId: string,
   event: string,
-  properties?: Record<string, any>
+  properties?: Record<string, unknown>
 ): Promise<void> {
   try {
     await supabase.from('analytics_events').insert({

@@ -122,7 +122,7 @@ class PrivacyService {
   /**
    * Export user data (Right to data portability)
    */
-  exportUserData(userId: string): any {
+  exportUserData(userId: string): unknown {
     const personalData = this.getUserPersonalData(userId);
     const consentRecords = this.getUserConsentRecords(userId);
     
@@ -184,7 +184,7 @@ class PrivacyService {
   /**
    * Generate privacy report
    */
-  generatePrivacyReport(): any {
+  generatePrivacyReport(): unknown {
     const totalPersonalData = this.personalData.size;
     const totalConsentRecords = this.consentRecords.size;
     const retentionCompliance = this.checkDataRetentionCompliance();

@@ -162,7 +162,7 @@ export const cache = new CacheManager();
  * Cache decorator for functions
  * Measurable: Automatic caching with TTL
  */
-export function cached<T extends (...args: any[]) => Promise<any>>(
+export function cached<T extends (...args: unknown[]) => Promise<unknown>>(
   fn: T,
   options: CacheOptions & { keyPrefix?: string } = {}
 ): T {

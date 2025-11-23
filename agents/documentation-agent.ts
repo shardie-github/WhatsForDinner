@@ -9,7 +9,9 @@
 import { writeFileSync, existsSync, readFileSync, appendFileSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('documentation-agent-ts');
 interface RepoContext {
   type: string;
   framework: string;
@@ -26,7 +28,7 @@ export class DocumentationAgent {
   ) {}
 
   async run(): Promise<void> {
-    console.log('📚 Updating documentation...');
+    logger.info('📚 Updating documentation...');
 
     await this.updateIntentLog();
     await this.updateChangelog();
@@ -55,7 +57,7 @@ export class DocumentationAgent {
           return { hash, message, date };
         });
     } catch (error) {
-      console.warn('Could not read git log:', error);
+      logger.warn('Could not read git log:', { error });
     }
 
     // Check if intent log exists

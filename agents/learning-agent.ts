@@ -9,7 +9,9 @@
 
 import { writeFileSync, existsSync, readFileSync } from 'fs';
 import { join } from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('learning-agent-ts');
 interface Pattern {
   name: string;
   files: string[];
@@ -44,7 +46,7 @@ export class LearningAgent {
   ) {}
 
   async run(): Promise<void> {
-    console.log('🧠 Running learning and pattern detection...');
+    logger.info('🧠 Running learning and pattern detection...');
 
     const discovery = await this.analyzePatterns();
     await this.saveDiscoveries(discovery);
@@ -163,7 +165,7 @@ This file tracks patterns, duplications, and recommendations discovered by the L
     // Recommendations are already included in the discovery object
     // This method could be extended to create GitHub issues or PRs
     if (discovery.recommendations.length > 0) {
-      console.log('💡 Recommendations:', discovery.recommendations);
+      logger.info('💡 Recommendations:', { discovery.recommendations });
     }
   }
 }

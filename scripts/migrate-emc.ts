@@ -11,7 +11,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('migrate-emc-ts');
 interface MigrationStep {
   id: string;
   type: 'expand' | 'migrate' | 'contract';
@@ -131,7 +133,7 @@ class EMCMigrator {
         await this.updateStepStatus(step.id, 'completed');
         
       } catch (error) {
-        console.error(`❌ Failed expand step ${step.id}:`, error);
+        logger.error('❌ Failed expand step ${step.id}:', { error });
         await this.updateStepStatus(step.id, 'failed', error.message);
         throw error;
       }
@@ -166,7 +168,7 @@ class EMCMigrator {
         await this.updateStepStatus(step.id, 'completed');
         
       } catch (error) {
-        console.error(`❌ Failed migrate step ${step.id}:`, error);
+        logger.error('❌ Failed migrate step ${step.id}:', { error });
         await this.updateStepStatus(step.id, 'failed', error.message);
         throw error;
       }
@@ -195,7 +197,7 @@ class EMCMigrator {
         await this.updateStepStatus(step.id, 'completed');
         
       } catch (error) {
-        console.error(`❌ Failed contract step ${step.id}:`, error);
+        logger.error('❌ Failed contract step ${step.id}:', { error });
         await this.updateStepStatus(step.id, 'failed', error.message);
         throw error;
       }
@@ -304,7 +306,7 @@ class EMCMigrator {
       .eq('id', stepId);
 
     if (updateError) {
-      console.error(`Failed to update step status: ${updateError.message}`);
+      logger.error('Failed to update step status: ${updateError.message}');
     }
   }
 
@@ -362,7 +364,7 @@ ${this.migrationSteps.reduce((acc, step) => {
       
       
     } catch (error) {
-      console.error('❌ EMC migration process failed:', error);
+      logger.error('❌ EMC migration process failed:', { error });
       throw error;
     }
   }
@@ -388,7 +390,7 @@ ${this.migrationSteps.reduce((acc, step) => {
 
       
     } catch (error) {
-      console.error('❌ EMC migration check failed:', error);
+      logger.error('❌ EMC migration check failed:', { error });
       process.exit(1);
     }
   }
@@ -403,9 +405,9 @@ async function main() {
   const supabaseKey = (await secretsManager.getSecret('SUPABASE_SERVICE_ROLE_KEY')) || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('❌ Missing required environment variables:');
-    console.error('  - NEXT_PUBLIC_SUPABASE_URL');
-    console.error('  - SUPABASE_SERVICE_ROLE_KEY');
+    logger.error('❌ Missing required environment variables:');
+    logger.error('  - NEXT_PUBLIC_SUPABASE_URL');
+    logger.error('  - SUPABASE_SERVICE_ROLE_KEY');
     process.exit(1);
   }
 
@@ -421,7 +423,7 @@ async function main() {
 // Run if called directly
 if (require.main === module) {
   main().catch(error => {
-    console.error('Fatal error:', error);
+    logger.error('Fatal error:', { error });
     process.exit(1);
   });
 }

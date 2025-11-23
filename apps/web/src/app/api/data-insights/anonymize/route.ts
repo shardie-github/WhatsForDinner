@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function anonymizeData(data: any, type: string): any {
+function anonymizeData(data: any, type: string): unknown {
   // Remove PII
   if (data.email) {
     data.email = hashValue(data.email);

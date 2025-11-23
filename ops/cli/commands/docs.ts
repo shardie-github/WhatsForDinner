@@ -5,7 +5,9 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('docs-ts');
 export async function runDocs(options: { rebuild?: boolean; watch?: boolean }) {
   
   const docsDir = path.join(process.cwd(), 'ops', 'docs');
@@ -26,13 +28,13 @@ export async function runDocs(options: { rebuild?: boolean; watch?: boolean }) {
     generateHTMLIndex(docsDir);
 
     if (options.watch) {
-      console.log('📚 Watching for documentation changes...');
+      logger.info('📚 Watching for documentation changes...');
       // TODO: Implement file watching
     }
 
-    console.log('✅ Documentation generated successfully');
+    logger.info('✅ Documentation generated successfully');
   } catch (error) {
-    console.error('\n❌ Documentation generation failed:', error);
+    logger.error('\n❌ Documentation generation failed:', { error });
     process.exit(1);
   }
 }

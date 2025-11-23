@@ -233,7 +233,7 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const region = url.searchParams.get('region') as 'gdpr' | 'ccpa' | 'cpra' | 'other' | null;
 
-    const filters: any[] = [];
+    const filters: unknown[] = [];
     if (region) {
       filters.push(eq(regulatoryReports.region, region));
     }

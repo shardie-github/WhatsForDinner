@@ -5,7 +5,9 @@
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { secretsManager } from './secrets-manager-unified.mjs';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('cost-caps-ts');
 const REPORTS_DIR = join(process.cwd(), 'ops', 'reports');
 
 interface CostCap {
@@ -62,8 +64,8 @@ async function checkCostCaps(): Promise<void> {
   }
 
   if (alerts.length > 0) {
-    console.warn(`Cost cap alerts: ${alerts.length}`);
-    alerts.forEach(alert => console.warn(`  - ${alert.message}`));
+    logger.warn('Cost cap alerts: ${alerts.length}');
+    alerts.forEach(alert => logger.warn('  - ${alert.message}'));
     
     // Send webhook notification
     if ((await secretsManager.getSecret('SLACK_WEBHOOK_URL')) || process.env.SLACK_WEBHOOK_URL) {
@@ -126,16 +128,16 @@ if (require.main === module) {
 
   if (command === 'check') {
     checkCostCaps().catch(error => {
-      console.error('Failed to check cost caps:', error);
+      logger.error('Failed to check cost caps:', { error });
       process.exit(1);
     });
   } else if (command === 'simulate') {
     const scenario = args[0] || 'default';
     const simulation = simulateCosts(scenario);
-    console.log(`Simulation results for scenario: ${scenario}`);
-    simulation.recommendations.forEach(r => console.log(`  - ${r}`));
+    logger.info('Simulation results for scenario: ${scenario}');
+    simulation.recommendations.forEach(r => logger.info('  - ${r}'));
   } else {
-    console.error('Usage: cost-caps.ts [check|simulate]');
+    logger.error('Usage: cost-caps.ts [check|simulate]');
     process.exit(1);
   }
 }

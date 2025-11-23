@@ -75,7 +75,7 @@ export interface AnimationConfig {
   duration: number;
   easing: string;
   properties: string[];
-  keyframes: Record<string, any>;
+  keyframes: Record<string, unknown>;
 }
 
 export interface MicroInteraction {

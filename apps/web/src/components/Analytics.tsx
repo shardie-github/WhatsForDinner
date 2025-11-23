@@ -72,7 +72,7 @@ export function Analytics() {
 }
 
 // Helper function to track events
-export function trackEvent(eventName: string, properties?: Record<string, any>) {
+export function trackEvent(eventName: string, properties?: Record<string, unknown>) {
   if (typeof window === 'undefined') return;
 
   // PostHog
@@ -88,7 +88,7 @@ export function trackEvent(eventName: string, properties?: Record<string, any>) 
 
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void;
-    dataLayer?: any[];
+    gtag?: (...args: unknown[]) => void;
+    dataLayer?: unknown[];
   }
 }

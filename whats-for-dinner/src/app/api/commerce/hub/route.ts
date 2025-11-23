@@ -3,7 +3,9 @@ import { headers } from 'next/headers';
 import { supabase } from '@/lib/supabaseClient';
 import { AICommerceHub } from '@/lib/aiCommerceHub';
 import { z } from 'zod';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
+const logger = createComponentLogger('route-ts');
 const CommerceHubRequestSchema = z.object({
   action: z.enum([
     'summary',
@@ -78,7 +80,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Commerce Hub error:', error);
+    logger.error('Commerce Hub error:', { error });
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -147,7 +149,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Commerce Hub GET error:', error);
+    logger.error('Commerce Hub GET error:', { error });
     return NextResponse.json(
       { error: 'Commerce Hub request failed' },
       { status: 500 }

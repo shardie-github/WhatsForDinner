@@ -64,7 +64,7 @@ export class GroceryGamification {
       //   action,
       // });
     } catch (error) {
-      console.warn('Failed to award points:', error);
+      logger.warn('Failed to award points:', { error });
     }
 
     return this.getUserPoints(userId);
