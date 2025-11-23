@@ -206,7 +206,7 @@ function generateOpenAPISpec(routes: RouteInfo[]): OpenAPISpec {
     info: {
       title: "What's for Dinner API",
       version: '1.0.0',
-      description: 'API documentation for What\'s for Dinner meal planning application',
+      description: 'API documentation for What's for Dinner meal planning application',
     },
     servers: [
       {

@@ -136,7 +136,7 @@ async function main() {
   logger.info('\n✅ Archiving complete!');
   logger.info('\n📋 Next steps:');
   logger.info('   1. Review archived features manifest');
-  logger.info('   2. Manually move files if needed (or disable in code')');
+  logger.info('   2. Manually move files if needed (or disable in code)');
   logger.info('   3. Update API documentation');
   logger.info('   4. Simplify onboarding flow');
   logger.info('   5. Focus on core flow: Pantry → Suggestions → List');

@@ -45,10 +45,10 @@ export async function runRotateSecrets(options: { force?: boolean; dryRun?: bool
 
     if (options.force || daysSinceRotation >= rotationDays) {
       if (options.dryRun) {
-        logger.info('Would rotate secret: ${secretKey}');
+        logger.info(`Would rotate secret: ${secretKey}`);
         rotated.push(secretKey);
       } else {
-        logger.info('Rotating secret: ${secretKey}');
+        logger.info(`Rotating secret: ${secretKey}`);
         // Generate new secret (in production, use proper secret generation)
         const newSecret = crypto.randomBytes(32).toString('hex');
         
@@ -71,15 +71,15 @@ export async function runRotateSecrets(options: { force?: boolean; dryRun?: bool
         rotated.push(secretKey);
       }
     } else if (daysSinceRotation >= rotationDays - alertDays) {
-      logger.warn('Secret ${secretKey} will expire soon (${rotationDays - daysSinceRotation} days remaining')`);
+      logger.warn(`Secret ${secretKey} will expire soon (${rotationDays - daysSinceRotation} days remaining)`);
     }
   }
 
   if (!options.dryRun && rotated.length > 0) {
     fs.writeFileSync(rotationLog, JSON.stringify(rotationHistory, null, 2));
-    logger.info('Rotated ${rotated.length} secrets');
+    logger.info(`Rotated ${rotated.length} secrets`);
   } else if (options.dryRun) {
-    logger.info('Dry-run: Would rotate ${rotated.length} secrets');
+    logger.info(`Dry-run: Would rotate ${rotated.length} secrets`);
   } else {
     logger.info('No secrets need rotation');
   }

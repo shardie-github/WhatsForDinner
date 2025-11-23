@@ -165,7 +165,7 @@ This file tracks patterns, duplications, and recommendations discovered by the L
     // Recommendations are already included in the discovery object
     // This method could be extended to create GitHub issues or PRs
     if (discovery.recommendations.length > 0) {
-      logger.info('💡 Recommendations:', { discovery.recommendations });
+      logger.info('💡 Recommendations:', { recommendations: discovery.recommendations });
     }
   }
 }

@@ -51,16 +51,16 @@ async function handleWebhook(event: WebhookEvent): Promise<void> {
   // Handle event types
   switch (event.type) {
     case 'checkout.session.completed':
-      logger.info('Checkout session completed:', { event.data.id });
+      logger.info('Checkout session completed:', { id: event.data.id });
       break;
     case 'customer.subscription.created':
-      logger.info('Subscription created:', { event.data.id });
+      logger.info('Subscription created:', { id: event.data.id });
       break;
     case 'customer.subscription.updated':
-      logger.info('Subscription updated:', { event.data.id });
+      logger.info('Subscription updated:', { id: event.data.id });
       break;
     case 'customer.subscription.deleted':
-      logger.info('Subscription deleted:', { event.data.id });
+      logger.info('Subscription deleted:', { id: event.data.id });
       break;
   }
 }
@@ -84,7 +84,7 @@ if (require.main === module) {
     });
   } else if (command === 'check') {
     isBillingEnabled().then(enabled => {
-      logger.info('Billing is ${enabled ? 'enabled' : 'disabled'}');
+      logger.info(`Billing is ${enabled ? 'enabled' : 'disabled'}`);
     });
   } else {
     logger.error('Usage: billing-stub.ts [test|check]');

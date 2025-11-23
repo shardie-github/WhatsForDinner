@@ -137,7 +137,7 @@ export class IOSPurchaseAdapter implements PurchaseAdapter {
       
       // Fallback: StoreKit 2 via native module
       // This would require a custom native module
-      if (process.env.NODE_ENV === 'development') { logger.warn('IAP module not available', { using fallback' }); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('IAP module not available, using fallback'); }
     } catch (error) {
       // Error handled: StoreKit initialization error:
       throw error;

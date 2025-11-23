@@ -13,7 +13,7 @@ export async function runDRRehearsal(options: { scenario?: string }) {
   const scenario = options.scenario || '1';
   const startTime = Date.now();
 
-  logger.info('Starting DR rehearsal scenario ${scenario} at ${new Date(').toISOString()}\n`);
+  logger.info(`Starting DR rehearsal scenario ${scenario} at ${new Date().toISOString()}\n`);
 
   try {
     // Step 1: Create test snapshot
@@ -21,7 +21,7 @@ export async function runDRRehearsal(options: { scenario?: string }) {
     execSync('npm run ops snapshot', { stdio: 'inherit' });
 
     // Step 2: Restore test
-    logger.info('Step 2: Testing restore (dry-run')...');
+    logger.info('Step 2: Testing restore (dry-run)...');
     execSync('npm run ops restore --dry-run', { stdio: 'inherit' });
 
     // Step 3: Smoke tests

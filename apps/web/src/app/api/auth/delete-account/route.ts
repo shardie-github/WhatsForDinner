@@ -54,10 +54,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // In production, send confirmation email
-    if (process.env.NODE_ENV === 'production') {
-      // TODO: Send confirmation email via Resend/SendGrid
-      // await sendAccountDeletionConfirmationEmail(user.email);
+    // Send confirmation email
+    if (process.env.NODE_ENV === 'production' && process.env.RESEND_API_KEY) {
+      try {
+        const { Resend } = await import('resend');
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: process.env.SENDER_EMAIL || 'no-reply@whatsfordinner.app',
+          to: user.email!,
+          subject: 'Account Deletion Confirmation',
+          html: `
+            <h2>Account Deletion Confirmed</h2>
+            <p>Your account has been successfully deleted from What's for Dinner.</p>
+            <p>If you did not request this deletion, please contact support immediately.</p>
+            <p>Thank you for using What's for Dinner!</p>
+          `,
+        });
+      } catch (emailError) {
+        // Log but don't fail the deletion
+        console.error('Failed to send deletion confirmation email:', emailError);
+      }
     }
 
     return NextResponse.json(

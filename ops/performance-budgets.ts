@@ -145,11 +145,11 @@ if (require.main === module) {
       const failed = report.budgets.filter(b => !b.passed);
             report.budgets.forEach(budget => {
         const icon = budget.passed ? '✅' : '❌';
-        logger.info('${icon} ${budget.name}: ${budget.actual}${budget.unit} (budget: ${budget.budget}${budget.unit}')`);
+        logger.info(`${icon} ${budget.name}: ${budget.actual}${budget.unit} (budget: ${budget.budget}${budget.unit})`);
       });
       
       if (failed.length > 0) {
-        logger.error('\n❌ ${failed.length} budget(s') failed`);
+        logger.error(`\n❌ ${failed.length} budget(s) failed`);
         process.exit(1);
       } else {
         logger.info('\n✅ All budgets passed');

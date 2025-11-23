@@ -83,7 +83,7 @@ async function rotateSecrets(): Promise<SecretRotation[]> {
         stdio: 'inherit'
       });
     } catch (error) {
-      logger.error('Failed to update ${rotation.name} in Supabase:', { error });
+      logger.error(`Failed to update ${rotation.name} in Supabase:`, { error });
     }
   }
 
@@ -100,7 +100,7 @@ async function rotateSecrets(): Promise<SecretRotation[]> {
           { stdio: 'inherit' }
         );
       } catch (error) {
-        logger.error('Failed to update ${rotation.name} in Vercel:', { error });
+        logger.error(`Failed to update ${rotation.name} in Vercel:`, { error });
       }
     }
   }
@@ -130,7 +130,7 @@ function checkSecretRotation(): void {
     const daysUntilExpiry = Math.floor((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     
     if (daysUntilExpiry <= 20) {
-      logger.warn('⚠️  ${rotation.name} expires in ${daysUntilExpiry} days');
+      logger.warn(`⚠️  ${rotation.name} expires in ${daysUntilExpiry} days`);
     }
   }
 }

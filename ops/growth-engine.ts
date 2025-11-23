@@ -42,7 +42,7 @@ async function normalizeUTM(): Promise<void> {
   const { error } = await supabase.rpc('normalize_utm_parameters');
   
   if (error) {
-    logger.warn('UTM normalization function not found', { skipping' });
+    logger.warn('UTM normalization function not found, skipping');
   } else {
       }
 }

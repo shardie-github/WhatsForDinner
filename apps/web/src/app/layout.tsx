@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Poppins, Playfair_Display } from 'next/font/google';
 import { createComponentLogger } from '@whats-for-dinner/utils';
+import { headers } from 'next/headers';
 
 const logger = createComponentLogger('layout');
 import './globals.css';
@@ -150,8 +151,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   // [STAKE+TRUST:BEGIN:i18n_attributes]
-  // TODO: Replace with actual i18n locale detection
-  const locale = "en"; // Future: Get from i18n system or user preference
+  // Detect locale from headers, cookies, or user preference
+  const getLocale = () => {
+    // Check Accept-Language header
+    const acceptLanguage = headers().get('accept-language');
+    if (acceptLanguage) {
+      const preferredLang = acceptLanguage.split(',')[0].split('-')[0];
+      if (['en', 'es', 'fr', 'de', 'it'].includes(preferredLang)) {
+        return preferredLang;
+      }
+    }
+    // Default to English
+    return 'en';
+  };
+  const locale = getLocale();
   const direction = "ltr"; // Future: Support RTL languages (ar, he, fa, ur)
   // [STAKE+TRUST:END:i18n_attributes]
   

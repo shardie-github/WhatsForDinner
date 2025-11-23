@@ -330,7 +330,7 @@ class MobileConsentStorage implements ConsentStorage {
     try {
       this.SecureStore = require('expo-secure-store');
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { logger.warn('expo-secure-store not available', { using fallback' }); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('expo-secure-store not available, using fallback'); }
     }
   }
   

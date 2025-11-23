@@ -385,7 +385,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     loadBaseline('perf-baseline.json')
       .then((baseline) => {
         // Placeholder comparison - in production would compare against actual test results
-        if (process.env.NODE_ENV === 'development') { logger.info('Baseline loaded:', { baseline.timestamp }); }
+        if (process.env.NODE_ENV === 'development') { logger.info(`Baseline loaded: ${baseline.timestamp}`); }
         if (process.env.NODE_ENV === 'development') { logger.info('Run k6 tests and compare results'); }
         process.exit(0);
       })
