@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
-import { Inter, Poppins, Playfair_Display } from 'next/
+import { Inter, Poppins, Playfair_Display } from 'next/font/google';
 import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const logger = createComponentLogger('layout');
-
-font/google';
 import './globals.css';
 import PWAInstaller from '@/components/PWAInstaller';
 import { ThemeProvider } from '@/components/ThemeProvider';

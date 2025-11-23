@@ -156,7 +156,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 {isDevelopment && (
                   <Button
                     onClick={() => {
-                      logger.error('Full error details:', { this.state.error, this.state.errorInfo });
+                      logger.error('Full error details:', { error: this.state.error, errorInfo: this.state.errorInfo });
                     }}
                     variant="outline"
                   >

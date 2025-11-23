@@ -1,9 +1,4 @@
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 import { stripe, StripeService } from '@/lib/stripe';
 import { createClient } from '@supabase/supabase-js';
 import { headers } from 'next/headers';
@@ -117,8 +112,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
       stripe_customer_id: session.customer,
     })
     .eq('id', tenantId);
-
-  }
+}
 
 async function handleSubscriptionCreated(subscription: Stripe.Subscription): Promise<void> {
   const { tenantId, userId, plan } = subscription.metadata;

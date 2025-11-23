@@ -3,12 +3,7 @@
  * Runs daily and weekly retention automation
  */
 
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 import { retentionAutomation } from '@/lib/retention/automation';
 
 export async function GET(request: NextRequest) {

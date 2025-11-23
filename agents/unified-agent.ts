@@ -157,7 +157,7 @@ export class UnifiedAgent {
    */
   async runAll(): Promise<void> {
     logger.info('🤖 Unified Agent: Starting agent cycle...');
-    logger.info('📦 Repository Context: ${this.repoContext.type} (${this.repoContext.framework}')`);
+    logger.info(`📦 Repository Context: ${this.repoContext.type} (${this.repoContext.framework})`);
 
     await this.initializeArtifacts();
 
@@ -176,11 +176,11 @@ export class UnifiedAgent {
       const settings = this.config.agents[agent.name];
       if (settings?.enabled !== false) {
         try {
-          logger.info('\n🔄 Running ${agent.name} agent...');
+          logger.info(`\n🔄 Running ${agent.name} agent...`);
           await agent.runner();
-          logger.info('✅ ${agent.name} agent completed');
+          logger.info(`✅ ${agent.name} agent completed`);
         } catch (error) {
-          logger.error('❌ ${agent.name} agent failed:', { error });
+          logger.error(`❌ ${agent.name} agent failed:`, { error });
         }
       }
     }

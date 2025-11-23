@@ -3,12 +3,7 @@
  * Zero-effort upsell identification using engagement scoring
  */
 
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { revenueOptimizer } from '@/lib/revenue/optimization';
 import { engagementScorer } from '@/lib/revenue/engagement-scoring';

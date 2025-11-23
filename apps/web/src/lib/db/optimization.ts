@@ -4,12 +4,10 @@
  * Measurable: 30-50% reduction in query time
  */
 
-import { createClient } from '@/lib/
+import { createClient } from '@/lib/supabase/server';
 import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const logger = createComponentLogger('optimization');
-
-supabase/server';
 
 /**
  * Optimized query helper with caching
@@ -110,7 +108,7 @@ export async function paginatedQuery<T>(
  */
 export function logSlowQuery(query: string, duration: number, threshold: number = 1000): void {
   if (duration > threshold) {
-    logger.warn('Slow query detected (${duration}ms'):`, query.substring(0, 200));
+    logger.warn(`Slow query detected (${duration}ms):`, query.substring(0, 200));
     // In production, send to monitoring service
   }
 }

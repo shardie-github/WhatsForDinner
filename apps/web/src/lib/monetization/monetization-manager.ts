@@ -51,7 +51,7 @@ class MonetizationManager {
       try {
         await revenueCat.initialize(userId);
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') { logger.warn('[Monetization] RevenueCat failed', { using native billing:', error }); }
+        if (process.env.NODE_ENV === 'development') { logger.warn('[Monetization] RevenueCat failed, using native billing:', { error }); }
       }
     }
 
