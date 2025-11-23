@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
+import { handleApiError, getCorrelationId } from '@whats-for-dinner/utils';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('feedback-api');
 
 const FeedbackSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -41,11 +45,15 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error saving feedback:', error);
-      return NextResponse.json(
-        { error: 'Failed to save feedback' },
-        { status: 500 }
-      );
+      logger.error('Error saving feedback', {
+        error: error.message,
+        userId: user.id,
+        correlationId: getCorrelationId(request),
+      });
+      return handleApiError(error, {
+        component: 'feedback-api',
+        context: { userId: user.id, correlationId: getCorrelationId(request) },
+      });
     }
 
     return NextResponse.json({ success: true, feedback: data });
@@ -57,11 +65,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Feedback API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, {
+      component: 'feedback-api',
+      context: { correlationId: getCorrelationId(request) },
+    });
   }
 }
 
@@ -104,10 +111,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ feedback });
   } catch (error) {
-    console.error('Feedback GET error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, {
+      component: 'feedback-api',
+      context: { correlationId: getCorrelationId(request) },
+    });
   }
 }

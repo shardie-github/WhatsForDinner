@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('resilience');
+
 import { createClient } from '@supabase/supabase-js';
 
 // Retry configuration

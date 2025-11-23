@@ -3,7 +3,12 @@
  * Get available grocery stores and their configuration
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { groceryManager } from '@/lib/grocery/grocery-manager';
 import { createClient } from '@/lib/supabase/server';
 
@@ -28,7 +33,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Grocery stores API error:', error);
+    logger.error('Grocery stores API error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { success: false, error: 'Failed to load stores' },
       { status: 500 }

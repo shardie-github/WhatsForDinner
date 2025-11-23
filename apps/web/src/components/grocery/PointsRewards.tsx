@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('pointsrewards');
+
+
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,7 +43,7 @@ export function PointsRewards({ userId }: PointsRewardsProps) {
       setRewards(userRewards);
       setAchievements(userAchievements);
     } catch (error) {
-      console.error('Failed to load points/rewards:', error);
+      logger.error('Failed to load points/rewards:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 

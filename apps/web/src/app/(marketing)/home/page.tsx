@@ -6,6 +6,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -92,7 +97,7 @@ export default function HomePage() {
         created_at: new Date().toISOString()
       });
     } catch (error) {
-      console.error('Email capture error:', error);
+      logger.error('Email capture error:', { error: error instanceof Error ? error.message : String(error) });
     }
 
     setEmail('');

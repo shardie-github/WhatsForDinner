@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('selflearningsystem');
+
 /**
  * Self-Learning System
  * Continuously learns from user behavior, errors, and performance to improve autonomously
@@ -550,7 +554,7 @@ export class SelfLearningSystem {
             break;
         }
       } catch (error) {
-        console.error(`Error taking action for insight ${insight.id}:`, error);
+        logger.error('Error taking action for insight ${insight.id}:', { error: error instanceof Error ? error.message : String(error) });
       }
     }
 

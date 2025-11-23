@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('grocery-manager');
+
 /**
  * Grocery Manager
  * Central manager for all grocery store integrations
@@ -41,10 +45,10 @@ export class GroceryManager {
       try {
         const isValid = await adapter.validateConnection();
         if (!isValid) {
-          console.warn(`Store ${id} connection validation failed`);
+          logger.warn('Store ${id} connection validation failed');
         }
       } catch (error) {
-        console.error(`Error validating store ${id}:`, error);
+        logger.error('Error validating store ${id}:', { error: error instanceof Error ? error.message : String(error) });
       }
     }
   }
@@ -69,7 +73,7 @@ export class GroceryManager {
           const result = await adapter.searchProducts(params);
           results.set(storeId, result);
         } catch (error) {
-          console.error(`Error searching ${storeId}:`, error);
+          logger.error('Error searching ${storeId}:', { error: error instanceof Error ? error.message : String(error) });
         }
       });
 

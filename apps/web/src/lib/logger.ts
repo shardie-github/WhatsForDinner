@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('logger');
+
 import { supabase } from './supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 

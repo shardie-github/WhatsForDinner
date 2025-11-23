@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useState } from 'react';
 import { Save, DollarSign } from 'lucide-react';
@@ -50,7 +55,7 @@ export default function CreateCollectionPage() {
       const { collectionId } = await response.json();
       window.location.href = `/collections/${collectionId}`;
     } catch (error) {
-      console.error('Create collection error:', error);
+      logger.error('Create collection error:', { error: error instanceof Error ? error.message : String(error) });
     } finally {
       setIsCreating(false);
     }

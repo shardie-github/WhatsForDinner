@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('enhanced-tracking');
+
 /**
  * Enhanced Analytics Tracking
  * Comprehensive event tracking with funnel analysis
@@ -56,7 +60,7 @@ class EnhancedAnalytics {
         body: JSON.stringify(analyticsEvent),
       });
     } catch (error) {
-      console.error('Analytics tracking error:', error);
+      logger.error('Analytics tracking error:', { error: error instanceof Error ? error.message : String(error) });
       // Fail silently - don't block user experience
     }
   }

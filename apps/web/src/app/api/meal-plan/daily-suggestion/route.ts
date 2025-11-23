@@ -3,7 +3,12 @@
  * Returns a personalized daily recipe suggestion
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(req: NextRequest) {
@@ -42,7 +47,7 @@ export async function GET(req: NextRequest) {
       data: suggestion,
     });
   } catch (error) {
-    console.error('Daily suggestion API error:', error);
+    logger.error('Daily suggestion API error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { success: false, error: 'Failed to load daily suggestion' },
       { status: 500 }

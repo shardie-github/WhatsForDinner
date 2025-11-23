@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('consentgate');
+
+
 
 import React, { useState, useEffect } from 'react';
 import { ConsentStore } from '@whats-for-dinner/analytics-consent/store';

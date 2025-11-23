@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('apple-sign-in');
+
 /**
  * Sign in with Apple Integration
  * iOS-specific authentication via Apple ID
@@ -23,7 +27,7 @@ export interface AppleSignInResult {
  */
 export async function signInWithApple(): Promise<AppleSignInResult | null> {
   if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'ios') {
-    if (process.env.NODE_ENV === 'development') { console.warn('Sign in with Apple only available on iOS'); }
+    if (process.env.NODE_ENV === 'development') { logger.warn('Sign in with Apple only available on iOS'); }
     return null;
   }
 

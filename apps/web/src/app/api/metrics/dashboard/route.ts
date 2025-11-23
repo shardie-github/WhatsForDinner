@@ -4,7 +4,12 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
 export const runtime = 'edge';
@@ -36,7 +41,7 @@ async function handler(request: NextRequest) {
       .limit(1000);
 
     if (error) {
-      console.error('Error fetching metrics:', error);
+      logger.error('Error fetching metrics:', { error: error instanceof Error ? error.message : String(error) });
       return NextResponse.json(
         { error: 'Failed to fetch metrics', details: error.message },
         { status: 500 }
@@ -176,7 +181,7 @@ async function handler(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Dashboard error:', error);
+    logger.error('Dashboard error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       {
         error: 'Failed to generate dashboard',

@@ -1,4 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -38,7 +43,7 @@ export async function POST(request: NextRequest) {
         .eq(userIdColumn, userId);
       
       if (error) {
-        console.error(`Error deleting from ${table}:`, error);
+        logger.error('Error deleting from ${table}:', { error: error instanceof Error ? error.message : String(error) });
         // Continue deletion even if some tables fail
       }
     }

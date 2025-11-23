@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('ugcgrowth');
+
 import { supabase } from './supabaseClient';
 
 export interface UGCShare {

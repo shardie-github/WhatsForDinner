@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { handleApiError, getCorrelationId } from '@whats-for-dinner/utils';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('performance-api');
 
 /**
  * Performance Metrics API
@@ -29,7 +33,10 @@ export async function GET(request: NextRequest) {
       .limit(1000);
 
     if (metricsError) {
-      console.error('Error fetching performance metrics:', metricsError);
+      logger.warn('Error fetching performance metrics', {
+        error: metricsError.message,
+        correlationId: getCorrelationId(request),
+      });
     }
 
     // Calculate percentiles
@@ -73,11 +80,10 @@ export async function GET(request: NextRequest) {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
-    console.error('Performance API error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch performance metrics', message: error.message },
-      { status: 500 }
-    );
+  } catch (error) {
+    return handleApiError(error, {
+      component: 'performance-api',
+      context: { correlationId: getCorrelationId(request) },
+    });
   }
 }

@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

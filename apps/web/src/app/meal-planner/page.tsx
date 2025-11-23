@@ -41,8 +41,14 @@ interface WeeklyMealPlan {
   totalCost?: number;
 }
 
+interface User {
+  id: string;
+  email?: string;
+  [key: string]: unknown;
+}
+
 export default function MealPlannerPage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [mealPlan, setMealPlan] = useState<WeeklyMealPlan | null>(null);
   const [preferences, setPreferences] = useState({

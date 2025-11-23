@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('autonomousinfrastructure');
+
 /**
  * Autonomous Infrastructure System
  * Self-healing, auto-scaling, monitoring, and AI-powered maintenance
@@ -315,7 +319,7 @@ export class AutonomousInfrastructure {
           }
         }
       } catch (error) {
-        console.error(`Error attempting self-healing for issue ${issue.id}:`, error);
+        logger.error('Error attempting self-healing for issue ${issue.id}:', { error: error instanceof Error ? error.message : String(error) });
       }
     }
 

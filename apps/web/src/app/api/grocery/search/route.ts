@@ -3,7 +3,12 @@
  * Search products across all stores
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { groceryManager } from '@/lib/grocery/grocery-manager';
 import { createClient } from '@/lib/supabase/server';
 
@@ -64,7 +69,7 @@ export async function GET(req: NextRequest) {
       data: Object.fromEntries(results),
     });
   } catch (error) {
-    console.error('Grocery search API error:', error);
+    logger.error('Grocery search API error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { success: false, error: 'Failed to search products' },
       { status: 500 }

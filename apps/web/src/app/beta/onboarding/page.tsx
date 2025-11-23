@@ -24,7 +24,7 @@ interface OnboardingStep {
 
 export default function BetaOnboardingPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
   const [steps, setSteps] = useState<OnboardingStep[]>([
     {
       id: 'welcome',

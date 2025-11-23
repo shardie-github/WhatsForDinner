@@ -3,7 +3,12 @@
  * Zero-effort API key generation and management
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 import crypto from 'crypto';
 
@@ -81,7 +86,7 @@ export async function POST(request: NextRequest) {
       warning: 'Save this API key - it will not be shown again!',
     });
   } catch (error) {
-    console.error('API key creation error:', error);
+    logger.error('API key creation error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to create API key' },
       { status: 500 }
@@ -135,7 +140,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('API key fetch error:', error);
+    logger.error('API key fetch error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to fetch API key' },
       { status: 500 }

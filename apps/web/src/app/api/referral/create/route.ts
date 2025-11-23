@@ -3,7 +3,12 @@
  * Create referral codes and track referrals
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 import { withTelemetry } from '@/lib/telemetry/api-middleware';
 
@@ -84,7 +89,7 @@ async function handler(request: NextRequest) {
       shareText: `Join me on What's for Dinner? Use my referral code ${referral.referral_code} and we both get 1 month free Pro!`,
     });
   } catch (error) {
-    console.error('Referral creation error:', error);
+    logger.error('Referral creation error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to create referral' },
       { status: 500 }

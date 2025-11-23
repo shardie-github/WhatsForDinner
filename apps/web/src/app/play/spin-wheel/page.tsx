@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,7 +34,7 @@ export default function SpinWheelPage() {
   const [spinning, setSpinning] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
-  const [recipe, setRecipe] = useState<any>(null);
+  const [recipe, setRecipe] = useState<unknown>(null);
 
   const spinWheel = async () => {
     setSpinning(true);
@@ -60,7 +65,7 @@ export default function SpinWheelPage() {
         setShowCelebration(true);
       }
     } catch (error) {
-      console.error('Failed to generate recipe:', error);
+      logger.error('Failed to generate recipe:', { error: error instanceof Error ? error.message : String(error) });
     }
 
     setSpinning(false);

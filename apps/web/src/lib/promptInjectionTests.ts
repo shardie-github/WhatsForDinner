@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('promptinjectiontests');
+
 import { aiSafetyGuardrails } from './aiSafetyGuardrails';
 
 interface TestResult {
@@ -177,7 +181,7 @@ class PromptInjectionTestSuite {
         if (safetyResult.violations.length > 0) {
           console.log(`${status} ${testCase.name} - Violations: ${safetyResult.violations.join(', ')}`);
         } else {
-          console.log(`${status} ${testCase.name}`);
+          logger.info('${status} ${testCase.name}');
         }
       } catch (error) {
         console.error(`❌ ERROR in test "${testCase.name}":`, error);
@@ -196,7 +200,7 @@ class PromptInjectionTestSuite {
       }
     }
 
-    console.log(`\nTest Summary: ${passedTests}/${this.testCases.length} passed`);
+    logger.info('\nTest Summary: ${passedTests}/${this.testCases.length} passed');
                     
     return {
       totalTests: this.testCases.length,
@@ -232,7 +236,7 @@ class PromptInjectionTestSuite {
         });
 
         const status = passed ? '✅ PASS' : '❌ FAIL';
-        console.log(`${status} ${testCase.name}`);
+        logger.info('${status} ${testCase.name}');
       } catch (error) {
         console.error(`❌ ERROR in critical test "${testCase.name}":`, error);
         results.push({
@@ -377,10 +381,10 @@ export async function runAutomatedRedTeamTests(): Promise<void> {
         
     // Exit with error code if tests failed
     if (results.failedTests > 0) {
-      console.error(`❌ ${results.failedTests} tests failed!`);
+      logger.error('❌ ${results.failedTests} tests failed!');
       process.exit(1);
     } else {
-      console.log('✅ All tests passed!');
+      logger.info('✅ All tests passed!');
     }
   } catch (error) {
     // Error handled: ❌ Error running red team tests:

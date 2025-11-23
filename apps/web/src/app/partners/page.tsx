@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -168,7 +173,7 @@ export default function PartnerProgramPage() {
         });
 
       if (error) {
-        console.error('Failed to submit partner inquiry:', error);
+        logger.error('Failed to submit partner inquiry:', { error: error instanceof Error ? error.message : String(error) });
         alert('Failed to submit. Please try again.');
       } else {
         alert('Thank you! We\'ll contact you within 24-48 hours to discuss partnership opportunities.');
@@ -183,7 +188,7 @@ export default function PartnerProgramPage() {
         });
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      logger.error('Error submitting form:', { error: error instanceof Error ? error.message : String(error) });
       alert('An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);

@@ -3,7 +3,12 @@
  * Enables all monetization channels
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 import { handleError } from '@/lib/errors';
 
@@ -54,7 +59,7 @@ async function handler(req: NextRequest) {
     if (error) {
       // If table doesn't exist, try to create it
       if (error.code === '42P01') {
-        console.warn('monetization_settings table does not exist. Run migrations first.');
+        logger.warn('monetization_settings table does not exist. Run migrations first.');
         return NextResponse.json({
           success: false,
           error: 'Monetization settings table not found. Please run database migrations first.',

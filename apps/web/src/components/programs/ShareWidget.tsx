@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('sharewidget');
+
+
 
 import { useState } from 'react';
 import { Share2, Copy, Check, Twitter, Facebook, Linkedin, Mail, MessageCircle } from 'lucide-react';
@@ -98,7 +103,7 @@ export function ShareWidget({ url, title, description, programType, programId }:
         metadata: { action: 'copy' },
       });
     } catch (error) {
-      console.error('Failed to copy:', error);
+      logger.error('Failed to copy:', { error: error instanceof Error ? error.message : String(error) });
     }
   };
 

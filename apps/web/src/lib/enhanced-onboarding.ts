@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('enhanced-onboarding');
+
 /**
  * Enhanced Onboarding System
  * Improves user retention through better onboarding experience
@@ -137,7 +141,7 @@ export async function getOnboardingProgress(userId: string): Promise<OnboardingP
     };
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('Error fetching onboarding progress:', error);
+      logger.error('Error fetching onboarding progress:', { error: error instanceof Error ? error.message : String(error) });
     }
     return null;
   }
@@ -169,7 +173,7 @@ export async function initializeOnboarding(userId: string): Promise<OnboardingPr
     if (error) throw error;
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('Error initializing onboarding:', error);
+      logger.error('Error initializing onboarding:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -218,7 +222,7 @@ export async function completeOnboardingStep(
     return true;
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('Error completing onboarding step:', error);
+      logger.error('Error completing onboarding step:', { error: error instanceof Error ? error.message : String(error) });
     }
     return false;
   }
@@ -265,7 +269,7 @@ async function trackOnboardingEvent(
   } catch (error) {
     // Analytics tracking should not block user flow
     if (process.env.NODE_ENV === 'development') {
-      console.error('Error tracking onboarding event:', error);
+      logger.error('Error tracking onboarding event:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 }
@@ -298,7 +302,7 @@ export async function getOnboardingCompletionRate(): Promise<number> {
     return total > 0 ? Math.round((completed / total) * 100) : 0;
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('Error calculating completion rate:', error);
+      logger.error('Error calculating completion rate:', { error: error instanceof Error ? error.message : String(error) });
     }
     return 0;
   }

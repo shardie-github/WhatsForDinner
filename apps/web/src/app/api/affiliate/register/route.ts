@@ -3,7 +3,12 @@
  * Zero-effort affiliate signup - automatically enabled for all users
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
@@ -60,7 +65,7 @@ export async function POST(request: NextRequest) {
       data,
     });
   } catch (error) {
-    console.error('Affiliate registration error:', error);
+    logger.error('Affiliate registration error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to register affiliate' },
       { status: 500 }

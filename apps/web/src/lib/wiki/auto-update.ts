@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('auto-update');
+
 /**
  * Auto-Update System for Wiki Knowledge Base
  * 
@@ -65,7 +69,7 @@ export class WikiAutoUpdate {
       .single();
 
     if (error) {
-      console.error('Error creating article:', error);
+      logger.error('Error creating article:', { error: error instanceof Error ? error.message : String(error) });
       return null;
     }
 

@@ -1,5 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('pushnotificationsetup');
+
+;
 import { supabase } from "@/lib/supabase/client";
 import { hapticTap } from "@/components/gamification/Haptics";
 

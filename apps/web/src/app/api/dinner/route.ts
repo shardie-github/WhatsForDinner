@@ -10,6 +10,9 @@ import { getTenantContext } from '@/lib/auth-middleware';
 import { withCSRFProtection } from '@/lib/csrf-middleware';
 import { analytics } from '@/lib/analytics';
 import { suggestionCache } from '@/lib/cache';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('dinner-api');
 
 async function handler(req: NextRequest) {
   try {
@@ -221,7 +224,10 @@ async function handler(req: NextRequest) {
     }
 
     // Generic error
-    console.error('Error generating recipes:', error);
+    logger.error('Error generating recipes', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     return NextResponse.json(
       {
         error: 'Failed to generate recipes',

@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       { error: 'Invalid request. Provide type and ingredients or ingredient.' },
       { status: 400 }
     );
-  } catch (error: any) {
+  } catch (error) {
     // Error handled: Nutrition API error:
     return NextResponse.json(
       { error: error.message || 'Failed to get nutrition data' },

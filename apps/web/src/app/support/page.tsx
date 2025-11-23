@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('page');
+
+
 
 import { useState } from 'react';
 import { MessageCircle, BookOpen, Mail, Search, Send, HelpCircle } from 'lucide-react';
@@ -40,7 +45,7 @@ export default function SupportPage() {
         alert('Failed to create ticket. Please try again.');
       }
     } catch (error) {
-      console.error('Ticket creation error:', error);
+      logger.error('Ticket creation error:', { error: error instanceof Error ? error.message : String(error) });
       alert('An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);

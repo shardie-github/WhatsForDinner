@@ -1,4 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { stripe, StripeService } from '@/lib/stripe';
 import { createClient } from '@supabase/supabase-js';
 import { headers } from 'next/headers';
@@ -19,7 +24,7 @@ export async function POST(request: NextRequest) {
     const signature = (await headers()).get('stripe-signature');
 
     if (!signature) {
-      console.error('No Stripe signature found');
+      logger.error('No Stripe signature found');
       return NextResponse.json({ error: 'No signature' }, { status: 400 });
     }
 
@@ -157,7 +162,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription): Pro
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
-    console.error('Missing tenantId in subscription metadata');
+    logger.error('Missing tenantId in subscription metadata');
     return;
   }
 
@@ -194,7 +199,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription): Pro
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
-    console.error('Missing tenantId in subscription metadata');
+    logger.error('Missing tenantId in subscription metadata');
     return;
   }
 
@@ -224,7 +229,7 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice): Promise<v
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
-    console.error('Missing tenantId in subscription metadata');
+    logger.error('Missing tenantId in subscription metadata');
     return;
   }
 
@@ -245,7 +250,7 @@ async function handleInvoicePaymentFailed(invoice: Stripe.Invoice): Promise<void
   const { tenantId } = subscription.metadata;
 
   if (!tenantId) {
-    console.error('Missing tenantId in subscription metadata');
+    logger.error('Missing tenantId in subscription metadata');
     return;
   }
 

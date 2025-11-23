@@ -21,11 +21,50 @@ export function VoiceInput({ onTranscript, placeholder = 'Say ingredients...', d
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isSupported, setIsSupported] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    start(): void;
+    stop(): void;
+    onresult: ((event: SpeechRecognitionEvent) => void) | null;
+    onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  }
+
+  interface SpeechRecognitionEvent {
+    resultIndex: number;
+    results: SpeechRecognitionResultList;
+  }
+
+  interface SpeechRecognitionErrorEvent {
+    error: string;
+  }
+
+  interface SpeechRecognitionResultList {
+    length: number;
+    [index: number]: SpeechRecognitionResult;
+  }
+
+  interface SpeechRecognitionResult {
+    isFinal: boolean;
+    [index: number]: SpeechRecognitionAlternative;
+  }
+
+  interface SpeechRecognitionAlternative {
+    transcript: string;
+  }
+
+  interface WindowWithSpeechRecognition extends Window {
+    SpeechRecognition?: new () => SpeechRecognition;
+    webkitSpeechRecognition?: new () => SpeechRecognition;
+  }
+
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
     // Check for browser support
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as WindowWithSpeechRecognition).SpeechRecognition || 
+                             (window as WindowWithSpeechRecognition).webkitSpeechRecognition;
     setIsSupported(!!SpeechRecognition);
 
     if (SpeechRecognition && !recognitionRef.current) {
@@ -34,7 +73,7 @@ export function VoiceInput({ onTranscript, placeholder = 'Say ingredients...', d
       recognition.interimResults = true;
       recognition.lang = 'en-US';
 
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
         let interimTranscript = '';
         let finalTranscript = '';
 
@@ -53,8 +92,8 @@ export function VoiceInput({ onTranscript, placeholder = 'Say ingredients...', d
         }
       };
 
-      recognition.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+        // Error handled by error boundary
         setIsListening(false);
       };
 

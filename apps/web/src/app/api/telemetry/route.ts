@@ -4,7 +4,12 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 
 export const runtime = 'edge';
 
@@ -59,7 +64,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      console.error('Telemetry insert error:', error);
+      logger.error('Telemetry insert error:', { error: error instanceof Error ? error.message : String(error) });
       return NextResponse.json(
         { success: false, error: error.message },
         { status: 500 }
@@ -78,7 +83,7 @@ export async function POST(request: NextRequest) {
       }
     );
   } catch (error) {
-    console.error('Telemetry endpoint error:', error);
+    logger.error('Telemetry endpoint error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       {
         success: false,

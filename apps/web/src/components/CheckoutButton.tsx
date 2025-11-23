@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('checkoutbutton');
+
+
 
 import { useState } from 'react';
 import { ShoppingCart, Loader2 } from 'lucide-react';
@@ -31,7 +36,7 @@ export function CheckoutButton({ productId, productName, price, onSuccess }: Che
       const { checkoutUrl } = await response.json();
       window.location.href = checkoutUrl;
     } catch (error) {
-      console.error('Checkout error:', error);
+      logger.error('Checkout error:', { error: error instanceof Error ? error.message : String(error) });
     } finally {
       setIsLoading(false);
     }

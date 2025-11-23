@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('monitoring');
+
 import { createClient } from '@supabase/supabase-js';
 import { logger } from './logger';
 import { analytics } from './analytics';
@@ -184,7 +188,7 @@ class MonitoringSystem {
         'metrics'
       );
     } catch (error) {
-      console.error(`Failed to record metric ${name}:`, error);
+      logger.error('Failed to record metric ${name}:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -219,7 +223,7 @@ class MonitoringSystem {
       // Record as metric
       await this.recordMetric(name, newValue, tags);
     } catch (error) {
-      console.error(`Failed to record counter ${name}:`, error);
+      logger.error('Failed to record counter ${name}:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -248,7 +252,7 @@ class MonitoringSystem {
         await this.recordMetric(`${name}_avg`, avg, tags);
       }
     } catch (error) {
-      console.error(`Failed to record timer ${name}:`, error);
+      logger.error('Failed to record timer ${name}:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -260,7 +264,7 @@ class MonitoringSystem {
     try {
       await this.recordMetric(name, value, tags);
     } catch (error) {
-      console.error(`Failed to record gauge ${name}:`, error);
+      logger.error('Failed to record gauge ${name}:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -424,7 +428,7 @@ class MonitoringSystem {
           break;
       }
     } catch (error) {
-      console.error(`Failed to send ${channel} alert:`, error);
+      logger.error('Failed to send ${channel} alert:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -471,7 +475,7 @@ class MonitoringSystem {
 
       return data || [];
     } catch (error) {
-      console.error(`Failed to get metrics ${name}:`, error);
+      logger.error('Failed to get metrics ${name}:', { error: error instanceof Error ? error.message : String(error) });
       return [];
     }
   }
@@ -521,7 +525,7 @@ class MonitoringSystem {
         'alerts'
       );
     } catch (error) {
-      console.error(`Failed to resolve alert ${alertId}:`, error);
+      logger.error('Failed to resolve alert ${alertId}:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 

@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('leadmagnet');
+
+
 
 import { useState } from 'react';
 import { Download, Check, Gift } from 'lucide-react';
@@ -60,7 +65,7 @@ export function LeadMagnet({
         window.location.href = '/downloads/meal-planning-guide.pdf';
       }, 1000);
     } catch (error) {
-      console.error('Failed to capture lead:', error);
+      logger.error('Failed to capture lead:', { error: error instanceof Error ? error.message : String(error) });
     } finally {
       setIsSubmitting(false);
     }

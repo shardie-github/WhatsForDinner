@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('crooptimizer');
+
 /**
  * CRO (Conversion Rate Optimization) System
  * Advanced A/B testing, heatmaps, funnel analysis, and CTA optimization

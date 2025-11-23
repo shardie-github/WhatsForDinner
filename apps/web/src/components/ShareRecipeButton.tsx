@@ -4,6 +4,11 @@
  */
 
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('sharerecipebutton');
+
+
 
 import { useState } from 'react';
 import { Share2, Gift } from 'lucide-react';
@@ -63,7 +68,7 @@ export function ShareRecipeButton({ recipe, onShare }: ShareRecipeButtonProps) {
 
       onShare?.();
     } catch (error) {
-      console.error('Share error:', error);
+      logger.error('Share error:', { error: error instanceof Error ? error.message : String(error) });
     }
   };
 

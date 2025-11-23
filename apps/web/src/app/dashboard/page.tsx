@@ -21,7 +21,7 @@ import Link from 'next/link';
 export default function DashboardPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -3,7 +3,12 @@
  * Runs daily and weekly retention automation
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('route');
+
+server';
 import { retentionAutomation } from '@/lib/retention/automation';
 
 export async function GET(request: NextRequest) {
@@ -27,7 +32,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid frequency' }, { status: 400 });
     }
   } catch (error) {
-    console.error('Retention automation error:', error);
+    logger.error('Retention automation error:', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to run retention automation' },
       { status: 500 }

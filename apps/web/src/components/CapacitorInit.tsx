@@ -1,4 +1,9 @@
 'use client';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('capacitorinit');
+
+
 
 import { useEffect } from 'react';
 import { initializeCapacitor } from '@/lib/capacitor/init';

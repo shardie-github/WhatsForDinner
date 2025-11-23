@@ -18,7 +18,7 @@ interface PantryItem {
 export default function PantryExpirationWidget() {
   const [items, setItems] = useState<PantryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
 
   useEffect(() => {
     const fetchUser = async () => {

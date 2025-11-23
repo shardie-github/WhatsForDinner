@@ -52,7 +52,7 @@ async function handler(request: NextRequest) {
     );
 
     return NextResponse.json({ mealPlan });
-  } catch (error: any) {
+  } catch (error) {
     // Error handled: Meal plan generation error:
     return NextResponse.json(
       { error: error.message || 'Failed to generate meal plan' },

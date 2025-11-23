@@ -37,7 +37,7 @@ interface NutritionSummary {
 }
 
 export default function NutritionDashboard() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
   const [nutrition, setNutrition] = useState<NutritionSummary | null>(null);
   const [dailyGoals, setDailyGoals] = useState({

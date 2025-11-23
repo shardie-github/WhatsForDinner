@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('cache');
+
 /**
  * Caching Utilities
  * Redis-backed caching with fallback to in-memory cache
@@ -21,7 +25,7 @@ class CacheManager {
         import('ioredis').then((Redis) => {
           this.redisClient = new Redis.default(process.env.REDIS_URL);
         }).catch(() => {
-          console.warn('Redis not available, using memory cache');
+          logger.warn('Redis not available, using memory cache');
         });
       } catch {
         // Redis not available, use memory cache
@@ -42,7 +46,7 @@ class CacheManager {
           return JSON.parse(value) as T;
         }
       } catch (error) {
-        console.error('Redis get error:', error);
+        logger.error('Redis get error:', { error: error instanceof Error ? error.message : String(error) });
       }
     }
 
@@ -80,7 +84,7 @@ class CacheManager {
         }
         return;
       } catch (error) {
-        console.error('Redis set error:', error);
+        logger.error('Redis set error:', { error: error instanceof Error ? error.message : String(error) });
       }
     }
 
@@ -101,7 +105,7 @@ class CacheManager {
       try {
         await this.redisClient.del(key);
       } catch (error) {
-        console.error('Redis delete error:', error);
+        logger.error('Redis delete error:', { error: error instanceof Error ? error.message : String(error) });
       }
     }
     this.memoryCache.delete(key);
@@ -122,7 +126,7 @@ class CacheManager {
           }
         }
       } catch (error) {
-        console.error('Redis invalidate error:', error);
+        logger.error('Redis invalidate error:', { error: error instanceof Error ? error.message : String(error) });
       }
     }
     // Memory cache doesn't support tags, so we clear all

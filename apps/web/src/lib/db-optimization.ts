@@ -1,3 +1,7 @@
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('db-optimization');
+
 /**
  * Database Query Optimization Utilities
  * 
@@ -132,7 +136,7 @@ export function recordQueryMetrics(metrics: QueryMetrics): void {
   
   // Log slow queries (> 100ms)
   if (metrics.duration > 100) {
-    console.warn(`Slow query detected: ${metrics.query} took ${metrics.duration}ms`);
+    logger.warn('Slow query detected: ${metrics.query} took ${metrics.duration}ms');
   }
 }
 
