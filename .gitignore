@@ -29,6 +29,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# Lockfiles - only pnpm-lock.yaml should be committed
+package-lock.json
+yarn.lock
+# pnpm-lock.yaml is intentionally NOT ignored - it should be committed
+
 # local env files
 .env*.local
 .env.local

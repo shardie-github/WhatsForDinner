@@ -127,6 +127,29 @@ Open `http://localhost:3000` and start planning your next meal.
 
 ---
 
+## CI/CD Overview
+
+This repository uses **fully automated CI/CD** with zero local CLI requirements:
+
+- **Frontend**: Deployed via GitHub Actions to Vercel
+  - Pull Requests → Preview deployments
+  - Push to `main` → Production deployments
+- **Database (Supabase)**: Migrations are applied via GitHub Actions using the Supabase CLI
+- **No local CLI required**: Everything runs in GitHub Actions—perfect for Android/Termux users
+
+### Key Workflows
+
+- **`frontend-deploy.yml`**: Handles frontend builds, tests, and Vercel deployments
+- **`supabase-migrate.yml`**: Applies database migrations (separate from frontend deployments)
+- **`ci.yml`**: Runs lint, type-check, tests, and builds on every PR
+
+### Documentation
+
+- [Frontend Deployment Guide](docs/frontend-deploy-vercel-ci.md) - Complete guide to Vercel deployments via CI
+- [CI/CD Overview](docs/ci-overview.md) - Detailed CI/CD architecture and workflow documentation
+
+---
+
 ## Architecture Overview
 
 ```
