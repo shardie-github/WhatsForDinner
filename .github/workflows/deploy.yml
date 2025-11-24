@@ -1,9 +1,23 @@
-name: Deploy
+# ⚠️ DEPRECATED: This workflow is deprecated and will be removed.
+# 
+# Use these workflows instead:
+# - `.github/workflows/frontend-deploy.yml` - Frontend deployments to Vercel (preview + production)
+# - `.github/workflows/supabase-migrate.yml` - Database migrations (separate concern)
+#
+# This workflow mixed frontend deployment with database migrations, which violates
+# separation of concerns. Frontend deployments and database migrations should be
+# decoupled and run independently.
+#
+# This workflow is disabled (no triggers) and kept for reference only.
+# It will be removed in a future cleanup.
 
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+name: Deploy (DEPRECATED)
+
+# Disabled triggers - workflow will not run
+# on:
+#   push:
+#     branches: [main]
+#   workflow_dispatch:
 
 env:
   NODE_VERSION: '20'
@@ -11,7 +25,7 @@ env:
 
 jobs:
   deploy-production:
-    name: Deploy to Production
+    name: Deploy to Production (DEPRECATED)
     runs-on: ubuntu-latest
     environment: production
     concurrency:

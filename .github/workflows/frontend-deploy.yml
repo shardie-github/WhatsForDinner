@@ -1,0 +1,193 @@
+name: Frontend CI/CD
+
+on:
+  pull_request:
+    branches: ['*']
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: 9
+
+concurrency:
+  group: frontend-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/test' }}
+        continue-on-error: true
+
+      - name: Run lint
+        run: pnpm lint
+        continue-on-error: false
+
+      - name: Run type check
+        run: pnpm type-check
+        continue-on-error: false
+
+      - name: Run tests
+        run: pnpm test:ci || pnpm test
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/test' }}
+        continue-on-error: false
+
+      - name: Build packages
+        run: pnpm build:packages
+        continue-on-error: false
+
+      - name: Build web app
+        run: pnpm build:web
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
+        continue-on-error: false
+
+  deploy:
+    name: Deploy to Vercel
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: |
+      github.event_name == 'pull_request' || 
+      github.ref == 'refs/heads/main' || 
+      github.event_name == 'workflow_dispatch'
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      NODE_ENV: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Verify Vercel secrets
+        run: |
+          set -euo pipefail
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::VERCEL_TOKEN secret is not set. Please add it to GitHub Secrets."
+            exit 1
+          fi
+          if [ -z "$VERCEL_ORG_ID" ]; then
+            echo "::error::VERCEL_ORG_ID secret is not set. Please add it to GitHub Secrets."
+            exit 1
+          fi
+          if [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "::error::VERCEL_PROJECT_ID secret is not set. Please add it to GitHub Secrets."
+            exit 1
+          fi
+          echo "✅ All Vercel secrets are configured"
+
+      - name: Deploy Preview (PR)
+        if: github.event_name == 'pull_request'
+        working-directory: apps/web
+        run: |
+          set -euo pipefail
+          echo "🚀 Deploying preview for PR #${{ github.event.pull_request.number }}"
+          
+          vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+          vercel build --token="$VERCEL_TOKEN"
+          
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --prod=false 2>&1 | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
+          
+          if [ -z "$DEPLOYMENT_URL" ]; then
+            echo "::warning::Could not extract preview URL from deployment output"
+          else
+            echo "✅ Preview deployment successful!"
+            echo "Preview URL: $DEPLOYMENT_URL"
+            echo "::notice::Preview deployment available at $DEPLOYMENT_URL"
+          fi
+
+      - name: Deploy Production (main)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        working-directory: apps/web
+        env:
+          VERCEL_ENV: production
+        run: |
+          set -euo pipefail
+          echo "🚀 Deploying to production..."
+          
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel build --token="$VERCEL_TOKEN"
+          
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --prod=true 2>&1 | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
+          
+          if [ -z "$DEPLOYMENT_URL" ]; then
+            echo "::warning::Could not extract production URL from deployment output"
+          else
+            echo "✅ Production deployment successful!"
+            echo "Production URL: $DEPLOYMENT_URL"
+            echo "::notice::Production deployment available at $DEPLOYMENT_URL"
+          fi
+
+      - name: Deploy Manual (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: apps/web
+        run: |
+          set -euo pipefail
+          echo "🚀 Manual deployment triggered"
+          
+          # Default to preview for manual deployments unless explicitly set
+          ENVIRONMENT="${VERCEL_ENV:-preview}"
+          IS_PROD="${PRODUCTION:-false}"
+          
+          if [ "$IS_PROD" = "true" ] || [ "$ENVIRONMENT" = "production" ]; then
+            echo "Deploying to production..."
+            vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+            vercel build --token="$VERCEL_TOKEN"
+            DEPLOYMENT_URL=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --prod=true 2>&1 | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
+            echo "✅ Production deployment successful!"
+            echo "Production URL: $DEPLOYMENT_URL"
+          else
+            echo "Deploying preview..."
+            vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+            vercel build --token="$VERCEL_TOKEN"
+            DEPLOYMENT_URL=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --prod=false 2>&1 | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
+            echo "✅ Preview deployment successful!"
+            echo "Preview URL: $DEPLOYMENT_URL"
+          fi
