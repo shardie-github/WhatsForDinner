@@ -36,7 +36,7 @@ async function syncPricingFromSupabase(): Promise<PricingOffer[]> {
     .eq('enabled', true);
 
   if (error) {
-    logger.warn('Pricing offers table not found', { using defaults' });
+    logger.warn('Pricing offers table not found, using defaults');
     return getDefaultOffers();
   }
 

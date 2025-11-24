@@ -65,7 +65,7 @@ try {
   logger.info('Next steps:');
   logger.info('  1. Review prisma/schema.prisma');
   logger.info('  2. Commit changes if everything looks good');
-  logger.info('  3. Run: pnpm prisma migrate dev (if you need to create migrations')');
+  logger.info('  3. Run: pnpm prisma migrate dev (if you need to create migrations)');
 } catch (error) {
   logger.error('\n❌ Error syncing schema:', { error });
   process.exit(1);

@@ -295,7 +295,7 @@ export async function generateRecipesWithFallback(
   try {
     return await generateRecipes(options);
   } catch (error) {
-    logger.error('Primary recipe generation failed', { using fallback:', error });
+    logger.error('Primary recipe generation failed, using fallback:', { error });
 
     // Fallback: return a simple recipe based on ingredients
     const fallbackRecipes = [

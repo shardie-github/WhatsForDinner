@@ -206,7 +206,7 @@ function generateOpenAPISpec(routes: RouteInfo[]): OpenAPISpec {
     info: {
       title: "What's for Dinner API",
       version: '1.0.0',
-      description: 'API documentation for What\'s for Dinner meal planning application',
+      description: "API documentation for What's for Dinner meal planning application",
     },
     servers: [
       {
@@ -286,9 +286,9 @@ function main() {
   }
 
   logger.info('\n📊 Summary:');
-  logger.info('   - Total routes: ${routes.length}');
-  logger.info('   - Total paths: ${Object.keys(spec.paths').length}`);
-  logger.info('   - Documentation: ${OUTPUT_FILE}');
+  logger.info(`   - Total routes: ${routes.length}`);
+  logger.info(`   - Total paths: ${Object.keys(spec.paths).length}`);
+  logger.info(`   - Documentation: ${OUTPUT_FILE}`);
 }
 
 if (require.main === module) {

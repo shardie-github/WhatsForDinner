@@ -19,7 +19,8 @@ import {
   TrendingUp,
   Users,
   Package,
-  DollarSign
+  DollarSign,
+  X
 } from 'lucide-react';
 import { agentOrchestrator, AIAgent, AgentPackage } from '@/lib/ai-agents/agentOrchestrator';
 import { createComponentLogger } from '@whats-for-dinner/utils';
@@ -64,8 +65,37 @@ export default function AgentsPage() {
 
   const toggleAgentStatus = async (agentId: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-    // In a real implementation, you would update the agent status in the database
-        loadData(); // Reload data
+    try {
+      // In a real implementation, you would update the agent status in the database
+      // For now, update local state
+      setAgents(prev => prev.map(agent => 
+        agent.id === agentId ? { ...agent, status: newStatus } : agent
+      ));
+      logger.info(`Agent ${agentId} status changed to ${newStatus}`);
+    } catch (error) {
+      logger.error('Error toggling agent status:', { error });
+    }
+  };
+
+  const deleteAgent = async (agentId: string) => {
+    if (!confirm('Are you sure you want to delete this agent? This action cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      // In a real implementation, you would delete the agent from the database
+      // For now, update local state
+      setAgents(prev => prev.filter(agent => agent.id !== agentId));
+      logger.info(`Agent ${agentId} deleted`);
+      
+      // If the deleted agent was selected, clear selection
+      if (selectedAgent?.id === agentId) {
+        setSelectedAgent(null);
+      }
+    } catch (error) {
+      logger.error('Error deleting agent:', { error });
+      alert('Failed to delete agent. Please try again.');
+    }
   };
 
   if (loading) {
@@ -155,10 +185,7 @@ export default function AgentsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => {
-                            // TODO: Implement delete agent functionality
-                            logger.info('Delete agent:', { agent.id });
-                          }}
+                          onClick={() => deleteAgent(agent.id)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

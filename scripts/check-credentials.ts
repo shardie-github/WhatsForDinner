@@ -243,7 +243,7 @@ async function main() {
   
   // Generate report
   logger.info('📋 CREDENTIALS AUDIT REPORT\n');
-  logger.info('='.repeat(80'));
+  logger.info('='.repeat(80));
   
   // Summary
   const required = credentials.filter(c => c.required);
@@ -253,23 +253,23 @@ async function main() {
   const supabaseNeeded = credentials.filter(c => c.platforms.supabase);
   
   logger.info('\n📊 SUMMARY');
-  logger.info('-'.repeat(80'));
-  logger.info('Total credentials: ${credentials.length}');
-  logger.info('Required: ${required.length}');
-  logger.info('Used in code: ${credentials.filter(c => c.foundInCode').length}`);
-  logger.info('Used in workflows: ${credentials.filter(c => c.foundInWorkflows').length}`);
-  logger.info('\nNeed GitHub Secrets: ${githubNeeded.length}');
-  logger.info('Need Vercel Env Vars: ${vercelNeeded.length}');
-  logger.info('Need Supabase Secrets: ${supabaseNeeded.length}');
+  logger.info('-'.repeat(80));
+  logger.info(`Total credentials: ${credentials.length}`);
+  logger.info(`Required: ${required.length}`);
+  logger.info(`Used in code: ${credentials.filter(c => c.foundInCode).length}`);
+  logger.info(`Used in workflows: ${credentials.filter(c => c.foundInWorkflows).length}`);
+  logger.info(`\nNeed GitHub Secrets: ${githubNeeded.length}`);
+  logger.info(`Need Vercel Env Vars: ${vercelNeeded.length}`);
+  logger.info(`Need Supabase Secrets: ${supabaseNeeded.length}`);
   
   // Missing Required
   if (missingRequired.length > 0) {
     logger.info('\n⚠️  MISSING REQUIRED CREDENTIALS');
-    logger.info('-'.repeat(80'));
+    logger.info('-'.repeat(80));
     missingRequired.forEach(c => {
-      logger.info('\n❌ ${c.name}');
-      logger.info('   Category: ${c.category}');
-      logger.info('   Description: ${c.description}');
+      logger.info(`\n❌ ${c.name}`);
+      logger.info(`   Category: ${c.category}`);
+      logger.info(`   Description: ${c.description}`);
       logger.info('   Platforms needed:');
       if (c.platforms.github) logger.info('     - GitHub Secrets');
       if (c.platforms.vercel) logger.info('     - Vercel Environment Variables');
@@ -279,42 +279,42 @@ async function main() {
   
   // GitHub Secrets needed
   logger.info('\n\n🔐 GITHUB SECRETS NEEDED');
-  logger.info('-'.repeat(80'));
+  logger.info('-'.repeat(80));
   githubNeeded.forEach(c => {
     const status = c.foundInWorkflows ? '✅' : '⚠️ ';
-    logger.info('${status} ${c.name}');
-    if (c.description) logger.info('   ${c.description}');
+    logger.info(`${status} ${c.name}`);
+    if (c.description) logger.info(`   ${c.description}`);
   });
   
   // Vercel Env Vars needed
   logger.info('\n\n🌐 VERCEL ENVIRONMENT VARIABLES NEEDED');
-  logger.info('-'.repeat(80'));
+  logger.info('-'.repeat(80));
   vercelNeeded.forEach(c => {
     const status = c.foundInCode ? '✅' : '⚠️ ';
-    logger.info('${status} ${c.name}');
-    if (c.description) logger.info('   ${c.description}');
+    logger.info(`${status} ${c.name}`);
+    if (c.description) logger.info(`   ${c.description}`);
   });
   
   // Supabase Secrets needed
   if (supabaseNeeded.length > 0) {
     logger.info('\n\n🗄️  SUPABASE SECRETS NEEDED');
-    logger.info('-'.repeat(80'));
+    logger.info('-'.repeat(80));
     supabaseNeeded.forEach(c => {
-      logger.info('✅ ${c.name}');
-      if (c.description) logger.info('   ${c.description}');
+      logger.info(`✅ ${c.name}`);
+      if (c.description) logger.info(`   ${c.description}`);
     });
   }
   
   // Grouped by category
   logger.info('\n\n📁 CREDENTIALS BY CATEGORY');
-  logger.info('='.repeat(80'));
+  logger.info('='.repeat(80));
   
   const categories = Array.from(new Set(credentials.map(c => c.category))).sort();
   
   for (const category of categories) {
     const categoryCreds = credentials.filter(c => c.category === category);
-    logger.info('\n### ${category} (${categoryCreds.length}')`);
-    logger.info('-'.repeat(80'));
+    logger.info(`\n### ${category} (${categoryCreds.length})`);
+    logger.info('-'.repeat(80));
     
     for (const cred of categoryCreds) {
       const platforms = [];
@@ -325,9 +325,9 @@ async function main() {
       const req = cred.required ? ' [REQUIRED]' : '';
       const status = cred.foundInCode || cred.foundInWorkflows ? '✅' : '❌';
       
-      logger.info('${status} ${cred.name}${req}');
-      logger.info('   Platforms: ${platforms.join(', { ' }) || 'None'}`);
-      if (cred.description) logger.info('   ${cred.description}');
+      logger.info(`${status} ${cred.name}${req}`);
+      logger.info(`   Platforms: ${platforms.join(', ') || 'None'}`);
+      if (cred.description) logger.info(`   ${cred.description}`);
     }
   }
   

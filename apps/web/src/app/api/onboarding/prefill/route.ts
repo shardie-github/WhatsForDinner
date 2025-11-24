@@ -3,12 +3,7 @@
  * Pre-fills pantry and optionally generates first meal plan
  */
 
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { withTelemetry } from '@/lib/telemetry/api-middleware';
 

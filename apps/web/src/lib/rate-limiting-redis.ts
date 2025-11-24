@@ -5,12 +5,10 @@
  * Falls back to in-memory store if Redis is not available.
  */
 
-import { NextRequest } from 'next/
+import { NextRequest } from 'next/server';
 import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const logger = createComponentLogger('rate-limiting-redis');
-
-server';
 
 export interface RateLimitConfig {
   requests: number;
@@ -53,7 +51,7 @@ async function getRedisClient() {
     
     return client;
   } catch (error) {
-    logger.warn('Redis not available', { falling back to in-memory rate limiting:', error });
+    logger.warn('Redis not available, falling back to in-memory rate limiting:', { error });
     return null;
   }
 }

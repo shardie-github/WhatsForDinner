@@ -369,7 +369,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       dryRun,
     })
     .then((result) => {
-      logger.info('Restore ${result.success ? 'completed' : 'failed'}');
+      logger.info(`Restore ${result.success ? 'completed' : 'failed'}`);
       process.exit(result.success ? 0 : 1);
     })
     .catch((error) => {

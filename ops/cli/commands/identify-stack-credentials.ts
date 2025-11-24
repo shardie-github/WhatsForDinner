@@ -239,7 +239,7 @@ async function attemptAutoShare(credential: Credential, sourceEnv: Record<string
   
   const value = credential.value;
   if (!value || value.includes('your-') || value.includes('placeholder')) {
-    logger.warn('   ⚠️  ${credential.name} has placeholder value', { skipping auto-share` });
+    logger.warn(`   ⚠️  ${credential.name} has placeholder value, skipping auto-share`);
     return false;
   }
   
@@ -248,13 +248,13 @@ async function attemptAutoShare(credential: Credential, sourceEnv: Record<string
   const vercelProjectId = process.env.VERCEL_PROJECT_ID;
   
   if (!vercelToken) {
-    logger.warn('   ⚠️  VERCEL_TOKEN not found', { cannot auto-share via Vercel API` });
+    logger.warn('   ⚠️  VERCEL_TOKEN not found, cannot auto-share via Vercel API');
     logger.warn('      Set VERCEL_TOKEN environment variable to enable auto-sharing');
     return false;
   }
   
   if (!vercelProjectId) {
-    logger.warn('   ⚠️  VERCEL_PROJECT_ID not found', { cannot auto-share via Vercel API` });
+    logger.warn('   ⚠️  VERCEL_PROJECT_ID not found, cannot auto-share via Vercel API');
     logger.warn('      Set VERCEL_PROJECT_ID environment variable to enable auto-sharing');
     return false;
   }
@@ -263,7 +263,7 @@ async function attemptAutoShare(credential: Credential, sourceEnv: Record<string
     // Map target environment to Vercel environment type
     const vercelTarget = targetEnvName === 'production' ? 'production' : 'preview';
     
-    logger.info('   📝 Setting ${credential.name} in ${targetEnvName} via Vercel API...');
+    logger.info(`   📝 Setting ${credential.name} in ${targetEnvName} via Vercel API...`);
     
     // Use Vercel API to set environment variable
     const response = await fetch(`https://api.vercel.com/v10/projects/${vercelProjectId}/env`, {
@@ -284,7 +284,7 @@ async function attemptAutoShare(credential: Credential, sourceEnv: Record<string
       const error = await response.text();
       // Check if env var already exists (409 conflict)
       if (response.status === 409) {
-        logger.info('   ℹ️  ${credential.name} already exists in ${targetEnvName}', { attempting to update...` });
+        logger.info(`   ℹ️  ${credential.name} already exists in ${targetEnvName}, attempting to update...`);
         // Try to update existing env var
         const updateResponse = await fetch(`https://api.vercel.com/v10/projects/${vercelProjectId}/env/${credential.name}`, {
           method: 'PATCH',
@@ -311,23 +311,23 @@ async function attemptAutoShare(credential: Credential, sourceEnv: Record<string
     logger.info('   ✅ Successfully set ${credential.name} in ${targetEnvName}');
     return true;
   } catch (error: any) {
-    logger.error('   ❌ Failed to auto-share ${credential.name}:', { error.message });
-    logger.error('      You can manually set it via: vercel env add ${credential.name} ${targetEnvName}');
+    logger.error(`   ❌ Failed to auto-share ${credential.name}:`, { error: error.message });
+    logger.error(`      You can manually set it via: vercel env add ${credential.name} ${targetEnvName}`);
     return false;
   }
 }
 
 async function generateReport(comparison: StackComparison, dryRun: boolean = true): Promise<void> {
   logger.info('\n📊 Stack Credential Analysis Report\n');
-  logger.info('=' .repeat(60'));
+  logger.info('='.repeat(60));
   
   const stagingCount = Object.keys(comparison.staging).length;
   const productionCount = Object.keys(comparison.production).length;
   
   logger.info('\n📈 Summary:');
-  logger.info('   Staging credentials: ${stagingCount}');
-  logger.info('   Production credentials: ${productionCount}');
-  logger.info('   Missing shared credentials: ${comparison.missing.length}');
+  logger.info(`   Staging credentials: ${stagingCount}`);
+  logger.info(`   Production credentials: ${productionCount}`);
+  logger.info(`   Missing shared credentials: ${comparison.missing.length}`);
   
   if (comparison.missing.length === 0) {
     logger.info('\n✅ All shared credentials are present in both stacks!');
@@ -343,9 +343,9 @@ async function generateReport(comparison: StackComparison, dryRun: boolean = tru
     logger.info('📦 Credentials that can be auto-shared:');
     for (const cred of autoShareable) {
       const icon = cred.source === 'staging' ? '🔵' : '🟢';
-      logger.info('   ${icon} ${cred.name} (source: ${cred.source}')`);
+      logger.info(`   ${icon} ${cred.name} (source: ${cred.source})`);
       if (cred.value && !cred.value.includes('your-') && !cred.value.includes('placeholder')) {
-        logger.info('      Value: ${cred.value.substring(0', { 20 })}...`);
+        logger.info(`      Value: ${cred.value.substring(0, 20)}...`);
       }
       
       if (!dryRun) {
@@ -360,11 +360,11 @@ async function generateReport(comparison: StackComparison, dryRun: boolean = tru
     logger.info('✋ Credentials requiring manual configuration:');
     for (const cred of manualRequired) {
       const icon = cred.source === 'staging' ? '🔵' : '🟢';
-      logger.info('   ${icon} ${cred.name} (source: ${cred.source}')`);
-      logger.info('      Action: Manually copy ${cred.name} to ${cred.source === 'staging' ? 'production' : 'staging'} stack');
+      logger.info(`   ${icon} ${cred.name} (source: ${cred.source})`);
+      logger.info(`      Action: Manually copy ${cred.name} to ${cred.source === 'staging' ? 'production' : 'staging'} stack`);
       logger.info('      Location:');
       logger.info('         - Vercel: Dashboard > Project > Settings > Environment Variables');
-      logger.info('         - Supabase: Dashboard > Settings > API (if applicable')`);
+      logger.info('         - Supabase: Dashboard > Settings > API (if applicable)');
     }
     logger.info('');
   }
@@ -419,7 +419,7 @@ export async function runIdentifyStackCredentials(options: { dryRun?: boolean; a
   const autoShare = options.autoShare === true && !dryRun;
   
   if (dryRun) {
-    logger.info('⚠️  Running in dry-run mode (no changes will be made')\n');
+    logger.info('⚠️  Running in dry-run mode (no changes will be made)\n');
   }
   
   // Get environment configurations

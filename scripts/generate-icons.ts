@@ -57,14 +57,72 @@ async function generateIcons() {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
 
-  // TODO: Implement actual icon generation using sharp or similar
-  // This requires:
-  // 1. Read SVG file
-  // 2. Convert to PNG at each required size
-  // 3. Save to appropriate directories
-  
-        
+  try {
+    // Try to use sharp if available, otherwise log instructions
+    let sharp: any;
+    try {
+      sharp = await import('sharp');
+    } catch {
+      logger.warn('sharp not installed. Install with: pnpm add -D sharp');
+      logger.info('Icon generation requires sharp. Creating placeholder structure...');
+      
+      // Create placeholder files
+      for (const icon of [...ANDROID_ICONS, ...IOS_ICONS]) {
+        const iconPath = path.join(OUTPUT_DIR, `${icon.name}.png`);
+        const iconDir = path.dirname(iconPath);
+        if (!fs.existsSync(iconDir)) {
+          fs.mkdirSync(iconDir, { recursive: true });
         }
+        // Create a placeholder file
+        if (!fs.existsSync(iconPath)) {
+          fs.writeFileSync(iconPath, '');
+        }
+      }
+      logger.info('Placeholder icon structure created. Install sharp to generate actual icons.');
+      return;
+    }
+
+    // Read SVG source
+    const svgBuffer = fs.readFileSync(ICON_SOURCE);
+    
+    // Generate all Android icons
+    for (const icon of ANDROID_ICONS) {
+      const iconPath = path.join(OUTPUT_DIR, `${icon.name}.png`);
+      const iconDir = path.dirname(iconPath);
+      if (!fs.existsSync(iconDir)) {
+        fs.mkdirSync(iconDir, { recursive: true });
+      }
+      
+      await sharp(svgBuffer)
+        .resize(icon.size, icon.size)
+        .png()
+        .toFile(iconPath);
+      
+      logger.info(`Generated: ${icon.name} (${icon.size}x${icon.size})`);
+    }
+    
+    // Generate all iOS icons
+    for (const icon of IOS_ICONS) {
+      const iconPath = path.join(OUTPUT_DIR, `${icon.name}.png`);
+      const iconDir = path.dirname(iconPath);
+      if (!fs.existsSync(iconDir)) {
+        fs.mkdirSync(iconDir, { recursive: true });
+      }
+      
+      await sharp(svgBuffer)
+        .resize(icon.size, icon.size)
+        .png()
+        .toFile(iconPath);
+      
+      logger.info(`Generated: ${icon.name} (${icon.size}x${icon.size})`);
+    }
+    
+    logger.info('✅ All icons generated successfully');
+  } catch (error) {
+    logger.error('Error generating icons:', { error });
+    throw error;
+  }
+}
 
 if (require.main === module) {
   generateIcons().catch(console.error);

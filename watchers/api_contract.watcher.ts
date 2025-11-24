@@ -149,7 +149,7 @@ class APIContractWatcher {
           const fileContracts = this.extractContractsFromSpec(spec);
           contracts.push(...fileContracts);
         } catch (error) {
-          logger.warn('Failed to load spec file ${specFile}:', { error.message });
+          logger.warn('Failed to load spec file ' + specFile + ':', { error: error.message });
         }
       }
 
@@ -244,7 +244,7 @@ class APIContractWatcher {
           const fileContracts = this.parseAPIFile(apiFile, content);
           contracts.push(...fileContracts);
         } catch (error) {
-          logger.warn('Failed to parse API file ${apiFile}:', { error.message });
+          logger.warn('Failed to parse API file ' + apiFile + ':', { error: error.message });
         }
       }
     } catch (error) {

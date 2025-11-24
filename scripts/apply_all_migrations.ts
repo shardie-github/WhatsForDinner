@@ -23,7 +23,7 @@ const DB_URL = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
 const DRY_RUN = process.argv.includes('--dry-run');
 
 if (!DB_URL && !DRY_RUN) {
-  logger.error('❌ SUPABASE_DB_URL or DATABASE_URL required (or use --dry-run')');
+  logger.error('❌ SUPABASE_DB_URL or DATABASE_URL required (or use --dry-run)');
   process.exit(1);
 }
 

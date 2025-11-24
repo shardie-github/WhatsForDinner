@@ -370,7 +370,7 @@ class FullStackGuardian {
     logger.info('📋 Domain 1: Environment & Secret Drift');
     const envReport = await this.auditEnvironmentDrift();
     this.reports.drift.push(envReport);
-    logger.info('   Found ${envReport.summary.total} issues (${envReport.summary.critical} critical')\n`);
+    logger.info(`   Found ${envReport.summary.total} issues (${envReport.summary.critical} critical)\n`);
 
     logger.info('🗄️  Domain 2: Supabase Schema Alignment');
     await this.auditSchemaAlignment();
@@ -389,8 +389,8 @@ class FullStackGuardian {
 
     logger.info('🤖 Domain 5: AI Agent Mesh');
     await this.auditAgentMesh();
-    logger.info('   Zapier configured: ${this.reports.agents.zapier}');
-    logger.info('   Integrations: ${Object.keys(this.reports.agents.integrations').length}\n`);
+    logger.info(`   Zapier configured: ${this.reports.agents.zapier}`);
+    logger.info(`   Integrations: ${Object.keys(this.reports.agents.integrations).length}\n`);
 
     return this.reports;
   }

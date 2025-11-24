@@ -1,31 +1,22 @@
 ---
 name: Feature Request
-about: Suggest an idea for What's for Dinner
+about: Suggest a new feature
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
 ---
 
-## Feature Description
+## Description
+Clear and concise description of the feature.
 
-**What would you like to see?** A clear and concise description of the feature.
-
-## Problem It Solves
-
-**What problem does this solve?** Describe the problem or use case this feature would address.
+## Problem
+What problem does this solve?
 
 ## Proposed Solution
-
-**How should it work?** Describe how you envision this feature working.
+How should this work?
 
 ## Alternatives Considered
-
-**What alternatives have you considered?** Describe any alternative solutions or features you've thought about.
+Other solutions you've considered.
 
 ## Additional Context
-
-Add any other context, mockups, or examples about the feature request here.
-
-## Use Case
-
-**Who would benefit from this?** Describe who would use this feature and how.
+Any other relevant information.

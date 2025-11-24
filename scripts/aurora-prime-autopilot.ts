@@ -78,7 +78,7 @@ class AuroraPrime {
 
   private async verifyEnvironment(): Promise<void> {
     logger.info('📋 MISSION 1: ENVIRONMENT VERIFICATION');
-    logger.info('─'.repeat(60'));
+    logger.info('─'.repeat(60));
     
     const workflowsDir = join(ROOT, '.github', 'workflows');
     if (!existsSync(workflowsDir)) {
@@ -110,8 +110,8 @@ class AuroraPrime {
       secretsConsistent = false;
     }
 
-    logger.info('✅ Found ${workflowFiles.length} workflow files');
-    logger.info('✅ Verified ${Object.keys(secretUsage').length} secret references`);
+    logger.info(`✅ Found ${workflowFiles.length} workflow files`);
+    logger.info(`✅ Verified ${Object.keys(secretUsage).length} secret references`);
     
     if (secretsConsistent) {
       this.status.secretsAlignment = 'Healthy';
@@ -120,7 +120,7 @@ class AuroraPrime {
 
   private async validateSupabase(): Promise<void> {
     logger.info('\n🗄️  MISSION 2: SUPABASE — MIGRATION & SCHEMA HEALTH');
-    logger.info('─'.repeat(60'));
+    logger.info('─'.repeat(60));
 
     try {
       // Check Supabase config
@@ -140,7 +140,7 @@ class AuroraPrime {
       }
 
       const migrations = readdirSync(migrationsDir).filter(f => f.endsWith('.sql'));
-      logger.info('✅ Found ${migrations.length} migration files');
+      logger.info(`✅ Found ${migrations.length} migration files`);
 
       // Check Prisma schema alignment
       const prismaSchemaPath = join(ROOT, 'prisma', 'schema.prisma');
@@ -160,7 +160,7 @@ class AuroraPrime {
           const funcPath = join(functionsDir, f);
           return existsSync(funcPath) && readdirSync(funcPath).some(f2 => f2 === 'index.ts' || f2 === 'deno.json');
         });
-        logger.info('✅ Found ${functions.length} Edge Functions');
+        logger.info(`✅ Found ${functions.length} Edge Functions`);
       }
 
       // Try to validate schema (dry-run if possible)
@@ -169,7 +169,7 @@ class AuroraPrime {
         logger.info('✅ Supabase CLI available');
         this.status.supabase = 'Healthy';
       } catch {
-        logger.info('⚠️  Supabase CLI not available (non-blocking')');
+        logger.info('⚠️  Supabase CLI not available (non-blocking)');
         this.status.supabase = 'Healthy'; // Non-blocking
       }
     } catch (error) {
@@ -180,7 +180,7 @@ class AuroraPrime {
 
   private async validateVercel(): Promise<void> {
     logger.info('\n🌐 MISSION 3: VERCEL — FRONTEND DEPLOYMENT CHECK');
-    logger.info('─'.repeat(60'));
+    logger.info('─'.repeat(60));
 
     try {
       // Check vercel.json
@@ -226,7 +226,7 @@ class AuroraPrime {
 
   private async validateExpo(): Promise<void> {
     logger.info('\n📱 MISSION 4: EXPO — MOBILE APP DEPLOYMENT');
-    logger.info('─'.repeat(60'));
+    logger.info('─'.repeat(60));
 
     try {
       const mobileAppPath = join(ROOT, 'apps', 'mobile');
@@ -240,7 +240,7 @@ class AuroraPrime {
       const appJsonPath = join(mobileAppPath, 'app.json');
       if (existsSync(appJsonPath)) {
         const appJson = JSON.parse(readFileSync(appJsonPath, 'utf-8'));
-        logger.info('✅ Expo app.json found: ${appJson.expo?.name || 'Unknown'}');
+        logger.info(`✅ Expo app.json found: ${appJson.expo?.name || 'Unknown'}`);
       } else {
         this.status.issues.push('Expo app.json not found');
       }
@@ -289,7 +289,7 @@ class AuroraPrime {
 
   private async validateCICD(): Promise<void> {
     logger.info('\n🔄 MISSION 5: CI/CD PIPELINE AUTOPILOT');
-    logger.info('─'.repeat(60'));
+    logger.info('─'.repeat(60));
 
     try {
       const workflowsDir = join(ROOT, '.github', 'workflows');
@@ -313,7 +313,7 @@ class AuroraPrime {
         }
       }
 
-      logger.info('✅ Found ${workflowFiles.length} workflow files');
+      logger.info(`✅ Found ${workflowFiles.length} workflow files`);
 
       if (!hasDoctorJob) {
         logger.info('⚠️  No Doctor job found in workflows');
@@ -420,7 +420,7 @@ jobs:
 
   private async checkSecretsAlignment(): Promise<void> {
     logger.info('\n🔐 MISSION 6: SECRETS ALIGNMENT CHECK');
-    logger.info('─'.repeat(60'));
+    logger.info('─'.repeat(60));
 
     try {
       // Check if workflows use consistent secret names
@@ -452,7 +452,7 @@ jobs:
         logger.info('✅ Both SUPABASE_URL and NEXT_PUBLIC_SUPABASE_URL found');
       }
 
-      logger.info('✅ Found ${Object.keys(secretPatterns').length} unique secrets in workflows`);
+      logger.info(`✅ Found ${Object.keys(secretPatterns).length} unique secrets in workflows`);
       
       // Check for common inconsistencies
       if (secretPatterns['SUPABASE_ANON_KEY'] && !secretPatterns['NEXT_PUBLIC_SUPABASE_ANON_KEY']) {
@@ -473,7 +473,7 @@ jobs:
 
   private async checkSchemaDrift(): Promise<void> {
     logger.info('\n📊 MISSION 7: SCHEMA DRIFT DETECTION');
-    logger.info('─'.repeat(60'));
+    logger.info('─'.repeat(60));
 
     try {
       // Check if Supabase CI workflow exists and has drift detection
@@ -496,7 +496,7 @@ jobs:
       const migrationsDir = join(ROOT, 'supabase', 'migrations');
       if (existsSync(migrationsDir)) {
         const migrations = readdirSync(migrationsDir).filter(f => f.endsWith('.sql'));
-        logger.info('✅ Found ${migrations.length} migration files');
+        logger.info(`✅ Found ${migrations.length} migration files`);
       }
     } catch (error) {
       this.status.issues.push(`Schema drift check error: ${error instanceof Error ? error.message : String(error)}`);
@@ -505,25 +505,25 @@ jobs:
   }
 
   private printStatus(): void {
-    logger.info('\n' + '═'.repeat(60'));
+    logger.info('\n' + '═'.repeat(60));
     logger.info('🌟 AURORA PRIME — FULL SYSTEM STATUS');
-    logger.info('═'.repeat(60'));
-    logger.info('Supabase:              [${this.status.supabase}]');
-    logger.info('Vercel Deployment:     [${this.status.vercel}]');
-    logger.info('Expo (iOS/Android'):    [${this.status.expo}]`);
-    logger.info('GitHub Actions:        [${this.status.githubActions}]');
-    logger.info('Secrets Alignment:     [${this.status.secretsAlignment}]');
-    logger.info('Schema Drift:          [${this.status.schemaDrift}]');
-    logger.info('═'.repeat(60'));
+    logger.info('═'.repeat(60));
+    logger.info(`Supabase:              [${this.status.supabase}]`);
+    logger.info(`Vercel Deployment:     [${this.status.vercel}]`);
+    logger.info(`Expo (iOS/Android):    [${this.status.expo}]`);
+    logger.info(`GitHub Actions:        [${this.status.githubActions}]`);
+    logger.info(`Secrets Alignment:     [${this.status.secretsAlignment}]`);
+    logger.info(`Schema Drift:          [${this.status.schemaDrift}]`);
+    logger.info('═'.repeat(60));
 
     if (this.status.fixes.length > 0) {
       logger.info('\n🔧 AUTO-REPAIRS APPLIED:');
-      this.status.fixes.forEach(fix => logger.info('  ✅ ${fix}'));
+      this.status.fixes.forEach(fix => logger.info(`  ✅ ${fix}`));
     }
 
     if (this.status.issues.length > 0) {
       logger.info('\n⚠️  ISSUES DETECTED:');
-      this.status.issues.forEach(issue => logger.info('  • ${issue}'));
+      this.status.issues.forEach(issue => logger.info(`  • ${issue}`));
     }
 
     logger.info('\n📋 RECOMMENDED NEXT ACTIONS:');
@@ -562,7 +562,7 @@ jobs:
       logger.info('  ✅ System is healthy — no actions required');
     }
 
-    logger.info('\n' + '═'.repeat(60'));
+    logger.info('\n' + '═'.repeat(60));
   }
 }
 

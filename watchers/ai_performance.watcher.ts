@@ -585,11 +585,11 @@ ${report.recommendations.map(rec => `- ${rec}`).join('\n')}
     try {
       const report = await this.analyzePerformance();
       
-      logger.info('Performance check completed in ${report.duration}ms');
-      logger.info('Overall score: ${(report.score * 100').toFixed(1)}%`);
+      logger.info(`Performance check completed in ${report.duration}ms`);
+      logger.info('Overall score: ' + (report.score * 100).toFixed(1) + '%');
       
       if (report.alerts.length > 0) {
-        logger.warn('Found ${report.alerts.length} performance alerts');
+        logger.warn('Found ' + report.alerts.length + ' performance alerts');
       }
     } catch (error) {
       logger.error('Nightly performance check failed:', { error });

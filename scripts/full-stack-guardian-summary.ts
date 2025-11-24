@@ -302,16 +302,16 @@ if (require.main === module) {
   const guardian = new FullStackGuardianSummary();
   guardian.generateReport()
     .then(report => {
-      logger.info('JSON.stringify(report', { null, 2 }));
+      logger.info(JSON.stringify(report, null, 2));
       
       logger.info('\n📊 Summary:');
-      logger.info('Status: ${report.status.toUpperCase(')}`);
-      logger.info('Overall Score: ${(Object.values(report.categories').reduce((sum, c) => sum + c.score, 0) / Object.keys(report.categories).length * 100).toFixed(1)}%`);
+      logger.info(`Status: ${report.status.toUpperCase()}`);
+      logger.info(`Overall Score: ${(Object.values(report.categories).reduce((sum, c) => sum + c.score, 0) / Object.keys(report.categories).length * 100).toFixed(1)}%`);
       
       if (report.recommendations.length > 0) {
         logger.info('\n📋 Recommendations:');
         report.recommendations.forEach((rec, i) => {
-          logger.info('${i + 1}. ${rec}');
+          logger.info(`${i + 1}. ${rec}`);
         });
       }
       

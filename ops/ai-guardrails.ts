@@ -119,7 +119,7 @@ class AIAgentGuardrails {
 
   offlineFallback<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
     return fn().catch(() => {
-      logger.warn('LLM call failed', { using offline fallback' });
+      logger.warn('LLM call failed, using offline fallback');
       return Promise.resolve(fallback);
     });
   }

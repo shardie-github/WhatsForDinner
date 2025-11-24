@@ -30,9 +30,9 @@ const results: CheckResult[] = [];
 function addResult(result: CheckResult) {
   results.push(result);
   const icon = result.passed ? '✅' : '❌';
-  logger.info('${icon} ${result.name}${result.error ? `: ${result.error}` : ''}');
+  logger.info(`${icon} ${result.name}${result.error ? `: ${result.error}` : ''}`);
   if (result.details) {
-    logger.info('   Details:', { result.details });
+    logger.info('   Details:', result.details);
   }
 }
 
@@ -66,7 +66,7 @@ async function checkEnvVars(): Promise<boolean> {
     addResult({
       name: 'Prisma Engine Type',
       passed: false,
-      error: `Expected 'wasm', got '${process.env.PRISMA_CLIENT_ENGINE_TYPE}'`,
+      error: 'Expected \'wasm\', got \'' + (process.env.PRISMA_CLIENT_ENGINE_TYPE || 'undefined') + '\'',
     });
     return false;
   }
@@ -116,7 +116,7 @@ async function checkSupabaseREST(): Promise<boolean> {
     addResult({
       name: 'Supabase REST API',
       passed: true,
-      details: { latency: `${latency}ms`, dataCount: data?.length ?? 0 },
+      details: { latency: latency + 'ms', dataCount: data?.length ?? 0 },
     });
     return true;
   } catch (error) {
@@ -135,7 +135,7 @@ async function checkPrisma(): Promise<boolean> {
     const start = Date.now();
     
     // Simple query
-    await prisma.$queryRaw`SELECT 1`;
+    await prisma.$queryRawUnsafe('SELECT 1');
     
     const latency = Date.now() - start;
     
@@ -144,7 +144,7 @@ async function checkPrisma(): Promise<boolean> {
     addResult({
       name: 'Prisma Database',
       passed: true,
-      details: { latency: `${latency}ms` },
+      details: { latency: latency + 'ms' },
     });
     return true;
   } catch (error) {
@@ -230,8 +230,8 @@ async function checkStorage(): Promise<boolean> {
     const supabase = createClient(url, key);
     
     // Test upload
-    const testContent = `reality-check-${Date.now()}`;
-    const testPath = `reality-check/${Date.now()}.txt`;
+    const testContent = 'reality-check-' + Date.now();
+    const testPath = 'reality-check/' + Date.now() + '.txt';
     
     const { error: uploadError } = await supabase.storage
       .from(bucket)
@@ -244,7 +244,7 @@ async function checkStorage(): Promise<boolean> {
       addResult({
         name: 'Storage Upload/Download',
         passed: false,
-        error: `Upload failed: ${uploadError.message}`,
+        error: 'Upload failed: ' + uploadError.message,
       });
       return false;
     }
@@ -258,7 +258,7 @@ async function checkStorage(): Promise<boolean> {
       addResult({
         name: 'Storage Upload/Download',
         passed: false,
-        error: `Download failed: ${downloadError.message}`,
+        error: 'Download failed: ' + downloadError.message,
       });
       return false;
     }
@@ -304,14 +304,14 @@ async function main() {
   const results = await Promise.all(checks);
   const allPassed = results.every((r) => r);
 
-  logger.info('\n' + '='.repeat(50'));
-  logger.info('allPassed ? '✅ ALL CHECKS PASSED' : '❌ SOME CHECKS FAILED');
-  logger.info('='.repeat(50'));
+  logger.info('\n' + '='.repeat(50));
+  logger.info(allPassed ? '✅ ALL CHECKS PASSED' : '❌ SOME CHECKS FAILED');
+  logger.info('='.repeat(50));
 
   process.exit(allPassed ? 0 : 1);
 }
 
 main().catch((error) => {
-  logger.error('Fatal error:', { error });
+  logger.error('Fatal error:', { error: error });
   process.exit(1);
 });

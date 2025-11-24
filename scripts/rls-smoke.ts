@@ -282,7 +282,7 @@ function printReport(results: RLSResults) {
 
         
   if (results.failed > 0) {
-    logger.info('\n❌ ${results.failed} test(s') failed`);
+    logger.info('\n❌ ' + results.failed + ' test(s) failed');
   } else {
     logger.info('\n✅ All tests passed');
   }

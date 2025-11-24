@@ -3,12 +3,7 @@
  * Handles affiliate payouts, API subscriptions, marketplace payouts
  */
 
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 

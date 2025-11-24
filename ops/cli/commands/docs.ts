@@ -29,7 +29,18 @@ export async function runDocs(options: { rebuild?: boolean; watch?: boolean }) {
 
     if (options.watch) {
       logger.info('📚 Watching for documentation changes...');
-      // TODO: Implement file watching
+      const chokidar = await import('chokidar');
+      const watcher = chokidar.watch(['docs/**/*.md', '*.md'], {
+        ignored: /node_modules/,
+        persistent: true,
+      });
+      
+      watcher.on('change', (path) => {
+        logger.info(`📝 Documentation changed: ${path}`);
+        logger.info('   Run "pnpm ops docs" to regenerate');
+      });
+      
+      logger.info('   Watching for changes... (Press Ctrl+C to stop)');
     }
 
     logger.info('✅ Documentation generated successfully');

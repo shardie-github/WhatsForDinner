@@ -4,12 +4,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 

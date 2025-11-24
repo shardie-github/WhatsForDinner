@@ -3,12 +3,7 @@
  * Sends welcome emails when users join programs
  */
 
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 

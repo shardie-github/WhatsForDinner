@@ -24,7 +24,7 @@ async function extractMessages(): Promise<Message[]> {
   // Scan for i18n usage patterns
   const patterns = [
     't("', // t("key")
-    't(\'', // t('key')
+    "t('", // t('key')
     'useTranslation()', // React i18n
   ];
 

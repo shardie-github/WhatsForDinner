@@ -190,7 +190,7 @@ export function processTelemetryEvent(
   // Validate and redact
   const validation = validateTelemetryEvent(event);
   if (!validation.valid || !validation.redacted) {
-    if (process.env.NODE_ENV === 'development') { logger.warn('Telemetry event validation failed:', { validation.error }); }
+    if (process.env.NODE_ENV === 'development') { logger.warn('Telemetry event validation failed:', { error: validation.error }); }
     return null;
   }
 

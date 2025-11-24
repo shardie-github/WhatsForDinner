@@ -81,19 +81,19 @@ export async function runBenchmark(benchmark: Benchmark): Promise<BenchmarkResul
 export async function runSuite(suite: BenchmarkSuite): Promise<BenchmarkResult[]> {
   const results: BenchmarkResult[] = [];
 
-  logger.info('\nRunning benchmark suite: ${suite.name}');
-  logger.info('─'.repeat(50'));
+  logger.info(`\nRunning benchmark suite: ${suite.name}`);
+  logger.info('─'.repeat(50));
 
   for (const benchmark of suite.benchmarks) {
     const result = await runBenchmark(benchmark);
     results.push(result);
 
-    logger.info('${result.name}:');
-    logger.info('  Iterations: ${result.iterations}');
-    logger.info('  Average: ${result.averageTime.toFixed(4')}ms`);
-    logger.info('  Min: ${result.minTime.toFixed(4')}ms`);
-    logger.info('  Max: ${result.maxTime.toFixed(4')}ms`);
-    logger.info('  Ops/sec: ${result.opsPerSecond.toFixed(2')}`);
+    logger.info(`${result.name}:`);
+    logger.info(`  Iterations: ${result.iterations}`);
+    logger.info(`  Average: ${result.averageTime.toFixed(4)}ms`);
+    logger.info(`  Min: ${result.minTime.toFixed(4)}ms`);
+    logger.info(`  Max: ${result.maxTime.toFixed(4)}ms`);
+    logger.info(`  Ops/sec: ${result.opsPerSecond.toFixed(2)}`);
     logger.info('');
   }
 

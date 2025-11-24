@@ -3,12 +3,7 @@
  * Add items to cart and manage carts
  */
 
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 import { groceryManager } from '@/lib/grocery/grocery-manager';
 import { createClient } from '@/lib/supabase/server';
 import { GroceryCartItem } from '@/lib/grocery/types';

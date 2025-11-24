@@ -1,0 +1,3309 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "What's for Dinner API",
+    "version": "1.0.0",
+    "description": "API for What's for Dinner meal planning application"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Development"
+    },
+    {
+      "url": "https://whatsfordinner.app/api",
+      "description": "Production"
+    }
+  ],
+  "paths": {
+    "/activation/review": {},
+    "/admin/audit": {
+      "get": {
+        "summary": "* Admin Audit Logs API",
+        "description": "* Admin Audit Logs API\n * \n * GET /api/admin/audit - List audit logs with filters",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/costs": {
+      "get": {
+        "summary": "* Admin Cost Dashboard API",
+        "description": "* Admin Cost Dashboard API\n * \n * Provides cost data for the admin dashboard:\n * - Infrastructure costs (Supabase, Vercel, etc.)\n * - Stripe fees\n * - Email service costs\n * - Advertising costs\n * - Trends and forecasts",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/dashboard": {
+      "get": {
+        "summary": "* Admin Dashboard API",
+        "description": "* Admin Dashboard API\n * \n * GET /api/admin/dashboard - Key metrics overview",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/governance/retention": {
+      "get": {
+        "summary": "* Admin Data Governance - Retention Policies API",
+        "description": "* Admin Data Governance - Retention Policies API\n * \n * GET /api/admin/governance/retention - List policies & preview\n * POST /api/admin/governance/retention/run - Run retention policies",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "* Admin Data Governance - Retention Policies API",
+        "description": "* Admin Data Governance - Retention Policies API\n * \n * GET /api/admin/governance/retention - List policies & preview\n * POST /api/admin/governance/retention/run - Run retention policies",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/incidents": {
+      "get": {
+        "summary": "* Admin Incidents API",
+        "description": "* Admin Incidents API\n * \n * GET /api/admin/incidents - List incidents\n * POST /api/admin/incidents - Create incident",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "* Admin Incidents API",
+        "description": "* Admin Incidents API\n * \n * GET /api/admin/incidents - List incidents\n * POST /api/admin/incidents - Create incident",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/wiki/sync-markdown": {
+      "post": {
+        "summary": "API endpoint at /admin/wiki/sync-markdown",
+        "description": "API endpoint at /admin/wiki/sync-markdown",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/affiliate/convert": {
+      "post": {
+        "summary": "* Affiliate Conversion API",
+        "description": "* Affiliate Conversion API\n * Automatically called on purchase - zero effort",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/affiliate/dashboard": {
+      "get": {
+        "summary": "* Affiliate Dashboard API",
+        "description": "* Affiliate Dashboard API\n * Pre-built dashboard data - zero effort",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/affiliate/register": {
+      "post": {
+        "summary": "* Affiliate Registration API",
+        "description": "* Affiliate Registration API\n * Zero-effort affiliate signup - automatically enabled for all users",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/affiliate/track": {},
+    "/agent/suggest": {
+      "post": {
+        "summary": "API endpoint at /agent/suggest",
+        "description": "API endpoint at /agent/suggest",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/alerts": {
+      "get": {
+        "summary": "API endpoint at /alerts",
+        "description": "API endpoint at /alerts",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "API endpoint at /alerts",
+        "description": "API endpoint at /alerts",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/analytics/dashboard": {
+      "get": {
+        "summary": "API endpoint at /analytics/dashboard",
+        "description": "API endpoint at /analytics/dashboard",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api-access/keys": {
+      "get": {
+        "summary": "* API Key Management",
+        "description": "* API Key Management\n * Zero-effort API key generation and management",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* API Key Management",
+        "description": "* API Key Management\n * Zero-effort API key generation and management",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/audit/me": {
+      "get": {
+        "summary": "API endpoint at /audit/me",
+        "description": "API endpoint at /audit/me",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/apple/callback": {
+      "post": {
+        "summary": "API endpoint at /auth/apple/callback",
+        "description": "API endpoint at /auth/apple/callback",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/delete-account": {
+      "get": {
+        "summary": "API endpoint at /auth/delete-account",
+        "description": "API endpoint at /auth/delete-account",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "API endpoint at /auth/delete-account",
+        "description": "API endpoint at /auth/delete-account",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/billing/checkout": {
+      "post": {
+        "summary": "API endpoint at /billing/checkout",
+        "description": "API endpoint at /billing/checkout",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/billing/invoice": {
+      "get": {
+        "summary": "* Invoice Generation API",
+        "description": "* Invoice Generation API\n * Generates invoices for subscriptions and payments",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/billing/portal": {
+      "post": {
+        "summary": "API endpoint at /billing/portal",
+        "description": "API endpoint at /billing/portal",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/billing/refund": {
+      "get": {
+        "summary": "* Refund Processing API",
+        "description": "* Refund Processing API\n * Handles refund requests and processing",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* Refund Processing API",
+        "description": "* Refund Processing API\n * Handles refund requests and processing",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/business-readiness": {
+      "get": {
+        "summary": "* Business Readiness API",
+        "description": "* Business Readiness API\n * Endpoint for accessing business readiness reports and metrics",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* Business Readiness API",
+        "description": "* Business Readiness API\n * Endpoint for accessing business readiness reports and metrics",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/chat": {
+      "post": {
+        "summary": "API endpoint at /chat",
+        "description": "API endpoint at /chat",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/checkout/create-link": {},
+    "/collections/create": {},
+    "/collections/list": {},
+    "/collections/purchase": {},
+    "/collections": {
+      "get": {
+        "summary": "* GET /api/collections",
+        "description": "* GET /api/collections\n * Get all collections for the current user",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* GET /api/collections",
+        "description": "* GET /api/collections\n * Get all collections for the current user",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/commerce/hub": {
+      "get": {
+        "summary": "API endpoint at /commerce/hub",
+        "description": "API endpoint at /commerce/hub",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "API endpoint at /commerce/hub",
+        "description": "API endpoint at /commerce/hub",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/cost/calculate": {
+      "post": {
+        "summary": "API endpoint at /cost/calculate",
+        "description": "API endpoint at /cost/calculate",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/credits/purchase": {},
+    "/cro/insights": {
+      "get": {
+        "summary": "* CRO Insights API",
+        "description": "* CRO Insights API",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* CRO Insights API",
+        "description": "* CRO Insights API",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cron/affiliate-payouts": {
+      "get": {
+        "summary": "* Automated Affiliate Payout Cron Job",
+        "description": "* Automated Affiliate Payout Cron Job\n * Runs monthly to process affiliate payouts\n * Configure in Vercel Cron or similar",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/cron/data-aggregation": {
+      "get": {
+        "summary": "* Automated Data Aggregation Cron Job",
+        "description": "* Automated Data Aggregation Cron Job\n * Aggregates and anonymizes data for insights packages\n * Runs daily",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/cron/retention": {
+      "get": {
+        "summary": "* Retention Automation Cron Job",
+        "description": "* Retention Automation Cron Job\n * Runs daily and weekly retention automation",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/csrf-token": {
+      "get": {
+        "summary": "API endpoint at /csrf-token",
+        "description": "API endpoint at /csrf-token",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/data-insights/anonymize": {
+      "post": {
+        "summary": "* Automatic Data Anonymization",
+        "description": "* Automatic Data Anonymization\n * Zero-effort GDPR/CCPA compliant anonymization",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/data-insights/catalog": {
+      "get": {
+        "summary": "* Data Insights Catalog",
+        "description": "* Data Insights Catalog\n * Pre-built insights ready to sell - zero effort",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/developers/keys": {
+      "get": {
+        "summary": "API endpoint at /developers/keys",
+        "description": "API endpoint at /developers/keys",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "API endpoint at /developers/keys",
+        "description": "API endpoint at /developers/keys",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/developers/usage": {
+      "get": {
+        "summary": "API endpoint at /developers/usage",
+        "description": "API endpoint at /developers/usage",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/dinner": {},
+    "/email/program-welcome": {
+      "post": {
+        "summary": "* Program Welcome Email",
+        "description": "* Program Welcome Email\n * Sends welcome emails when users join programs",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/errors": {
+      "get": {
+        "summary": "API endpoint at /errors",
+        "description": "API endpoint at /errors",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/experiments/assign": {
+      "get": {
+        "summary": "* GET /api/experiments/assign?experimentId=xxx",
+        "description": "* GET /api/experiments/assign?experimentId=xxx\n * Assigns or retrieves variant for an experiment",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/experiments/convert": {
+      "post": {
+        "summary": "* POST /api/experiments/convert",
+        "description": "* POST /api/experiments/convert\n * Tracks a conversion event for an experiment",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/experiments/price": {},
+    "/expiration/alerts": {
+      "get": {
+        "summary": "* GET /api/expiration/alerts",
+        "description": "* GET /api/expiration/alerts\n * Get expiration alerts for the current user",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/export": {
+      "post": {
+        "summary": "API endpoint at /export",
+        "description": "API endpoint at /export",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/family/invite": {},
+    "/features/check": {
+      "post": {
+        "summary": "* POST /api/features/check",
+        "description": "* POST /api/features/check\n * Checks if a feature is available for the user's plan",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/federation": {
+      "get": {
+        "summary": "API endpoint at /federation",
+        "description": "API endpoint at /federation",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "API endpoint at /federation",
+        "description": "API endpoint at /federation",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/feedback": {
+      "get": {
+        "summary": "API endpoint at /feedback",
+        "description": "API endpoint at /feedback",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "API endpoint at /feedback",
+        "description": "API endpoint at /feedback",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/gamification/badges": {},
+    "/gamification/challenges": {},
+    "/gamification/leaderboard": {},
+    "/gamification/streak": {},
+    "/gdpr/delete": {
+      "delete": {
+        "summary": "API endpoint at /gdpr/delete",
+        "description": "API endpoint at /gdpr/delete",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/gdpr/export": {
+      "get": {
+        "summary": "API endpoint at /gdpr/export",
+        "description": "API endpoint at /gdpr/export",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/grocery/cart": {
+      "post": {
+        "summary": "* Grocery Cart API",
+        "description": "* Grocery Cart API\n * Add items to cart and manage carts",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/grocery/config": {
+      "get": {
+        "summary": "* Grocery Configuration API",
+        "description": "* Grocery Configuration API\n * Get and update grocery integration configuration",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "* Grocery Configuration API",
+        "description": "* Grocery Configuration API\n * Get and update grocery integration configuration",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/grocery/search": {
+      "get": {
+        "summary": "* Grocery Product Search API",
+        "description": "* Grocery Product Search API\n * Search products across all stores",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/grocery/stores": {
+      "get": {
+        "summary": "* Grocery Stores API",
+        "description": "* Grocery Stores API\n * Get available grocery stores and their configuration",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/guardian": {
+      "get": {
+        "summary": "* Guardian API Routes",
+        "description": "* Guardian API Routes\n * RESTful API for Guardian system",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* Guardian API Routes",
+        "description": "* Guardian API Routes\n * RESTful API for Guardian system",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/health/comprehensive": {
+      "get": {
+        "summary": "* Comprehensive Health Check API",
+        "description": "* Comprehensive Health Check API\n * Checks all system components and returns health status",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/health/db": {
+      "get": {
+        "summary": "* Phase 1 Guardrail: Health Endpoint - Database",
+        "description": "* Phase 1 Guardrail: Health Endpoint - Database\n * Checks the health of the database connection",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/health/live": {
+      "get": {
+        "summary": "* Liveness Probe Endpoint",
+        "description": "* Liveness Probe Endpoint\n * \n * Simple check to verify the service is running.\n * Used by Kubernetes/Docker health checks.\n * \n * GET /api/health/live",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/health/queue": {
+      "get": {
+        "summary": "* Phase 1 Guardrail: Health Endpoint - Queue",
+        "description": "* Phase 1 Guardrail: Health Endpoint - Queue\n * Checks the health of the queue worker and Redis connection",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "summary": "* Readiness Probe Endpoint",
+        "description": "* Readiness Probe Endpoint\n * \n * Checks if the service is ready to accept traffic.\n * Verifies dependencies (database, external APIs) are available.\n * \n * GET /api/health/ready",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "* Production Health Check Endpoint",
+        "description": "* Production Health Check Endpoint\n * \n * Provides comprehensive health checking for production monitoring:\n * - GET /api/health - Full health check with all checks\n * - GET /api/health/live - Liveness probe (simple alive check)\n * - GET /api/health/ready - Readiness probe (ready to accept traffic)",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/healthz": {
+      "get": {
+        "summary": "API endpoint at /healthz",
+        "description": "API endpoint at /healthz",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/ingest": {
+      "post": {
+        "summary": "API endpoint at /ingest",
+        "description": "API endpoint at /ingest",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/marketplace/purchase": {},
+    "/marketplace/verify": {},
+    "/meal-plan/daily-suggestion": {
+      "get": {
+        "summary": "* Daily Suggestion API",
+        "description": "* Daily Suggestion API\n * Returns a personalized daily recipe suggestion",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/meal-plan/generate": {},
+    "/mealplan/ai-generate": {},
+    "/mealplan": {},
+    "/metrics/dashboard": {},
+    "/metrics": {
+      "get": {
+        "summary": "API endpoint at /metrics",
+        "description": "API endpoint at /metrics",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "API endpoint at /metrics",
+        "description": "API endpoint at /metrics",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/metrics.json": {
+      "get": {
+        "summary": "* Performance Intelligence Layer: JSON Dashboard Endpoint",
+        "description": "* Performance Intelligence Layer: JSON Dashboard Endpoint\n * Returns metrics in JSON format for external consumption",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/monetization/opportunities": {
+      "get": {
+        "summary": "* Monetization Opportunities API",
+        "description": "* Monetization Opportunities API",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/monetization/paywall": {
+      "get": {
+        "summary": "* Paywall Strategy API",
+        "description": "* Paywall Strategy API\n * Determine if paywall should be shown and which strategy to use",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/monetization/pricing": {
+      "get": {
+        "summary": "* Dynamic Pricing API",
+        "description": "* Dynamic Pricing API\n * Get personalized pricing offers",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/monetization/retention": {
+      "get": {
+        "summary": "* Retention Monetization API",
+        "description": "* Retention Monetization API\n * Get retention offers and churn risk analysis",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/monetization/upsells": {
+      "get": {
+        "summary": "* Smart Upsell Opportunities API",
+        "description": "* Smart Upsell Opportunities API\n * Get personalized upsell opportunities",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/monetization/usage-premium": {
+      "get": {
+        "summary": "* Usage-Based Premium Features API",
+        "description": "* Usage-Based Premium Features API",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* Usage-Based Premium Features API",
+        "description": "* Usage-Based Premium Features API",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/monetization/value-profile": {
+      "get": {
+        "summary": "* Customer Value Profile API",
+        "description": "* Customer Value Profile API\n * Get comprehensive customer value analysis",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/nomad/family/chat": {
+      "get": {
+        "summary": "API endpoint at /nomad/family/chat",
+        "description": "API endpoint at /nomad/family/chat",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "API endpoint at /nomad/family/chat",
+        "description": "API endpoint at /nomad/family/chat",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/nomad/family": {
+      "get": {
+        "summary": "API endpoint at /nomad/family",
+        "description": "API endpoint at /nomad/family",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "API endpoint at /nomad/family",
+        "description": "API endpoint at /nomad/family",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/nomad/mealplan": {
+      "get": {
+        "summary": "API endpoint at /nomad/mealplan",
+        "description": "API endpoint at /nomad/mealplan",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "API endpoint at /nomad/mealplan",
+        "description": "API endpoint at /nomad/mealplan",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "API endpoint at /nomad/mealplan",
+        "description": "API endpoint at /nomad/mealplan",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/nomad/nutrition": {
+      "get": {
+        "summary": "API endpoint at /nomad/nutrition",
+        "description": "API endpoint at /nomad/nutrition",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/nomad/recipes": {
+      "get": {
+        "summary": "API endpoint at /nomad/recipes",
+        "description": "API endpoint at /nomad/recipes",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "API endpoint at /nomad/recipes",
+        "description": "API endpoint at /nomad/recipes",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/nomad/user": {
+      "get": {
+        "summary": "API endpoint at /nomad/user",
+        "description": "API endpoint at /nomad/user",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "API endpoint at /nomad/user",
+        "description": "API endpoint at /nomad/user",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/nomad/wearables/google-fit/callback": {
+      "get": {
+        "summary": "* Encrypt token using AES-256-GCM",
+        "description": "* Encrypt token using AES-256-GCM",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/nutrition": {
+      "post": {
+        "summary": "API endpoint at /nutrition",
+        "description": "API endpoint at /nutrition",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/observability/alerts": {
+      "get": {
+        "summary": "API endpoint at /observability/alerts",
+        "description": "API endpoint at /observability/alerts",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "API endpoint at /observability/alerts",
+        "description": "API endpoint at /observability/alerts",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/observability/dashboard": {
+      "get": {
+        "summary": "API endpoint at /observability/dashboard",
+        "description": "API endpoint at /observability/dashboard",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/observability/errors": {
+      "get": {
+        "summary": "API endpoint at /observability/errors",
+        "description": "API endpoint at /observability/errors",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/observability/health": {
+      "get": {
+        "summary": "API endpoint at /observability/health",
+        "description": "API endpoint at /observability/health",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/observability/metrics": {
+      "get": {
+        "summary": "API endpoint at /observability/metrics",
+        "description": "API endpoint at /observability/metrics",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/observability/report": {
+      "get": {
+        "summary": "API endpoint at /observability/report",
+        "description": "API endpoint at /observability/report",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/observability/traces": {
+      "get": {
+        "summary": "API endpoint at /observability/traces",
+        "description": "API endpoint at /observability/traces",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/onboarding/checklist": {
+      "get": {
+        "summary": "* GET /api/onboarding/checklist",
+        "description": "* GET /api/onboarding/checklist\n * Returns user's onboarding checklist state",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/onboarding/prefill": {},
+    "/pantry/seed-sample": {},
+    "/partner/webhook": {},
+    "/partners/revenue": {
+      "get": {
+        "summary": "API endpoint at /partners/revenue",
+        "description": "API endpoint at /partners/revenue",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/partners/stats": {
+      "get": {
+        "summary": "API endpoint at /partners/stats",
+        "description": "API endpoint at /partners/stats",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/performance/optimize": {
+      "post": {
+        "summary": "API endpoint at /performance/optimize",
+        "description": "API endpoint at /performance/optimize",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/performance/recommendations": {
+      "get": {
+        "summary": "API endpoint at /performance/recommendations",
+        "description": "API endpoint at /performance/recommendations",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/performance": {
+      "get": {
+        "summary": "* Performance Metrics API",
+        "description": "* Performance Metrics API\n * \n * Tracks and returns performance metrics: API response times, suggestion generation time, Core Web Vitals",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/performance/summary": {
+      "get": {
+        "summary": "* Performance Summary API",
+        "description": "* Performance Summary API\n * Returns performance metrics for monitoring",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/preferences": {
+      "get": {
+        "summary": "* GET /api/preferences",
+        "description": "* GET /api/preferences\n * Returns user's dietary preferences",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* GET /api/preferences",
+        "description": "* GET /api/preferences\n * Returns user's dietary preferences",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/premium/cost": {
+      "post": {
+        "summary": "API endpoint at /premium/cost",
+        "description": "API endpoint at /premium/cost",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/premium/meal-plan": {},
+    "/premium/nutrition": {},
+    "/premium/pantry-intelligence": {
+      "post": {
+        "summary": "API endpoint at /premium/pantry-intelligence",
+        "description": "API endpoint at /premium/pantry-intelligence",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/pricing/current": {},
+    "/pricing/survey": {},
+    "/privacy/apps": {
+      "post": {
+        "summary": "API endpoint at /privacy/apps",
+        "description": "API endpoint at /privacy/apps",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/privacy/consent": {
+      "get": {
+        "summary": "* Privacy API Routes",
+        "description": "* Privacy API Routes\n * Zero-trust, user-only access with MFA enforcement",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "* Privacy API Routes",
+        "description": "* Privacy API Routes\n * Zero-trust, user-only access with MFA enforcement",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/privacy/delete": {
+      "post": {
+        "summary": "API endpoint at /privacy/delete",
+        "description": "API endpoint at /privacy/delete",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/privacy/erase": {
+      "post": {
+        "summary": "* Privacy Erasure Endpoint (Right to be Forgotten)",
+        "description": "* Privacy Erasure Endpoint (Right to be Forgotten)\n * Schedules account and data deletion",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/privacy/export": {
+      "post": {
+        "summary": "API endpoint at /privacy/export",
+        "description": "API endpoint at /privacy/export",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/privacy/log": {
+      "post": {
+        "summary": "API endpoint at /privacy/log",
+        "description": "API endpoint at /privacy/log",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/privacy/mfa/verify": {
+      "get": {
+        "summary": "API endpoint at /privacy/mfa/verify",
+        "description": "API endpoint at /privacy/mfa/verify",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/privacy/prefs": {
+      "get": {
+        "summary": "API endpoint at /privacy/prefs",
+        "description": "API endpoint at /privacy/prefs",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/privacy/signals": {
+      "post": {
+        "summary": "API endpoint at /privacy/signals",
+        "description": "API endpoint at /privacy/signals",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/programs/analytics": {
+      "get": {
+        "summary": "* Program Analytics API",
+        "description": "* Program Analytics API\n * Returns aggregated analytics for programs",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/programs/attribution": {
+      "get": {
+        "summary": "* Attribution API",
+        "description": "* Attribution API\n * Handles program code attribution and cookie tracking",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "* Attribution API",
+        "description": "* Attribution API\n * Handles program code attribution and cookie tracking",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/programs/rewards/distribute": {
+      "post": {
+        "summary": "* Automated Reward Distribution",
+        "description": "* Automated Reward Distribution\n * Processes pending rewards and distributes them",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/programs/track": {
+      "post": {
+        "summary": "* Program Tracking API",
+        "description": "* Program Tracking API\n * Tracks conversions, clicks, and attribution for referral/affiliate/partner programs",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/purchase/convert": {
+      "post": {
+        "summary": "* Purchase Conversion Handler",
+        "description": "* Purchase Conversion Handler\n * Automatically calls affiliate conversion on purchase\n * Pre-wired to work with existing purchase flow",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/push/register": {
+      "post": {
+        "summary": "API endpoint at /push/register",
+        "description": "API endpoint at /push/register",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/recipes/customize": {},
+    "/recipes/generate-image": {},
+    "/reco/whatsfordinner": {
+      "post": {
+        "summary": "API endpoint at /reco/whatsfordinner",
+        "description": "API endpoint at /reco/whatsfordinner",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/referral/convert": {},
+    "/referral/create": {},
+    "/referral/enhanced": {
+      "get": {
+        "summary": "* Enhanced Referral Program API",
+        "description": "* Enhanced Referral Program API",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* Enhanced Referral Program API",
+        "description": "* Enhanced Referral Program API",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/revenue/dashboard": {},
+    "/revenue/enable": {},
+    "/revenue/summary": {},
+    "/selftest": {
+      "get": {
+        "summary": "API endpoint at /selftest",
+        "description": "API endpoint at /selftest",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/share/reward": {},
+    "/stripe/monetization-webhook": {
+      "post": {
+        "summary": "* Stripe Webhook Handler for Monetization",
+        "description": "* Stripe Webhook Handler for Monetization\n * Handles affiliate payouts, API subscriptions, marketplace payouts",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/stripe/webhook": {
+      "post": {
+        "summary": "API endpoint at /stripe/webhook",
+        "description": "API endpoint at /stripe/webhook",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/subscriptions/create": {},
+    "/subscriptions/me": {},
+    "/support/ticket": {
+      "get": {
+        "summary": "* Support Ticket API",
+        "description": "* Support Ticket API\n * Creates and manages support tickets",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "* Support Ticket API",
+        "description": "* Support Ticket API\n * Creates and manages support tickets",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/swagger": {
+      "get": {
+        "summary": "API endpoint at /swagger",
+        "description": "API endpoint at /swagger",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/telemetry/ingest": {},
+    "/telemetry": {
+      "post": {
+        "summary": "* Performance Intelligence Layer: Telemetry Beacon Endpoint",
+        "description": "* Performance Intelligence Layer: Telemetry Beacon Endpoint\n * Receives client-side performance metrics via sendBeacon",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/traces": {
+      "get": {
+        "summary": "API endpoint at /traces",
+        "description": "API endpoint at /traces",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/upsells/opportunities": {
+      "get": {
+        "summary": "* Automated Upsell Opportunities",
+        "description": "* Automated Upsell Opportunities\n * Zero-effort upsell identification using engagement scoring",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user/me": {
+      "get": {
+        "summary": "API endpoint at /user/me",
+        "description": "API endpoint at /user/me",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -193,13 +193,13 @@ class AlertingSystem {
     // Email notifications
     if (this.alertChannels.email && this.alertChannels.email.length > 0) {
       // Implement email sending
-      logger.info('Sending email alert to ${this.alertChannels.email.join(', { ' })}`);
+      logger.info(`Sending email alert to ${this.alertChannels.email.join(', ')}`);
     }
 
     // Slack notifications
     if (this.alertChannels.slack) {
       // Implement Slack webhook
-      logger.info('Sending Slack alert to ${this.alertChannels.slack}');
+      logger.info(`Sending Slack alert to ${this.alertChannels.slack}`);
     }
 
     // Webhook notifications

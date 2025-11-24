@@ -295,15 +295,14 @@ ${this.generateTrendAnalysis(metrics)}
 
   private async checkOverruns(metrics: CostMetrics): Promise<void> {
     if (metrics.total.overrun) {
-      logger.warn('⚠️ Cost overrun detected: Forecast ($${metrics.total.forecast.toFixed(2')}) exceeds budget ($${metrics.total.budget.toFixed(2)}) by ${metrics.total.overrunPercent.toFixed(1)}%`
-      );
+      logger.warn(`⚠️ Cost overrun detected: Forecast ($${metrics.total.forecast.toFixed(2)}) exceeds budget ($${metrics.total.budget.toFixed(2)}) by ${metrics.total.overrunPercent.toFixed(1)}%`);
       // In production, would send alert or create GitHub issue
     }
 
     // Check individual provider overruns
     for (const [provider, data] of Object.entries(metrics.providers)) {
       if (data?.overrun) {
-        logger.warn('⚠️ ${provider} cost overrun detected');
+        logger.warn(`⚠️ ${provider} cost overrun detected`);
       }
     }
   }

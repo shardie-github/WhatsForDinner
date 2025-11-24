@@ -179,9 +179,9 @@ class PromptInjectionTestSuite {
         // Log test result
         const status = passed ? '✅ PASS' : '❌ FAIL';
         if (safetyResult.violations.length > 0) {
-          logger.info('${status} ${testCase.name} - Violations: ${safetyResult.violations.join(', { ' })}`);
+          logger.info(`${status} ${testCase.name} - Violations: ${safetyResult.violations.join(', ')}`);
         } else {
-          logger.info('${status} ${testCase.name}');
+          logger.info(`${status} ${testCase.name}`);
         }
       } catch (error) {
         logger.error('❌ ERROR in test "${testCase.name}":', { error });
@@ -200,7 +200,7 @@ class PromptInjectionTestSuite {
       }
     }
 
-    logger.info('\nTest Summary: ${passedTests}/${this.testCases.length} passed');
+    logger.info(`\nTest Summary: ${passedTests}/${this.testCases.length} passed`);
                     
     return {
       totalTests: this.testCases.length,

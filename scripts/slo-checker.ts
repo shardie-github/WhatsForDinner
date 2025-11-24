@@ -257,16 +257,16 @@ import { createComponentLogger } from '@whats-for-dinner/utils';
       
       // Log results
       logger.info('SLO check completed');
-      logger.info('Compliance: ${(evaluation.compliance * 100').toFixed(1)}%`);
+      logger.info('Compliance: ' + (evaluation.compliance * 100).toFixed(1) + '%');
       
       if (evaluation.violations.length > 0) {
         logger.warn('Violations:');
-        evaluation.violations.forEach(violation => logger.warn('  - ${violation}'));
+        evaluation.violations.forEach(violation => logger.warn('  - ' + violation));
       }
       
       if (evaluation.recommendations.length > 0) {
         logger.info('Recommendations:');
-        evaluation.recommendations.forEach(rec => logger.info('  - ${rec}'));
+        evaluation.recommendations.forEach(rec => logger.info('  - ' + rec));
       }
       
       return report;

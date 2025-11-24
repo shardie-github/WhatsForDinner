@@ -9,9 +9,8 @@
 import { execSync } from 'child_process';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { logger } from '../../server/src/observability/index.js';
-import {
 import { createComponentLogger } from '@whats-for-dinner/utils';
+import {
   generateK6Script,
   generateBaseline,
   compareBaseline,
@@ -248,8 +247,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         if (!result.passed) {
           logger.error('Performance regressions detected:');
           for (const regression of result.regressions) {
-            logger.error('  ${regression.scenario} - ${regression.metric}: ${regression.deltaPercent.toFixed(2')}% regression`,
-            );
+            logger.error(`  ${regression.scenario} - ${regression.metric}: ${regression.deltaPercent.toFixed(2)}% regression`);
           }
         }
         process.exit(result.passed ? 0 : 1);

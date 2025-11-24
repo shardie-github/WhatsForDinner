@@ -138,10 +138,10 @@ function main() {
     
     ISSUES.forEach((issue, index) => {
       const icon = issue.severity === 'error' ? '?' : '??';
-      logger.info('${icon} [${issue.severity.toUpperCase(')}] ${issue.file}:${issue.line}`);
-      logger.info('   ${issue.issue}');
+      logger.info(`${icon} [${issue.severity.toUpperCase()}] ${issue.file}:${issue.line}`);
+      logger.info(`   ${issue.issue}`);
       if (issue.browser) {
-        logger.info('   Affected browsers: ${issue.browser}');
+        logger.info(`   Affected browsers: ${issue.browser}`);
       }
       logger.info('');
     });

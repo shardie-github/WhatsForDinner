@@ -48,7 +48,7 @@ if (require.main === module) {
   runSuite(suite)
     .then((results) => {
       logger.info('\nBenchmark complete!');
-      logger.info('JSON.stringify(results', { null, 2 }));
+      logger.info(JSON.stringify(results, null, 2));
     })
     .catch((error) => {
       logger.error('Benchmark failed:', { error });

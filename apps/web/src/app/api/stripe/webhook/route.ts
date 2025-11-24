@@ -1,9 +1,4 @@
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 import { stripe, StripeService } from '@/lib/stripe';
 import { createClient } from '@supabase/supabase-js';
 import { headers } from 'next/headers';
@@ -33,7 +28,7 @@ export async function POST(request: NextRequest) {
     try {
       event = StripeService.verifyWebhookSignature(body, signature);
     } catch (err) {
-      logger.error('Webhook signature verification failed:', { err });
+      logger.error('Webhook signature verification failed:', { error: err });
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
@@ -106,7 +101,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
   const { tenantId, userId, plan } = session.metadata;
 
   if (!tenantId || !userId || !plan) {
-    logger.error('Missing metadata in checkout session:', { session.metadata });
+    logger.error('Missing metadata in checkout session:', { metadata: session.metadata });
     return;
   }
 
@@ -117,14 +112,13 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
       stripe_customer_id: session.customer,
     })
     .eq('id', tenantId);
-
-  }
+}
 
 async function handleSubscriptionCreated(subscription: Stripe.Subscription): Promise<void> {
   const { tenantId, userId, plan } = subscription.metadata;
 
   if (!tenantId || !userId || !plan) {
-    logger.error('Missing metadata in subscription:', { subscription.metadata });
+    logger.error('Missing metadata in subscription:', { metadata: subscription.metadata });
     return;
   }
 

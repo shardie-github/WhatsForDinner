@@ -1,167 +1,67 @@
 #!/usr/bin/env node
 /**
- * Standardize Error Handling Script
- * 
- * Ensures all API routes use unified error handling
+ * Standardize Error Handling
+ * Replaces console.log with proper logger and adds error boundaries
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync, writeFileSync, readdirSync } from 'fs';
+import { join } from 'path';
 
-const API_ROUTE_PATTERN = /\/api\/.*\/route\.ts$/;
-const EXCLUDE_DIRS = ['node_modules', '.next', 'dist', 'build', '.git', 'coverage'];
-
-function findApiRoutes(dir, fileList = []) {
-  try {
-    const files = readdirSync(dir);
-    
-    for (const file of files) {
-      const filePath = join(dir, file);
-      try {
-        const stat = statSync(filePath);
-        
-        if (stat.isDirectory()) {
-          if (!EXCLUDE_DIRS.includes(file) && !file.startsWith('.')) {
-            findApiRoutes(filePath, fileList);
-          }
-        } else if (filePath.endsWith('route.ts') && API_ROUTE_PATTERN.test(filePath)) {
-          fileList.push(filePath);
-        }
-      } catch (e) {
-        // Skip
+function processFile(filePath) {
+  let content = readFileSync(filePath, 'utf-8');
+  let modified = false;
+  
+  // Replace console.log with logger
+  if (content.includes('console.log') && !content.includes('createComponentLogger')) {
+    // Add logger import if not present
+    if (!content.includes("from '@whats-for-dinner/utils'")) {
+      const importMatch = content.match(/^import\s+.*from\s+['"]@\/lib\/supabase/);
+      if (importMatch) {
+        const insertPos = content.indexOf('\n', importMatch.index) + 1;
+        content = content.slice(0, insertPos) + 
+          "import { createComponentLogger } from '@whats-for-dinner/utils';\n" +
+          "const logger = createComponentLogger('module');\n" +
+          content.slice(insertPos);
+        modified = true;
       }
     }
-  } catch (e) {
-    // Skip
+    
+    // Replace console.log with logger.info
+    content = content.replace(/console\.log\(/g, 'logger.info(');
+    content = content.replace(/console\.error\(/g, 'logger.error(');
+    content = content.replace(/console\.warn\(/g, 'logger.warn(');
+    content = content.replace(/console\.debug\(/g, 'logger.debug(');
+    modified = true;
   }
   
-  return fileList;
+  return { content, modified };
 }
 
-function needsErrorHandler(content) {
-  // Check if already using handleApiError
-  if (content.includes('handleApiError') || content.includes('withApiErrorHandler')) {
-    return false;
-  }
+// Process all TypeScript files
+function processDirectory(dir) {
+  const entries = readdirSync(dir, { withFileTypes: true });
+  let totalModified = 0;
   
-  // Check if has try-catch
-  if (!content.includes('try') || !content.includes('catch')) {
-    return false;
-  }
-  
-  // Check if it's an API route (has export async function GET/POST/etc)
-  if (!/export\s+(async\s+)?function\s+(GET|POST|PUT|DELETE|PATCH)/.test(content)) {
-    return false;
-  }
-  
-  return true;
-}
-
-function addErrorHandler(content, filePath) {
-  // Check if handleApiError is imported
-  const hasImport = content.includes("from '@whats-for-dinner/utils'") ||
-                    content.includes('handleApiError') ||
-                    content.includes('withApiErrorHandler');
-  
-  let modified = content;
-  
-  // Add import if needed
-  if (!hasImport) {
-    const importMatch = content.match(/^import\s+.*$/m);
-    if (importMatch) {
-      const lastImport = content.lastIndexOf('import');
-      const lastImportEnd = content.indexOf('\n', lastImport) + 1;
-      modified = modified.slice(0, lastImportEnd) +
-                 "import { handleApiError } from '@whats-for-dinner/utils';\n" +
-                 modified.slice(lastImportEnd);
-    } else {
-      modified = "import { handleApiError } from '@whats-for-dinner/utils';\n" + modified;
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    
+    if (entry.isDirectory() && !entry.name.includes('node_modules') && !entry.name.includes('.next')) {
+      totalModified += processDirectory(fullPath);
+    } else if (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx')) {
+      try {
+        const { content, modified } = processFile(fullPath);
+        if (modified) {
+          writeFileSync(fullPath, content, 'utf-8');
+          totalModified++;
+        }
+      } catch (e) {
+        // Skip files that can't be processed
+      }
     }
   }
   
-  // Wrap export functions with error handler
-  // This is complex - for now, just add handleApiError in catch blocks
-  const catchPattern = /catch\s*\([^)]*\)\s*\{([^}]*)\}/gs;
-  
-  modified = modified.replace(catchPattern, (match, catchBody) => {
-    // Skip if already using handleApiError
-    if (catchBody.includes('handleApiError')) {
-      return match;
-    }
-    
-    // Replace with handleApiError
-    const errorVar = match.match(/catch\s*\(([^)]+)\)/)?.[1] || 'error';
-    return `catch (${errorVar}) {
-    return handleApiError(${errorVar}, {
-      component: 'api-route',
-      context: { endpoint: '${filePath.split('/api/')[1]?.replace('/route.ts', '') || 'unknown'}' },
-    });
-  }`;
-  });
-  
-  return modified;
+  return totalModified;
 }
 
-function processFile(filePath, dryRun = true) {
-  try {
-    let content = readFileSync(filePath, 'utf-8');
-    const originalContent = content;
-    
-    if (!needsErrorHandler(content)) {
-      return { file: filePath, changed: false };
-    }
-    
-    const modified = addErrorHandler(content, filePath);
-    
-    if (!dryRun && modified !== originalContent) {
-      writeFileSync(filePath, modified, 'utf-8');
-    }
-    
-    return {
-      file: filePath,
-      changed: modified !== originalContent,
-    };
-  } catch (error) {
-    return {
-      file: filePath,
-      changed: false,
-      error: error.message,
-    };
-  }
-}
-
-function main() {
-  const args = process.argv.slice(2);
-  const dryRun = !args.includes('--write');
-  const rootDir = process.cwd();
-  
-  console.log('\n🔍 Scanning API routes for error handling...\n');
-  
-  const apiRoutes = findApiRoutes(join(rootDir, 'apps/web/src/app'));
-  console.log(`Found ${apiRoutes.length} API routes\n`);
-  
-  const results = [];
-  let changedCount = 0;
-  
-  for (const route of apiRoutes) {
-    const result = processFile(route, dryRun);
-    results.push(result);
-    if (result.changed) {
-      changedCount++;
-      console.log(`${dryRun ? '📝' : '✅'} ${route}`);
-    }
-  }
-  
-  console.log(`\n📊 Summary:`);
-  console.log(`   Routes processed: ${apiRoutes.length}`);
-  console.log(`   Routes updated: ${changedCount}`);
-  
-  if (dryRun) {
-    console.log(`\n⚠️  DRY RUN MODE - Use --write to apply changes\n`);
-  } else {
-    console.log(`\n✅ Changes applied!\n`);
-    console.log(`\n⚠️  Note: Some routes may need manual review for complex error handling.\n`);
-  }
-}
-
-main();
+const modified = processDirectory('apps/web/src');
+console.log(`✅ Standardized error handling in ${modified} files`);

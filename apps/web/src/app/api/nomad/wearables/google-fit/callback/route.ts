@@ -1,11 +1,27 @@
-import { NextRequest, NextResponse } from 'next/
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('route');
-
-server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { supabase } from '@/lib/supabaseClient';
+import { createCipheriv, randomBytes } from 'crypto';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('google-fit-callback');
+
+/**
+ * Encrypt token using AES-256-GCM
+ */
+async function encryptToken(token: string): Promise<string> {
+  const algorithm = 'aes-256-gcm';
+  const key = Buffer.from(process.env.ENCRYPTION_KEY || randomBytes(32).toString('hex'), 'hex');
+  const iv = randomBytes(16);
+  const cipher = createCipheriv(algorithm, key, iv);
+  
+  let encrypted = cipher.update(token, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  const authTag = cipher.getAuthTag();
+  
+  // Return IV + AuthTag + Encrypted data (all hex encoded)
+  return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
+}
 
 /**
  * Google Fit OAuth Callback
@@ -70,7 +86,7 @@ export async function GET(request: NextRequest) {
       .upsert({
         user_id: user.id,
         provider: 'google_fit',
-        access_token_encrypted: tokenData.access_token, // TODO: Encrypt this
+        access_token_encrypted: await encryptToken(tokenData.access_token),
         last_synced_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });

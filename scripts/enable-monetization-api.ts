@@ -46,10 +46,10 @@ async function enableMonetization() {
   logger.info('💰 Revenue tracking available at /api/revenue/dashboard');
   logger.info('');
   logger.info('📋 Enabled channels:');
-  logger.info('   ✓ Affiliate Program (10% commission')');
+  logger.info('   ✓ Affiliate Program (10% commission)');
   logger.info('   ✓ API Monetization');
   logger.info('   ✓ Data Insights');
-  logger.info('   ✓ Marketplace (10% commission')');
+  logger.info('   ✓ Marketplace (10% commission)');
   logger.info('   ✓ Automated Upsells');
 }
 

@@ -37,7 +37,7 @@ async function testServiceRoleInsert() {
     .single();
 
   if (error) {
-    logger.error('❌ Service role insert failed:', { error.message });
+    logger.error('❌ Service role insert failed:', { error: error.message });
     return null;
   }
 
@@ -46,11 +46,11 @@ async function testServiceRoleInsert() {
 }
 
 async function testAnonRead(userId: string | null) {
-  logger.info('Test 2: Read as anon (should fail if RLS enabled')...');
+  logger.info('Test 2: Read as anon (should fail if RLS enabled)...');
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
   
   if (!userId) {
-    logger.info('⚠️  Skipping anon read test (no user ID')');
+    logger.info('⚠️  Skipping anon read test (no user ID)');
     return true;
   }
 
@@ -71,7 +71,7 @@ async function testAnonRead(userId: string | null) {
     return false;
   }
 
-  logger.info('⚠️  Anon read failed with unexpected error:', { error.message });
+  logger.info('⚠️  Anon read failed with unexpected error:', { error: error.message });
   return true; // Non-critical
 }
 
@@ -84,7 +84,7 @@ async function testPrismaRead() {
     logger.info('✅ Prisma read succeeded');
     return true;
   } catch (error) {
-    logger.error('❌ Prisma read failed:', { error instanceof Error ? error.message : error });
+    logger.error('❌ Prisma read failed:', { error: error instanceof Error ? error.message : String(error) });
     return false;
   }
 }
@@ -94,7 +94,7 @@ async function testHealthz() {
   
   // In CI, we can't actually hit the Next.js server, so we'll check the health check logic
   // by importing and running it directly, or we can skip this in CI
-  logger.info('⚠️  Healthz endpoint test skipped in CI (requires running server')');
+  logger.info('⚠️  Healthz endpoint test skipped in CI (requires running server)');
   logger.info('   Run locally: curl http://localhost:3000/api/healthz');
   return true;
 }
@@ -120,9 +120,9 @@ async function main() {
 
   const allPassed = anonReadOk && prismaOk && healthzOk;
 
-  logger.info('\n' + '='.repeat(50'));
-  logger.info('allPassed ? '✅ ALL SMOKE TESTS PASSED' : '❌ SOME TESTS FAILED');
-  logger.info('='.repeat(50'));
+  logger.info('\n' + '='.repeat(50));
+  logger.info(allPassed ? '✅ ALL SMOKE TESTS PASSED' : '❌ SOME TESTS FAILED');
+  logger.info('='.repeat(50));
 
   process.exit(allPassed ? 0 : 1);
 }
