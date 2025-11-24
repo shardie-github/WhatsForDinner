@@ -230,7 +230,9 @@
     "env:doctor": "tsx scripts/env-doctor.ts",
     "db:validate": "tsx scripts/db-validate-schema.ts",
     "redis:setup": "tsx scripts/setup-redis.ts",
-    "redis:test": "tsx scripts/setup-redis.ts"
+    "redis:test": "tsx scripts/setup-redis.ts",
+    "marketing:setup": "tsx scripts/setup/marketing-setup.ts",
+    "kpi:dashboard": "tsx scripts/monitoring/kpi-alert-runner.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",
