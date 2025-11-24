@@ -341,6 +341,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 - 🔐 [Security Policy](SECURITY.md) - How we handle security
 - 🛠️ [Setup Guide](docs/SETUP.md) - Complete setup instructions
 - 🗄️ [Database Guide](docs/DATABASE.md) - Migration and schema docs
+- 🚀 [Supabase Migrations CI](docs/supabase-migrations-ci.md) - Automated migrations via GitHub Actions
 - 🔑 [Secrets Management](docs/SECRETS.md) - Secure secrets handling
 - 🎯 [API Documentation](docs/API.md) - API endpoints and examples
 
