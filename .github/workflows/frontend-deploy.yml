@@ -123,6 +123,33 @@ jobs:
           fi
           echo "✅ All Vercel secrets are configured"
 
+      - name: Link Vercel project (if needed)
+        working-directory: apps/web
+        run: |
+          set -euo pipefail
+          # Check if project is already linked
+          if [ -f ".vercel/project.json" ]; then
+            echo "✅ Project already linked"
+            cat .vercel/project.json
+          else
+            echo "🔗 Linking Vercel project..."
+            # Create .vercel directory if it doesn't exist
+            mkdir -p .vercel
+            
+            # Link project using explicit IDs
+            vercel link --yes --token="$VERCEL_TOKEN" --project="$VERCEL_PROJECT_ID" --scope="$VERCEL_ORG_ID" || {
+              echo "::warning::Project link failed, but continuing (may already be linked)"
+            }
+            
+            # Verify link was created
+            if [ -f ".vercel/project.json" ]; then
+              echo "✅ Project linked successfully"
+              cat .vercel/project.json
+            else
+              echo "::warning::Project link verification failed, but continuing"
+            fi
+          fi
+
       - name: Deploy Preview (PR)
         if: github.event_name == 'pull_request'
         working-directory: apps/web
@@ -130,13 +157,28 @@ jobs:
           set -euo pipefail
           echo "🚀 Deploying preview for PR #${{ github.event.pull_request.number }}"
           
-          vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
-          vercel build --token="$VERCEL_TOKEN"
+          # Pull Vercel config with explicit project/org
+          vercel pull --yes --environment=preview --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" || {
+            echo "::error::Failed to pull Vercel configuration"
+            exit 1
+          }
           
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --prod=false 2>&1 | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
+          # Build with Vercel CLI
+          vercel build --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" || {
+            echo "::error::Vercel build failed"
+            exit 1
+          }
+          
+          # Deploy preview
+          DEPLOY_OUTPUT=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" --prod=false 2>&1)
+          echo "$DEPLOY_OUTPUT"
+          
+          # Extract deployment URL
+          DEPLOYMENT_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
           
           if [ -z "$DEPLOYMENT_URL" ]; then
             echo "::warning::Could not extract preview URL from deployment output"
+            echo "Check Vercel Dashboard for deployment URL: https://vercel.com/$VERCEL_ORG_ID/$VERCEL_PROJECT_ID"
           else
             echo "✅ Preview deployment successful!"
             echo "Preview URL: $DEPLOYMENT_URL"
@@ -152,13 +194,28 @@ jobs:
           set -euo pipefail
           echo "🚀 Deploying to production..."
           
-          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-          vercel build --token="$VERCEL_TOKEN"
+          # Pull Vercel config with explicit project/org
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" || {
+            echo "::error::Failed to pull Vercel configuration"
+            exit 1
+          }
           
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --prod=true 2>&1 | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
+          # Build with Vercel CLI
+          vercel build --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" || {
+            echo "::error::Vercel build failed"
+            exit 1
+          }
+          
+          # Deploy production
+          DEPLOY_OUTPUT=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" --prod=true 2>&1)
+          echo "$DEPLOY_OUTPUT"
+          
+          # Extract deployment URL
+          DEPLOYMENT_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
           
           if [ -z "$DEPLOYMENT_URL" ]; then
             echo "::warning::Could not extract production URL from deployment output"
+            echo "Check Vercel Dashboard for deployment URL: https://vercel.com/$VERCEL_ORG_ID/$VERCEL_PROJECT_ID"
           else
             echo "✅ Production deployment successful!"
             echo "Production URL: $DEPLOYMENT_URL"
@@ -178,16 +235,50 @@ jobs:
           
           if [ "$IS_PROD" = "true" ] || [ "$ENVIRONMENT" = "production" ]; then
             echo "Deploying to production..."
-            vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-            vercel build --token="$VERCEL_TOKEN"
-            DEPLOYMENT_URL=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --prod=true 2>&1 | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
-            echo "✅ Production deployment successful!"
-            echo "Production URL: $DEPLOYMENT_URL"
+            
+            vercel pull --yes --environment=production --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" || {
+              echo "::error::Failed to pull Vercel configuration"
+              exit 1
+            }
+            
+            vercel build --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" || {
+              echo "::error::Vercel build failed"
+              exit 1
+            }
+            
+            DEPLOY_OUTPUT=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" --prod=true 2>&1)
+            echo "$DEPLOY_OUTPUT"
+            
+            DEPLOYMENT_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
+            if [ -z "$DEPLOYMENT_URL" ]; then
+              echo "::warning::Could not extract production URL"
+              echo "Check Vercel Dashboard: https://vercel.com/$VERCEL_ORG_ID/$VERCEL_PROJECT_ID"
+            else
+              echo "✅ Production deployment successful!"
+              echo "Production URL: $DEPLOYMENT_URL"
+            fi
           else
             echo "Deploying preview..."
-            vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
-            vercel build --token="$VERCEL_TOKEN"
-            DEPLOYMENT_URL=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --prod=false 2>&1 | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
-            echo "✅ Preview deployment successful!"
-            echo "Preview URL: $DEPLOYMENT_URL"
+            
+            vercel pull --yes --environment=preview --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" || {
+              echo "::error::Failed to pull Vercel configuration"
+              exit 1
+            }
+            
+            vercel build --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" || {
+              echo "::error::Vercel build failed"
+              exit 1
+            }
+            
+            DEPLOY_OUTPUT=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID" --prod=false 2>&1)
+            echo "$DEPLOY_OUTPUT"
+            
+            DEPLOYMENT_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[^\s]+\.vercel\.app' | head -1 || echo "")
+            if [ -z "$DEPLOYMENT_URL" ]; then
+              echo "::warning::Could not extract preview URL"
+              echo "Check Vercel Dashboard: https://vercel.com/$VERCEL_ORG_ID/$VERCEL_PROJECT_ID"
+            else
+              echo "✅ Preview deployment successful!"
+              echo "Preview URL: $DEPLOYMENT_URL"
+            fi
           fi

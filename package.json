@@ -223,6 +223,7 @@
     "schema:health": "tsx scripts/schema-health-check.ts",
     "api:docs:generate": "tsx scripts/generate-openapi-docs.ts",
     "deploy:validate": "tsx scripts/validate-deployment-config.ts",
+    "deploy:doctor": "tsx scripts/deploy-doctor.ts",
     "env:validate": "tsx -e \"import('./packages/config/src/env-loader.ts').then(m => m.loadEnv({ strict: false }))\"",
     "env:check": "tsx -e \"import('./packages/config/src/env-loader.ts').then(m => { const result = m.checkRequiredEnv(['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY']); if (!result.valid) { console.error('Missing required env vars:', result.missing); process.exit(1); } else { console.log('✅ All required env vars are set'); } })\""
   },
