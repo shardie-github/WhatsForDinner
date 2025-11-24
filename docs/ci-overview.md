@@ -44,10 +44,12 @@ This repository uses **GitHub Actions** for all CI/CD operations, following a **
 #### `deploy`
 - Depends on: `build-and-test`
 - Install Vercel CLI
-- Verify Vercel secrets
-- **Preview (PR):** Deploy to preview environment
-- **Production (main):** Deploy to production environment
+- Verify Vercel secrets (fails fast if missing)
+- Link Vercel project automatically (if not already linked)
+- **Preview (PR):** Deploy to preview environment with explicit scoping
+- **Production (main):** Deploy to production environment with explicit scoping
 - **Manual:** Deploy based on input
+- Enhanced error handling with fallback URLs
 
 **Secrets Required:**
 - `VERCEL_TOKEN`
@@ -57,6 +59,13 @@ This repository uses **GitHub Actions** for all CI/CD operations, following a **
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 **Status:** ✅ Active and well-configured
+
+**Recent Improvements (2025-01-28):**
+- ✅ Automatic Vercel project linking (no manual setup required)
+- ✅ Explicit project/org scoping on all Vercel CLI commands
+- ✅ Enhanced error handling with clear messages
+- ✅ Fallback URLs if deployment URL extraction fails
+- ✅ Comprehensive documentation and diagnostic tools
 
 ---
 
@@ -489,6 +498,29 @@ Migrations applied to production database
 
 ---
 
+## Diagnostic Tools
+
+### Deploy Doctor
+
+Run local diagnostic checks before deploying:
+
+```bash
+pnpm deploy:doctor
+```
+
+**Checks:**
+- Package.json configuration (Node version, package manager, scripts)
+- Lockfile presence and uniqueness
+- GitHub Actions workflow files
+- Vercel configuration files
+- Environment variable templates
+- Monorepo structure
+- GitHub Secrets (simulated)
+
+**See:** [Deploy Reliability Plan](./deploy-reliability-plan.md) for complete diagnostic guide
+
+---
+
 ## Future Improvements
 
 ### Short-Term
@@ -497,6 +529,8 @@ Migrations applied to production database
 2. ✅ Audit and consolidate workflows (remove obsolete ones)
 3. ✅ Add performance monitoring to CI
 4. ✅ Add security scanning as required check
+5. ✅ Add GitHub Action for deploy-doctor (run on schedule)
+6. ✅ Add deployment status comments to PRs
 
 ### Long-Term
 

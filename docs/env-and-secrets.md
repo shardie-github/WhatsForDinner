@@ -1,472 +1,277 @@
-# Environment Variables & Secrets Management
+# Environment Variables & Secrets
 
 **Last Updated:** 2025-01-28  
-**Status:** ✅ Comprehensive Documentation
+**Status:** ✅ Complete Reference
 
 ---
 
-## Executive Summary
+## Overview
 
-This application uses **200+ environment variables** across:
-- **Public variables** (client-safe, prefixed with `NEXT_PUBLIC_`)
-- **Private variables** (server-only, secrets)
-- **Third-party integrations** (OpenAI, Stripe, etc.)
+This document provides a complete reference for all environment variables and secrets required for deployment and runtime operation.
 
-**Secrets Management:**
-- **GitHub Secrets:** For CI/CD
-- **Vercel Environment Variables:** For deployments
-- **Supabase Secrets:** For database access
+**Key Principle:** Some variables are needed in **both** GitHub Secrets (for CI/CD builds) **and** Vercel Dashboard (for runtime). Others are only needed in one place.
 
 ---
 
-## Variable Categories
+## Required GitHub Secrets
 
-### 1. Core Supabase (Required)
+These secrets must be configured in **GitHub Repository Settings → Secrets and variables → Actions**.
 
-**Public (Client-Safe):**
-```bash
-NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
-```
+### Vercel Deployment Secrets (Critical)
 
-**Private (Server-Only):**
-```bash
-SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
-SUPABASE_PROJECT_REF=<project-ref>
-SUPABASE_URL=https://<project-ref>.supabase.co
-SUPABASE_ANON_KEY=<anon-key>
-SUPABASE_JWT_SECRET=<jwt-secret>
-```
+| Secret Name | Where to Get | Purpose | Required For |
+|------------|--------------|---------|--------------|
+| `VERCEL_TOKEN` | [Vercel Dashboard → Account → Tokens](https://vercel.com/account/tokens) | Authenticate Vercel CLI in GitHub Actions | All deployments |
+| `VERCEL_ORG_ID` | Vercel Dashboard → Team Settings → General → Team ID | Identify Vercel organization | All deployments |
+| `VERCEL_PROJECT_ID` | Vercel Dashboard → Project Settings → General → Project ID | Identify Vercel project | All deployments |
 
-**Usage:**
-- Public: Client-side Supabase client initialization
-- Private: Server-side operations, migrations, admin tasks
+**How to Get:**
 
-**Where to Set:**
-- GitHub Secrets: `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`
-- Vercel: All Supabase variables (production/preview)
-- Local: `.env.local` (copy from `.env.example`)
+1. **VERCEL_TOKEN:**
+   - Go to https://vercel.com/account/tokens
+   - Click "Create Token"
+   - Name it (e.g., "GitHub Actions Deployment")
+   - Copy the token immediately (it won't be shown again)
+   - Add to GitHub Secrets
 
----
+2. **VERCEL_ORG_ID:**
+   - Go to Vercel Dashboard → Your Team/Organization
+   - Check URL: `vercel.com/[org-id]/...`
+   - Or go to Team Settings → General → Team ID
+   - Copy the ID
 
-### 2. Database (Required)
+3. **VERCEL_PROJECT_ID:**
+   - Go to your project in Vercel Dashboard
+   - Go to Settings → General
+   - Find "Project ID" field
+   - Or check URL: `vercel.com/[org-id]/[project-id]/...`
+   - Copy the ID
 
-```bash
-DATABASE_URL=postgresql://postgres:<password>@db.<project-ref>.supabase.co:5432/postgres?sslmode=require
-PRISMA_CLIENT_ENGINE_TYPE=wasm
-```
-
-**Usage:**
-- Prisma Client generation
-- Direct database connections
-- Migration operations
-
-**Where to Set:**
-- GitHub Secrets: `DATABASE_URL` (for CI)
-- Vercel: `DATABASE_URL` (for API routes)
-- Local: `.env.local`
-
-**Note:** `PRISMA_CLIENT_ENGINE_TYPE=wasm` is required for Termux/Android compatibility
+**Verification:**
+- Run `scripts/deploy-doctor.ts` to verify all secrets are set
+- Or check GitHub Actions logs for "Verify Vercel secrets" step
 
 ---
 
-### 3. Application Configuration
+### Build-Time Secrets (For CI/CD)
 
-**Public:**
-```bash
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_APP_ENV=development
-```
+| Secret Name | Purpose | Required For | Default |
+|------------|---------|--------------|---------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL (build-time) | Build process | None |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key (build-time) | Build process | None |
+| `DATABASE_URL` | Database connection (for Prisma Client generation) | Build process | `postgresql://localhost:5432/test` |
 
-**Private:**
-```bash
-NODE_ENV=development
-LOG_LEVEL=info
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=<secret>
-```
-
-**Usage:**
-- App URL for absolute links
-- Environment detection
-- Logging configuration
-- Auth configuration
+**Note:** These are used during the GitHub Actions build process. They may have placeholder values for CI, but should match production values for production builds.
 
 ---
 
-### 4. OAuth Providers (Optional)
+### Optional GitHub Secrets
 
-```bash
-GITHUB_CLIENT_ID=<client-id>
-GITHUB_CLIENT_SECRET=<client-secret>
-GOOGLE_CLIENT_ID=<client-id>
-GOOGLE_CLIENT_SECRET=<client-secret>
-```
-
-**Usage:**
-- OAuth authentication via Supabase Auth
-- Social login options
-
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local`
+| Secret Name | Purpose | Required For |
+|------------|---------|--------------|
+| `SUPABASE_ACCESS_TOKEN` | Supabase CLI authentication | Database migrations |
+| `SUPABASE_PROJECT_REF` | Supabase project reference | Database migrations |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | Admin operations |
+| `PROD_URL` | Production URL for E2E tests | E2E testing |
 
 ---
 
-### 5. OpenAI (Required for Meal Generation)
+## Required Vercel Environment Variables
 
-```bash
-OPENAI_API_KEY=<api-key>
-OPENAI_MODEL=gpt-4-turbo-preview
-OPENAI_MAX_TOKENS=2000
-OPENAI_TEMPERATURE=0.7
-```
+These variables must be configured in **Vercel Dashboard → Project Settings → Environment Variables**.
 
-**Usage:**
-- AI-powered meal generation
-- Recipe suggestions
+### Critical Runtime Variables
 
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local`
+| Variable Name | Environment | Purpose | Example |
+|--------------|-------------|---------|---------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Production, Preview | Supabase project URL | `https://xxx.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Production, Preview | Supabase anonymous key | `eyJhbGc...` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Production, Preview | Supabase service role key | `eyJhbGc...` |
+| `SUPABASE_JWT_SECRET` | Production, Preview | JWT secret for Supabase | `your-secret-key` |
+| `DATABASE_URL` | Production, Preview | Database connection string | `postgresql://...` |
+| `PRISMA_CLIENT_ENGINE_TYPE` | Production, Preview | Prisma engine type | `wasm` |
+| `NEXTAUTH_URL` | Production, Preview | NextAuth base URL | `https://your-app.vercel.app` |
+| `NEXTAUTH_SECRET` | Production, Preview | NextAuth secret | `your-secret-key` |
 
-**Cost:** Pay-per-use (monitor usage)
-
----
-
-### 6. Stripe (Required for Payments)
-
-**Public:**
-```bash
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=<publishable-key>
-```
-
-**Private:**
-```bash
-STRIPE_SECRET_KEY=<secret-key>
-STRIPE_PUBLISHABLE_KEY=<publishable-key>
-STRIPE_WEBHOOK_SECRET=<webhook-secret>
-```
-
-**Usage:**
-- Payment processing
-- Subscription management
-
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local`
+**Note:** These are pulled from Vercel during `vercel pull` in the deployment workflow.
 
 ---
 
-### 7. Email Configuration (Optional)
+### Complete Environment Variable List
 
-```bash
-RESEND_API_KEY=<api-key>
-SENDER_EMAIL=no-reply@whatsfordinner.app
-SENDGRID_API_KEY=<api-key>
-CRM_PROVIDER=sendgrid
-```
+See `.env.example` for the complete list of all environment variables. Key categories:
 
-**Usage:**
-- Transactional emails
-- Marketing emails
-- Email notifications
+#### Core Supabase
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_JWT_SECRET`
 
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local`
+#### Database
+- `DATABASE_URL`
+- `PRISMA_CLIENT_ENGINE_TYPE` (should be `wasm`)
 
----
+#### App Configuration
+- `NEXTAUTH_URL`
+- `NEXTAUTH_SECRET`
+- `NEXT_PUBLIC_APP_ENV` (development/staging/production)
+- `LOG_LEVEL`
+- `NODE_ENV`
 
-### 8. Analytics & Monitoring (Optional)
+#### OAuth Providers
+- `GITHUB_CLIENT_ID`
+- `GITHUB_CLIENT_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
 
-**Public:**
-```bash
-NEXT_PUBLIC_GA_ID=<ga-id>
-NEXT_PUBLIC_POSTHOG_KEY=<posthog-key>
-NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
-NEXT_PUBLIC_CLARITY_ID=<clarity-id>
-NEXT_PUBLIC_PLAUSIBLE_DOMAIN=<domain>
-```
+#### Storage
+- `NEXT_PUBLIC_UPLOAD_BUCKET`
+- `SIGNING_SECRET`
 
-**Private:**
-```bash
-SENTRY_DSN=<sentry-dsn>
-NEXT_PUBLIC_SENTRY_DSN=<sentry-dsn>
-SENTRY_AUTH_TOKEN=<token>
-SENTRY_ORG=<org>
-SENTRY_PROJECT=<project>
-```
+#### Payments
+- `STRIPE_SECRET_KEY`
+- `STRIPE_PUBLISHABLE_KEY`
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- `STRIPE_WEBHOOK_SECRET`
 
-**Usage:**
-- User analytics
-- Error tracking
-- Performance monitoring
+#### Analytics & Monitoring
+- `NEXT_PUBLIC_GA_ID`
+- `NEXT_PUBLIC_POSTHOG_KEY`
+- `SENTRY_DSN`
+- `NEXT_PUBLIC_SENTRY_DSN`
 
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local` (optional)
+#### And 50+ more...
 
----
-
-### 9. Storage & Media (Optional)
-
-```bash
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=<cloud-name>
-NEXT_PUBLIC_CLOUDINARY_API_KEY=<api-key>
-CLOUDINARY_API_SECRET=<secret>
-NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY=<key>
-```
-
-**Usage:**
-- Image uploads
-- Media management
-- CDN for assets
-
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local` (optional)
+See `.env.example` for the complete list.
 
 ---
 
-### 10. Security & Bot Protection (Optional)
+## Where to Set Variables
 
-```bash
-NEXT_PUBLIC_HCAPTCHA_SITEKEY=<sitekey>
-HCAPTCHA_SECRET=<secret>
-NEXT_PUBLIC_RECAPTCHA_SITE_KEY=<site-key>
-RECAPTCHA_SECRET_KEY=<secret-key>
-```
+### GitHub Secrets (CI/CD Build Process)
 
-**Usage:**
-- Bot protection
-- Spam prevention
-- Rate limiting
+**Set in:** GitHub Repository → Settings → Secrets and variables → Actions
 
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local` (optional)
-
----
-
-### 11. Monetization (Optional)
-
-```bash
-AFFILIATE_ENABLED=true
-AFFILIATE_COMMISSION_RATE=10
-AFFILIATE_MIN_PAYOUT=50
-API_MONETIZATION_ENABLED=true
-DATA_INSIGHTS_ENABLED=true
-MARKETPLACE_ENABLED=true
-MARKETPLACE_COMMISSION_RATE=10
-AUTOMATED_UPSELLS_ENABLED=true
-CRON_SECRET=<secret>
-```
-
-**Usage:**
-- Affiliate system
-- API monetization
-- Marketplace features
-- Revenue operations
-
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local` (optional)
-
----
-
-### 12. Privacy & Compliance (Optional)
-
-```bash
-PRIVACY_OFFICER_EMAIL=privacy@whatsfordinner.app
-DSAR_VERIFICATION_JWT_SECRET=<secret>
-ARTIFACTS_BUCKET_URL=/tmp/artifacts
-ARTIFACTS_BUCKET_SIGNING_KEY=<key>
-EVIDENCE_IMMUTABLE_BUCKET_URL=/tmp/evidence
-MAGIC_LINK_BASE_URL=http://localhost:3000/privacy/verify
-CCM_ALERT_WEBHOOK=<webhook-url>
-LEGAL_HOLD_DEFAULT=false
-DSAR_DEADLINE_DAYS=30
-ADMIN_JWT_SECRET=<secret>
-ADMIN_JWT_EXPIRY=8h
-```
-
-**Usage:**
-- GDPR compliance
-- DSAR (Data Subject Access Requests)
-- Privacy transparency
-- Legal hold
-
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local` (optional)
-
----
-
-### 13. Observability (Optional)
-
-```bash
-OTEL_EXPORTER_OTLP_ENDPOINT=<endpoint>
-OTEL_SERVICE_NAME=whats-for-dinner-backend
-PROMETHEUS_URL=http://localhost:9090
-GRAFANA_URL=http://localhost:3001
-LOKI_URL=http://localhost:3100
-TEMPO_URL=http://localhost:3200
-PROMETHEUS_PORT=9464
-ENABLE_PROMETHEUS=true
-ENABLE_OTLP=true
-```
-
-**Usage:**
-- Distributed tracing
-- Metrics collection
-- Log aggregation
-- Performance monitoring
-
-**Where to Set:**
-- Vercel: Production/preview environments
-- Local: `.env.local` (optional)
-
----
-
-## Secrets Mapping
-
-### GitHub Secrets (CI/CD)
+**Used for:**
+- GitHub Actions workflows
+- Build process in CI
+- Test execution
+- Deployment authentication
 
 **Required:**
-- `VERCEL_TOKEN` - Vercel API token
-- `VERCEL_ORG_ID` - Vercel organization ID
-- `VERCEL_PROJECT_ID` - Vercel project ID
-- `SUPABASE_ACCESS_TOKEN` - Supabase CLI token
-- `SUPABASE_PROJECT_REF` - Supabase project reference
-- `DATABASE_URL` - Database connection string
-- `NEXT_PUBLIC_SUPABASE_URL` - Supabase URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anonymous key
-
-**Optional:**
-- `SUPABASE_DB_URL` - For schema drift detection
-- `SUPABASE_SERVICE_ROLE_KEY` - For service role operations
-- `PROD_URL` - For E2E tests
-- `SENTRY_DSN` - For error tracking
-- `OPENAI_API_KEY` - For AI features
-- `STRIPE_SECRET_KEY` - For payments
-
-**How to Set:**
-1. Go to GitHub repository → Settings → Secrets and variables → Actions
-2. Click "New repository secret"
-3. Add name and value
-4. Click "Add secret"
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+- `NEXT_PUBLIC_SUPABASE_URL` (for build)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (for build)
+- `DATABASE_URL` (for Prisma Client generation)
 
 ---
 
-### Vercel Environment Variables
+### Vercel Dashboard (Runtime Environment)
 
-**Production Environment:**
-- Set in Vercel Dashboard → Project → Settings → Environment Variables
-- Select "Production" environment
-- Add all required variables
+**Set in:** Vercel Dashboard → Project → Settings → Environment Variables
 
-**Preview Environment:**
-- Set in Vercel Dashboard → Project → Settings → Environment Variables
-- Select "Preview" environment
-- Add all required variables (can inherit from Production)
+**Used for:**
+- Runtime environment variables
+- Build-time variables (pulled during `vercel pull`)
+- Preview deployments
+- Production deployments
 
-**Development Environment:**
-- Set in Vercel Dashboard → Project → Settings → Environment Variables
-- Select "Development" environment
-- Add all required variables (can inherit from Production)
+**Required:**
+- All `NEXT_PUBLIC_*` variables
+- All server-side environment variables
+- See `.env.example` for complete list
 
-**How to Set:**
-1. Go to Vercel Dashboard → Project → Settings → Environment Variables
-2. Click "Add New"
-3. Add key and value
-4. Select environment(s)
-5. Click "Save"
-
-**Note:** Vercel can sync environment variables from GitHub Secrets (if configured)
+**Environments:**
+- **Production:** Used for `main` branch deployments
+- **Preview:** Used for PR preview deployments
+- **Development:** Used for local development (optional)
 
 ---
 
-### Supabase Secrets
+## Variables Needed in Both Places
 
-**Set in Supabase Dashboard:**
-- Go to Supabase Dashboard → Project → Settings → API
-- View/regenerate keys:
-  - `anon` key (public)
-  - `service_role` key (secret)
-  - `JWT secret` (secret)
+Some variables are needed in **both** GitHub Secrets **and** Vercel Dashboard:
 
-**For Edge Functions:**
-- Go to Supabase Dashboard → Project → Settings → Edge Functions
-- Set secrets via CLI: `supabase secrets set KEY=value`
+| Variable | GitHub Secrets | Vercel Dashboard | Reason |
+|----------|---------------|------------------|--------|
+| `NEXT_PUBLIC_SUPABASE_URL` | ✅ Yes | ✅ Yes | Build-time (CI) + Runtime |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ Yes | ✅ Yes | Build-time (CI) + Runtime |
+| `DATABASE_URL` | ✅ Yes (for Prisma) | ✅ Yes (for runtime) | Prisma generation + Runtime |
 
----
-
-## Local Development Setup
-
-### 1. Copy Environment Template
-
-```bash
-cp .env.example .env.local
-```
-
-### 2. Fill Required Variables
-
-**Minimum Required:**
-```bash
-NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
-SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
-SUPABASE_PROJECT_REF=<project-ref>
-DATABASE_URL=postgresql://postgres:<password>@db.<project-ref>.supabase.co:5432/postgres?sslmode=require
-OPENAI_API_KEY=<api-key>
-```
-
-### 3. Optional Variables
-
-Add other variables as needed for features you're testing:
-- Stripe (for payments)
-- Email (for notifications)
-- Analytics (for tracking)
-- etc.
-
-### 4. Verify Setup
-
-```bash
-# Check required variables
-pnpm env:check
-
-# Validate environment
-pnpm env:validate
-```
+**Why Both?**
+- GitHub Secrets: Used during CI/CD build process
+- Vercel Dashboard: Used during Vercel build and runtime
 
 ---
 
-## CI/CD Environment Variables
+## Verification
 
-### GitHub Actions
+### Check GitHub Secrets
 
-**Automatic:**
-- GitHub Actions automatically has access to repository secrets
-- Use `${{ secrets.SECRET_NAME }}` in workflows
-
-**Example:**
-```yaml
-env:
-  SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
-```
-
-### Vercel Deployments
-
-**Automatic:**
-- Vercel pulls environment variables from Vercel Dashboard
-- Use `vercel pull` to sync environment variables
-
-**In CI:**
 ```bash
-vercel pull --yes --environment=preview --token $VERCEL_TOKEN
+# Run deploy-doctor script
+pnpm deploy:doctor
+
+# Or check manually in GitHub UI
+# Settings → Secrets and variables → Actions
 ```
+
+### Check Vercel Environment Variables
+
+```bash
+# Pull env vars from Vercel (requires Vercel CLI)
+cd apps/web
+vercel env pull .env.local
+
+# Or check in Vercel Dashboard
+# Project → Settings → Environment Variables
+```
+
+### Automated Verification
+
+The `frontend-deploy.yml` workflow includes a "Verify Vercel secrets" step that checks:
+- `VERCEL_TOKEN` is set
+- `VERCEL_ORG_ID` is set
+- `VERCEL_PROJECT_ID` is set
+
+If any are missing, the workflow fails with a clear error message.
+
+---
+
+## Troubleshooting
+
+### "VERCEL_TOKEN secret is not set"
+
+**Fix:**
+1. Go to GitHub Repository → Settings → Secrets and variables → Actions
+2. Add `VERCEL_TOKEN` secret
+3. Get token from https://vercel.com/account/tokens
+
+### "Environment variable not found at runtime"
+
+**Fix:**
+1. Check Vercel Dashboard → Project → Settings → Environment Variables
+2. Ensure variable is set for correct environment (Production/Preview)
+3. Redeploy after adding variable
+
+### "Build fails with missing NEXT_PUBLIC_* variable"
+
+**Fix:**
+1. Add variable to GitHub Secrets (for CI build)
+2. Add variable to Vercel Dashboard (for Vercel build)
+3. Ensure variable name matches exactly (case-sensitive)
+
+### "Deployment succeeds but app doesn't work"
+
+**Fix:**
+1. Check Vercel Dashboard → Project → Settings → Environment Variables
+2. Ensure all required runtime variables are set
+3. Check Vercel deployment logs for errors
+4. Verify variable values are correct (not placeholders)
 
 ---
 
@@ -474,107 +279,30 @@ vercel pull --yes --environment=preview --token $VERCEL_TOKEN
 
 ### ✅ Do
 
-1. **Use Secrets:** Never hardcode secrets in code
-2. **Rotate Regularly:** Rotate secrets every 90 days
-3. **Use Different Keys:** Different keys for dev/staging/prod
-4. **Limit Access:** Only grant access to necessary secrets
-5. **Audit Usage:** Regularly audit secret usage
-6. **Use Vaults:** Consider secret management services (1Password, AWS Secrets Manager)
+1. **Use GitHub Secrets** for sensitive values (never commit to repo)
+2. **Use Vercel Environment Variables** for runtime config
+3. **Rotate secrets regularly** (especially VERCEL_TOKEN)
+4. **Use different values** for development, staging, and production
+5. **Limit secret access** to only necessary workflows
+6. **Audit secrets periodically** to remove unused ones
 
 ### ❌ Don't
 
-1. **Commit Secrets:** Never commit `.env.local` to git
-2. **Share Secrets:** Don't share secrets in chat/email
-3. **Use Production Keys Locally:** Use separate dev keys
-4. **Expose in Logs:** Don't log secrets
-5. **Hardcode:** Don't hardcode secrets in code
+1. **Never commit secrets** to version control
+2. **Don't hardcode secrets** in workflow files
+3. **Don't share secrets** in logs or error messages
+4. **Don't use production secrets** in development
+5. **Don't leave placeholder values** in production
 
 ---
 
-## Variable Validation
+## Related Documentation
 
-### Check Required Variables
-
-```bash
-# Check if all required variables are set
-pnpm env:check
-```
-
-**Script:** `packages/config/src/env-loader.ts`
-
-### Validate Environment
-
-```bash
-# Validate environment configuration
-pnpm env:validate
-```
-
-**Script:** `packages/config/src/env-loader.ts`
+- [Deploy Strategy](./deploy-strategy.md) - Deployment overview
+- [Vercel Troubleshooting](./vercel-troubleshooting.md) - Troubleshooting guide
+- [Deploy Reliability Plan](./deploy-reliability-plan.md) - Comprehensive deployment guide
+- `.env.example` - Complete environment variable template
 
 ---
 
-## Troubleshooting
-
-### Missing Variables
-
-**Error:** `Missing required environment variables`
-
-**Solution:**
-1. Check `.env.local` exists
-2. Verify all required variables are set
-3. Run `pnpm env:check` to see missing variables
-
-### Invalid Variables
-
-**Error:** `Invalid environment variable format`
-
-**Solution:**
-1. Check variable format matches expected pattern
-2. Verify URLs are valid
-3. Check for typos in variable names
-
-### Secrets Not Working in CI
-
-**Error:** `Secret not found in GitHub Actions`
-
-**Solution:**
-1. Verify secret exists in GitHub Secrets
-2. Check secret name matches workflow
-3. Ensure secret is not expired
-
----
-
-## Complete Variable List
-
-See `.env.example` for the complete list of 200+ environment variables with descriptions.
-
-**Categories:**
-- Core Supabase (6 variables)
-- Database (2 variables)
-- Application Configuration (5 variables)
-- OAuth Providers (4 variables)
-- OpenAI (4 variables)
-- Stripe (4 variables)
-- Email Configuration (4 variables)
-- Analytics & Monitoring (10 variables)
-- Storage & Media (4 variables)
-- Security & Bot Protection (4 variables)
-- Monetization (8 variables)
-- Privacy & Compliance (12 variables)
-- Observability (8 variables)
-- And 100+ more...
-
----
-
-## Conclusion
-
-**Current State:** ✅ Environment variables are **well-documented** in `.env.example`
-
-**Recommendations:**
-1. ✅ Use `.env.example` as the source of truth
-2. ✅ Regularly audit actual usage vs documented variables
-3. ✅ Remove unused variables
-4. ✅ Document new variables as they're added
-5. ✅ Use secret management services for production
-
-**Status:** Production-ready with comprehensive documentation.
+*Keep this document updated as new secrets are added or removed.*
