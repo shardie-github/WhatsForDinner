@@ -60,3 +60,19 @@ jobs:
           echo "Applying pending migrations..."
           npx supabase@latest migration up
           echo "✅ Migrations applied successfully"
+
+      - name: Validate schema
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          set -euo pipefail
+          echo "Validating database schema..."
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::warning::DATABASE_URL secret not set. Skipping schema validation."
+            exit 0
+          fi
+          pnpm tsx scripts/db-validate-schema.ts || {
+            echo "::error::Schema validation failed. Please check the database schema."
+            exit 1
+          }
+          echo "✅ Schema validation passed"
