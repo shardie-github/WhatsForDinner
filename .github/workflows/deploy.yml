@@ -10,8 +10,10 @@
 #
 # This workflow is disabled (no triggers) and kept for reference only.
 # It will be removed in a future cleanup.
+#
+# REMOVAL DATE: 2025-02-28 (30 days from deprecation)
 
-name: Deploy (DEPRECATED)
+name: Deploy (DEPRECATED - REMOVE BY 2025-02-28)
 
 # Disabled triggers - workflow will not run
 # on:
