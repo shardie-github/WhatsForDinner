@@ -1,194 +1,246 @@
+/**
+ * Input Validation Utilities
+ * 
+ * Provides Zod schemas and validation helpers for API routes
+ */
+
 import { z } from 'zod';
 
-// Security: Sanitize strings to prevent XSS
-export function sanitizeString(input: string): string {
-  return input
-    .replace(/[<>]/g, '') // Remove angle brackets
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/on\w+=/gi, '') // Remove event handlers
-    .trim()
-    .slice(0, 10000); // Max length
-}
+// Common validation schemas
+export const emailSchema = z.string().email('Invalid email address');
+export const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
+export const uuidSchema = z.string().uuid('Invalid UUID');
+export const nonEmptyStringSchema = z.string().min(1, 'Field cannot be empty');
 
-// Security: Validate email format
-const emailSchema = z.string().email('Invalid email format').transform((val) => sanitizeString(val));
-
-// Security: Validate URLs
-const urlSchema = z.string().url('Invalid URL format').refine(
-  (url) => {
-    try {
-      const parsed = new URL(url);
-      return ['http:', 'https:'].includes(parsed.protocol);
-    } catch {
-      return false;
-    }
-  },
-  { message: 'URL must use http or https protocol' }
-);
-
-// Recipe validation schema with security enhancements
-export const RecipeSchema = z.object({
-  title: z.string()
-    .min(1, 'Title is required')
-    .max(200, 'Title too long')
-    .transform(sanitizeString),
-  cookTime: z.string()
-    .min(1, 'Cook time is required')
-    .max(50, 'Cook time too long')
-    .transform(sanitizeString),
-  calories: z.number()
-    .int('Calories must be an integer')
-    .positive('Calories must be positive')
-    .max(10000, 'Calories value too high'),
-  ingredients: z
-    .array(
-      z.string()
-        .min(1, 'Ingredient cannot be empty')
-        .max(200, 'Ingredient name too long')
-        .transform(sanitizeString)
-    )
-    .min(1, 'At least one ingredient is required')
-    .max(50, 'Too many ingredients'),
-  steps: z
-    .array(
-      z.string()
-        .min(1, 'Step cannot be empty')
-        .max(2000, 'Step too long')
-        .transform(sanitizeString)
-    )
-    .min(1, 'At least one step is required')
-    .max(100, 'Too many steps'),
+// User schemas
+export const signupSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+  name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
 });
 
-// API request validation schema with security
-export const GenerateRecipesRequestSchema = z.object({
-  ingredients: z
-    .array(
-      z.string()
-        .min(1, 'Ingredient cannot be empty')
-        .max(200, 'Ingredient name too long')
-        .transform(sanitizeString)
-    )
-    .min(1, 'At least one ingredient is required')
-    .max(50, 'Too many ingredients'),
-  preferences: z.string()
-    .max(1000, 'Preferences too long')
-    .optional()
-    .default('')
-    .transform((val) => val ? sanitizeString(val) : ''),
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: z.string().min(1, 'Password is required'),
 });
 
-// Security: Input validation for user inputs
-export const SanitizedStringSchema = z.string()
-  .max(10000, 'Input too long')
-  .transform(sanitizeString);
-
-// Security: Validate IDs (UUID format)
-export const IdSchema = z.string().uuid('Invalid ID format');
-
-// Security: Rate limit configuration validation
-export const RateLimitConfigSchema = z.object({
-  requests: z.number().int().positive().max(10000),
-  window: z.number().int().positive().max(3600000), // Max 1 hour
+export const updateUserSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  preferences: z.record(z.any()).optional(),
 });
 
-// Pantry item validation schema with security
-export const PantryItemSchema = z.object({
-  ingredient: z.string()
-    .min(1, 'Ingredient name is required')
-    .max(200, 'Ingredient name too long')
-    .transform(sanitizeString),
-  quantity: z.number()
-    .int('Quantity must be an integer')
-    .positive('Quantity must be positive')
-    .max(1000000, 'Quantity too large'),
+// Recipe schemas
+export const createRecipeSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
+  ingredients: z.array(z.string()).min(1, 'At least one ingredient is required'),
+  steps: z.array(z.string()).min(1, 'At least one step is required'),
+  tags: z.array(z.string()).optional(),
+  macros: z.object({
+    calories: z.number().int().positive().optional(),
+    protein: z.number().int().nonnegative().optional(),
+    carbs: z.number().int().nonnegative().optional(),
+    fat: z.number().int().nonnegative().optional(),
+  }).optional(),
 });
 
-// User profile validation schema with security
-export const UserProfileSchema = z.object({
-  name: z.string()
-    .min(1, 'Name is required')
-    .max(100, 'Name too long')
-    .transform(sanitizeString),
-  preferences: z.record(z.any())
-    .optional()
-    .refine(
-      (val) => {
-        if (!val) return true;
-        // Validate that preferences don't contain malicious data
-        const jsonString = JSON.stringify(val);
-        return jsonString.length < 10000 && !jsonString.includes('<script');
-      },
-      { message: 'Invalid preferences data' }
-    ),
+export const generateMealSchema = z.object({
+  ingredients: z.array(z.string()).min(1, 'At least one ingredient is required'),
+  dietaryRestrictions: z.array(z.string()).optional(),
+  cuisine: z.string().optional(),
+  servings: z.number().int().positive().max(20).optional(),
 });
 
-// Security: SQL injection prevention helper
-export function escapeSqlString(input: string): string {
-  return input.replace(/'/g, "''"); // Escape single quotes
-}
-
-// Security: Validate no SQL injection attempts
-export function validateNoSqlInjection(input: string): boolean {
-  const sqlPatterns = [
-    /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|SCRIPT)\b)/i,
-    /(--|;|\/\*|\*\/)/,
-    /(xp_|sp_)/i,
-  ];
-  
-  return !sqlPatterns.some(pattern => pattern.test(input));
-}
-
-// Enhanced string schema with SQL injection check
-export const SecureStringSchema = z.string()
-  .max(10000, 'Input too long')
-  .refine(validateNoSqlInjection, {
-    message: 'Invalid characters detected',
-  })
-  .transform(sanitizeString);
-
-// Environment variables validation
-export const EnvSchema = z.object({
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url('Invalid Supabase URL'),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z
-    .string()
-    .min(1, 'Supabase anon key is required'),
-  OPENAI_API_KEY: z.string().min(1, 'OpenAI API key is required'),
+// Meal plan schemas
+export const createMealPlanSchema = z.object({
+  day: z.string().datetime().or(z.date()),
+  items: z.array(z.object({
+    mealType: z.enum(['breakfast', 'lunch', 'dinner', 'snack']),
+    recipeId: uuidSchema.optional(),
+    customMeal: z.string().optional(),
+  })).min(1, 'At least one meal is required'),
 });
 
-// Validate environment variables
-export function validateEnv() {
-  // Skip validation during build time
-  if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
-    return {
-      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-      NEXT_PUBLIC_SUPABASE_ANON_KEY:
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
-      OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
-    };
-  }
+// Grocery list schemas
+export const createGroceryListSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
+  items: z.array(z.object({
+    name: z.string().min(1, 'Item name is required'),
+    quantity: z.string().optional(),
+    checked: z.boolean().optional(),
+  })).optional(),
+});
 
+// Pagination schemas
+export const paginationSchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(20),
+  sortBy: z.string().optional(),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+});
+
+// Search schemas
+export const searchSchema = z.object({
+  query: z.string().min(1, 'Search query is required').max(200, 'Query too long'),
+  filters: z.record(z.any()).optional(),
+});
+
+/**
+ * Validate request body against a Zod schema
+ */
+export async function validateRequest<T>(
+  request: Request,
+  schema: z.ZodSchema<T>
+): Promise<{ data: T; error: null } | { data: null; error: Response }> {
   try {
-    return EnvSchema.parse({
-      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    });
+    const body = await request.json();
+    const data = schema.parse(body);
+    return { data, error: null };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const missingVars = error.errors
-        .map(err => `${err.path.join('.')}: ${err.message}`)
-        .join(', ');
-      throw new Error(`Environment validation failed: ${missingVars}`);
+      return {
+        data: null,
+        error: new Response(
+          JSON.stringify({
+            error: 'Validation Error',
+            message: 'Invalid request data',
+            details: error.errors.map((e) => ({
+              path: e.path.join('.'),
+              message: e.message,
+            })),
+          }),
+          {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        ),
+      };
     }
-    throw error;
+    
+    return {
+      data: null,
+      error: new Response(
+        JSON.stringify({
+          error: 'Invalid Request',
+          message: 'Request body is not valid JSON',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      ),
+    };
   }
 }
 
-// Type exports
-export type Recipe = z.infer<typeof RecipeSchema>;
-export type GenerateRecipesRequest = z.infer<
-  typeof GenerateRecipesRequestSchema
->;
-export type PantryItem = z.infer<typeof PantryItemSchema>;
-export type UserProfile = z.infer<typeof UserProfileSchema>;
+/**
+ * Validate query parameters against a Zod schema
+ */
+export function validateQuery<T>(
+  request: Request,
+  schema: z.ZodSchema<T>
+): { data: T; error: null } | { data: null; error: Response } {
+  try {
+    const url = new URL(request.url);
+    const params: Record<string, string> = {};
+    url.searchParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    
+    const data = schema.parse(params);
+    return { data, error: null };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return {
+        data: null,
+        error: new Response(
+          JSON.stringify({
+            error: 'Validation Error',
+            message: 'Invalid query parameters',
+            details: error.errors.map((e) => ({
+              path: e.path.join('.'),
+              message: e.message,
+            })),
+          }),
+          {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        ),
+      };
+    }
+    
+    return {
+      data: null,
+      error: new Response(
+        JSON.stringify({
+          error: 'Invalid Request',
+          message: 'Invalid query parameters',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      ),
+    };
+  }
+}
+
+/**
+ * Helper to create validated API route handler
+ */
+export function createValidatedHandler<TBody, TQuery = Record<string, never>>(
+  bodySchema?: z.ZodSchema<TBody>,
+  querySchema?: z.ZodSchema<TQuery>,
+  handler: (data: { body: TBody; query: TQuery; request: Request }) => Promise<Response>
+) {
+  return async (request: Request): Promise<Response> => {
+    // Validate body if schema provided
+    if (bodySchema) {
+      const bodyResult = await validateRequest(request, bodySchema);
+      if (bodyResult.error) {
+        return bodyResult.error;
+      }
+      
+      // Validate query if schema provided
+      if (querySchema) {
+        const queryResult = validateQuery(request, querySchema);
+        if (queryResult.error) {
+          return queryResult.error;
+        }
+        
+        return handler({
+          body: bodyResult.data,
+          query: queryResult.data,
+          request,
+        });
+      }
+      
+      return handler({
+        body: bodyResult.data,
+        query: {} as TQuery,
+        request,
+      });
+    }
+    
+    // Only validate query
+    if (querySchema) {
+      const queryResult = validateQuery(request, querySchema);
+      if (queryResult.error) {
+        return queryResult.error;
+      }
+      
+      return handler({
+        body: {} as TBody,
+        query: queryResult.data,
+        request,
+      });
+    }
+    
+    // No validation
+    return handler({
+      body: {} as TBody,
+      query: {} as TQuery,
+      request,
+    });
+  };
+}

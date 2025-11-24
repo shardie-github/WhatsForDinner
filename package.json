@@ -222,6 +222,7 @@
     "guardian:summary": "tsx scripts/full-stack-guardian-summary.ts",
     "schema:health": "tsx scripts/schema-health-check.ts",
     "api:docs:generate": "tsx scripts/generate-openapi-docs.ts",
+    "api:docs:generate:complete": "tsx scripts/generate-openapi-complete.ts",
     "deploy:validate": "tsx scripts/validate-deployment-config.ts",
     "deploy:doctor": "tsx scripts/deploy-doctor.ts",
     "env:validate": "tsx -e \"import('./packages/config/src/env-loader.ts').then(m => m.loadEnv({ strict: false }))\"",

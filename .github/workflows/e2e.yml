@@ -7,6 +7,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Make E2E tests required for PRs
+concurrency:
+  group: e2e-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   e2e-smoke-test:
     name: E2E Smoke Test

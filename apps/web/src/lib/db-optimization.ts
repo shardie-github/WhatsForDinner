@@ -1,187 +1,205 @@
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('db-optimization');
-
 /**
- * Database Query Optimization Utilities
+ * Database Query Optimization Helpers
  * 
- * Provides utilities for optimizing database queries, including query caching,
- * connection pooling, and query analysis.
+ * Provides utilities for optimizing database queries
  */
 
-import { createClient } from '@supabase/supabase-js';
-import { get } from './cache';
-
-// Query cache TTL (5 minutes default)
-const QUERY_CACHE_TTL = parseInt(process.env.QUERY_CACHE_TTL || '300', 10);
+import { PrismaClient } from '@prisma/client';
 
 /**
- * Optimized Supabase query with caching
+ * Query optimization utilities
  */
-export async function cachedQuery<T>(
-  cacheKey: string,
-  queryFn: () => Promise<T>,
-  options: { ttl?: number; tags?: string[] } = {}
-): Promise<T> {
-  // Try to get from cache first
-  const cached = await get<T>(cacheKey);
-  if (cached !== null) {
-    return cached;
+export class QueryOptimizer {
+  constructor(private prisma: PrismaClient) {}
+
+  /**
+   * Batch load related data to avoid N+1 queries
+   */
+  async batchLoad<T, K extends keyof T>(
+    items: T[],
+    relationKey: K,
+    loader: (ids: string[]) => Promise<Map<string, T[K] extends (infer U)[] ? U : T[K] extends Promise<infer U> ? U : never>>
+  ): Promise<void> {
+    // Extract IDs from items
+    const ids = items
+      .map((item) => {
+        const relation = item[relationKey];
+        if (Array.isArray(relation)) {
+          return relation.map((r: any) => r.id);
+        }
+        return (relation as any)?.id;
+      })
+      .filter(Boolean)
+      .flat();
+
+    // Load all relations in one query
+    const relations = await loader(ids);
+
+    // Attach relations to items
+    items.forEach((item) => {
+      const relation = item[relationKey];
+      if (Array.isArray(relation)) {
+        // Handle array relations
+        (item[relationKey] as any) = relation.map((r: any) => relations.get(r.id) || r);
+      } else {
+        // Handle single relations
+        const id = (relation as any)?.id;
+        if (id && relations.has(id)) {
+          (item[relationKey] as any) = relations.get(id);
+        }
+      }
+    });
   }
-  
-  // Execute query
-  const result = await queryFn();
-  
-  // Cache result
-  const { set } = await import('./cache');
-  await set(cacheKey, result, {
-    ttl: options.ttl || QUERY_CACHE_TTL,
-    tags: options.tags,
-  });
-  
-  return result;
-}
 
-/**
- * Pagination helper with cursor-based pagination for better performance
- */
-export interface PaginationOptions {
-  limit?: number;
-  cursor?: string;
-  orderBy?: string;
-  orderDirection?: 'asc' | 'desc';
-}
+  /**
+   * Paginate query results efficiently
+   */
+  async paginate<T>(
+    query: () => Promise<T[]>,
+    page: number,
+    limit: number,
+    totalCount?: () => Promise<number>
+  ): Promise<{
+    data: T[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+  }> {
+    const skip = (page - 1) * limit;
+    
+    // Execute query and count in parallel
+    const [data, total] = await Promise.all([
+      query(),
+      totalCount ? totalCount() : Promise.resolve(0),
+    ]);
 
-export interface PaginatedResult<T> {
-  data: T[];
-  nextCursor: string | null;
-  hasMore: boolean;
-}
+    const totalPages = Math.ceil(total / limit);
 
-/**
- * Execute paginated query with cursor-based pagination
- */
-export async function paginatedQuery<T>(
-  queryFn: (options: PaginationOptions) => Promise<{ data: T[] | null; error: unknown }>,
-  options: PaginationOptions = {}
-): Promise<PaginatedResult<T>> {
-  const limit = Math.min(options.limit || 20, 100); // Max 100 items per page
-  const orderBy = options.orderBy || 'created_at';
-  const orderDirection = options.orderDirection || 'desc';
-  
-  const queryOptions: PaginationOptions = {
-    ...options,
-    limit,
-    orderBy,
-    orderDirection,
-  };
-  
-  const { data, error } = await queryFn(queryOptions);
-  
-  if (error) {
-    throw new Error(`Query failed: ${error.message}`);
+    return {
+      data,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    };
   }
-  
-  const items = data || [];
-  const hasMore = items.length === limit;
-  const nextCursor = hasMore && items.length > 0
-    ? (items[items.length - 1] as any)[orderBy]?.toString() || null
-    : null;
-  
-  return {
-    data: items,
-    nextCursor,
-    hasMore,
-  };
-}
 
-/**
- * Batch query helper to reduce database round trips
- */
-export async function batchQuery<T, R>(
-  items: T[],
-  batchSize: number,
-  queryFn: (batch: T[]) => Promise<R[]>
-): Promise<R[]> {
-  const results: R[] = [];
-  
-  for (let i = 0; i < items.length; i += batchSize) {
-    const batch = items.slice(i, i + batchSize);
-    const batchResults = await queryFn(batch);
-    results.push(...batchResults);
-  }
-  
-  return results;
-}
-
-/**
- * Query performance monitoring
- */
-export interface QueryMetrics {
-  query: string;
-  duration: number;
-  rowCount?: number;
-  cached: boolean;
-}
-
-const queryMetrics: QueryMetrics[] = [];
-
-export function recordQueryMetrics(metrics: QueryMetrics): void {
-  queryMetrics.push(metrics);
-  
-  // Keep only last 1000 metrics
-  if (queryMetrics.length > 1000) {
-    queryMetrics.shift();
-  }
-  
-  // Log slow queries (> 100ms)
-  if (metrics.duration > 100) {
-    logger.warn('Slow query detected: ${metrics.query} took ${metrics.duration}ms');
+  /**
+   * Select only needed fields to reduce data transfer
+   */
+  selectFields<T extends Record<string, any>>(
+    fields: (keyof T)[]
+  ): Partial<Record<keyof T, boolean>> {
+    const selection: Partial<Record<keyof T, boolean>> = {};
+    fields.forEach((field) => {
+      selection[field] = true;
+    });
+    return selection;
   }
 }
 
-export function getQueryMetrics(): QueryMetrics[] {
-  return [...queryMetrics];
-}
-
-export function getAverageQueryTime(): number {
-  if (queryMetrics.length === 0) {
-    return 0;
-  }
-  
-  const total = queryMetrics.reduce((sum, m) => sum + m.duration, 0);
-  return total / queryMetrics.length;
-}
+/**
+ * Example usage:
+ * 
+ * ```typescript
+ * const optimizer = new QueryOptimizer(prisma);
+ * 
+ * // Batch load user's meal plans
+ * const users = await prisma.user.findMany();
+ * await optimizer.batchLoad(users, 'mealPlans', async (userIds) => {
+ *   const mealPlans = await prisma.mealPlan.findMany({
+ *     where: { userId: { in: userIds } },
+ *   });
+ *   return new Map(mealPlans.map(mp => [mp.userId, mp]));
+ * });
+ * 
+ * // Paginate recipes
+ * const result = await optimizer.paginate(
+ *   () => prisma.recipe.findMany({ skip, take: limit }),
+ *   page,
+ *   limit,
+ *   () => prisma.recipe.count()
+ * );
+ * ```
+ */
 
 /**
- * Optimize Supabase query with select only needed columns
+ * Common query patterns
  */
-export function selectColumns<T extends Record<string, unknown>>(
-  columns: (keyof T)[]
-): string {
-  return columns.join(', ');
-}
+export const queryPatterns = {
+  /**
+   * Get user with related data efficiently
+   */
+  async getUserWithRelations(prisma: PrismaClient, userId: string) {
+    return prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        mealPlans: {
+          take: 7, // Last 7 days
+          orderBy: { day: 'desc' },
+        },
+        ownedHouseholds: {
+          include: {
+            members: {
+              take: 10, // Limit members
+            },
+          },
+        },
+      },
+    });
+  },
 
-/**
- * Common query optimizations
- */
-export const queryOptimizations = {
-  // Use select() to limit columns
-  selectOnly: <T extends Record<string, unknown>>(columns: (keyof T)[]) => 
-    columns.join(', '),
-  
-  // Use limit() to restrict results
-  limit: (count: number) => Math.min(count, 100),
-  
-  // Use range() for pagination
-  range: (from: number, to: number) => ({
-    from: Math.max(0, from),
-    to: Math.max(from, to),
-  }),
-  
-  // Use order() with index-friendly columns
-  order: (column: string, ascending: boolean = false) => ({
-    column,
-    ascending,
-  }),
+  /**
+   * Get recipes with pagination
+   */
+  async getRecipesPaginated(
+    prisma: PrismaClient,
+    page: number,
+    limit: number,
+    filters?: {
+      tags?: string[];
+      userId?: string;
+    }
+  ) {
+    const skip = (page - 1) * limit;
+    
+    const [recipes, total] = await Promise.all([
+      prisma.recipe.findMany({
+        where: {
+          ...(filters?.tags && { tags: { hasSome: filters.tags } }),
+          ...(filters?.userId && { userId: filters.userId }),
+        },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.recipe.count({
+        where: {
+          ...(filters?.tags && { tags: { hasSome: filters.tags } }),
+          ...(filters?.userId && { userId: filters.userId }),
+        },
+      }),
+    ]);
+
+    return {
+      recipes,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasNext: page * limit < total,
+        hasPrev: page > 1,
+      },
+    };
+  },
 };
