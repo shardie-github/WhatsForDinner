@@ -228,7 +228,9 @@
     "env:validate": "tsx -e \"import('./packages/config/src/env-loader.ts').then(m => m.loadEnv({ strict: false }))\"",
     "env:check": "tsx -e \"import('./packages/config/src/env-loader.ts').then(m => { const result = m.checkRequiredEnv(['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY']); if (!result.valid) { console.error('Missing required env vars:', result.missing); process.exit(1); } else { console.log('✅ All required env vars are set'); } })\"",
     "env:doctor": "tsx scripts/env-doctor.ts",
-    "db:validate": "tsx scripts/db-validate-schema.ts"
+    "db:validate": "tsx scripts/db-validate-schema.ts",
+    "redis:setup": "tsx scripts/setup-redis.ts",
+    "redis:test": "tsx scripts/setup-redis.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",

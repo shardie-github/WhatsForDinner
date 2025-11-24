@@ -151,8 +151,14 @@ function initCache(): CacheStore {
     // Server-side: Try to use Redis
     try {
       // Dynamic import to avoid requiring redis in client bundle
-      const redis = require('redis');
-      const client = redis.createClient({ url: redisUrl });
+      const { createClient } = require('redis');
+      const client = createClient({ url: redisUrl });
+      
+      // Connect to Redis (async, but we'll handle it)
+      client.connect().catch((err: Error) => {
+        console.warn('Redis connection failed, using memory cache:', err.message);
+      });
+      
       cacheStore = new RedisCacheStore(client);
       console.log('Using Redis cache store');
       return cacheStore;
