@@ -222,10 +222,17 @@
     "guardian:summary": "tsx scripts/full-stack-guardian-summary.ts",
     "schema:health": "tsx scripts/schema-health-check.ts",
     "api:docs:generate": "tsx scripts/generate-openapi-docs.ts",
+    "api:docs:generate:complete": "tsx scripts/generate-openapi-complete.ts",
     "deploy:validate": "tsx scripts/validate-deployment-config.ts",
     "deploy:doctor": "tsx scripts/deploy-doctor.ts",
     "env:validate": "tsx -e \"import('./packages/config/src/env-loader.ts').then(m => m.loadEnv({ strict: false }))\"",
-    "env:check": "tsx -e \"import('./packages/config/src/env-loader.ts').then(m => { const result = m.checkRequiredEnv(['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY']); if (!result.valid) { console.error('Missing required env vars:', result.missing); process.exit(1); } else { console.log('✅ All required env vars are set'); } })\""
+    "env:check": "tsx -e \"import('./packages/config/src/env-loader.ts').then(m => { const result = m.checkRequiredEnv(['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY']); if (!result.valid) { console.error('Missing required env vars:', result.missing); process.exit(1); } else { console.log('✅ All required env vars are set'); } })\"",
+    "env:doctor": "tsx scripts/env-doctor.ts",
+    "db:validate": "tsx scripts/db-validate-schema.ts",
+    "redis:setup": "tsx scripts/setup-redis.ts",
+    "redis:test": "tsx scripts/setup-redis.ts",
+    "marketing:setup": "tsx scripts/setup/marketing-setup.ts",
+    "kpi:dashboard": "tsx scripts/monitoring/kpi-alert-runner.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",

@@ -149,6 +149,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [lint, type-check, test, smoke-tests]
+    if: always() && (needs.lint.result == 'success' && needs.type-check.result == 'success' && needs.test.result == 'success' && needs.smoke-tests.result == 'success')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -235,12 +236,14 @@ jobs:
             ")
             echo "Current coverage: ${TOTAL_COVERAGE}%"
             if [ "$TOTAL_COVERAGE" -lt 80 ]; then
-              echo "⚠️  Warning: Test coverage (${TOTAL_COVERAGE}%) is below 80% threshold"
+              echo "::error::Test coverage (${TOTAL_COVERAGE}%) is below 80% threshold"
+              exit 1
             else
               echo "✅ Test coverage (${TOTAL_COVERAGE}%) meets 80% threshold"
             fi
           else
-            echo "⚠️  Coverage report not found"
+            echo "::error::Coverage report not found. Run tests with coverage enabled."
+            exit 1
           fi
 
       - name: Upload coverage
