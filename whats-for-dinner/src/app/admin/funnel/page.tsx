@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { GrowthAnalytics, FunnelConversionRates } from '@/lib/growthAnalytics';
-import {
 import { createComponentLogger } from '@whats-for-dinner/utils';
+import {
   Card,
   CardContent,
   CardDescription,

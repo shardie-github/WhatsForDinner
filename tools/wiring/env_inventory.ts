@@ -237,7 +237,7 @@ ${setVars.filter(v => !v.isSet && !v.required).map(v =>
   );
   
   logger.info('\nEnvironment Variables Inventory:');
-  logger.info('Total: ${setVars.length}', { Set: ${setVars.filter(v => v.isSet }).length}, Missing: ${setVars.filter(v => !v.isSet).length}`);
+  logger.info(`Total: ${setVars.length}, Set: ${setVars.filter(v => v.isSet).length}, Missing: ${setVars.filter(v => !v.isSet).length}`);
   
   const missingRequired = setVars.filter(v => v.required && !v.isSet);
   if (missingRequired.length > 0) {

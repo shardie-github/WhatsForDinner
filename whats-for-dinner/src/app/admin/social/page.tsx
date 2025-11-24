@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
 import { createComponentLogger } from '@whats-for-dinner/utils';
+import {
   SocialAutomator,
   SocialPost,
   TrendingTheme,

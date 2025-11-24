@@ -91,7 +91,7 @@ async function handleCheckoutSessionCompleted(session: any) {
   const { tenantId, userId, plan } = session.metadata;
 
   if (!tenantId || !userId || !plan) {
-    logger.error('Missing metadata in checkout session:', { session.metadata });
+    logger.error('Missing metadata in checkout session:', { metadata: session.metadata });
     return;
   }
 
@@ -109,7 +109,7 @@ async function handleSubscriptionCreated(subscription: any) {
   const { tenantId, userId, plan } = subscription.metadata;
 
   if (!tenantId || !userId || !plan) {
-    logger.error('Missing metadata in subscription:', { subscription.metadata });
+    logger.error('Missing metadata in subscription:', { metadata: subscription.metadata });
     return;
   }
 

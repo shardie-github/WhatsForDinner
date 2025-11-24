@@ -96,7 +96,7 @@ if (require.main === module) {
   monitor().then(results => {
     const passed = results.filter(r => r.passed).length;
     const failed = results.filter(r => !r.passed).length;
-    logger.info('✅ Passed: ${passed}', { ❌ Failed: ${failed}` });
+    logger.info(`✅ Passed: ${passed}, ❌ Failed: ${failed}`);
     process.exit(failed > 0 ? 1 : 0);
   });
 }

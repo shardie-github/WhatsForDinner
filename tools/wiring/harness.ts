@@ -725,7 +725,7 @@ async function main() {
   const duration = Date.now() - startTime;
   
   logger.info('\nWiring harness checks completed in ${duration}ms');
-  logger.info('Summary: ${summary.pass} passed', { ${summary.degraded} degraded, ${summary.fail} failed` });
+  logger.info(`Summary: ${summary.pass} passed, ${summary.degraded} degraded, ${summary.fail} failed`);
   
   if (summary.fail > 0) {
     process.exit(1);

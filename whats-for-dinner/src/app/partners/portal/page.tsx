@@ -11,8 +11,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
 import { createComponentLogger } from '@whats-for-dinner/utils';
+import {
   TrendingUp,
   DollarSign,
   Users,

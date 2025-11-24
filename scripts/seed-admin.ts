@@ -30,7 +30,7 @@ async function seedAdmin() {
   const validRoles = ['superadmin', 'finance', 'reviewer', 'support'];
   
   if (!validRoles.includes(role)) {
-    logger.error('Error: Invalid role. Must be one of: ${validRoles.join(', { ' })}`);
+    logger.error('Error: Invalid role. Must be one of: ' + validRoles.join(', '));
     process.exit(1);
   }
 

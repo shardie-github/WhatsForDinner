@@ -283,7 +283,7 @@ async function main() {
 
   logger.info('📖 Parsing Prisma schema...');
   const prismaSchema = parsePrismaSchema(schemaPath);
-  logger.info('   Found ${Object.keys(prismaSchema').length} models`);
+  logger.info('   Found ' + Object.keys(prismaSchema).length + ' models');
 
   logger.info('📖 Parsing SQL migrations...');
   const migrations = parseMigrations(migrationsDir);
@@ -293,10 +293,10 @@ async function main() {
   const diff = compareSchemas(prismaSchema, migrations);
 
   logger.info('\n📊 Schema Health Report:');
-  logger.info('   ✅ Tables in sync: ${Object.keys(prismaSchema').length - diff.missingTables.length}`);
-  logger.info(`   ⚠️  Missing tables: ${diff.missingTables.length}`);
-  logger.info(`   ⚠️  Tables with missing columns: ${Object.keys(diff.missingColumns).length}`);
-  logger.info(`   ⚠️  Extra tables in migrations: ${diff.extraTables.length}`);
+  logger.info('   ✅ Tables in sync: ' + (Object.keys(prismaSchema).length - diff.missingTables.length));
+  logger.info('   ⚠️  Missing tables: ' + diff.missingTables.length);
+  logger.info('   ⚠️  Tables with missing columns: ' + Object.keys(diff.missingColumns).length);
+  logger.info('   ⚠️  Extra tables in migrations: ' + diff.extraTables.length);
 
   if (diff.missingTables.length > 0) {
     logger.info('\n❌ Missing Tables:');
