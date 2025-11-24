@@ -98,9 +98,26 @@ pnpm install
 
 # 3. Set up your environment
 cp .env.example .env.local
-# Add your Supabase URL and API keys
 
-# 4. Start developing
+# 4. Configure Supabase and OpenAI keys in .env.local
+# See docs/env-setup.md for detailed instructions
+# Required variables:
+#   - NEXT_PUBLIC_SUPABASE_URL
+#   - NEXT_PUBLIC_SUPABASE_ANON_KEY
+#   - SUPABASE_SERVICE_ROLE_KEY
+#   - SUPABASE_PROJECT_REF
+#   - OPENAI_API_KEY
+
+# 5. Set up Supabase database (one-time)
+# Link to your Supabase project
+supabase link --project-ref <your-project-ref>
+
+# Apply migrations
+supabase migration up
+# Or use the helper script:
+# ./scripts/supa-migrate-all.sh
+
+# 6. Start developing
 pnpm dev
 ```
 
