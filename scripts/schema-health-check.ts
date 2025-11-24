@@ -294,26 +294,26 @@ async function main() {
 
   logger.info('\n📊 Schema Health Report:');
   logger.info('   ✅ Tables in sync: ${Object.keys(prismaSchema').length - diff.missingTables.length}`);
-  logger.info('   ⚠️  Missing tables: ${diff.missingTables.length}');
-  logger.info('   ⚠️  Tables with missing columns: ${Object.keys(diff.missingColumns').length}`);
-  logger.info('   ⚠️  Extra tables in migrations: ${diff.extraTables.length}');
+  logger.info(`   ⚠️  Missing tables: ${diff.missingTables.length}`);
+  logger.info(`   ⚠️  Tables with missing columns: ${Object.keys(diff.missingColumns).length}`);
+  logger.info(`   ⚠️  Extra tables in migrations: ${diff.extraTables.length}`);
 
   if (diff.missingTables.length > 0) {
     logger.info('\n❌ Missing Tables:');
-    diff.missingTables.forEach(t => logger.info('   - ${t}'));
+    diff.missingTables.forEach(t => logger.info(`   - ${t}`));
   }
 
   if (Object.keys(diff.missingColumns).length > 0) {
     logger.info('\n❌ Missing Columns:');
     for (const [table, columns] of Object.entries(diff.missingColumns)) {
-      logger.info('   - ${table}:');
-      columns.forEach(col => logger.info('     • ${col}'));
+      logger.info(`   - ${table}:`);
+      columns.forEach(col => logger.info(`     • ${col}`));
     }
   }
 
   if (diff.extraTables.length > 0) {
-    logger.info('\n⚠️  Extra Tables (in migrations but not in Prisma'):');
-    diff.extraTables.forEach(t => logger.info('   - ${t}'));
+    logger.info('\n⚠️  Extra Tables (in migrations but not in Prisma):');
+    diff.extraTables.forEach(t => logger.info(`   - ${t}`));
   }
 
   // Generate migration SQL
@@ -321,7 +321,7 @@ async function main() {
     const migrationSQL = generateMigrationSQL(diff);
     const outputPath = join(process.cwd(), 'supabase/migrations/999_schema_health_fix.sql');
     require('fs').writeFileSync(outputPath, migrationSQL);
-    logger.info('\n💾 Generated migration file: ${outputPath}');
+    logger.info(`\n💾 Generated migration file: ${outputPath}`);
     logger.info('   ⚠️  Review and test before applying!');
   }
 

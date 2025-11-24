@@ -123,12 +123,12 @@ async function runSmokeTests() {
   logger.info('\n=== Smoke Test Results ===');
   results.forEach(result => {
     const status = result.passed ? '✅ PASS' : '❌ FAIL';
-    logger.info('${status} ${result.name} (${result.duration}ms')`);
+    logger.info(`${status} ${result.name} (${result.duration}ms)`);
     if (result.error) {
-      logger.info('   Error: ${result.error}');
+      logger.info(`   Error: ${result.error}`);
     }
   });
-  logger.info('\nTotal: ${passed}/${results.length} passed in ${totalDuration}ms\n');
+  logger.info(`\nTotal: ${passed}/${results.length} passed in ${totalDuration}ms\n`);
   
   // Exit with error code if any tests failed
   if (failed > 0) {

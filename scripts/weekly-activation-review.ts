@@ -202,14 +202,14 @@ async function runWeeklyActivationReview() {
 
   // Print summary
   logger.info('📈 Activation Metrics:');
-  logger.info('   Signups: ${metrics.signups}');
-  logger.info('   Activations: ${metrics.activations}');
-  logger.info('   Activation Rate: ${metrics.activationRate.toFixed(2')}%`);
-  logger.info('   Avg Time to Activation: ${metrics.avgTimeToActivation.toFixed(1')} minutes`);
-  logger.info('   Trend: ${report.comparison.trend} (${activationRateChange > 0 ? '+' : ''}${activationRateChange.toFixed(2')}%)`);
+  logger.info(`   Signups: ${metrics.signups}`);
+  logger.info(`   Activations: ${metrics.activations}`);
+  logger.info(`   Activation Rate: ${metrics.activationRate.toFixed(2)}%`);
+  logger.info(`   Avg Time to Activation: ${metrics.avgTimeToActivation.toFixed(1)} minutes`);
+  logger.info(`   Trend: ${report.comparison.trend} (${activationRateChange > 0 ? '+' : ''}${activationRateChange.toFixed(2)}%)`);
   logger.info('\n📉 Top Dropoff Points:');
   dropoffPoints.slice(0, 5).forEach(point => {
-    logger.info('   ${point.stage}: ${point.percentage.toFixed(1')}% (${point.count} users)`);
+    logger.info(`   ${point.stage}: ${point.percentage.toFixed(1)}% (${point.count} users)`);
   });
   logger.info('\n💡 Recommendations:');
   recommendations.forEach(rec => logger.info('   ${rec}'));

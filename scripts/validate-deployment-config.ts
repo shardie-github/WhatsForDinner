@@ -99,7 +99,7 @@ function validateNextConfig(): ValidationResult {
     const content = readFileSync(nextConfigPath, 'utf-8');
     
     // Check for common misconfigurations
-    if (content.includes('output: 'export'') && content.includes('api')) {
+    if (content.includes("output: 'export'") && content.includes('api')) {
       result.warnings.push('Static export mode may not support API routes');
     }
 

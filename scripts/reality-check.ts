@@ -56,7 +56,7 @@ async function checkEnvVars(): Promise<boolean> {
     addResult({
       name: 'Environment Variables',
       passed: false,
-      error: `Missing: ${missing.join(', ')},
+      error: `Missing: ${missing.join(', ')}`,
     });
     return false;
   }
@@ -135,7 +135,7 @@ async function checkPrisma(): Promise<boolean> {
     const start = Date.now();
     
     // Simple query
-    await prisma.$queryRaw`SELECT 1`;
+    await prisma.$queryRawUnsafe('SELECT 1');
     
     const latency = Date.now() - start;
     
@@ -230,8 +230,8 @@ async function checkStorage(): Promise<boolean> {
     const supabase = createClient(url, key);
     
     // Test upload
-    const testContent = `reality-check-${Date.now()}`;
-    const testPath = `reality-check/${Date.now()}.txt`;
+    const testContent = 'reality-check-' + Date.now();
+    const testPath = 'reality-check/' + Date.now() + '.txt';
     
     const { error: uploadError } = await supabase.storage
       .from(bucket)
@@ -244,7 +244,7 @@ async function checkStorage(): Promise<boolean> {
       addResult({
         name: 'Storage Upload/Download',
         passed: false,
-        error: `Upload failed: ${uploadError.message},
+        error: 'Upload failed: ' + uploadError.message,
       });
       return false;
     }
@@ -258,7 +258,7 @@ async function checkStorage(): Promise<boolean> {
       addResult({
         name: 'Storage Upload/Download',
         passed: false,
-        error: `Download failed: ${downloadError.message},
+        error: 'Download failed: ' + downloadError.message,
       });
       return false;
     }
@@ -304,9 +304,9 @@ async function main() {
   const results = await Promise.all(checks);
   const allPassed = results.every((r) => r);
 
-  logger.info('\n' + '='.repeat(50'));
+  logger.info('\n' + '='.repeat(50));
   logger.info(allPassed ? '✅ ALL CHECKS PASSED' : '❌ SOME CHECKS FAILED');
-  logger.info('='.repeat(50'));
+  logger.info('='.repeat(50));
 
   process.exit(allPassed ? 0 : 1);
 }
