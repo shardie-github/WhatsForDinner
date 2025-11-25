@@ -1,451 +1,391 @@
-# Database Migrations & Schema
+# Database Migrations & Schema Management
 
-**Last Updated:** 2025-01-28  
-**Status:** ✅ Complete Migration Strategy Documented
-
----
-
-## Executive Summary
-
-This repository uses a **dual-approach** for database schema management:
-- **Migrations:** Supabase-native SQL migrations (`supabase/migrations/`)
-- **Type Generation:** Prisma schema (`prisma/schema.prisma`) for type-safe access
-
-**Key Principle:** Supabase handles migrations, Prisma handles type generation.
+**Last Updated:** $(date)  
+**Agent:** Unified Background Agent v3.0
 
 ---
 
-## Migration Strategy
+## Overview
 
-### Master Consolidated Migration
-
-**File:** `supabase/migrations/99999999999999_master_consolidated_schema.sql`
-
-**Purpose:** Single consolidated migration for fresh database bootstrapping
-
-**Characteristics:**
-- ✅ Idempotent (uses `IF NOT EXISTS` throughout)
-- ✅ Contains all tables, enums, indexes, RLS policies, functions
-- ✅ Safe to run multiple times
-- ✅ Suitable for fresh database initialization
-
-**When to Use:**
-- Fresh database setup
-- Development environment initialization
-- Testing database setup
-
-**When NOT to Use:**
-- Production databases with existing data (use incremental migrations instead)
+This document describes the database schema, migration strategy, and how to maintain consistency between Prisma schema and Supabase migrations.
 
 ---
 
-## Migration Workflow
+## Schema Architecture
 
-### Local Development
+### Database Provider
+- **Provider:** PostgreSQL (via Supabase)
+- **ORM:** Prisma 5.22.0
+- **Engine:** WASM (for Termux/Android compatibility)
+- **Migration Tool:** Supabase CLI + Prisma Migrate
 
-**Prerequisites:**
-```bash
-# Install Supabase CLI
-npm install -g supabase
+### Current Schema Status
 
-# Link to Supabase project (one-time)
-supabase link --project-ref <your-project-ref>
-```
-
-**Apply Migrations:**
-```bash
-# Apply all pending migrations
-supabase migration up
-
-# Or apply specific migration
-supabase migration up --version <timestamp>
-```
-
-**Create New Migration:**
-```bash
-# Generate migration from schema changes
-supabase migration new <migration-name>
-
-# Or use migra to generate diff
-supabase db diff -f <migration-name>
-```
-
-**Check Migration Status:**
-```bash
-# List applied migrations
-supabase migration list
-
-# Check remote status
-supabase db remote commit --dry-run
-```
+**Tables in Prisma Schema:** 20+ tables
+- Core: `users`, `households`, `recipes`, `meal_plans`, `grocery_lists`
+- Growth: `referral_programs`, `referral_codes`, `referrals`, `email_subscriptions`
+- Privacy: `privacy_prefs`, `app_allowlist`, `signal_toggles`, `telemetry_events`
+- Compliance: `dsar_requests`, `privacy_transparency_log`, `mfa_enforced_sessions`
 
 ---
 
-### CI/CD Workflow
+## Migration Directories
 
-**Workflow:** `.github/workflows/supabase-migrate.yml`
+⚠️ **Current Issue:** Multiple migration directories detected
 
-**Triggers:**
-- Push to `main` branch
-- Manual dispatch (`workflow_dispatch`)
+1. `/apps/web/supabase/migrations` - Primary location (37+ migrations)
+2. `/supabase/migrations` - Secondary location
+3. `/whats-for-dinner/supabase/migrations` - Legacy location
 
-**Steps:**
-1. Checkout code
-2. Setup pnpm 9.0.0
-3. Setup Node.js 20.x
-4. Login to Supabase (`supabase login --token`)
-5. Link project (`supabase link --project-ref`)
-6. Apply migrations (`supabase migration up`)
-7. Validate schema (optional, via `scripts/db-validate-schema.ts`)
-
-**Secrets Required:**
-- `SUPABASE_ACCESS_TOKEN` - Supabase CLI authentication token
-- `SUPABASE_PROJECT_REF` - Supabase project reference ID
-- `DATABASE_URL` - Database connection string (for validation)
-
-**Concurrency:**
-- Group: `supabase-migrations-${{ github.ref }}`
-- Cancel in-progress: `false` (migrations must complete sequentially)
+**Recommendation:** Consolidate all migrations into `/apps/web/supabase/migrations`
 
 ---
 
-## Prisma Integration
+## Migration Naming Convention
 
-### Schema File
+### Current Patterns
+- Timestamp-based: `20250109_affiliate_system.sql`
+- Date-based: `2025-11-05_meal_prefs.sql`
+- Sequential: `001_create_tables.sql`, `002_analytics_logging_tables.sql`
+- Master: `99999999999999_master_consolidated_schema.sql`
 
-**Location:** `prisma/schema.prisma`
+### Recommended Standard
+Use timestamp-based naming: `YYYYMMDDHHMMSS_description.sql`
 
-**Purpose:** Type-safe database access in application code
-
-**Engine Type:** WASM (for Termux/Android compatibility)
-
-**Generation:**
-```bash
-# Generate Prisma Client
-pnpm prisma generate
-
-# Or via package script
-pnpm db:generate
-```
-
-**Usage:**
-```typescript
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-// Type-safe database access
-const user = await prisma.user.findUnique({
-  where: { id: userId },
-});
-```
-
-### Prisma vs Supabase Migrations
-
-**Why Both?**
-
-1. **Supabase Migrations:**
-   - Native SQL migrations
-   - Better for complex RLS policies
-   - Better for database functions and triggers
-   - Required for Supabase platform features
-
-2. **Prisma Schema:**
-   - Type generation for application code
-   - Better developer experience (autocomplete, type safety)
-   - Not used for migrations (Supabase handles migrations)
-
-**Synchronization:**
-- Prisma schema should match Supabase schema
-- When Supabase schema changes, update Prisma schema manually
-- Script exists: `scripts/sync-prisma-from-supabase.ts` (if needed)
+Example: `20250109120000_add_user_preferences.sql`
 
 ---
 
 ## Schema Validation
 
-### Validation Script
+### Running Schema Validation
 
-**Location:** `scripts/db-validate-schema.ts`
-
-**Purpose:** Validate that database schema matches expectations
-
-**Usage:**
 ```bash
-# Run validation
-tsx scripts/db-validate-schema.ts
-
-# Or via package script
+# Check for schema drift
 pnpm db:validate
+
+# List all migrations
+pnpm db:validate --list-migrations
 ```
 
-**What It Checks:**
-- ✅ Core tables exist (`users`, `households`, `recipes`, `meal_plans`, etc.)
-- ✅ Required columns exist
-- ✅ Indexes exist
-- ✅ RLS policies exist (informational)
+### What It Checks
 
-**Required Environment:**
-- `DATABASE_URL` - PostgreSQL connection string
+1. **Table Consistency**
+   - Tables in Prisma schema exist in migrations
+   - Tables in migrations exist in Prisma schema
 
-**Output:**
-- ✅ Pass: All tables and columns exist
-- ❌ Fail: Missing tables or columns (with details)
+2. **Migration Fragmentation**
+   - Detects multiple migration directories
+   - Warns about inconsistent naming
+
+3. **Database Connection**
+   - Validates DATABASE_URL is set
+   - Tests Prisma connection
 
 ---
 
-## Core Schema Overview
+## Prisma Schema vs Supabase Migrations
 
-### Core Tables
+### Current State
 
-**Users & Authentication:**
-- `users` - User accounts
-- `households` - Family/household management
-- `household_members` - Household membership
+**Prisma Schema** (`prisma/schema.prisma`)
+- Source of truth for TypeScript types
+- Used by Prisma Client generation
+- Defines relationships and constraints
 
-**Meal Planning:**
-- `recipes` - Recipe storage
-- `meal_plans` - Meal planning data
-- `grocery_lists` - Shopping lists
+**Supabase Migrations** (`apps/web/supabase/migrations/*.sql`)
+- Source of truth for database structure
+- Applied via Supabase CLI
+- Contains RLS policies, functions, triggers
 
-**Health Tracking:**
-- `health_metrics` - Health metrics (weight, sleep, water, steps, calories)
+### Reconciliation Strategy
 
-**Messaging:**
-- `rooms` - Chat rooms (family, DM)
-- `messages` - Chat messages
+1. **Prisma First** (Recommended for new features)
+   ```bash
+   # 1. Update Prisma schema
+   # 2. Generate migration
+   pnpm prisma migrate dev --name add_feature
+   # 3. Export to Supabase format
+   pnpm db:sync
+   ```
 
-**Growth Systems:**
-- `email_subscriptions` - Email marketing
-- `referral_programs` - Referral programs
-- `referral_codes` - Referral codes
-- `referrals` - Referral tracking
-
-**Privacy & Compliance:**
-- `privacy_prefs` - Privacy preferences
-- `app_allowlist` - App allowlist
-- `signal_toggles` - Signal toggles
-- `telemetry_events` - Telemetry events
-- `privacy_transparency_log` - Privacy transparency log
-- `mfa_enforced_sessions` - MFA sessions
-- `dsar_requests` - DSAR (Data Subject Access Request) requests
-
-**Monetization:**
-- `api_keys` - API keys for partners
-- `webhook_events` - Webhook events
-- `ad_impressions` - Ad impressions
-- `events` - Analytics events
-
-**Feature Flags:**
-- `feature_flags` - User-level feature flags
-
----
-
-## Row-Level Security (RLS)
-
-### Strategy
-
-**Enforcement:** Database-level access control via RLS policies
-
-**Benefits:**
-- Security enforced at database level (can't be bypassed)
-- Multi-tenant data isolation
-- Fine-grained access control (per table, per user)
-
-### Example Policies
-
-**Users can only read their own meal plans:**
-```sql
-CREATE POLICY "Users can read own meal plans"
-ON meal_plans FOR SELECT
-USING (auth.uid() = user_id);
-```
-
-**Household members can read household data:**
-```sql
-CREATE POLICY "Household members can read household"
-ON households FOR SELECT
-USING (
-  auth.uid() = owner_id OR
-  auth.uid() IN (
-    SELECT user_id FROM household_members
-    WHERE household_id = households.id
-  )
-);
-```
-
-**RLS Policies Location:**
-- Defined in master migration: `supabase/migrations/99999999999999_master_consolidated_schema.sql`
-- Applied automatically when migration runs
-
----
-
-## Indexes
-
-### Key Indexes
-
-**Performance-Critical Indexes:**
-- `meal_plans_user_day_idx` - On `meal_plans(user_id, day)`
-- `health_metrics_user_kind_ts_idx` - On `health_metrics(user_id, kind, ts)`
-- `events_user_ts_idx` - On `events(user_id, ts)`
-- `messages_room_ts_idx` - On `messages(room_id, ts)`
-
-**Foreign Key Indexes:**
-- Automatically created for foreign keys
-- Additional indexes for common query patterns
-
-**Index Strategy:**
-- Index foreign keys
-- Index frequently queried columns
-- Index columns used in WHERE clauses
-- Index columns used in JOINs
-
----
-
-## Enums
-
-### Core Enums
-
-**Plan Types:**
-- `free` - Free plan
-- `premium` - Premium plan
-- `partner` - Partner plan
-
-**Roles:**
-- `owner` - Household owner
-- `adult` - Adult member
-- `teen` - Teen member
-- `child` - Child member
-
-**Recipe Sources:**
-- `curated` - Curated recipes
-- `partner` - Partner recipes
-- `user` - User-created recipes
-
-**Health Metric Kinds:**
-- `weight` - Weight tracking
-- `sleep` - Sleep tracking
-- `water` - Water intake
-- `steps` - Step count
-- `calories` - Calorie tracking
-
-**And more...** See master migration for complete list.
-
----
-
-## Database Functions
-
-### Helper Functions
-
-**Auth Helper:**
-```sql
-CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid AS $$
-  SELECT current_setting('request.jwt.claims', true)::json->>'sub'::uuid;
-$$ LANGUAGE sql STABLE;
-```
-
-**Updated At Trigger:**
-```sql
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = now();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-```
-
-**Usage:**
-- Applied automatically via triggers on tables with `updated_at` columns
-- Ensures `updated_at` is always current
+2. **SQL First** (For complex migrations)
+   ```bash
+   # 1. Create SQL migration
+   # 2. Apply via Supabase CLI
+   supabase migration up
+   # 3. Pull schema changes to Prisma
+   pnpm db:pull
+   ```
 
 ---
 
 ## Migration Best Practices
 
-### ✅ Do
+### 1. Always Test Locally First
 
-1. **Use idempotent migrations** (`IF NOT EXISTS`, `CREATE OR REPLACE`)
-2. **Test migrations locally** before pushing
-3. **Run migrations in CI** before deploying code
-4. **Validate schema** after migrations
-5. **Document breaking changes** in migration comments
-6. **Use transactions** for multi-step migrations
-7. **Backup before migrations** (production)
+```bash
+# Start local Supabase
+supabase start
 
-### ❌ Don't
+# Apply migrations
+supabase migration up
 
-1. **Don't modify existing migrations** (create new ones instead)
-2. **Don't run migrations manually in production** (use CI/CD)
-3. **Don't skip validation** after migrations
-4. **Don't mix concerns** (separate migrations for schema vs data)
-5. **Don't commit secrets** in migrations
+# Verify schema
+pnpm db:validate
+```
+
+### 2. Use Transactions
+
+```sql
+BEGIN;
+
+-- Your migration SQL here
+
+COMMIT;
+```
+
+### 3. Include Rollback Strategy
+
+```sql
+-- Migration: add_column_to_table
+ALTER TABLE users ADD COLUMN new_field TEXT;
+
+-- Rollback (keep in comments):
+-- ALTER TABLE users DROP COLUMN new_field;
+```
+
+### 4. Document Breaking Changes
+
+```sql
+-- BREAKING CHANGE: Removes deprecated column
+-- Migration: 20250109120000_remove_deprecated_field.sql
+-- Affected: users table
+-- Action Required: Update application code before deploying
+ALTER TABLE users DROP COLUMN deprecated_field;
+```
 
 ---
 
-## Troubleshooting
+## Row-Level Security (RLS)
 
-### Migration Fails in CI
+### RLS Policies
 
-**Common Issues:**
-1. **Supabase token expired:** Regenerate `SUPABASE_ACCESS_TOKEN`
-2. **Migration conflicts:** Check for schema drift
-3. **Syntax errors:** Validate SQL syntax locally
-4. **Missing dependencies:** Ensure all migrations are in correct order
+All user-scoped tables have RLS enabled:
 
-**Fix:**
-```bash
-# Check migration status locally
-supabase migration list
-
-# Validate SQL syntax
-supabase migration lint
-
-# Check for drift
-supabase db remote commit --dry-run
+```sql
+-- Example: Users can only see their own data
+CREATE POLICY "Users can view own data" ON recipes
+  FOR SELECT USING (auth.uid() = user_id);
 ```
 
-### Schema Validation Fails
+### Policy Management
 
-**Common Issues:**
-1. **Missing tables:** Run migrations
-2. **Missing columns:** Check migration applied correctly
-3. **Connection issues:** Verify `DATABASE_URL` is correct
+- Policies are defined in migration files
+- Test policies with `supabase db test`
+- Document policy changes in migration comments
 
-**Fix:**
+---
+
+## Indexes
+
+### Current Indexes
+
+Key indexes defined in Prisma schema:
+- `meal_plans_user_day_idx` - (userId, day)
+- `health_metrics_user_kind_ts_idx` - (userId, kind, ts)
+- `events_user_ts_idx` - (userId, ts)
+- `messages_room_ts_idx` - (roomId, ts)
+
+### Index Best Practices
+
+1. **Index Foreign Keys**
+   ```prisma
+   @@index([userId], name: "recipes_user_id_idx")
+   ```
+
+2. **Index Query Patterns**
+   ```prisma
+   @@index([userId, day], name: "meal_plans_user_day_idx")
+   ```
+
+3. **Monitor Index Usage**
+   ```sql
+   SELECT * FROM pg_stat_user_indexes;
+   ```
+
+---
+
+## Common Issues & Solutions
+
+### Issue: Schema Drift
+
+**Symptoms:**
+- Prisma schema doesn't match database
+- Migrations fail to apply
+
+**Solution:**
 ```bash
-# Run validation script
-tsx scripts/db-validate-schema.ts
+# 1. Validate schema
+pnpm db:validate
 
-# Check database connection
-psql $DATABASE_URL -c "SELECT version();"
+# 2. Sync Prisma from database
+pnpm db:pull
+
+# 3. Create migration to reconcile
+pnpm prisma migrate dev --name reconcile_schema
 ```
 
-### Prisma Client Generation Fails
+### Issue: Migration Conflicts
 
-**Common Issues:**
-1. **Invalid schema:** Check `prisma/schema.prisma` syntax
-2. **Missing DATABASE_URL:** Set `DATABASE_URL` environment variable
-3. **Engine type mismatch:** Ensure `PRISMA_CLIENT_ENGINE_TYPE=wasm`
+**Symptoms:**
+- Multiple migrations modify same table
+- Migration order issues
 
-**Fix:**
+**Solution:**
+1. Review migration order
+2. Consolidate conflicting migrations
+3. Create baseline migration if needed
+
+### Issue: RLS Policy Errors
+
+**Symptoms:**
+- Queries fail with permission errors
+- Users can't access their own data
+
+**Solution:**
+```bash
+# Test RLS policies
+supabase db test
+
+# Check policy definitions
+psql $DATABASE_URL -c "\d+ recipes"
+```
+
+---
+
+## Migration Workflow
+
+### Development
+
+1. **Create Migration**
+   ```bash
+   # Option 1: Prisma-first
+   pnpm prisma migrate dev --name feature_name
+   
+   # Option 2: SQL-first
+   touch apps/web/supabase/migrations/$(date +%Y%m%d%H%M%S)_feature_name.sql
+   ```
+
+2. **Test Locally**
+   ```bash
+   supabase migration up
+   pnpm db:validate
+   ```
+
+3. **Commit Migration**
+   ```bash
+   git add apps/web/supabase/migrations/
+   git commit -m "feat: add feature_name migration"
+   ```
+
+### CI/CD
+
+Migrations are applied automatically via GitHub Actions:
+
+**Workflow:** `.github/workflows/supabase-migrate.yml`
+
+**Process:**
+1. Validates migration files
+2. Applies migrations to staging/production
+3. Runs schema validation
+4. Reports results
+
+---
+
+## Schema Documentation
+
+### Table Relationships
+
+```
+users
+  ├── households (owner)
+  ├── household_members
+  ├── meal_plans
+  ├── recipes
+  ├── health_metrics
+  └── privacy_prefs
+
+households
+  ├── household_members
+  ├── meal_plans
+  ├── grocery_lists
+  └── rooms
+
+referral_programs
+  ├── referral_codes
+  └── referrals
+```
+
+### Key Constraints
+
+- **UUID Primary Keys:** All tables use UUIDs
+- **Cascade Deletes:** Related records deleted automatically
+- **Timestamps:** Created/updated timestamps on all tables
+- **JSONB Fields:** Flexible JSON storage for preferences
+
+---
+
+## Tools & Scripts
+
+### Available Commands
+
 ```bash
 # Generate Prisma Client
-pnpm prisma generate
+pnpm db:generate
 
-# Or check schema
-pnpm prisma validate
+# Create migration
+pnpm db:migrate:dev
+
+# Apply migrations
+pnpm db:migrate
+
+# Pull schema from database
+pnpm db:pull
+
+# Sync Prisma from Supabase
+pnpm db:sync
+
+# Validate schema
+pnpm db:validate
+
+# Open Prisma Studio
+pnpm db:studio
 ```
 
 ---
 
-## Related Documentation
+## Future Improvements
 
-- [Backend Strategy](./backend-strategy.md) - Overall backend architecture
-- [Stack Discovery](./stack-discovery.md) - Technology stack overview
-- [CI Overview](./ci-overview.md) - CI/CD pipeline
-- [Deploy Strategy](./deploy-strategy.md) - Deployment process
+1. **Consolidate Migrations**
+   - Move all migrations to single directory
+   - Create baseline migration
+   - Archive old migrations
+
+2. **Automated Testing**
+   - Test migrations in CI
+   - Validate RLS policies
+   - Check for breaking changes
+
+3. **Schema Documentation**
+   - Auto-generate ER diagrams
+   - Document all tables/columns
+   - Maintain changelog
 
 ---
 
-*Keep this document updated as schema evolves.*
+## References
+
+- [Prisma Migration Guide](https://www.prisma.io/docs/guides/migrate)
+- [Supabase Migrations](https://supabase.com/docs/guides/cli/local-development#database-migrations)
+- [PostgreSQL Best Practices](https://www.postgresql.org/docs/current/ddl-best-practices.html)

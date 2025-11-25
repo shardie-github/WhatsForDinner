@@ -45,8 +45,8 @@ function sendToAnalytics(metric: WebVitalsMetric) {
   });
 
   // Phase 2: Send to analytics with budget context
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', metric.name, {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', metric.name, {
       event_category: 'Web Vitals',
       event_label: metric.id,
       value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),

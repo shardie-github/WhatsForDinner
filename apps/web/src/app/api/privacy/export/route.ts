@@ -16,8 +16,10 @@ function hashValue(value: unknown): string {
   return crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 }
 
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 async function logPrivacyAction(
-  supabase: any,
+  supabase: SupabaseClient,
   userId: string,
   action: string,
   entityType?: string,

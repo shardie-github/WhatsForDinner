@@ -55,10 +55,20 @@ jobs:
           npx supabase@latest link --project-ref "$SUPABASE_PROJECT_REF"
 
       - name: Run migrations
+        working-directory: apps/web
         run: |
           set -euo pipefail
-          echo "Applying pending migrations..."
-          npx supabase@latest migration up
+          echo "Applying pending migrations from apps/web/supabase/migrations..."
+          # Ensure we're in the right directory with config.toml or link properly
+          if [ -f "supabase/config.toml" ]; then
+            npx supabase@latest migration up
+          else
+            # If no local config, use the migrations directory explicitly
+            cd supabase && npx supabase@latest migration up --db-url "$DATABASE_URL" || {
+              echo "::warning::Direct migration up failed, trying alternative method"
+              npx supabase@latest db push
+            }
+          fi
           echo "✅ Migrations applied successfully"
 
       - name: Validate schema

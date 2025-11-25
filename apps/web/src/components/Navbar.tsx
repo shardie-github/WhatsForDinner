@@ -19,8 +19,10 @@ import {
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 
+import type { AppUser } from '@/types/user';
+
 interface NavbarProps {
-  user: any;
+  user: AppUser | null;
 }
 
 export default function Navbar({ user }: NavbarProps) {

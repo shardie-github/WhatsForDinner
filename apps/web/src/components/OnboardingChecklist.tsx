@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, Circle, X } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { analytics } from '@/lib/analytics';
+import type { OnboardingUpdateData } from '@/types/onboarding';
 
 interface ChecklistItem {
   id: string;
@@ -125,7 +126,7 @@ export default function OnboardingChecklist({
 
     // Update state in DB
     try {
-      const updateData: any = {};
+      const updateData: OnboardingUpdateData = {};
       switch (itemId) {
         case 'generate_recipe':
           updateData.first_recipe_generated = true;

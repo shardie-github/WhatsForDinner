@@ -37,7 +37,9 @@ jobs:
       - name: Lint migrations
         run: |
           echo "Linting Supabase migrations..."
-          if [ -d supabase/migrations ] && [ "$(ls -A supabase/migrations/*.sql 2>/dev/null)" ]; then
+          if [ -d apps/web/supabase/migrations ] && [ "$(ls -A apps/web/supabase/migrations/*.sql 2>/dev/null)" ]; then
+            # Set migrations directory for Supabase CLI
+            export SUPABASE_MIGRATIONS_DIR=apps/web/supabase/migrations
             supabase db lint || echo "::warning::Migration linting found issues (non-blocking)"
           else
             echo "No migrations found to lint"
@@ -46,7 +48,7 @@ jobs:
       - name: Check migration syntax
         run: |
           echo "Checking migration SQL syntax..."
-          find supabase/migrations whats-for-dinner/supabase/migrations -name "*.sql" -type f 2>/dev/null | while read -r file; do
+          find apps/web/supabase/migrations -name "*.sql" -type f 2>/dev/null | while read -r file; do
             echo "Checking $file..."
             # Basic SQL validation - check for common errors
             if grep -qi "CREATE TABLE.*(" "$file" && ! grep -qi "CREATE TABLE.*IF NOT EXISTS" "$file"; then
@@ -83,7 +85,7 @@ jobs:
           -- This is a placeholder for schema comparison
           EOF
           
-          find supabase/migrations whats-for-dinner/supabase/migrations -name "*.sql" -type f 2>/dev/null | sort | while read -r file; do
+          find apps/web/supabase/migrations -name "*.sql" -type f 2>/dev/null | sort | while read -r file; do
             echo "-- Migration: $file" >> supabase/.audit/local_schema.sql
             cat "$file" >> supabase/.audit/local_schema.sql
             echo "" >> supabase/.audit/local_schema.sql
@@ -131,7 +133,7 @@ jobs:
           FUNC_COUNT=0
           FUNC_ERRORS=0
           
-          for func_dir in supabase/functions/*/ whats-for-dinner/supabase/functions/*/; do
+          for func_dir in apps/web/supabase/functions/*/ supabase/functions/*/ whats-for-dinner/supabase/functions/*/; do
             if [ -d "$func_dir" ]; then
               func_name=$(basename "$func_dir")
               echo "Checking function: $func_name"

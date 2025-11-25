@@ -4,11 +4,12 @@ import { useState } from 'react';
 import { ThumbsUp, ThumbsDown, Star, MessageSquare } from 'lucide-react';
 import { feedbackSystem } from '@/lib/feedbackSystem';
 import { logger } from '@/lib/logger';
+import type { RecipeFeedback } from '@/types/recipe';
 
 interface RecipeFeedbackProps {
   recipeId: number;
   userId?: string;
-  onFeedbackSubmitted?: (feedback: any) => void;
+  onFeedbackSubmitted?: (feedback: RecipeFeedback) => void;
 }
 
 export default function RecipeFeedback({

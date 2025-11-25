@@ -5,12 +5,14 @@ on:
     branches: [main, develop]
     paths:
       - 'prisma/schema.prisma'
+      - 'apps/web/supabase/migrations/**'
       - 'supabase/migrations/**'
       - '.github/workflows/schema-validation.yml'
   pull_request:
     branches: [main, develop]
     paths:
       - 'prisma/schema.prisma'
+      - 'apps/web/supabase/migrations/**'
       - 'supabase/migrations/**'
 
 jobs:
@@ -82,22 +84,22 @@ jobs:
         run: |
           # Check for migration file naming
           echo "Checking migration file names..."
-          find supabase/migrations -name "*.sql" | while read file; do
-            if [[ ! "$file" =~ ^[0-9]+.*\.sql$ ]]; then
+          find apps/web/supabase/migrations -name "*.sql" | while read file; do
+            if [[ ! "$(basename "$file")" =~ ^([0-9]+|202[0-9]) ]]; then
               echo "❌ Invalid migration file name: $file"
-              echo "Migration files should start with a number"
+              echo "Migration files should start with a number or date (YYYY-MM-DD or YYYYMMDD)"
               exit 1
             fi
           done
           
           # Check for syntax errors (basic)
           echo "Checking SQL syntax..."
-          find supabase/migrations -name "*.sql" -exec echo "Validating {}" \;
+          find apps/web/supabase/migrations -name "*.sql" -exec echo "Validating {}" \;
 
       - name: Check migration order
         run: |
           echo "Checking migration order..."
-          ls -1 supabase/migrations/*.sql | sort -V
+          ls -1 apps/web/supabase/migrations/*.sql | sort -V
 
   prisma-schema-validation:
     name: Prisma Schema Validation
