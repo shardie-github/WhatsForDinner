@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Clock, Zap, ChevronDown, ChevronUp } from 'lucide-react';
+import { Clock, Zap, ChevronDown, ChevronUp, Share2 } from 'lucide-react';
 import { Recipe } from '@/lib/validation';
 import RecipeFeedback from './RecipeFeedback';
+import ShareRecipe from './sharing/ShareRecipe';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -128,6 +129,13 @@ export default function RecipeCard({
             </Button>
           )}
         </div>
+
+        {/* Social Sharing */}
+        {recipeId && (
+          <div className="pt-2">
+            <ShareRecipe recipeId={recipeId} recipeTitle={recipe.title} />
+          </div>
+        )}
 
         {/* Recipe Feedback Component */}
         {userId && recipeId && (
