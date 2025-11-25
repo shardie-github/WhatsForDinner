@@ -474,5 +474,395 @@
 
 ---
 
+## F. ADDITIONAL INCUBATOR & NEW-VENTURE LENSES
+
+### 1. TECHSTARS LENS (Mentorship + Traction + Ecosystem)
+
+**Focus**: Is the product, docs, and architecture "mentor-ready"? Does it fit Techstars' ecosystem approach?
+
+#### Strengths
+
+- ✅ **Clear Problem Statement**: Well-documented problem (daily meal planning decision fatigue) in `/yc/YC_PROBLEM_USERS.md`
+- ✅ **Comprehensive Documentation**: Extensive YC readiness docs (`YC_PRODUCT_OVERVIEW.md`, `YC_TECH_OVERVIEW.md`, `YC_DISTRIBUTION_PLAN.md`)
+- ✅ **Metrics Infrastructure**: Analytics tables (`analytics_events`, `recipe_metrics`) and experimentation framework exist
+- ✅ **Architecture Clarity**: Well-structured monorepo with clear separation of concerns (apps/, packages/, infra/)
+- ✅ **Multi-Platform Ready**: Universal platform (web + mobile) shows scalability thinking
+- ✅ **GTM Strategy**: Distribution plan exists with multiple channels identified
+
+#### Gaps
+
+- ❌ **No Explicit Weekly/Monthly KPIs**: While metrics infrastructure exists, no documented KPI cadence or experiment schedule
+- ❌ **Missing Mentor Onboarding Doc**: No single "mentor quick-start" document that explains problem, solution, and current state in 5 minutes
+- ❌ **Unclear Ecosystem Fit**: Not explicitly positioned for specific Techstars verticals (climatetech, AI, mobility, biotech, etc.)
+- ❌ **No Experiment Cadence**: Experimentation infrastructure exists but no documented weekly/monthly experiment schedule
+- ❌ **Missing Traction Narrative**: No clear "here's what we've validated" story for mentors to understand progress
+
+#### Prioritized TODOs
+
+1. **Create Mentor Quick-Start Doc** (`/yc/MENTOR_QUICK_START.md`) - 2-page doc explaining problem, solution, current metrics, and what help is needed (HIGH leverage, LOW effort)
+2. **Document Weekly KPI Cadence** (`/yc/WEEKLY_KPI_CADENCE.md`) - Define 5-7 weekly KPIs (DAU, recipes generated, activation rate, etc.) and how they're reviewed (MEDIUM leverage, LOW effort)
+3. **Position for Techstars Vertical** (`/yc/TECHSTARS_ECOSYSTEM_FIT.md`) - Identify which Techstars program fits best (likely AI/Consumer Tech) and document why (MEDIUM leverage, LOW effort)
+4. **Create Experiment Schedule Template** (`/yc/EXPERIMENT_CADENCE.md`) - Document weekly/monthly experiment schedule (e.g., "Week 1: Test referral rewards, Week 2: Test onboarding flow") (MEDIUM leverage, LOW effort)
+5. **Build Traction Dashboard** (`/apps/web/src/app/admin/traction/page.tsx`) - Visual dashboard showing key metrics mentors care about (growth rate, retention, activation) (HIGH leverage, MEDIUM effort)
+6. **Document Validation Milestones** (`/yc/VALIDATION_MILESTONES.md`) - Clear timeline of what's been validated (e.g., "Validated: Users want pantry-first approach. Testing: Willingness to pay $9.99/month") (MEDIUM leverage, LOW effort)
+
+**Cross-References**: TODO #1 improves Lean Startup Lens; TODO #5 improves YC Gap #5 (Metrics Dashboard)
+
+---
+
+### 2. 500 GLOBAL LENS (Growth, Distribution, Experimentation)
+
+**Focus**: What growth and distribution levers exist? Are they implemented? What experiments can accelerate growth?
+
+#### Strengths
+
+- ✅ **Distribution Plan Exists**: Comprehensive `/yc/YC_DISTRIBUTION_PLAN.md` identifies multiple channels (SEO, social, referrals, partnerships)
+- ✅ **Referral Infrastructure**: Database tables (`referral_codes`, `referral_tracking`, `referral_rewards`) ready for implementation
+- ✅ **Social Sharing Infrastructure**: `social_shares` table exists for tracking viral loops
+- ✅ **Experimentation Framework**: A/B testing infrastructure (`/apps/web/src/lib/experiments.ts`) with variant assignment and conversion tracking
+- ✅ **Affiliate System**: Schema exists for affiliate commissions (grocery delivery partnerships)
+- ✅ **UTM Tracking**: Channel attribution infrastructure mentioned in distribution plan
+
+#### Gaps
+
+- ❌ **Referral UI Not Implemented**: Infrastructure exists but no user-facing referral program (`/apps/web/src/app/referrals/page.tsx` missing)
+- ❌ **SEO Not Implemented**: No SEO metadata, structured data, or content marketing infrastructure
+- ❌ **Social Sharing Not Implemented**: Tables exist but no share buttons or viral loops in product
+- ❌ **No Growth Experiment Roadmap**: While experimentation framework exists, no prioritized list of growth experiments
+- ❌ **Missing Distribution Metrics**: No tracking of which channels drive signups, conversions, or LTV
+- ❌ **No Embed/Integration Strategy**: No documentation of embeddable widgets or API integrations for distribution
+
+#### Prioritized TODOs
+
+1. **Build Referral Program UI** (`/apps/web/src/app/referrals/page.tsx`) - Create user-facing referral dashboard with shareable links and reward tracking (HIGH leverage, MEDIUM effort) - *Cross-ref: YC Gap #8*
+2. **Implement SEO Landing Pages** (`/apps/web/src/app/recipes/what-to-make-with/[ingredients]/page.tsx`) - Create dynamic SEO pages for high-value keywords like "what to make with chicken and rice" (HIGH leverage, MEDIUM effort) - *Cross-ref: YC Gap #8*
+3. **Add Social Sharing Buttons** (`/apps/web/src/components/recipe/RecipeCard.tsx`) - Add share buttons to recipes with tracking (`social_shares` table) (HIGH leverage, LOW effort)
+4. **Create Growth Experiment Roadmap** (`/yc/GROWTH_EXPERIMENTS_ROADMAP.md`) - Prioritized list of 5-7 concrete experiments (e.g., "Test referral reward: 1 month free vs 2 weeks free") with success metrics (HIGH leverage, LOW effort)
+5. **Build Distribution Metrics Dashboard** (`/apps/web/src/app/admin/distribution/page.tsx`) - Track signups, conversions, CAC, and LTV by channel (UTM tracking) (MEDIUM leverage, MEDIUM effort)
+6. **Document Embed/Integration Strategy** (`/yc/EMBED_INTEGRATION_STRATEGY.md`) - Identify where embeds could work (recipe widgets for blogs, grocery app integrations) (MEDIUM leverage, LOW effort)
+7. **Implement Viral Loop Tracking** (`/apps/web/src/lib/viral-loops.ts`) - Track shares → signups → shares chain to measure viral coefficient (MEDIUM leverage, LOW effort)
+
+**Cross-References**: TODO #1, #2, #3 address YC Gap #8 (Distribution Execution); TODO #4 improves Lean Startup Lens
+
+---
+
+### 3. ANTLER LENS (Problem-Founder Fit + Structured Validation)
+
+**Focus**: Is the core problem clearly articulated? Can we reconstruct problem-solution fit? What validation evidence exists?
+
+#### Strengths
+
+- ✅ **Clear Problem Statement**: Well-documented in `/yc/YC_PROBLEM_USERS.md` - "50 million Americans face daily meal planning decision fatigue"
+- ✅ **User Segments Defined**: ICP profiles exist (`/gtm/ICP_profiles.md`) with pain points and Jobs-to-Be-Done
+- ✅ **Problem-Solution Narrative**: `/yc/YC_PRODUCT_OVERVIEW.md` explains how solution addresses problem
+- ✅ **Market Sizing**: TAM/SAM/SOM documented in `/yc/YC_MARKET_VISION.md` ($2B+ TAM, $180M SAM, $6M SOM)
+- ✅ **Business Model Clarity**: Revenue streams and pricing documented (`/yc/FINANCIAL_MODEL.md`)
+
+#### Gaps
+
+- ❌ **No User Validation Evidence**: No documented user interviews, surveys, or validation experiments
+- ❌ **Unclear Founder-Market Fit**: No explicit "why us" story connecting founders to the problem
+- ❌ **Missing Structured Hypothesis Testing**: No documented hypotheses (problem, customer segment, feature, revenue model) with test results
+- ❌ **No Willingness-to-Pay Evidence**: Pricing exists but no validation that users will pay $9.99-$19.99/month
+- ❌ **Missing Urgency Indicators**: No evidence of how urgent the problem is (frequency, intensity, current workarounds)
+- ❌ **No Problem Scale Validation**: Market size is top-down but no bottom-up validation (e.g., "We talked to 50 users, 80% have this problem daily")
+
+#### Prioritized TODOs
+
+1. **Document User Validation Evidence** (`/yc/USER_VALIDATION_EVIDENCE.md`) - Compile user interviews, surveys, and validation experiments (e.g., "Interviewed 20 busy parents, 18 confirmed daily decision fatigue") (HIGH leverage, MEDIUM effort)
+2. **Create Founder-Market Fit Narrative** (`/yc/FOUNDER_MARKET_FIT.md`) - Explicit story connecting founders to problem (e.g., "Founder X faced this problem daily, built solution for self, validated with 100 users") (HIGH leverage, LOW effort)
+3. **Document Structured Hypotheses** (`/yc/VALIDATION_HYPOTHESES.md`) - List explicit hypotheses with test status:
+   - Problem hypothesis: "Users waste 15+ minutes daily deciding what to cook" → Status: Validated/Testing/Untested
+   - Customer segment hypothesis: "Busy families will pay $9.99/month" → Status: Validated/Testing/Untested
+   - Feature hypothesis: "Pantry-first approach reduces decision time" → Status: Validated/Testing/Untested
+   (HIGH leverage, LOW effort)
+4. **Run Willingness-to-Pay Experiment** (`/yc/WTP_EXPERIMENT.md`) - Test pricing with landing page A/B test or survey (e.g., "Would you pay $9.99/month?" with conversion tracking) (HIGH leverage, MEDIUM effort)
+5. **Document Problem Urgency** (`/yc/PROBLEM_URGENCY.md`) - Quantify urgency (frequency: daily, intensity: 15+ minutes wasted, current workarounds: takeout, repetitive meals) (MEDIUM leverage, LOW effort)
+6. **Create Validation Roadmap** (`/yc/VALIDATION_ROADMAP.md`) - 2-4 week plan of minimal validation experiments using current product (e.g., "Week 1: Survey 50 users on problem frequency, Week 2: Test pricing page conversion") (MEDIUM leverage, LOW effort)
+
+**Cross-References**: TODO #3 improves Lean Startup Lens; TODO #1, #4 improve Jobs-to-Be-Done Lens
+
+---
+
+### 4. ENTREPRENEUR FIRST LENS (Talent-First + Idea Maze)
+
+**Focus**: What do code quality and architecture say about founder capabilities? Are there signs of pivots or idea maze? How can founder story be better documented?
+
+#### Strengths
+
+- ✅ **Strong Technical Execution**: Comprehensive monorepo with clean architecture (apps/, packages/, infra/), TypeScript throughout, proper testing infrastructure
+- ✅ **Production-Ready Infrastructure**: Multi-tenant SaaS schema, compliance-ready (GDPR, SOC2 docs), enterprise features (RBAC, RLS)
+- ✅ **Bias for Action**: Extensive automation scripts (`scripts/`), CI/CD pipelines, monitoring/observability setup
+- ✅ **Scalability Thinking**: Architecture supports growth (caching, job queues, real-time sync, offline support)
+- ✅ **Code Quality**: Linting, type-checking, test coverage infrastructure, security scanning
+
+#### Gaps
+
+- ❌ **No Founder Story Documented**: No explicit "founder journey" or "why we started" narrative
+- ❌ **Missing Iteration History**: No documentation of previous approaches, pivots, or "idea maze" exploration
+- ❌ **No Capability Showcase**: While code shows capability, no explicit documentation of founder skills/background
+- ❌ **Unclear Reasoning Trail**: No documented "why we built X this way" or "what we learned from Y"
+- ❌ **No Pivot Evidence**: No signs of previous iterations or failed approaches (could be good or bad - shows focus vs. shows lack of learning)
+
+#### Prioritized TODOs
+
+1. **Create Founder Story Document** (`/yc/FOUNDER_STORY.md`) - Document founder journey: problem discovery, initial solution, iterations, current state (HIGH leverage, LOW effort) - *Cross-ref: YC Gap #10*
+2. **Document Idea Maze** (`/yc/IDEA_MAZE.md`) - If applicable, document previous approaches considered/rejected (e.g., "Considered recipe-first approach, rejected because it doesn't solve decision fatigue") (MEDIUM leverage, LOW effort)
+3. **Create Capability Showcase** (`/yc/FOUNDER_CAPABILITIES.md`) - Document what codebase demonstrates about founder capabilities (e.g., "Full-stack execution, infrastructure expertise, product thinking") (MEDIUM leverage, LOW effort)
+4. **Document Key Decisions** (`/yc/DECISION_LOG.md`) - Create log of key technical/product decisions with reasoning (e.g., "Why pantry-first? Why Supabase? Why monorepo?") (MEDIUM leverage, LOW effort)
+5. **Add Iteration Timeline** (`/yc/ITERATION_TIMELINE.md`) - Document product evolution: v1 → v2 → current, what changed and why (MEDIUM leverage, LOW effort)
+6. **Showcase Technical Depth** (`/yc/TECHNICAL_SHOWCASE.md`) - Highlight impressive technical achievements (e.g., "Built multi-tenant SaaS in 3 months", "Achieved 60% AI cost reduction via caching") (LOW leverage, LOW effort)
+
+**Cross-References**: TODO #1 addresses YC Gap #10 (Team Information); TODO #2, #4 improve Disciplined Entrepreneurship Lens
+
+---
+
+### 5. LEAN STARTUP LENS (Hypothesis-Driven)
+
+**Focus**: Are there explicit hypotheses? Are they tested? What's the smallest next experiment?
+
+#### Strengths
+
+- ✅ **Experimentation Infrastructure**: A/B testing framework exists (`/apps/web/src/lib/experiments.ts`) with variant assignment and conversion tracking
+- ✅ **Metrics Infrastructure**: Analytics tables track user behavior (`analytics_events`, `recipe_metrics`, `recipe_feedback`)
+- ✅ **Problem Hypothesis Implied**: Problem statement exists ("50M Americans face daily decision fatigue")
+- ✅ **Feature Hypothesis Implied**: Product features suggest hypotheses (pantry-first approach, AI personalization)
+
+#### Gaps
+
+- ❌ **No Explicit Hypotheses Documented**: Hypotheses are implied but not explicitly stated with test status
+- ❌ **Missing Hypothesis Framework**: No structured format for documenting hypotheses (problem, customer, feature, revenue, growth)
+- ❌ **No Test Results**: No documented results of hypothesis tests (validated/invalidated/untested)
+- ❌ **Unclear Next Experiments**: No prioritized list of smallest next experiments to run
+- ❌ **No Learning Log**: No documented "what we learned" from experiments or user feedback
+
+#### Prioritized TODOs
+
+1. **Create Hypothesis Framework** (`/yc/HYPOTHESIS_FRAMEWORK.md`) - Document explicit hypotheses using format:
+   - **Problem Hypothesis**: "Users waste 15+ minutes daily deciding what to cook" → Status: Validated/Testing/Untested → Evidence: [user interviews, surveys]
+   - **Customer Segment Hypothesis**: "Busy families (28-45, 2-4 people) will pay $9.99/month" → Status: Validated/Testing/Untested → Evidence: [pricing tests, surveys]
+   - **Feature Hypothesis**: "Pantry-first approach reduces decision time by 50%" → Status: Validated/Testing/Untested → Evidence: [usage data, user feedback]
+   - **Revenue Model Hypothesis**: "Subscription model works better than one-time purchase" → Status: Validated/Testing/Untested → Evidence: [conversion data]
+   - **Growth Channel Hypothesis**: "Referral program will achieve 0.2 viral coefficient" → Status: Validated/Testing/Untested → Evidence: [referral data]
+   (HIGH leverage, LOW effort)
+2. **Map Features to Hypotheses** (`/yc/FEATURE_HYPOTHESIS_MAP.md`) - For each major feature, document which hypothesis it tests (e.g., "Pantry tracking → tests 'users want to use existing ingredients' hypothesis") (MEDIUM leverage, LOW effort)
+3. **Create Experiment Backlog** (`/yc/EXPERIMENT_BACKLOG.md`) - Prioritized list of smallest next experiments (e.g., "Test: Add 'Share Recipe' button → Measure: Shares per recipe → Success: 10%+ share rate") (HIGH leverage, LOW effort)
+4. **Document Learning Log** (`/yc/LEARNING_LOG.md`) - Document what was learned from each experiment/user interaction (e.g., "Learned: Users want barcode scanning more than manual entry") (MEDIUM leverage, LOW effort)
+5. **Create Hypothesis Status Dashboard** (`/apps/web/src/app/admin/hypotheses/page.tsx`) - Visual dashboard showing hypothesis status (Validated/Testing/Untested) with evidence links (MEDIUM leverage, MEDIUM effort)
+6. **Run Minimal Validation Experiments** (`/yc/MINIMAL_VALIDATION_EXPERIMENTS.md`) - List 3-5 experiments that can be run in next 2-4 weeks using existing codebase (e.g., "Landing page A/B test: 'Pantry-first' vs 'Recipe discovery'") (HIGH leverage, LOW effort)
+
+**Cross-References**: TODO #1 improves Antler Lens; TODO #3 improves 500 Global Lens; TODO #6 improves Antler Lens
+
+---
+
+### 6. DISCIPLINED ENTREPRENEURSHIP LENS (Beachhead + 24 Steps)
+
+**Focus**: What's the beachhead market? Is the full lifecycle use case clear? Are TAM/SAM/SOM and pricing logic documented?
+
+#### Strengths
+
+- ✅ **Beachhead Identified**: Primary ICP is "Busy Families" (28-45, household 2-4) documented in `/gtm/ICP_profiles.md`
+- ✅ **TAM/SAM/SOM Documented**: Market sizing exists in `/yc/YC_MARKET_VISION.md` ($2B+ TAM, $180M SAM, $6M SOM)
+- ✅ **Pricing Defined**: Subscription tiers documented (`/yc/FINANCIAL_MODEL.md`: Free, Pro $9.99, Premium $19.99)
+- ✅ **User Persona Clear**: End-user persona (busy parent) well-defined with pain points and Jobs-to-Be-Done
+- ✅ **Business Model Clear**: Revenue streams and unit economics documented
+
+#### Gaps
+
+- ❌ **No Full Lifecycle Use Case**: No explicit end-to-end user journey document (discover → buy → use → get value → ongoing use)
+- ❌ **Missing Pricing Logic**: Pricing exists but no documented reasoning (why $9.99 vs $7.99 vs $12.99?)
+- ❌ **No Channel Strategy**: Distribution plan exists but no explicit "how users discover us" strategy
+- ❌ **Unclear Value Delivery**: No explicit "how users get value" document (e.g., "User saves 15 minutes per meal decision")
+- ❌ **Missing Beachhead Validation**: Beachhead identified but no evidence it's the right starting point
+
+#### Prioritized TODOs
+
+1. **Create Full Lifecycle Use Case** (`/yc/FULL_LIFECYCLE_USE_CASE.md`) - Document end-to-end journey:
+   - **Discover**: User finds app via Google search "what to make with chicken"
+   - **Buy**: User signs up free, upgrades to Pro after 3 recipes
+   - **Use**: User scans pantry, gets recipe suggestions, cooks meal
+   - **Get Value**: Saves 15 minutes, reduces food waste, family happy
+   - **Ongoing Use**: User returns daily, app learns preferences, gets better recommendations
+   (HIGH leverage, LOW effort)
+2. **Document Pricing Logic** (`/yc/PRICING_LOGIC.md`) - Explain pricing reasoning:
+   - Why $9.99? (Competitive analysis, willingness-to-pay tests, unit economics)
+   - Why Free tier? (Conversion funnel, activation strategy)
+   - Why Premium $19.99? (Value-add justification)
+   (MEDIUM leverage, LOW effort)
+3. **Create Channel Strategy Document** (`/yc/CHANNEL_STRATEGY.md`) - Explicit "how users discover us" strategy:
+   - Primary channel: SEO ("what to make with X ingredients")
+   - Secondary channel: Referrals (viral loops)
+   - Tertiary channel: Social media (TikTok, Instagram)
+   - Why these channels? (CAC, conversion rates, scalability)
+   (MEDIUM leverage, LOW effort)
+4. **Document Value Delivery** (`/yc/VALUE_DELIVERY.md`) - Explicit "how users get value":
+   - Time saved: 15 minutes per meal decision
+   - Waste reduced: Use existing ingredients before expiration
+   - Stress reduced: No decision paralysis
+   - Family satisfaction: Kids eat varied meals
+   - Measurable outcomes: Track via analytics
+   (MEDIUM leverage, LOW effort)
+5. **Validate Beachhead Market** (`/yc/BEACHHEAD_VALIDATION.md`) - Document why "Busy Families" is the right beachhead:
+   - High pain (daily decision fatigue)
+   - Willingness to pay ($9.99/month validated?)
+   - Reachable (channels identified)
+   - Scalable (40M households)
+   (MEDIUM leverage, LOW effort)
+6. **Create 24-Step Checklist** (`/yc/DISCIPLINED_ENTREPRENEURSHIP_CHECKLIST.md`) - Map current state to 24 Steps framework (which steps are complete, which are missing) (LOW leverage, LOW effort)
+
+**Cross-References**: TODO #1 improves Jobs-to-Be-Done Lens; TODO #2 improves Antler Lens (WTP validation); TODO #3 improves 500 Global Lens
+
+---
+
+### 7. JOBS-TO-BE-DONE LENS (Outcomes and Alternatives)
+
+**Focus**: What Jobs-to-Be-Done do users "hire" this product for? Does the UX match those jobs end-to-end? What are competing alternatives?
+
+#### Strengths
+
+- ✅ **Jobs-to-Be-Done Identified**: Explicit JTBD documented in `/gtm/ICP_profiles.md`:
+   - "I need dinner ideas in under 5 minutes"
+   - "I want to use ingredients I already have"
+   - "I need recipes my whole family will eat"
+- ✅ **User Personas Clear**: ICP profiles define who has these jobs
+- ✅ **Product Aligns with JTBD**: Pantry-first approach directly addresses "use ingredients I already have"
+
+#### Gaps
+
+- ❌ **No End-to-End JTBD Flow**: No document mapping current product flow to each JTBD (does it fully solve the job?)
+- ❌ **Missing Competing Alternatives Analysis**: No explicit list of alternatives users consider (takeout, recipe sites, meal apps, etc.)
+- ❌ **No JTBD Validation**: JTBD are assumed but not validated with users
+- ❌ **Unclear "Hire" Moment**: No explicit "aha moment" where user realizes product solves their job
+- ❌ **Missing Sticky Mechanisms**: No documented features that make product "sticky" (why users won't switch)
+
+#### Prioritized TODOs
+
+1. **Map Product Flow to JTBD** (`/yc/JTBD_PRODUCT_FLOW.md`) - For each JTBD, document:
+   - **Job**: "I need dinner ideas in under 5 minutes"
+   - **Current Flow**: User opens app → scans pantry → gets 3 recipes in 30 seconds → picks one → cooks
+   - **Gaps**: Does it fully solve the job? Missing steps? (e.g., "Missing: Quick-add common ingredients")
+   - **Success Metrics**: Time to first recipe suggestion (< 30 seconds)
+   (HIGH leverage, LOW effort)
+2. **Document Competing Alternatives** (`/yc/COMPETING_ALTERNATIVES.md`) - List alternatives users consider:
+   - **Takeout Apps** (UberEats, DoorDash): Job = "Get food fast" → Why we win: Cheaper, healthier, uses existing ingredients
+   - **Recipe Sites** (AllRecipes, Food Network): Job = "Find recipes" → Why we win: Starts with what you have, not what you need
+   - **Meal Apps** (Yummly, Mealime): Job = "Plan meals" → Why we win: Solves "what's for dinner TONIGHT" not "plan ahead"
+   - **Generic AI** (ChatGPT): Job = "Get recipe ideas" → Why we win: Learns preferences, integrates pantry
+   (HIGH leverage, LOW effort)
+3. **Identify "Hire" Moment** (`/yc/HIRE_MOMENT.md`) - Document the "aha moment":
+   - **Moment**: User scans pantry, gets recipe suggestion in 30 seconds using ingredients they have
+   - **Instrumentation**: Track time to first recipe, user satisfaction at that moment
+   - **Optimization**: How to make this moment happen faster/more reliably?
+   (MEDIUM leverage, LOW effort)
+4. **Document Sticky Mechanisms** (`/yc/STICKY_MECHANISMS.md`) - Why users won't switch:
+   - **Data Moat**: App learns pantry patterns, preferences → switching loses personalization
+   - **Habit**: Daily use creates habit → switching requires new habit formation
+   - **Network Effects**: Family sharing → switching requires family to switch too
+   (MEDIUM leverage, LOW effort)
+5. **Validate JTBD with Users** (`/yc/JTBD_VALIDATION.md`) - Test JTBD with user interviews:
+   - Ask: "What job were you trying to get done when you used our product?"
+   - Validate: Do users articulate the same jobs we identified?
+   - Refine: Update JTBD based on user feedback
+   (HIGH leverage, MEDIUM effort)
+6. **Create JTBD Improvement Roadmap** (`/yc/JTBD_IMPROVEMENTS.md`) - Quick improvements to make "hire" more obvious:
+   - Add onboarding step: "Tell us your biggest cooking challenge" → Surface relevant JTBD
+   - Improve "aha moment": Show "You saved 15 minutes!" after first recipe
+   - Reduce friction: One-click pantry scan vs manual entry
+   (MEDIUM leverage, MEDIUM effort)
+
+**Cross-References**: TODO #1 improves Disciplined Entrepreneurship Lens (Full Lifecycle); TODO #2 improves YC Gap #4 (Competitive Analysis); TODO #5 improves Antler Lens (Validation)
+
+---
+
+### 8. PRODUCT-LED GROWTH LENS (If Applicable)
+
+**Focus**: How does someone go from landing page visitor → engaged user → paying customer? Are PLG primitives in place?
+
+#### Strengths
+
+- ✅ **Self-Serve Model**: Free tier allows self-serve signup (no sales required)
+- ✅ **Activation Infrastructure**: Onboarding types exist (`/apps/web/src/types/onboarding.ts`) suggesting activation flow thinking
+- ✅ **Usage-Based Upgrade Triggers**: Free tier (10 recipes/day) creates natural upgrade trigger to Pro (unlimited)
+- ✅ **Multi-Tenant Architecture**: Supports family/household sharing (potential viral loops)
+- ✅ **Referral Infrastructure**: Database tables ready for referral program (PLG growth lever)
+
+#### Gaps
+
+- ❌ **No Onboarding Flow Documented**: Onboarding types exist but no explicit onboarding flow document
+- ❌ **Missing "Aha Moment" Instrumentation**: No explicit tracking of when users hit "aha moment" (first recipe generated?)
+- ❌ **No In-Product Education**: No tooltips, tutorials, or guided tours to help users discover value
+- ❌ **Share/Invite Not Implemented**: Referral infrastructure exists but no in-product share/invite flow
+- ❌ **Unclear Upgrade Triggers**: Free tier limits exist but no explicit "upgrade now" prompts or usage-based triggers
+- ❌ **No Activation Funnel**: No documented funnel (signup → add pantry → generate recipe → engage → upgrade)
+
+#### Prioritized TODOs
+
+1. **Create Onboarding Flow Document** (`/yc/ONBOARDING_FLOW.md`) - Document self-serve journey:
+   - **Step 1**: Sign up (email/social) → **Goal**: Get user in product
+   - **Step 2**: Add pantry (scan 3 items) → **Goal**: Create initial value
+   - **Step 3**: Generate first recipe → **Goal**: Hit "aha moment"
+   - **Step 4**: Cook and rate → **Goal**: Create engagement loop
+   - **Step 5**: Invite family member → **Goal**: Create viral loop
+   - **Success Metric**: % users who complete all 5 steps
+   (HIGH leverage, LOW effort)
+2. **Instrument "Aha Moment"** (`/apps/web/src/lib/activation.ts`) - Track when users hit "aha moment":
+   - **Moment**: First recipe generated using pantry items
+   - **Tracking**: `analytics.trackEvent('aha_moment', { time_to_first_recipe, pantry_items_count })`
+   - **Optimization**: Reduce time to "aha moment" (< 2 minutes target)
+   (HIGH leverage, MEDIUM effort)
+3. **Build In-Product Education** (`/apps/web/src/components/onboarding/TooltipTour.tsx`) - Add tooltips/tutorials:
+   - **Tooltip 1**: "Scan your pantry to get personalized recipes" (on pantry page)
+   - **Tooltip 2**: "Generate recipes based on what you have" (on recipe page)
+   - **Tooltip 3**: "Invite family members to share meal plans" (on settings page)
+   (MEDIUM leverage, MEDIUM effort)
+4. **Implement Share/Invite Flow** (`/apps/web/src/components/sharing/ShareRecipe.tsx`) - Add in-product sharing:
+   - **Share Recipe**: "Share this recipe with friends" button → Generates shareable link
+   - **Invite Family**: "Invite family member" button → Sends invite email
+   - **Track**: Shares → Signups conversion rate
+   (HIGH leverage, MEDIUM effort) - *Cross-ref: 500 Global Lens TODO #3*
+5. **Create Upgrade Triggers** (`/apps/web/src/components/upgrade/UpgradePrompt.tsx`) - Usage-based upgrade prompts:
+   - **Trigger 1**: User hits 10 recipe limit → "Upgrade to Pro for unlimited recipes"
+   - **Trigger 2**: User tries premium feature → "This feature requires Premium"
+   - **Trigger 3**: User generates 5+ recipes/week → "You're a power user! Upgrade for more features"
+   (MEDIUM leverage, MEDIUM effort)
+6. **Build Activation Funnel Dashboard** (`/apps/web/src/app/admin/activation/page.tsx`) - Visualize PLG funnel:
+   - **Step 1**: Signups
+   - **Step 2**: Added pantry (activation milestone)
+   - **Step 3**: Generated first recipe ("aha moment")
+   - **Step 4**: Generated 3+ recipes (engaged)
+   - **Step 5**: Upgraded to Pro (paying)
+   - **Optimization**: Identify drop-off points, improve conversion
+   (MEDIUM leverage, MEDIUM effort)
+7. **Document PLG Growth Loops** (`/yc/PLG_GROWTH_LOops.md`) - Document viral loops:
+   - **Loop 1**: User shares recipe → Friend signs up → Friend shares → Exponential growth
+   - **Loop 2**: User invites family → Family uses app → Family invites friends → Network effects
+   - **Loop 3**: User generates recipe → Recipe is good → User shares → Social proof → Signups
+   - **Measurement**: Viral coefficient (referrals per user)
+   (MEDIUM leverage, LOW effort)
+
+**Cross-References**: TODO #1 improves Jobs-to-Be-Done Lens (Full Flow); TODO #4 addresses 500 Global Lens TODO #3 (Social Sharing); TODO #6 improves YC Gap #7 (Activation Metrics)
+
+---
+
+## G. CROSS-LENS SYNERGIES
+
+### Shared TODOs That Improve Multiple Lenses
+
+1. **Mentor Quick-Start Doc** (Techstars Lens TODO #1) → Also improves: Antler Lens (founder story), Entrepreneur First Lens (founder capabilities)
+2. **User Validation Evidence** (Antler Lens TODO #1) → Also improves: Lean Startup Lens (hypothesis validation), Jobs-to-Be-Done Lens (JTBD validation)
+3. **Referral Program UI** (500 Global Lens TODO #1) → Also improves: PLG Lens (viral loops), YC Gap #8 (Distribution)
+4. **Full Lifecycle Use Case** (Disciplined Entrepreneurship Lens TODO #1) → Also improves: Jobs-to-Be-Done Lens (end-to-end flow), PLG Lens (onboarding flow)
+5. **Hypothesis Framework** (Lean Startup Lens TODO #1) → Also improves: Antler Lens (structured validation), Techstars Lens (experiment cadence)
+6. **Onboarding Flow Document** (PLG Lens TODO #1) → Also improves: Jobs-to-Be-Done Lens (product flow), Disciplined Entrepreneurship Lens (full lifecycle)
+
+### High-Leverage Changes (Improve 3+ Lenses)
+
+- **Create Validation Evidence**: Improves Antler, Lean Startup, Jobs-to-Be-Done, Disciplined Entrepreneurship
+- **Build Growth Experiments Roadmap**: Improves 500 Global, Lean Startup, Techstars
+- **Document Founder Story**: Improves Entrepreneur First, Antler, Techstars
+- **Implement Referral Program**: Improves 500 Global, PLG, YC Distribution Gap
+
+---
+
 **Last Updated**: 2025-01-27  
-**Status**: Comprehensive gap analysis - Ready for prioritization and action
+**Status**: Comprehensive gap analysis with 8 additional incubator lenses - Ready for prioritization and action
