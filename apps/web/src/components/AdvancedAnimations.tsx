@@ -142,10 +142,18 @@ export function Celebration({ type, onComplete }: CelebrationProps) {
   );
 }
 
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
+
 /**
  * Micro-interaction: Button press animation
  */
-export function AnimatedButton({ children, onClick, ...props }: any) {
+
+interface AnimatedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+  onClick?: () => void;
+}
+
+export function AnimatedButton({ children, onClick, ...props }: AnimatedButtonProps) {
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}

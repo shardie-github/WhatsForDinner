@@ -66,7 +66,7 @@ export function GDPRConsent() {
     localStorage.setItem('gdpr_consent_date', new Date().toISOString());
 
     // Update analytics based on consent
-    if (typeof window !== 'undefined' && (window as any).gtag) {
+    if (typeof window !== 'undefined' && window.gtag) {
       if (consentPrefs.analytics) {
         (window as any).gtag('consent', 'update', {
           analytics_storage: 'granted',

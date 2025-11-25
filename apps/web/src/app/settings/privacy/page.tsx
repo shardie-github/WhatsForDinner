@@ -19,15 +19,16 @@ import {
   AlertTriangleIcon,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import type { AppAllowlist, SignalToggle, PrivacyTransparencyLog } from '@/types/privacy';
 
 export default function PrivacySettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [prefs, setPrefs] = useState<unknown>(null);
-  const [apps, setApps] = useState<any[]>([]);
-  const [signals, setSignals] = useState<any[]>([]);
-  const [logs, setLogs] = useState<any[]>([]);
+  const [apps, setApps] = useState<AppAllowlist[]>([]);
+  const [signals, setSignals] = useState<SignalToggle[]>([]);
+  const [logs, setLogs] = useState<PrivacyTransparencyLog[]>([]);
   const [mfaSessionToken, setMfaSessionToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,8 +50,8 @@ export default function PrivacySettingsPage() {
       if (logData.success) {
         setLogs(logData.data);
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch privacy data');
     } finally {
       setLoading(false);
     }
@@ -75,8 +76,8 @@ export default function PrivacySettingsPage() {
         setError('MFA verification failed');
         return false;
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch privacy data');
       return false;
     }
   };
@@ -108,8 +109,8 @@ export default function PrivacySettingsPage() {
         a.click();
         URL.revokeObjectURL(url);
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch privacy data');
     }
   };
 
@@ -138,8 +139,8 @@ export default function PrivacySettingsPage() {
         alert('Data deletion scheduled. Hard delete will occur after 7 days.');
         router.push('/');
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch privacy data');
     }
   };
 

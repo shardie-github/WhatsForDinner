@@ -2,6 +2,37 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { requireAuth } from '@/lib/auth-middleware';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+async function logPrivacyAction(
+  supabase: SupabaseClient,
+  userId: string,
+  action: string,
+  entityType?: string,
+  entityId?: string,
+  oldValue?: unknown,
+  newValue?: unknown,
+  metadata?: Record<string, unknown>
+) {
+  const crypto = await import('crypto');
+  const hashValue = (value: unknown): string => {
+    return crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
+  };
+  
+  const oldHash = oldValue ? hashValue(oldValue) : null;
+  const newHash = newValue ? hashValue(newValue) : null;
+
+  await supabase.from('privacy_transparency_log').insert({
+    user_id: userId,
+    action,
+    actor_id: userId,
+    entity_type: entityType,
+    entity_id: entityId,
+    old_value_hash: oldHash,
+    new_value_hash: newHash,
+    metadata: metadata || {},
+  });
+}
 
 export async function GET(request: NextRequest) {
   const authResult = await requireAuth(request);

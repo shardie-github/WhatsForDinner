@@ -73,7 +73,7 @@ async function patchHandler(request: NextRequest) {
     };
 
     const updated = await usersRepo.update(ctx.user.id, {
-      preferences: updatedPreferences as any,
+      preferences: updatedPreferences,
     });
 
     if (!updated) {

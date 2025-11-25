@@ -16,6 +16,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { analytics } from '@/lib/analytics';
+import type { PantryItem } from '@/types/pantry';
 
 interface OnboardingStep {
   id: string;
@@ -60,7 +61,7 @@ export default function OnboardingFlow({ userId, onComplete, onSkip }: Onboardin
     },
   ]);
 
-  const [pantryItems, setPantryItems] = useState<any[]>([]);
+  const [pantryItems, setPantryItems] = useState<PantryItem[]>([]);
   const [hasGeneratedRecipe, setHasGeneratedRecipe] = useState(false);
 
   useEffect(() => {
