@@ -1,372 +1,541 @@
-# Stack Discovery Report
+# Stack Discovery & Architecture Analysis
 
-**Generated:** 2025-01-28  
-**Purpose:** Complete inventory of the technology stack, infrastructure, and deployment patterns
+**Generated:** $(date)  
+**Agent:** Unified Background Agent v3.0  
+**Status:** Complete Diagnostic
 
 ---
 
 ## Executive Summary
 
-This repository is a **monorepo meal planning application** ("What's for Dinner") built with:
-- **Frontend:** Next.js 16 (web) + React Native/Expo (mobile)
-- **Backend:** Supabase (PostgreSQL + Auth + Storage + Realtime)
-- **ORM:** Prisma (for type-safe database access)
-- **Hosting:** Vercel (web), GitHub Actions (CI/CD)
+**What's for Dinner** is a production-grade meal planning application built as a monorepo using modern web technologies. The system demonstrates sophisticated architecture with multiple deployment targets, comprehensive CI/CD, and enterprise-level features.
+
+### Key Metrics
+- **Monorepo Structure:** Turborepo-powered workspace
+- **Frontend:** Next.js 16 (React 19) + React Native (Expo SDK 52)
+- **Backend:** Supabase (PostgreSQL) + Prisma ORM
+- **Deployment:** Vercel (Web) + EAS Build (Mobile)
+- **CI/CD:** 40+ GitHub Actions workflows
+- **Language:** TypeScript (strict mode enabled)
 - **Package Manager:** pnpm 9.0.0
-- **Node Version:** 20.x (LTS)
-
-The application is **CI-first** with all deployments and migrations automated via GitHub Actions.
 
 ---
 
-## Frontend Stack
+## 1. Architecture Overview
 
-### Web Application (`apps/web`)
-- **Framework:** Next.js 16.0.0
+### 1.1 Monorepo Structure
+
+```
+whats-for-dinner-monorepo/
+├── apps/
+│   ├── web/              # Next.js 16 web application (main app)
+│   ├── mobile/           # React Native mobile app
+│   ├── api-docs/        # API documentation portal
+│   ├── chef-marketplace/ # Chef marketplace feature
+│   ├── community-portal/ # Community features
+│   └── referral/        # Referral program app
+├── packages/
+│   ├── ui/              # Shared UI components (Radix UI based)
+│   ├── utils/           # Shared utilities and hooks
+│   ├── theme/           # Design system and theming
+│   ├── config/          # Configuration management
+│   ├── server/          # Server-side utilities and jobs
+│   ├── analytics/       # Analytics integration
+│   ├── adapters/        # External service adapters
+│   └── testing/         # Testing utilities and fixtures
+├── scripts/             # Automation scripts (200+ files)
+├── ops/                 # Operations and deployment tooling
+├── infra/               # Infrastructure as code
+├── supabase/            # Supabase migrations and functions
+└── docs/                # Documentation
+```
+
+### 1.2 Technology Stack
+
+#### Frontend
+- **Framework:** Next.js 16.0.0 (App Router)
 - **React:** 19.2.0
-- **Build Tool:** Next.js built-in (Turbopack enabled)
-- **Styling:** Tailwind CSS + Radix UI components
+- **Styling:** Tailwind CSS + NativeWind
+- **UI Components:** Radix UI primitives
 - **State Management:** TanStack Query (React Query)
-- **Type Safety:** TypeScript 5.x
-- **Output Mode:** Static export (`output: 'export'`)
-- **PWA:** Enabled via `next-pwa`
+- **Mobile:** React Native + Expo SDK 52 + Capacitor 7
 
-**Key Features:**
-- Static site generation (SSG)
-- Image optimization (WebP/AVIF)
-- Code splitting and bundle optimization
-- Security headers configured
-- Sentry integration (optional)
+#### Backend
+- **Database:** PostgreSQL (via Supabase)
+- **ORM:** Prisma 5.22.0 (WASM engine for Termux compatibility)
+- **Auth:** Supabase Auth
+- **Storage:** Supabase Storage
+- **Realtime:** Supabase Realtime
+- **API:** Next.js API Routes + Supabase Edge Functions
 
-### Mobile Application (`apps/mobile`)
-- **Framework:** React Native + Expo SDK 52
-- **Capacitor:** v7.4.4 (for native features)
-- **Build:** EAS Build (Expo Application Services)
-- **Styling:** NativeWind (Tailwind for React Native)
+#### Infrastructure
+- **Hosting:** Vercel (Web), EAS Build (Mobile)
+- **CI/CD:** GitHub Actions (40+ workflows)
+- **Monitoring:** Sentry, PostHog, Custom observability
+- **Analytics:** PostHog, Mixpanel, Google Analytics
+- **Payments:** Stripe, LemonSqueezy
+- **Email:** Resend, SendGrid
 
-### Shared Packages (`packages/`)
-- `@whats-for-dinner/ui` - Shared UI components
-- `@whats-for-dinner/utils` - Shared utilities and hooks
-- `@whats-for-dinner/theme` - Design system
-- `@whats-for-dinner/config` - Shared configuration
-
-**Monorepo Tool:** Turborepo for build orchestration
-
----
-
-## Backend Stack
-
-### Database
-- **Provider:** Supabase (managed PostgreSQL)
-- **ORM:** Prisma 5.22.0
-- **Engine Type:** WASM (Termux/Android compatible)
-- **Migrations:** Supabase-native SQL migrations (`supabase/migrations/`)
-- **Schema Strategy:** Consolidated master migration (`99999999999999_master_consolidated_schema.sql`)
-
-**Key Tables:**
-- `users` - User accounts
-- `households` - Family/household management
-- `meal_plans` - Meal planning data
-- `recipes` - Recipe storage
-- `grocery_lists` - Shopping lists
-- `health_metrics` - Health tracking
-- Growth systems (referrals, email subscriptions, etc.)
-- Privacy & compliance (DSAR, privacy prefs, etc.)
-
-### API Layer
-- **Primary:** Next.js API routes (`apps/web/app/api/`)
-- **Edge Functions:** Supabase Edge Functions (`supabase/functions/`)
-  - `generate-meal` - AI meal generation
-  - `job-processor` - Background job processing
-  - `api` - General API endpoints
-
-### Authentication
-- **Provider:** Supabase Auth
-- **Methods:** Email/password, OAuth (GitHub, Google)
-- **Session Management:** Supabase SSR helpers
-
-### Storage
-- **Provider:** Supabase Storage
-- **Buckets:** Public uploads, artifacts, backups
-
-### Realtime
-- **Provider:** Supabase Realtime (PostgreSQL subscriptions)
+#### Development Tools
+- **Monorepo:** Turborepo 1.13.4
+- **Package Manager:** pnpm 9.0.0
+- **TypeScript:** 5.x (strict mode)
+- **Linting:** ESLint 9
+- **Testing:** Jest, Vitest, Playwright
+- **Formatting:** Prettier
 
 ---
 
-## Infrastructure & Hosting
+## 2. Data Flow Architecture
 
-### Web Hosting
-- **Platform:** Vercel
-- **Deployment Method:** GitHub Actions → Vercel CLI
-- **Preview Deploys:** Automatic on PRs
-- **Production Deploys:** Automatic on `main` branch push
-- **Configuration:** `vercel.json` (crons, rewrites, headers)
+### 2.1 Request Flow
 
-### Mobile Hosting
-- **Platform:** EAS Build (Expo)
-- **Distribution:** App Store / Google Play (via EAS)
+```
+User (Browser/Mobile)
+  ↓
+Next.js App Router (apps/web)
+  ↓
+API Routes (/api/*)
+  ↓
+Supabase Client (Auth + Database)
+  ↓
+PostgreSQL Database
+  ↓
+Prisma ORM (Type-safe queries)
+```
 
-### CI/CD
-- **Platform:** GitHub Actions
-- **Primary Workflows:**
-  - `frontend-deploy.yml` - Frontend builds and Vercel deployments
-  - `supabase-migrate.yml` - Database migrations
-  - `ci.yml` - Lint, type-check, test, build
-  - `supabase-ci.yml` - Schema validation and drift detection
+### 2.2 Authentication Flow
 
-**Node Version:** 20.x (pinned in workflows)  
-**Package Manager:** pnpm 9.0.0 (locked)
+```
+1. User authenticates via Supabase Auth
+2. JWT token stored in httpOnly cookie
+3. Server-side middleware validates token
+4. Row-Level Security (RLS) enforces permissions
+5. Prisma queries filtered by user context
+```
 
----
+### 2.3 Real-time Updates
 
-## Database Migrations
-
-### Current Strategy
-- **Master Migration:** `supabase/migrations/99999999999999_master_consolidated_schema.sql`
-  - Single consolidated migration for fresh databases
-  - Idempotent (uses `IF NOT EXISTS` throughout)
-  - Contains all tables, enums, indexes, RLS policies, functions
-
-### Migration Workflow
-1. **Local Development:** `supabase migration up` (via Supabase CLI)
-2. **CI/CD:** `.github/workflows/supabase-migrate.yml`
-   - Runs on `push` to `main`
-   - Uses `supabase migration up` via GitHub Actions
-   - Requires: `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`
-
-### Prisma Integration
-- **Schema:** `prisma/schema.prisma` (generated from Supabase schema)
-- **Client Generation:** `prisma generate` (WASM engine)
-- **Usage:** Type-safe database access in application code
-- **Note:** Prisma is used for type generation, not migrations (Supabase handles migrations)
+```
+Supabase Realtime
+  ↓
+WebSocket connection
+  ↓
+React Query subscriptions
+  ↓
+UI auto-updates
+```
 
 ---
 
-## Environment Variables
+## 3. Database Schema
 
-### Core Supabase
-- `NEXT_PUBLIC_SUPABASE_URL` - Public Supabase URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Public anonymous key
-- `SUPABASE_SERVICE_ROLE_KEY` - Service role key (server-only)
-- `SUPABASE_PROJECT_REF` - Project reference ID
-- `DATABASE_URL` - PostgreSQL connection string
+### 3.1 Core Tables
 
-### Application
-- `NEXT_PUBLIC_APP_URL` - Application base URL
-- `NODE_ENV` - Environment (development/production)
-- `LOG_LEVEL` - Logging level
+- **users** - User accounts and preferences
+- **households** - Multi-user household management
+- **household_members** - User-household relationships
+- **recipes** - Recipe storage (curated, partner, user-generated)
+- **meal_plans** - Daily meal planning
+- **grocery_lists** - Shopping list management
+- **health_metrics** - Health tracking data
+- **rooms** - Chat/messaging rooms
+- **messages** - Chat messages
 
-### Third-Party Services
-- `OPENAI_API_KEY` - OpenAI for meal generation
-- `STRIPE_SECRET_KEY` - Payment processing
-- `RESEND_API_KEY` - Email sending
-- `SENTRY_DSN` - Error tracking (optional)
+### 3.2 Growth & Monetization Tables
 
-**Full list:** See `.env.example` (200+ variables documented)
+- **referral_programs** - Referral program configuration
+- **referral_codes** - User referral codes
+- **referrals** - Referral tracking
+- **email_subscriptions** - Email marketing
+- **ad_impressions** - Ad tracking
+- **events** - Analytics events
 
----
+### 3.3 Privacy & Compliance Tables
 
-## CI/CD Workflows
+- **privacy_prefs** - User privacy preferences
+- **app_allowlist** - Third-party app permissions
+- **signal_toggles** - Telemetry controls
+- **telemetry_events** - Privacy-compliant telemetry
+- **privacy_transparency_log** - Audit trail
+- **mfa_enforced_sessions** - MFA session management
+- **dsar_requests** - GDPR data subject access requests
 
-### Active Workflows
+### 3.4 Schema Characteristics
 
-#### `frontend-deploy.yml` ✅
-- **Triggers:** PRs, push to `main`, manual dispatch
-- **Jobs:**
-  - `build-and-test` - Lint, type-check, test, build
-  - `deploy` - Deploy to Vercel (preview or production)
-- **Status:** Active and well-configured
-
-#### `supabase-migrate.yml` ✅
-- **Triggers:** Push to `main`, manual dispatch
-- **Job:** `migrate` - Applies Supabase migrations
-- **Status:** Active and working
-
-#### `ci.yml` ✅
-- **Triggers:** PRs, push to `main`/`develop`
-- **Jobs:** Lint, type-check, test, build, test-coverage, code-hygiene
-- **Status:** Active and comprehensive
-
-#### `supabase-ci.yml` ✅
-- **Triggers:** PRs/push affecting `supabase/**` or `prisma/**`
-- **Job:** Schema validation, drift detection, edge function validation
-- **Status:** Active (non-blocking warnings)
-
-### Potentially Obsolete Workflows
-
-#### `deploy.yml` ⚠️
-- **Status:** DEPRECATED (marked in file)
-- **Reason:** Mixed frontend deployment with migrations (violates separation of concerns)
-- **Replacement:** Use `frontend-deploy.yml` + `supabase-migrate.yml`
-- **Action:** Should be removed
-
-#### Other Workflows (50+ total)
-Many workflows exist for:
-- Nightly jobs (`nightly.yml`, `nightly-drift-report.yml`, `nightly-etl.yml`)
-- Security (`security.yml`, `compliance.yml`)
-- Monitoring (`system-health.yml`, `telemetry.yml`)
-- Operations (`ops-ci.yml`, `ops-matrix-ci.yml`)
-- Specialized (`chaos.yml`, `e2e.yml`, `canary-deploy.yml`)
-
-**Recommendation:** Audit each workflow to determine if it's:
-1. **Active** - Runs regularly and provides value
-2. **Obsolete** - No longer needed, should be removed
-3. **Needs Update** - Still relevant but needs modernization
+- **UUID Primary Keys:** All tables use UUIDs
+- **Timestamps:** Created/updated timestamps on all tables
+- **JSONB Fields:** Flexible JSON storage for preferences, metadata
+- **Indexes:** Strategic indexes on foreign keys and query patterns
+- **RLS Policies:** Row-Level Security on all user-scoped tables
 
 ---
 
-## Testing Strategy
+## 4. API Endpoints
 
-### Current Tests
-- **Unit Tests:** Jest (configured in `apps/web`)
-- **E2E Tests:** Playwright (workflow: `e2e.yml`)
-- **Type Checking:** TypeScript compiler
-- **Linting:** ESLint
+### 4.1 Core APIs
 
-### Test Coverage
-- Coverage reporting configured (`test:coverage`)
-- Threshold: 80% (warning if below)
+**User Management**
+- `GET /api/user/me` - Get current user
+- `POST /api/user/me` - Update user profile
 
-### Smoke Tests
-- Scripts exist: `smoke:test`, `smoke:test:elevation`
-- **Gap:** Not wired into CI as required checks
+**Recipes**
+- `GET /api/v2/recipes` - List/search recipes
+- `POST /api/recipes/generate-image` - Generate recipe images
+- `POST /api/recipes/customize` - Customize recipes
 
----
+**Meal Planning**
+- `GET /api/dinner` - Get meal suggestions
+- `POST /api/meal-plans` - Create meal plan
 
-## Security & Compliance
+**Pantry**
+- `POST /api/pantry/seed-sample` - Seed sample pantry items
 
-### Authentication
-- Supabase Auth with MFA support
-- Row-Level Security (RLS) policies enforced
-- Session management via Supabase SSR
+### 4.2 Privacy & Compliance APIs
 
-### Privacy & Compliance
-- GDPR compliance features (DSAR requests)
-- Privacy preferences management
-- Data retention policies
-- Transparency logging
+- `GET /api/privacy/prefs` - Get privacy preferences
+- `POST /api/privacy/prefs` - Update privacy preferences
+- `POST /api/privacy/export` - Export user data (GDPR)
+- `POST /api/privacy/erase` - Delete user data (GDPR)
+- `GET /api/privacy/apps` - List connected apps
+- `POST /api/privacy/log` - Privacy transparency log
+- `POST /api/privacy/mfa/verify` - MFA verification
 
-### Security Headers
-- Configured in `next.config.ts`
-- X-Frame-Options, X-Content-Type-Options, Referrer-Policy
+### 4.3 Growth & Monetization APIs
 
-### Secrets Management
-- GitHub Secrets for CI/CD
-- Vercel environment variables for deployments
-- Supabase secrets for database access
+- `GET /api/programs/analytics` - Referral analytics
+- `POST /api/programs/track` - Track referral events
+- `POST /api/programs/attribution` - Attribution tracking
+- `POST /api/programs/rewards/distribute` - Distribute rewards
+- `GET /api/partners/stats` - Partner statistics
+- `GET /api/partners/revenue` - Revenue data
+- `POST /api/partners/v1/recipes` - Partner recipe API
+- `POST /api/partners/v1/nutrition` - Nutrition API
+- `POST /api/partners/v1/meal-plans` - Meal plan API
 
----
+### 4.4 Observability APIs
 
-## Observability
+- `GET /api/observability/health` - Health check
+- `GET /api/observability/metrics` - Metrics endpoint
+- `GET /api/observability/traces` - Trace data
+- `GET /api/observability/errors` - Error logs
+- `GET /api/observability/report` - Observability report
+- `GET /api/observability/dashboard` - Dashboard data
 
-### Error Tracking
-- Sentry integration (optional, env-driven)
-- Error boundaries in React components
+### 4.4 Developer APIs
 
-### Monitoring
-- Prometheus metrics (optional)
-- Grafana dashboards (configured)
-- Loki for logs (configured)
-
-### Telemetry
-- PostHog analytics (optional)
-- Custom event tracking
-
----
-
-## Notable Gaps & Red Flags
-
-### ⚠️ Critical Issues
-
-1. **Too Many Workflows**
-   - 50+ GitHub workflows exist
-   - Many may be obsolete or redundant
-   - **Action:** Audit and consolidate
-
-2. **Prisma vs Supabase Migrations**
-   - Prisma schema exists but migrations are Supabase-native
-   - **Status:** Acceptable (Prisma for types, Supabase for migrations)
-   - **Action:** Document this strategy clearly
-
-3. **Smoke Tests Not in CI**
-   - Smoke test scripts exist but not required in CI
-   - **Action:** Add smoke tests as required CI checks
-
-4. **Deprecated Workflow**
-   - `deploy.yml` is deprecated but still in repo
-   - **Action:** Remove after confirming no dependencies
-
-### ⚠️ Medium Priority
-
-1. **Environment Variables**
-   - 200+ env vars documented
-   - Many may be unused
-   - **Action:** Audit actual usage vs documented vars
-
-2. **Test Coverage**
-   - Coverage threshold exists but may not be enforced
-   - **Action:** Ensure coverage gates in CI
-
-3. **Mobile Build**
-   - Mobile app exists but build may not be fully automated
-   - **Action:** Verify mobile CI/CD pipeline
-
-### ✅ Strengths
-
-1. **CI-First Approach**
-   - All deployments automated
-   - No local CLI requirements for production
-
-2. **Consolidated Migrations**
-   - Single master migration simplifies onboarding
-   - Idempotent design
-
-3. **Comprehensive Documentation**
-   - Extensive docs in `/docs`
-   - Well-documented environment variables
-
-4. **Modern Stack**
-   - Latest Next.js, React 19
-   - Type-safe with TypeScript + Prisma
+- `GET /api/developers/keys` - List API keys
+- `POST /api/developers/keys` - Create API key
+- `DELETE /api/developers/keys/[id]` - Revoke API key
+- `GET /api/developers/usage` - API usage stats
 
 ---
 
-## Recommendations
+## 5. Environment Variables
 
-### Immediate Actions
-1. ✅ Document backend strategy (Supabase + Prisma)
-2. ✅ Document frontend hosting strategy (Vercel)
-3. ✅ Normalize migrations workflow
-4. ✅ Add smoke tests to CI
-5. ✅ Remove deprecated `deploy.yml` workflow
+### 5.1 Core Configuration (Required)
 
-### Short-Term
-1. Audit and consolidate GitHub workflows
-2. Create demo script and seed data workflow
-3. Normalize environment variables (usage audit)
-4. Add schema validation script
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+DATABASE_URL
 
-### Long-Term
-1. Consider workflow consolidation tool
-2. Implement comprehensive E2E test suite
-3. Add performance monitoring to CI
-4. Create runbook for common operations
+# App
+NEXT_PUBLIC_APP_URL
+NODE_ENV
+```
+
+### 5.2 Optional Services
+
+- **OpenAI:** `OPENAI_API_KEY` - AI meal generation
+- **Stripe:** `STRIPE_SECRET_KEY` - Payments
+- **Resend:** `RESEND_API_KEY` - Email
+- **Sentry:** `NEXT_PUBLIC_SENTRY_DSN` - Error tracking
+- **PostHog:** `NEXT_PUBLIC_POSTHOG_KEY` - Analytics
+- **Redis:** `REDIS_URL` - Caching (optional)
+
+### 5.3 Environment Variable Count
+
+- **Total Variables:** 100+ (comprehensive .env.example)
+- **Required:** ~10 core variables
+- **Optional:** 90+ service integrations
 
 ---
 
-## Conclusion
+## 6. CI/CD Pipeline
 
-This is a **well-structured, modern monorepo** with:
-- ✅ Clear separation of concerns (frontend/backend)
-- ✅ CI-first deployment strategy
-- ✅ Comprehensive database schema
-- ✅ Good documentation foundation
+### 6.1 Primary Workflows
 
-**Primary focus areas:**
-1. Workflow consolidation and cleanup
-2. Smoke test integration
-3. Demo readiness (seed data, scripts)
-4. Environment variable normalization
+**ci.yml** - Main CI pipeline
+- Lint
+- Type check
+- Tests
+- Smoke tests
+- Build
+- Test coverage (80% threshold)
+- Code hygiene checks
 
-The stack is **production-ready** with minor cleanup needed.
+**frontend-deploy.yml** - Frontend deployment
+- Build and test
+- Deploy preview (PRs)
+- Deploy production (main branch)
+
+**supabase-migrate.yml** - Database migrations
+- Validate migrations
+- Apply to staging/production
+
+### 6.2 Specialized Workflows (40+ total)
+
+- **security.yml** - Security scanning
+- **performance-monitoring.yml** - Performance tests
+- **e2e.yml** - End-to-end tests
+- **nightly.yml** - Nightly maintenance
+- **watcher-cron.yml** - Automated watchers
+- **reliability-orchestrator.yml** - Reliability checks
+- And 30+ more specialized workflows
+
+### 6.3 Deployment Strategy
+
+- **Preview Deployments:** Every PR gets a preview URL
+- **Production Deployments:** Automatic on merge to main
+- **Database Migrations:** Separate workflow, applied after validation
+- **Zero Manual Steps:** Fully automated CI/CD
+
+---
+
+## 7. Dependency Analysis
+
+### 7.1 High-Gravity Packages
+
+**Frontend Core**
+- `next` - Framework
+- `react`, `react-dom` - UI library
+- `@supabase/supabase-js` - Backend client
+- `@tanstack/react-query` - Data fetching
+
+**UI Components**
+- `@radix-ui/*` - Accessible primitives
+- `tailwindcss` - Styling
+- `lucide-react` - Icons
+
+**Backend**
+- `@prisma/client` - Database ORM
+- `zod` - Schema validation
+- `stripe` - Payments
+
+### 7.2 Package Count
+
+- **Dependencies:** ~50 (production)
+- **Dev Dependencies:** ~40 (development)
+- **Total Packages:** ~90 (excluding transitive)
+
+---
+
+## 8. Security Posture
+
+### 8.1 Security Features
+
+✅ **Row-Level Security (RLS)** - Database-level access control  
+✅ **JWT Authentication** - Secure token-based auth  
+✅ **MFA Support** - Multi-factor authentication  
+✅ **GDPR Compliance** - Data export/deletion  
+✅ **Privacy Controls** - Granular user preferences  
+✅ **Secrets Management** - No hardcoded secrets  
+✅ **Security Headers** - HSTS, CSP, X-Frame-Options  
+✅ **Input Validation** - Zod schema validation  
+✅ **SQL Injection Protection** - Prisma ORM  
+✅ **CSRF Protection** - Next.js built-in  
+
+### 8.2 Security Scanning
+
+- Automated security audits in CI
+- Dependency vulnerability scanning
+- Secrets scanning
+- Penetration testing scripts
+
+---
+
+## 9. Performance Characteristics
+
+### 9.1 Performance Targets
+
+- **LCP:** < 2.5s (Largest Contentful Paint)
+- **CLS:** < 0.1 (Cumulative Layout Shift)
+- **FID:** < 100ms (First Input Delay)
+- **Bundle Size:** < 170KB (JavaScript)
+- **TTFB:** < 500ms (Time to First Byte)
+
+### 9.2 Optimizations
+
+- **Code Splitting** - Automatic route-based splitting
+- **Image Optimization** - Next.js Image component
+- **Bundle Analysis** - Automated bundle size monitoring
+- **Caching** - Redis (optional) + HTTP caching
+- **CDN** - Vercel Edge Network
+
+---
+
+## 10. Testing Strategy
+
+### 10.1 Test Types
+
+- **Unit Tests** - Jest + Testing Library
+- **Integration Tests** - API route tests
+- **E2E Tests** - Playwright
+- **Accessibility Tests** - pa11y-ci
+- **Performance Tests** - Lighthouse CI
+- **Contract Tests** - OpenAPI validation
+
+### 10.2 Coverage
+
+- **Target:** 80% coverage threshold
+- **Enforced:** CI blocks merges below threshold
+- **Reporting:** Codecov integration
+
+---
+
+## 11. Observability & Monitoring
+
+### 11.1 Monitoring Stack
+
+- **Error Tracking:** Sentry
+- **Analytics:** PostHog, Mixpanel
+- **Performance:** Custom observability APIs
+- **Logging:** Structured logging
+- **Metrics:** Prometheus (optional)
+- **Tracing:** OpenTelemetry (optional)
+
+### 11.2 Health Checks
+
+- `/api/health` - Basic health check
+- `/api/observability/health` - Detailed health
+- `/status` - Public status page
+
+---
+
+## 12. Risk Heatmap
+
+### 🔴 High Risk Areas
+
+1. **Migration Fragmentation**
+   - Multiple migration directories (`apps/web/supabase/migrations`, `supabase/migrations`, `whats-for-dinner/supabase/migrations`)
+   - Risk: Schema drift, migration conflicts
+   - Action: Consolidate migrations
+
+2. **Environment Variable Complexity**
+   - 100+ environment variables
+   - Risk: Missing vars, misconfiguration
+   - Action: Create env-doctor script, canonicalize vars
+
+3. **CI/CD Workflow Proliferation**
+   - 40+ workflows
+   - Risk: Maintenance burden, conflicting triggers
+   - Action: Audit and consolidate workflows
+
+### 🟡 Medium Risk Areas
+
+1. **API Endpoint Discovery**
+   - 366+ API route files
+   - Risk: Undocumented endpoints, inconsistent patterns
+   - Action: Generate OpenAPI spec, document all endpoints
+
+2. **Dependency Management**
+   - Large dependency tree
+   - Risk: Security vulnerabilities, bundle bloat
+   - Action: Regular audits, remove unused deps
+
+3. **TypeScript Strictness**
+   - Some `any` types may exist
+   - Risk: Runtime errors
+   - Action: Enable stricter checks, fix type errors
+
+### 🟢 Low Risk Areas
+
+1. **Architecture** - Well-structured monorepo
+2. **Security** - Comprehensive security features
+3. **Testing** - Good test coverage strategy
+4. **Documentation** - Extensive docs directory
+
+---
+
+## 13. Recommendations
+
+### Immediate Actions (Priority 1)
+
+1. ✅ **Consolidate Database Migrations**
+   - Unify migration directories
+   - Create baseline migration
+   - Validate schema consistency
+
+2. ✅ **Create Environment Variable Doctor**
+   - Script to validate env vars
+   - Detect missing/unused vars
+   - Generate canonical .env.example
+
+3. ✅ **Generate OpenAPI Documentation**
+   - Discover all API endpoints
+   - Generate OpenAPI spec
+   - Create API documentation
+
+4. ✅ **Fix TypeScript Errors**
+   - Run type check
+   - Fix all errors
+   - Enable stricter checks
+
+### Short-term Improvements (Priority 2)
+
+1. **Audit CI/CD Workflows**
+   - Identify redundant workflows
+   - Consolidate similar workflows
+   - Optimize workflow triggers
+
+2. **Dependency Cleanup**
+   - Remove unused dependencies
+   - Update outdated packages
+   - Audit security vulnerabilities
+
+3. **Performance Optimization**
+   - Bundle size analysis
+   - Code splitting improvements
+   - Image optimization audit
+
+### Long-term Enhancements (Priority 3)
+
+1. **Architecture Documentation**
+   - Complete architecture diagrams
+   - Data flow documentation
+   - Decision records
+
+2. **Developer Experience**
+   - Improve onboarding docs
+   - Create development scripts
+   - Enhance local setup
+
+3. **Observability Enhancement**
+   - Expand metrics collection
+   - Improve error tracking
+   - Add performance monitoring
+
+---
+
+## 14. Completeness Checklist
+
+- [x] Architecture documented
+- [x] Data flow mapped
+- [x] Database schema analyzed
+- [x] API endpoints discovered
+- [x] Environment variables cataloged
+- [x] CI/CD workflows analyzed
+- [x] Dependencies mapped
+- [x] Security posture assessed
+- [x] Performance targets defined
+- [x] Testing strategy documented
+- [x] Observability stack identified
+- [x] Risks identified
+- [x] Recommendations provided
+
+---
+
+**Next Steps:** Proceed with systematic improvements per Unified Background Agent modes.

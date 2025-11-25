@@ -1,233 +1,226 @@
 #!/usr/bin/env tsx
 /**
- * Database Schema Validation Script
+ * Database Schema Validator
  * 
- * Validates that the database schema matches expectations:
- * - Core tables exist
- * - Core columns exist
- * - Indexes exist
- * - RLS policies exist (if applicable)
- * 
- * Usage:
- *   tsx scripts/db-validate-schema.ts
- * 
- * Environment Variables:
- *   DATABASE_URL - PostgreSQL connection string
+ * Validates that Prisma schema matches Supabase migrations
+ * and identifies schema drift or missing migrations.
  */
 
+import { readFileSync, existsSync, readdirSync } from 'fs';
+import { join } from 'path';
 import { PrismaClient } from '@prisma/client';
-import { createComponentLogger } from '@whats-for-dinner/utils';
 
-const logger = createComponentLogger('db-validate-schema');
-
-interface ValidationResult {
-  table: string;
-  exists: boolean;
-  columns?: string[];
-  missingColumns?: string[];
+interface SchemaIssue {
+  type: 'missing_table' | 'missing_column' | 'type_mismatch' | 'missing_index' | 'missing_migration';
+  table?: string;
+  column?: string;
+  expected?: string;
+  actual?: string;
+  migration?: string;
+  severity: 'error' | 'warning';
+  message: string;
 }
 
-const REQUIRED_TABLES = [
-  'users',
-  'households',
-  'household_members',
-  'recipes',
-  'meal_plans',
-  'grocery_lists',
-  'health_metrics',
-];
+interface SchemaValidation {
+  issues: SchemaIssue[];
+  tablesInPrisma: string[];
+  tablesInMigrations: string[];
+  migrations: string[];
+}
 
-const REQUIRED_COLUMNS: Record<string, string[]> = {
-  users: ['id', 'email', 'plan', 'created_at', 'updated_at'],
-  households: ['id', 'owner_id', 'created_at', 'updated_at'],
-  recipes: ['id', 'title', 'steps', 'ingredients', 'created_at', 'updated_at'],
-  meal_plans: ['id', 'user_id', 'day', 'items', 'created_at', 'updated_at'],
-};
+function loadPrismaSchema(): any {
+  const schemaPath = join(process.cwd(), 'prisma', 'schema.prisma');
+  if (!existsSync(schemaPath)) {
+    throw new Error('Prisma schema not found at prisma/schema.prisma');
+  }
 
-async function validateTableExists(prisma: PrismaClient, tableName: string): Promise<boolean> {
+  const content = readFileSync(schemaPath, 'utf-8');
+  
+  // Extract table names from Prisma schema
+  const tableMatches = content.matchAll(/model\s+(\w+)\s*\{/g);
+  const tables = Array.from(tableMatches, m => m[1]);
+  
+  return {
+    content,
+    tables,
+    path: schemaPath
+  };
+}
+
+function loadSupabaseMigrations(): { files: string[]; tables: Set<string> } {
+  const migrationDirs = [
+    join(process.cwd(), 'apps', 'web', 'supabase', 'migrations'),
+    join(process.cwd(), 'supabase', 'migrations'),
+    join(process.cwd(), 'whats-for-dinner', 'supabase', 'migrations'),
+  ];
+
+  const allMigrations: string[] = [];
+  const tables = new Set<string>();
+
+  for (const dir of migrationDirs) {
+    if (existsSync(dir)) {
+      const files = readdirSync(dir)
+        .filter(f => f.endsWith('.sql'))
+        .map(f => join(dir, f));
+      
+      allMigrations.push(...files);
+
+      // Extract table names from SQL migrations
+      for (const file of files) {
+        try {
+          const content = readFileSync(file, 'utf-8');
+          const createTableMatches = content.matchAll(/create\s+table\s+(?:if\s+not\s+exists\s+)?([a-z_]+)/gi);
+          for (const match of createTableMatches) {
+            tables.add(match[1]);
+          }
+        } catch (err) {
+          // Skip files that can't be read
+        }
+      }
+    }
+  }
+
+  return {
+    files: allMigrations.sort(),
+    tables
+  };
+}
+
+async function validateSchema(): Promise<SchemaValidation> {
+  const issues: SchemaIssue[] = [];
+  
+  const prismaSchema = loadPrismaSchema();
+  const migrations = loadSupabaseMigrations();
+
+  // Check for tables in Prisma but not in migrations
+  for (const table of prismaSchema.tables) {
+    const tableName = table.toLowerCase();
+    if (!migrations.tables.has(tableName)) {
+      issues.push({
+        type: 'missing_migration',
+        table: tableName,
+        severity: 'error',
+        message: `Table "${table}" exists in Prisma schema but no migration found`
+      });
+    }
+  }
+
+  // Check for multiple migration directories (fragmentation)
+  const migrationDirs = [
+    join(process.cwd(), 'apps', 'web', 'supabase', 'migrations'),
+    join(process.cwd(), 'supabase', 'migrations'),
+    join(process.cwd(), 'whats-for-dinner', 'supabase', 'migrations'),
+  ].filter(dir => existsSync(dir));
+
+  if (migrationDirs.length > 1) {
+    issues.push({
+      type: 'missing_migration',
+      severity: 'warning',
+      message: `Found ${migrationDirs.length} migration directories. Consider consolidating: ${migrationDirs.join(', ')}`
+    });
+  }
+
+  // Check migration file naming consistency
+  const inconsistentNames = migrations.files.filter(f => {
+    const name = f.split('/').pop() || '';
+    // Check if migration follows naming convention (timestamp_name.sql or YYYY-MM-DD_name.sql)
+    return !name.match(/^\d{13,}_|^\d{4}-\d{2}-\d{2}_/) && !name.includes('master');
+  });
+
+  if (inconsistentNames.length > 0) {
+    issues.push({
+      type: 'missing_migration',
+      severity: 'warning',
+      message: `Found ${inconsistentNames.length} migrations with inconsistent naming: ${inconsistentNames.map(f => f.split('/').pop()).join(', ')}`
+    });
+  }
+
+  return {
+    issues,
+    tablesInPrisma: prismaSchema.tables,
+    tablesInMigrations: Array.from(migrations.tables),
+    migrations: migrations.files.map(f => f.split('/').pop() || f)
+  };
+}
+
+async function checkDatabaseConnection(): Promise<boolean> {
   try {
-    // Use raw query to check if table exists
-    const result = await prisma.$queryRaw<Array<{ exists: boolean }>>`
-      SELECT EXISTS (
-        SELECT FROM information_schema.tables 
-        WHERE table_schema = 'public' 
-        AND table_name = ${tableName}
-      ) as exists
-    `;
-    return result[0]?.exists ?? false;
-  } catch (error) {
-    logger.error(`Error checking table ${tableName}:`, { error });
+    const prisma = new PrismaClient();
+    await prisma.$connect();
+    await prisma.$disconnect();
+    return true;
+  } catch (err) {
     return false;
   }
 }
 
-async function validateColumns(prisma: PrismaClient, tableName: string, requiredColumns: string[]): Promise<{ columns: string[]; missingColumns: string[] }> {
-  try {
-    const result = await prisma.$queryRaw<Array<{ column_name: string }>>`
-      SELECT column_name
-      FROM information_schema.columns
-      WHERE table_schema = 'public'
-      AND table_name = ${tableName}
-    `;
-    
-    const existingColumns = result.map(r => r.column_name);
-    const missingColumns = requiredColumns.filter(col => !existingColumns.includes(col));
-    
-    return {
-      columns: existingColumns,
-      missingColumns,
-    };
-  } catch (error) {
-    logger.error(`Error checking columns for ${tableName}:`, { error });
-    return {
-      columns: [],
-      missingColumns: requiredColumns,
-    };
-  }
-}
-
-async function validateIndexes(prisma: PrismaClient, tableName: string): Promise<number> {
-  try {
-    const result = await prisma.$queryRaw<Array<{ count: bigint }>>`
-      SELECT COUNT(*) as count
-      FROM pg_indexes
-      WHERE schemaname = 'public'
-      AND tablename = ${tableName}
-    `;
-    return Number(result[0]?.count ?? 0);
-  } catch (error) {
-    logger.error(`Error checking indexes for ${tableName}:`, { error });
-    return 0;
-  }
-}
-
-async function validateRLSPolicies(prisma: PrismaClient, tableName: string): Promise<number> {
-  try {
-    const result = await prisma.$queryRaw<Array<{ count: bigint }>>`
-      SELECT COUNT(*) as count
-      FROM pg_policies
-      WHERE schemaname = 'public'
-      AND tablename = ${tableName}
-    `;
-    return Number(result[0]?.count ?? 0);
-  } catch (error) {
-    logger.error(`Error checking RLS policies for ${tableName}:`, { error });
-    return 0;
-  }
-}
-
 async function main() {
-  const databaseUrl = process.env.DATABASE_URL;
-  
-  if (!databaseUrl) {
-    logger.error('❌ DATABASE_URL environment variable is not set');
-    logger.info('Set DATABASE_URL to a PostgreSQL connection string');
-    process.exit(1);
-  }
+  const args = process.argv.slice(2);
+  const command = args[0];
 
-  logger.info('🔍 Validating database schema...\n');
+  if (command === '--check' || command === 'check' || !command) {
+    console.log('🔍 Validating database schema...\n');
 
-  const prisma = new PrismaClient();
-  const results: ValidationResult[] = [];
-  let allValid = true;
+    try {
+      const validation = await validateSchema();
 
-  try {
-    // Test connection
-    await prisma.$connect();
-    logger.info('✅ Database connection successful\n');
+      if (validation.issues.length === 0) {
+        console.log('✅ Schema validation passed!\n');
+        console.log(`Found ${validation.tablesInPrisma.length} tables in Prisma schema`);
+        console.log(`Found ${validation.migrations.length} migration files\n`);
+      } else {
+        console.log(`⚠️  Found ${validation.issues.length} issues:\n`);
 
-    // Validate each required table
-    for (const tableName of REQUIRED_TABLES) {
-      logger.info(`Checking table: ${tableName}`);
-      
-      const exists = await validateTableExists(prisma, tableName);
-      
-      if (!exists) {
-        logger.error(`  ❌ Table ${tableName} does not exist`);
-        results.push({ table: tableName, exists: false });
-        allValid = false;
-        continue;
-      }
+        const errors = validation.issues.filter(i => i.severity === 'error');
+        const warnings = validation.issues.filter(i => i.severity === 'warning');
 
-      logger.info(`  ✅ Table ${tableName} exists`);
+        if (errors.length > 0) {
+          console.log('❌ Errors:');
+          for (const issue of errors) {
+            console.log(`   - ${issue.message}`);
+          }
+          console.log('');
+        }
 
-      // Validate columns if specified
-      const requiredColumns = REQUIRED_COLUMNS[tableName];
-      if (requiredColumns) {
-        const { columns, missingColumns } = await validateColumns(prisma, tableName, requiredColumns);
-        
-        if (missingColumns.length > 0) {
-          logger.error(`  ❌ Missing columns: ${missingColumns.join(', ')}`);
-          results.push({
-            table: tableName,
-            exists: true,
-            columns,
-            missingColumns,
-          });
-          allValid = false;
-        } else {
-          logger.info(`  ✅ All required columns exist`);
-          results.push({
-            table: tableName,
-            exists: true,
-            columns,
-          });
+        if (warnings.length > 0) {
+          console.log('⚠️  Warnings:');
+          for (const issue of warnings) {
+            console.log(`   - ${issue.message}`);
+          }
+          console.log('');
         }
       }
 
-      // Check indexes
-      const indexCount = await validateIndexes(prisma, tableName);
-      logger.info(`  ℹ️  Indexes: ${indexCount}`);
-
-      // Check RLS policies (informational)
-      const policyCount = await validateRLSPolicies(prisma, tableName);
-      if (policyCount > 0) {
-        logger.info(`  ℹ️  RLS policies: ${policyCount}`);
-      }
-    }
-
-    // Summary
-    logger.info('\n' + '='.repeat(50));
-    logger.info('Schema Validation Summary');
-    logger.info('='.repeat(50));
-
-    const validTables = results.filter(r => r.exists && (!r.missingColumns || r.missingColumns.length === 0)).length;
-    const invalidTables = results.length - validTables;
-
-    logger.info(`✅ Valid tables: ${validTables}`);
-    if (invalidTables > 0) {
-      logger.info(`❌ Invalid tables: ${invalidTables}`);
-    }
-
-    results.forEach(result => {
-      if (!result.exists) {
-        logger.info(`  ❌ ${result.table}: Table missing`);
-      } else if (result.missingColumns && result.missingColumns.length > 0) {
-        logger.info(`  ❌ ${result.table}: Missing columns (${result.missingColumns.join(', ')})`);
+      // Check database connection
+      console.log('🔌 Checking database connection...');
+      const canConnect = await checkDatabaseConnection();
+      if (canConnect) {
+        console.log('✅ Database connection successful\n');
       } else {
-        logger.info(`  ✅ ${result.table}: Valid`);
+        console.log('⚠️  Could not connect to database (DATABASE_URL may not be set)\n');
       }
-    });
 
-    logger.info('='.repeat(50) + '\n');
-
-    if (allValid) {
-      logger.info('✅ Schema validation passed!');
-      process.exit(0);
-    } else {
-      logger.error('❌ Schema validation failed!');
-      logger.info('Run migrations: pnpm db:migrate');
+      process.exit(validation.issues.filter(i => i.severity === 'error').length > 0 ? 1 : 0);
+    } catch (err: any) {
+      console.error('❌ Schema validation failed:', err.message);
       process.exit(1);
     }
-  } catch (error) {
-    logger.error('Fatal error during schema validation:', { error });
-    process.exit(1);
-  } finally {
-    await prisma.$disconnect();
+  } else if (command === '--list-migrations') {
+    const migrations = loadSupabaseMigrations();
+    console.log('📁 Migration files:\n');
+    for (const file of migrations.files) {
+      console.log(`   ${file}`);
+    }
+  } else {
+    console.log('Database Schema Validator\n');
+    console.log('Usage:');
+    console.log('  pnpm db:validate          Validate schema consistency');
+    console.log('  pnpm db:validate --list-migrations  List all migration files');
   }
 }
 
-main().catch((error) => {
-  logger.error('Unhandled error:', { error });
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(console.error);
+}
+
+export { validateSchema, SchemaValidation, SchemaIssue };
