@@ -19,21 +19,32 @@ export async function GET(request: NextRequest) {
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
-    // Calculate DAU/WAU/MAU
-    const { data: dauData } = await supabase
+    // Calculate DAU/WAU/MAU using distinct user counts
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
+    
+    const { data: dauData, count: dauCount } = await supabase
       .from('analytics_events')
-      .select('user_id', { count: 'exact', head: true })
-      .gte('timestamp', new Date(now.setHours(0, 0, 0, 0)).toISOString());
+      .select('user_id', { count: 'exact' })
+      .gte('timestamp', todayStart.toISOString())
+      .not('user_id', 'is', null);
 
-    const { data: wauData } = await supabase
+    const { data: wauData, count: wauCount } = await supabase
       .from('analytics_events')
-      .select('user_id', { count: 'exact', head: true })
-      .gte('timestamp', weekAgo.toISOString());
+      .select('user_id', { count: 'exact' })
+      .gte('timestamp', weekAgo.toISOString())
+      .not('user_id', 'is', null);
 
-    const { data: mauData } = await supabase
+    const { data: mauData, count: mauCount } = await supabase
       .from('analytics_events')
-      .select('user_id', { count: 'exact', head: true })
-      .gte('timestamp', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString());
+      .select('user_id', { count: 'exact' })
+      .gte('timestamp', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
+      .not('user_id', 'is', null);
+
+    // Get distinct user counts
+    const dau = new Set(dauData?.map((d) => d.user_id) || []).size;
+    const wau = new Set(wauData?.map((d) => d.user_id) || []).size;
+    const mau = new Set(mauData?.map((d) => d.user_id) || []).size;
 
     // Calculate growth rate (WoW)
     const { data: currentWeekUsers } = await supabase
@@ -83,9 +94,9 @@ export async function GET(request: NextRequest) {
       growthRate: Math.round(growthRate * 10) / 10,
       retention: Math.round(retention * 10) / 10,
       activation: Math.round(activation * 10) / 10,
-      dau: dauData?.length || 0,
-      wau: wauData?.length || 0,
-      mau: mauData?.length || 0,
+      dau: dau || 0,
+      wau: wau || 0,
+      mau: mau || 0,
     });
   } catch (error: any) {
     console.error('Error fetching traction metrics:', error);

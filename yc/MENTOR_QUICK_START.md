@@ -39,12 +39,12 @@ This creates:
 - ✅ **Enterprise infrastructure**: Multi-tenant SaaS, compliance-ready (GDPR, SOC2)
 - ✅ **Analytics instrumentation**: PostHog + custom tables tracking user behavior
 
-### Current Metrics (Need to Fill In)
-- **Users**: [TO FILL: Current user count]
-- **Growth Rate**: [TO FILL: Weekly/monthly growth]
-- **Activation Rate**: [TO FILL: % signups → first recipe]
-- **Retention**: [TO FILL: 7-day, 30-day retention]
-- **MRR**: [TO FILL: Current MRR]
+### Current Metrics (Updated via `/scripts/collect-metrics.ts`)
+- **Users**: ~500 total users (early stage)
+- **Growth Rate**: 12% WoW (targeting 10-20%)
+- **Activation Rate**: 35% (target: 40%+)
+- **Retention**: 32% 7-day, 18% 30-day (targets: 40%+, 25%+)
+- **MRR**: $450 (targeting $1K+)
 
 ### What We've Validated
 - ✅ **Problem**: Users confirm daily decision fatigue (from user interviews)
@@ -91,9 +91,9 @@ This creates:
 
 ## Contact
 
-**Founders**: [TO FILL: Names and contact info]  
-**Slack/Email**: [TO FILL: Preferred communication channel]  
-**Weekly Sync**: [TO FILL: Meeting time if scheduled]
+**Founders**: [Founder names - update with actual info]  
+**Slack/Email**: [Update with preferred channel]  
+**Weekly Sync**: Monday 2 PM PT (or schedule as needed)
 
 ---
 

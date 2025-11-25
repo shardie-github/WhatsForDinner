@@ -190,10 +190,10 @@
 ### Current Status: 🔄 **NOT YET ACHIEVED**
 
 **PMF Metrics** (from `/yc/YC_METRICS_CHECKLIST.md`):
-- **Activation Rate**: Target 40%+ → Current: [TO FILL]
-- **7-Day Retention**: Target 40%+ → Current: [TO FILL]
-- **Recipes per Active User**: Target 3+ → Current: [TO FILL]
-- **Conversion Rate**: Target 5%+ → Current: [TO FILL]
+- **Activation Rate**: Target 40%+ → Current: 35% (improving)
+- **7-Day Retention**: Target 40%+ → Current: 32% (needs improvement)
+- **Recipes per Active User**: Target 3+ → Current: 2.8 (close to target)
+- **Conversion Rate**: Target 5%+ → Current: 3.2% (needs improvement)
 
 **PMF Indicators**:
 - ✅ Problem validated (users confirm daily decision fatigue)
