@@ -9,19 +9,37 @@
 
 All infrastructure has been created. Follow these steps to collect data and complete the action plan.
 
+**🚀 NEW: GitHub Actions Automation**
+
+A GitHub Actions workflow has been set up to automatically:
+- Apply migrations when migration files are added/changed in PRs
+- Run metrics collection script on PR commits
+- Run testimonial generation script on PR commits
+- Commit generated files back to the PR branch
+
+**No CLI needed!** Just push your changes to a PR and the workflow handles everything.
+
+See `.github/workflows/supabase-scripts-automation.yml` for details.
+
 ---
 
 ## Week 1: Collect Metrics & Start Testimonial Outreach
 
 ### Step 1: Apply Database Migration (5 minutes)
 
-**Apply metrics calculation functions**:
+**Option A: Automated via GitHub Actions (Recommended)**
+
+1. Create a PR with the migration file (`supabase/migrations/99999999999998_metrics_calculations.sql`)
+2. The workflow will automatically apply it when the PR is opened/updated
+3. Check the PR comments for confirmation
+
+**Option B: Manual via CLI**
 
 ```bash
-# Option 1: Via Supabase CLI
+# Via Supabase CLI
 supabase migration up
 
-# Option 2: Via Supabase Dashboard
+# OR via Supabase Dashboard
 # 1. Go to Supabase Dashboard → SQL Editor
 # 2. Copy contents of: supabase/migrations/99999999999998_metrics_calculations.sql
 # 3. Paste and run
@@ -48,7 +66,14 @@ Should return:
 
 ### Step 2: Collect Metrics (5 minutes)
 
-**Run collection script**:
+**Option A: Automated via GitHub Actions (Recommended)**
+
+1. Push changes to a PR (or commit to main)
+2. The workflow automatically runs `pnpm metrics:collect`
+3. Generated file (`/yc/METRICS_COLLECTED.md`) is committed back to the PR
+4. Check PR comments for status
+
+**Option B: Manual via CLI**
 
 ```bash
 # Set environment variables
@@ -93,7 +118,14 @@ pnpm dev:web
 
 ### Step 4: Generate Testimonial Request List (2 minutes)
 
-**Run testimonial script**:
+**Option A: Automated via GitHub Actions (Recommended)**
+
+1. Push changes to a PR (or commit to main)
+2. The workflow automatically runs `pnpm testimonials:generate`
+3. Generated file (`/yc/TESTIMONIAL_REQUESTS.md`) is committed back to the PR
+4. Check PR comments for status
+
+**Option B: Manual via CLI**
 
 ```bash
 pnpm testimonials:generate

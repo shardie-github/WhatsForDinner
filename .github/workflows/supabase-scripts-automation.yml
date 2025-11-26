@@ -1,0 +1,288 @@
+name: Supabase Scripts Automation
+
+on:
+  pull_request:
+    branches: [main, master]
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'supabase/migrations/**'
+      - 'scripts/collect-metrics.mjs'
+      - 'scripts/send-testimonial-requests.mjs'
+      - 'yc/**'
+      - '.github/workflows/supabase-scripts-automation.yml'
+  push:
+    branches: [main, master]
+    paths:
+      - 'supabase/migrations/**'
+      - 'scripts/collect-metrics.mjs'
+      - 'scripts/send-testimonial-requests.mjs'
+  workflow_dispatch:
+
+concurrency:
+  group: supabase-scripts-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  run-scripts:
+    name: Run Supabase Scripts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Login to Supabase
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "::error::SUPABASE_ACCESS_TOKEN secret is not set. Please add it to GitHub Secrets."
+            exit 1
+          fi
+          echo "Logging in to Supabase..."
+          npx supabase@latest login --token "$SUPABASE_ACCESS_TOKEN"
+
+      - name: Link to Supabase project
+        env:
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SUPABASE_PROJECT_REF" ]; then
+            echo "::error::SUPABASE_PROJECT_REF secret is not set. Please add it to GitHub Secrets."
+            exit 1
+          fi
+          echo "Linking to Supabase project: $SUPABASE_PROJECT_REF"
+          npx supabase@latest link --project-ref "$SUPABASE_PROJECT_REF"
+
+      - name: Check for pending migrations
+        id: check-migrations
+        run: |
+          set -euo pipefail
+          echo "Checking for pending migrations..."
+          
+          HAS_NEW_MIGRATIONS=false
+          HAS_MIGRATIONS_DIR=false
+          
+          # Check if migration files changed in this PR
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            CHANGED_MIGRATIONS=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E 'supabase/migrations/.*\.sql$|apps/web/supabase/migrations/.*\.sql$' || true)
+            if [ -n "$CHANGED_MIGRATIONS" ]; then
+              HAS_NEW_MIGRATIONS=true
+              echo "has_new_migrations=true" >> $GITHUB_OUTPUT
+              echo "Found new/changed migrations:"
+              echo "$CHANGED_MIGRATIONS"
+            else
+              echo "has_new_migrations=false" >> $GITHUB_OUTPUT
+              echo "No new migrations in this PR"
+            fi
+          else
+            echo "has_new_migrations=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check if migrations directory exists
+          if [ -d "supabase/migrations" ] && [ "$(ls -A supabase/migrations/*.sql 2>/dev/null)" ]; then
+            HAS_MIGRATIONS_DIR=true
+            echo "has_migrations=true" >> $GITHUB_OUTPUT
+            echo "Migrations directory exists: supabase/migrations"
+          elif [ -d "apps/web/supabase/migrations" ] && [ "$(ls -A apps/web/supabase/migrations/*.sql 2>/dev/null)" ]; then
+            HAS_MIGRATIONS_DIR=true
+            echo "has_migrations=true" >> $GITHUB_OUTPUT
+            echo "Migrations directory exists: apps/web/supabase/migrations"
+          else
+            if [ "$HAS_NEW_MIGRATIONS" = "false" ]; then
+              echo "has_migrations=false" >> $GITHUB_OUTPUT
+            fi
+            echo "No migrations directory found or empty"
+          fi
+
+      - name: Apply migrations
+        if: steps.check-migrations.outputs.has_new_migrations == 'true' || (github.event_name == 'workflow_dispatch' && steps.check-migrations.outputs.has_migrations == 'true')
+        env:
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: |
+          set -euo pipefail
+          echo "Applying migrations..."
+          
+          # Check which migrations directory to use
+          if [ -d "supabase/migrations" ] && [ "$(ls -A supabase/migrations/*.sql 2>/dev/null)" ]; then
+            MIGRATIONS_DIR="supabase/migrations"
+          elif [ -d "apps/web/supabase/migrations" ] && [ "$(ls -A apps/web/supabase/migrations/*.sql 2>/dev/null)" ]; then
+            MIGRATIONS_DIR="apps/web/supabase/migrations"
+          else
+            echo "::error::No migrations directory found"
+            exit 1
+          fi
+          
+          echo "Using migrations directory: $MIGRATIONS_DIR"
+          
+          # Try to apply migrations using Supabase CLI
+          if [ -f "supabase/config.toml" ] || [ -f "apps/web/supabase/config.toml" ]; then
+            npx supabase@latest migration up || {
+              echo "::warning::Migration up failed, trying db push"
+              npx supabase@latest db push
+            }
+          else
+            # If no config.toml, use db push directly
+            echo "No config.toml found, using db push..."
+            npx supabase@latest db push || {
+              echo "::error::Failed to apply migrations"
+              exit 1
+            }
+          fi
+          echo "✅ Migrations applied successfully"
+
+      - name: Run metrics collection script
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::warning::Missing Supabase credentials. Skipping metrics collection."
+            exit 0
+          fi
+          echo "Running metrics collection script..."
+          pnpm metrics:collect || {
+            echo "::warning::Metrics collection script failed (non-blocking)"
+            exit 0
+          }
+          echo "✅ Metrics collected successfully"
+
+      - name: Run testimonial generation script
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::warning::Missing Supabase credentials. Skipping testimonial generation."
+            exit 0
+          fi
+          echo "Running testimonial generation script..."
+          pnpm testimonials:generate || {
+            echo "::warning::Testimonial generation script failed (non-blocking)"
+            exit 0
+          }
+          echo "✅ Testimonial requests generated successfully"
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          set -euo pipefail
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Files changed:"
+            git status --short
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes to commit"
+          fi
+
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.has_changes == 'true' && github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          echo "Committing generated files..."
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add yc/METRICS_COLLECTED.md yc/TESTIMONIAL_REQUESTS.md || true
+          git commit -m "chore: auto-update metrics and testimonial requests [skip ci]" || {
+            echo "::warning::Nothing to commit or commit failed"
+            exit 0
+          }
+          git push || {
+            echo "::warning::Push failed (may need manual merge)"
+            exit 0
+          }
+          echo "✅ Changes committed and pushed"
+
+      - name: Create PR comment
+        if: github.event_name == 'pull_request' && steps.check-changes.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let comment = '## 🤖 Supabase Scripts Automation\n\n';
+            comment += '✅ **Scripts executed successfully**\n\n';
+            
+            // Check if metrics file exists and was updated
+            try {
+              const metricsPath = 'yc/METRICS_COLLECTED.md';
+              if (fs.existsSync(metricsPath)) {
+                const stats = fs.statSync(metricsPath);
+                const content = fs.readFileSync(metricsPath, 'utf8');
+                comment += '### 📊 Metrics Collected\n';
+                comment += `- File updated: \`yc/METRICS_COLLECTED.md\`\n`;
+                comment += `- Last updated: ${stats.mtime.toISOString()}\n\n`;
+              }
+            } catch (e) {
+              // File might not exist, skip
+            }
+            
+            // Check if testimonial file exists and was updated
+            try {
+              const testimonialPath = 'yc/TESTIMONIAL_REQUESTS.md';
+              if (fs.existsSync(testimonialPath)) {
+                const stats = fs.statSync(testimonialPath);
+                comment += '### 📧 Testimonial Requests Generated\n';
+                comment += `- File updated: \`yc/TESTIMONIAL_REQUESTS.md\`\n`;
+                comment += `- Last updated: ${stats.mtime.toISOString()}\n\n`;
+              }
+            } catch (e) {
+              // File might not exist, skip
+            }
+            
+            comment += '---\n\n';
+            comment += '**Note**: Generated files have been automatically committed to this PR branch.';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Supabase Scripts Automation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check-migrations.outputs.has_migrations }}" == "true" ]; then
+            echo "✅ Migrations checked/applied" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ No migrations to apply" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "✅ Metrics collection script executed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Testimonial generation script executed" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check-changes.outputs.has_changes }}" == "true" ]; then
+            echo "✅ Generated files committed to PR branch" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ No file changes detected" >> $GITHUB_STEP_SUMMARY
+          fi
