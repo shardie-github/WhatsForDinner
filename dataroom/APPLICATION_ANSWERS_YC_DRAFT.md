@@ -134,7 +134,11 @@
 
 ## How long have the founders known each other and how did you meet?
 
-**Draft Answer**:
+**Draft Answer** (If solo founder):
+
+> I'm the solo founder of What's for Dinner. [If applicable: I'm open to finding a co-founder with complementary skills in GTM, sales, or design.]
+
+**Draft Answer** (If co-founder):
 
 > [Founders to customize] We've known each other for [X years]. We met [how]. We're perfect for this because [why].
 
@@ -144,12 +148,12 @@
 
 ## Why will you succeed?
 
-**Draft Answer**:
+**Draft Answer** (To be customized with LinkedIn details):
 
-> **Technical**: [Founder 1] brings [skill/experience] which is critical for [aspect].  
-> **Product**: [Founder 2] brings [skill/experience] which is critical for [aspect].  
-> **Execution**: We've [evidence of execution] that proves we can [capability].  
-> **Market**: [Why this market/timing is right].
+> **Technical**: I bring [skill/experience from LinkedIn] which is critical for building scalable SaaS.  
+> **Product**: I've demonstrated product thinking through extensive GTM materials and user research.  
+> **Execution**: I've built [evidence of execution from codebase - comprehensive product, enterprise architecture] that proves I can [capability - build and ship products, think at scale].  
+> **Market**: [Why this market/timing is right - see `/yc/YC_MARKET_VISION.md`].
 
 **See**: `/yc/YC_TEAM_NOTES.md` for team strengths, `/yc/YC_MARKET_VISION.md` for market timing
 

@@ -38,16 +38,20 @@
 **Why**: YC will ask "Tell us about your team"
 
 **Steps**:
-1. Open `/yc/YC_TEAM_NOTES.md`
-2. Fill in:
-   - Founder names and backgrounds
-   - Previous companies/products
-   - Role split (who does what)
-   - Why this team is right for this problem
-3. Add founder bios to README.md (optional)
+1. Review LinkedIn profile: /scottrmhardie
+2. Open `/yc/YC_TEAM_NOTES.md`
+3. Add to document:
+   - Previous companies and roles from LinkedIn
+   - Education background (if relevant)
+   - Previous projects or startups
+   - Specific technical/product experience
+4. Customize founder story with actual background
+5. Add founder bio to README.md (optional)
 
 **Time**: 30 minutes  
-**Owner**: Founders
+**Owner**: Scott Hardie
+
+**Note**: Team information has been updated with Scott Hardie's name and GitHub. LinkedIn details need to be reviewed and added.
 
 ---
 

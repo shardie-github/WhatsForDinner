@@ -150,14 +150,19 @@
 
 ## Slide 10: Team
 
-**Founders** (Founders to fill in):
+**Founder**: Scott Hardie
 
-- **[Founder 1]**: [Role] - [Background, previous experience]
-- **[Founder 2]**: [Role] - [Background, previous experience]
+- **Role**: Founder & Full-Stack Engineer
+- **Background**: [TODO: Add from LinkedIn /scottrmhardie]
+- **Previous Experience**: [TODO: Add from LinkedIn]
+- **Skills**: Full-stack development, product thinking, GTM strategy
 
-**Why This Team**: [Founders to fill in]
+**Why This Founder**: 
+- Built comprehensive product demonstrating execution capability
+- Enterprise-grade architecture shows scalability thinking
+- Product and GTM materials show market understanding
 
-**Visual**: Founder photos and bios
+**Visual**: Founder photo and bio
 
 **See**: `/yc/YC_TEAM_NOTES.md` for detailed team information
 

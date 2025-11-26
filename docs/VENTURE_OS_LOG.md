@@ -52,6 +52,12 @@
 - ✅ Master TODO created in `/yc/YC_GAP_ANALYSIS.md`
 - ✅ Cross-references added across all docs
 
+**Team Information Update**:
+- ✅ Updated `/yc/YC_TEAM_NOTES.md` with Scott Hardie information
+- ✅ Updated data room docs with founder name
+- ✅ Updated application answers with founder information
+- ⚠️ LinkedIn profile (/scottrmhardie) needs review to add previous experience details
+
 ---
 
 ## Current Status
@@ -67,7 +73,7 @@
 ### ⚠️ Requires Founder Input
 
 - **Metrics**: Actual user counts, MRR, retention (see `/yc/YC_METRICS_CHECKLIST.md`)
-- **Team Info**: Founder names, backgrounds, roles (see `/yc/YC_TEAM_NOTES.md`)
+- **Team Info**: LinkedIn profile (/scottrmhardie) needs review to add previous experience (see `/yc/YC_TEAM_NOTES.md`)
 - **Testimonials**: User testimonials and case studies (see `/yc/USER_TESTIMONIALS.md`)
 - **Financials**: Actual costs, unit economics (see `/yc/FINANCIAL_MODEL.md`)
 
@@ -91,18 +97,19 @@
 
 ---
 
-### Risk 2: Missing Team Information
+### Risk 2: Missing Team Information Details
 
-**Impact**: HIGH  
+**Impact**: MEDIUM (Name added, details needed)  
 **Likelihood**: HIGH  
-**Description**: No founder bios, backgrounds, or role split documented. YC will ask "Tell us about your team."
+**Description**: Founder name (Scott Hardie) added, but LinkedIn profile details need to be reviewed and added. YC will ask "Tell us about your team" and want previous experience.
 
 **Mitigation**:
-- Founders must fill in `/yc/YC_TEAM_NOTES.md`
-- Add founder bios to README.md (optional)
-- Update YC application with team info
+- Review LinkedIn profile (/scottrmhardie)
+- Add previous companies, roles, education to `/yc/YC_TEAM_NOTES.md`
+- Customize founder story with actual background
+- Consider if co-founder needed for YC application
 
-**Owner**: Founders  
+**Owner**: Scott Hardie  
 **Priority**: MUST DO NOW
 
 ---
@@ -131,9 +138,10 @@
    - Run queries from `/yc/YC_METRICS_CHECKLIST.md`
    - Document in `/yc/YC_METRICS_CHECKLIST.md`
 
-2. **Fill Team Info** (Founders)
-   - Complete `/yc/YC_TEAM_NOTES.md`
-   - Add founder bios
+2. **Fill Team Info** (Scott Hardie)
+   - Review LinkedIn profile (/scottrmhardie)
+   - Add previous experience to `/yc/YC_TEAM_NOTES.md`
+   - Customize founder story with actual background
 
 3. **Collect Testimonials** (Founder/GTM)
    - Reach out to beta users

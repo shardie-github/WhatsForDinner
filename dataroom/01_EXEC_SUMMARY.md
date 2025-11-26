@@ -87,11 +87,17 @@ Every day at 6 PM, 50 million Americans face the same question: "What should I c
 
 ## Team
 
-**Founders**: [Founders to fill in]
-- [Founder 1]: [Role] - [Background]
-- [Founder 2]: [Role] - [Background]
+**Founder**: Scott Hardie
+- **Role**: Founder & Full-Stack Engineer (Product, Engineering, GTM)
+- **GitHub**: shardie-github
+- **LinkedIn**: /scottrmhardie
+- **Background**: [TODO: Add details from LinkedIn profile]
 
-**Why This Team**: [Founders to fill in]
+**Why This Founder**: 
+- Built comprehensive product (not just MVP) - demonstrates execution capability
+- Enterprise-grade architecture - thinks at scale
+- Product and GTM thinking - understands market and users
+- Full-stack capabilities - can build and ship independently
 
 **See**: `/yc/YC_TEAM_NOTES.md` for detailed team information
 
