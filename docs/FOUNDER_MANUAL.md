@@ -51,7 +51,7 @@
 **Time**: 30 minutes  
 **Owner**: Scott Hardie
 
-**Note**: Team information has been updated with Scott Hardie's name and GitHub. LinkedIn details need to be reviewed and added.
+**Note**: Team information has been updated with Scott Hardie's complete LinkedIn profile information including 15+ years experience at McGraw Hill/Pearson, recent AI projects (Hardonia OS, PromptPilot, Daily Intel Suite), and education background.
 
 ---
 

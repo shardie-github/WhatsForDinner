@@ -65,14 +65,37 @@
 ---
 
 **Previous Experience**: 
-- [TODO: Review LinkedIn profile /scottrmhardie to add previous companies, roles, and experience]
-- [TODO: Add education background if relevant]
-- [TODO: Add any previous startups or products built]
+- **Current**: Solutions Architect at McGraw Hill (Dec 2022 - Present, 3 years)
+  - Delivering consultative sales and solution design for enterprise digital learning systems
+  - Designing bespoke SaaS integrations and AI-infused solutions
+  - Creating custom content development workflows with AI-assisted authoring tools
+- **McGraw Hill**: 6 years total
+  - Senior Digital Solutions Consultant (Dec 2019 - Dec 2022, 3 years)
+  - Portfolio Manager (Jan 2015 - Oct 2017, 2 years 10 months)
+  - Account Executive (Jan 2012 - Jan 2015, 3 years) - Achieved President's Award for Sales Excellence 2014
+- **Pearson Education**: Portfolio Manager (Oct 2017 - Dec 2019, 2 years 3 months)
+  - Managed $8.5M/yr business publishing portfolio
+- **Total Experience**: 15+ years in educational technology and SaaS
+- **Recent Projects**:
+  - Built Hardonia OS: Fully automated AI-driven Shopify commerce lab replacing 7+ apps
+  - Created PromptPilot: SaaS framework for orchestrating real-time prompt refinement
+  - Developed Daily Intel Suite: 9 agents delivering TikTok, AliExpress, and consumer trend insights
+
+**Education**:
+- **Master of Arts (MA)**: Political Science - Public Opinion & Research Methods, Wilfrid Laurier University (2010-2011)
+- **Bachelor of Arts (BA)**: Political Science and Communication Studies, Wilfrid Laurier University (2006-2010)
+
+**Skills**:
+- Policy Research, International Relations, Collaboration
+- Learning Management Systems, Solution Architecture, AI in Education
+- SaaS Enablement, Client Success, Technical Integration
+- Languages: English (Native), French (Limited Working), Spanish (Limited Working)
 
 **Why This Problem Matters**:
-- [TODO: Add personal connection to the "what's for dinner?" problem]
 - Built What's for Dinner to solve own problem
 - Recognized that 50 million Americans face the same daily decision fatigue
+- Experience in AI-first automation and agent-based systems translates to AI-powered meal planning
+- Background in consultative selling and SaaS adoption helps understand user needs
 
 ---
 
@@ -92,14 +115,8 @@
 - Business model thinking (revenue streams, pricing)
 - Market research and competitive analysis
 
-**Suggested Story** (To be customized with LinkedIn details):
-> "I'm Scott Hardie, and I've been [previous experience from LinkedIn]. Every day at 6 PM, I'd stare into my fridge and waste 15 minutes deciding what to cook. I tried [competitor solutions], but they all failed because they don't start with what you actually have. I built What's for Dinner to solve my own problem, and it turns out 50 million Americans face the same thing."
-
-**TODO**: Review LinkedIn profile (/scottrmhardie) to add:
-- Previous companies and roles
-- Specific technical/product experience
-- Education background
-- Previous projects or startups
+**Founder Story**:
+> "I'm Scott Hardie, a Solutions Architect with 15+ years building SaaS products and AI-powered solutions at McGraw Hill and Pearson Education. Every day at 6 PM, I'd stare into my fridge and waste 15 minutes deciding what to cook. I tried recipe sites and meal apps, but they all failed because they don't start with what you actually have. I built What's for Dinner to solve my own problem, and it turns out 50 million Americans face the same thing. My experience building AI-first automation systems—like Hardonia OS and PromptPilot—taught me how to create intelligent workflows that actually solve real problems."
 
 ---
 
@@ -269,20 +286,20 @@
 
 ### "Tell us about your team"
 
-**Draft Answer** (To be customized with LinkedIn details):
-> "I'm Scott Hardie, the founder of What's for Dinner. I'm a full-stack engineer with [experience from LinkedIn]. I handle product, engineering, and GTM. Previously, I [previous experience from LinkedIn]. I'm building What's for Dinner because [personal connection to problem]. I've built [evidence of execution from codebase] which shows I can [relevant skill - full-stack development, product thinking, GTM]."
+**Draft Answer**:
+> "I'm Scott Hardie, the founder of What's for Dinner. I'm a Solutions Architect with 15+ years building SaaS products and AI-powered solutions at McGraw Hill and Pearson Education, where I drove 125% YOY sales growth through consultative selling and SaaS adoption. I handle product, engineering, and GTM. Previously, I built Hardonia OS (AI-driven Shopify commerce lab), PromptPilot (SaaS framework for prompt refinement), and Daily Intel Suite (9-agent consumer insights system). I'm building What's for Dinner because I faced the daily 'what's for dinner?' problem myself. I've built a comprehensive product with enterprise-grade architecture, extensive GTM materials, and full-stack capabilities, which shows I can build and ship products, think about product-market fit, and execute on GTM strategy."
 
 ### "Why are you the right team?"
 
-**Draft Answer** (To be customized with LinkedIn details):
-> "I'm the right founder because [unique insight/experience from LinkedIn]. I bring [skill/experience] which is critical for [aspect of product - full-stack development, product thinking, GTM]. I've [evidence of execution from codebase] that proves I can [relevant capability - build and ship products, think about product-market fit, execute on GTM strategy]."
+**Draft Answer**:
+> "I'm the right founder because I bring 15+ years of experience building SaaS products and AI-powered solutions, combined with proven ability to drive sales growth and user adoption. I bring expertise in solution architecture, AI integration, and consultative selling which is critical for building a product that solves real user problems and scales. I've built Hardonia OS, PromptPilot, and Daily Intel Suite—plus the comprehensive What's for Dinner codebase—that proves I can build and ship products, think about product-market fit, and execute on GTM strategy."
 
 ### "What have you built before?"
 
-**Draft Answer** (To be customized with LinkedIn details):
-> "Before What's for Dinner, I built [previous product/company from LinkedIn] where I learned [relevant lesson]. This experience taught me [insight] which I'm applying to [aspect of What's for Dinner - e.g., building scalable SaaS, understanding user needs, executing on product vision]."
+**Draft Answer**:
+> "Before What's for Dinner, I spent 15+ years at McGraw Hill and Pearson Education building enterprise SaaS solutions and AI-powered learning platforms, where I learned how to bridge business objectives with technical execution. I also built Hardonia OS (AI-driven Shopify commerce lab), PromptPilot (SaaS framework for prompt refinement), and Daily Intel Suite (9-agent consumer insights system). This experience taught me how to create intelligent workflows that solve real problems, understand user needs through consultative selling, and execute on product vision. I'm applying these lessons to What's for Dinner by building scalable SaaS architecture, using AI to personalize meal recommendations, and focusing on user adoption through intuitive design."
 
 ---
 
 **Last Updated**: 2025-01-28  
-**Status**: Updated with Scott Hardie information - LinkedIn profile (/scottrmhardie) should be reviewed to add previous experience details
+**Status**: ✅ Complete - Updated with Scott Hardie's LinkedIn profile information

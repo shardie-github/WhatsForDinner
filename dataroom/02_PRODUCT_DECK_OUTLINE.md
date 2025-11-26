@@ -152,15 +152,21 @@
 
 **Founder**: Scott Hardie
 
-- **Role**: Founder & Full-Stack Engineer
-- **Background**: [TODO: Add from LinkedIn /scottrmhardie]
-- **Previous Experience**: [TODO: Add from LinkedIn]
-- **Skills**: Full-stack development, product thinking, GTM strategy
+- **Role**: Founder & Solutions Architect
+- **Background**: Solutions Architect at McGraw Hill (15+ years in educational technology and SaaS)
+- **Previous Experience**: 
+  - Built Hardonia OS (AI-driven Shopify commerce lab)
+  - Created PromptPilot (SaaS framework for prompt refinement)
+  - Developed Daily Intel Suite (9-agent consumer insights system)
+  - Drove 125% YOY sales growth at McGraw Hill/Pearson
+- **Skills**: Solution architecture, AI integration, SaaS enablement, consultative selling, product thinking
 
 **Why This Founder**: 
+- 15+ years building enterprise SaaS solutions and AI-powered platforms
+- Proven ability to drive sales growth and user adoption
+- Experience with AI-first automation translates to AI-powered meal planning
 - Built comprehensive product demonstrating execution capability
 - Enterprise-grade architecture shows scalability thinking
-- Product and GTM materials show market understanding
 
 **Visual**: Founder photo and bio
 

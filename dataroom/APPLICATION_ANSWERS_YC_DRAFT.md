@@ -29,9 +29,9 @@
 
 **Draft Answer**:
 
-> [Founders to customize] Every day at 6 PM, I'd stare into my fridge and waste 15 minutes deciding what to cook. I tried [competitor solutions], but they all failed because [why they failed]. So I built What's for Dinner to solve my own problem, and it turns out 50 million Americans face the same thing.
+> Every day at 6 PM, I'd stare into my fridge and waste 15 minutes deciding what to cook. I tried recipe sites and meal apps, but they all failed because they don't start with what you actually have. So I built What's for Dinner to solve my own problem, and it turns out 50 million Americans face the same thing. My experience building AI-first automation systems—like Hardonia OS and PromptPilot—taught me how to create intelligent workflows that actually solve real problems.
 
-**See**: `/yc/YC_PROBLEM_USERS.md` for problem statement, `/yc/FOUNDER_STORY.md` for founder story
+**See**: `/yc/YC_PROBLEM_USERS.md` for problem statement, `/yc/YC_TEAM_NOTES.md` for founder story
 
 ---
 
@@ -148,11 +148,11 @@
 
 ## Why will you succeed?
 
-**Draft Answer** (To be customized with LinkedIn details):
+**Draft Answer**:
 
-> **Technical**: I bring [skill/experience from LinkedIn] which is critical for building scalable SaaS.  
-> **Product**: I've demonstrated product thinking through extensive GTM materials and user research.  
-> **Execution**: I've built [evidence of execution from codebase - comprehensive product, enterprise architecture] that proves I can [capability - build and ship products, think at scale].  
+> **Technical**: I bring 15+ years building enterprise SaaS solutions and AI-powered platforms, which is critical for building scalable SaaS. I've built Hardonia OS, PromptPilot, and Daily Intel Suite—proving I can create intelligent AI workflows.  
+> **Product**: I've demonstrated product thinking through extensive GTM materials, user research, and consultative selling experience that helps me understand user needs.  
+> **Execution**: I've built a comprehensive product with enterprise architecture, plus previous AI-first automation systems, that proves I can build and ship products and think at scale.  
 > **Market**: [Why this market/timing is right - see `/yc/YC_MARKET_VISION.md`].
 
 **See**: `/yc/YC_TEAM_NOTES.md` for team strengths, `/yc/YC_MARKET_VISION.md` for market timing

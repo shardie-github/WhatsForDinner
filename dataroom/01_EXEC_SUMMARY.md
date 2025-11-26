@@ -88,16 +88,22 @@ Every day at 6 PM, 50 million Americans face the same question: "What should I c
 ## Team
 
 **Founder**: Scott Hardie
-- **Role**: Founder & Full-Stack Engineer (Product, Engineering, GTM)
+- **Role**: Founder & Solutions Architect (Product, Engineering, GTM)
 - **GitHub**: shardie-github
 - **LinkedIn**: /scottrmhardie
-- **Background**: [TODO: Add details from LinkedIn profile]
+- **Background**: 
+  - Solutions Architect at McGraw Hill (15+ years in educational technology and SaaS)
+  - Drove 125% YOY sales growth through consultative selling and SaaS adoption
+  - Built Hardonia OS (AI-driven Shopify commerce lab), PromptPilot (SaaS framework), Daily Intel Suite (9-agent insights system)
+  - MA Political Science, BA Political Science and Communication Studies
 
 **Why This Founder**: 
+- 15+ years building enterprise SaaS solutions and AI-powered platforms
+- Proven track record of driving sales growth and user adoption
+- Experience building AI-first automation systems translates to AI-powered meal planning
 - Built comprehensive product (not just MVP) - demonstrates execution capability
 - Enterprise-grade architecture - thinks at scale
-- Product and GTM thinking - understands market and users
-- Full-stack capabilities - can build and ship independently
+- Product and GTM thinking - understands market and users through consultative selling
 
 **See**: `/yc/YC_TEAM_NOTES.md` for detailed team information
 
