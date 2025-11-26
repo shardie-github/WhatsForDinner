@@ -595,15 +595,71 @@ FROM revenue r, costs c;
 
 ---
 
-## TODO: Founders to Supply
+## Implementation Status
 
-- [ ] Actual user count (current)
-- [ ] Actual MRR (current)
-- [ ] Actual retention rates (7-day, 30-day)
-- [ ] Actual CAC by channel
-- [ ] Actual LTV
-- [ ] Actual activation rate
-- [ ] Actual conversion rate (free → paid)
+### ✅ COMPLETE
+
+- ✅ **SQL Functions Created**: `/supabase/migrations/99999999999998_metrics_calculations.sql`
+  - `get_active_users()` - DAU/WAU/MAU
+  - `get_activation_rate()` - Activation rate
+  - `get_retention_rate()` - Retention rates
+  - `get_revenue_metrics()` - MRR, ARPU
+  - `get_conversion_funnel()` - Conversion funnel
+  - `get_unit_economics()` - Unit economics
+  - `get_channel_metrics()` - Channel metrics
+
+- ✅ **API Endpoint Created**: `/apps/web/src/app/api/metrics/yc/route.ts`
+  - Returns all metrics in JSON format
+  - Accessible at `/api/metrics/yc`
+
+- ✅ **Metrics Dashboard**: `/apps/web/src/app/admin/(console)/yc-metrics/page.tsx`
+  - Visualizes all key metrics
+  - Accessible at `/admin/yc-metrics`
+  - Auto-refreshes every minute
+
+- ✅ **Collection Script**: `scripts/collect-metrics.mjs`
+  - Run: `pnpm metrics:collect`
+  - Collects all metrics and saves to `/yc/METRICS_COLLECTED.md`
+
+- ✅ **Testimonial Script**: `scripts/send-testimonial-requests.mjs`
+  - Run: `pnpm testimonials:generate`
+  - Generates testimonial request list
+
+### 📋 NEXT STEPS
+
+1. **Apply Migration**:
+   ```bash
+   # Apply metrics calculation functions
+   supabase migration up
+   # OR run the SQL file directly in Supabase SQL Editor
+   ```
+
+2. **Collect Metrics**:
+   ```bash
+   pnpm metrics:collect
+   # This will run queries and save results to /yc/METRICS_COLLECTED.md
+   ```
+
+3. **Generate Testimonial Requests**:
+   ```bash
+   pnpm testimonials:generate
+   # This will create /yc/TESTIMONIAL_REQUESTS.md with user list
+   ```
+
+4. **View Dashboard**:
+   - Start dev server: `pnpm dev:web`
+   - Navigate to: `http://localhost:3000/admin/yc-metrics`
+
+---
+
+## TODO: Founders to Supply (After Running Queries)
+
+- [ ] Run `pnpm metrics:collect` and review `/yc/METRICS_COLLECTED.md`
+- [ ] Update YC application with actual numbers
+- [ ] Update data room docs with actual metrics
+- [ ] Send testimonial requests (use `/yc/TESTIMONIAL_REQUESTS.md`)
+- [ ] Track actual costs (Vercel, Supabase, OpenAI)
+- [ ] Calculate CAC by channel (if paid acquisition)
 - [ ] Ad spend by channel (for CAC calculation)
 
 ---

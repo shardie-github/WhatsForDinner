@@ -84,13 +84,15 @@ export default function YCMetricsPage() {
       try {
         const res = await fetch('/api/metrics/yc');
         if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
+          const errorText = await res.text();
+          throw new Error(`HTTP ${res.status}: ${errorText}`);
         }
         const json = await res.json();
         setData(json);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load metrics');
+        console.error('Metrics fetch error:', err);
       } finally {
         setLoading(false);
       }

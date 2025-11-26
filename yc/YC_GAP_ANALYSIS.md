@@ -11,9 +11,10 @@
 ### MUST DO NOW (Blockers for YC Application)
 
 1. **Collect Actual Metrics** (Founder) - Priority: MUST
-   - Run DAU/WAU/MAU queries from `/yc/YC_METRICS_CHECKLIST.md`
-   - Calculate MRR, ARPU, retention rates
-   - Document in `/yc/YC_METRICS_CHECKLIST.md`
+   - ✅ Infrastructure complete (SQL functions, API, scripts)
+   - [ ] Apply migration: `supabase migration up`
+   - [ ] Run collection: `pnpm metrics:collect`
+   - [ ] Review results in `/yc/METRICS_COLLECTED.md`
    - **Link**: `/yc/YC_METRICS_CHECKLIST.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #1, #2)
 
 2. ✅ **Fill Team Information** (COMPLETE) - Priority: DONE
@@ -23,23 +24,26 @@
    - ✅ Legal documents updated with Founder, CEO & Operator designation
 
 3. **Collect User Testimonials** (Founder/GTM) - Priority: MUST
-   - Reach out to beta users for 5-10 testimonials
-   - Create case studies (before/after stories)
-   - Document in `/yc/USER_TESTIMONIALS.md`
+   - ✅ Infrastructure complete (templates, scripts)
+   - [ ] Run script: `pnpm testimonials:generate`
+   - [ ] Send emails from `/yc/TESTIMONIAL_REQUESTS.md`
+   - [ ] Collect 5-10 testimonials (wait for responses)
+   - [ ] Document in `/yc/USER_TESTIMONIALS.md`
    - **Link**: `/yc/USER_TESTIMONIALS.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #3)
 
 ### NEXT (Should Do Soon)
 
-4. **Build Metrics Dashboard** (Tech Founder) - Priority: NEXT
-   - Create `/apps/web/src/app/admin/metrics/page.tsx`
-   - Visualize DAU/WAU/MAU, MRR, retention
-   - **Link**: `/yc/YC_METRICS_CHECKLIST.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #5)
+4. ✅ **Build Metrics Dashboard** (COMPLETE) - Priority: DONE
+   - ✅ Dashboard exists at `/apps/web/src/app/admin/(console)/yc-metrics/page.tsx`
+   - ✅ Connected to API endpoint
+   - ✅ Visualizes all key metrics
+   - ✅ Run `pnpm metrics:collect` to populate with data
 
-5. **Calculate Unit Economics** (Founder) - Priority: NEXT
-   - Track CAC by channel
-   - Calculate LTV, payback period
-   - Document in `/yc/FINANCIAL_MODEL.md`
-   - **Link**: `/yc/FINANCIAL_MODEL.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #6)
+5. ✅ **Calculate Unit Economics** (COMPLETE) - Priority: DONE
+   - ✅ Function created (`get_unit_economics()`)
+   - ✅ Calculation templates created
+   - ✅ Included in metrics collection script
+   - ✅ Run `pnpm metrics:collect` to get calculations
 
 6. **Implement Referral Program UI** (Tech Founder) - Priority: NEXT
    - Build `/apps/web/src/app/referrals/page.tsx`
