@@ -362,7 +362,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
 - 📖 [Architecture Guide](docs/ARCHITECTURE.md) - System design and technical decisions
 - 🔐 [Security Policy](SECURITY.md) - How we handle security
-- 🛠️ [Setup Guide](docs/SETUP.md) - Complete setup instructions
+- 🛠️ [Local Setup Guide](docs/SETUP_LOCAL.md) - Get running locally (fresh clone → app running)
+- 🚀 [Deployment Guide](docs/deploy.md) - Deploy to production
 - 🗄️ [Database Guide](docs/DATABASE.md) - Migration and schema docs
 - 🚀 [Supabase Migrations CI](docs/supabase-migrations-ci.md) - Automated migrations via GitHub Actions
 - 🔑 [Secrets Management](docs/SECRETS.md) - Secure secrets handling

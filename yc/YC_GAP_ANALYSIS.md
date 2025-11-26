@@ -1,7 +1,71 @@
 # YC Gap Analysis: What's for Dinner
 
 **Generated**: 2025-01-27  
+**Last Updated**: 2025-01-28  
 **Purpose**: Comprehensive gap analysis comparing repo to YC application and interview expectations
+
+---
+
+## MASTER TODO (Prioritized)
+
+### MUST DO NOW (Blockers for YC Application)
+
+1. **Collect Actual Metrics** (Founder) - Priority: MUST
+   - Run DAU/WAU/MAU queries from `/yc/YC_METRICS_CHECKLIST.md`
+   - Calculate MRR, ARPU, retention rates
+   - Document in `/yc/YC_METRICS_CHECKLIST.md`
+   - **Link**: `/yc/YC_METRICS_CHECKLIST.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #1, #2)
+
+2. **Fill Team Information** (Founder) - Priority: MUST
+   - Add founder names, backgrounds, previous experience to `/yc/YC_TEAM_NOTES.md`
+   - Document role split and why this team
+   - **Link**: `/yc/YC_TEAM_NOTES.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #10)
+
+3. **Collect User Testimonials** (Founder/GTM) - Priority: MUST
+   - Reach out to beta users for 5-10 testimonials
+   - Create case studies (before/after stories)
+   - Document in `/yc/USER_TESTIMONIALS.md`
+   - **Link**: `/yc/USER_TESTIMONIALS.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #3)
+
+### NEXT (Should Do Soon)
+
+4. **Build Metrics Dashboard** (Tech Founder) - Priority: NEXT
+   - Create `/apps/web/src/app/admin/metrics/page.tsx`
+   - Visualize DAU/WAU/MAU, MRR, retention
+   - **Link**: `/yc/YC_METRICS_CHECKLIST.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #5)
+
+5. **Calculate Unit Economics** (Founder) - Priority: NEXT
+   - Track CAC by channel
+   - Calculate LTV, payback period
+   - Document in `/yc/FINANCIAL_MODEL.md`
+   - **Link**: `/yc/FINANCIAL_MODEL.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #6)
+
+6. **Implement Referral Program UI** (Tech Founder) - Priority: NEXT
+   - Build `/apps/web/src/app/referrals/page.tsx`
+   - Infrastructure exists, needs UI
+   - **Link**: `/yc/YC_DISTRIBUTION_PLAN.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #8)
+
+7. **Document User Validation Evidence** (Founder) - Priority: NEXT
+   - Compile user interviews, surveys
+   - Document in `/yc/USER_VALIDATION_EVIDENCE.md`
+   - **Link**: `/yc/USER_VALIDATION_EVIDENCE.md`, `/yc/YC_GAP_ANALYSIS.md` (Antler Lens TODO #1)
+
+### LATER (Nice to Have)
+
+8. **Create Competitive Analysis** (Founder/GTM) - Priority: LATER
+   - Feature comparison table (us vs competitors)
+   - Competitive positioning map
+   - Document in `/yc/COMPETITIVE_ANALYSIS.md`
+   - **Link**: `/yc/COMPETITIVE_ANALYSIS.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #4)
+
+9. **Implement SEO Landing Pages** (Tech Founder) - Priority: LATER
+   - Create dynamic SEO pages for high-value keywords
+   - **Link**: `/yc/YC_DISTRIBUTION_PLAN.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #8)
+
+10. **Set Up Alerting** (Tech Founder) - Priority: LATER
+    - Configure PagerDuty/Slack webhooks
+    - Set up KPI alerts
+    - **Link**: `/docs/PROJECT_READINESS_REPORT.md`
 
 ---
 
