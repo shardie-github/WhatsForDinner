@@ -1,0 +1,117 @@
+name: Generate Changelog
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'package.json'
+      - 'apps/**/package.json'
+      - 'packages/**/package.json'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  generate-changelog:
+    name: Generate Changelog
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate changelog from commits
+        id: changelog
+        run: |
+          # Get commits since last tag or last 50 commits
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          if [ -z "$LAST_TAG" ]; then
+            echo "No previous tag found, using last 50 commits"
+            COMMITS=$(git log --pretty=format:"- %s (%h)" -50)
+          else
+            echo "Comparing with last tag: $LAST_TAG"
+            COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s (%h)" || git log --pretty=format:"- %s (%h)" -50)
+          fi
+          
+          # Categorize commits
+          FEATURES=$(echo "$COMMITS" | grep -iE "^(feat|feature|add)" || echo "")
+          FIXES=$(echo "$COMMITS" | grep -iE "^(fix|bug|patch)" || echo "")
+          DOCS=$(echo "$COMMITS" | grep -iE "^(docs|doc)" || echo "")
+          REFACTOR=$(echo "$COMMITS" | grep -iE "^(refactor|chore|style)" || echo "")
+          PERF=$(echo "$COMMITS" | grep -iE "^(perf|performance)" || echo "")
+          
+          # Generate changelog
+          CHANGELOG="# Changelog\n\n"
+          CHANGELOG+="**Generated**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")\n\n"
+          
+          if [ -n "$FEATURES" ]; then
+            CHANGELOG+="## ✨ Features\n\n$FEATURES\n\n"
+          fi
+          
+          if [ -n "$FIXES" ]; then
+            CHANGELOG+="## 🐛 Fixes\n\n$FIXES\n\n"
+          fi
+          
+          if [ -n "$PERF" ]; then
+            CHANGELOG+="## ⚡ Performance\n\n$PERF\n\n"
+          fi
+          
+          if [ -n "$REFACTOR" ]; then
+            CHANGELOG+="## 🔧 Refactoring\n\n$REFACTOR\n\n"
+          fi
+          
+          if [ -n "$DOCS" ]; then
+            CHANGELOG+="## 📚 Documentation\n\n$DOCS\n\n"
+          fi
+          
+          echo "$CHANGELOG" > CHANGELOG.md
+          echo "changelog_generated=true" >> $GITHUB_OUTPUT
+          
+          # Show preview
+          echo "Generated changelog:"
+          cat CHANGELOG.md
+
+      - name: Commit changelog
+        if: steps.changelog.outputs.changelog_generated == 'true' && github.event_name == 'push'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add CHANGELOG.md
+          git diff --staged --quiet || git commit -m "chore: auto-generate changelog [skip ci]"
+          git push || echo "Push skipped (may need manual merge)"
+
+      - name: Create release notes
+        if: github.event_name == 'release'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+            
+            github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: context.payload.release.id,
+              body: changelog
+            });

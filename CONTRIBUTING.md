@@ -189,6 +189,19 @@ We're building a community where everyone feels welcome. That means:
 
 ---
 
+## About the Founder
+
+**What's for Dinner** is built by **Scott Hardie**, Founder, CEO & Operator.
+
+With 15+ years building SaaS products and AI-powered solutions, Scott brings expertise in solution architecture, AI integration, and product development. He built What's for Dinner to solve his own daily "what's for dinner?" problem.
+
+**Connect**:
+- 📧 Email: scottrmhardie@gmail.com
+- 💼 LinkedIn: [linkedin.com/in/scottrmhardie](https://www.linkedin.com/in/scottrmhardie)
+- 💻 GitHub: [github.com/shardie-github](https://github.com/shardie-github)
+
+---
+
 ## Questions?
 
 **Still have questions?** That's totally fine!

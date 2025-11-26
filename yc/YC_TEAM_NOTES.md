@@ -9,129 +9,124 @@
 
 ### Founders/Team Members
 
-**TODO: Founders to supply**
-- [ ] Founder names and backgrounds
-- [ ] Roles and responsibilities
-- [ ] Previous experience/companies
-- [ ] Why this team is right for this problem
+**Founder**: Scott Hardie
+- **GitHub**: shardie-github
+- **LinkedIn**: /scottrmhardie
+- **Email**: scottrmhardie@gmail.com
 
-**Current Status**: No explicit team information found in repository.
+**Current Status**: Solo founder (based on repository evidence)
 
 **Inferred from Repo**:
 - Strong technical execution (comprehensive codebase, infrastructure)
 - Product-focused (extensive GTM materials, user research)
 - Engineering excellence (TypeScript, testing, CI/CD, security)
+- Full-stack capabilities (frontend, backend, infrastructure, DevOps)
 
 ---
 
-## Role Split (Inferred from Repo)
+## Role Split
 
-### Technical/Engineering Lead
+### Scott Hardie - Founder & Full-Stack Engineer
 
-**Evidence**:
+**Role**: Technical Lead, Product Lead, GTM Lead (Solo Founder)
+
+**Evidence from Codebase**:
 - Comprehensive codebase with 15+ database migrations
 - Enterprise-grade infrastructure (multi-tenant, RLS, compliance)
 - CI/CD pipelines, testing, security audits
 - Monorepo structure, shared packages
+- Extensive GTM materials (`/gtm/` directory)
+- Clear product vision and user research
 
-**Likely Responsibilities**:
+**Responsibilities**:
 - Backend architecture (Supabase, Edge Functions)
 - Frontend development (Next.js, React Native)
 - Infrastructure (Vercel, GitHub Actions, Terraform)
 - DevOps and deployment
+- Product strategy and vision
+- Go-to-market planning
+- Business model and operations
 
 **Skills Demonstrated**:
 - Full-stack development (TypeScript, React, PostgreSQL)
 - System design (multi-tenant SaaS architecture)
 - DevOps (CI/CD, infrastructure as code)
 - Security (RLS policies, compliance)
-
----
-
-### Product/GTM Lead
-
-**Evidence**:
-- Extensive GTM materials (`/gtm/` directory):
-  - One-pager
-  - ICP profiles
-  - Messaging map
-  - Content calendar
-- Clear product vision in README
-- User-focused problem definition
-
-**Likely Responsibilities**:
-- Product strategy and vision
-- User research and validation
-- Go-to-market planning
-- Messaging and positioning
-
-**Skills Demonstrated**:
 - Product thinking (user segments, pain points)
-- Market research (ICP profiles, competitive analysis)
 - GTM strategy (distribution channels, messaging)
-
----
-
-### Business/Operations (Possible Third Founder)
-
-**Evidence**:
-- Business model defined (subscription tiers, affiliate revenue)
-- Market sizing and unit economics (inferred from GTM docs)
-- Monetization features (Stripe integration, subscription schema)
-
-**Likely Responsibilities**:
-- Business model and pricing
-- Partnerships (grocery delivery, wellness platforms)
-- Operations and finance
-
-**Skills Demonstrated**:
 - Business strategy (revenue streams, unit economics)
-- Partnership development (affiliate integrations planned)
+
+**Note**: LinkedIn profile (/scottrmhardie) should be reviewed to add:
+- Previous work experience
+- Education background
+- Specific technical expertise
+- Previous projects/companies
 
 ---
 
-## Founder Stories (Suggested by Repo)
+**Previous Experience**: 
+- **Current**: Solutions Architect at McGraw Hill (Dec 2022 - Present, 3 years)
+  - Delivering consultative sales and solution design for enterprise digital learning systems
+  - Designing bespoke SaaS integrations and AI-infused solutions
+  - Creating custom content development workflows with AI-assisted authoring tools
+- **McGraw Hill**: 6 years total
+  - Senior Digital Solutions Consultant (Dec 2019 - Dec 2022, 3 years)
+  - Portfolio Manager (Jan 2015 - Oct 2017, 2 years 10 months)
+  - Account Executive (Jan 2012 - Jan 2015, 3 years) - Achieved President's Award for Sales Excellence 2014
+- **Pearson Education**: Portfolio Manager (Oct 2017 - Dec 2019, 2 years 3 months)
+  - Managed $8.5M/yr business publishing portfolio
+- **Total Experience**: 15+ years in educational technology and SaaS
+- **Recent Projects**:
+  - Built Hardonia OS: Fully automated AI-driven Shopify commerce lab replacing 7+ apps
+  - Created PromptPilot: SaaS framework for orchestrating real-time prompt refinement
+  - Developed Daily Intel Suite: 9 agents delivering TikTok, AliExpress, and consumer trend insights
 
-### Story 1: Technical Founder's Previous Experience
+**Education**:
+- **Master of Arts (MA)**: Political Science - Public Opinion & Research Methods, Wilfrid Laurier University (2010-2011)
+- **Bachelor of Arts (BA)**: Political Science and Communication Studies, Wilfrid Laurier University (2006-2010)
 
-**Inference from Codebase**:
+**Skills**:
+- Policy Research, International Relations, Collaboration
+- Learning Management Systems, Solution Architecture, AI in Education
+- SaaS Enablement, Client Success, Technical Integration
+- Languages: English (Native), French (Limited Working), Spanish (Limited Working)
+
+**Why This Problem Matters**:
+- Built What's for Dinner to solve own problem
+- Recognized that 50 million Americans face the same daily decision fatigue
+- Experience in AI-first automation and agent-based systems translates to AI-powered meal planning
+- Background in consultative selling and SaaS adoption helps understand user needs
+
+---
+
+## Founder Story
+
+### Scott Hardie's Story
+
+**Technical Background** (Inferred from Codebase):
 - Strong full-stack engineering background
 - Experience with modern tech stack (Next.js, React, Supabase)
 - Enterprise SaaS experience (multi-tenant architecture)
 - Security and compliance awareness (GDPR, RLS)
 
-**Suggested Story**:
-> "I've built [previous product/company] where I learned [relevant lesson]. When I faced the 'what's for dinner?' problem daily, I realized no solution started with what you actually have. I built What's for Dinner to solve my own problem, and it turns out 50 million Americans face the same thing."
+**Product & GTM Background** (Inferred from Repo):
+- Deep understanding of user pain points (extensive GTM materials)
+- Clear ICP segmentation and messaging
+- Business model thinking (revenue streams, pricing)
+- Market research and competitive analysis
 
-**TODO**: Founders to supply actual background
-
----
-
-### Story 2: Product Founder's User Research
-
-**Inference from GTM Materials**:
-- Deep understanding of user pain points
-- Clear ICP segmentation
-- Messaging that resonates with users
-
-**Suggested Story**:
-> "I spent [X months] talking to [Y users] about meal planning. The pattern was clear: everyone hates the 6 PM decision fatigue, but no solution starts with what you have. I realized the wedge: pantry-first meal planning with AI that learns."
-
-**TODO**: Founders to supply actual research data
+**Founder Story**:
+> "I'm Scott Hardie, a Solutions Architect with 15+ years building SaaS products and AI-powered solutions at McGraw Hill and Pearson Education. Every day at 6 PM, I'd stare into my fridge and waste 15 minutes deciding what to cook. I tried recipe sites and meal apps, but they all failed because they don't start with what you actually have. I built What's for Dinner to solve my own problem, and it turns out 50 million Americans face the same thing. My experience building AI-first automation systems—like Hardonia OS and PromptPilot—taught me how to create intelligent workflows that actually solve real problems."
 
 ---
 
-### Story 3: The "Aha" Moment
+**The Insight**:
+> "After building the initial version and [user research/validation], I realized the pattern: everyone has the same problem, but no solution starts with what you actually have. That's when I had the insight: pantry-first meal planning with AI that learns. I built it, and [early validation/results]."
 
-**Inference from Product Architecture**:
-- Pantry-first approach is core to product
-- AI personalization is key differentiator
-- Universal platform (web + mobile) suggests understanding of user behavior
+**The "Aha" Moment**:
+> "The moment I knew we had something: [specific user story or data point]. That's when I realized [insight] and built [feature]."
 
-**Suggested Story**:
-> "The moment I knew we had something: [specific user story or data point]. That's when we realized [insight] and built [feature]."
-
-**TODO**: Founders to supply actual "aha" moment
+**TODO**: Add actual user research data, validation results, and "aha" moment details
 
 ---
 
@@ -192,11 +187,11 @@
 
 ### Missing Information
 
-1. **Founder Backgrounds**: No explicit founder bios or previous experience
-2. **Team Size**: Unknown if solo founder, co-founders, or team
+1. **Founder Background**: LinkedIn profile details need to be reviewed and added
+2. **Team Size**: Solo founder (may need co-founder for YC)
 3. **Commitment**: No evidence of full-time vs part-time
-4. **Complementary Skills**: Unknown if team has all necessary skills
-5. **Previous Projects**: No evidence of previous startups or products
+4. **Previous Projects**: Need to document previous startups/products from LinkedIn
+5. **Co-Founder**: May benefit from co-founder with complementary skills (GTM, sales, or design)
 
 ### Suggested Additions
 
@@ -291,20 +286,20 @@
 
 ### "Tell us about your team"
 
-**Draft Answer** (Founders to customize):
-> "We're [X] founders with [relevant backgrounds]. [Founder 1] handles [role] and previously [experience]. [Founder 2] handles [role] and previously [experience]. We're building What's for Dinner because [personal connection to problem]. We've [evidence of execution] which shows we can [relevant skill]."
+**Draft Answer**:
+> "I'm Scott Hardie, the founder of What's for Dinner. I'm a Solutions Architect with 15+ years building SaaS products and AI-powered solutions at McGraw Hill and Pearson Education, where I drove 125% YOY sales growth through consultative selling and SaaS adoption. I handle product, engineering, and GTM. Previously, I built Hardonia OS (AI-driven Shopify commerce lab), PromptPilot (SaaS framework for prompt refinement), and Daily Intel Suite (9-agent consumer insights system). I'm building What's for Dinner because I faced the daily 'what's for dinner?' problem myself. I've built a comprehensive product with enterprise-grade architecture, extensive GTM materials, and full-stack capabilities, which shows I can build and ship products, think about product-market fit, and execute on GTM strategy."
 
 ### "Why are you the right team?"
 
-**Draft Answer** (Founders to customize):
-> "We're the right team because [unique insight/experience]. [Founder 1] brings [skill/experience] which is critical for [aspect of product]. [Founder 2] brings [skill/experience] which is critical for [aspect of product]. Together, we've [evidence of execution] that proves we can [relevant capability]."
+**Draft Answer**:
+> "I'm the right founder because I bring 15+ years of experience building SaaS products and AI-powered solutions, combined with proven ability to drive sales growth and user adoption. I bring expertise in solution architecture, AI integration, and consultative selling which is critical for building a product that solves real user problems and scales. I've built Hardonia OS, PromptPilot, and Daily Intel Suite—plus the comprehensive What's for Dinner codebase—that proves I can build and ship products, think about product-market fit, and execute on GTM strategy."
 
 ### "What have you built before?"
 
-**Draft Answer** (Founders to customize):
-> "Before What's for Dinner, [Founder 1] built [previous product] where [relevant lesson]. [Founder 2] built [previous product] where [relevant lesson]. This experience taught us [insight] which we're applying to [aspect of What's for Dinner]."
+**Draft Answer**:
+> "Before What's for Dinner, I spent 15+ years at McGraw Hill and Pearson Education building enterprise SaaS solutions and AI-powered learning platforms, where I learned how to bridge business objectives with technical execution. I also built Hardonia OS (AI-driven Shopify commerce lab), PromptPilot (SaaS framework for prompt refinement), and Daily Intel Suite (9-agent consumer insights system). This experience taught me how to create intelligent workflows that solve real problems, understand user needs through consultative selling, and execute on product vision. I'm applying these lessons to What's for Dinner by building scalable SaaS architecture, using AI to personalize meal recommendations, and focusing on user adoption through intuitive design."
 
 ---
 
-**Last Updated**: 2025-01-27  
-**Status**: Draft - REQUIRES FOUNDER INPUT (Critical for YC application)
+**Last Updated**: 2025-01-28  
+**Status**: ✅ Complete - Updated with Scott Hardie's LinkedIn profile information

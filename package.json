@@ -236,7 +236,9 @@
     "redis:setup": "tsx scripts/setup-redis.ts",
     "redis:test": "tsx scripts/setup-redis.ts",
     "marketing:setup": "tsx scripts/setup/marketing-setup.ts",
-    "kpi:dashboard": "tsx scripts/monitoring/kpi-alert-runner.ts"
+    "kpi:dashboard": "tsx scripts/monitoring/kpi-alert-runner.ts",
+    "metrics:collect": "node scripts/collect-metrics.mjs",
+    "testimonials:generate": "node scripts/send-testimonial-requests.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",

@@ -4,7 +4,7 @@
 
 ## 1. Acceptance of Terms
 
-By accessing and using What's for Dinner ("the Service"), you accept and agree to be bound by the terms and provision of this agreement.
+What's for Dinner ("the Service") is operated by Scott Hardie, Founder, CEO & Operator. By accessing and using What's for Dinner, you accept and agree to be bound by the terms and provision of this agreement.
 
 ## 2. Description of Service
 
@@ -58,7 +58,7 @@ What's for Dinner is an AI-powered meal suggestion service that helps users gene
 - You are responsible for content you submit
 
 ### Our Content
-- Service content is owned by What's for Dinner
+- Service content is owned by What's for Dinner, operated by Scott Hardie, Founder, CEO & Operator
 - Recipes generated are suggestions only
 - Not medical or nutritional advice
 
@@ -106,7 +106,8 @@ What's for Dinner is an AI-powered meal suggestion service that helps users gene
 ## 12. Dispute Resolution
 
 ### Governing Law
-- Terms governed by [Jurisdiction] law
+- Terms governed by the laws of Canada (Ontario)
+- Service operated from Greater Toronto Area, Canada
 
 ### Dispute Process
 1. Contact support first
@@ -117,8 +118,9 @@ What's for Dinner is an AI-powered meal suggestion service that helps users gene
 ## 13. Contact
 
 For questions about these Terms:
-- Email: legal@whats-for-dinner.com
-- Support: support@whats-for-dinner.com
+- **Founder, CEO & Operator**: Scott Hardie
+- **Email**: scottrmhardie@gmail.com
+- **LinkedIn**: [linkedin.com/in/scottrmhardie](https://www.linkedin.com/in/scottrmhardie)
 
 ## 14. Severability
 

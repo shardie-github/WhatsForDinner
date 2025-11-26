@@ -9,12 +9,14 @@
 
 ## 1. Introduction
 
-**What's for Dinner?** ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information in accordance with the **Personal Information Protection and Electronic Documents Act (PIPEDA)** and other applicable Canadian privacy laws.
+**What's for Dinner?** ("we," "us," "our", "the Service") is operated by Scott Hardie, Founder, CEO & Operator. We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information in accordance with the **Personal Information Protection and Electronic Documents Act (PIPEDA)** and other applicable Canadian privacy laws.
 
 **Contact Information**:
-- **Email**: privacy@whats-for-dinner.ca
+- **Founder, CEO & Operator**: Scott Hardie
+- **Email**: scottrmhardie@gmail.com
+- **LinkedIn**: [linkedin.com/in/scottrmhardie](https://www.linkedin.com/in/scottrmhardie)
 - **Website**: https://whats-for-dinner.ca/privacy
-- **Address**: [Your Business Address - Ontario, Canada]
+- **Location**: Greater Toronto Area, Ontario, Canada
 
 ---
 
@@ -249,7 +251,9 @@ We may update this Privacy Policy from time to time. We will notify you of chang
 If you have questions about this Privacy Policy or wish to exercise your rights:
 
 **Privacy Officer**:
-- **Email**: privacy@whats-for-dinner.ca
+- **Founder, CEO & Operator**: Scott Hardie
+- **Email**: scottrmhardie@gmail.com
+- **LinkedIn**: [linkedin.com/in/scottrmhardie](https://www.linkedin.com/in/scottrmhardie)
 - **Website**: https://whats-for-dinner.ca/privacy
 - **Response Time**: Within 30 days (as required by PIPEDA)
 

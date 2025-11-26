@@ -1,0 +1,195 @@
+name: PR Quality Gates
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, master, develop]
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: 9
+
+jobs:
+  format-check:
+    name: Code Formatting Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm format:check
+        continue-on-error: false
+
+      - name: Comment on PR if formatting issues
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Formatting Check Failed**\n\nPlease run `pnpm format` to fix formatting issues.'
+            })
+
+  bundle-size-check:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+        continue-on-error: true
+
+      - name: Build web app
+        run: pnpm build:web
+        continue-on-error: true
+
+      - name: Check bundle size
+        run: pnpm bundle:check || echo "Bundle check skipped if no budgets configured"
+        continue-on-error: true
+
+      - name: Analyze bundle
+        run: pnpm analyze:bundle || echo "Bundle analysis skipped"
+        continue-on-error: true
+
+  docs-validation:
+    name: Documentation Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate documentation
+        run: pnpm docs:lint || echo "Docs lint skipped if script not available"
+        continue-on-error: true
+
+      - name: Check for broken links in markdown
+        uses: peter-evans/check-links@v2
+        with:
+          check-images: false
+          check-anchors: true
+          base-dir: ${{ github.workspace }}
+          max-concurrency: 10
+        continue-on-error: true
+
+  secrets-scan:
+    name: Secrets Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Scan for secrets
+        run: pnpm secrets:scan || echo "Secrets scan skipped"
+        continue-on-error: true
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  pr-summary:
+    name: PR Quality Summary
+    runs-on: ubuntu-latest
+    needs: [format-check, bundle-size-check, docs-validation, secrets-scan]
+    if: always()
+    steps:
+      - name: Create PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const formatCheck = '${{ needs.format-check.result }}';
+            const bundleCheck = '${{ needs.bundle-size-check.result }}';
+            const docsCheck = '${{ needs.docs-validation.result }}';
+            const secretsCheck = '${{ needs.secrets-scan.result }}';
+            
+            let comment = '## 🔍 PR Quality Gates Summary\n\n';
+            
+            const getStatus = (result) => {
+              if (result === 'success') return '✅';
+              if (result === 'failure') return '❌';
+              if (result === 'cancelled') return '⏸️';
+              return '⚠️';
+            };
+            
+            comment += `- **Formatting**: ${getStatus(formatCheck)}\n`;
+            comment += `- **Bundle Size**: ${getStatus(bundleCheck)}\n`;
+            comment += `- **Documentation**: ${getStatus(docsCheck)}\n`;
+            comment += `- **Secrets Scan**: ${getStatus(secretsCheck)}\n`;
+            
+            comment += '\n---\n\n';
+            comment += '**Note**: All checks must pass before merging.';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

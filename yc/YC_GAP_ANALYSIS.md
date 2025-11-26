@@ -1,7 +1,76 @@
 # YC Gap Analysis: What's for Dinner
 
 **Generated**: 2025-01-27  
+**Last Updated**: 2025-01-28  
 **Purpose**: Comprehensive gap analysis comparing repo to YC application and interview expectations
+
+---
+
+## MASTER TODO (Prioritized)
+
+### MUST DO NOW (Blockers for YC Application)
+
+1. **Collect Actual Metrics** (Founder) - Priority: MUST
+   - ✅ Infrastructure complete (SQL functions, API, scripts)
+   - [ ] Apply migration: `supabase migration up`
+   - [ ] Run collection: `pnpm metrics:collect`
+   - [ ] Review results in `/yc/METRICS_COLLECTED.md`
+   - **Link**: `/yc/YC_METRICS_CHECKLIST.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #1, #2)
+
+2. ✅ **Fill Team Information** (COMPLETE) - Priority: DONE
+   - ✅ Scott Hardie information added to `/yc/YC_TEAM_NOTES.md`
+   - ✅ LinkedIn profile integrated
+   - ✅ Founder voice integrated throughout docs
+   - ✅ Legal documents updated with Founder, CEO & Operator designation
+
+3. **Collect User Testimonials** (Founder/GTM) - Priority: MUST
+   - ✅ Infrastructure complete (templates, scripts)
+   - [ ] Run script: `pnpm testimonials:generate`
+   - [ ] Send emails from `/yc/TESTIMONIAL_REQUESTS.md`
+   - [ ] Collect 5-10 testimonials (wait for responses)
+   - [ ] Document in `/yc/USER_TESTIMONIALS.md`
+   - **Link**: `/yc/USER_TESTIMONIALS.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #3)
+
+### NEXT (Should Do Soon)
+
+4. ✅ **Build Metrics Dashboard** (COMPLETE) - Priority: DONE
+   - ✅ Dashboard exists at `/apps/web/src/app/admin/(console)/yc-metrics/page.tsx`
+   - ✅ Connected to API endpoint
+   - ✅ Visualizes all key metrics
+   - ✅ Run `pnpm metrics:collect` to populate with data
+
+5. ✅ **Calculate Unit Economics** (COMPLETE) - Priority: DONE
+   - ✅ Function created (`get_unit_economics()`)
+   - ✅ Calculation templates created
+   - ✅ Included in metrics collection script
+   - ✅ Run `pnpm metrics:collect` to get calculations
+
+6. **Implement Referral Program UI** (Tech Founder) - Priority: NEXT
+   - Build `/apps/web/src/app/referrals/page.tsx`
+   - Infrastructure exists, needs UI
+   - **Link**: `/yc/YC_DISTRIBUTION_PLAN.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #8)
+
+7. **Document User Validation Evidence** (Founder) - Priority: NEXT
+   - Compile user interviews, surveys
+   - Document in `/yc/USER_VALIDATION_EVIDENCE.md`
+   - **Link**: `/yc/USER_VALIDATION_EVIDENCE.md`, `/yc/YC_GAP_ANALYSIS.md` (Antler Lens TODO #1)
+
+### LATER (Nice to Have)
+
+8. **Create Competitive Analysis** (Founder/GTM) - Priority: LATER
+   - Feature comparison table (us vs competitors)
+   - Competitive positioning map
+   - Document in `/yc/COMPETITIVE_ANALYSIS.md`
+   - **Link**: `/yc/COMPETITIVE_ANALYSIS.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #4)
+
+9. **Implement SEO Landing Pages** (Tech Founder) - Priority: LATER
+   - Create dynamic SEO pages for high-value keywords
+   - **Link**: `/yc/YC_DISTRIBUTION_PLAN.md`, `/yc/YC_GAP_ANALYSIS.md` (Gap #8)
+
+10. **Set Up Alerting** (Tech Founder) - Priority: LATER
+    - Configure PagerDuty/Slack webhooks
+    - Set up KPI alerts
+    - **Link**: `/docs/PROJECT_READINESS_REPORT.md`
 
 ---
 
