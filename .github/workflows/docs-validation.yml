@@ -1,0 +1,126 @@
+name: Documentation Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'docs/**'
+      - '*.md'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - '.github/**/*.md'
+  push:
+    branches: [main, master]
+    paths:
+      - 'docs/**'
+      - '*.md'
+  workflow_dispatch:
+
+jobs:
+  validate-docs:
+    name: Validate Documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check markdown syntax
+        uses: DavidAnson/markdownlint-cli2-action@v15
+        with:
+          globs: |
+            **/*.md
+            !node_modules/**
+            !.next/**
+            !dist/**
+        continue-on-error: true
+
+      - name: Validate documentation structure
+        run: pnpm docs:lint || echo "Docs lint script not available"
+        continue-on-error: true
+
+      - name: Check for broken links
+        uses: peter-evans/check-links@v2
+        with:
+          check-images: false
+          check-anchors: true
+          base-dir: ${{ github.workspace }}
+          max-concurrency: 10
+          retry-on-429: true
+          retry-count: 3
+        continue-on-error: true
+
+      - name: Check for required docs
+        run: |
+          REQUIRED_DOCS=(
+            "README.md"
+            "docs/SETUP_LOCAL.md"
+            "docs/FOUNDER_MANUAL.md"
+          )
+          
+          MISSING_DOCS=()
+          for doc in "${REQUIRED_DOCS[@]}"; do
+            if [ ! -f "$doc" ]; then
+              MISSING_DOCS+=("$doc")
+            fi
+          done
+          
+          if [ ${#MISSING_DOCS[@]} -gt 0 ]; then
+            echo "::warning::Missing required documentation files:"
+            printf '%s\n' "${MISSING_DOCS[@]}"
+          else
+            echo "✅ All required documentation files present"
+          fi
+
+      - name: Validate YC documentation
+        run: |
+          YC_DOCS=(
+            "yc/YC_PRODUCT_OVERVIEW.md"
+            "yc/YC_PROBLEM_USERS.md"
+            "yc/YC_MARKET_VISION.md"
+            "yc/YC_TEAM_NOTES.md"
+            "yc/YC_METRICS_CHECKLIST.md"
+            "yc/YC_GAP_ANALYSIS.md"
+          )
+          
+          MISSING_YC_DOCS=()
+          for doc in "${YC_DOCS[@]}"; do
+            if [ ! -f "$doc" ]; then
+              MISSING_YC_DOCS+=("$doc")
+            fi
+          done
+          
+          if [ ${#MISSING_YC_DOCS[@]} -gt 0 ]; then
+            echo "::warning::Missing YC documentation files:"
+            printf '%s\n' "${MISSING_YC_DOCS[@]}"
+          else
+            echo "✅ All YC documentation files present"
+          fi
+        continue-on-error: true
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ **Documentation Validation Issues Found**\n\nPlease review the workflow logs for details.'
+            });

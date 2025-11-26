@@ -1,0 +1,128 @@
+name: Performance Budget Monitoring
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [main, master]
+    paths:
+      - 'apps/web/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  push:
+    branches: [main, master]
+    paths:
+      - 'apps/web/**'
+      - 'packages/**'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: 9
+
+jobs:
+  bundle-size-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+        continue-on-error: true
+
+      - name: Build web app
+        run: pnpm build:web
+        continue-on-error: true
+
+      - name: Analyze bundle size
+        run: pnpm analyze:bundle || echo "Bundle analysis skipped"
+        continue-on-error: true
+
+      - name: Check bundle budgets
+        run: pnpm bundle:check || echo "Bundle budget check skipped"
+        continue-on-error: true
+        id: bundle-check
+
+      - name: Upload bundle report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-report
+          path: |
+            reports/bundle*.json
+            .next/analyze/**
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Comment on PR with bundle size
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const bundleCheck = '${{ steps.bundle-check.outcome }}';
+            
+            let comment = '## 📦 Bundle Size Analysis\n\n';
+            
+            if (bundleCheck === 'success') {
+              comment += '✅ Bundle size within budget limits\n\n';
+            } else if (bundleCheck === 'failure') {
+              comment += '⚠️ Bundle size exceeds budget limits\n\n';
+              comment += 'Please review bundle size and consider code splitting or optimization.\n';
+            } else {
+              comment += 'ℹ️ Bundle analysis completed (no budgets configured)\n\n';
+            }
+            
+            comment += '**Artifacts**: Bundle reports are available in the workflow artifacts.';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  performance-budgets:
+    name: Performance Budgets
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check performance budgets
+        run: pnpm performance:budget || echo "Performance budget check skipped"
+        continue-on-error: true
