@@ -9,12 +9,14 @@
 
 ## 1. Agreement to Terms
 
-By accessing or using **What's for Dinner?** ("the Service," "we," "us," or "our"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not use the Service.
+**What's for Dinner?** ("the Service," "we," "us," or "our") is operated by Scott Hardie, Founder, CEO & Operator. By accessing or using What's for Dinner?, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not use the Service.
 
 **Contact Information**:
-- **Email**: legal@whats-for-dinner.ca
+- **Founder, CEO & Operator**: Scott Hardie
+- **Email**: scottrmhardie@gmail.com
+- **LinkedIn**: [linkedin.com/in/scottrmhardie](https://www.linkedin.com/in/scottrmhardie)
 - **Website**: https://whats-for-dinner.ca/terms
-- **Address**: [Your Business Address - Ontario, Canada]
+- **Location**: Greater Toronto Area, Ontario, Canada
 
 ---
 
@@ -133,7 +135,7 @@ You retain ownership of content you create (meal plans, recipes, notes). By usin
 
 ### 7.1 Our Rights
 
-**What's for Dinner?** and its content (logos, designs, software, recipes) are owned by us or our licensors and are protected by copyright, trademark, and other intellectual property laws.
+**What's for Dinner?** and its content (logos, designs, software, recipes) are owned by Scott Hardie, Founder, CEO & Operator, or our licensors and are protected by copyright, trademark, and other intellectual property laws.
 
 ### 7.2 Your Rights
 
@@ -191,7 +193,7 @@ Nothing in these Terms limits your rights under applicable Canadian consumer pro
 
 ## 10. Indemnification
 
-You agree to indemnify and hold harmless **What's for Dinner?** and its officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from:
+You agree to indemnify and hold harmless **What's for Dinner?**, Scott Hardie (Founder, CEO & Operator), and its officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from:
 - Your use of the Service
 - Your violation of these Terms
 - Your violation of any rights of others
@@ -273,7 +275,9 @@ These Terms, together with our Privacy Policy, constitute the entire agreement b
 If you have questions about these Terms:
 
 **Legal Department**:
-- **Email**: legal@whats-for-dinner.ca
+- **Founder, CEO & Operator**: Scott Hardie
+- **Email**: scottrmhardie@gmail.com
+- **LinkedIn**: [linkedin.com/in/scottrmhardie](https://www.linkedin.com/in/scottrmhardie)
 - **Website**: https://whats-for-dinner.ca/terms
 
 ---

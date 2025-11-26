@@ -101,9 +101,10 @@ See [SECURITY_CHECKLIST.md](./docs/SECURITY_CHECKLIST.md) for our comprehensive 
 
 **Need to report a security issue?**
 
+- **Founder, CEO & Operator**: Scott Hardie
+- **Email**: scottrmhardie@gmail.com
 - **Use GitHub Security Advisories** - For reporting vulnerabilities
 - **Tag maintainers in Issues** - For general security questions
-- **Email** - For sensitive security concerns (if GitHub isn't appropriate)
 
 **We're here to help.** Don't hesitate to reach out if you have security concerns.
 

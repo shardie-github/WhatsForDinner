@@ -4,7 +4,7 @@
 
 ## 1. Introduction
 
-What's for Dinner ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect your personal information.
+What's for Dinner ("we", "us", "our", "the Service") is operated by Scott Hardie, Founder, CEO & Operator. We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect your personal information.
 
 ## 2. Information We Collect
 
@@ -154,14 +154,15 @@ California residents have additional rights:
 ## 13. Contact
 
 For privacy questions or requests:
-- Email: privacy@whats-for-dinner.com
-- Support: support@whats-for-dinner.com
+- **Founder, CEO & Operator**: Scott Hardie
+- **Email**: scottrmhardie@gmail.com
+- **LinkedIn**: [linkedin.com/in/scottrmhardie](https://www.linkedin.com/in/scottrmhardie)
 
 ## 14. Data Protection Officer
 
 For EU residents:
-- Data Protection Officer contact available
-- privacy@whats-for-dinner.com
+- **Data Protection Officer**: Scott Hardie, Founder, CEO & Operator
+- **Email**: scottrmhardie@gmail.com
 
 ---
 

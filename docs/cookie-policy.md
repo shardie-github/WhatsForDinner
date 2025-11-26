@@ -107,8 +107,9 @@ We provide a cookie preference center where you can:
 ## 9. Contact
 
 For questions about cookies:
-- Email: privacy@whats-for-dinner.com
-- Support: support@whats-for-dinner.com
+- **Founder, CEO & Operator**: Scott Hardie
+- **Email**: scottrmhardie@gmail.com
+- **LinkedIn**: [linkedin.com/in/scottrmhardie](https://www.linkedin.com/in/scottrmhardie)
 
 ---
 

@@ -4,7 +4,7 @@
 
 Every day at 6 PM, millions of people stare into their fridge and ask the same question: "What's for dinner?" 
 
-We built What's for Dinner to answer that question—instantly, intelligently, and deliciously.
+I built What's for Dinner to answer that question—instantly, intelligently, and deliciously. As someone who faced this daily decision fatigue myself, I realized no solution started with what you actually have. So I built one that does.
 
 ---
 
@@ -14,7 +14,7 @@ You know the feeling. It's been a long day. You're tired. You open the fridge an
 
 **What's for Dinner solves this daily dilemma.**
 
-We combine AI-powered meal suggestions with smart pantry tracking to give you personalized recommendations based on what you actually have, your dietary preferences, and how much time you have to cook.
+I combine AI-powered meal suggestions with smart pantry tracking to give you personalized recommendations based on what you actually have, your dietary preferences, and how much time you have to cook. After 15+ years building SaaS products and AI-powered solutions, I've learned that the best products solve real problems people face every day.
 
 ---
 
@@ -22,13 +22,13 @@ We combine AI-powered meal suggestions with smart pantry tracking to give you pe
 
 Meal planning shouldn't be a chore. It should be effortless, enjoyable, and inspiring.
 
-We believe that:
+I believe that:
 - **Everyone deserves great meals**, regardless of cooking skill level
 - **Food waste is preventable** with better visibility into what you have
 - **Meal planning should save time**, not consume it
 - **Cooking should be creative**, not stressful
 
-What's for Dinner turns meal planning from a daily struggle into a delightful discovery.
+What's for Dinner turns meal planning from a daily struggle into a delightful discovery. It's the product I wish existed when I was standing in front of my fridge at 6 PM, wondering what to cook.
 
 ---
 
@@ -431,14 +431,29 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+## About the Founder
+
+**What's for Dinner** is built by **Scott Hardie**, Founder, CEO & Operator.
+
+With 15+ years building SaaS products and AI-powered solutions at McGraw Hill and Pearson Education, Scott brings deep expertise in solution architecture, AI integration, and consultative selling. He's built Hardonia OS (AI-driven Shopify commerce lab), PromptPilot (SaaS framework for prompt refinement), and Daily Intel Suite (9-agent consumer insights system).
+
+Scott built What's for Dinner to solve his own daily "what's for dinner?" problem—the same decision fatigue that 50 million Americans face every day at 6 PM.
+
+**Connect**:
+- 📧 Email: scottrmhardie@gmail.com
+- 💼 LinkedIn: [linkedin.com/in/scottrmhardie](https://www.linkedin.com/in/scottrmhardie)
+- 💻 GitHub: [github.com/shardie-github](https://github.com/shardie-github)
+
+---
+
 ## Support
 
 **Need help?**
 
 - 📖 Check the [documentation](docs/)
-- 🐛 [Report a bug](https://github.com/your-org/whats-for-dinner/issues)
-- 💬 [Ask a question](https://github.com/your-org/whats-for-dinner/discussions)
-- 📧 Email: support@whatsfordinner.app
+- 🐛 [Report a bug](https://github.com/shardie-github/WhatsForDinner/issues)
+- 💬 [Ask a question](https://github.com/shardie-github/WhatsForDinner/discussions)
+- 📧 Email: scottrmhardie@gmail.com
 
 **We're here to help you succeed.**
 
@@ -459,7 +474,7 @@ Built with love using:
 
 **🍽️ Stop wondering. Start cooking. 🍳**
 
-Made with ❤️ by the What's for Dinner team
+Built by **Scott Hardie**, Founder, CEO & Operator
 
 [Get Started](#quick-start) • [Documentation](docs/) • [Contributing](CONTRIBUTING.md) • [Security](SECURITY.md)
 
