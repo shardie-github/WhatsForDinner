@@ -20,7 +20,7 @@
     "api:validate": "node scripts/api-validate.js",
     "db:doctor": "node scripts/db-doctor.js",
     "db:migrate": "node scripts/db-migrate.js",
-    "security:scan": "node scripts/security-scan.js",
+    "security:scan": "npm audit --audit-level=high --json > security-scan-report.json",
     "security:deps": "npm audit --audit-level=moderate",
     "security:secrets": "node scripts/security-scan.js --type secrets",
     "security:headers": "node scripts/security-scan.js --type headers",
@@ -73,10 +73,8 @@
     "rls:test": "node scripts/supabase-policy-smoke/index.js",
     "env:validate": "node scripts/validate-env.js",
     "perf:monitor": "node scripts/performance-monitor.js",
-    "perf:analyze": "npm run build && npm run perf:monitor",
     "perf:lighthouse": "npx lighthouse http://localhost:3000 --output=html --output-path=REPORTS/lighthouse-report.html",
-    "security:audit": "npm audit --audit-level=moderate --json > security-audit-report.json",
-    "security:scan": "npm audit --audit-level=high --json > security-scan-report.json"
+    "security:audit": "npm audit --audit-level=moderate --json > security-audit-report.json"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -102,7 +100,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.548.0",
-    "next": "16.0.0",
+    "next": "16.0.7",
     "openai": "^6.7.0",
     "posthog-js": "^1.200.0",
     "react": "19.2.0",
