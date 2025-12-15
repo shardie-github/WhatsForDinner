@@ -1,0 +1,11 @@
+{
+  "date": "2025-12-15",
+  "pr_metrics": {
+    "open_prs": 16,
+    "stale_prs_48h": 0
+  },
+  "ci_metrics": {
+    "failed_runs_last_week": 93
+  },
+  "notes": "Metrics calculated from GitHub API"
+}
