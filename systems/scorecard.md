@@ -1,14 +1,14 @@
 # Systems Scorecard
 
-**Last Updated:** 2026-01-26
+**Last Updated:** 2026-02-02
 
 ## Metrics
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Open PRs | 17 | 🟡 |
+| Open PRs | 18 | 🟡 |
 | Stale PRs (>48h) | 0 | 🟢 |
-| Failed CI Runs (last week) | 93 | ⚠️ |
+| Failed CI Runs (last week) | 91 | ⚠️ |
 
 ## Trends
 

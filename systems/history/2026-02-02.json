@@ -1,0 +1,11 @@
+{
+  "date": "2026-02-02",
+  "pr_metrics": {
+    "open_prs": 18,
+    "stale_prs_48h": 0
+  },
+  "ci_metrics": {
+    "failed_runs_last_week": 91
+  },
+  "notes": "Metrics calculated from GitHub API"
+}
