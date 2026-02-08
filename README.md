@@ -14,7 +14,7 @@ You know the feeling. It's been a long day. You're tired. You open the fridge an
 
 **What's for Dinner solves this daily dilemma.**
 
-I combine AI-powered meal suggestions with smart pantry tracking to give you personalized recommendations based on what you actually have, your dietary preferences, and how much time you have to cook. After 15+ years building SaaS products and AI-powered solutions, I've learned that the best products solve real problems people face every day.
+The app that combines AI-powered meal suggestions with smart pantry tracking to give you personalized recommendations based on what you actually have, your dietary preferences, and how much time you have to cook. After 15+ years building SaaS products and AI-powered solutions, I've learned that the best products solve real problems people face every day.
 
 ---
 
