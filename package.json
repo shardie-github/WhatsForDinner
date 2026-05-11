@@ -247,7 +247,7 @@
   "devDependencies": {
     "@lhci/cli": "^0.13.0",
     "@octokit/rest": "^20.0.2",
-    "@opentelemetry/auto-instrumentations-node": "^0.55.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.75.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
     "@opentelemetry/resources": "^1.28.0",
     "@opentelemetry/sdk-metrics": "^1.28.0",
