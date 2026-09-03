@@ -57,7 +57,7 @@ export default function NutritionDashboard() {
       
       if (user) {
         // Fetch user's recent meals and calculate nutrition
-        await loadNutritionData(user.id);
+        await loadNutritionData();
       }
       
       setLoading(false);
@@ -66,7 +66,7 @@ export default function NutritionDashboard() {
     fetchUser();
   }, []);
 
-  const loadNutritionData = async (_userId: string) => {
+  const loadNutritionData = async () => {
     try {
       // This would fetch recent recipes and calculate aggregate nutrition
       // For now, using mock data structure
