@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
     "target": "ES2022",
     "lib": [
       "dom",
@@ -31,6 +32,12 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@whats-for-dinner/server": [
+        "../../packages/server/src/index.ts"
+      ],
+      "@whats-for-dinner/server/*": [
+        "../../packages/server/src/*"
       ]
     }
   },

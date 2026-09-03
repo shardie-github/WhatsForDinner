@@ -43,15 +43,8 @@ export function initializeTelemetry(): void {
       [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development',
     });
 
-    const traceExporter = otlpEndpoint
-      ? new OTLPTraceExporter({
-          url: `${otlpEndpoint}/v1/traces`,
-        })
-      : undefined;
-
-    sdk = new NodeSDK({
+    const sdkConfig: Parameters<typeof NodeSDK.prototype.constructor>[0] = {
       resource,
-      traceExporter,
       instrumentations: [
         getNodeAutoInstrumentations({
           // Disable fs instrumentation in production for performance
@@ -60,13 +53,24 @@ export function initializeTelemetry(): void {
           },
         }),
       ],
-      metricReader: process.env.NODE_ENV === 'development'
-        ? new PeriodicExportingMetricReader({
-            exporter: new ConsoleMetricExporter(),
-            exportIntervalMillis: 10000,
-          })
-        : undefined,
-    });
+      ...(otlpEndpoint
+        ? {
+            traceExporter: new OTLPTraceExporter({
+              url: `${otlpEndpoint}/v1/traces`,
+            }),
+          }
+        : {}),
+      ...(process.env.NODE_ENV === 'development'
+        ? {
+            metricReader: new PeriodicExportingMetricReader({
+              exporter: new ConsoleMetricExporter(),
+              exportIntervalMillis: 10000,
+            }),
+          }
+        : {}),
+    };
+
+    sdk = new NodeSDK(sdkConfig);
 
     sdk.start();
     initialized = true;

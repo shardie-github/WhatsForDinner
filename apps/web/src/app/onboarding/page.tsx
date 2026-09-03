@@ -377,7 +377,7 @@ export default function OnboardingPage() {
                     Dinner, Solved in 30 Seconds
                   </CardTitle>
                   <CardDescription className="text-base sm:text-lg max-w-md mx-auto mt-2">
-                    Select what's already in your fridge and pantry. We'll craft a custom chef-grade recipe right now.
+                    Select what&apos;s already in your fridge and pantry. We&apos;ll craft a custom chef-grade recipe right now.
                   </CardDescription>
                 </CardHeader>
 
@@ -438,7 +438,7 @@ export default function OnboardingPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="text-2xl sm:text-3xl font-bold">
-                        What's in your kitchen?
+                        What&apos;s in your kitchen?
                       </CardTitle>
                       <CardDescription className="text-sm mt-1">
                         Tap any items you have on hand. The more you pick, the smarter the recipe.

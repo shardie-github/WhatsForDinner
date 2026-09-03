@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-03T01:27:51.793Z",
+  "timestamp": "2026-09-03T01:36:38.374Z",
   "version": "1.0.0",
   "environment": "development",
   "checks": [
@@ -148,9 +148,9 @@
       "subsystem": "Web /api/healthz",
       "result": {
         "status": "pass",
-        "latency": 44,
+        "latency": 53,
         "evidence": [
-          "{\n  \"ok\": false,\n  \"status\": \"unhealthy\",\n  \"version\": \"0.1.0\",\n  \"timestamp\": \"2026-09-03T01:27:48.622Z\",\n  \"environment\": \"development\",\n  \"checks\": {\n    \"database\": {\n      \"healthy\": false,\n      \"error\": \"Missing Supabase credentials\"\n    },\n    \"auth\": {\n      \"healthy\": false,\n      \"error\": \"Missing Supabase credentials\"\n    },\n    \"storage\": {\n      \"healthy\": true\n    },\n    \"rls\": {\n      \"effective\": false,\n      \"unauthReadBlocked\": false,\n      \"authReadAllowed\": false\n    }\n  },\n  \"responseTime\": 0\n}"
+          "{\n  \"ok\": false,\n  \"status\": \"unhealthy\",\n  \"version\": \"0.1.0\",\n  \"timestamp\": \"2026-09-03T01:36:35.231Z\",\n  \"environment\": \"development\",\n  \"checks\": {\n    \"database\": {\n      \"healthy\": false,\n      \"error\": \"Missing Supabase credentials\"\n    },\n    \"auth\": {\n      \"healthy\": false,\n      \"error\": \"Missing Supabase credentials\"\n    },\n    \"storage\": {\n      \"healthy\": true\n    },\n    \"rls\": {\n      \"effective\": false,\n      \"unauthReadBlocked\": false,\n      \"authReadAllowed\": false\n    }\n  },\n  \"responseTime\": 0\n}"
         ]
       }
     },
@@ -207,7 +207,7 @@
       "subsystem": "Meal Plan API",
       "result": {
         "status": "pass",
-        "latency": 182,
+        "latency": 178,
         "evidence": [
           "HTTP 405"
         ]
@@ -218,7 +218,7 @@
       "subsystem": "Grocery List API",
       "result": {
         "status": "pass",
-        "latency": 70,
+        "latency": 86,
         "evidence": [
           "HTTP 200"
         ]

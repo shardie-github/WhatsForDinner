@@ -32,7 +32,6 @@ export async function generateRecipes({
 }: GenerateRecipesOptions): Promise<GenerateRecipesResult> {
   const startTime = Date.now();
   let lastError: Error | null = null;
-  let retryCount = 0;
 
   const apiKey = process.env.OPENAI_API_KEY || '';
   if (!apiKey || apiKey.startsWith('mock-') || apiKey.startsWith('sk-test') || apiKey.includes('placeholder')) {
@@ -140,6 +139,7 @@ export async function generateRecipes({
           model: model,
           attempt: attempt + 1,
           duration_ms: attemptDuration,
+          total_duration_ms: totalDuration,
           recipes_count: recipes.length,
           confidence_score: confidenceScore,
         },
@@ -161,7 +161,6 @@ export async function generateRecipes({
     } catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       lastError = error;
-      retryCount = attempt;
 
       // Log the error
       await logger.error(
@@ -185,7 +184,9 @@ export async function generateRecipes({
       });
 
       // Don't retry on auth errors or validation errors
-      if ((error as any)?.status === 401 || (error as any)?.code === 'invalid_api_key') {
+      const errorStatus = (error as { status?: number; code?: string })?.status;
+      const errorCode = (error as { status?: number; code?: string })?.code;
+      if (errorStatus === 401 || errorCode === 'invalid_api_key') {
         break;
       }
 
@@ -220,7 +221,10 @@ export async function generateRecipes({
 }
 
 // Helper methods
-function calculateCostEstimate(usage: any, model: string): number {
+function calculateCostEstimate(
+  usage: { prompt_tokens?: number; completion_tokens?: number } | null | undefined,
+  model: string
+): number {
   if (!usage) return 0;
 
   // Simplified cost calculation (prices as of 2024)
@@ -240,7 +244,7 @@ function calculateCostEstimate(usage: any, model: string): number {
 }
 
 function calculateConfidenceScore(
-  recipes: any[],
+  recipes: Array<{ ingredients?: string[]; title?: string; cookTime?: string; calories?: number; steps?: string[] }>,
   ingredients: string[]
 ): number {
   let score = 0.5; // Base score

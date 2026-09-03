@@ -4,12 +4,15 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "skipLibCheck": true,
-    "noEmit": true,
-    "strict": false,
-    "noImplicitAny": false,
+    "noEmit": false,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "exactOptionalPropertyTypes": false
+    "exactOptionalPropertyTypes": false,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.*", "**/*.spec.*"]

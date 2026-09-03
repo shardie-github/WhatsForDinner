@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Sentry Configuration
  * 
@@ -14,9 +15,12 @@ const ENABLE_SENTRY = process.env.NEXT_PUBLIC_SENTRY_ENABLED === 'true' ||
 
 export function initSentry() {
   if (!ENABLE_SENTRY || !SENTRY_DSN) {
-    console.log('Sentry disabled or DSN not configured');
     return;
   }
+
+  const sentryBrowser = Sentry as unknown as {
+    replayIntegration?: (options: { maskAllText: boolean; blockAllMedia: boolean }) => Sentry.Integration;
+  };
 
   Sentry.init({
     dsn: SENTRY_DSN,
@@ -49,7 +53,7 @@ export function initSentry() {
     ],
     
     // Filter out sensitive data
-    beforeSend(event, hint) {
+    beforeSend(event) {
       // Remove sensitive data from event
       if (event.request) {
         // Remove passwords from request data
@@ -79,15 +83,13 @@ export function initSentry() {
     },
     
     // Integrations (browser-only)
-    integrations: typeof (Sentry as any).replayIntegration === 'function' ? [
-      (Sentry as any).replayIntegration({
+    integrations: typeof sentryBrowser.replayIntegration === 'function' ? [
+      sentryBrowser.replayIntegration({
         maskAllText: true,
         blockAllMedia: false,
       }),
     ] : [],
   });
-  
-  console.log('Sentry initialized for environment:', ENVIRONMENT);
 }
 
 // Export Sentry instance for manual error reporting

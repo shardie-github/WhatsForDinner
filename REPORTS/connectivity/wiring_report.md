@@ -1,6 +1,6 @@
 # Nomad Monorepo Connectivity Report
 
-Generated: 2026-09-03T01:27:51.793Z  
+Generated: 2026-09-03T01:36:38.374Z  
 Version: 1.0.0  
 Environment: development
 
@@ -30,14 +30,14 @@ Environment: development
 | Environment | DSAR Verification JWT | ?? DEGRADED | -ms | Missing: DSAR_VERIFICATION_JWT_SECRET |
 | Environment | Artifacts Bucket URL | ?? DEGRADED | -ms | Missing: ARTIFACTS_BUCKET_URL |
 | Environment | OTel Endpoint | ?? DEGRADED | -ms | Missing: OTEL_EXPORTER_OTLP_ENDPOINT |
-| Health | Web /api/healthz | ? PASS | 44ms | - |
+| Health | Web /api/healthz | ? PASS | 53ms | - |
 | Health | Database | ? FAIL | -ms | DATABASE_URL or SUPABASE_DB_URL must be set before executing database queries |
 | Health | Redis | ?? SKIP | -ms | - |
 | Auth/RLS | Supabase JWT Verification | ?? SKIP | -ms | - |
 | Consent/Ads/Analytics | Analytics Provider | ?? DEGRADED | -ms | - |
 | Consent/Ads/Analytics | Ads Network Fallback | ? PASS | -ms | - |
-| Core Product | Meal Plan API | ? PASS | 182ms | - |
-| Core Product | Grocery List API | ? PASS | 70ms | - |
+| Core Product | Meal Plan API | ? PASS | 178ms | - |
+| Core Product | Grocery List API | ? PASS | 86ms | - |
 | Core Product | AI Meal Generation | ?? DEGRADED | -ms | - |
 | Payments | Stripe Configuration | ?? DEGRADED | -ms | - |
 | Payments | Stripe Webhook Endpoint | ? PASS | -ms | - |
