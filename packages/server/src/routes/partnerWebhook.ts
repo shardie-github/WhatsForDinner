@@ -1,10 +1,10 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { verifyHMAC } from '../security/index.js';
-import { webhookEventsRepo } from '../db/index.js';
-import { queue } from '../queue/index.js';
-import { logger } from '../observability/index.js';
-import { addSecurityHeaders } from '../security/helmet.js';
+import { verifyHMAC } from '../security/index';
+import { webhookEventsRepo } from '../db/index';
+import { queue } from '../queue/index';
+import { logger } from '../observability/index';
+import { addSecurityHeaders } from '../security/helmet';
 import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {

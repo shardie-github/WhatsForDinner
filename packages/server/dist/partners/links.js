@@ -6,8 +6,8 @@
  * Includes tokenization for short URLs (/r/:token).
  */
 import crypto from 'crypto';
-import { db } from '../db/index.js';
-import { partners, partnerLinks } from '../db/schema.js';
+import { db } from '../db/index';
+import { partners, partnerLinks } from '../db/schema';
 import { eq, and, gte } from 'drizzle-orm';
 const LINK_SIGNING_SECRET = process.env.LINK_SIGNING_SECRET || '';
 const DEFAULT_EXPIRY_HOURS = 30 * 24; // 30 days

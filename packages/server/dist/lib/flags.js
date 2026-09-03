@@ -6,6 +6,8 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+const logger = createComponentLogger('flags-ts');
 let flagsCache = null;
 let lastModified = 0;
 /**
@@ -32,7 +34,7 @@ function loadFlags() {
         return flagsCache;
     }
     catch (error) {
-        console.warn(`Failed to load flags from ${flagsPath}:`, error);
+        logger.warn('Failed to load flags from ${flagsPath}:', { error });
         return {};
     }
 }

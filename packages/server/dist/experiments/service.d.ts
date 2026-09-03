@@ -43,29 +43,9 @@ export declare function pauseExperimentIfNeeded(experimentKey: string): Promise<
  * Get experiment statistics (for dashboard)
  */
 export declare function getExperimentStats(experimentKey: string): Promise<{
-    experiment: {
-        id: string;
-        created_at: Date;
-        updated_at: Date;
-        description: string | null;
-        status: "draft" | "running" | "paused" | "complete";
-        key: string;
-        hypothesis: string | null;
-        primary_metric: string;
-        guardrail_metrics: string[] | null;
-        created_by: string | null;
-        started_at: Date | null;
-        stopped_at: Date | null;
-    };
-    variants: {
-        weight: number;
-        id: string;
-        created_at: Date;
-        key: string;
-        experiment_id: string;
-        meta: Record<string, unknown> | null;
-    }[];
-    assignments: Record<string, number>;
+    experiment: any;
+    variants: any;
+    assignments: any;
 } | null>;
 /**
  * Minimum sample size calculator (for power analysis)

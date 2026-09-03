@@ -1,6 +1,8 @@
 /**
  * AI Agent Guardrails
  */
+import { createComponentLogger } from '@whats-for-dinner/utils';
+const logger = createComponentLogger('llm-guardrails-ts');
 export class LLMGuardrails {
     circuitBreakerOpen = false;
     failureCount = 0;
@@ -61,7 +63,7 @@ export class LLMGuardrails {
         }
         catch (error) {
             if (process.env.NODE_ENV === 'development') {
-                console.warn('LLM failed, using fallback:', error);
+                logger.warn('LLM failed', { message: 'using fallback', error });
             }
             return fallbackFunction();
         }

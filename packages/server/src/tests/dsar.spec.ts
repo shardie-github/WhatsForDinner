@@ -5,11 +5,11 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { db } from '../db/index.js';
-import { dsarRequests, dsarArtifacts, users } from '../db/schema.js';
+import { db } from '../db/index';
+import { dsarRequests, dsarArtifacts, users } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { generateDSARExport } from '../jobs/dsarExport.js';
-import { processErasure } from '../jobs/erasureRunner.js';
+import { generateDSARExport } from '../jobs/dsarExport';
+import { processErasure } from '../jobs/erasureRunner';
 
 describe('DSAR Workflows', () => {
   let testUserId: string;

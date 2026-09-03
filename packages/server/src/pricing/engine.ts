@@ -3,16 +3,16 @@
  * Intelligent price recommendation with elasticity, Van Westendorp, and geo-pricing
  */
 
-import { db } from '../db/index.js';
+import { db } from '../db/index';
 import {
   pricingRules,
   elasticityResults,
   vanWestendorpSurveys,
   priceExperiments,
   promoOffers,
-} from '../db/schema.js';
+} from '../db/schema';
 import { eq, and, or, isNull, isNotNull, sql } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 export interface PriceRecommendation {
   price_cents: number;

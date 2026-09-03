@@ -6,15 +6,15 @@
  * Auto-pause if conversion drop > 10% or revenue drop > 5%
  */
 
-import { db } from '../db/index.js';
+import { db } from '../db/index';
 import {
   priceExperiments,
   elasticityResults,
   transactions,
   lifecycleEvents,
-} from '../db/schema.js';
+} from '../db/schema';
 import { eq, and, sql, gte, lte, count, sum } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 /**
  * Check if experiment should be auto-paused based on conversion/revenue drop

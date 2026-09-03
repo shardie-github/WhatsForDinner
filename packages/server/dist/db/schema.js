@@ -46,7 +46,7 @@ export const recipes = pgTable('recipes', {
     created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
-// Meal plans table
+// Meal plans table (RLS enabled: user_id = auth.uid() or household member)
 export const mealPlans = pgTable('meal_plans', {
     id: uuid('id').primaryKey().defaultRandom(),
     user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -196,8 +196,8 @@ export const referralPrograms = pgTable('referral_programs', {
     id: uuid('id').primaryKey().defaultRandom(),
     slug: text('slug').notNull().unique(),
     active: boolean('active').default(true).notNull(),
-    reward_sender: jsonb('reward_sender').$type().default({}),
-    reward_receiver: jsonb('reward_receiver').$type().default({}),
+    reward_sender: jsonb('reward_sender').$type().default({ type: 'credit', value: 0 }),
+    reward_receiver: jsonb('reward_receiver').$type().default({ type: 'credit', value: 0 }),
     terms_url: text('terms_url'),
     created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),

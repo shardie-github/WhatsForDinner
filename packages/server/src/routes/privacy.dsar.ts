@@ -7,12 +7,12 @@
 import { z } from 'zod';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { db } from '../db/index.js';
-import { dsarRequests, dsarArtifacts, users } from '../db/schema.js';
+import { db } from '../db/index';
+import { dsarRequests, dsarArtifacts, users } from '../db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import { getAdminAuth, requirePermission } from '../auth/admin.js';
-import { logger } from '../observability/index.js';
-import { addSecurityHeaders } from '../security/helmet.js';
+import { getAdminAuth, requirePermission } from '../auth/admin';
+import { logger } from '../observability/index';
+import { addSecurityHeaders } from '../security/helmet';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 

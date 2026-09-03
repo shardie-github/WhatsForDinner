@@ -3,12 +3,12 @@
  * Monitors metrics and auto-pauses experiments if guardrails breached
  */
 
-import { db } from '../db/index.js';
-import { experiments } from '../db/schema.js';
+import { db } from '../db/index';
+import { experiments } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
-import { pauseExperimentIfNeeded } from '../experiments/service.js';
-import { lifecycleEvents } from '../db/schema.js';
+import { logger } from '../observability/index';
+import { pauseExperimentIfNeeded } from '../experiments/service';
+import { lifecycleEvents } from '../db/schema';
 
 export async function anomalyGuardProcessor(): Promise<{
   checked: number;

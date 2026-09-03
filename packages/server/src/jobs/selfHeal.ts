@@ -8,7 +8,7 @@
  * - Stuck processes
  */
 
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 import { Queue } from 'bullmq';
 
 interface SelfHealConfig {

@@ -4,10 +4,10 @@
  * SOC2/ISO27001 evidence capture, controls monitoring, automated collectors
  */
 
-import { db } from '../db/index.js';
-import { controls, controlEvidence } from '../db/schema.js';
+import { db } from '../db/index';
+import { controls, controlEvidence } from '../db/schema';
 import { eq, and } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 import crypto from 'crypto';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';

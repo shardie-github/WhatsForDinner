@@ -57,10 +57,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (!user) {
-    router.push('/home');
-    return null;
-  }
+  const effectiveUserId = user?.id || 'guest-session';
 
   return (
     <div className="min-h-screen p-4 pb-24 md:pb-4">
@@ -79,63 +76,82 @@ export default function DashboardPage() {
           {/* AI Personality Greeting */}
           <AIPersonality context="greeting" />
 
+          {/* Guest Mode Banner if unauthenticated */}
+          {!user && (
+            <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span>You&apos;re exploring in <strong>Guest Chef Mode</strong>. Data is stored locally on this device.</span>
+              </div>
+              <Button size="sm" variant="outline" className="text-xs h-8 border-primary/40 font-semibold" asChild>
+                <Link href="/onboarding">
+                  Sync & Create Account
+                </Link>
+              </Button>
+            </div>
+          )}
+
           {/* Daily Retention Hooks */}
-          <DailyRetentionHooks userId={user.id} />
+          <DailyRetentionHooks userId={effectiveUserId} />
 
           {/* Smart Upsell Opportunities */}
           {user && tenantId && (
-            <SmartUpsell userId={user.id} tenantId={tenantId} />
+            <SmartUpsell userId={effectiveUserId} tenantId={tenantId} />
           )}
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions Grid - Industry-Defining Suite */}
         <div>
-          <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+          <h2 className="text-xl font-semibold mb-4">Autonomous Culinary Suite</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card className="cursor-pointer hover:border-primary transition-colors" asChild>
-              <Link href="/surprise-me">
+            {/* Action 1: OmniChef Voice HUD */}
+            <Card className="cursor-pointer hover:border-primary transition-colors border-2" asChild>
+              <Link href="/cook/demo">
                 <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="font-semibold">Surprise Me</div>
-                  <div className="text-xs text-muted-foreground mt-1">Get instant recipe</div>
-                </CardContent>
-              </Link>
-            </Card>
-
-            <Card className="cursor-pointer hover:border-primary transition-colors" asChild>
-              <Link href="/play">
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <Play className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="font-semibold">Play Games</div>
-                  <div className="text-xs text-muted-foreground mt-1">Decision games</div>
-                </CardContent>
-              </Link>
-            </Card>
-
-            <Card className="cursor-pointer hover:border-primary transition-colors" asChild>
-              <Link href="/grocery">
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                    <ShoppingCart className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="font-semibold">Shop</div>
-                  <div className="text-xs text-muted-foreground mt-1">Grocery lists</div>
-                </CardContent>
-              </Link>
-            </Card>
-
-            <Card className="cursor-pointer hover:border-primary transition-colors" asChild>
-              <Link href="/meal-planner">
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center">
                     <UtensilsCrossed className="w-6 h-6 text-white" />
                   </div>
-                  <div className="font-semibold">Meal Plan</div>
-                  <div className="text-xs text-muted-foreground mt-1">Weekly planning</div>
+                  <div className="font-semibold text-sm">OmniChef™ HUD</div>
+                  <div className="text-xs text-muted-foreground mt-1">Voice cooking mode</div>
+                </CardContent>
+              </Link>
+            </Card>
+
+            {/* Action 2: Vision Scanner */}
+            <Card className="cursor-pointer hover:border-primary transition-colors border-2" asChild>
+              <Link href="/onboarding">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="font-semibold text-sm">Vision Scanner</div>
+                  <div className="text-xs text-muted-foreground mt-1">Photo fridge scan</div>
+                </CardContent>
+              </Link>
+            </Card>
+
+            {/* Action 3: OmniCart Arbitrage */}
+            <Card className="cursor-pointer hover:border-primary transition-colors border-2" asChild>
+              <Link href="/grocery">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center">
+                    <ShoppingCart className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="font-semibold text-sm">OmniCart™</div>
+                  <div className="text-xs text-muted-foreground mt-1">Price arbitrage</div>
+                </CardContent>
+              </Link>
+            </Card>
+
+            {/* Action 4: Metabolic Index */}
+            <Card className="cursor-pointer hover:border-primary transition-colors border-2" asChild>
+              <Link href="/nutrition">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                    <Play className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="font-semibold text-sm">Metabolic CGM</div>
+                  <div className="text-xs text-muted-foreground mt-1">Glycemic & satiety</div>
                 </CardContent>
               </Link>
             </Card>

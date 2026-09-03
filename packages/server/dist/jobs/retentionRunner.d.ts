@@ -24,9 +24,7 @@ export declare function getRetentionPreview(category: string, days: number): Pro
     retentionDays: number;
     cutoffDate: string;
     recordsToDelete: number;
-    oldestRecord: {
-        [x: string]: any;
-    } | null;
+    oldestRecord: any;
 }>;
 /**
  * Initialize default retention policies

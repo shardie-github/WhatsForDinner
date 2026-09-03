@@ -3,10 +3,10 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { GET } from '../routes/paywall.js';
+import { GET } from '../routes/paywall';
 import type { NextRequest } from 'next/server';
-import { db } from '../db/index.js';
-import { pricingRules, experiments, experimentVariants } from '../db/schema.js';
+import { db } from '../db/index';
+import { pricingRules, experiments, experimentVariants } from '../db/schema';
 
 describe('Paywall API', () => {
   beforeEach(async () => {

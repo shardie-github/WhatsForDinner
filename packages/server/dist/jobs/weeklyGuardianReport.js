@@ -5,6 +5,8 @@
 import { GuardianInspector } from '@whats-for-dinner/utils/guardian';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+const logger = createComponentLogger('weeklyguardianreport-ts');
 export async function generateWeeklyReports() {
     const logsDir = './guardian/logs';
     const reportsDir = './guardian/reports';
@@ -35,7 +37,7 @@ export async function generateWeeklyReports() {
             reportsGenerated++;
         }
         catch (error) {
-            console.error(`Failed to generate report for ${file}:`, error);
+            logger.error('Failed to generate report for ${file}:', { error });
         }
     }
 }

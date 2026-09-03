@@ -3,6 +3,8 @@
  * Parses CSV feeds (Google Merchant format compatible)
  */
 import { parse } from 'csv-parse/sync';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+const logger = createComponentLogger('csv-ts');
 /**
  * Parse CSV content into catalog items
  */
@@ -19,7 +21,7 @@ export function parseCSVFeed(csvContent, options) {
         }
         catch (error) {
             if (process.env.NODE_ENV === 'development') {
-                console.warn('Failed to parse CSV row', error, row);
+                logger.warn('Failed to parse CSV row', { error, row });
             }
             return null;
         }

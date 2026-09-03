@@ -7,8 +7,8 @@
  */
 
 import crypto from 'crypto';
-import { db } from '../db/index.js';
-import { partners, partnerLinks } from '../db/schema.js';
+import { db } from '../db/index';
+import { partners, partnerLinks } from '../db/schema';
 import { eq, and, gte } from 'drizzle-orm';
 
 const LINK_SIGNING_SECRET = process.env.LINK_SIGNING_SECRET || '';

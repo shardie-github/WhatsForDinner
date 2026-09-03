@@ -10,7 +10,7 @@
  */
 
 import { metrics } from '@opentelemetry/api';
-import { logger } from './index.js';
+import { logger } from './index';
 
 export interface SLOTarget {
   name: string;

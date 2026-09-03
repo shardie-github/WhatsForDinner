@@ -3,8 +3,8 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { verifyAppleReceipt } from '../payments/apple.js';
-import { verifyGooglePurchase } from '../payments/google.js';
+import { verifyAppleReceipt } from '../payments/apple';
+import { verifyGooglePurchase } from '../payments/google';
 
 describe('Payment Verification', () => {
   beforeEach(() => {

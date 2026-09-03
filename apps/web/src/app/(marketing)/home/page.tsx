@@ -33,9 +33,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { TrustSignals } from '@/components/TrustSignals';
+import { InteractiveFridgeSandbox } from '@/components/home/InteractiveFridgeSandbox';
 import Link from 'next/link';
+import { Camera, Utensils, Activity, GitFork } from 'lucide-react';
 
 interface ValueProposition {
   icon: React.ReactNode;
@@ -123,62 +124,35 @@ export default function HomePage() {
 
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-            Stop wondering what's for dinner. Our AI analyzes your pantry, preferences, and goals 
+            Stop wondering what&apos;s for dinner. Our AI analyzes your pantry, preferences, and goals 
             to create personalized meal plans in seconds—not hours.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" asChild>
-              <Link href="/surprise-me">
+              <Link href="/onboarding">
                 <Sparkles className="w-5 h-5 mr-2" />
-                Surprise Me!
+                Start Instant Dinner (30s)
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-              <Link href="/signup">
-                Start Planning Free
-                <ArrowRight className="w-5 h-5 ml-2" />
+              <Link href="/cook/demo">
+                <Utensils className="w-5 h-5 mr-2 text-primary" />
+                OmniChef™ Voice HUD
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-              <Link href="/demo">
-                <Play className="w-5 h-5 mr-2" />
-                Watch Demo
+              <Link href="/surprise-me">
+                <Flame className="w-5 h-5 mr-2 text-amber-500" />
+                Dinner Roulette
               </Link>
             </Button>
           </div>
 
-          {/* Quick Decision Section */}
-          <div className="mt-16 mb-20">
-            <div className="max-w-2xl mx-auto">
-              <Card className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 border-2 border-primary/20">
-                <CardContent className="p-8 text-center">
-                  <div className="mb-6">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
-                      <Sparkles className="w-10 h-10 text-white" />
-                    </div>
-                    <h2 className="text-3xl font-bold mb-2">Don't Know What to Cook?</h2>
-                    <p className="text-muted-foreground text-lg">
-                      Get an instant AI-powered suggestion in seconds
-                    </p>
-                  </div>
-                  <Button 
-                    size="lg" 
-                    className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                    asChild
-                  >
-                    <Link href="/surprise-me">
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      Surprise Me!
-                    </Link>
-                  </Button>
-                  <p className="text-xs text-muted-foreground mt-4">
-                    No signup required • Instant results • Free forever
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+          {/* Interactive Virtual Fridge Sandbox Hero Feature */}
+          <div className="mt-8 mb-16 text-left">
+            <InteractiveFridgeSandbox />
           </div>
 
           {/* Trust Signals */}
@@ -215,7 +189,7 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Why Thousands Choose What's for Dinner</h2>
+            <h2 className="text-4xl font-bold mb-4">Why Thousands Choose What&apos;s for Dinner</h2>
             <p className="text-xl text-muted-foreground">
               Real results. Real time saved. Real peace of mind.
             </p>
@@ -238,6 +212,124 @@ export default function HomePage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Industry-Defining Innovations Showcase */}
+      <section className="container mx-auto px-4 py-20 bg-muted/30 border-y">
+        <div className="max-w-6xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <Badge className="bg-primary/10 text-primary border-primary/30 text-xs px-3 py-1 font-bold">
+              The Next-Gen Food Operating System
+            </Badge>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-tight">
+              5 Breakthrough Technologies in One App
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Engineered to eliminate kitchen decision fatigue, grocery markups, and food waste forever.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Feature 1: OmniChef Voice HUD */}
+            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold">
+                <Utensils className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">OmniChef™ Voice HUD</h3>
+                <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
+                  Cook completely hands-free with voice recognition, parallel multi-timers, and live emergency ingredient substitutions.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" className="w-full text-xs font-bold" asChild>
+                <Link href="/cook/demo">
+                  Try Kitchen HUD
+                  <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </Link>
+              </Button>
+            </Card>
+
+            {/* Feature 2: VisionPantry Multimodal AI */}
+            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                <Camera className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">VisionPantry™ AI</h3>
+                <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
+                  Snap a photo of your open fridge or supermarket receipt. Neural vision identifies ingredients and predicts expiration hazard curves.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" className="w-full text-xs font-bold" asChild>
+                <Link href="/onboarding">
+                  Test Vision Scanner
+                  <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </Link>
+              </Button>
+            </Card>
+
+            {/* Feature 3: OmniCart Multi-Retailer Arbitrage */}
+            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center text-xl font-bold">
+                <ShoppingCart className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">OmniCart™ Arbitrage</h3>
+                <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
+                  Real-time basket pricing across Instacart, Amazon Fresh, Walmart+, and Kroger. Auto-swaps brand names to save up to 28%.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" className="w-full text-xs font-bold" asChild>
+                <Link href="/grocery">
+                  Compare Grocery Carts
+                  <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </Link>
+              </Button>
+            </Card>
+
+            {/* Feature 4: Precision Metabolic Nutrition */}
+            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-xl font-bold">
+                <Activity className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">Metabolic & CGM Sync</h3>
+                <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
+                  Medical-grade glycemic load modeling, anti-inflammatory scoring, and activity toggles for keto, post-workout, and diabetic health.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" className="w-full text-xs font-bold" asChild>
+                <Link href="/nutrition">
+                  View Metabolic Index
+                  <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </Link>
+              </Button>
+            </Card>
+
+            {/* Feature 5: Culinary Git Forkable Network */}
+            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4 md:col-span-2 lg:col-span-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl font-bold flex-shrink-0">
+                    <GitFork className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">Culinary Git™ Forkable Recipe Network</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Fork any recipe, track ingredient deltas, and earn 30% affiliate creator royalties when groceries are bought through your branch.
+                    </p>
+                  </div>
+                </div>
+                <Button size="sm" className="font-bold text-xs h-10 px-6 flex-shrink-0" asChild>
+                  <Link href="/recipes">
+                    Explore Branch Tree
+                    <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                  </Link>
+                </Button>
+              </div>
+            </Card>
           </div>
         </div>
       </section>

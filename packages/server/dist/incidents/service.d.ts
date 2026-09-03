@@ -26,32 +26,7 @@ export declare function createIncident(input: CreateIncidentInput): Promise<stri
 /**
  * Get incident by ID
  */
-export declare function getIncident(incidentId: string): Promise<{
-    opened_by_user: {
-        role: "superadmin" | "finance" | "reviewer" | "support" | "privacy_officer" | "auditor";
-        id: string;
-        email: string;
-        created_at: Date;
-        updated_at: Date;
-        status: "active" | "suspended";
-        last_login_at: Date | null;
-    } | null;
-    id: string;
-    created_at: Date;
-    updated_at: Date;
-    title: string;
-    status: "open" | "mitigated" | "closed";
-    severity: "low" | "major" | "critical";
-    summary: string;
-    opened_by: string;
-    timeline: {
-        ts: string;
-        actor_id: string;
-        action: string;
-        details?: Record<string, unknown>;
-    }[];
-    closed_at: Date | null;
-} | null>;
+export declare function getIncident(incidentId: string): Promise<any>;
 /**
  * List incidents with filters
  */
@@ -63,32 +38,7 @@ export declare function listIncidents(params: {
     to?: Date;
     page?: number;
     limit?: number;
-}): Promise<{
-    opened_by_user: {
-        role: "superadmin" | "finance" | "reviewer" | "support" | "privacy_officer" | "auditor";
-        id: string;
-        email: string;
-        created_at: Date;
-        updated_at: Date;
-        status: "active" | "suspended";
-        last_login_at: Date | null;
-    } | null;
-    id: string;
-    created_at: Date;
-    updated_at: Date;
-    title: string;
-    status: "open" | "mitigated" | "closed";
-    severity: "low" | "major" | "critical";
-    summary: string;
-    opened_by: string;
-    timeline: {
-        ts: string;
-        actor_id: string;
-        action: string;
-        details?: Record<string, unknown>;
-    }[];
-    closed_at: Date | null;
-}[]>;
+}): Promise<any>;
 /**
  * Update incident
  */
@@ -110,34 +60,18 @@ export declare function getIncidentsNeedingAttention(): Promise<Array<{
  * Generate weekly incident digest
  */
 export declare function generateWeeklyDigest(from: Date, to: Date): Promise<{
-    total: number;
+    total: any;
     byStatus: {
-        open: number;
-        mitigated: number;
-        closed: number;
+        open: any;
+        mitigated: any;
+        closed: any;
     };
     bySeverity: {
-        critical: number;
-        major: number;
-        low: number;
+        critical: any;
+        major: any;
+        low: any;
     };
     avgTimeToClose: number;
-    incidents: {
-        id: string;
-        created_at: Date;
-        updated_at: Date;
-        title: string;
-        status: "open" | "mitigated" | "closed";
-        severity: "low" | "major" | "critical";
-        summary: string;
-        opened_by: string;
-        timeline: {
-            ts: string;
-            actor_id: string;
-            action: string;
-            details?: Record<string, unknown>;
-        }[];
-        closed_at: Date | null;
-    }[];
+    incidents: any;
 }>;
 //# sourceMappingURL=service.d.ts.map

@@ -10,19 +10,19 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { getAuthContext } from '../auth/index.js';
-import { db } from '../db/index.js';
+import { getAuthContext } from '../auth/index';
+import { db } from '../db/index';
 import {
   vanWestendorpSurveys,
   priceExperiments,
   elasticityResults,
-} from '../db/schema.js';
+} from '../db/schema';
 import { eq, and, or, isNull, sql } from 'drizzle-orm';
-import { addSecurityHeaders, setCORSHeaders } from '../security/helmet.js';
-import { logger } from '../observability/index.js';
-import { getRecommendedPrice } from '../pricing/engine.js';
-import { getRevenueSummary } from '../analytics/revenue.js';
-import { assignExperiment } from '../experiments/service.js';
+import { addSecurityHeaders, setCORSHeaders } from '../security/helmet';
+import { logger } from '../observability/index';
+import { getRecommendedPrice } from '../pricing/engine';
+import { getRevenueSummary } from '../analytics/revenue';
+import { assignExperiment } from '../experiments/service';
 
 // Validation schemas
 const priceCurrentSchema = z.object({

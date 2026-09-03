@@ -3,8 +3,8 @@
  * BullMQ worker processor for journey orchestration
  */
 
-import { runJourneys } from '../journeys/engine.js';
-import { logger } from '../observability/index.js';
+import { runJourneys } from '../journeys/engine';
+import { logger } from '../observability/index';
 
 export async function journeysRunnerProcessor(data: { batchSize?: number }): Promise<{
   processed: number;

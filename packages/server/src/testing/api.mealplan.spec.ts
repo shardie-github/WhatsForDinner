@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import express from 'express';
-import { mealPlansRepo, usersRepo } from '../db/index.js';
-import { requireAuth } from '../auth/index.js';
-import { addSecurityHeaders } from '../security/helmet.js';
+import { mealPlansRepo, usersRepo } from '../db/index';
+import { requireAuth } from '../auth/index';
+import { addSecurityHeaders } from '../security/helmet';
 
 // Mock auth middleware for testing
 const app = express();

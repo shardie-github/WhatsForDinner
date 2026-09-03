@@ -8,11 +8,11 @@
 import { z } from 'zod';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { db } from '../db/index.js';
-import { partners, clicks, conversions } from '../db/schema.js';
+import { db } from '../db/index';
+import { partners, clicks, conversions } from '../db/schema';
 import { eq, and, gte, desc } from 'drizzle-orm';
-import { verifyConversionWebhookSignature } from '../auth/partner.js';
-import { logger } from '../observability/index.js';
+import { verifyConversionWebhookSignature } from '../auth/partner';
+import { logger } from '../observability/index';
 
 const conversionWebhookSchema = z.object({
   order_id: z.string(),
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     
     if (!partnerId) {
       // Try to get from auth
-      const { getPartnerAuth } = await import('../auth/partner.js');
+      const { getPartnerAuth } = await import('../auth/partner');
       const partnerAuth = await getPartnerAuth(request);
       if (partnerAuth) {
         partnerId = partnerAuth.partner.id;

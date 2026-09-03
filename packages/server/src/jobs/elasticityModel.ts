@@ -4,10 +4,10 @@
  * Fit log-log regression to compute price elasticity
  */
 
-import { db } from '../db/index.js';
-import { transactions, elasticityResults } from '../db/schema.js';
+import { db } from '../db/index';
+import { transactions, elasticityResults } from '../db/schema';
 import { eq, and, sql, gte, desc } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 /**
  * Simple log-log regression to compute elasticity

@@ -6,14 +6,14 @@
 
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getAuthContext } from '../auth/index.js';
-import { db } from '../db/index.js';
-import { pricingRules, promoOffers, experiments, experimentVariants } from '../db/schema.js';
+import { getAuthContext } from '../auth/index';
+import { db } from '../db/index';
+import { pricingRules, promoOffers, experiments, experimentVariants } from '../db/schema';
 import { eq, and, or, sql, isNull, isNotNull } from 'drizzle-orm';
-import { addSecurityHeaders, setCORSHeaders } from '../security/helmet.js';
-import { logger } from '../observability/index.js';
-import { assignExperiment } from '../experiments/service.js';
-import { lifecycleEvents } from '../db/schema.js';
+import { addSecurityHeaders, setCORSHeaders } from '../security/helmet';
+import { logger } from '../observability/index';
+import { assignExperiment } from '../experiments/service';
+import { lifecycleEvents } from '../db/schema';
 
 /**
  * GET /api/paywall/config

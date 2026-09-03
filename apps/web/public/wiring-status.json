@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-03T01:36:38.374Z",
+  "timestamp": "2026-09-03T02:48:03.326Z",
   "version": "1.0.0",
   "environment": "development",
   "checks": [
@@ -147,11 +147,9 @@
       "category": "Health",
       "subsystem": "Web /api/healthz",
       "result": {
-        "status": "pass",
-        "latency": 53,
-        "evidence": [
-          "{\n  \"ok\": false,\n  \"status\": \"unhealthy\",\n  \"version\": \"0.1.0\",\n  \"timestamp\": \"2026-09-03T01:36:35.231Z\",\n  \"environment\": \"development\",\n  \"checks\": {\n    \"database\": {\n      \"healthy\": false,\n      \"error\": \"Missing Supabase credentials\"\n    },\n    \"auth\": {\n      \"healthy\": false,\n      \"error\": \"Missing Supabase credentials\"\n    },\n    \"storage\": {\n      \"healthy\": true\n    },\n    \"rls\": {\n      \"effective\": false,\n      \"unauthReadBlocked\": false,\n      \"authReadAllowed\": false\n    }\n  },\n  \"responseTime\": 0\n}"
-        ]
+        "status": "fail",
+        "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+        "nextAction": "Check if web server is running"
       }
     },
     {
@@ -207,7 +205,7 @@
       "subsystem": "Meal Plan API",
       "result": {
         "status": "pass",
-        "latency": 178,
+        "latency": 239,
         "evidence": [
           "HTTP 405"
         ]
@@ -218,7 +216,7 @@
       "subsystem": "Grocery List API",
       "result": {
         "status": "pass",
-        "latency": 86,
+        "latency": 79,
         "evidence": [
           "HTTP 200"
         ]
@@ -331,8 +329,8 @@
   ],
   "summary": {
     "total": 32,
-    "pass": 9,
-    "fail": 1,
+    "pass": 8,
+    "fail": 2,
     "degraded": 20,
     "skip": 2
   }

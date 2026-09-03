@@ -5,11 +5,27 @@ import { eq, and, desc, gte, lte, sql } from 'drizzle-orm';
 import Redis from 'ioredis';
 import crypto from 'crypto';
 const connectionString = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL || '';
-if (!connectionString) {
-    throw new Error('DATABASE_URL or SUPABASE_DB_URL must be set');
+let client = null;
+export let db = null;
+if (connectionString) {
+    client = postgres(connectionString, { max: 20 });
+    db = drizzle(client, { schema });
 }
-const client = postgres(connectionString, { max: 20 });
-export const db = drizzle(client, { schema });
+else {
+    db = new Proxy({}, {
+        get(_, prop) {
+            const conn = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
+            if (!conn) {
+                throw new Error('DATABASE_URL or SUPABASE_DB_URL must be set before executing database queries');
+            }
+            if (!client) {
+                client = postgres(conn, { max: 20 });
+                db = drizzle(client, { schema });
+            }
+            return db[prop];
+        },
+    });
+}
 let redisClient = null;
 function getRedis() {
     if (!redisClient) {
@@ -30,7 +46,6 @@ function computeETag(data) {
 export async function paginateQuery(query, countQuery, params) {
     const page = params.page || 1;
     const limit = params.limit || 20;
-    const offset = (page - 1) * limit;
     const [data, countResult] = await Promise.all([query, countQuery]);
     const total = Number(countResult[0]?.count || 0);
     const totalPages = Math.ceil(total / limit);
@@ -66,7 +81,7 @@ export const usersRepo = {
 // Meal plans repository
 export const mealPlansRepo = {
     async findByUserAndDay(userId, day) {
-        const dayStr = day.toISOString().split('T')[0];
+        const dayStr = typeof day === 'string' ? day : (day.toISOString().split('T')[0] ?? '');
         const [plan] = await db
             .select()
             .from(schema.mealPlans)
@@ -92,7 +107,7 @@ export const mealPlansRepo = {
         return paginateQuery(query, countQuery, params);
     },
     async upsert(plan) {
-        const dayStr = typeof plan.day === 'string' ? plan.day : plan.day.toISOString().split('T')[0];
+        const dayStr = String(plan.day);
         const [existing] = await db
             .select()
             .from(schema.mealPlans)
@@ -270,7 +285,9 @@ export function computeResponseETag(data) {
 }
 // Cleanup function
 export async function closeDb() {
-    await client.end();
+    if (client) {
+        await client.end();
+    }
     if (redisClient) {
         await redisClient.quit();
     }

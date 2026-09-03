@@ -3,6 +3,8 @@
  * Handles webhooks from AI agents (MindStudio, Zapier, n8n, etc.)
  */
 import { createHmac } from 'crypto';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+const logger = createComponentLogger('agent-webhook-ts');
 export class AgentWebhookRouter {
     agents = new Map();
     constructor() {
@@ -80,7 +82,7 @@ export class AgentWebhookRouter {
             reply.code(200).send({ success: true });
         }
         catch (error) {
-            console.error(`Webhook processing failed for ${agent.name}:`, error);
+            logger.error('Webhook processing failed for ${agent.name}:', { error });
             reply.code(500).send({ error: 'Webhook processing failed' });
         }
     }
@@ -104,35 +106,35 @@ export class AgentWebhookRouter {
                 await this.handleGroceryListUpdated(agentName, data);
                 break;
             default:
-                console.log(`Unhandled event: ${event} from ${agentName}`);
+                logger.info('Unhandled event: ${event} from ${agentName}');
         }
     }
     /**
      * Handle meal suggestion from agent
      */
     async handleMealSuggestion(agentName, data) {
-        console.log(`Meal suggestion from ${agentName}:`, data);
+        logger.info('Meal suggestion from ${agentName}:', { data });
         // Implement meal suggestion handling
     }
     /**
      * Handle recipe generation from agent
      */
     async handleRecipeGeneration(agentName, data) {
-        console.log(`Recipe generation from ${agentName}:`, data);
+        logger.info('Recipe generation from ${agentName}:', { data });
         // Implement recipe generation handling
     }
     /**
      * Handle meal plan created event
      */
     async handleMealPlanCreated(agentName, data) {
-        console.log(`Meal plan created event from ${agentName}:`, data);
+        logger.info('Meal plan created event from ${agentName}:', { data });
         // Implement meal plan handling
     }
     /**
      * Handle grocery list updated event
      */
     async handleGroceryListUpdated(agentName, data) {
-        console.log(`Grocery list updated event from ${agentName}:`, data);
+        logger.info('Grocery list updated event from ${agentName}:', { data });
         // Implement grocery list handling
     }
     /**

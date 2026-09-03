@@ -1,6 +1,6 @@
 import { Job } from 'bullmq';
-import { logger } from '../observability/index.js';
-import { usersRepo, mealPlansRepo, healthMetricsRepo } from '../db/index.js';
+import { logger } from '../observability/index';
+import { usersRepo, mealPlansRepo, healthMetricsRepo } from '../db/index';
 // Email sending via SendGrid (optional dependency)
 async function sendEmail(to: string, subject: string, html: string) {
   try {

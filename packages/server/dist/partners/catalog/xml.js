@@ -3,6 +3,8 @@
  * Parses XML feeds (Google Merchant, RSS, custom formats)
  */
 import { XMLParser } from 'fast-xml-parser';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+const logger = createComponentLogger('xml-ts');
 /**
  * Parse XML feed content
  */
@@ -49,7 +51,7 @@ function parseAtomFeed(parsed) {
         }
         catch (error) {
             if (process.env.NODE_ENV === 'development') {
-                console.warn('Failed to parse Atom entry', error);
+                logger.warn('Failed to parse Atom entry', { error });
             }
             return null;
         }
@@ -132,7 +134,7 @@ function parseRSSFeed(parsed) {
         }
         catch (error) {
             if (process.env.NODE_ENV === 'development') {
-                console.warn('Failed to parse RSS item', error);
+                logger.warn('Failed to parse RSS item', { error });
             }
             return null;
         }
@@ -174,7 +176,7 @@ function parseProductsFormat(parsed) {
         }
         catch (error) {
             if (process.env.NODE_ENV === 'development') {
-                console.warn('Failed to parse product', error);
+                logger.warn('Failed to parse product', { error });
             }
             return null;
         }

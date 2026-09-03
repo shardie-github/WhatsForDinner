@@ -3,10 +3,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { POST_CODE, POST_TRACK, POST_CLAIM, GET_ME } from '../routes/referrals.js';
+import { POST_CODE, POST_TRACK, POST_CLAIM, GET_ME } from '../routes/referrals';
 import type { NextRequest } from 'next/server';
-import { db } from '../db/index.js';
-import { referralPrograms, referralCodes, referrals, users } from '../db/schema.js';
+import { db } from '../db/index';
+import { referralPrograms, referralCodes, referrals, users } from '../db/schema';
 
 // Mock auth context
 const mockUser = { id: 'test-user-id', email: 'test@example.com' };

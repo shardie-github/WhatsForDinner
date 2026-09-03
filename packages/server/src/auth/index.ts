@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
 import type { NextRequest } from 'next/server';
-import { usersRepo } from '../db/index.js';
-import type { RequestContext, Plan } from '../types.js';
+import { usersRepo } from '../db/index';
+import type { RequestContext, Plan } from '../types';
 
 const JWT_SECRET = process.env.SUPABASE_JWT_SECRET || process.env.JWT_SECRET || '';
 

@@ -14,10 +14,10 @@
  * - Timeline auto-append
  */
 
-import { createIncident, updateIncident, addTimelineEntry, getIncidentsNeedingAttention } from './service.js';
-import { logger } from '../observability/index.js';
-import { getCurrentSLOStatus, checkSLOForDeployment } from '../observability/slo.js';
-import { aggregateHealthCheck } from '../observability/health.js';
+import { createIncident, updateIncident, addTimelineEntry, getIncidentsNeedingAttention } from './service';
+import { logger } from '../observability/index';
+import { getCurrentSLOStatus, checkSLOForDeployment } from '../observability/slo';
+import { aggregateHealthCheck } from '../observability/health';
 
 export interface IncidentTrigger {
   type: 'error_rate_spike' | 'slo_violation' | 'health_check_failure' | 'external_alert';

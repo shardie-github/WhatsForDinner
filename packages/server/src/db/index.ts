@@ -1,8 +1,8 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as schema from './schema.js';
+import * as schema from './schema';
 import { eq, and, desc, gte, lte, sql } from 'drizzle-orm';
-import type { PaginationParams, PaginatedResponse } from '../types.js';
+import type { PaginationParams, PaginatedResponse } from '../types';
 import Redis from 'ioredis';
 import crypto from 'crypto';
 
@@ -360,5 +360,5 @@ export async function closeDb() {
 }
 
 // Re-export schema for convenience
-export * as schema from './schema.js';
-export { clicks, partners, users, households, recipes, mealPlans, groceryLists } from './schema.js';
+export * as schema from './schema';
+export { clicks, partners, users, households, recipes, mealPlans, groceryLists } from './schema';

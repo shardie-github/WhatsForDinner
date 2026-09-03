@@ -9,6 +9,7 @@ import { AnimatedCard } from '@/components/ui/animated-card';
 import { LoadingSpinner, LoadingOverlay } from '@/components/ui/loading-spinner';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import Navbar from '@/components/Navbar';
+import { MetabolicScoreCard } from '@/components/nutrition/MetabolicScoreCard';
 import {
   Apple,
   Activity,
@@ -107,14 +108,8 @@ export default function NutritionDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         <Navbar user={user} />
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-center text-muted-foreground">
-                No nutrition data available yet. Generate some recipes to see your nutrition summary!
-              </p>
-            </CardContent>
-          </Card>
+        <div className="container mx-auto px-4 py-8 max-w-7xl space-y-6">
+          <MetabolicScoreCard />
         </div>
       </div>
     );
@@ -154,6 +149,17 @@ export default function NutritionDashboard() {
             )}
           </div>
         </AnimatedCard>
+
+        {/* Metabolic & Biometric ScoreCard */}
+        <MetabolicScoreCard
+          metrics={{
+            calories: nutrition.calories,
+            proteinGrams: nutrition.protein,
+            carbsGrams: nutrition.carbs,
+            fatGrams: nutrition.fat,
+            fiberGrams: nutrition.fiber,
+          }}
+        />
 
         {/* Daily Summary Cards */}
         <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">

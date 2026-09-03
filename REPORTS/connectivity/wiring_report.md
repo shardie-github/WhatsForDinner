@@ -1,14 +1,14 @@
 # Nomad Monorepo Connectivity Report
 
-Generated: 2026-09-03T01:36:38.374Z  
+Generated: 2026-09-03T02:48:03.326Z  
 Version: 1.0.0  
 Environment: development
 
 ## Summary
 
 - **Total Checks**: 32
-- **? Pass**: 9
-- **? Fail**: 1
+- **? Pass**: 8
+- **? Fail**: 2
 - **?? Degraded**: 20
 - **?? Skip**: 2
 
@@ -30,14 +30,14 @@ Environment: development
 | Environment | DSAR Verification JWT | ?? DEGRADED | -ms | Missing: DSAR_VERIFICATION_JWT_SECRET |
 | Environment | Artifacts Bucket URL | ?? DEGRADED | -ms | Missing: ARTIFACTS_BUCKET_URL |
 | Environment | OTel Endpoint | ?? DEGRADED | -ms | Missing: OTEL_EXPORTER_OTLP_ENDPOINT |
-| Health | Web /api/healthz | ? PASS | 53ms | - |
+| Health | Web /api/healthz | ? FAIL | -ms | Unexpected token '<', "<!DOCTYPE "... is not valid JSON |
 | Health | Database | ? FAIL | -ms | DATABASE_URL or SUPABASE_DB_URL must be set before executing database queries |
 | Health | Redis | ?? SKIP | -ms | - |
 | Auth/RLS | Supabase JWT Verification | ?? SKIP | -ms | - |
 | Consent/Ads/Analytics | Analytics Provider | ?? DEGRADED | -ms | - |
 | Consent/Ads/Analytics | Ads Network Fallback | ? PASS | -ms | - |
-| Core Product | Meal Plan API | ? PASS | 178ms | - |
-| Core Product | Grocery List API | ? PASS | 86ms | - |
+| Core Product | Meal Plan API | ? PASS | 239ms | - |
+| Core Product | Grocery List API | ? PASS | 79ms | - |
 | Core Product | AI Meal Generation | ?? DEGRADED | -ms | - |
 | Payments | Stripe Configuration | ?? DEGRADED | -ms | - |
 | Payments | Stripe Webhook Endpoint | ? PASS | -ms | - |
@@ -133,6 +133,12 @@ Environment: development
 - Status: degraded
 - Error: Missing: OTEL_EXPORTER_OTLP_ENDPOINT
 - Next Action: Set OTEL_EXPORTER_OTLP_ENDPOINT or configure adapter fallback
+- Evidence: N/A
+
+### Health - Web /api/healthz
+- Status: fail
+- Error: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+- Next Action: Check if web server is running
 - Evidence: N/A
 
 ### Health - Database

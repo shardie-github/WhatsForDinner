@@ -4,12 +4,12 @@
  * Built-in journeys: onboarding, habit_loop, premium_upsell, churn_save, winback
  */
 
-import { db } from '../db/index.js';
-import { journeyStates, users, mealPlans, lifecycleEvents } from '../db/schema.js';
+import { db } from '../db/index';
+import { journeyStates, users, mealPlans, lifecycleEvents } from '../db/schema';
 import { eq, and, sql, gte, lte, count } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
-import { crmAdapter } from '../../../adapters/crm/index.js';
-import type { EmailMessage } from '../../../adapters/crm/types.js';
+import { logger } from '../observability/index';
+import { crmAdapter } from '../../../adapters/crm/index';
+import type { EmailMessage } from '../../../adapters/crm/types';
 
 export interface JourneyRule {
   key: string;

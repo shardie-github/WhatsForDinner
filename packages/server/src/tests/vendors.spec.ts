@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { db } from '../db/index.js';
-import { vendorCatalog } from '../db/schema.js';
+import { db } from '../db/index';
+import { vendorCatalog } from '../db/schema';
 import { eq } from 'drizzle-orm';
 
 describe('Vendor Management', () => {

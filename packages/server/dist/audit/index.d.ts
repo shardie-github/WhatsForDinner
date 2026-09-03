@@ -46,19 +46,7 @@ export declare function getAuditLogs(params: {
     page?: number;
     limit?: number;
 }): Promise<{
-    data: {
-        id: string;
-        created_at: Date;
-        ts: Date;
-        signature: string;
-        actor_id: string | null;
-        entity_kind: string;
-        entity_id: string | null;
-        action: string;
-        before: Record<string, unknown> | null;
-        after: Record<string, unknown> | null;
-        reason: string | null;
-    }[];
+    data: any;
     pagination: {
         page: number;
         limit: number;

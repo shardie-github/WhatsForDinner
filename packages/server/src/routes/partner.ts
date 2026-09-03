@@ -7,16 +7,16 @@
 import { z } from 'zod';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { db } from '../db/index.js';
-import { partners, catalogFeeds, catalogItems, campaigns, creatives, placements, partnerLinks, clicks, conversions, payouts } from '../db/schema.js';
+import { db } from '../db/index';
+import { partners, catalogFeeds, catalogItems, campaigns, creatives, placements, partnerLinks, clicks, conversions, payouts } from '../db/schema';
 import { eq, and, gte, lte, desc, sql, count } from 'drizzle-orm';
-import { getPartnerAuth, requirePartnerAuth, requireScope, mintPartnerToken } from '../auth/partner.js';
-import { generateSignedLink } from '../partners/links.js';
-import { parseCSVFeed } from '../partners/catalog/csv.js';
-import { parseXMLFeed } from '../partners/catalog/xml.js';
-import { fetchAPIFeed } from '../partners/catalog/api.js';
-import { logger } from '../observability/index.js';
-import { addSecurityHeaders } from '../security/helmet.js';
+import { getPartnerAuth, requirePartnerAuth, requireScope, mintPartnerToken } from '../auth/partner';
+import { generateSignedLink } from '../partners/links';
+import { parseCSVFeed } from '../partners/catalog/csv';
+import { parseXMLFeed } from '../partners/catalog/xml';
+import { fetchAPIFeed } from '../partners/catalog/api';
+import { logger } from '../observability/index';
+import { addSecurityHeaders } from '../security/helmet';
 
 // ============================================================================
 // SCHEMAS
@@ -79,7 +79,7 @@ export async function POST_AUTH_TOKEN(request: NextRequest) {
     const auth = await getPartnerAuth(request);
     if (!auth) {
       // Try user auth for admin
-      const { getAuthContext } = await import('../auth/index.js');
+      const { getAuthContext } = await import('../auth/index');
       const userAuth = await getAuthContext(request);
       if (userAuth?.user.role !== 'admin') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

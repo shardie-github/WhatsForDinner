@@ -4,10 +4,10 @@
  * Update pricing_rules with optimal prices
  */
 
-import { db } from '../db/index.js';
-import { vanWestendorpSurveys, pricingRules } from '../db/schema.js';
+import { db } from '../db/index';
+import { vanWestendorpSurveys, pricingRules } from '../db/schema';
 import { eq, and, sql } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 /**
  * Compute median optimal price from survey responses

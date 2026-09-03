@@ -4,8 +4,8 @@
  */
 
 import { parse } from 'csv-parse/sync';
-import type { catalogItems } from '../../db/schema.js';
-import type { catalogAvailabilityEnum } from '../../db/schema.js';
+import type { catalogItems } from '../../db/schema';
+import type { catalogAvailabilityEnum } from '../../db/schema';
 import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const logger = createComponentLogger('csv-ts');

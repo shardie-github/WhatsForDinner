@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getAuthContext } from '../auth/index.js';
-import { mealPlansRepo } from '../db/index.js';
-import { addSecurityHeaders, setCORSHeaders } from '../security/helmet.js';
-import { queue } from '../queue/index.js';
+import { getAuthContext } from '../auth/index';
+import { mealPlansRepo } from '../db/index';
+import { addSecurityHeaders, setCORSHeaders } from '../security/helmet';
+import { queue } from '../queue/index';
 
 const mealPlanItemSchema = z.object({
   slot: z.enum(['breakfast', 'lunch', 'dinner', 'snack']),

@@ -6,11 +6,11 @@
 import { z } from 'zod';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getAuthContext } from '../auth/index.js';
-import { addSecurityHeaders } from '../security/helmet.js';
-import { logger } from '../observability/index.js';
-import { verifyAppleReceipt } from '../payments/apple.js';
-import { verifyGooglePurchase } from '../payments/google.js';
+import { getAuthContext } from '../auth/index';
+import { addSecurityHeaders } from '../security/helmet';
+import { logger } from '../observability/index';
+import { verifyAppleReceipt } from '../payments/apple';
+import { verifyGooglePurchase } from '../payments/google';
 
 const verifyRequestSchema = z.object({
   platform: z.enum(['ios', 'android']),

@@ -4,11 +4,11 @@
  * Automatically purges expired records based on retention policies
  */
 
-import { db } from '../db/index.js';
-import { retentionPolicies, clicks, conversions, events, auditLogs, processingActivities, legalHold, dsarArtifacts } from '../db/schema.js';
+import { db } from '../db/index';
+import { retentionPolicies, clicks, conversions, events, auditLogs, processingActivities, legalHold, dsarArtifacts } from '../db/schema';
 import { eq, lt, sql, and } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
-import { logAction } from '../audit/index.js';
+import { logger } from '../observability/index';
+import { logAction } from '../audit/index';
 
 const DRY_RUN = process.env.RETENTION_DRYRUN === 'true';
 

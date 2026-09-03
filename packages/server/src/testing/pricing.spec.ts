@@ -4,15 +4,15 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { getRecommendedPrice } from '../pricing/engine.js';
-import { db } from '../db/index.js';
+import { getRecommendedPrice } from '../pricing/engine';
+import { db } from '../db/index';
 import {
   pricingRules,
   elasticityResults,
   vanWestendorpSurveys,
   priceExperiments,
   promoOffers,
-} from '../db/schema.js';
+} from '../db/schema';
 import { eq } from 'drizzle-orm';
 
 // Mock database

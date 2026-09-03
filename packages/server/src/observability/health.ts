@@ -12,8 +12,8 @@
  */
 
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { db } from '../db/index.js';
-import { logger } from './index.js';
+import { db } from '../db/index';
+import { logger } from './index';
 
 export interface HealthCheckResult {
   status: 'healthy' | 'degraded' | 'unhealthy';

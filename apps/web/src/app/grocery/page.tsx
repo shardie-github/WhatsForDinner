@@ -18,6 +18,7 @@ import { AvatarDisplay } from '@/components/grocery/AvatarDisplay';
 import { PointsRewards } from '@/components/grocery/PointsRewards';
 import { GrocerySocial } from '@/components/grocery/GrocerySocial';
 import { GroceryCategory } from '@/lib/grocery/types';
+import { RetailerPriceComparison } from '@/components/grocery/RetailerPriceComparison';
 import { ShoppingCart, Search, Brain, Trophy, Users } from 'lucide-react';
 
 export default function GroceryPage() {
@@ -61,7 +62,10 @@ export default function GroceryPage() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="shop" className="space-y-6">
+        <TabsContent value="shop" className="space-y-8">
+          {/* OmniCart Multi-Retailer Arbitrage Matrix */}
+          <RetailerPriceComparison />
+
           <div>
             <h2 className="text-2xl font-semibold mb-4">Browse by Category</h2>
             <GroceryCategories

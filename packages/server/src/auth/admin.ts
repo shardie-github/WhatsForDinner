@@ -8,8 +8,8 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import type { Request, Response, NextFunction } from 'express';
 import type { NextRequest } from 'next/server';
-import { db } from '../db/index.js';
-import { adminUsers } from '../db/schema.js';
+import { db } from '../db/index';
+import { adminUsers } from '../db/schema';
 import { eq } from 'drizzle-orm';
 
 const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || process.env.JWT_SECRET || '';

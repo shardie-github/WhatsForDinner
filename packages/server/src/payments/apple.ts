@@ -3,7 +3,7 @@
  * Uses App Store Server API (JWT/JWS) for validation
  */
 
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 export interface AppleReceiptVerificationRequest {
   receipt: string; // Receipt data (base64 or JWT)

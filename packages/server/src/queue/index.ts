@@ -1,6 +1,6 @@
 import { Queue, Worker, QueueEvents } from 'bullmq';
 import Redis from 'ioredis';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 let redisConnection: Redis | null = null;
 
@@ -81,34 +81,34 @@ export async function startWorker() {
 
       switch (job.name) {
         case 'mealgen':
-          const { mealGenProcessor } = await import('../jobs/mealGen.js');
+          const { mealGenProcessor } = await import('../jobs/mealGen');
           return await mealGenProcessor(job.data);
         case 'digest':
-          const { digestProcessor } = await import('../jobs/digests.js');
+          const { digestProcessor } = await import('../jobs/digests');
           return await digestProcessor(job.data);
         case 'journeys':
-          const { journeysRunnerProcessor } = await import('../jobs/journeysRunner.js');
+          const { journeysRunnerProcessor } = await import('../jobs/journeysRunner');
           return await journeysRunnerProcessor(job.data);
         case 'digest_weekly':
-          const { digestRunnerProcessor } = await import('../jobs/digestRunner.js');
+          const { digestRunnerProcessor } = await import('../jobs/digestRunner');
           return await digestRunnerProcessor(job.data);
         case 'anomaly_guard':
-          const { anomalyGuardProcessor } = await import('../jobs/anomalyGuard.js');
+          const { anomalyGuardProcessor } = await import('../jobs/anomalyGuard');
           return await anomalyGuardProcessor();
         case 'price_rollout':
-          const { priceRolloutProcessor } = await import('../jobs/priceRollout.js');
+          const { priceRolloutProcessor } = await import('../jobs/priceRollout');
           return await priceRolloutProcessor();
         case 'dsar_export':
-          const { generateDSARExport } = await import('../jobs/dsarExport.js');
+          const { generateDSARExport } = await import('../jobs/dsarExport');
           return await generateDSARExport(job.data.requestId);
         case 'retention_run':
-          const { runRetentionPolicies } = await import('../jobs/retentionRunner.js');
+          const { runRetentionPolicies } = await import('../jobs/retentionRunner');
           return await runRetentionPolicies(job.data.dryRun || false);
         case 'erasure_run':
-          const { runErasureJob } = await import('../jobs/erasureRunner.js');
+          const { runErasureJob } = await import('../jobs/erasureRunner');
           return await runErasureJob();
         case 'self_heal':
-          const { runSelfHealing } = await import('../jobs/selfHeal.js');
+          const { runSelfHealing } = await import('../jobs/selfHeal');
           return await runSelfHealing(job.data || {});
         default:
           throw new Error(`Unknown job type: ${job.name}`);
@@ -181,7 +181,7 @@ export async function queueHealth(): Promise<{ healthy: boolean; pending: number
 }
 
 // Export health module
-export { checkQueueHealth, getQueueMetrics } from './health.js';
+export { checkQueueHealth, getQueueMetrics } from './health';
 
 // Handle process signals
 process.on('SIGTERM', async () => {

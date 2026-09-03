@@ -3,10 +3,10 @@
  * Activates scheduled pricing rules and expires promos
  */
 
-import { db } from '../db/index.js';
-import { pricingRules, promoOffers } from '../db/schema.js';
+import { db } from '../db/index';
+import { pricingRules, promoOffers } from '../db/schema';
 import { eq, and, sql, lte, gte } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 export async function priceRolloutProcessor(): Promise<{
   activated: number;

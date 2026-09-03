@@ -5,7 +5,7 @@
  * grocery lists, health metrics, messages metadata, events, analytics, consents)
  */
 
-import { db } from '../db/index.js';
+import { db } from '../db/index';
 import {
   users,
   mealPlans,
@@ -14,9 +14,9 @@ import {
   dsarRequests,
   dsarArtifacts,
   recipes,
-} from '../db/schema.js';
+} from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 import { createWriteStream } from 'fs';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';

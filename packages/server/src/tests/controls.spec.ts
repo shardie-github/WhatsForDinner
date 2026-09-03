@@ -5,10 +5,10 @@
  */
 
 import { describe, it, expect, beforeAll } from 'vitest';
-import { db } from '../db/index.js';
-import { controls, controlEvidence } from '../db/schema.js';
+import { db } from '../db/index';
+import { controls, controlEvidence } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { bootstrapControls, runControlsCheck, runCollector } from '../controls/ccm.js';
+import { bootstrapControls, runControlsCheck, runCollector } from '../controls/ccm';
 
 describe('Controls Monitoring', () => {
   beforeAll(async () => {

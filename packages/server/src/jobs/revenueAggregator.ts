@@ -4,11 +4,11 @@
  * Weekly task: compute cohort LTV/CAC segments
  */
 
-import { aggregateRevenueSnapshot } from '../analytics/revenue.js';
-import { db } from '../db/index.js';
-import { ltvSegments, transactions, users } from '../db/schema.js';
+import { aggregateRevenueSnapshot } from '../analytics/revenue';
+import { db } from '../db/index';
+import { ltvSegments, transactions, users } from '../db/schema';
 import { eq, sql, and, gte, lte, count, avg } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 /**
  * Daily aggregation job

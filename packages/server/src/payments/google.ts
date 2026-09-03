@@ -3,7 +3,7 @@
  * Uses Google Play Developer API
  */
 
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 export interface GooglePurchaseVerificationRequest {
   purchaseToken: string;

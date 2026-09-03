@@ -6,10 +6,10 @@
  */
 
 import Stripe from 'stripe';
-import { db } from '../db/index.js';
-import { partners, conversions, payouts, transactions } from '../db/schema.js';
+import { db } from '../db/index';
+import { partners, conversions, payouts, transactions } from '../db/schema';
 import { eq, and, gte, lte, sum, sql } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2024-11-20.acacia',

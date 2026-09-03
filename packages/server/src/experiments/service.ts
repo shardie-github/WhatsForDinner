@@ -5,10 +5,10 @@
  */
 
 import { eq, and, sql, inArray } from 'drizzle-orm';
-import { db } from '../db/index.js';
-import { experiments, experimentVariants, experimentAssignments } from '../db/schema.js';
-import { logger } from '../observability/index.js';
-import { lifecycleEvents } from '../db/schema.js';
+import { db } from '../db/index';
+import { experiments, experimentVariants, experimentAssignments } from '../db/schema';
+import { logger } from '../observability/index';
+import { lifecycleEvents } from '../db/schema';
 
 export interface ExperimentAssignment {
   experimentKey: string;

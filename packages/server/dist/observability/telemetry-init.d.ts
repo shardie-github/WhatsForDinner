@@ -6,9 +6,6 @@
  */
 import { NodeSDK } from '@opentelemetry/sdk-node';
 declare let sdk: NodeSDK | null;
-/**
- * Initialize OpenTelemetry SDK
- */
 export declare function initializeTelemetry(): void;
 /**
  * Shutdown telemetry SDK gracefully

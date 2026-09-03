@@ -21,7 +21,7 @@ import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { MeterProvider, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { trace, metrics } from '@opentelemetry/api';
-import { logger } from './index.js';
+import { logger } from './index';
 
 let sdk: NodeSDK | null = null;
 let meterProvider: MeterProvider | null = null;

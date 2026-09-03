@@ -5,27 +5,27 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { db } from '../db/index.js';
+import { db } from '../db/index';
 import {
   adminUsers,
   auditLogs,
   moderationQueue,
   incidents,
   retentionPolicies,
-} from '../db/schema.js';
+} from '../db/schema';
 import { eq } from 'drizzle-orm';
 import {
   mintAdminToken,
   verifyAdminJWT,
   hasRole,
   canPerformAction,
-} from '../auth/admin.js';
-import { logAction, verifyAuditLogSignature } from '../audit/index.js';
+} from '../auth/admin';
+import { logAction, verifyAuditLogSignature } from '../audit/index';
 import {
   createIncident,
   addTimelineEntry,
-} from '../incidents/service.js';
-import { runRetentionPolicies } from '../jobs/retentionRunner.js';
+} from '../incidents/service';
+import { runRetentionPolicies } from '../jobs/retentionRunner';
 
 describe('Admin Auth & RBAC', () => {
   let superadminId: string;

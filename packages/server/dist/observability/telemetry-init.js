@@ -10,11 +10,13 @@ import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-otlp-http';
 import { PeriodicExportingMetricReader, ConsoleMetricExporter } from '@opentelemetry/sdk-metrics';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 let sdk = null;
 let initialized = false;
 /**
  * Initialize OpenTelemetry SDK
  */
+const logger = createComponentLogger('telemetry-init-ts');
 export function initializeTelemetry() {
     if (initialized) {
         return;
@@ -24,7 +26,7 @@ export function initializeTelemetry() {
     const enableOtlp = process.env.ENABLE_OTLP !== 'false';
     // Only initialize if OTLP endpoint is configured or in development
     if (!enableOtlp && !otlpEndpoint && process.env.NODE_ENV !== 'development') {
-        console.log('📊 OpenTelemetry: Disabled (no OTLP endpoint configured)');
+        logger.info('📊 OpenTelemetry: Disabled (no OTLP endpoint configured)');
         initialized = true;
         return;
     }
@@ -34,14 +36,8 @@ export function initializeTelemetry() {
             [SemanticResourceAttributes.SERVICE_VERSION]: process.env.npm_package_version || '1.0.0',
             [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development',
         });
-        const traceExporter = otlpEndpoint
-            ? new OTLPTraceExporter({
-                url: `${otlpEndpoint}/v1/traces`,
-            })
-            : undefined;
-        sdk = new NodeSDK({
+        const sdkConfig = {
             resource,
-            traceExporter,
             instrumentations: [
                 getNodeAutoInstrumentations({
                     // Disable fs instrumentation in production for performance
@@ -50,25 +46,35 @@ export function initializeTelemetry() {
                     },
                 }),
             ],
-            metricReader: process.env.NODE_ENV === 'development'
-                ? new PeriodicExportingMetricReader({
-                    exporter: new ConsoleMetricExporter(),
-                    exportIntervalMillis: 10000,
-                })
-                : undefined,
-        });
+            ...(otlpEndpoint
+                ? {
+                    traceExporter: new OTLPTraceExporter({
+                        url: `${otlpEndpoint}/v1/traces`,
+                    }),
+                }
+                : {}),
+            ...(process.env.NODE_ENV === 'development'
+                ? {
+                    metricReader: new PeriodicExportingMetricReader({
+                        exporter: new ConsoleMetricExporter(),
+                        exportIntervalMillis: 10000,
+                    }),
+                }
+                : {}),
+        };
+        sdk = new NodeSDK(sdkConfig);
         sdk.start();
         initialized = true;
-        console.log(`✅ OpenTelemetry initialized: ${serviceName}`);
+        logger.info(`✅ OpenTelemetry initialized: ${serviceName}`);
         if (otlpEndpoint) {
-            console.log(`   📡 OTLP Endpoint: ${otlpEndpoint}`);
+            logger.info(`   📡 OTLP Endpoint: ${otlpEndpoint}`);
         }
         else {
-            console.log('   📡 OTLP: Console exporter (development mode)');
+            logger.info('   📡 OTLP: Console exporter (development mode)');
         }
     }
     catch (error) {
-        console.error('❌ Failed to initialize OpenTelemetry:', error);
+        logger.error('❌ Failed to initialize OpenTelemetry:', { error });
         // Don't throw - telemetry failures shouldn't break the app
     }
 }
@@ -79,10 +85,10 @@ export async function shutdownTelemetry() {
     if (sdk) {
         try {
             await sdk.shutdown();
-            console.log('✅ OpenTelemetry shutdown complete');
+            logger.info('✅ OpenTelemetry shutdown complete');
         }
         catch (error) {
-            console.error('❌ Error shutting down OpenTelemetry:', error);
+            logger.error('❌ Error shutting down OpenTelemetry:', { error });
         }
     }
 }

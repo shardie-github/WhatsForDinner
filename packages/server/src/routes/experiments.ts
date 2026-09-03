@@ -4,10 +4,10 @@
 
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getAuthContext } from '../auth/index.js';
-import { assignExperiments, trackExposure } from '../experiments/service.js';
-import { addSecurityHeaders, setCORSHeaders } from '../security/helmet.js';
-import { logger } from '../observability/index.js';
+import { getAuthContext } from '../auth/index';
+import { assignExperiments, trackExposure } from '../experiments/service';
+import { addSecurityHeaders, setCORSHeaders } from '../security/helmet';
+import { logger } from '../observability/index';
 
 /**
  * GET /api/experiments/assignments

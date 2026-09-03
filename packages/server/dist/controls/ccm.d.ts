@@ -45,31 +45,17 @@ export declare function runControlsCheck(frequency?: 'continuous' | 'daily' | 'w
  * Get controls dashboard data
  */
 export declare function getControlsDashboard(framework?: 'soc2' | 'iso27001' | 'custom'): Promise<{
-    total: number;
+    total: any;
     byStatus: {
-        passing: number;
-        failing: number;
-        waived: number;
+        passing: any;
+        failing: any;
+        waived: any;
     };
     byFramework: {
-        soc2: number;
-        iso27001: number;
-        custom: number;
+        soc2: any;
+        iso27001: any;
+        custom: any;
     };
-    controls: {
-        owner: string;
-        id: string;
-        name: string;
-        created_at: Date;
-        updated_at: Date;
-        description: string;
-        status: "passing" | "failing" | "waived";
-        key: string;
-        notes: string | null;
-        evidence_kind: "log" | "screenshot" | "report" | "config";
-        framework: "custom" | "soc2" | "iso27001";
-        frequency: "monthly" | "continuous" | "daily" | "weekly" | "quarterly";
-        last_checked_at: Date | null;
-    }[];
+    controls: any;
 }>;
 //# sourceMappingURL=ccm.d.ts.map

@@ -1,6 +1,6 @@
 import { Job } from 'bullmq';
-import { mealPlansRepo, recipesRepo } from '../db/index.js';
-import { logger } from '../observability/index.js';
+import { mealPlansRepo, recipesRepo } from '../db/index';
+import { logger } from '../observability/index';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({

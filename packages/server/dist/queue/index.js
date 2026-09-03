@@ -59,7 +59,7 @@ export const queue = new Queue('nomad-jobs', {
 });
 const queueEvents = new QueueEvents('nomad-jobs', { connection });
 // Worker setup
-let worker = null;
+export let worker = null;
 export async function startWorker() {
     const concurrency = parseInt(process.env.QUEUE_CONCURRENCY || '5', 10);
     worker = new Worker('nomad-jobs', async (job) => {

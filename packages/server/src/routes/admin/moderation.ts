@@ -7,18 +7,18 @@
 import { z } from 'zod';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { db } from '../../db/index.js';
+import { db } from '../../db/index';
 import {
   moderationQueue,
   campaigns,
   creatives,
   partners,
   adminUsers,
-} from '../../db/schema.js';
+} from '../../db/schema';
 import { eq, and, desc, inArray, sql, count } from 'drizzle-orm';
-import { getAdminAuth } from '../../auth/admin.js';
-import { logAction } from '../../audit/index.js';
-import { logger } from '../../observability/index.js';
+import { getAdminAuth } from '../../auth/admin';
+import { logAction } from '../../audit/index';
+import { logger } from '../../observability/index';
 
 // ============================================================================
 // SCHEMAS

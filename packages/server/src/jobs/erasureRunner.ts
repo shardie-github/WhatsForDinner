@@ -5,7 +5,7 @@
  * Respects legal hold. Writes erasure logs.
  */
 
-import { db } from '../db/index.js';
+import { db } from '../db/index';
 import {
   dsarRequests,
   dsarArtifacts,
@@ -15,9 +15,9 @@ import {
   groceryLists,
   healthMetrics,
   recipes,
-} from '../db/schema.js';
+} from '../db/schema';
 import { eq, and, sql } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 import crypto from 'crypto';
 
 const ERASURE_GRACE_DAYS = 7; // Grace period before hard delete

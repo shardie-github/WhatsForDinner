@@ -3,8 +3,8 @@
  * Provides health check endpoints and monitoring for the queue worker
  */
 
-import { worker, queue } from './index.js';
-import { logger } from '../observability/index.js';
+import { worker, queue } from './index';
+import { logger } from '../observability/index';
 import type { Worker } from 'bullmq';
 
 export interface QueueHealthStatus {

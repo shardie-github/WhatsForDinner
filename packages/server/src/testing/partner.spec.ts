@@ -5,12 +5,12 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { db } from '../db/index.js';
-import { partners, catalogItems, campaigns, clicks, conversions, payouts } from '../db/schema.js';
+import { db } from '../db/index';
+import { partners, catalogItems, campaigns, clicks, conversions, payouts } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { generateSignedLink } from '../partners/links.js';
-import { mintPartnerToken } from '../auth/partner.js';
-import { runPayoutCycle } from '../payouts/runner.js';
+import { generateSignedLink } from '../partners/links';
+import { mintPartnerToken } from '../auth/partner';
+import { runPayoutCycle } from '../payouts/runner';
 
 describe('Partner Revenue Network E2E', () => {
   let testPartnerId: string;
@@ -54,7 +54,7 @@ PROD-2,Test Product 2,29.99,USD,in stock,https://example.com/product/2`;
 
     // In real test, would call the API endpoint
     // For unit test, directly use the parser
-    const { parseCSVFeed } = await import('../partners/catalog/csv.js');
+    const { parseCSVFeed } = await import('../partners/catalog/csv');
     const items = parseCSVFeed(csvContent);
 
     expect(items.length).toBe(2);

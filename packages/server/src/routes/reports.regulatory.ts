@@ -7,7 +7,7 @@
 
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { db } from '../db/index.js';
+import { db } from '../db/index';
 import {
   regulatoryReports,
   dsarRequests,
@@ -15,10 +15,10 @@ import {
   controls,
   controlEvidence,
   riskRegister,
-} from '../db/schema.js';
+} from '../db/schema';
 import { eq, and, gte, lte, count, sql } from 'drizzle-orm';
-import { getAdminAuth, requirePermission } from '../auth/admin.js';
-import { logger } from '../observability/index.js';
+import { getAdminAuth, requirePermission } from '../auth/admin';
+import { logger } from '../observability/index';
 import crypto from 'crypto';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';

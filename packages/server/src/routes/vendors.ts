@@ -7,11 +7,11 @@
 import { z } from 'zod';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { db } from '../db/index.js';
-import { vendorCatalog } from '../db/schema.js';
+import { db } from '../db/index';
+import { vendorCatalog } from '../db/schema';
 import { eq, and } from 'drizzle-orm';
-import { getAdminAuth, requirePermission } from '../auth/admin.js';
-import { logger } from '../observability/index.js';
+import { getAdminAuth, requirePermission } from '../auth/admin';
+import { logger } from '../observability/index';
 
 // ============================================================================
 // SCHEMAS

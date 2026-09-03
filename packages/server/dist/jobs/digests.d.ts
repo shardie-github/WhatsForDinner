@@ -6,7 +6,7 @@ interface DigestJobData {
 export declare function digestProcessor(job: Job<DigestJobData>): Promise<{
     success: boolean;
     meals: number;
-    calories: number;
+    calories: any;
 }>;
 export {};
 //# sourceMappingURL=digests.d.ts.map

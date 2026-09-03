@@ -31,6 +31,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Celebration } from '@/components/AdvancedAnimations';
+import { VisionScanner } from '@/components/pantry/VisionScanner';
+import { MetabolicScoreCard } from '@/components/nutrition/MetabolicScoreCard';
+import { Camera, Utensils } from 'lucide-react';
 
 type Step = 'welcome' | 'pantry' | 'preferences' | 'generating' | 'recipe';
 
@@ -107,6 +110,7 @@ export default function OnboardingPage() {
     'Tomatoes',
   ]);
   const [customItemInput, setCustomItemInput] = useState('');
+  const [pantryInputMode, setPantryInputMode] = useState<'grid' | 'vision'>('grid');
   const [selectedDiets, setSelectedDiets] = useState<string[]>(['high-protein']);
   const [familySize, setFamilySize] = useState<number>(2);
   const [cookTimeGoal, setCookTimeGoal] = useState<string>('25 min');
@@ -448,10 +452,40 @@ export default function OnboardingPage() {
                       {selectedPantry.length} Selected
                     </Badge>
                   </div>
+
+                  {/* Mode Toggle between Quick Tap and Vision Scan */}
+                  <div className="flex gap-2 pt-3">
+                    <Button
+                      variant={pantryInputMode === 'grid' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setPantryInputMode('grid')}
+                      className="text-xs h-8"
+                    >
+                      Quick Tap Pantry
+                    </Button>
+                    <Button
+                      variant={pantryInputMode === 'vision' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setPantryInputMode('vision')}
+                      className="text-xs h-8"
+                    >
+                      <Camera className="w-3.5 h-3.5 mr-1.5 text-primary" />
+                      Vision Fridge / Receipt Scan
+                    </Button>
+                  </div>
                 </CardHeader>
 
                 <CardContent className="space-y-6">
-                  {/* Category Pill Grid */}
+                  {pantryInputMode === 'vision' ? (
+                    <VisionScanner
+                      onItemsAdded={(newItems) => {
+                        setSelectedPantry(prev => Array.from(new Set([...prev, ...newItems])));
+                        setPantryInputMode('grid');
+                      }}
+                    />
+                  ) : (
+                    <>
+                      {/* Category Pill Grid */}
                   <div className="space-y-4">
                     {PANTRY_CATEGORIES.map((category) => (
                       <div key={category.name} className="space-y-2">
@@ -520,6 +554,8 @@ export default function OnboardingPage() {
                       <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -804,15 +840,42 @@ export default function OnboardingPage() {
                     </div>
                   )}
 
-                  {/* Primary Next Action Bar */}
-                  <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+                  {/* Metabolic & Glycemic Profile */}
+                  <MetabolicScoreCard
+                    metrics={{
+                      calories: generatedRecipe.calories,
+                      proteinGrams: generatedRecipe.nutrition?.protein || 38,
+                      carbsGrams: generatedRecipe.nutrition?.carbs || 24,
+                      fatGrams: generatedRecipe.nutrition?.fat || 22,
+                    }}
+                  />
+
+                  {/* Primary Hands-Free Cooking HUD Launch Action */}
+                  <Button
+                    size="lg"
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && generatedRecipe) {
+                        sessionStorage.setItem('active_cooking_recipe', JSON.stringify(generatedRecipe));
+                      }
+                      router.push(`/cook/${generatedRecipe.id}`);
+                    }}
+                    className="w-full bg-primary hover:bg-primary/90 font-black h-14 text-base shadow-xl"
+                  >
+                    <Utensils className="w-5 h-5 mr-2" />
+                    <span>Start Hands-Free Cooking Mode (OmniChef™ Voice HUD)</span>
+                    <ChevronRight className="w-5 h-5 ml-2" />
+                  </Button>
+
+                  {/* Secondary Action Bar */}
+                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <Button
                       size="lg"
+                      variant="outline"
                       onClick={() => router.push('/dashboard')}
-                      className="flex-1 font-semibold h-12 shadow-md"
+                      className="flex-1 font-semibold h-12 shadow-sm"
                     >
                       <Check className="w-4 h-4 mr-2" />
-                      <span>Save & Continue to Dashboard</span>
+                      <span>Save to Smart Dashboard</span>
                     </Button>
 
                     <Button

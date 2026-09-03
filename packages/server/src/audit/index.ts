@@ -5,10 +5,10 @@
  */
 
 import crypto from 'crypto';
-import { db } from '../db/index.js';
-import { auditLogs } from '../db/schema.js';
+import { db } from '../db/index';
+import { auditLogs } from '../db/schema';
 import { eq, desc, sql } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 
 const AUDIT_SECRET = process.env.AUDIT_SECRET || process.env.ADMIN_JWT_SECRET || '';
 const AUDIT_SALT = process.env.AUDIT_SALT || 'nomad-audit-salt';

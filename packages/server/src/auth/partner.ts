@@ -8,8 +8,8 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import type { Request, Response, NextFunction } from 'express';
 import type { NextRequest } from 'next/server';
-import { db } from '../db/index.js';
-import { partners, partnerApiKeys } from '../db/schema.js';
+import { db } from '../db/index';
+import { partners, partnerApiKeys } from '../db/schema';
 import { eq } from 'drizzle-orm';
 
 const JWT_SECRET = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET || '';

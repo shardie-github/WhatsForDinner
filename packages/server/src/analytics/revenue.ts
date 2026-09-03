@@ -5,16 +5,16 @@
  * Emits metrics ? Prometheus + PostHog events
  */
 
-import { db } from '../db/index.js';
+import { db } from '../db/index';
 import {
   transactions,
   revenueSnapshots,
   users,
   ltvSegments,
   lifecycleEvents,
-} from '../db/schema.js';
+} from '../db/schema';
 import { eq, and, gte, lte, sql, desc, sum, count, avg } from 'drizzle-orm';
-import { logger } from '../observability/index.js';
+import { logger } from '../observability/index';
 import type { Numeric } from 'drizzle-orm';
 
 export interface RevenueMetrics {

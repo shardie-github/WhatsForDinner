@@ -20,7 +20,7 @@ interface MealGenJobData {
 }
 export declare function mealGenProcessor(job: Job<MealGenJobData>): Promise<{
     success: boolean;
-    planId: string | undefined;
+    planId: any;
 }>;
 export {};
 //# sourceMappingURL=mealGen.d.ts.map
