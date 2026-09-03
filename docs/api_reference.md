@@ -7,10 +7,9 @@
 
 ## Authentication
 
-All endpoints (except `/api/healthz` and `/api/swagger`) require authentication via JWT token
-in the Authorization header:
+All endpoints (except `/api/healthz` and `/api/swagger`) require authentication via JWT token in the Authorization header:
 
-```http
+```
 Authorization: Bearer <token>
 ```
 
@@ -25,7 +24,6 @@ Tokens are issued by Supabase Auth after user login (Google/Apple OAuth or email
 Returns service health status and connectivity checks.
 
 **Response:**
-
 ```json
 {
   "status": "healthy",
@@ -46,11 +44,9 @@ Returns service health status and connectivity checks.
 Get current user profile and feature flags.
 
 **Headers:**
-
 - `Authorization: Bearer <token>`
 
 **Response:**
-
 ```json
 {
   "user": {
@@ -75,12 +71,10 @@ Get current user profile and feature flags.
 Update user preferences.
 
 **Headers:**
-
 - `Authorization: Bearer <token>`
 - `Content-Type: application/json`
 
 **Body:**
-
 ```json
 {
   "diet": ["vegetarian", "vegan"],
@@ -91,7 +85,6 @@ Update user preferences.
 ```
 
 **Response:**
-
 ```json
 {
   "user": {
@@ -110,16 +103,13 @@ Update user preferences.
 Get meal plan for a specific day.
 
 **Headers:**
-
 - `Authorization: Bearer <token>`
 - `If-None-Match: <etag>` (optional, for caching)
 
 **Query Parameters:**
-
 - `day` (optional): Date in YYYY-MM-DD format. Defaults to today.
 
 **Response:**
-
 ```json
 {
   "mealPlan": {
@@ -143,7 +133,6 @@ Get meal plan for a specific day.
 ```
 
 **Status Codes:**
-
 - `200`: Success
 - `304`: Not Modified (if `If-None-Match` matches ETag)
 
@@ -152,12 +141,10 @@ Get meal plan for a specific day.
 Create or update meal plan for a day.
 
 **Headers:**
-
 - `Authorization: Bearer <token>`
 - `Content-Type: application/json`
 
 **Body:**
-
 ```json
 {
   "day": "2024-01-15",
@@ -178,7 +165,6 @@ Create or update meal plan for a day.
 ```
 
 **Response:**
-
 ```json
 {
   "mealPlan": { /* created/updated plan */ }
@@ -186,7 +172,6 @@ Create or update meal plan for a day.
 ```
 
 **Status Codes:**
-
 - `201`: Created
 - `400`: Invalid input
 
@@ -195,12 +180,10 @@ Create or update meal plan for a day.
 Generate a meal plan using AI.
 
 **Headers:**
-
 - `Authorization: Bearer <token>`
 - `Content-Type: application/json`
 
 **Body:**
-
 ```json
 {
   "day": "2024-01-15",
@@ -225,7 +208,6 @@ Generate a meal plan using AI.
 ```
 
 **Response:**
-
 ```json
 {
   "jobId": "uuid",
@@ -234,7 +216,6 @@ Generate a meal plan using AI.
 ```
 
 **Status Codes:**
-
 - `202`: Accepted (job queued)
 
 ### Recipes
@@ -244,13 +225,11 @@ Generate a meal plan using AI.
 Search recipes.
 
 **Query Parameters:**
-
 - `q` (optional): Search query
 - `tags` (optional): Comma-separated tags
 - `macro` (optional): Filter by macro (e.g., "high-protein")
 
 **Response:**
-
 ```json
 {
   "recipes": [
@@ -275,12 +254,10 @@ Search recipes.
 Create or update grocery list.
 
 **Headers:**
-
 - `Authorization: Bearer <token>`
 - `Content-Type: application/json`
 
 **Body:**
-
 ```json
 {
   "household_id": "uuid",
@@ -303,13 +280,11 @@ Create or update grocery list.
 Get health metrics timeseries.
 
 **Query Parameters:**
-
 - `kind` (optional): Filter by kind (weight, sleep, water, steps, calories)
 - `from` (optional): Start date (ISO 8601)
 - `to` (optional): End date (ISO 8601)
 
 **Response:**
-
 ```json
 {
   "metrics": [
@@ -330,7 +305,6 @@ Get health metrics timeseries.
 Record a health metric.
 
 **Body:**
-
 ```json
 {
   "kind": "weight",
@@ -346,7 +320,6 @@ Record a health metric.
 List family rooms and DMs.
 
 **Response:**
-
 ```json
 {
   "rooms": [
@@ -365,7 +338,6 @@ List family rooms and DMs.
 Send a message to a room.
 
 **Body:**
-
 ```json
 {
   "room_id": "uuid",
@@ -381,7 +353,6 @@ Send a message to a room.
 Ingest analytics event.
 
 **Body:**
-
 ```json
 {
   "name": "recipe_viewed",
@@ -399,15 +370,11 @@ Ingest analytics event.
 Partner webhook endpoint (HMAC verified).
 
 **Headers:**
-
 - `X-Nomad-Signature: <hmac-signature>`
 
-**Body:**
-
-Partner-specific payload
+**Body:** Partner-specific payload
 
 **Response:**
-
 ```json
 {
   "received": true,
@@ -427,7 +394,6 @@ All endpoints return standard error responses:
 ```
 
 **Status Codes:**
-
 - `400`: Bad Request (validation errors)
 - `401`: Unauthorized (missing/invalid token)
 - `403`: Forbidden (plan upgrade required)
@@ -440,7 +406,6 @@ All endpoints return standard error responses:
 ## Rate Limiting
 
 Rate limits are enforced per IP + user:
-
 - Default: 100 requests per 60 seconds
 - Response headers:
   - `X-RateLimit-Limit`: Maximum requests
@@ -450,7 +415,6 @@ Rate limits are enforced per IP + user:
 ## ETag Support
 
 GET endpoints support ETag caching:
-
 1. Response includes `ETag` header
 2. Client sends `If-None-Match: <etag>` on subsequent requests
 3. Server returns `304 Not Modified` if unchanged
@@ -458,7 +422,6 @@ GET endpoints support ETag caching:
 ## OpenAPI Documentation
 
 Interactive API documentation available at:
-
 - `/api/swagger` - Swagger JSON
 - `/api/docs` - Swagger UI (if configured)
 
