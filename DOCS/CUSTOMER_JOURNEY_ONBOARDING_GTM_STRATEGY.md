@@ -9,7 +9,8 @@
 
 ## 1. Executive Summary & Core Value Proposition
 
-WhatsForDinner exists to solve the universal daily friction point for modern households: **decision fatigue and food waste at mealtime**.
+WhatsForDinner exists to solve the universal daily friction point for modern households:
+**decision fatigue and food waste at mealtime**.
 
 Most meal solutions fail because they either:
 
@@ -19,8 +20,12 @@ Most meal solutions fail because they either:
 
 WhatsForDinner employs a **"Value-First, Zero-Friction" customer engine**:
 
-- **Time-to-Value (TTV) < 45 seconds**: Visitors select or scan ingredients they already possess, specify dietary constraints, and receive an instant, chef-grade customized dinner recipe *before* any account creation or payment barrier.
-- **Full-Stack Monetization Flywheel**: Combining Pro SaaS subscriptions ($9.99/mo or $79/yr), 3-5% affiliate revenue on missing ingredients through grocery partners (Instacart, Amazon Fresh, Walmart, Kroger), and a two-sided private chef marketplace.
+- **Time-to-Value (TTV) < 45 seconds**: Visitors select or scan ingredients they already
+  possess, specify dietary constraints, and receive an instant, chef-grade customized dinner
+  recipe *before* any account creation or payment barrier.
+- **Full-Stack Monetization Flywheel**: Combining Pro SaaS subscriptions ($9.99/mo or $79/yr),
+  3-5% affiliate revenue on missing ingredients through grocery partners (Instacart, Amazon
+  Fresh, Walmart, Kroger), and a two-sided private chef marketplace.
 
 ---
 
@@ -58,8 +63,10 @@ flowchart LR
    - `/surprise-me`: 1-click instant meal roulette for spontaneous cooking.
    - `/recipes/[slug]`: SEO-indexed recipe index with embedded "Cook with what you have" widget.
 2. **Viral Creator Loop**:
-   - Short-form content (TikTok, Reels, YouTube Shorts) showing 3 random fridge ingredients turned into gourmet dinner in 20 minutes.
-   - Every shared recipe includes an interactive web link with pre-populated ingredients and UTM tracking.
+   - Short-form content (TikTok, Reels, YouTube Shorts) showing 3 random fridge ingredients
+     turned into gourmet dinner in 20 minutes.
+   - Every shared recipe includes an interactive web link with pre-populated ingredients
+     and UTM tracking.
 3. **Chef & Creator Affiliates**:
    - Creator portal (`/affiliate`) offering 20% recurring commission on Pro subscriber referrals.
 
@@ -68,10 +75,12 @@ flowchart LR
 - **Path**: `/onboarding`
 - **Guiding Rule**: *Never force authentication before delivering the core solution.*
 - **Funnel Progression**:
-  1. **Hook & Welcome**: Clear benefit promise ("Turn what's in your fridge into dinner in 30 seconds").
+  1. **Hook & Welcome**: Clear benefit promise ("Turn what's in your fridge into dinner
+     in 30 seconds").
   2. **Interactive Pantry Selection**:
      - Visual categorical pill selection (Proteins, Produce, Grains, Dairy, Pantry Essentials).
-     - 1-click popular bundles ("Chicken + Rice + Veggies", "Quick Pasta Night", "Vegetarian Scramble").
+     - 1-click popular bundles ("Chicken + Rice + Veggies", "Quick Pasta Night",
+       "Vegetarian Scramble").
      - Custom search input for unique pantry staples.
   3. **Dietary & Household Profile**:
      - Single-tap constraint chips (Vegetarian, Vegan, Keto, Paleo, Gluten-Free, Dairy-Free).
@@ -89,13 +98,15 @@ flowchart LR
   - **Ingredient Checklist**:
     - [x] In Your Pantry (Olive oil, garlic, chicken breast, rice)
     - [ ] Missing Items Needed (Fresh cilantro, lime)
-  - **Instant Grocery Cart CTA**: "Export Missing Items to Instacart / Amazon Fresh" (with price estimation).
+  - **Instant Grocery Cart CTA**: "Export Missing Items to Instacart / Amazon Fresh"
+    (with price estimation).
 
 ### Stage 4: Account Activation & Identity Handshake
 
 - User clicks **"Save to Weekly Meal Plan"**, **"Cook Tonight"**, or **"Send to Phone"**:
   - Modal provides frictionless OAuth (Google, Apple, or Magic Link).
-  - Client sends cached guest pantry items and generated meal to `POST /api/pantry/bulk` and `POST /api/meal-plan/save`.
+  - Client sends cached guest pantry items and generated meal to `POST /api/pantry/bulk`
+    and `POST /api/meal-plan/save`.
   - Supabase assigns persistent `user_id` and profile seamlessly without losing single data point.
 
 ### Stage 5: Habituation & Retention Loops
@@ -170,7 +181,8 @@ graph TD
 
 #### 2. `POST /api/meal-plan/generate`
 
-- **Supports Guest Mode**: Header or body flag `guestMode: true` bypasses auth wall, returning an instantaneous tailored recipe while attaching an onboarding session token.
+- **Supports Guest Mode**: Header or body flag `guestMode: true` bypasses auth wall,
+  returning an instantaneous tailored recipe while attaching an onboarding session token.
 
 - **Response**:
 
