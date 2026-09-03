@@ -14,7 +14,7 @@
   "dependencies": {
     "@testing-library/react": "^14.1.2",
     "@testing-library/jest-dom": "^6.1.5",
-    "vitest": "^1.2.0"
+    "vitest": "^3.2.6"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
