@@ -1,488 +1,465 @@
-# API Reference
-
-This document provides a comprehensive reference for all API endpoints in the "What's for Dinner" application.
+# Nomad Backend API Reference
 
 ## Base URL
 
-All API endpoints are relative to the base URL of your deployment:
-- **Development**: `http://localhost:3000`
-- **Production**: `https://your-domain.com`
+- Development: `http://localhost:3000`
+- Production: `https://your-domain.com`
 
 ## Authentication
 
-Most endpoints require authentication via Supabase Auth. Include the authentication token in the request headers:
+All endpoints (except `/api/healthz` and `/api/swagger`) require authentication via JWT token in the Authorization header:
 
-```typescript
-headers: {
-  'Authorization': `Bearer ${accessToken}`,
-  'x-tenant-id': tenantId  // Required for multi-tenant operations
-}
+```
+Authorization: Bearer <token>
 ```
 
-## API Endpoints
+Tokens are issued by Supabase Auth after user login (Google/Apple OAuth or email/password).
 
-### Health & Monitoring
+## Endpoints
 
-#### `GET /api/health`
-Basic health check endpoint.
+### Health Check
+
+#### `GET /api/healthz`
+
+Returns service health status and connectivity checks.
 
 **Response:**
 ```json
 {
   "status": "healthy",
-  "timestamp": "2025-01-21T10:00:00.000Z",
   "version": "1.0.0",
-  "buildSha": "abc123",
-  "environment": "production",
+  "timestamp": "2024-01-15T10:00:00Z",
   "checks": {
-    "database": {
-      "status": "healthy",
-      "duration": 45
-    }
-  },
-  "uptime": 3600,
-  "responseTime": 50
-}
-```
-
-#### `GET /api/observability/health`
-Comprehensive observability health check.
-
-**Response:**
-```json
-{
-  "timestamp": "2025-01-21T10:00:00.000Z",
-  "overall": "healthy",
-  "system": {
-    "status": "healthy",
-    "alerts": [],
-    "metrics": {}
-  },
-  "observability": {
-    "status": "healthy",
-    "components": {}
-  },
-  "components": {
-    "monitoring": "healthy",
-    "tracing": "healthy",
-    "logging": "healthy",
-    "database": "healthy"
-  },
-  "summary": {
-    "activeAlerts": 0,
-    "criticalAlerts": 0,
-    "errorRate": 0,
-    "responseTime": 45,
-    "uptime": 3600
+    "database": { "healthy": true, "latency": 5 },
+    "redis": { "healthy": true, "latency": 2 },
+    "queue": { "healthy": true, "pending": 0, "active": 2 }
   }
 }
 ```
 
-### Recipe Generation
+### User Profile
 
-#### `POST /api/dinner`
-Generate recipes from pantry ingredients.
+#### `GET /api/user/me`
 
-**Request Body:**
+Get current user profile and feature flags.
+
+**Headers:**
+- `Authorization: Bearer <token>`
+
+**Response:**
 ```json
 {
-  "ingredients": ["chicken", "tomatoes", "pasta"],
-  "preferences": "vegetarian, gluten-free"
+  "user": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "plan": "premium",
+    "preferences": {
+      "diet": ["vegetarian"],
+      "allergens": ["peanuts"],
+      "units": "metric",
+      "theme": "dark"
+    }
+  },
+  "flags": {
+    "new_feature": true
+  }
 }
 ```
+
+#### `PATCH /api/user/me`
+
+Update user preferences.
+
+**Headers:**
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+**Body:**
+```json
+{
+  "diet": ["vegetarian", "vegan"],
+  "allergens": ["peanuts", "dairy"],
+  "units": "imperial",
+  "theme": "light"
+}
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "plan": "premium",
+    "preferences": { /* updated */ }
+  }
+}
+```
+
+### Meal Plans
+
+#### `GET /api/mealplan?day=YYYY-MM-DD`
+
+Get meal plan for a specific day.
+
+**Headers:**
+- `Authorization: Bearer <token>`
+- `If-None-Match: <etag>` (optional, for caching)
+
+**Query Parameters:**
+- `day` (optional): Date in YYYY-MM-DD format. Defaults to today.
+
+**Response:**
+```json
+{
+  "mealPlan": {
+    "id": "uuid",
+    "user_id": "uuid",
+    "day": "2024-01-15",
+    "items": [
+      {
+        "slot": "breakfast",
+        "recipe_id": "uuid",
+        "macros": {
+          "calories": 500,
+          "protein": 20,
+          "carbs": 60,
+          "fat": 15
+        }
+      }
+    ]
+  }
+}
+```
+
+**Status Codes:**
+- `200`: Success
+- `304`: Not Modified (if `If-None-Match` matches ETag)
+
+#### `POST /api/mealplan`
+
+Create or update meal plan for a day.
+
+**Headers:**
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+**Body:**
+```json
+{
+  "day": "2024-01-15",
+  "household_id": "uuid (optional)",
+  "items": [
+    {
+      "slot": "breakfast",
+      "recipe_id": "uuid",
+      "macros": {
+        "calories": 500,
+        "protein": 20,
+        "carbs": 60,
+        "fat": 15
+      }
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "mealPlan": { /* created/updated plan */ }
+}
+```
+
+**Status Codes:**
+- `201`: Created
+- `400`: Invalid input
+
+#### `POST /api/mealplan/ai-generate`
+
+Generate a meal plan using AI.
+
+**Headers:**
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+**Body:**
+```json
+{
+  "day": "2024-01-15",
+  "household_id": "uuid (optional)",
+  "preferences": {
+    "calorie_target": 2000,
+    "macros": {
+      "protein": 150,
+      "carbs": 250,
+      "fat": 65
+    },
+    "allergens": ["peanuts"]
+  },
+  "pantry": [
+    {
+      "name": "chicken breast",
+      "quantity": 500,
+      "unit": "g"
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "jobId": "uuid",
+  "status": "queued"
+}
+```
+
+**Status Codes:**
+- `202`: Accepted (job queued)
+
+### Recipes
+
+#### `GET /api/recipes/search?q=<query>&tags=<tags>&macro=<macro>`
+
+Search recipes.
+
+**Query Parameters:**
+- `q` (optional): Search query
+- `tags` (optional): Comma-separated tags
+- `macro` (optional): Filter by macro (e.g., "high-protein")
 
 **Response:**
 ```json
 {
   "recipes": [
     {
-      "title": "Recipe Name",
-      "ingredients": ["ingredient1", "ingredient2"],
-      "instructions": ["step1", "step2"],
-      "nutrition": {}
+      "id": "uuid",
+      "title": "Grilled Chicken Salad",
+      "media_url": "https://...",
+      "steps": [],
+      "ingredients": [],
+      "macros": {},
+      "tags": ["healthy", "high-protein"],
+      "source": "curated"
     }
-  ],
-  "metadata": {
-    "model": "gpt-4o-mini",
-    "tokensUsed": 150,
-    "costUsd": 0.002,
-    "cached": false
+  ]
+}
+```
+
+### Grocery Lists
+
+#### `POST /api/grocery`
+
+Create or update grocery list.
+
+**Headers:**
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+**Body:**
+```json
+{
+  "household_id": "uuid",
+  "name": "Weekly Shopping",
+  "items": [
+    {
+      "title": "Chicken Breast",
+      "qty": 500,
+      "unit": "g",
+      "checked": false
+    }
+  ]
+}
+```
+
+### Health Metrics
+
+#### `GET /api/health?kind=<kind>&from=<date>&to=<date>`
+
+Get health metrics timeseries.
+
+**Query Parameters:**
+- `kind` (optional): Filter by kind (weight, sleep, water, steps, calories)
+- `from` (optional): Start date (ISO 8601)
+- `to` (optional): End date (ISO 8601)
+
+**Response:**
+```json
+{
+  "metrics": [
+    {
+      "id": "uuid",
+      "user_id": "uuid",
+      "kind": "weight",
+      "value": "70.5",
+      "unit": "kg",
+      "ts": "2024-01-15T10:00:00Z"
+    }
+  ]
+}
+```
+
+#### `POST /api/health`
+
+Record a health metric.
+
+**Body:**
+```json
+{
+  "kind": "weight",
+  "value": 70.5,
+  "unit": "kg"
+}
+```
+
+### Family Communication
+
+#### `GET /api/family/rooms`
+
+List family rooms and DMs.
+
+**Response:**
+```json
+{
+  "rooms": [
+    {
+      "id": "uuid",
+      "household_id": "uuid",
+      "kind": "family",
+      "participants": ["uuid1", "uuid2"]
+    }
+  ]
+}
+```
+
+#### `POST /api/family/message`
+
+Send a message to a room.
+
+**Body:**
+```json
+{
+  "room_id": "uuid",
+  "body": "Dinner's ready!",
+  "attachments": []
+}
+```
+
+### Analytics & Events
+
+#### `POST /api/events`
+
+Ingest analytics event.
+
+**Body:**
+```json
+{
+  "name": "recipe_viewed",
+  "props": {
+    "recipe_id": "uuid",
+    "source": "search"
   }
 }
 ```
 
-**Headers Required:**
-- `x-tenant-id`: Tenant identifier (required)
+### Webhooks
 
-### Observability
+#### `POST /api/partner/webhook`
 
-#### `GET /api/observability/traces`
-Get distributed traces.
+Partner webhook endpoint (HMAC verified).
 
-**Query Parameters:**
-- `limit` (optional): Number of traces to return (default: 100)
-- `service` (optional): Filter by service name
-- `timeRange` (optional): Time range in minutes (default: 60)
+**Headers:**
+- `X-Nomad-Signature: <hmac-signature>`
 
-#### `GET /api/observability/metrics`
-Get system metrics.
-
-**Query Parameters:**
-- `metric` (optional): Specific metric name
-- `timeRange` (optional): Time range in minutes (default: 60)
-
-#### `GET /api/observability/alerts`
-Get active alerts.
+**Body:** Partner-specific payload
 
 **Response:**
 ```json
 {
-  "alerts": [
-    {
-      "id": "alert-123",
-      "severity": "critical",
-      "message": "High error rate detected",
-      "timestamp": "2025-01-21T10:00:00.000Z"
-    }
-  ]
+  "received": true,
+  "id": "uuid"
 }
 ```
-
-#### `GET /api/observability/report`
-Get observability report.
-
-#### `GET /api/observability/dashboard`
-Get dashboard data for observability.
-
-#### `GET /api/observability/errors`
-Get error logs.
-
-**Query Parameters:**
-- `limit` (optional): Number of errors to return (default: 50)
-- `severity` (optional): Filter by severity level
-
-### Billing
-
-#### `GET /api/billing/portal`
-Get Stripe billing portal session URL.
-
-**Response:**
-```json
-{
-  "url": "https://billing.stripe.com/session/..."
-}
-```
-
-#### `POST /api/billing/checkout`
-Create Stripe checkout session.
-
-**Request Body:**
-```json
-{
-  "planId": "pro",
-  "successUrl": "https://example.com/success",
-  "cancelUrl": "https://example.com/cancel"
-}
-```
-
-**Response:**
-```json
-{
-  "sessionId": "cs_test_...",
-  "url": "https://checkout.stripe.com/pay/..."
-}
-```
-
-### Pantry Management
-
-#### `POST /api/pantry/seed-sample`
-Seed sample pantry items for a user.
-
-**Request Body:**
-```json
-{
-  "userId": "user-id"
-}
-```
-
-### Preferences
-
-#### `GET /api/preferences`
-Get user preferences.
-
-**Response:**
-```json
-{
-  "dietaryRestrictions": ["vegetarian"],
-  "allergies": ["nuts"],
-  "cuisinePreferences": ["italian"],
-  "cookingTime": "30-60"
-}
-```
-
-#### `POST /api/preferences`
-Update user preferences.
-
-**Request Body:**
-```json
-{
-  "dietaryRestrictions": ["vegetarian"],
-  "allergies": ["nuts"],
-  "cuisinePreferences": ["italian"],
-  "cookingTime": "30-60"
-}
-```
-
-### Feature Flags
-
-#### `GET /api/features/check`
-Check feature flag status.
-
-**Query Parameters:**
-- `feature`: Feature flag name (required)
-
-**Response:**
-```json
-{
-  "enabled": true,
-  "variant": "variant-name"
-}
-```
-
-### Experiments
-
-#### `POST /api/experiments/assign`
-Assign user to experiment variant.
-
-**Request Body:**
-```json
-{
-  "experimentId": "experiment-123",
-  "userId": "user-id"
-}
-```
-
-#### `POST /api/experiments/convert`
-Record experiment conversion.
-
-**Request Body:**
-```json
-{
-  "experimentId": "experiment-123",
-  "userId": "user-id",
-  "event": "purchase"
-}
-```
-
-### Onboarding
-
-#### `GET /api/onboarding/checklist`
-Get onboarding checklist for user.
-
-**Response:**
-```json
-{
-  "steps": [
-    {
-      "id": "step-1",
-      "title": "Add pantry items",
-      "completed": true
-    }
-  ]
-}
-```
-
-### Developers API
-
-#### `GET /api/developers/keys`
-Get API keys for authenticated developer.
-
-**Response:**
-```json
-{
-  "keys": [
-    {
-      "id": "key-123",
-      "name": "Production Key",
-      "createdAt": "2025-01-21T10:00:00.000Z",
-      "lastUsed": "2025-01-21T10:00:00.000Z"
-    }
-  ]
-}
-```
-
-#### `POST /api/developers/keys`
-Create new API key.
-
-**Request Body:**
-```json
-{
-  "name": "My API Key"
-}
-```
-
-**Response:**
-```json
-{
-  "id": "key-123",
-  "key": "sk_live_...",
-  "name": "My API Key",
-  "createdAt": "2025-01-21T10:00:00.000Z"
-}
-```
-
-#### `DELETE /api/developers/keys/[id]`
-Delete API key.
-
-#### `GET /api/developers/usage`
-Get API usage statistics.
-
-**Query Parameters:**
-- `startDate` (optional): Start date (ISO format)
-- `endDate` (optional): End date (ISO format)
-
-### Partners API
-
-#### `GET /api/partners/stats`
-Get partner statistics.
-
-**Response:**
-```json
-{
-  "totalRecipes": 1000,
-  "totalViews": 50000,
-  "totalRevenue": 10000
-}
-```
-
-#### `GET /api/partners/revenue`
-Get partner revenue.
-
-**Query Parameters:**
-- `startDate` (optional): Start date (ISO format)
-- `endDate` (optional): End date (ISO format)
-
-#### `GET /api/partners/v1/recipes`
-Get partner recipes (API v1).
-
-#### `GET /api/partners/v1/nutrition`
-Get nutrition data (API v1).
-
-#### `GET /api/partners/v1/meal-plans`
-Get meal plans (API v1).
-
-### Performance
-
-#### `GET /api/performance`
-Get performance metrics.
-
-#### `POST /api/performance/optimize`
-Request performance optimization.
-
-**Request Body:**
-```json
-{
-  "resource": "recipes",
-  "action": "cache"
-}
-```
-
-#### `GET /api/performance/recommendations`
-Get performance optimization recommendations.
-
-### Commerce Hub
-
-#### `GET /api/commerce/hub`
-Get commerce hub data.
-
-### Federation
-
-#### `GET /api/federation`
-Get federation data.
-
-### Traces
-
-#### `GET /api/traces`
-Get distributed traces.
-
-**Query Parameters:**
-- `limit` (optional): Number of traces (default: 100)
-- `service` (optional): Filter by service
-
-#### `GET /api/traces/[traceId]/spans`
-Get spans for a specific trace.
-
-### Other Endpoints
-
-#### `GET /api/metrics`
-Get system metrics.
-
-#### `POST /api/errors`
-Report error.
-
-**Request Body:**
-```json
-{
-  "error": "Error message",
-  "stack": "Stack trace",
-  "context": {}
-}
-```
-
-#### `POST /api/alerts`
-Create alert.
-
-#### `POST /api/stripe/webhook`
-Stripe webhook endpoint (handled by Stripe).
-
-#### `GET /api/selftest`
-Self-test endpoint.
 
 ## Error Responses
 
-All error responses follow this format:
+All endpoints return standard error responses:
 
 ```json
 {
   "error": "Error message",
-  "details": {}  // Optional additional details
+  "details": [] // Optional, for validation errors
 }
 ```
 
-### HTTP Status Codes
-
-- `200` - Success
-- `400` - Bad Request (validation error)
-- `401` - Unauthorized (missing or invalid auth)
-- `403` - Forbidden (insufficient permissions)
-- `404` - Not Found
-- `500` - Internal Server Error
-- `503` - Service Unavailable
+**Status Codes:**
+- `400`: Bad Request (validation errors)
+- `401`: Unauthorized (missing/invalid token)
+- `403`: Forbidden (plan upgrade required)
+- `404`: Not Found
+- `413`: Payload Too Large (>1MB)
+- `429`: Too Many Requests (rate limited)
+- `500`: Internal Server Error
+- `503`: Service Unavailable (degraded health)
 
 ## Rate Limiting
 
-API endpoints are rate-limited based on your plan:
-- **Free**: 100 requests/hour
-- **Pro**: 1000 requests/hour
-- **Enterprise**: Unlimited
+Rate limits are enforced per IP + user:
+- Default: 100 requests per 60 seconds
+- Response headers:
+  - `X-RateLimit-Limit`: Maximum requests
+  - `X-RateLimit-Remaining`: Remaining requests
+  - `X-RateLimit-Reset`: Reset time (ISO 8601)
 
-Rate limit headers are included in responses:
+## ETag Support
+
+GET endpoints support ETag caching:
+1. Response includes `ETag` header
+2. Client sends `If-None-Match: <etag>` on subsequent requests
+3. Server returns `304 Not Modified` if unchanged
+
+## OpenAPI Documentation
+
+Interactive API documentation available at:
+- `/api/swagger` - Swagger JSON
+- `/api/docs` - Swagger UI (if configured)
+
+## Examples
+
+### cURL
+
+```bash
+# Get user profile
+curl -H "Authorization: Bearer $TOKEN" \
+  https://api.nomad.app/api/user/me
+
+# Get meal plan
+curl -H "Authorization: Bearer $TOKEN" \
+  "https://api.nomad.app/api/mealplan?day=2024-01-15"
+
+# Create meal plan
+curl -X POST \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"day":"2024-01-15","items":[]}' \
+  https://api.nomad.app/api/mealplan
 ```
-X-RateLimit-Limit: 1000
-X-RateLimit-Remaining: 999
-X-RateLimit-Reset: 1642680000
+
+### TypeScript (fetch)
+
+```typescript
+const response = await fetch('https://api.nomad.app/api/mealplan?day=2024-01-15', {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'If-None-Match': etag, // for caching
+  },
+});
+
+if (response.status === 304) {
+  // Use cached data
+} else {
+  const data = await response.json();
+  const newEtag = response.headers.get('ETag');
+}
 ```
-
-## SDKs
-
-Official SDKs are available:
-- TypeScript/JavaScript: `@whats-for-dinner/sdk`
-- React: `@whats-for-dinner/react-sdk`
-- React Native: `@whats-for-dinner/react-native-sdk`
-
-## Support
-
-For API support:
-- Documentation: See this file and inline code comments
-- Issues: GitHub Issues
-- Discussions: GitHub Discussions
