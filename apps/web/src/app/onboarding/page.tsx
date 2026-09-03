@@ -23,16 +23,13 @@ import {
   Flame,
   ShoppingCart,
   Plus,
-  X,
   ExternalLink,
   ChevronRight,
-  ShieldCheck,
   RefreshCw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AIPersonality } from '@/components/AIPersonality';
 import { Celebration } from '@/components/AdvancedAnimations';
 
 type Step = 'welcome' | 'pantry' | 'preferences' | 'generating' | 'recipe';
@@ -113,7 +110,7 @@ export default function OnboardingPage() {
   const [selectedDiets, setSelectedDiets] = useState<string[]>(['high-protein']);
   const [familySize, setFamilySize] = useState<number>(2);
   const [cookTimeGoal, setCookTimeGoal] = useState<string>('25 min');
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [, setIsGenerating] = useState(false);
   const [generatedRecipe, setGeneratedRecipe] = useState<RecipeData | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [retailers, setRetailers] = useState<RetailerOption[]>([]);

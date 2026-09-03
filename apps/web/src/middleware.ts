@@ -19,6 +19,13 @@ if (typeof window === 'undefined') {
 
 export function middleware(request: NextRequest) {
   const startTime = Date.now();
+  // CSRF protection
+  const origin = request.headers.get("origin");
+  const allowedOrigins = process.env.CORS_ORIGINS?.split(",") || [];
+  
+  if (request.method !== "GET" && origin && !allowedOrigins.includes(origin)) {
+    return new NextResponse("Invalid origin", { status: 403 });
+  }
   const response = NextResponse.next();
 
   // Add performance headers

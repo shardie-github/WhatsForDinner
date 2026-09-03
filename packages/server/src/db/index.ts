@@ -1,8 +1,8 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema.js';
-import { eq, and, desc, gte, lte, sql, inArray } from 'drizzle-orm';
-import type { RequestContext, PaginationParams, PaginatedResponse } from '../types.js';
+import { eq, and, desc, gte, lte, sql } from 'drizzle-orm';
+import type { PaginationParams, PaginatedResponse } from '../types.js';
 import Redis from 'ioredis';
 import crypto from 'crypto';
 
@@ -56,7 +56,6 @@ export async function paginateQuery<T>(
 ): Promise<PaginatedResponse<T>> {
   const page = params.page || 1;
   const limit = params.limit || 20;
-  const offset = (page - 1) * limit;
 
   const [data, countResult] = await Promise.all([query, countQuery]);
   const total = Number(countResult[0]?.count || 0);
@@ -97,8 +96,8 @@ export const usersRepo = {
 
 // Meal plans repository
 export const mealPlansRepo = {
-  async findByUserAndDay(userId: string, day: Date) {
-    const dayStr = day.toISOString().split('T')[0];
+  async findByUserAndDay(userId: string, day: Date | string) {
+    const dayStr = typeof day === 'string' ? day : (day.toISOString().split('T')[0] ?? '');
     const [plan] = await db
       .select()
       .from(schema.mealPlans)
@@ -129,7 +128,7 @@ export const mealPlansRepo = {
   },
 
   async upsert(plan: typeof schema.mealPlans.$inferInsert) {
-    const dayStr = typeof plan.day === 'string' ? plan.day : plan.day.toISOString().split('T')[0];
+    const dayStr = String(plan.day);
     
     const [existing] = await db
       .select()
@@ -352,7 +351,9 @@ export function computeResponseETag(data: unknown): string {
 
 // Cleanup function
 export async function closeDb() {
-  await client.end();
+  if (client) {
+    await client.end();
+  }
   if (redisClient) {
     await redisClient.quit();
   }

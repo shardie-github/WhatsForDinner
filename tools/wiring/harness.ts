@@ -9,6 +9,7 @@
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { db } from '../../packages/server/src/db/index.js';
+// @ts-ignore
 import Redis from 'ioredis';
 import { createClient } from '@supabase/supabase-js';
 import { createComponentLogger } from '@whats-for-dinner/utils';
@@ -16,11 +17,11 @@ import { createComponentLogger } from '@whats-for-dinner/utils';
 const logger = createComponentLogger('harness-ts');
 interface CheckResult {
   status: 'pass' | 'fail' | 'degraded' | 'skip';
-  latency?: number;
-  evidence?: string[];
-  error?: string;
-  fixPr?: string;
-  nextAction?: string;
+  latency?: number | undefined;
+  evidence?: string[] | undefined;
+  error?: string | undefined;
+  fixPr?: string | undefined;
+  nextAction?: string | undefined;
 }
 
 interface ConnectivityCheck {
@@ -50,7 +51,6 @@ const EVIDENCE_DIR = join(REPORT_DIR, 'evidence');
 mkdirSync(REPORT_DIR, { recursive: true });
 mkdirSync(EVIDENCE_DIR, { recursive: true });
 
-const checks: ConnectivityCheck[] = [];
 const evidence: string[] = [];
 
 function logEvidence(message: string) {
@@ -160,9 +160,9 @@ async function checkHealth(): Promise<ConnectivityCheck[]> {
   try {
     const start = Date.now();
     // Try simple query - db might not have execute, use SQL directly
-    const result = await db.execute({ sql: 'SELECT 1 as test', args: [] } as any).catch(async () => {
+    await db.execute({ sql: 'SELECT 1 as test', args: [] } as any).catch(async () => {
       // Fallback: try postgres client directly
-      const { default: postgres } = await import('postgres');
+      const { default: postgres } = (await import('postgres' as string)) as any;
       const connectionString = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL || '';
       if (!connectionString) throw new Error('No database URL');
       const sql = postgres(connectionString);
@@ -260,7 +260,7 @@ async function checkAuthRLS(): Promise<ConnectivityCheck[]> {
       return authChecks;
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    createClient(supabaseUrl, supabaseKey);
     
     // Test RLS: Create two test users and attempt cross-tenant access
     // This is a simplified check - full test in E2E
@@ -339,7 +339,7 @@ async function checkCoreProductLoop(): Promise<ConnectivityCheck[]> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   try {
     const start = Date.now();
-    const response = await fetch(`${baseUrl}/api/meal-plan`, {
+    const response = await fetch(`${baseUrl}/api/meal-plan/generate`, {
       method: 'GET',
       signal: AbortSignal.timeout(5000),
     });
@@ -371,7 +371,7 @@ async function checkCoreProductLoop(): Promise<ConnectivityCheck[]> {
   // Check grocery list endpoint
   try {
     const start = Date.now();
-    const response = await fetch(`${baseUrl}/api/grocery-list`, {
+    const response = await fetch(`${baseUrl}/api/grocery/cart-export`, {
       method: 'GET',
       signal: AbortSignal.timeout(5000),
     });
@@ -526,7 +526,7 @@ async function checkGrowthLayer(): Promise<ConnectivityCheck[]> {
   // Check experiments endpoint
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   try {
-    const response = await fetch(`${baseUrl}/api/experiments`, {
+    const response = await fetch(`${baseUrl}/api/experiments/price`, {
       method: 'GET',
       signal: AbortSignal.timeout(3000),
     });
@@ -553,7 +553,7 @@ async function checkGrowthLayer(): Promise<ConnectivityCheck[]> {
 
   // Check pricing endpoint
   try {
-    const response = await fetch(`${baseUrl}/api/pricing`, {
+    const response = await fetch(`${baseUrl}/api/pricing/current`, {
       method: 'GET',
       signal: AbortSignal.timeout(3000),
     });
@@ -604,7 +604,7 @@ async function checkCompliance(): Promise<ConnectivityCheck[]> {
   // Check GDPR endpoint
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   try {
-    const response = await fetch(`${baseUrl}/api/gdpr`, {
+    const response = await fetch(`${baseUrl}/api/gdpr/export`, {
       method: 'GET',
       signal: AbortSignal.timeout(3000),
     });

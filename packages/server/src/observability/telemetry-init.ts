@@ -31,7 +31,7 @@ export function initializeTelemetry(): void {
 
   // Only initialize if OTLP endpoint is configured or in development
   if (!enableOtlp && !otlpEndpoint && process.env.NODE_ENV !== 'development') {
-    logger.info('📊 OpenTelemetry: Disabled (no OTLP endpoint configured')');
+    logger.info('📊 OpenTelemetry: Disabled (no OTLP endpoint configured)');
     initialized = true;
     return;
   }
@@ -71,11 +71,11 @@ export function initializeTelemetry(): void {
     sdk.start();
     initialized = true;
 
-    logger.info('✅ OpenTelemetry initialized: ${serviceName}');
+    logger.info(`✅ OpenTelemetry initialized: ${serviceName}`);
     if (otlpEndpoint) {
-      logger.info('   📡 OTLP Endpoint: ${otlpEndpoint}');
+      logger.info(`   📡 OTLP Endpoint: ${otlpEndpoint}`);
     } else {
-      logger.info('   📡 OTLP: Console exporter (development mode')');
+      logger.info('   📡 OTLP: Console exporter (development mode)');
     }
   } catch (error) {
     logger.error('❌ Failed to initialize OpenTelemetry:', { error });

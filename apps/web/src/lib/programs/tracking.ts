@@ -46,7 +46,7 @@ export function getAttributionCode(type: 'ref' | 'aff'): string | null {
   
   for (const cookie of cookies) {
     const [name, value] = cookie.trim().split('=');
-    if (name === cookieName) {
+    if (name === cookieName && value) {
       return decodeURIComponent(value);
     }
   }

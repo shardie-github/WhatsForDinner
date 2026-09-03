@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@whats-for-dinner/utils';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   className?: string;
   label?: string;
   error?: string;

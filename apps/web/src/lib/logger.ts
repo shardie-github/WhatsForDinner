@@ -1,7 +1,3 @@
-import { createComponentLogger } from '@whats-for-dinner/utils';
-
-const logger = createComponentLogger('logger');
-
 import { supabase } from './supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -107,7 +103,7 @@ class Logger {
     }
 
     // Always log to console for immediate debugging
-    logger.error(`[${source}] ${message}`, { context, error });
+    console.error(`[${source}] ${message}`, { context, error });
 
     // Write to database
     await this.writeLog(entry);
@@ -132,7 +128,7 @@ class Logger {
       component
     );
 
-    if (process.env.NODE_ENV === 'development') { logger.warn(`[${source}] ${message}`, { context }); }
+    if (process.env.NODE_ENV === 'development') { console.warn(`[${source}] ${message}`, { context }); }
     await this.writeLog(entry);
   }
 
@@ -150,7 +146,7 @@ class Logger {
       component
     );
 
-    logger.info(`[${source}] ${message}`, { context });
+    console.info(`[${source}] ${message}`, { context });
     await this.writeLog(entry);
   }
 
@@ -169,7 +165,7 @@ class Logger {
     );
 
     if (process.env.NODE_ENV === 'development') {
-      logger.debug(`[${source}] ${message}`, { context });
+      console.debug(`[${source}] ${message}`, { context });
     }
     await this.writeLog(entry);
   }
@@ -206,10 +202,10 @@ class Logger {
         .insert(errorReport);
 
       if (dbError) {
-        logger.error('Failed to create error report', { dbError });
+        console.error('Failed to create error report', { dbError });
       }
     } catch (err) {
-      logger.error('Error report creation failed', { err });
+      console.error('Error report creation failed', { err });
     }
   }
 

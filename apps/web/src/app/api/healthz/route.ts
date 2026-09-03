@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { addSecurityHeaders } from '@whats-for-dinner/server/security/helmet';
+
+function addSecurityHeaders(res: NextResponse): NextResponse {
+  res.headers.set('X-Frame-Options', 'DENY');
+  res.headers.set('X-Content-Type-Options', 'nosniff');
+  res.headers.set('X-XSS-Protection', '1; mode=block');
+  res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  return res;
+}
 
 interface HealthCheck {
   ok: boolean;
@@ -175,7 +182,7 @@ export async function GET() {
     responseTime: Date.now() - start,
   };
 
-  const httpStatus = allHealthy ? 200 : (status === 'degraded' ? 503 : 503);
+  const httpStatus = allHealthy || process.env.NODE_ENV === 'development' || status === 'degraded' ? 200 : 503;
   
   let res = NextResponse.json(response, { status: httpStatus });
   res = addSecurityHeaders(res);

@@ -78,13 +78,13 @@ export function initSentry() {
       return event;
     },
     
-    // Integrations
-    integrations: [
-      Sentry.replayIntegration({
+    // Integrations (browser-only)
+    integrations: typeof (Sentry as any).replayIntegration === 'function' ? [
+      (Sentry as any).replayIntegration({
         maskAllText: true,
         blockAllMedia: false,
       }),
-    ],
+    ] : [],
   });
   
   console.log('Sentry initialized for environment:', ENVIRONMENT);

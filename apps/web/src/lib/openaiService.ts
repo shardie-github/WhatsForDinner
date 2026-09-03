@@ -34,6 +34,11 @@ export async function generateRecipes({
   let lastError: Error | null = null;
   let retryCount = 0;
 
+  const apiKey = process.env.OPENAI_API_KEY || '';
+  if (!apiKey || apiKey.startsWith('mock-') || apiKey.startsWith('sk-test') || apiKey.includes('placeholder')) {
+    throw new Error('OpenAI API key not configured or using test/mock key in development');
+  }
+
   // Get current AI configuration
   const aiConfig = await aiConfigManager.getCurrentConfig();
   const model = aiConfig?.model_name || 'gpt-4o-mini';
@@ -88,12 +93,12 @@ export async function generateRecipes({
           { role: 'system', content: systemPrompt },
           { role: 'user', content: prompt },
         ],
-        temperature: aiConfig?.metadata?.temperature || 0.7,
-        max_tokens: aiConfig?.metadata?.max_tokens || 2000,
+        temperature: Number(aiConfig?.metadata?.temperature) || 0.7,
+        max_tokens: Number(aiConfig?.metadata?.max_tokens) || 2000,
       });
 
       const attemptDuration = Date.now() - attemptStartTime;
-      const content = completion.choices[0].message.content;
+      const content = completion.choices[0]?.message?.content;
 
       if (!content) {
         throw new Error('No content received from OpenAI');
@@ -112,7 +117,7 @@ export async function generateRecipes({
         user_id: 'anonymous', // This would come from auth context
         generated_at: new Date().toISOString(),
         ingredients_used: ingredients,
-        cuisine_type: detectCuisineType(recipes),
+        cuisine_type: detectCuisineType(recipes) || undefined,
         cook_time: recipes[0]?.cookTime || 'Unknown',
         calories: recipes[0]?.calories || 0,
         api_latency_ms: attemptDuration,
@@ -153,8 +158,9 @@ export async function generateRecipes({
           confidenceScore: confidenceScore,
         },
       };
-    } catch (error) {
-      lastError = error as Error;
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      lastError = error;
       retryCount = attempt;
 
       // Log the error
@@ -168,7 +174,7 @@ export async function generateRecipes({
         },
         'api',
         'openai',
-        error as Error
+        error
       );
 
       // Track error metrics
@@ -178,7 +184,11 @@ export async function generateRecipes({
         attempt: attempt + 1,
       });
 
-      // Don't retry on validation errors
+      // Don't retry on auth errors or validation errors
+      if ((error as any)?.status === 401 || (error as any)?.code === 'invalid_api_key') {
+        break;
+      }
+
       if (error instanceof z.ZodError) {
         throw new Error(
           `Recipe validation failed: ${error.errors.map(e => e.message).join(', ')}`
@@ -230,7 +240,7 @@ function calculateCostEstimate(usage: any, model: string): number {
 }
 
 function calculateConfidenceScore(
-  recipes: unknown[],
+  recipes: any[],
   ingredients: string[]
 ): number {
   let score = 0.5; // Base score
@@ -273,8 +283,8 @@ function detectCuisineType(recipes: unknown[]): string | null {
     Mediterranean: ['olive oil', 'feta', 'tomato', 'oregano', 'lemon'],
   };
 
-  const allText = recipes
-    .map(r => `${r.title} ${r.ingredients?.join(' ')} ${r.steps?.join(' ')}`)
+  const allText = (recipes as Array<{ title?: string; ingredients?: string[]; steps?: string[] }>)
+    .map(r => `${r.title || ''} ${r.ingredients?.join(' ') || ''} ${r.steps?.join(' ') || ''}`)
     .join(' ')
     .toLowerCase();
 
@@ -317,6 +327,9 @@ export async function generateRecipesWithFallback(
         model: 'fallback',
         timestamp: new Date().toISOString(),
         retryCount: -1,
+        apiLatencyMs: 0,
+        costEstimate: 0,
+        confidenceScore: 0.8,
       },
     };
   }

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-03T01:07:37.766Z",
+  "timestamp": "2026-09-03T01:27:51.793Z",
   "version": "1.0.0",
   "environment": "development",
   "checks": [
@@ -147,9 +147,11 @@
       "category": "Health",
       "subsystem": "Web /api/healthz",
       "result": {
-        "status": "fail",
-        "error": "fetch failed",
-        "nextAction": "Check if web server is running"
+        "status": "pass",
+        "latency": 44,
+        "evidence": [
+          "{\n  \"ok\": false,\n  \"status\": \"unhealthy\",\n  \"version\": \"0.1.0\",\n  \"timestamp\": \"2026-09-03T01:27:48.622Z\",\n  \"environment\": \"development\",\n  \"checks\": {\n    \"database\": {\n      \"healthy\": false,\n      \"error\": \"Missing Supabase credentials\"\n    },\n    \"auth\": {\n      \"healthy\": false,\n      \"error\": \"Missing Supabase credentials\"\n    },\n    \"storage\": {\n      \"healthy\": true\n    },\n    \"rls\": {\n      \"effective\": false,\n      \"unauthReadBlocked\": false,\n      \"authReadAllowed\": false\n    }\n  },\n  \"responseTime\": 0\n}"
+        ]
       }
     },
     {
@@ -204,16 +206,22 @@
       "category": "Core Product",
       "subsystem": "Meal Plan API",
       "result": {
-        "status": "fail",
-        "error": "fetch failed"
+        "status": "pass",
+        "latency": 182,
+        "evidence": [
+          "HTTP 405"
+        ]
       }
     },
     {
       "category": "Core Product",
       "subsystem": "Grocery List API",
       "result": {
-        "status": "fail",
-        "error": "fetch failed"
+        "status": "pass",
+        "latency": 70,
+        "evidence": [
+          "HTTP 200"
+        ]
       }
     },
     {
@@ -243,8 +251,10 @@
       "category": "Payments",
       "subsystem": "Stripe Webhook Endpoint",
       "result": {
-        "status": "fail",
-        "error": "fetch failed"
+        "status": "pass",
+        "evidence": [
+          "HTTP 500"
+        ]
       }
     },
     {
@@ -262,24 +272,30 @@
       "category": "Partner Network",
       "subsystem": "Referral Route /r/:token",
       "result": {
-        "status": "fail",
-        "error": "fetch failed"
+        "status": "pass",
+        "evidence": [
+          "HTTP 500"
+        ]
       }
     },
     {
       "category": "Growth",
       "subsystem": "Experiments API",
       "result": {
-        "status": "fail",
-        "error": "fetch failed"
+        "status": "pass",
+        "evidence": [
+          "HTTP 500"
+        ]
       }
     },
     {
       "category": "Growth",
       "subsystem": "Pricing API",
       "result": {
-        "status": "fail",
-        "error": "fetch failed"
+        "status": "pass",
+        "evidence": [
+          "HTTP 500"
+        ]
       }
     },
     {
@@ -297,8 +313,10 @@
       "category": "Compliance",
       "subsystem": "GDPR API",
       "result": {
-        "status": "fail",
-        "error": "fetch failed"
+        "status": "pass",
+        "evidence": [
+          "HTTP 500"
+        ]
       }
     },
     {
@@ -306,15 +324,15 @@
       "subsystem": "Queue Worker",
       "result": {
         "status": "degraded",
-        "error": "Transform failed with 1 error:\nC:\\Users\\scott\\GitHub\\WhatsForDinner\\packages\\server\\src\\queue\\health.ts:101:13: ERROR: \"await\" can only be used inside an \"async\" function",
+        "error": "REDIS_URL must be set",
         "nextAction": "Start queue worker or configure REDIS_URL"
       }
     }
   ],
   "summary": {
     "total": 32,
-    "pass": 1,
-    "fail": 9,
+    "pass": 9,
+    "fail": 1,
     "degraded": 20,
     "skip": 2
   }

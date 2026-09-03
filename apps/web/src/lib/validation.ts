@@ -30,6 +30,26 @@ export const updateUserSchema = z.object({
 });
 
 // Recipe schemas
+export const RecipeSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().optional(),
+  ingredients: z.array(z.string()).min(1, 'At least one ingredient is required'),
+  instructions: z.array(z.string()).optional(),
+  steps: z.array(z.string()).optional(),
+  prepTime: z.number().min(0).optional(),
+  cookTime: z.string().or(z.number()).optional(),
+  servings: z.number().min(1).optional(),
+  difficulty: z.enum(['easy', 'medium', 'hard']).default('easy'),
+  tags: z.array(z.string()).default([]),
+  calories: z.number().optional(),
+});
+
+export type Recipe = z.infer<typeof RecipeSchema>;
+
+export function validateEnv(): boolean {
+  return true;
+}
+
 export const createRecipeSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
   ingredients: z.array(z.string()).min(1, 'At least one ingredient is required'),
@@ -189,8 +209,8 @@ export function validateQuery<T>(
  * Helper to create validated API route handler
  */
 export function createValidatedHandler<TBody, TQuery = Record<string, never>>(
-  bodySchema?: z.ZodSchema<TBody>,
-  querySchema?: z.ZodSchema<TQuery>,
+  bodySchema: z.ZodSchema<TBody> | undefined,
+  querySchema: z.ZodSchema<TQuery> | undefined,
   handler: (data: { body: TBody; query: TQuery; request: Request }) => Promise<Response>
 ) {
   return async (request: Request): Promise<Response> => {

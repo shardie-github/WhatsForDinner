@@ -12,7 +12,6 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
-import { readFile } from 'fs/promises';
 import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const logger = createComponentLogger('wire-doctor-ts');
@@ -24,8 +23,6 @@ interface Fix {
   fix: () => Promise<void>;
   rollback?: () => Promise<void>;
 }
-
-const fixes: Fix[] = [];
 
 async function checkCSRFHeaders(): Promise<Fix | null> {
   // Check middleware.ts for CSRF and security protection
@@ -230,12 +227,13 @@ async function main() {
     
   for (const fix of allFixes) {
     const icon = {
-      critical: '??',
-      warning: '??',
-      info: '??',
-    }[fix.severity];
+      critical: '🔴',
+      warning: '🟡',
+      info: '🔵',
+    }[fix.severity] || '⚪';
     
-              }
+    logger.info(`${icon} [${fix.severity.toUpperCase()}] ${fix.description}`);
+  }
   
   if (allFixes.length === 0) {
         return;

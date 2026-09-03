@@ -1,5 +1,5 @@
-import { pgTable, uuid, text, jsonb, timestamp, numeric, pgEnum, boolean, integer, date, varchar, sql } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { pgTable, uuid, text, jsonb, timestamp, numeric, pgEnum, boolean, integer, date, varchar } from 'drizzle-orm/pg-core';
+import { relations, sql } from 'drizzle-orm';
 
 // Enums
 export const planEnum = pgEnum('plan', ['free', 'premium', 'partner']);
@@ -57,7 +57,7 @@ export const recipes = pgTable('recipes', {
   updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-// Meal plans table
+// Meal plans table (RLS enabled: user_id = auth.uid() or household member)
 export const mealPlans = pgTable('meal_plans', {
   id: uuid('id').primaryKey().defaultRandom(),
   user_id: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -232,8 +232,8 @@ export const referralPrograms = pgTable('referral_programs', {
   id: uuid('id').primaryKey().defaultRandom(),
   slug: text('slug').notNull().unique(),
   active: boolean('active').default(true).notNull(),
-  reward_sender: jsonb('reward_sender').$type<{ type: string; value: number }>().default({}),
-  reward_receiver: jsonb('reward_receiver').$type<{ type: string; value: number }>().default({}),
+  reward_sender: jsonb('reward_sender').$type<{ type: string; value: number }>().default({ type: 'credit', value: 0 }),
+  reward_receiver: jsonb('reward_receiver').$type<{ type: string; value: number }>().default({ type: 'credit', value: 0 }),
   terms_url: text('terms_url'),
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),

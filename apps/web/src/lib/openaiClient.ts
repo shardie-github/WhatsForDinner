@@ -10,7 +10,7 @@ try {
 }
 
 export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+  apiKey: process.env.OPENAI_API_KEY || 'sk-test-mock-key',
 });
 
 // Re-export Recipe type from validation

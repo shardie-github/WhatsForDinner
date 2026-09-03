@@ -7,8 +7,18 @@ import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const logger = createComponentLogger('pantry-bulk-api');
 
+const PantryItemEntry = z.union([
+  z.string().min(1).max(100),
+  z.object({
+    name: z.string().min(1).max(100),
+    category: z.string().optional(),
+    quantity: z.number().optional(),
+    unit: z.string().optional(),
+  }),
+]);
+
 const BulkPantrySchema = z.object({
-  items: z.array(z.string().min(1).max(100)).min(1).max(50),
+  items: z.array(PantryItemEntry).min(1).max(50),
   source: z.string().optional().default('onboarding'),
 });
 
@@ -32,7 +42,9 @@ async function handler(req: NextRequest) {
       );
     }
 
-    const { items, source } = parseResult.data;
+    const rawItems = parseResult.data.items;
+    const items = rawItems.map(item => typeof item === 'string' ? item : item.name);
+    const source = parseResult.data.source;
 
     // Check if user is authenticated
     let user = null;

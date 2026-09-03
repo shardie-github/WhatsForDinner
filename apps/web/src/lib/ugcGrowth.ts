@@ -397,7 +397,7 @@ export class UGCGrowth {
 
       const platformBreakdown = shares.reduce(
         (acc, share) => {
-          share.social_platforms.forEach(platform => {
+          share.social_platforms.forEach((platform: string) => {
             acc[platform] = (acc[platform] || 0) + 1;
           });
           return acc;

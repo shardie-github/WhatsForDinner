@@ -93,16 +93,16 @@ class TelemetryService {
     // Use console for now, can be extended to send to logging service
     switch (level) {
       case 'debug':
-        logger.debug('JSON.stringify(logEntry'));
+        logger.debug(JSON.stringify(logEntry));
         break;
       case 'info':
-        logger.info('JSON.stringify(logEntry'));
+        logger.info(JSON.stringify(logEntry));
         break;
       case 'warn':
-        logger.warn('JSON.stringify(logEntry'));
+        logger.warn(JSON.stringify(logEntry));
         break;
       case 'error':
-        logger.error('JSON.stringify(logEntry'));
+        logger.error(JSON.stringify(logEntry));
         break;
     }
   }

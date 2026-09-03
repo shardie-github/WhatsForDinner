@@ -4,11 +4,23 @@ import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const logger = createComponentLogger('grocery-cart-export-api');
 
+const GroceryItemEntry = z.union([
+  z.string().min(1),
+  z.object({
+    name: z.string().min(1),
+    amount: z.string().optional(),
+    unit: z.string().optional(),
+  }),
+]);
+
 const CartExportSchema = z.object({
-  items: z.array(z.string().min(1)).min(1).max(50),
+  items: z.array(GroceryItemEntry).min(1).max(50).optional(),
+  ingredients: z.array(GroceryItemEntry).min(1).max(50).optional(),
   retailer: z.enum(['instacart', 'amazon_fresh', 'walmart', 'kroger', 'all']).optional().default('instacart'),
   postalCode: z.string().optional().default('94105'),
   recipeTitle: z.string().optional(),
+}).refine(data => (data.items && data.items.length > 0) || (data.ingredients && data.ingredients.length > 0), {
+  message: 'At least one item or ingredient is required',
 });
 
 interface RetailerLink {
@@ -41,7 +53,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, retailer, postalCode, recipeTitle } = parseResult.data;
+    const rawItems = parseResult.data.items || parseResult.data.ingredients || [];
+    const items = rawItems.map(item => typeof item === 'string' ? item : item.name);
+    const { retailer, postalCode, recipeTitle } = parseResult.data;
     logger.info('Generating grocery cart export', { itemCount: items.length, retailer, recipeTitle });
 
     // Build retailer deep-links with affiliate attribution

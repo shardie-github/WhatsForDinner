@@ -38,7 +38,7 @@ export function extractSupabaseProjectRef(supabaseUrl?: string): string | null {
   }
   
   const match = supabaseUrl.match(/https:\/\/([^.]+)\.supabase\.co/);
-  return match ? match[1] : null;
+  return (match && match[1]) ? match[1] : null;
 }
 
 /**

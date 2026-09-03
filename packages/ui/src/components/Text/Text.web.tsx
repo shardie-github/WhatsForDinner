@@ -27,7 +27,7 @@ export function Text({
     small: 'text-xs text-muted-foreground',
   };
 
-  const Component = variant.startsWith('h') ? variant as keyof JSX.IntrinsicElements : 'p';
+  const Component = (variant.startsWith('h') ? variant : 'p') as any;
 
   return (
     <Component

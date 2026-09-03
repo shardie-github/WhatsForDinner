@@ -13,8 +13,19 @@ export async function withCSRFProtection(
     return handler(req);
   }
 
-  // Skip CSRF check for public endpoints
-  const publicPaths = ['/api/public', '/api/health', '/api/metrics'];
+  // Skip CSRF check for public endpoints, webhooks, and guest onboarding routes
+  const publicPaths = [
+    '/api/public',
+    '/api/health',
+    '/api/metrics',
+    '/api/pantry/bulk',
+    '/api/analytics/track',
+    '/api/grocery/cart-export',
+    '/api/meal-plan/generate',
+    '/api/stripe/webhook',
+    '/api/partner/webhook',
+    '/api/r',
+  ];
   const isPublicPath = publicPaths.some(path => req.nextUrl.pathname.startsWith(path));
   
   if (isPublicPath) {

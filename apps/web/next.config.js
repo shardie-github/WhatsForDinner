@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Turbopack config
+  turbopack: {},
   // Performance optimizations
   compress: true,
   poweredByHeader: false,

@@ -93,14 +93,18 @@ export async function getQueueMetrics() {
   const health = await checkQueueHealth();
   const jobs = await queue.getJobs(['waiting', 'active', 'completed', 'failed'], 0, 100);
   
-  return {
-    health,
-    recentJobs: jobs.map(job => ({
+  const recentJobs = await Promise.all(
+    jobs.map(async (job) => ({
       id: job.id,
       name: job.name,
       state: await job.getState(),
       progress: job.progress,
       createdAt: job.timestamp,
-    })),
+    }))
+  );
+
+  return {
+    health,
+    recentJobs,
   };
 }

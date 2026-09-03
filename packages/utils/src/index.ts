@@ -7,9 +7,15 @@ export * from './env';
 export * from './errors';
 export * from './retry';
 export * from './config';
-export * from './error-handler';
+export {
+  withErrorHandler,
+  createErrorBoundary,
+  handleError as handleAppError,
+  type ErrorContext,
+  type ErrorHandlerOptions,
+} from './error-handler';
 export * from './logger';
 export * from './api-error-handler';
 export * from './correlation-id';
-export * from './types/common';
+export type { User } from './types/common';
 export * from './health';

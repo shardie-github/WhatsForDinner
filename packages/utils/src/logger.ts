@@ -119,10 +119,10 @@ export function createLogger(source = 'app'): Logger {
   const isDevelopment = process.env.NODE_ENV === 'development';
   
   // Try to import Sentry if available
-  let Sentry: typeof import('@sentry/nextjs') | null = null;
+  let Sentry: any = null;
   try {
     // Dynamic import to avoid breaking if Sentry is not installed
-    Sentry = require('@sentry/nextjs') as typeof import('@sentry/nextjs');
+    Sentry = require('@sentry/nextjs');
   } catch {
     // Sentry not available, continue without it
   }

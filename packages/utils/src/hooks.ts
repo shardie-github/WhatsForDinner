@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import { useDeviceMode } from './device';
 
@@ -58,11 +60,11 @@ export function usePantry() {
   const [items, setItems] = useState<string[]>([]);
 
   const addItem = (item: string) => {
-    setItems(prev => [...prev, item]);
+    setItems((prev: string[]) => [...prev, item]);
   };
 
   const removeItem = (index: number) => {
-    setItems(prev => prev.filter((_, i) => i !== index));
+    setItems((prev: string[]) => prev.filter((_: string, i: number) => i !== index));
   };
 
   const clearItems = () => {
@@ -115,7 +117,7 @@ export function useTheme() {
   }, [theme, isWeb, getSystemTheme]);
 
   const toggleTheme = useCallback(() => {
-    setTheme(prev => {
+    setTheme((prev: ThemeMode) => {
       if (prev === 'light') return 'dark';
       if (prev === 'dark') return 'system';
       return 'light';

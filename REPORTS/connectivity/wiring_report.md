@@ -1,14 +1,14 @@
 # Nomad Monorepo Connectivity Report
 
-Generated: 2026-09-03T01:07:37.766Z  
+Generated: 2026-09-03T01:27:51.793Z  
 Version: 1.0.0  
 Environment: development
 
 ## Summary
 
 - **Total Checks**: 32
-- **? Pass**: 1
-- **? Fail**: 9
+- **? Pass**: 9
+- **? Fail**: 1
 - **?? Degraded**: 20
 - **?? Skip**: 2
 
@@ -30,25 +30,24 @@ Environment: development
 | Environment | DSAR Verification JWT | ?? DEGRADED | -ms | Missing: DSAR_VERIFICATION_JWT_SECRET |
 | Environment | Artifacts Bucket URL | ?? DEGRADED | -ms | Missing: ARTIFACTS_BUCKET_URL |
 | Environment | OTel Endpoint | ?? DEGRADED | -ms | Missing: OTEL_EXPORTER_OTLP_ENDPOINT |
-| Health | Web /api/healthz | ? FAIL | -ms | fetch failed |
+| Health | Web /api/healthz | ? PASS | 44ms | - |
 | Health | Database | ? FAIL | -ms | DATABASE_URL or SUPABASE_DB_URL must be set before executing database queries |
 | Health | Redis | ?? SKIP | -ms | - |
 | Auth/RLS | Supabase JWT Verification | ?? SKIP | -ms | - |
 | Consent/Ads/Analytics | Analytics Provider | ?? DEGRADED | -ms | - |
 | Consent/Ads/Analytics | Ads Network Fallback | ? PASS | -ms | - |
-| Core Product | Meal Plan API | ? FAIL | -ms | fetch failed |
-| Core Product | Grocery List API | ? FAIL | -ms | fetch failed |
+| Core Product | Meal Plan API | ? PASS | 182ms | - |
+| Core Product | Grocery List API | ? PASS | 70ms | - |
 | Core Product | AI Meal Generation | ?? DEGRADED | -ms | - |
 | Payments | Stripe Configuration | ?? DEGRADED | -ms | - |
-| Payments | Stripe Webhook Endpoint | ? FAIL | -ms | fetch failed |
+| Payments | Stripe Webhook Endpoint | ? PASS | -ms | - |
 | Partner Network | HMAC Configuration | ?? DEGRADED | -ms | - |
-| Partner Network | Referral Route /r/:token | ? FAIL | -ms | fetch failed |
-| Growth | Experiments API | ? FAIL | -ms | fetch failed |
-| Growth | Pricing API | ? FAIL | -ms | fetch failed |
+| Partner Network | Referral Route /r/:token | ? PASS | -ms | - |
+| Growth | Experiments API | ? PASS | -ms | - |
+| Growth | Pricing API | ? PASS | -ms | - |
 | Compliance | DSAR Configuration | ?? DEGRADED | -ms | - |
-| Compliance | GDPR API | ? FAIL | -ms | fetch failed |
-| Jobs | Queue Worker | ?? DEGRADED | -ms | Transform failed with 1 error:
-C:\Users\scott\GitHub\WhatsForDinner\packages\server\src\queue\health.ts:101:13: ERROR: "await" can only be used inside an "async" function |
+| Compliance | GDPR API | ? PASS | -ms | - |
+| Jobs | Queue Worker | ?? DEGRADED | -ms | REDIS_URL must be set |
 
 ## Details
 
@@ -136,12 +135,6 @@ C:\Users\scott\GitHub\WhatsForDinner\packages\server\src\queue\health.ts:101:13:
 - Next Action: Set OTEL_EXPORTER_OTLP_ENDPOINT or configure adapter fallback
 - Evidence: N/A
 
-### Health - Web /api/healthz
-- Status: fail
-- Error: fetch failed
-- Next Action: Check if web server is running
-- Evidence: N/A
-
 ### Health - Database
 - Status: fail
 - Error: DATABASE_URL or SUPABASE_DB_URL must be set before executing database queries
@@ -153,18 +146,6 @@ C:\Users\scott\GitHub\WhatsForDinner\packages\server\src\queue\health.ts:101:13:
 - Error: N/A
 - Next Action: Configure PostHog or use noop fallback
 - Evidence: Using: noop
-
-### Core Product - Meal Plan API
-- Status: fail
-- Error: fetch failed
-- Next Action: N/A
-- Evidence: N/A
-
-### Core Product - Grocery List API
-- Status: fail
-- Error: fetch failed
-- Next Action: N/A
-- Evidence: N/A
 
 ### Core Product - AI Meal Generation
 - Status: degraded
@@ -178,35 +159,11 @@ C:\Users\scott\GitHub\WhatsForDinner\packages\server\src\queue\health.ts:101:13:
 - Next Action: Configure STRIPE_SECRET_KEY or use stripe-mock
 - Evidence: Stripe Key: missing, Webhook Secret: missing
 
-### Payments - Stripe Webhook Endpoint
-- Status: fail
-- Error: fetch failed
-- Next Action: N/A
-- Evidence: N/A
-
 ### Partner Network - HMAC Configuration
 - Status: degraded
 - Error: N/A
 - Next Action: N/A
 - Evidence: HMAC Secret: missing, Link Signing: missing
-
-### Partner Network - Referral Route /r/:token
-- Status: fail
-- Error: fetch failed
-- Next Action: N/A
-- Evidence: N/A
-
-### Growth - Experiments API
-- Status: fail
-- Error: fetch failed
-- Next Action: N/A
-- Evidence: N/A
-
-### Growth - Pricing API
-- Status: fail
-- Error: fetch failed
-- Next Action: N/A
-- Evidence: N/A
 
 ### Compliance - DSAR Configuration
 - Status: degraded
@@ -214,16 +171,9 @@ C:\Users\scott\GitHub\WhatsForDinner\packages\server\src\queue\health.ts:101:13:
 - Next Action: N/A
 - Evidence: DSAR JWT: missing, Artifacts Bucket: missing
 
-### Compliance - GDPR API
-- Status: fail
-- Error: fetch failed
-- Next Action: N/A
-- Evidence: N/A
-
 ### Jobs - Queue Worker
 - Status: degraded
-- Error: Transform failed with 1 error:
-C:\Users\scott\GitHub\WhatsForDinner\packages\server\src\queue\health.ts:101:13: ERROR: "await" can only be used inside an "async" function
+- Error: REDIS_URL must be set
 - Next Action: Start queue worker or configure REDIS_URL
 - Evidence: N/A
 
