@@ -28,7 +28,13 @@ import {
   Star,
   TrendingUp,
   Users,
-  Zap
+  Zap,
+  Flame,
+  ShieldCheck,
+  Camera,
+  Utensils,
+  Activity,
+  GitFork
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -36,7 +42,6 @@ import { Badge } from '@/components/ui/badge';
 import { TrustSignals } from '@/components/TrustSignals';
 import { InteractiveFridgeSandbox } from '@/components/home/InteractiveFridgeSandbox';
 import Link from 'next/link';
-import { Camera, Utensils, Activity, GitFork } from 'lucide-react';
 
 interface ValueProposition {
   icon: React.ReactNode;
@@ -107,42 +112,53 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-muted/20 relative overflow-hidden">
+      {/* Ambient Lighting Orbs */}
+      <div className="ambient-orb w-[600px] h-[600px] bg-primary/20 top-[-100px] left-1/2 -translate-x-1/2 -z-10 pointer-events-none" />
+      <div className="ambient-orb w-[450px] h-[450px] bg-emerald-500/15 top-[600px] left-[-150px] -z-10 pointer-events-none" />
+      <div className="ambient-orb w-[450px] h-[450px] bg-violet-500/15 top-[900px] right-[-150px] -z-10 pointer-events-none" />
+
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 md:py-32">
+      <section className="container mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28 relative">
         <div className="max-w-4xl mx-auto text-center">
           {/* Brand Badge */}
-          <Badge variant="secondary" className="mb-6 px-4 py-2 text-sm">
-            <Sparkles className="w-4 h-4 mr-2" />
-            AI-Powered Meal Planning
-          </Badge>
+          <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-bold shadow-sm backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 animate-pulse text-primary" />
+            <span>The Next-Gen AI Food Operating System</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+            <span className="text-muted-foreground font-normal">TTV &lt; 30s</span>
+          </div>
 
           {/* Main Headline */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Dinner Plans That Plan Themselves
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
+            Dinner Plans That <br />
+            <span className="bg-gradient-to-r from-primary via-accent to-emerald-500 bg-clip-text text-transparent">
+              Plan Themselves
+            </span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-            Stop wondering what&apos;s for dinner. Our AI analyzes your pantry, preferences, and goals 
-            to create personalized meal plans in seconds—not hours.
+          <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed font-normal">
+            Stop wondering what&apos;s for dinner. Multimodal AI scans your fridge, analyzes dietary goals, 
+            and crafts chef-grade recipes with real-time grocery price arbitrage in seconds.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" asChild>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <Button size="lg" className="text-base font-bold px-8 py-6 bg-gradient-to-r from-primary via-primary to-accent hover:opacity-95 shadow-xl shadow-primary/30 btn-shimmer rounded-2xl" asChild>
               <Link href="/onboarding">
                 <Sparkles className="w-5 h-5 mr-2" />
                 Start Instant Dinner (30s)
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
+            <Button size="lg" variant="outline" className="text-base font-bold px-7 py-6 glass-card rounded-2xl border-border/80 hover:bg-muted/40" asChild>
               <Link href="/cook/demo">
                 <Utensils className="w-5 h-5 mr-2 text-primary" />
                 OmniChef™ Voice HUD
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
+            <Button size="lg" variant="outline" className="text-base font-bold px-7 py-6 glass-card rounded-2xl border-border/80 hover:bg-muted/40" asChild>
               <Link href="/surprise-me">
                 <Flame className="w-5 h-5 mr-2 text-amber-500" />
                 Dinner Roulette
@@ -151,7 +167,7 @@ export default function HomePage() {
           </div>
 
           {/* Interactive Virtual Fridge Sandbox Hero Feature */}
-          <div className="mt-8 mb-16 text-left">
+          <div className="mt-6 mb-16 text-left">
             <InteractiveFridgeSandbox />
           </div>
 
@@ -161,52 +177,59 @@ export default function HomePage() {
           </div>
 
           {/* Social Proof */}
-          <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground font-medium">
             <div className="flex items-center gap-2">
               <div className="flex -space-x-2">
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="w-8 h-8 rounded-full bg-primary/20 border-2 border-background"
-                  />
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 border-2 border-background flex items-center justify-center text-[10px] font-bold text-primary"
+                  >
+                    ★
+                  </div>
                 ))}
               </div>
-              <span>12,847+ users</span>
+              <span className="font-semibold text-foreground">12,840+ cooks</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              <span>4.8/5 rating</span>
+            <div className="flex items-center gap-1.5 bg-muted/30 px-3 py-1 rounded-full border border-border/60">
+              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+              <span className="font-bold text-foreground">4.9/5</span>
+              <span>App Rating</span>
             </div>
-            <div className="flex items-center gap-1">
-              <TrendingUp className="w-4 h-4" />
-              <span>5+ hours saved/week</span>
+            <div className="flex items-center gap-1.5 bg-muted/30 px-3 py-1 rounded-full border border-border/60">
+              <TrendingUp className="w-4 h-4 text-emerald-500" />
+              <span className="font-bold text-foreground">5.2 hrs</span>
+              <span>saved / week</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Value Propositions */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container mx-auto px-4 py-20 relative">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Why Thousands Choose What&apos;s for Dinner</h2>
-            <p className="text-xl text-muted-foreground">
-              Real results. Real time saved. Real peace of mind.
+          <div className="text-center mb-14 space-y-3">
+            <Badge className="bg-primary/10 text-primary border-primary/20 text-xs px-3 py-1 font-bold">
+              Quantifiable Impact
+            </Badge>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-tight">Why Thousands Choose What&apos;s for Dinner</h2>
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+              Real results. Over $50 saved per month on groceries. Zero 5:30 PM meal panic.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {valuePropositions.map((prop, index) => (
-              <Card key={index} className="border-2 hover:border-primary/50 transition-colors">
-                <CardHeader>
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 text-primary">
+              <Card key={index} className="glass-card hover-lift rounded-3xl p-6 border border-border/70 hover:border-primary/50 transition-all">
+                <CardHeader className="p-0 pb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center mb-4 border border-primary/20">
                     {prop.icon}
                   </div>
-                  <CardTitle className="text-xl">{prop.title}</CardTitle>
+                  <CardTitle className="text-lg font-bold">{prop.title}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-3">{prop.description}</p>
-                  <Badge variant="secondary" className="text-xs">
+                <CardContent className="p-0 space-y-3">
+                  <p className="text-xs text-muted-foreground leading-relaxed">{prop.description}</p>
+                  <Badge variant="secondary" className="text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20">
                     {prop.benefit}
                   </Badge>
                 </CardContent>
@@ -233,8 +256,8 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Feature 1: OmniChef Voice HUD */}
-            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold">
+            <Card className="glass-card hover-lift transition-all rounded-3xl p-6 space-y-4 border border-border/80 hover:border-primary/50">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center text-xl font-bold border border-primary/20 shadow-sm">
                 <Utensils className="w-6 h-6" />
               </div>
               <div>
@@ -243,7 +266,7 @@ export default function HomePage() {
                   Cook completely hands-free with voice recognition, parallel multi-timers, and live emergency ingredient substitutions.
                 </p>
               </div>
-              <Button variant="outline" size="sm" className="w-full text-xs font-bold" asChild>
+              <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-xl border-border/80 hover:bg-primary/5" asChild>
                 <Link href="/cook/demo">
                   Try Kitchen HUD
                   <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -252,8 +275,8 @@ export default function HomePage() {
             </Card>
 
             {/* Feature 2: VisionPantry Multimodal AI */}
-            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-xl font-bold">
+            <Card className="glass-card hover-lift transition-all rounded-3xl p-6 space-y-4 border border-border/80 hover:border-emerald-500/50">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl font-bold border border-emerald-500/20 shadow-sm">
                 <Camera className="w-6 h-6" />
               </div>
               <div>
@@ -262,7 +285,7 @@ export default function HomePage() {
                   Snap a photo of your open fridge or supermarket receipt. Neural vision identifies ingredients and predicts expiration hazard curves.
                 </p>
               </div>
-              <Button variant="outline" size="sm" className="w-full text-xs font-bold" asChild>
+              <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-xl border-border/80 hover:bg-emerald-500/5" asChild>
                 <Link href="/onboarding">
                   Test Vision Scanner
                   <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -271,8 +294,8 @@ export default function HomePage() {
             </Card>
 
             {/* Feature 3: OmniCart Multi-Retailer Arbitrage */}
-            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center text-xl font-bold">
+            <Card className="glass-card hover-lift transition-all rounded-3xl p-6 space-y-4 border border-border/80 hover:border-blue-500/50">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl font-bold border border-blue-500/20 shadow-sm">
                 <ShoppingCart className="w-6 h-6" />
               </div>
               <div>
@@ -281,7 +304,7 @@ export default function HomePage() {
                   Real-time basket pricing across Instacart, Amazon Fresh, Walmart+, and Kroger. Auto-swaps brand names to save up to 28%.
                 </p>
               </div>
-              <Button variant="outline" size="sm" className="w-full text-xs font-bold" asChild>
+              <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-xl border-border/80 hover:bg-blue-500/5" asChild>
                 <Link href="/grocery">
                   Compare Grocery Carts
                   <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -290,8 +313,8 @@ export default function HomePage() {
             </Card>
 
             {/* Feature 4: Precision Metabolic Nutrition */}
-            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-xl font-bold">
+            <Card className="glass-card hover-lift transition-all rounded-3xl p-6 space-y-4 border border-border/80 hover:border-purple-500/50">
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl font-bold border border-purple-500/20 shadow-sm">
                 <Activity className="w-6 h-6" />
               </div>
               <div>
@@ -300,7 +323,7 @@ export default function HomePage() {
                   Medical-grade glycemic load modeling, anti-inflammatory scoring, and activity toggles for keto, post-workout, and diabetic health.
                 </p>
               </div>
-              <Button variant="outline" size="sm" className="w-full text-xs font-bold" asChild>
+              <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-xl border-border/80 hover:bg-purple-500/5" asChild>
                 <Link href="/nutrition">
                   View Metabolic Index
                   <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -309,20 +332,20 @@ export default function HomePage() {
             </Card>
 
             {/* Feature 5: Culinary Git Forkable Network */}
-            <Card className="border-2 hover:border-primary/50 transition-all rounded-3xl p-6 bg-background space-y-4 md:col-span-2 lg:col-span-2">
+            <Card className="glass-card hover-lift transition-all rounded-3xl p-6 space-y-4 md:col-span-2 lg:col-span-2 border border-border/80 hover:border-amber-500/50">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl font-bold flex-shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl font-bold flex-shrink-0 border border-amber-500/20 shadow-sm">
                     <GitFork className="w-6 h-6" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold">Culinary Git™ Forkable Recipe Network</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                       Fork any recipe, track ingredient deltas, and earn 30% affiliate creator royalties when groceries are bought through your branch.
                     </p>
                   </div>
                 </div>
-                <Button size="sm" className="font-bold text-xs h-10 px-6 flex-shrink-0" asChild>
+                <Button size="sm" className="font-bold text-xs h-10 px-6 flex-shrink-0 rounded-xl" asChild>
                   <Link href="/recipes">
                     Explore Branch Tree
                     <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
