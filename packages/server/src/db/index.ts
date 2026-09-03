@@ -7,12 +7,27 @@ import Redis from 'ioredis';
 import crypto from 'crypto';
 
 const connectionString = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL || '';
-if (!connectionString) {
-  throw new Error('DATABASE_URL or SUPABASE_DB_URL must be set');
-}
+let client: ReturnType<typeof postgres> | null = null;
+export let db: any = null;
 
-const client = postgres(connectionString, { max: 20 });
-export const db = drizzle(client, { schema });
+if (connectionString) {
+  client = postgres(connectionString, { max: 20 });
+  db = drizzle(client, { schema });
+} else {
+  db = new Proxy({}, {
+    get(_, prop) {
+      const conn = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
+      if (!conn) {
+        throw new Error('DATABASE_URL or SUPABASE_DB_URL must be set before executing database queries');
+      }
+      if (!client) {
+        client = postgres(conn, { max: 20 });
+        db = drizzle(client, { schema });
+      }
+      return (db as any)[prop];
+    },
+  });
+}
 
 let redisClient: Redis | null = null;
 

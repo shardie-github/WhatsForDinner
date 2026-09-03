@@ -1,4 +1,4 @@
-import { createComponentLogger } from '@whats-for-dinner/utils';
+import { createComponentLogger } from './logger';
 
 /**
  * Feature Flags Service

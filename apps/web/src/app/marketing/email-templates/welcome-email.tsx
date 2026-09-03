@@ -6,7 +6,7 @@
  */
 
 export const WelcomeEmailTemplate = {
-  subject: 'Welcome to What's For Dinner! 🍽️',
+  subject: "Welcome to What's For Dinner! 🍽️",
   
   html: `
 <!DOCTYPE html>

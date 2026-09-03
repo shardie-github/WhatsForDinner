@@ -13,6 +13,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { readFile } from 'fs/promises';
+import { createComponentLogger } from '@whats-for-dinner/utils';
 
 const logger = createComponentLogger('wire-doctor-ts');
 interface Fix {
@@ -27,8 +28,8 @@ interface Fix {
 const fixes: Fix[] = [];
 
 async function checkCSRFHeaders(): Promise<Fix | null> {
-  // Check middleware.ts for CSRF protection
-  const middlewarePath = join(process.cwd(), 'apps', 'web', 'src', 'app', 'middleware.ts');
+  // Check middleware.ts for CSRF and security protection
+  const middlewarePath = join(process.cwd(), 'apps', 'web', 'src', 'middleware.ts');
   
   if (!existsSync(middlewarePath)) {
     return {

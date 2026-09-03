@@ -3,11 +3,10 @@
  * Composable patterns for integrating Guardian into various parts of the app
  */
 
-import { createGuardianMiddleware } from '@whats-for-dinner/utils/guardian';
-import { PrivacyInsurance } from '@whats-for-dinner/utils/guardian';
-import { TrustFabricAI } from '@whats-for-dinner/utils/guardian';
-import type { DataScope, DataClass, ResponseAction } from '@whats-for-dinner/utils/guardian';
-import { createComponentLogger } from '@whats-for-dinner/utils';
+import { createGuardianMiddleware } from './middleware';
+import { TrustFabricAI } from './trust-fabric';
+import type { DataScope, DataClass, ResponseAction } from './types';
+import { createComponentLogger } from '../logger';
 
 /**
  * Pattern 1: API Route Integration

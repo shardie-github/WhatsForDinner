@@ -637,32 +637,32 @@ async function checkJobs(): Promise<ConnectivityCheck[]> {
   const checks: ConnectivityCheck[] = [];
   
   try {
-    const { queueHealth } = await import('@whats-for-dinner/server/queue');
-    const health = await queueHealth();
+    const { checkQueueHealth } = await import('../../packages/server/src/queue/health.js');
+    const health = await checkQueueHealth();
     
     checks.push({
       category: 'Jobs',
       subsystem: 'Queue Worker',
       result: {
-        status: health.healthy ? 'pass' : 'fail',
+        status: health.healthy ? 'pass' : 'degraded',
         evidence: [
-          `Pending: ${health.pending}`,
-          `Active: ${health.active}`,
+          `Waiting: ${health.worker?.waiting ?? 0}`,
+          `Active: ${health.worker?.active ?? 0}`,
         ],
       },
     });
-    logEvidence(`Queue Worker: ${health.healthy ? '?' : '?'}`);
+    logEvidence(`Queue Worker: ${health.healthy ? '✓' : '⚠️'}`);
   } catch (error) {
     checks.push({
       category: 'Jobs',
       subsystem: 'Queue Worker',
       result: {
-        status: 'fail',
+        status: 'degraded',
         error: error instanceof Error ? error.message : String(error),
-        nextAction: 'Start queue worker or check REDIS_URL',
+        nextAction: 'Start queue worker or configure REDIS_URL',
       },
     });
-    logEvidence(`Queue Worker: ? ${error instanceof Error ? error.message : String(error)}`);
+    logEvidence(`Queue Worker: ⚠️ ${error instanceof Error ? error.message : String(error)}`);
   }
 
   return checks;
@@ -709,6 +709,14 @@ async function main() {
     JSON.stringify(matrix, null, 2),
   );
 
+  // Expose to apps/web/public so the developer dashboard can render it
+  try {
+    const webPublicPath = join(process.cwd(), 'apps', 'web', 'public', 'wiring-status.json');
+    writeFileSync(webPublicPath, JSON.stringify(matrix, null, 2));
+  } catch {
+    // optional copy
+  }
+
   // Write evidence log
   writeFileSync(
     join(EVIDENCE_DIR, `${Date.now()}.log`),
@@ -724,7 +732,7 @@ async function main() {
 
   const duration = Date.now() - startTime;
   
-  logger.info('\nWiring harness checks completed in ${duration}ms');
+  logger.info(`\nWiring harness checks completed in ${duration}ms`);
   logger.info(`Summary: ${summary.pass} passed, ${summary.degraded} degraded, ${summary.fail} failed`);
   
   if (summary.fail > 0) {

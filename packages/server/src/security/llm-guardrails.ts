@@ -96,7 +96,7 @@ export class LLMGuardrails {
     try {
       return await this.callLLM(llmFunction, options);
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { logger.warn('LLM failed', { using fallback:', error }); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('LLM failed', { message: 'using fallback', error }); }
       return fallbackFunction();
     }
   }

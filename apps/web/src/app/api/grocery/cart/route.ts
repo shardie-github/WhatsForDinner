@@ -7,6 +7,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { groceryManager } from '@/lib/grocery/grocery-manager';
 import { createClient } from '@/lib/supabase/server';
 import { GroceryCartItem } from '@/lib/grocery/types';
+import { createComponentLogger } from '@whats-for-dinner/utils';
+
+const logger = createComponentLogger('grocery-cart-api');
 
 export async function POST(req: NextRequest) {
   try {

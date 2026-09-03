@@ -714,7 +714,7 @@ async function getRecipes() {
       cuisine: 'italian'
     });
       } catch (error) {
-    logger.error('Error:', { error.message });
+    logger.error('Error:', { message: error instanceof Error ? error.message : String(error) });
   }
 }
 

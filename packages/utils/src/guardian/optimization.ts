@@ -7,7 +7,7 @@ import { Guardian } from './core';
 import type { GuardianEvent, TrustReport } from './types';
 import * as fs from 'fs';
 import * as path from 'path';
-import { createComponentLogger } from '@whats-for-dinner/utils';
+import { createComponentLogger } from '../logger';
 
 /**
  * Optimized Guardian with caching

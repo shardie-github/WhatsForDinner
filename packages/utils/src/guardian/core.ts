@@ -7,8 +7,8 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import yaml from 'js-yaml';
+import { createComponentLogger } from '../logger';
 import type {
-import { createComponentLogger } from '@whats-for-dinner/utils';
   GuardianEvent,
   RiskAssessment,
   PolicyConfig,
@@ -43,7 +43,7 @@ export class Guardian {
         responseActions: parsed.response_actions || {},
       } as PolicyConfig;
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') { logger.warn('Failed to load policies', { using defaults:', error }); }
+      if (process.env.NODE_ENV === 'development') { logger.warn('Failed to load policies', { message: 'using defaults', error }); }
       return this.getDefaultPolicies();
     }
   }

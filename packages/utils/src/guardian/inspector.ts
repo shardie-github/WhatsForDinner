@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import type { GuardianEvent, TrustReport } from './types';
-import { createComponentLogger } from '@whats-for-dinner/utils';
+import { createComponentLogger } from '../logger';
 
 const logger = createComponentLogger('inspector-ts');
 export class GuardianInspector {

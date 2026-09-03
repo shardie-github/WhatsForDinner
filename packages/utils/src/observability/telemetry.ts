@@ -6,7 +6,7 @@
 import { trace, context, SpanStatusCode } from '@opentelemetry/api';
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-import { createComponentLogger } from '@whats-for-dinner/utils';
+import { createComponentLogger } from '../logger';
 
 const logger = createComponentLogger('telemetry-ts');
 interface TelemetryConfig {
