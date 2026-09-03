@@ -327,33 +327,70 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 text-foreground">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-muted/20 text-foreground relative overflow-hidden">
+      {/* Ambient Lighting Orbs */}
+      <div className="ambient-orb w-[500px] h-[500px] bg-primary/20 top-[-100px] left-1/2 -translate-x-1/2 -z-10 pointer-events-none" />
+      <div className="ambient-orb w-[400px] h-[400px] bg-emerald-500/15 bottom-[100px] right-[-100px] -z-10 pointer-events-none" />
+
       {showCelebration && (
         <Celebration type="success" onComplete={() => setShowCelebration(false)} />
       )}
 
-      {/* Top Header Progress Bar */}
-      <header className="border-b bg-background/80 backdrop-blur sticky top-0 z-40">
+      {/* Top Header with Visual Step Flow */}
+      <header className="border-b border-border/70 bg-background/80 backdrop-blur-xl sticky top-0 z-40">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground font-bold text-lg shadow-md shadow-primary/20">
               🍽️
             </div>
-            <span className="font-semibold text-lg tracking-tight">WhatsForDinner</span>
-            <Badge variant="secondary" className="ml-2 text-xs font-normal">
-              Quick Start
-            </Badge>
+            <div>
+              <span className="font-black text-lg tracking-tight">WhatsForDinner</span>
+              <span className="text-[10px] uppercase font-bold text-primary ml-2 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
+                Speed Engine
+              </span>
+            </div>
+          </div>
+
+          {/* Visual Step Progress Pills */}
+          <div className="hidden md:flex items-center gap-2">
+            {[
+              { id: 'welcome', label: '1. Welcome' },
+              { id: 'pantry', label: '2. Pantry' },
+              { id: 'preferences', label: '3. Preferences' },
+              { id: 'recipe', label: '4. Dinner' },
+            ].map((s, idx) => {
+              const isCurrent = step === s.id || (step === 'generating' && s.id === 'recipe');
+              const isPassed =
+                (step === 'pantry' && idx === 0) ||
+                (step === 'preferences' && idx <= 1) ||
+                ((step === 'generating' || step === 'recipe') && idx <= 2);
+
+              return (
+                <div key={s.id} className="flex items-center gap-2">
+                  <div
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                      isCurrent
+                        ? 'bg-primary text-primary-foreground shadow-sm glow-primary'
+                        : isPassed
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                        : 'text-muted-foreground bg-muted/40'
+                    }`}
+                  >
+                    {isPassed && <Check className="w-3 h-3 inline mr-1" />}
+                    {s.label}
+                  </div>
+                  {idx < 3 && <div className="w-3 h-0.5 bg-border/80" />}
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <span className="hidden sm:inline">
-              Step {step === 'welcome' ? '1' : step === 'pantry' ? '2' : step === 'preferences' ? '3' : '4'} of 4
-            </span>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => router.push('/dashboard')}
-              className="text-xs"
+              className="text-xs font-semibold rounded-xl hover:bg-muted/50"
             >
               Skip to Dashboard
             </Button>
@@ -361,7 +398,7 @@ export default function OnboardingPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-3xl">
+      <main className="container mx-auto px-4 py-10 max-w-3xl relative">
         <AnimatePresence mode="wait">
           {/* STEP 1: WELCOME */}
           {step === 'welcome' && (
@@ -372,32 +409,32 @@ export default function OnboardingPage() {
               exit={{ opacity: 0, y: -16 }}
               className="space-y-6"
             >
-              <Card className="border shadow-lg">
-                <CardHeader className="text-center pb-2 pt-8">
-                  <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 text-3xl">
+              <Card className="glass-card border border-border/80 shadow-2xl rounded-3xl overflow-hidden">
+                <CardHeader className="text-center pb-2 pt-10">
+                  <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center mb-4 text-3xl shadow-sm">
                     ✨
                   </div>
-                  <CardTitle className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                  <CardTitle className="text-3xl sm:text-5xl font-black tracking-tight bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
                     Dinner, Solved in 30 Seconds
                   </CardTitle>
-                  <CardDescription className="text-base sm:text-lg max-w-md mx-auto mt-2">
-                    Select what&apos;s already in your fridge and pantry. We&apos;ll craft a custom chef-grade recipe right now.
+                  <CardDescription className="text-base sm:text-lg max-w-md mx-auto mt-2 text-muted-foreground">
+                    Select what&apos;s already in your fridge. We&apos;ll craft a tailored chef-grade recipe right now.
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-6 pt-4">
+                <CardContent className="space-y-6 pt-4 p-8">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {[
                       { icon: '⚡', title: 'Zero Waste', desc: 'Use ingredients you own' },
                       { icon: '🎯', title: 'Diet Tailored', desc: 'Custom macros & allergies' },
-                      { icon: '🛒', title: '1-Click Cart', desc: 'Instant grocery delivery' },
+                      { icon: '🛒', title: '1-Click Cart', desc: 'Lowest basket price' },
                     ].map((feature, i) => (
                       <div
                         key={i}
-                        className="p-4 rounded-xl bg-muted/40 border flex flex-col items-center text-center space-y-1"
+                        className="p-4 rounded-2xl bg-muted/30 border border-border/60 flex flex-col items-center text-center space-y-1 hover-lift transition-all"
                       >
-                        <span className="text-2xl">{feature.icon}</span>
-                        <span className="font-semibold text-sm">{feature.title}</span>
+                        <span className="text-2xl mb-1">{feature.icon}</span>
+                        <span className="font-bold text-sm text-foreground">{feature.title}</span>
                         <span className="text-xs text-muted-foreground">{feature.desc}</span>
                       </div>
                     ))}
@@ -407,7 +444,7 @@ export default function OnboardingPage() {
                     <Button
                       size="lg"
                       onClick={() => setStep('pantry')}
-                      className="w-full text-base font-semibold h-13 shadow-md group"
+                      className="w-full text-base font-bold h-14 shadow-xl shadow-primary/25 group bg-gradient-to-r from-primary via-primary to-accent rounded-2xl btn-shimmer"
                     >
                       <span>Pick My Pantry Items</span>
                       <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -417,7 +454,7 @@ export default function OnboardingPage() {
                       variant="outline"
                       size="lg"
                       onClick={handleGenerateRecipe}
-                      className="w-full text-sm font-medium"
+                      className="w-full text-sm font-semibold h-12 rounded-2xl border-border/80 hover:bg-primary/5"
                     >
                       <Sparkles className="w-4 h-4 mr-2 text-primary" />
                       Quick Generate with Popular Staples
@@ -437,29 +474,29 @@ export default function OnboardingPage() {
               exit={{ opacity: 0, y: -16 }}
               className="space-y-6"
             >
-              <Card className="border shadow-lg">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
+              <Card className="glass-card border border-border/80 shadow-2xl rounded-3xl overflow-hidden">
+                <CardHeader className="p-8 pb-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <CardTitle className="text-2xl sm:text-3xl font-bold">
+                      <CardTitle className="text-2xl sm:text-4xl font-black tracking-tight">
                         What&apos;s in your kitchen?
                       </CardTitle>
-                      <CardDescription className="text-sm mt-1">
+                      <CardDescription className="text-sm mt-1 text-muted-foreground">
                         Tap any items you have on hand. The more you pick, the smarter the recipe.
                       </CardDescription>
                     </div>
-                    <Badge variant="outline" className="px-3 py-1 font-semibold text-primary">
+                    <Badge className="px-3.5 py-1.5 font-bold text-xs bg-primary/15 text-primary border border-primary/30 rounded-full">
                       {selectedPantry.length} Selected
                     </Badge>
                   </div>
 
                   {/* Mode Toggle between Quick Tap and Vision Scan */}
-                  <div className="flex gap-2 pt-3">
+                  <div className="flex gap-2 pt-4">
                     <Button
                       variant={pantryInputMode === 'grid' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setPantryInputMode('grid')}
-                      className="text-xs h-8"
+                      className="text-xs h-8 font-semibold rounded-xl"
                     >
                       Quick Tap Pantry
                     </Button>
@@ -467,15 +504,15 @@ export default function OnboardingPage() {
                       variant={pantryInputMode === 'vision' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setPantryInputMode('vision')}
-                      className="text-xs h-8"
+                      className="text-xs h-8 font-semibold rounded-xl"
                     >
-                      <Camera className="w-3.5 h-3.5 mr-1.5 text-primary" />
+                      <Camera className="w-3.5 h-3.5 mr-1.5 text-emerald-500" />
                       Vision Fridge / Receipt Scan
                     </Button>
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 p-8 pt-2">
                   {pantryInputMode === 'vision' ? (
                     <VisionScanner
                       onItemsAdded={(newItems) => {
@@ -486,74 +523,74 @@ export default function OnboardingPage() {
                   ) : (
                     <>
                       {/* Category Pill Grid */}
-                  <div className="space-y-4">
-                    {PANTRY_CATEGORIES.map((category) => (
-                      <div key={category.name} className="space-y-2">
-                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          <span>{category.icon}</span>
-                          <span>{category.name}</span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {category.items.map((item) => {
-                            const isSelected = selectedPantry.includes(item);
-                            return (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => togglePantryItem(item)}
-                                className={`px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-150 flex items-center gap-1.5 border ${
-                                  isSelected
-                                    ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                                    : 'bg-background hover:bg-muted text-foreground border-muted-foreground/20'
-                                }`}
-                              >
-                                {isSelected ? (
-                                  <Check className="w-3.5 h-3.5" />
-                                ) : (
-                                  <Plus className="w-3.5 h-3.5 opacity-60" />
-                                )}
-                                <span>{item}</span>
-                              </button>
-                            );
-                          })}
-                        </div>
+                      <div className="space-y-4">
+                        {PANTRY_CATEGORIES.map((category) => (
+                          <div key={category.name} className="space-y-2">
+                            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                              <span>{category.icon}</span>
+                              <span>{category.name}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {category.items.map((item) => {
+                                const isSelected = selectedPantry.includes(item);
+                                return (
+                                  <button
+                                    key={item}
+                                    type="button"
+                                    onClick={() => togglePantryItem(item)}
+                                    className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center gap-2 border interactive-pill ${
+                                      isSelected
+                                        ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 glow-primary'
+                                        : 'bg-muted/30 hover:bg-muted/60 text-foreground border-border/60 hover:border-border'
+                                    }`}
+                                  >
+                                    {isSelected ? (
+                                      <Check className="w-3.5 h-3.5" />
+                                    ) : (
+                                      <Plus className="w-3.5 h-3.5 opacity-60" />
+                                    )}
+                                    <span>{item}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
 
-                  {/* Add Custom Ingredient Input */}
-                  <form onSubmit={handleAddCustomItem} className="flex gap-2 pt-2">
-                    <input
-                      type="text"
-                      placeholder="Add anything else (e.g. avocado, chickpeas, chili flakes)..."
-                      value={customItemInput}
-                      onChange={(e) => setCustomItemInput(e.target.value)}
-                      className="flex-1 px-4 py-2 text-sm rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                    <Button type="submit" variant="secondary" size="sm" className="px-4">
-                      Add
-                    </Button>
-                  </form>
+                      {/* Add Custom Ingredient Input */}
+                      <form onSubmit={handleAddCustomItem} className="flex gap-2 pt-3">
+                        <input
+                          type="text"
+                          placeholder="Add anything else (e.g. avocado, chickpeas, chili flakes)..."
+                          value={customItemInput}
+                          onChange={(e) => setCustomItemInput(e.target.value)}
+                          className="flex-1 px-4 py-2.5 text-sm rounded-xl border border-border/80 bg-background focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                        />
+                        <Button type="submit" variant="secondary" size="sm" className="px-5 font-bold rounded-xl">
+                          Add
+                        </Button>
+                      </form>
 
-                  {/* Continue Button */}
-                  <div className="flex items-center gap-3 pt-4 border-t">
-                    <Button
-                      variant="ghost"
-                      onClick={() => setStep('welcome')}
-                      className="text-sm"
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      size="lg"
-                      onClick={handlePantryContinue}
-                      className="flex-1 font-semibold"
-                      disabled={selectedPantry.length === 0}
-                    >
-                      <span>Continue to Preferences</span>
-                      <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  </div>
+                      {/* Continue Button */}
+                      <div className="flex items-center gap-3 pt-6 border-t border-border/60">
+                        <Button
+                          variant="ghost"
+                          onClick={() => setStep('welcome')}
+                          className="text-sm font-semibold rounded-xl"
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          size="lg"
+                          onClick={handlePantryContinue}
+                          className="flex-1 font-bold h-12 rounded-2xl shadow-lg shadow-primary/20 bg-gradient-to-r from-primary to-accent"
+                          disabled={selectedPantry.length === 0}
+                        >
+                          <span>Continue to Preferences</span>
+                          <ChevronRight className="w-4 h-4 ml-1" />
+                        </Button>
+                      </div>
                     </>
                   )}
                 </CardContent>
@@ -570,20 +607,20 @@ export default function OnboardingPage() {
               exit={{ opacity: 0, y: -16 }}
               className="space-y-6"
             >
-              <Card className="border shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-2xl sm:text-3xl font-bold">
+              <Card className="glass-card border border-border/80 shadow-2xl rounded-3xl overflow-hidden">
+                <CardHeader className="p-8 pb-4">
+                  <CardTitle className="text-2xl sm:text-4xl font-black tracking-tight">
                     Diet & Cooking Preferences
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-sm mt-1 text-muted-foreground">
                     Tailor your recipe to your lifestyle, portions, and time constraints.
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 p-8 pt-2">
                   {/* Dietary Grid */}
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       Dietary Lifestyle
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -594,14 +631,14 @@ export default function OnboardingPage() {
                             key={diet.id}
                             type="button"
                             onClick={() => toggleDiet(diet.id)}
-                            className={`p-3 rounded-xl border text-left flex items-center gap-2.5 transition-all ${
+                            className={`p-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all interactive-pill ${
                               isSelected
-                                ? 'border-primary bg-primary/10 text-primary font-medium shadow-sm'
-                                : 'border-muted hover:border-muted-foreground/40 bg-background'
+                                ? 'border-primary bg-primary/15 text-primary font-bold shadow-md shadow-primary/10 glow-primary'
+                                : 'border-border/60 hover:border-border bg-muted/20 text-muted-foreground hover:text-foreground'
                             }`}
                           >
-                            <span className="text-xl">{diet.icon}</span>
-                            <span className="text-sm">{diet.label}</span>
+                            <span className="text-2xl">{diet.icon}</span>
+                            <span className="text-xs sm:text-sm">{diet.label}</span>
                           </button>
                         );
                       })}
@@ -610,7 +647,7 @@ export default function OnboardingPage() {
 
                   {/* Servings / Family Size */}
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       Portions (Servings)
                     </label>
                     <div className="grid grid-cols-4 gap-2">
@@ -619,10 +656,10 @@ export default function OnboardingPage() {
                           key={num}
                           type="button"
                           onClick={() => setFamilySize(num)}
-                          className={`py-2 rounded-lg border text-sm font-semibold transition-all ${
+                          className={`py-3 rounded-2xl border text-xs sm:text-sm font-bold transition-all interactive-pill ${
                             familySize === num
-                              ? 'bg-primary text-primary-foreground border-primary'
-                              : 'bg-background hover:bg-muted border-muted'
+                              ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 glow-primary'
+                              : 'bg-muted/20 hover:bg-muted/40 border-border/60 text-muted-foreground hover:text-foreground'
                           }`}
                         >
                           {num === 1 ? 'Solo (1)' : num === 2 ? 'Couple (2)' : `Family (${num})`}
@@ -633,7 +670,7 @@ export default function OnboardingPage() {
 
                   {/* Cook Time Goal */}
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       Max Cooking Time
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -642,10 +679,10 @@ export default function OnboardingPage() {
                           key={time}
                           type="button"
                           onClick={() => setCookTimeGoal(time)}
-                          className={`py-2 rounded-lg border text-sm font-medium transition-all ${
+                          className={`py-3 rounded-2xl border text-xs sm:text-sm font-bold transition-all interactive-pill ${
                             cookTimeGoal === time
-                              ? 'bg-primary text-primary-foreground border-primary font-semibold'
-                              : 'bg-background hover:bg-muted border-muted'
+                              ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 glow-primary'
+                              : 'bg-muted/20 hover:bg-muted/40 border-border/60 text-muted-foreground hover:text-foreground'
                           }`}
                         >
                           {time}
@@ -655,18 +692,18 @@ export default function OnboardingPage() {
                   </div>
 
                   {/* Submit Button */}
-                  <div className="flex items-center gap-3 pt-4 border-t">
+                  <div className="flex items-center gap-3 pt-6 border-t border-border/60">
                     <Button
                       variant="ghost"
                       onClick={() => setStep('pantry')}
-                      className="text-sm"
+                      className="text-sm font-semibold rounded-xl"
                     >
                       Back
                     </Button>
                     <Button
                       size="lg"
                       onClick={handleGenerateRecipe}
-                      className="flex-1 font-semibold h-12 shadow-md"
+                      className="flex-1 font-bold h-14 rounded-2xl shadow-xl shadow-primary/25 bg-gradient-to-r from-primary via-primary to-accent btn-shimmer"
                     >
                       <Sparkles className="w-5 h-5 mr-2" />
                       <span>Generate My Personalized Dinner</span>
@@ -685,26 +722,27 @@ export default function OnboardingPage() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
             >
-              <Card className="border shadow-lg text-center py-16 px-6">
-                <CardContent className="space-y-6">
-                  <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-                    <RefreshCw className="w-10 h-10 text-primary animate-spin" />
+              <Card className="glass-card border border-border/80 shadow-2xl rounded-3xl text-center py-20 px-8 relative overflow-hidden">
+                <div className="ambient-orb w-[300px] h-[300px] bg-primary/25 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+                <CardContent className="space-y-6 relative z-10">
+                  <div className="mx-auto w-24 h-24 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center glow-primary animate-pulse-glow">
+                    <RefreshCw className="w-12 h-12 text-primary animate-spin" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-2xl font-bold tracking-tight">
+                    <h3 className="text-3xl font-black tracking-tight">
                       Crafting Your Custom Recipe...
                     </h3>
-                    <p className="text-muted-foreground text-sm max-w-sm mx-auto">
-                      Matching {selectedPantry.length} pantry items against thousands of culinary techniques.
+                    <p className="text-muted-foreground text-sm max-w-sm mx-auto leading-relaxed">
+                      Synthesizing flavor pairings from {selectedPantry.length} pantry items against culinary databases and metabolic profiles.
                     </p>
                   </div>
 
-                  <div className="flex justify-center gap-1.5 pt-2">
+                  <div className="flex justify-center gap-2 pt-3">
                     {[0, 1, 2, 3].map((dot) => (
                       <motion.div
                         key={dot}
-                        className="w-2.5 h-2.5 rounded-full bg-primary"
-                        animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
+                        className="w-3 h-3 rounded-full bg-primary"
+                        animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
                         transition={{ duration: 1.2, repeat: Infinity, delay: dot * 0.2 }}
                       />
                     ))}
@@ -722,50 +760,50 @@ export default function OnboardingPage() {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <Card className="border shadow-xl overflow-hidden">
+              <Card className="glass-card border border-border/80 shadow-2xl rounded-3xl overflow-hidden">
                 {/* Recipe Hero Header */}
-                <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b">
-                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                    <Badge className="bg-green-600 hover:bg-green-700 text-white font-semibold">
+                <div className="bg-gradient-to-r from-primary/15 via-emerald-500/10 to-transparent p-8 border-b border-border/60 relative">
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                    <Badge className="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs px-3.5 py-1 rounded-full shadow-md shadow-emerald-600/20">
                       {generatedRecipe.matchScore}% Pantry Match
                     </Badge>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground font-medium">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
+                      <span className="flex items-center gap-1.5 bg-background/80 px-3 py-1 rounded-xl border border-border/60">
+                        <Clock className="w-3.5 h-3.5 text-primary" />
                         {generatedRecipe.cookTime}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <Flame className="w-3.5 h-3.5" />
+                      <span className="flex items-center gap-1.5 bg-background/80 px-3 py-1 rounded-xl border border-border/60">
+                        <Flame className="w-3.5 h-3.5 text-amber-500" />
                         {generatedRecipe.calories} kcal
                       </span>
-                      <span className="flex items-center gap-1">
-                        <UtensilsCrossed className="w-3.5 h-3.5" />
+                      <span className="flex items-center gap-1.5 bg-background/80 px-3 py-1 rounded-xl border border-border/60">
+                        <UtensilsCrossed className="w-3.5 h-3.5 text-purple-500" />
                         {familySize} Servings
                       </span>
                     </div>
                   </div>
 
-                  <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
+                  <h2 className="text-2xl sm:text-4xl font-black tracking-tight mt-2 text-foreground">
                     {generatedRecipe.title}
                   </h2>
-                  <p className="text-muted-foreground text-sm mt-2 leading-relaxed">
+                  <p className="text-muted-foreground text-sm sm:text-base mt-2 leading-relaxed max-w-2xl">
                     {generatedRecipe.description}
                   </p>
                 </div>
 
-                <CardContent className="p-6 space-y-6">
+                <CardContent className="p-8 space-y-8">
                   {/* Ingredients Breakdown */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Ready in Pantry */}
-                    <div className="p-4 rounded-xl bg-green-50/50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 space-y-2">
-                      <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-green-700 dark:text-green-400">
+                    <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                         <Check className="w-4 h-4" />
                         <span>Ready in Your Pantry ({generatedRecipe.pantryIngredientsUsed.length})</span>
                       </div>
-                      <ul className="text-sm space-y-1">
+                      <ul className="text-sm space-y-1.5 font-medium">
                         {generatedRecipe.pantryIngredientsUsed.map((ing, i) => (
                           <li key={i} className="flex items-center gap-2 text-foreground/90">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm" />
                             <span>{ing}</span>
                           </li>
                         ))}
@@ -773,15 +811,15 @@ export default function OnboardingPage() {
                     </div>
 
                     {/* Missing Items */}
-                    <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 space-y-2">
-                      <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                    <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-3">
+                      <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
                         <span>Missing Ingredients ({generatedRecipe.missingIngredients.length})</span>
-                        <span className="text-[10px] font-normal normal-case">Deliverable</span>
+                        <span className="text-[10px] font-bold normal-case px-2 py-0.5 rounded-full bg-amber-500/20">Deliverable</span>
                       </div>
-                      <ul className="text-sm space-y-1">
+                      <ul className="text-sm space-y-1.5 font-medium">
                         {generatedRecipe.missingIngredients.map((ing, i) => (
                           <li key={i} className="flex items-center gap-2 text-foreground/90">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                            <span className="w-2 h-2 rounded-full bg-amber-500 shadow-sm" />
                             <span>{ing}</span>
                           </li>
                         ))}
@@ -790,17 +828,18 @@ export default function OnboardingPage() {
                   </div>
 
                   {/* Cooking Instructions */}
-                  <div className="space-y-3">
-                    <h3 className="font-bold text-base tracking-tight flex items-center gap-2">
+                  <div className="space-y-4">
+                    <h3 className="font-bold text-lg tracking-tight flex items-center gap-2">
+                      <Utensils className="w-5 h-5 text-primary" />
                       <span>Chef Step-by-Step Instructions</span>
                     </h3>
-                    <ol className="space-y-2.5">
+                    <ol className="space-y-3">
                       {generatedRecipe.steps.map((stepText, idx) => (
-                        <li key={idx} className="flex gap-3 text-sm leading-relaxed">
-                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center">
+                        <li key={idx} className="flex gap-3.5 text-sm sm:text-base leading-relaxed p-3.5 rounded-2xl bg-muted/20 border border-border/50 hover:border-primary/30 transition-all">
+                          <span className="flex-shrink-0 w-7 h-7 rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-black text-xs flex items-center justify-center shadow-sm">
                             {idx + 1}
                           </span>
-                          <span className="text-foreground/90 pt-0.5">{stepText}</span>
+                          <span className="text-foreground/90 pt-0.5 font-normal">{stepText}</span>
                         </li>
                       ))}
                     </ol>
@@ -808,20 +847,20 @@ export default function OnboardingPage() {
 
                   {/* 1-Click Grocery Cart Export Box */}
                   {retailers.length > 0 && (
-                    <div className="p-4 rounded-xl bg-muted/40 border space-y-3">
+                    <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 via-muted/30 to-background border border-border/70 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <ShoppingCart className="w-4 h-4 text-primary" />
-                          <span className="font-semibold text-sm">
+                          <span className="font-bold text-sm">
                             Order Missing Items for Delivery
                           </span>
                         </div>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs font-semibold text-muted-foreground bg-muted/60 px-2.5 py-1 rounded-full">
                           Estimated ~${retailers[0]?.estimatedTotal || '6.50'}
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                         {retailers.map((ret) => (
                           <Button
                             key={ret.id}
@@ -829,9 +868,9 @@ export default function OnboardingPage() {
                             size="sm"
                             onClick={() => handleExportCart(ret)}
                             disabled={exportingCart}
-                            className="h-10 text-xs font-medium flex items-center justify-center gap-1.5 bg-background hover:bg-primary/5"
+                            className="h-11 text-xs font-bold flex items-center justify-center gap-2 rounded-xl bg-background hover:bg-primary/5 border-border/70"
                           >
-                            <span>{ret.logo}</span>
+                            <span className="text-base">{ret.logo}</span>
                             <span>{ret.name}</span>
                             <ExternalLink className="w-3 h-3 opacity-60" />
                           </Button>
@@ -859,7 +898,7 @@ export default function OnboardingPage() {
                       }
                       router.push(`/cook/${generatedRecipe.id}`);
                     }}
-                    className="w-full bg-primary hover:bg-primary/90 font-black h-14 text-base shadow-xl"
+                    className="w-full bg-gradient-to-r from-primary via-primary to-accent hover:opacity-95 font-black h-16 text-base sm:text-lg shadow-2xl shadow-primary/30 rounded-2xl btn-shimmer"
                   >
                     <Utensils className="w-5 h-5 mr-2" />
                     <span>Start Hands-Free Cooking Mode (OmniChef™ Voice HUD)</span>
@@ -872,9 +911,9 @@ export default function OnboardingPage() {
                       size="lg"
                       variant="outline"
                       onClick={() => router.push('/dashboard')}
-                      className="flex-1 font-semibold h-12 shadow-sm"
+                      className="flex-1 font-bold h-12 shadow-sm rounded-2xl border-border/80 hover:bg-muted/40"
                     >
-                      <Check className="w-4 h-4 mr-2" />
+                      <Check className="w-4 h-4 mr-2 text-emerald-500" />
                       <span>Save to Smart Dashboard</span>
                     </Button>
 
@@ -882,9 +921,9 @@ export default function OnboardingPage() {
                       variant="outline"
                       size="lg"
                       onClick={() => router.push('/pricing')}
-                      className="font-medium h-12"
+                      className="font-bold h-12 rounded-2xl border-primary/30 hover:bg-primary/5 text-primary"
                     >
-                      <Sparkles className="w-4 h-4 mr-2 text-primary" />
+                      <Sparkles className="w-4 h-4 mr-2" />
                       <span>Unlock Unlimited Pro ($9.99/mo)</span>
                     </Button>
                   </div>
