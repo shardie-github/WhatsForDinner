@@ -12,7 +12,7 @@ const logger = createComponentLogger('page');
 
 
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { 
   Sparkles, 
@@ -24,13 +24,10 @@ import {
   ChefHat,
   ArrowRight,
   Check,
-  Play,
   Star,
   TrendingUp,
-  Users,
   Zap,
   Flame,
-  ShieldCheck,
   Camera,
   Utensils,
   Activity,
@@ -412,7 +409,7 @@ export default function HomePage() {
                 Built for the Modern Stack
               </h2>
               <p className="text-lg text-muted-foreground mb-6">
-                What's for Dinner leverages cutting-edge AI and modern web technologies 
+                What&apos;s for Dinner leverages cutting-edge AI and modern web technologies 
                 to deliver a seamless, fast, and intelligent meal planning experience.
               </p>
               <ul className="space-y-4 mb-8">
@@ -508,7 +505,7 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Loved by Real Families</h2>
             <p className="text-xl text-muted-foreground">
-              See what others are saying about What's for Dinner
+              See what others are saying about What&apos;s for Dinner
             </p>
           </div>
 
@@ -589,7 +586,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto text-center bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-12">
           <h2 className="text-4xl font-bold mb-4">Ready to Reclaim Your Evenings?</h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Join 12,847+ users who've made meal planning effortless.
+            Join 12,847+ users who&apos;ve made meal planning effortless.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="text-lg px-8 py-6" asChild>

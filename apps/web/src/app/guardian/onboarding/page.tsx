@@ -76,9 +76,9 @@ export default function GuardianOnboarding() {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">You're All Set!</h1>
+          <h1 className="text-3xl font-bold mb-4">You&apos;re All Set!</h1>
           <p className="text-gray-600 mb-6">
-            Guardian is now active and monitoring your data access. Visit the Trust Dashboard anytime to see what's happening.
+            Guardian is now active and monitoring your data access. Visit the Trust Dashboard anytime to see what&apos;s happening.
           </p>
           <a
             href="/dashboard/trust"

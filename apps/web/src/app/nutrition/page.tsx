@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { AnimatedCard } from '@/components/ui/animated-card';
-import { LoadingSpinner, LoadingOverlay } from '@/components/ui/loading-spinner';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import Navbar from '@/components/Navbar';
 import { MetabolicScoreCard } from '@/components/nutrition/MetabolicScoreCard';
@@ -42,7 +41,7 @@ export default function NutritionDashboard() {
   const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [nutrition, setNutrition] = useState<NutritionSummary | null>(null);
-  const [dailyGoals, setDailyGoals] = useState({
+  const [dailyGoals] = useState({
     calories: 2000,
     protein: 150,
     carbs: 250,
@@ -67,7 +66,7 @@ export default function NutritionDashboard() {
     fetchUser();
   }, []);
 
-  const loadNutritionData = async (userId: string) => {
+  const loadNutritionData = async (_userId: string) => {
     try {
       // This would fetch recent recipes and calculate aggregate nutrition
       // For now, using mock data structure
